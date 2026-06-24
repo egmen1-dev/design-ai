@@ -1,0 +1,74 @@
+"use client";
+
+import { useState } from "react";
+
+type Props = {
+  name: string;
+  price: string;
+  features: string[];
+  cta: string;
+  checkout?: boolean;
+  disabled?: boolean;
+  highlighted?: boolean;
+};
+
+export function PricingCard({
+  name,
+  price,
+  features,
+  cta,
+  checkout,
+  disabled,
+  highlighted,
+}: Props) {
+  const [loading, setLoading] = useState(false);
+
+  async function handleCheckout() {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/stripe/checkout", { method: "POST" });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div
+      className={`rounded-2xl border p-8 ${
+        highlighted
+          ? "border-brand-500 bg-brand-500/10"
+          : "border-slate-800 bg-slate-900/50"
+      }`}
+    >
+      <h3 className="text-lg font-semibold">{name}</h3>
+      <p className="mt-2 text-3xl font-bold">{price}</p>
+      <ul className="mt-6 space-y-2 text-sm text-slate-400">
+        {features.map((f) => (
+          <li key={f}>• {f}</li>
+        ))}
+      </ul>
+      {checkout ? (
+        <button
+          type="button"
+          onClick={handleCheckout}
+          disabled={loading}
+          className="mt-8 w-full rounded-lg bg-brand-600 py-3 text-sm font-semibold hover:bg-brand-700 disabled:opacity-50"
+        >
+          {loading ? "Redirecting…" : cta}
+        </button>
+      ) : (
+        <button
+          type="button"
+          disabled={disabled}
+          className="mt-8 w-full rounded-lg border border-slate-700 py-3 text-sm font-medium text-slate-500"
+        >
+          {cta}
+        </button>
+      )}
+    </div>
+  );
+}
