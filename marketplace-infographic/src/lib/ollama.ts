@@ -3,7 +3,8 @@ import { generateMockInfographicHtml } from "./ollama-mock";
 const OLLAMA_BASE_URL =
   process.env.OLLAMA_BASE_URL ?? "http://localhost:11434";
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL ?? "qwen2.5:7b";
-const OLLAMA_MOCK = process.env.OLLAMA_MOCK === "true";
+const AI_MOCK_MODE =
+  process.env.AI_MOCK_MODE === "true" || process.env.OLLAMA_MOCK === "true";
 
 const SYSTEM_PROMPT = `You are an expert infographic designer. Generate a complete, self-contained HTML document for a professional infographic.
 Requirements:
@@ -15,7 +16,7 @@ Requirements:
 - Include data visualization elements where appropriate`;
 
 export async function generateInfographicHtml(prompt: string): Promise<string> {
-  if (OLLAMA_MOCK) {
+  if (AI_MOCK_MODE) {
     return generateMockInfographicHtml(prompt);
   }
 
@@ -78,9 +79,9 @@ function wrapFallbackHtml(prompt: string, content: string): string {
   </style>
 </head>
 <body>
-  <span class="badge">AI Infographic</span>
+  <span class="badge">AI-инфографика</span>
   <h1>${escapeHtml(prompt.slice(0, 80))}</h1>
-  <div class="content">${escapeHtml(content || "Generated infographic content")}</div>
+  <div class="content">${escapeHtml(content || "Сгенерированный контент инфографики")}</div>
 </body>
 </html>`;
 }

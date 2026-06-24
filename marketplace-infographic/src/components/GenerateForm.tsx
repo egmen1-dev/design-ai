@@ -25,13 +25,13 @@ export function GenerateForm() {
 
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "Generation failed");
+        setError(data.error ?? "Не удалось сгенерировать инфографику");
         return;
       }
 
       setResult({ imagePath: data.imagePath, remaining: data.remaining });
     } catch {
-      setError("Network error");
+      setError("Ошибка сети");
     } finally {
       setLoading(false);
     }
@@ -43,7 +43,7 @@ export function GenerateForm() {
       className="rounded-2xl border border-slate-800 bg-slate-900/50 p-6"
     >
       <label htmlFor="prompt" className="block text-sm font-medium text-slate-300">
-        Describe your infographic
+        Опишите инфографику
       </label>
       <textarea
         id="prompt"
@@ -53,7 +53,7 @@ export function GenerateForm() {
         required
         minLength={10}
         maxLength={2000}
-        placeholder="e.g. A timeline of renewable energy adoption from 2010 to 2025..."
+        placeholder="Например: инфографика для карточки товара на Ozon с преимуществами, цифрами и CTA..."
         className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-white placeholder:text-slate-600 focus:border-brand-500 focus:outline-none"
       />
       <button
@@ -61,7 +61,7 @@ export function GenerateForm() {
         disabled={loading || prompt.length < 10}
         className="mt-4 w-full rounded-lg bg-brand-600 py-3 text-sm font-semibold hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {loading ? "Generating…" : "Generate infographic"}
+        {loading ? "Генерируем..." : "Создать инфографику"}
       </button>
 
       {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
@@ -69,12 +69,12 @@ export function GenerateForm() {
       {result && (
         <div className="mt-6">
           <p className="mb-2 text-sm text-slate-400">
-            Remaining today: {result.remaining}
+            Осталось генераций сегодня: {result.remaining}
           </p>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={result.imagePath}
-            alt="Generated infographic"
+            alt="Сгенерированная инфографика"
             className="w-full rounded-lg border border-slate-700"
           />
         </div>

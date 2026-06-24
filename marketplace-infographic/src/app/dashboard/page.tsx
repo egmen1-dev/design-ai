@@ -29,24 +29,24 @@ export default async function DashboardPage({
     <main className="mx-auto max-w-5xl px-6 py-16">
       <header className="mb-10 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <h1 className="text-3xl font-bold">Кабинет</h1>
           <p className="mt-1 text-slate-400">
             {session.user.name ?? session.user.email}
           </p>
         </div>
         <Link href="/" className="text-sm text-brand-500 hover:underline">
-          ← Back
+          ← Назад
         </Link>
       </header>
 
       {params.checkout === "success" && (
         <div className="mb-6 rounded-lg border border-green-800 bg-green-950/50 p-4 text-green-300">
-          Subscription activated. Thank you!
+          Подписка активирована. Спасибо!
         </div>
       )}
 
       <div className="mb-10 rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
-        <p className="text-sm text-slate-400">Plan</p>
+        <p className="text-sm text-slate-400">Тариф</p>
         <p className="mt-1 text-xl font-semibold">
           {hasPro ? "Pro" : "Free"}
         </p>
@@ -55,14 +55,16 @@ export default async function DashboardPage({
             href="/pricing"
             className="mt-4 inline-block rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium hover:bg-brand-700"
           >
-            Upgrade to Pro
+            Перейти на Pro
           </Link>
         )}
       </div>
 
-      <h2 className="mb-4 text-xl font-semibold">Generated images</h2>
+      <h2 className="mb-4 text-xl font-semibold">Готовая инфографика</h2>
       {user.generatedImages.length === 0 ? (
-        <p className="text-slate-400">No images yet. Generate one from the home page.</p>
+        <p className="text-slate-400">
+          Пока нет изображений. Создайте первую инфографику на главной странице.
+        </p>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2">
           {user.generatedImages.map((img) => (

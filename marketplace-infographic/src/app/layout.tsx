@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Design AI — Infographic Marketplace",
-  description: "Generate professional infographics with AI",
+  title: "Design AI — Инфографика для маркетплейсов",
+  description: "Генерация инфографики для маркетплейсов с AI",
 };
 
 export default function RootLayout({

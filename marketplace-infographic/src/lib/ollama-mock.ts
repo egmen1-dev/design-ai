@@ -119,44 +119,44 @@ export function generateMockInfographicHtml(prompt: string): string {
 </head>
 <body>
   <main class="shell">
-    <div class="eyebrow">Mock render · qwen2.5:7b compatible</div>
-    <h1>${title || "AI infographic preview"}</h1>
+    <div class="eyebrow">Mock-режим · совместимо с qwen2.5:7b</div>
+    <h1>${title || "Превью AI-инфографики"}</h1>
     <p class="lead">${summary}</p>
 
     <section class="grid">
       <article class="card">
         <span class="value">01</span>
-        <div class="label">Prompt</div>
-        <p class="copy">Structured input is validated before generation.</p>
+        <div class="label">Бриф</div>
+        <p class="copy">Запрос проходит Zod-валидацию до запуска генерации.</p>
       </article>
       <article class="card">
         <span class="value">02</span>
-        <div class="label">Design</div>
-        <p class="copy">The model composes HTML with inline CSS for consistent rendering.</p>
+        <div class="label">Дизайн</div>
+        <p class="copy">Модель собирает HTML с inline CSS для стабильного рендера.</p>
       </article>
       <article class="card">
         <span class="value">03</span>
-        <div class="label">Export</div>
-        <p class="copy">Puppeteer renders PNG output and applies the watermark.</p>
+        <div class="label">Экспорт</div>
+        <p class="copy">Puppeteer рендерит PNG и добавляет водяной знак.</p>
       </article>
     </section>
 
     <section class="timeline">
       <div class="step">
         <strong>Free</strong>
-        <p>Generate three watermarked infographics per day with local rate limits.</p>
+        <p>Создавайте три инфографики в день с локальным rate-limit без Redis.</p>
       </div>
       <div class="step">
         <strong>Pro</strong>
-        <p>Stripe subscriptions unlock a higher daily quota when payments are enabled.</p>
+        <p>Stripe-подписка откроет повышенный дневной лимит после подключения домена.</p>
       </div>
       <div class="step">
         <strong>VPS</strong>
-        <p>Run Next.js, PostgreSQL, PM2, Nginx and Ollama on a small server.</p>
+        <p>Next.js, PostgreSQL, PM2, Nginx и Ollama работают на небольшом VPS.</p>
       </div>
     </section>
 
-    <p class="footer">Set OLLAMA_MOCK=true to use this deterministic generator without a running model.</p>
+    <p class="footer">Установите AI_MOCK_MODE=true, чтобы использовать детерминированный генератор без запущенной модели.</p>
   </main>
 </body>
 </html>`;

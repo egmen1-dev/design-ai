@@ -57,7 +57,7 @@ GITHUB_ID="your-github-oauth-app-id"
 GITHUB_SECRET="your-github-oauth-app-secret"
 OLLAMA_BASE_URL="http://localhost:11434"
 OLLAMA_MODEL="qwen2.5:7b"
-OLLAMA_MOCK="false"
+AI_MOCK_MODE="false"
 STRIPE_SECRET_KEY="sk_live_..."
 STRIPE_WEBHOOK_SECRET="whsec_..."
 STRIPE_PRICE_ID="price_..."
@@ -74,7 +74,7 @@ cd /opt/design-ai
 
 PM2 will start the app on port 3000. Put Nginx or Caddy in front for HTTPS.
 
-Set `OLLAMA_MOCK=true` only when you need to verify the UI and render pipeline before `qwen2.5:7b` is available.
+Set `AI_MOCK_MODE=true` only when you need to verify the UI and render pipeline before `qwen2.5:7b` is available.
 
 ### Example Nginx snippet
 

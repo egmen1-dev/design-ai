@@ -12,7 +12,7 @@ export function SignInButton() {
         type="submit"
         className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-slate-900 hover:bg-slate-200"
       >
-        Sign in with GitHub
+        Войти через GitHub
       </button>
     </form>
   );

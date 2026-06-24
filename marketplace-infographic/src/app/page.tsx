@@ -14,7 +14,7 @@ export default async function HomePage() {
             design-ai
           </p>
           <h1 className="mt-2 text-4xl font-bold tracking-tight">
-            Infographic Marketplace
+            Инфографика для маркетплейсов
           </h1>
         </div>
         <nav className="flex items-center gap-4">
@@ -22,17 +22,17 @@ export default async function HomePage() {
             href="/how-it-works"
             className="text-sm text-slate-400 hover:text-white"
           >
-            How it works
+            Как это работает
           </Link>
           <Link href="/pricing" className="text-sm text-slate-400 hover:text-white">
-            Pricing
+            Тарифы
           </Link>
           {session ? (
             <Link
               href="/dashboard"
               className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium hover:bg-brand-700"
             >
-              Dashboard
+              Кабинет
             </Link>
           ) : (
             <SignInButton />
@@ -43,16 +43,18 @@ export default async function HomePage() {
       <section className="grid gap-12 lg:grid-cols-2">
         <div>
           <h2 className="text-2xl font-semibold">
-            AI-powered infographics with Ollama
+            AI-инфографика для карточек, витрин и отчётов
           </h2>
           <p className="mt-4 text-slate-400">
-            Describe your topic and get a polished infographic rendered with
-            Puppeteer and a watermark. Powered by qwen2.5:7b locally via Ollama.
+            Опишите товар, нишу или маркетплейс-аналитику — приложение
+            соберёт готовую инфографику, отрендерит её через Puppeteer и
+            добавит водяной знак. Генерация работает локально через Ollama
+            qwen2.5:7b или через AI_MOCK_MODE.
           </p>
           <ul className="mt-6 space-y-2 text-sm text-slate-400">
-            <li>• NextAuth + GitHub sign-in</li>
-            <li>• Stripe subscriptions for Pro tier</li>
-            <li>• In-memory rate limiting (no Redis)</li>
+            <li>• NextAuth и вход через GitHub</li>
+            <li>• Stripe-подписки для Pro-тарифа</li>
+            <li>• Rate-limit в памяти без Redis</li>
           </ul>
         </div>
 
@@ -60,7 +62,9 @@ export default async function HomePage() {
           <GenerateForm />
         ) : (
           <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-8 text-center">
-            <p className="text-slate-400">Sign in to generate infographics</p>
+            <p className="text-slate-400">
+              Войдите, чтобы создавать инфографику
+            </p>
             <div className="mt-4">
               <SignInButton />
             </div>

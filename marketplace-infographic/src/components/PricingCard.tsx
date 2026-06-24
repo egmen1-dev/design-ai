@@ -58,7 +58,7 @@ export function PricingCard({
           disabled={loading}
           className="mt-8 w-full rounded-lg bg-brand-600 py-3 text-sm font-semibold hover:bg-brand-700 disabled:opacity-50"
         >
-          {loading ? "Redirecting…" : cta}
+          {loading ? "Перенаправляем..." : cta}
         </button>
       ) : (
         <button

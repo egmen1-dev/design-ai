@@ -9,7 +9,7 @@ Next.js app with:
 - **Prisma** — `User`, `Subscription`, `GeneratedImage`
 - **NextAuth** — GitHub OAuth
 - **Ollama** — `qwen2.5:7b` for HTML generation
-- **Ollama mock** — deterministic local generator with `OLLAMA_MOCK=true`
+- **Ollama mock** — deterministic local generator with `AI_MOCK_MODE=true`
 - **Puppeteer** — render + watermark
 - **Stripe** — checkout + webhook subscriptions
 - **Rate limit** — in-memory (no Redis)
