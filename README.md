@@ -9,6 +9,7 @@ Next.js app with:
 - **Prisma** — `User`, `Subscription`, `GeneratedImage`
 - **NextAuth** — GitHub OAuth
 - **Ollama** — `qwen2.5:7b` for HTML generation
+- **Ollama mock** — deterministic local generator with `OLLAMA_MOCK=true`
 - **Puppeteer** — render + watermark
 - **Stripe** — checkout + webhook subscriptions
 - **Rate limit** — in-memory (no Redis)
@@ -28,5 +29,6 @@ See [DEPLOY.md](./DEPLOY.md) for VPS setup with PM2, PostgreSQL, and GitHub Acti
 
 ```bash
 ./scripts/setup-vps.sh   # first-time VPS setup
+./scripts/install-small-vps.sh # one-shot small VPS bootstrap
 ./scripts/deploy.sh      # deploy / update
 ```

@@ -1,6 +1,9 @@
+import { generateMockInfographicHtml } from "./ollama-mock";
+
 const OLLAMA_BASE_URL =
   process.env.OLLAMA_BASE_URL ?? "http://localhost:11434";
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL ?? "qwen2.5:7b";
+const OLLAMA_MOCK = process.env.OLLAMA_MOCK === "true";
 
 const SYSTEM_PROMPT = `You are an expert infographic designer. Generate a complete, self-contained HTML document for a professional infographic.
 Requirements:
@@ -12,6 +15,10 @@ Requirements:
 - Include data visualization elements where appropriate`;
 
 export async function generateInfographicHtml(prompt: string): Promise<string> {
+  if (OLLAMA_MOCK) {
+    return generateMockInfographicHtml(prompt);
+  }
+
   const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

@@ -18,6 +18,12 @@ export default async function HomePage() {
           </h1>
         </div>
         <nav className="flex items-center gap-4">
+          <Link
+            href="/how-it-works"
+            className="text-sm text-slate-400 hover:text-white"
+          >
+            How it works
+          </Link>
           <Link href="/pricing" className="text-sm text-slate-400 hover:text-white">
             Pricing
           </Link>

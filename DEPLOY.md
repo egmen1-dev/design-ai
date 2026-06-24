@@ -20,6 +20,14 @@ GitHub (main) → GitHub Actions → SSH → VPS
 
 ## 1. Initial VPS setup
 
+For a small VPS, use the one-shot installer. It creates swap, installs the base packages, runs the regular VPS setup, optionally configures Nginx, and deploys:
+
+```bash
+export DOMAIN=your-domain.com
+export EMAIL=admin@your-domain.com
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/egmen1-dev/design-ai/main/scripts/install-small-vps.sh)"
+```
+
 SSH into your server and run:
 
 ```bash
@@ -49,6 +57,7 @@ GITHUB_ID="your-github-oauth-app-id"
 GITHUB_SECRET="your-github-oauth-app-secret"
 OLLAMA_BASE_URL="http://localhost:11434"
 OLLAMA_MODEL="qwen2.5:7b"
+OLLAMA_MOCK="false"
 STRIPE_SECRET_KEY="sk_live_..."
 STRIPE_WEBHOOK_SECRET="whsec_..."
 STRIPE_PRICE_ID="price_..."
@@ -64,6 +73,8 @@ cd /opt/design-ai
 ```
 
 PM2 will start the app on port 3000. Put Nginx or Caddy in front for HTTPS.
+
+Set `OLLAMA_MOCK=true` only when you need to verify the UI and render pipeline before `qwen2.5:7b` is available.
 
 ### Example Nginx snippet
 
