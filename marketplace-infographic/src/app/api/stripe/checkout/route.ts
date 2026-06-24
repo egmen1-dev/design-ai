@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { stripe } from "@/lib/stripe";
+import { getStripe } from "@/lib/stripe";
 import { checkoutSchema } from "@/lib/validations";
 
 export async function POST(request: NextRequest) {
@@ -27,12 +27,15 @@ export async function POST(request: NextRequest) {
   }
 
   const priceId = parsed.data.priceId ?? process.env.STRIPE_PRICE_ID;
-  if (!priceId) {
+  const secretKey = process.env.STRIPE_SECRET_KEY;
+  if (!priceId || !secretKey) {
     return NextResponse.json(
-      { error: "Stripe price not configured" },
-      { status: 500 },
+      { error: "Stripe is not configured yet" },
+      { status: 503 },
     );
   }
+
+  const stripe = getStripe();
 
   let user = await prisma.user.findUnique({
     where: { id: session.user.id },
