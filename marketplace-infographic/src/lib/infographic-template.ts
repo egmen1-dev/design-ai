@@ -78,6 +78,8 @@ export type RenderInfographicOptions = {
   productImageSrc?: string;
   productImageCutout?: boolean;
   style?: InfographicStyle;
+  /** Готовый композит фон+товар (sharp) — скрывает слои сцены и товар */
+  mergedImageDataUrl?: string;
 };
 
 function escapeHtml(text: string): string {
@@ -201,12 +203,13 @@ function renderProductVisual(
 
 function renderBadgeTopLeft(
   spec: InfographicData["specBlocks"][number],
-  badgeBlue: string,
+  badgeBg: string,
+  badgeExtraCss: string,
 ): string {
   const big = extractBigNumber(spec.value);
   const unit = spec.label;
   return `
-    <div class="badge badge-tl" style="background:${badgeBlue}">
+    <div class="badge badge-tl" style="background:${badgeBg}; ${badgeExtraCss}">
       <div class="badge-big">${escapeHtml(big)}</div>
       <div class="badge-sub">${escapeHtml(unit)}</div>
     </div>`;
@@ -214,11 +217,12 @@ function renderBadgeTopLeft(
 
 function renderBadgeTopRight(
   banner: InfographicData["mainBanner"],
-  badgeBlue: string,
+  badgeBg: string,
+  badgeExtraCss: string,
 ): string {
   const icon = banner.icon ?? "⚡";
   return `
-    <div class="badge badge-tr" style="background:${badgeBlue}">
+    <div class="badge badge-tr" style="background:${badgeBg}; ${badgeExtraCss}">
       <div class="badge-icon-wrap">${escapeHtml(icon)}</div>
       <div class="badge-tr-text">${escapeHtml(banner.title)}</div>
     </div>`;
@@ -227,11 +231,12 @@ function renderBadgeTopRight(
 function renderBadgeBottomRight(
   spec: InfographicData["specBlocks"][number],
   accentRed: string,
+  badgeExtraCss: string,
 ): string {
   const icon = /литр|л\/|объём|бак/i.test(spec.label + spec.value) ? "💧" : "★";
   return `
     <div class="badge badge-br">
-      <div class="badge-circle" style="border-color:${accentRed};color:${accentRed}">
+      <div class="badge-circle" style="border-color:${accentRed};color:${accentRed}; ${badgeExtraCss}">
         <div class="badge-circle-icon">${icon}</div>
         <div class="badge-circle-val">${escapeHtml(spec.value)}</div>
         <div class="badge-circle-lbl">${escapeHtml(spec.label)}</div>
@@ -246,24 +251,81 @@ export function renderInfographicHtml(
   const style = options?.style ?? DEFAULT_STYLE;
   const theme = buildSlideTheme(style);
   const accent = ACCENT[data.accentColor ?? "red"];
-  const hasPhoto = Boolean(options?.productImageSrc);
+  const useMerged = Boolean(options?.mergedImageDataUrl);
+  const hasPhoto = !useMerged && Boolean(options?.productImageSrc);
   const cutout = Boolean(options?.productImageCutout);
   const scene = getSceneLayers(data.backgroundScene);
   const showLeaves =
-    data.backgroundScene === "outdoor_home" || data.backgroundScene === "nature";
+    !useMerged &&
+    (data.backgroundScene === "outdoor_home" || data.backgroundScene === "nature");
   const visual = detectProductVisual(data);
   const brand = extractBrandName(data);
   const pill = extractCategoryPill(data);
   const spec0 = data.specBlocks[0];
   const spec1 = data.specBlocks[1] ?? data.specBlocks[0];
-  const badgeBlue = accent.badge;
 
-  const productHtml = options?.productImageSrc
-    ? renderProductPhoto(options.productImageSrc, data.productName, cutout)
-    : renderProductVisual(visual, accent.primary, data.productName);
+  const badgeRadius =
+    style === "brutalism" || style === "swiss"
+      ? "0"
+      : style === "3d"
+        ? "28px"
+        : style === "glassmorphism"
+          ? "24px"
+          : "20px";
+
+  const badgeGlass =
+    style === "glassmorphism"
+      ? "backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); background: rgba(37,99,235,0.78) !important;"
+      : style === "neumorphism"
+        ? "background: linear-gradient(145deg, #eef2f7, #d5dce6) !important; color: #1f2937 !important;"
+        : "";
+
+  const badgeExtraCss = `border: ${theme.trend.border}; box-shadow: ${theme.trend.shadow}; border-radius: ${badgeRadius}; ${badgeGlass}`;
+  const badgeBg =
+    style === "brutalism"
+      ? theme.trend.accent
+      : style === "retro"
+        ? theme.trend.accent
+        : accent.badge;
+  const pillBg = style === "brutalism" ? theme.trend.foreground : theme.trend.accent;
+  const pillColor = style === "brutalism" ? theme.trend.background : "#fff";
+  const pillRadius = style === "brutalism" || style === "swiss" ? "0" : "8px";
+  const pillShadow =
+    style === "brutalism" ? theme.trend.shadow : "0 4px 16px rgba(0,0,0,0.25)";
+
+  const productHtml =
+    !useMerged && options?.productImageSrc
+      ? renderProductPhoto(options.productImageSrc, data.productName, cutout)
+      : !useMerged
+        ? renderProductVisual(visual, accent.primary, data.productName)
+        : "";
 
   const titleColor =
-    style === "minimal" || style === "swiss" ? "#0f172a" : "#ffffff";
+    style === "minimal" || style === "swiss" || style === "neumorphism" || style === "retro"
+      ? theme.trend.foreground
+      : "#ffffff";
+
+  const mergedOverlay =
+    style === "minimal" || style === "swiss"
+      ? "linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.12) 40%, rgba(15,23,42,0.2) 100%)"
+      : style === "glassmorphism"
+        ? "linear-gradient(180deg, rgba(15,23,42,0.5) 0%, rgba(15,23,42,0.08) 42%, rgba(15,23,42,0.42) 100%)"
+        : style === "brutalism"
+          ? "linear-gradient(180deg, rgba(250,204,21,0.35) 0%, rgba(0,0,0,0.05) 45%, rgba(0,0,0,0.35) 100%)"
+          : "linear-gradient(180deg, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.06) 38%, rgba(0,0,0,0.28) 100%)";
+
+  const slideBg = useMerged
+    ? `background-image: url('${options!.mergedImageDataUrl}'); background-size: cover; background-position: center bottom;`
+    : "";
+
+  const sceneLayers = useMerged
+    ? `<div class="merged-overlay"></div>`
+    : `<div class="sky"></div>
+    <div class="sky-decor"></div>
+    <div class="grass"></div>
+    <div class="grass-line"></div>
+    ${scene.props}
+    ${showLeaves ? renderLeaves() : ""}`;
 
   return `<!DOCTYPE html>
 <html lang="ru">
@@ -278,7 +340,12 @@ export function renderInfographicHtml(
       font-family: ${theme.fontFamily}, "Segoe UI", Arial, sans-serif;
     }
 
-    .slide { position: relative; width: 1200px; height: 1200px; overflow: hidden; }
+    .slide { position: relative; width: 1200px; height: 1200px; overflow: hidden; ${slideBg} }
+
+    .merged-overlay {
+      position: absolute; inset: 0; z-index: 1; pointer-events: none;
+      background: ${mergedOverlay};
+    }
 
     .sky {
       position: absolute; top: 0; left: 0; right: 0; height: 62%;
@@ -316,10 +383,11 @@ export function renderInfographicHtml(
     }
     .hero-pill {
       display: inline-block; margin-top: 10px;
-      background: ${accent.primary};
-      color: #fff; font-size: 22px; font-weight: 700;
-      padding: 8px 22px; border-radius: 8px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+      background: ${pillBg};
+      color: ${pillColor}; font-size: 22px; font-weight: 700;
+      padding: 8px 22px; border-radius: ${pillRadius};
+      box-shadow: ${pillShadow};
+      border: ${style === "brutalism" ? theme.trend.border : "none"};
     }
     .hero-brand {
       font-size: 26px; font-weight: 800; color: ${titleColor};
@@ -334,7 +402,6 @@ export function renderInfographicHtml(
     .badge-tl {
       top: 200px; left: 44px;
       width: 148px; min-height: 148px;
-      border-radius: 20px;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       padding: 16px 12px;
@@ -352,7 +419,6 @@ export function renderInfographicHtml(
     .badge-tr {
       top: 210px; right: 40px;
       max-width: 300px;
-      border-radius: 16px;
       padding: 16px 20px;
       display: flex; align-items: center; gap: 14px;
       box-shadow: 0 12px 32px rgba(0,0,0,0.28);
@@ -501,13 +567,8 @@ export function renderInfographicHtml(
   </style>
 </head>
 <body>
-  <div class="slide">
-    <div class="sky"></div>
-    <div class="sky-decor"></div>
-    <div class="grass"></div>
-    <div class="grass-line"></div>
-    ${scene.props}
-    ${showLeaves ? renderLeaves() : ""}
+  <div class="slide" data-style="${style}">
+    ${sceneLayers}
 
     <header class="hero-header">
       <div>
@@ -517,13 +578,11 @@ export function renderInfographicHtml(
       <div class="hero-brand">${escapeHtml(brand)}</div>
     </header>
 
-    ${renderBadgeTopLeft(spec0, badgeBlue)}
-    ${renderBadgeTopRight(data.mainBanner, badgeBlue)}
-    ${renderBadgeBottomRight(spec1, accent.primary)}
+    ${renderBadgeTopLeft(spec0, badgeBg, badgeExtraCss)}
+    ${renderBadgeTopRight(data.mainBanner, badgeBg, badgeExtraCss)}
+    ${renderBadgeBottomRight(spec1, accent.primary, badgeExtraCss)}
 
-    <div class="product-stage">
-      ${productHtml}
-    </div>
+    ${productHtml ? `<div class="product-stage">${productHtml}</div>` : ""}
   </div>
 </body>
 </html>`;

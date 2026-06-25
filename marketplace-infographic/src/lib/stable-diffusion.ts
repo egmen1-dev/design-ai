@@ -117,14 +117,25 @@ export async function getCachedBackground(promptHash: string): Promise<string | 
   }
 }
 
-/** Генерирует фон через Stable Diffusion (HF) с кэшем по хэшу промпта */
+export type GenerateBackgroundOptions = {
+  /** Пропустить кэш (перегенерация фона) */
+  skipCache?: boolean;
+  /** Уникальный суффикс — каждая генерация получает новый фон */
+  seedSuffix?: string;
+  /** Стиль слайда — влияет на ключ кэша */
+  style?: string;
+};
+
+/** Генерирует фон через Stable Diffusion (HF) с кэшем по хэшу промпта+стиля+seed */
 export async function generateBackground(
   prompt: string,
-  options?: { skipCache?: boolean; seedSuffix?: string },
+  options?: GenerateBackgroundOptions,
 ): Promise<string> {
-  const promptKey = options?.seedSuffix
-    ? `${prompt}::${options.seedSuffix}`
-    : prompt;
+  const variation =
+    options?.seedSuffix ??
+    `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+  const stylePart = options?.style ? `style:${options.style}` : "style:modern";
+  const promptKey = `${prompt}::${stylePart}::${variation}`;
   const promptHash = hashPrompt(promptKey);
 
   if (!options?.skipCache) {

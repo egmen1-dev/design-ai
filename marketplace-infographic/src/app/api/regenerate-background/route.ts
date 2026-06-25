@@ -42,6 +42,7 @@ export async function POST(request: NextRequest) {
       regenerateBackgroundOnly: true,
       existingImageId: parsed.data.imageId,
       backgroundSeed: seed,
+      style: parsed.data.style,
     });
 
     return NextResponse.json(result);

@@ -163,7 +163,7 @@ export function GenerateForm() {
       const res = await fetch("/api/regenerate-background", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageId: result.id }),
+        body: JSON.stringify({ imageId: result.id, style }),
       });
 
       const data = (await res.json()) as {
@@ -171,6 +171,7 @@ export function GenerateForm() {
         imagePath?: string;
         freeRemaining: number;
         credits: number;
+        appliedStyle?: InfographicStyle;
         backgroundSource?: "sd" | "fallback";
       };
 
@@ -187,6 +188,7 @@ export function GenerateForm() {
               freeRemaining: data.freeRemaining ?? prev.freeRemaining,
               credits: data.credits ?? prev.credits,
               backgroundSource: data.backgroundSource ?? prev.backgroundSource,
+              appliedStyle: data.appliedStyle ?? style,
             }
           : prev,
       );

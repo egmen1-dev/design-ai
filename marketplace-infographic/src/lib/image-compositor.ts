@@ -99,11 +99,11 @@ async function createShadowLayer(
   const shadowH = Math.max(28, Math.round(productHeight * 0.06));
   const svg = `
     <svg width="${shadowW}" height="${shadowH}" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="${shadowW / 2}" cy="${shadowH / 2}" rx="${shadowW * 0.48}" ry="${shadowH * 0.42}" fill="black" fill-opacity="0.45"/>
+      <ellipse cx="${shadowW / 2}" cy="${shadowH / 2}" rx="${shadowW * 0.48}" ry="${shadowH * 0.42}" fill="black" fill-opacity="0.58"/>
     </svg>`;
 
   const shadow = await sharp(Buffer.from(svg))
-    .blur(15)
+    .blur(22)
     .ensureAlpha()
     .png()
     .toBuffer({ resolveWithObject: true });
@@ -159,10 +159,12 @@ export async function mergeProductWithBackground(
     loadImageBuffer(productUrl),
   ]);
 
-  const background = sharp(bgBuffer).resize(CANVAS, CANVAS, {
-    fit: "cover",
-    position: "centre",
-  });
+  const background = sharp(bgBuffer)
+    .resize(CANVAS, CANVAS, {
+      fit: "cover",
+      position: "centre",
+    })
+    .blur(2.5);
 
   const bgColor = await sampleBackgroundColor(background);
   const bgLuma = rec709Luminance(bgColor);

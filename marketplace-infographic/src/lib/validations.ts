@@ -33,6 +33,7 @@ export const generateInfographicSchema = z.object({
 export const regenerateBackgroundSchema = z.object({
   imageId: z.string().min(1),
   backgroundSeed: z.string().max(64).optional(),
+  style: z.enum(STYLE_KEYS).optional(),
 });
 
 export const uploadImageSchema = z.object({

@@ -3,14 +3,12 @@ import path from "path";
 import { consumeGenerationSlot } from "@/lib/credits";
 import { generateSdInfographicData } from "@/lib/ollama-sd";
 import {
-  backgroundToDataUrl,
-  buildFallbackGradient,
   generateBackground,
 } from "@/lib/stable-diffusion";
 import {
-  renderSdInfographicHtml,
-  type InfographicSdData,
-} from "@/lib/sd-infographic-template";
+  renderInfographicHtml,
+} from "@/lib/infographic-template";
+import { sdDataToInfographic } from "@/lib/sd-to-infographic";
 import { packSdPayload, unpackSdPayload } from "@/lib/sd-stored-payload";
 import { DEFAULT_STYLE, type InfographicStyle } from "@/lib/design-trends";
 import { renderHtmlToImage } from "@/lib/puppeteer";
@@ -19,6 +17,7 @@ import {
   parseProductImageDataUrl,
   processProductImageWithImgly,
 } from "@/lib/product-image-sd";
+import type { InfographicSdInput } from "@/lib/validations";
 import { prisma } from "@/lib/prisma";
 import {
   mergeProductWithBackground,
@@ -86,7 +85,7 @@ export async function handleGenerateInfographic(
   const slot = await consumeGenerationSlot(input.userId);
 
   try {
-    let sdData: InfographicSdData;
+    let sdData: InfographicSdInput;
     let appliedStyle: InfographicStyle = input.style ?? DEFAULT_STYLE;
     let aiSource = "mock";
     let productCutoutPath: string | null = null;
@@ -126,8 +125,11 @@ export async function handleGenerateInfographic(
 
     let backgroundUrl: string | null = null;
     let backgroundSource: "sd" | "fallback" = "sd";
-    let backgroundDataUrl: string | undefined;
     let mergedImageDataUrl: string | undefined;
+
+    const variationSeed =
+      input.backgroundSeed ??
+      `gen-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 
     try {
       if (!process.env.HF_API_KEY) {
@@ -135,9 +137,9 @@ export async function handleGenerateInfographic(
       }
       backgroundUrl = await generateBackground(sdData.backgroundPrompt, {
         skipCache: Boolean(input.backgroundSeed),
-        seedSuffix: input.backgroundSeed,
+        seedSuffix: variationSeed,
+        style: appliedStyle,
       });
-      backgroundDataUrl = await backgroundToDataUrl(backgroundUrl);
     } catch (error) {
       console.warn("SD background failed, gradient fallback:", error);
       backgroundSource = "fallback";
@@ -145,9 +147,10 @@ export async function handleGenerateInfographic(
 
     if (backgroundUrl) {
       try {
+        const productPath = productRender.absPath || productRender.webPath;
         const mergedPath = await mergeProductWithBackground(
           backgroundUrl,
-          productRender.webPath,
+          productPath,
           { reflection: sdData.layout === "cards" },
         );
         mergedImageDataUrl = await mergedToDataUrl(mergedPath);
@@ -156,13 +159,13 @@ export async function handleGenerateInfographic(
       }
     }
 
-    const html = renderSdInfographicHtml(sdData, {
+    const infographicData = sdDataToInfographic(sdData, input.prompt);
+
+    const html = renderInfographicHtml(infographicData, {
       style: appliedStyle,
       mergedImageDataUrl,
-      backgroundDataUrl: mergedImageDataUrl ? undefined : backgroundDataUrl,
-      backgroundCss: buildFallbackGradient(sdData.colors),
       productImageSrc: mergedImageDataUrl ? undefined : productRender.renderSrc,
-      productCutout: productRender.cutout,
+      productImageCutout: productRender.cutout,
     });
 
     const filename = `${input.userId}-${Date.now()}.png`;
