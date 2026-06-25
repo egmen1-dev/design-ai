@@ -25,6 +25,7 @@ import {
   mergeProductWithBackground,
   mergedToDataUrl,
 } from "@/lib/image-compositor";
+import { PIPELINE_VERSION } from "@/lib/pipeline-version";
 
 export type GenerateInfographicInput = {
   userId: string;
@@ -35,8 +36,6 @@ export type GenerateInfographicInput = {
   existingImageId?: string;
   backgroundSeed?: string;
 };
-
-export const PIPELINE_VERSION = "v3-styles";
 
 export type GenerateInfographicResult = {
   id: string;

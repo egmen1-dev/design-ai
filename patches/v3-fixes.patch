@@ -1,0 +1,2424 @@
+diff --git a/marketplace-infographic/.npmrc b/marketplace-infographic/.npmrc
+index b214905e..c7e14e44 100644
+--- a/marketplace-infographic/.npmrc
++++ b/marketplace-infographic/.npmrc
+@@ -1 +1,2 @@
++# VPS/CI: не скачивать CUDA-бинарники onnxruntime с GitHub (таймауты, GPU не нужен)
+ onnxruntime-node-install-cuda=skip
+diff --git a/marketplace-infographic/package-lock.json b/marketplace-infographic/package-lock.json
+index 9405a4cc..cd73b73b 100644
+--- a/marketplace-infographic/package-lock.json
++++ b/marketplace-infographic/package-lock.json
+@@ -15,6 +15,7 @@
+         "bcryptjs": "^3.0.3",
+         "next": "^15.1.0",
+         "next-auth": "^5.0.0-beta.25",
++        "prisma": "^6.1.0",
+         "puppeteer": "^23.11.1",
+         "react": "^19.0.0",
+         "react-dom": "^19.0.0",
+@@ -29,7 +30,6 @@
+         "@types/react-dom": "^19.0.2",
+         "autoprefixer": "^10.4.20",
+         "postcss": "^8.4.49",
+-        "prisma": "^6.1.0",
+         "tailwindcss": "^3.4.17",
+         "typescript": "^5.7.2"
+       }
+@@ -899,7 +899,6 @@
+       "version": "6.19.3",
+       "resolved": "https://registry.npmjs.org/@prisma/config/-/config-6.19.3.tgz",
+       "integrity": "sha512-CBPT44BjlQxEt8kiMEauji2WHTDoVBOKl7UlewXmUgBPnr/oPRZC3psci5chJnYmH0ivEIog2OU9PGWoki3DLQ==",
+-      "devOptional": true,
+       "license": "Apache-2.0",
+       "dependencies": {
+         "c12": "3.1.0",
+@@ -912,14 +911,12 @@
+       "version": "6.19.3",
+       "resolved": "https://registry.npmjs.org/@prisma/debug/-/debug-6.19.3.tgz",
+       "integrity": "sha512-ljkJ+SgpXNktLG0Q/n4JGYCkKf0f8oYLyjImS2I8e2q2WCfdRRtWER062ZV/ixaNP2M2VKlWXVJiGzZaUgbKZw==",
+-      "devOptional": true,
+       "license": "Apache-2.0"
+     },
+     "node_modules/@prisma/engines": {
+       "version": "6.19.3",
+       "resolved": "https://registry.npmjs.org/@prisma/engines/-/engines-6.19.3.tgz",
+       "integrity": "sha512-RSYxtlYFl5pJ8ZePgMv0lZ9IzVCOdTPOegrs2qcbAEFrBI1G33h6wyC9kjQvo0DnYEhEVY0X4LsuFHXLKQk88g==",
+-      "devOptional": true,
+       "hasInstallScript": true,
+       "license": "Apache-2.0",
+       "dependencies": {
+@@ -933,14 +930,12 @@
+       "version": "7.1.1-3.c2990dca591cba766e3b7ef5d9e8a84796e47ab7",
+       "resolved": "https://registry.npmjs.org/@prisma/engines-version/-/engines-version-7.1.1-3.c2990dca591cba766e3b7ef5d9e8a84796e47ab7.tgz",
+       "integrity": "sha512-03bgb1VD5gvuumNf+7fVGBzfpJPjmqV423l/WxsWk2cNQ42JD0/SsFBPhN6z8iAvdHs07/7ei77SKu7aZfq8bA==",
+-      "devOptional": true,
+       "license": "Apache-2.0"
+     },
+     "node_modules/@prisma/fetch-engine": {
+       "version": "6.19.3",
+       "resolved": "https://registry.npmjs.org/@prisma/fetch-engine/-/fetch-engine-6.19.3.tgz",
+       "integrity": "sha512-tKtl/qco9Nt7LU5iKhpultD8O4vMCZcU2CHjNTnRrL1QvSUr5W/GcyFPjNL87GtRrwBc7ubXXD9xy4EvLvt8JA==",
+-      "devOptional": true,
+       "license": "Apache-2.0",
+       "dependencies": {
+         "@prisma/debug": "6.19.3",
+@@ -952,7 +947,6 @@
+       "version": "6.19.3",
+       "resolved": "https://registry.npmjs.org/@prisma/get-platform/-/get-platform-6.19.3.tgz",
+       "integrity": "sha512-xFj1VcJ1N3MKooOQAGO0W5tsd0W2QzIvW7DD7c/8H14Zmp4jseeWAITm+w2LLoLrlhoHdPPh0NMZ8mfL6puoHA==",
+-      "devOptional": true,
+       "license": "Apache-2.0",
+       "dependencies": {
+         "@prisma/debug": "6.19.3"
+@@ -984,7 +978,6 @@
+       "version": "1.1.0",
+       "resolved": "https://registry.npmjs.org/@standard-schema/spec/-/spec-1.1.0.tgz",
+       "integrity": "sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==",
+-      "devOptional": true,
+       "license": "MIT"
+     },
+     "node_modules/@swc/helpers": {
+@@ -1441,7 +1434,6 @@
+       "version": "3.1.0",
+       "resolved": "https://registry.npmjs.org/c12/-/c12-3.1.0.tgz",
+       "integrity": "sha512-uWoS8OU1MEIsOv8p/5a82c3H31LsWVR5qiyXVfBNOzfffjUWtPnhAb4BYI2uG2HfGmZmFjCtui5XNWaps+iFuw==",
+-      "devOptional": true,
+       "license": "MIT",
+       "dependencies": {
+         "chokidar": "^4.0.3",
+@@ -1538,7 +1530,6 @@
+       "version": "4.0.3",
+       "resolved": "https://registry.npmjs.org/chokidar/-/chokidar-4.0.3.tgz",
+       "integrity": "sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==",
+-      "devOptional": true,
+       "license": "MIT",
+       "dependencies": {
+         "readdirp": "^4.0.1"
+@@ -1585,7 +1576,6 @@
+       "version": "0.1.6",
+       "resolved": "https://registry.npmjs.org/citty/-/citty-0.1.6.tgz",
+       "integrity": "sha512-tskPPKEs8D2KPafUypv2gxwJP8h/OaJmC82QQGGDQcHvXX43xF2VDACcJVmZ0EuSxkpO9Kc4MlrA3q0+FG58AQ==",
+-      "devOptional": true,
+       "license": "MIT",
+       "dependencies": {
+         "consola": "^3.2.3"
+@@ -1666,14 +1656,12 @@
+       "version": "0.2.4",
+       "resolved": "https://registry.npmjs.org/confbox/-/confbox-0.2.4.tgz",
+       "integrity": "sha512-ysOGlgTFbN2/Y6Cg3Iye8YKulHw+R2fNXHrgSmXISQdMnomY6eNDprVdW9R5xBguEqI954+S6709UyiO7B+6OQ==",
+-      "devOptional": true,
+       "license": "MIT"
+     },
+     "node_modules/consola": {
+       "version": "3.4.2",
+       "resolved": "https://registry.npmjs.org/consola/-/consola-3.4.2.tgz",
+       "integrity": "sha512-5IKcdX0nnYavi6G7TtOhwkYzyjfJlatbjMjuLSfE2kYT5pMDOilZ4OvMhi637CcDICTmz3wARPoyhqyX1Y+XvA==",
+-      "devOptional": true,
+       "license": "MIT",
+       "engines": {
+         "node": "^14.18.0 || >=16.10.0"
+@@ -1779,7 +1767,6 @@
+       "version": "7.1.5",
+       "resolved": "https://registry.npmjs.org/deepmerge-ts/-/deepmerge-ts-7.1.5.tgz",
+       "integrity": "sha512-HOJkrhaYsweh+W+e74Yn7YStZOilkoPb6fycpwNLKzSPtruFs48nYis0zy5yJz1+ktUhHxoRDJ27RQAWLIJVJw==",
+-      "devOptional": true,
+       "license": "BSD-3-Clause",
+       "engines": {
+         "node": ">=16.0.0"
+@@ -1789,7 +1776,6 @@
+       "version": "6.1.7",
+       "resolved": "https://registry.npmjs.org/defu/-/defu-6.1.7.tgz",
+       "integrity": "sha512-7z22QmUWiQ/2d0KkdYmANbRUVABpZ9SNYyH5vx6PZ+nE5bcC0l7uFvEfHlyld/HcGBFTL536ClDt3DEcSlEJAQ==",
+-      "devOptional": true,
+       "license": "MIT"
+     },
+     "node_modules/degenerator": {
+@@ -1810,7 +1796,6 @@
+       "version": "2.0.5",
+       "resolved": "https://registry.npmjs.org/destr/-/destr-2.0.5.tgz",
+       "integrity": "sha512-ugFTXCtDZunbzasqBxrK93Ik/DRYsO6S/fedkWEMKqt04xZ4csmnmwGDBAb07QWNaGMAmnTIemsYZCksjATwsA==",
+-      "devOptional": true,
+       "license": "MIT"
+     },
+     "node_modules/detect-libc": {
+@@ -1846,7 +1831,6 @@
+       "version": "16.6.1",
+       "resolved": "https://registry.npmjs.org/dotenv/-/dotenv-16.6.1.tgz",
+       "integrity": "sha512-uBq4egWHTcTt33a72vpSG0z3HnPuIl6NqYcTrKEg2azoEyl2hpW0zqlxysq2pK9HlDIHyHyakeYaYnSAwd8bow==",
+-      "devOptional": true,
+       "license": "BSD-2-Clause",
+       "engines": {
+         "node": ">=12"
+@@ -1873,7 +1857,6 @@
+       "version": "3.21.0",
+       "resolved": "https://registry.npmjs.org/effect/-/effect-3.21.0.tgz",
+       "integrity": "sha512-PPN80qRokCd1f015IANNhrwOnLO7GrrMQfk4/lnZRE/8j7UPWrNNjPV0uBrZutI/nHzernbW+J0hdqQysHiSnQ==",
+-      "devOptional": true,
+       "license": "MIT",
+       "dependencies": {
+         "@standard-schema/spec": "^1.0.0",
+@@ -1897,7 +1880,6 @@
+       "version": "2.0.0",
+       "resolved": "https://registry.npmjs.org/empathic/-/empathic-2.0.0.tgz",
+       "integrity": "sha512-i6UzDscO/XfAcNYD75CfICkmfLedpyPDdozrLMmQc5ORaQcdMoc21OnlEylMIqI7U8eniKrPMxxtj8k0vhmJhA==",
+-      "devOptional": true,
+       "license": "MIT",
+       "engines": {
+         "node": ">=14"
+@@ -2043,7 +2025,6 @@
+       "version": "1.1.0",
+       "resolved": "https://registry.npmjs.org/exsolve/-/exsolve-1.1.0.tgz",
+       "integrity": "sha512-D+42+T12DdIlJM3uepa55qGiL3sYdLBOxIl2ifQCzCHz4c7eiolaHsi3BIqEr7JxBzxv2pYZQX9kw16ziMcEmw==",
+-      "devOptional": true,
+       "license": "MIT"
+     },
+     "node_modules/extract-zip": {
+@@ -2070,7 +2051,6 @@
+       "version": "3.23.2",
+       "resolved": "https://registry.npmjs.org/fast-check/-/fast-check-3.23.2.tgz",
+       "integrity": "sha512-h5+1OzzfCC3Ef7VbtKdcv7zsstUQwUDlYpUTvjeUsJAssPgLn7QzbboPtL5ro04Mq0rPOsMzl7q5hIbRs2wD1A==",
+-      "devOptional": true,
+       "funding": [
+         {
+           "type": "individual",
+@@ -2280,7 +2260,6 @@
+       "version": "2.0.0",
+       "resolved": "https://registry.npmjs.org/giget/-/giget-2.0.0.tgz",
+       "integrity": "sha512-L5bGsVkxJbJgdnwyuheIunkGatUF/zssUoxxjACCseZYAVbaqdh9Tsmmlkl8vYan09H7sbvKt4pS8GqKLBrEzA==",
+-      "devOptional": true,
+       "license": "MIT",
+       "dependencies": {
+         "citty": "^0.1.6",
+@@ -2525,7 +2504,6 @@
+       "version": "2.7.0",
+       "resolved": "https://registry.npmjs.org/jiti/-/jiti-2.7.0.tgz",
+       "integrity": "sha512-AC/7JofJvZGrrneWNaEnJeOLUx+JlGt7tNa0wZiRPT4MY1wmfKjt2+6O2p2uz2+skll8OZZmJMNqeke7kKbNgQ==",
+-      "devOptional": true,
+       "license": "MIT",
+       "bin": {
+         "jiti": "lib/jiti-cli.mjs"
+@@ -3291,7 +3269,6 @@
+       "version": "1.6.7",
+       "resolved": "https://registry.npmjs.org/node-fetch-native/-/node-fetch-native-1.6.7.tgz",
+       "integrity": "sha512-g9yhqoedzIUm0nTnTqAQvueMPVOuIY16bqgAJJC8XOOubYFNwz6IER9qs0Gq2Xd0+CecCKFjtdDTMA4u4xG06Q==",
+-      "devOptional": true,
+       "license": "MIT"
+     },
+     "node_modules/node-releases": {
+@@ -3318,7 +3295,6 @@
+       "version": "0.6.7",
+       "resolved": "https://registry.npmjs.org/nypm/-/nypm-0.6.7.tgz",
+       "integrity": "sha512-s3ds97SD5pd1dULE+tHUk1DrV0cSHOnsfpcdGATJ8JpBo21DoKqN9exTH4/2nhPQNOLomBdTFMicN94S4DrZrQ==",
+-      "devOptional": true,
+       "license": "MIT",
+       "dependencies": {
+         "citty": "^0.2.2",
+@@ -3336,7 +3312,6 @@
+       "version": "0.2.2",
+       "resolved": "https://registry.npmjs.org/citty/-/citty-0.2.2.tgz",
+       "integrity": "sha512-+6vJA3L98yv+IdfKGZHBNiGW5KHn22e/JwID0Strsz8h4S/csAu/OuICwxrg44k5MRiZHWIo8XXuJgQTriRP4w==",
+-      "devOptional": true,
+       "license": "MIT"
+     },
+     "node_modules/oauth4webapi": {
+@@ -3384,7 +3359,6 @@
+       "version": "2.0.11",
+       "resolved": "https://registry.npmjs.org/ohash/-/ohash-2.0.11.tgz",
+       "integrity": "sha512-RdR9FQrFwNBNXAr4GixM8YaRZRJ5PUWbKYbE5eOsrwAjJW0q2REGcf79oYPsLyskQCZG1PLN+S/K1V00joZAoQ==",
+-      "devOptional": true,
+       "license": "MIT"
+     },
+     "node_modules/once": {
+@@ -3491,7 +3465,6 @@
+       "version": "2.0.3",
+       "resolved": "https://registry.npmjs.org/pathe/-/pathe-2.0.3.tgz",
+       "integrity": "sha512-WUjGcAqP1gQacoQe+OBJsFA7Ld4DyXuUIjZ5cc75cLHvJ7dtNsTugphxIADwspS+AraAUePCKrSVtPLFj/F88w==",
+-      "devOptional": true,
+       "license": "MIT"
+     },
+     "node_modules/pend": {
+@@ -3504,7 +3477,6 @@
+       "version": "1.0.0",
+       "resolved": "https://registry.npmjs.org/perfect-debounce/-/perfect-debounce-1.0.0.tgz",
+       "integrity": "sha512-xCy9V055GLEqoFaHoC1SoLIaLmWctgCUaBaWxDZ7/Zx4CTyX7cJQLJOok/orfjZAh9kEYpjJa4d0KcJmCbctZA==",
+-      "devOptional": true,
+       "license": "MIT"
+     },
+     "node_modules/picocolors": {
+@@ -3550,7 +3522,6 @@
+       "version": "2.3.1",
+       "resolved": "https://registry.npmjs.org/pkg-types/-/pkg-types-2.3.1.tgz",
+       "integrity": "sha512-y+ichcgc2LrADuhLNAx8DFjVfgz91pRxfZdI3UDhxHvcVEZsenLO+7XaU5vOp0u/7V/wZ+plyuQxtrDlZJ+yeg==",
+-      "devOptional": true,
+       "license": "MIT",
+       "dependencies": {
+         "confbox": "^0.2.4",
+@@ -3805,7 +3776,6 @@
+       "version": "6.19.3",
+       "resolved": "https://registry.npmjs.org/prisma/-/prisma-6.19.3.tgz",
+       "integrity": "sha512-++ZJ0ijLrDJF6hNB4t4uxg2br3fC4H9Yc9tcbjr2fcNFP3rh/SBNrAgjhsqBU4Ght8JPrVofG/ZkXfnSfnYsFg==",
+-      "devOptional": true,
+       "hasInstallScript": true,
+       "license": "Apache-2.0",
+       "dependencies": {
+@@ -3914,7 +3884,6 @@
+       "version": "6.1.0",
+       "resolved": "https://registry.npmjs.org/pure-rand/-/pure-rand-6.1.0.tgz",
+       "integrity": "sha512-bVWawvoZoBYpp6yIoQtQXHZjmz35RSVHnUOTefl8Vcjr8snTPY1wnpSPMWekcFwbxI6gtmT7rSYPFvz71ldiOA==",
+-      "devOptional": true,
+       "funding": [
+         {
+           "type": "individual",
+@@ -3982,7 +3951,6 @@
+       "version": "2.1.2",
+       "resolved": "https://registry.npmjs.org/rc9/-/rc9-2.1.2.tgz",
+       "integrity": "sha512-btXCnMmRIBINM2LDZoEmOogIZU7Qe7zn4BpomSKZ/ykbLObuBdvG+mFq11DL6fjH1DRwHhrlgtYWG96bJiC7Cg==",
+-      "devOptional": true,
+       "license": "MIT",
+       "dependencies": {
+         "defu": "^6.1.4",
+@@ -4038,7 +4006,6 @@
+       "version": "4.1.2",
+       "resolved": "https://registry.npmjs.org/readdirp/-/readdirp-4.1.2.tgz",
+       "integrity": "sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg==",
+-      "devOptional": true,
+       "license": "MIT",
+       "engines": {
+         "node": ">= 14.18.0"
+@@ -4708,7 +4675,6 @@
+       "version": "1.2.4",
+       "resolved": "https://registry.npmjs.org/tinyexec/-/tinyexec-1.2.4.tgz",
+       "integrity": "sha512-SHf/r48b7vOrjve9PxJo3MN5v5yuyjHvdUcrQffT3WXMUfnGmHDVbC4k3sHJaJTgZCwpUplIaAo5ANtMyp3YHg==",
+-      "devOptional": true,
+       "license": "MIT",
+       "engines": {
+         "node": ">=18"
+diff --git a/marketplace-infographic/package.json b/marketplace-infographic/package.json
+index 36ce9c1c..e97593bb 100644
+--- a/marketplace-infographic/package.json
++++ b/marketplace-infographic/package.json
+@@ -7,7 +7,7 @@
+     "build": "prisma generate && next build",
+     "start": "next start",
+     "lint": "next lint",
+-    "postinstall": "prisma generate",
++    "postinstall": "npx prisma generate",
+     "db:push": "prisma db push",
+     "db:migrate": "prisma migrate deploy"
+   },
+@@ -18,6 +18,7 @@
+     "bcryptjs": "^3.0.3",
+     "next": "^15.1.0",
+     "next-auth": "^5.0.0-beta.25",
++    "prisma": "^6.1.0",
+     "puppeteer": "^23.11.1",
+     "react": "^19.0.0",
+     "react-dom": "^19.0.0",
+@@ -32,7 +33,6 @@
+     "@types/react-dom": "^19.0.2",
+     "autoprefixer": "^10.4.20",
+     "postcss": "^8.4.49",
+-    "prisma": "^6.1.0",
+     "tailwindcss": "^3.4.17",
+     "typescript": "^5.7.2"
+   }
+diff --git a/marketplace-infographic/src/app/api/generate-infographic/route.ts b/marketplace-infographic/src/app/api/generate-infographic/route.ts
+index 4c1a81b2..2b3e4489 100644
+--- a/marketplace-infographic/src/app/api/generate-infographic/route.ts
++++ b/marketplace-infographic/src/app/api/generate-infographic/route.ts
+@@ -29,6 +29,7 @@ export async function POST(request: NextRequest) {
+       userId: session.user.id,
+       prompt: parsed.data.prompt,
+       productImage: parsed.data.productImage,
++      style: parsed.data.style,
+     });
+ 
+     return NextResponse.json(result);
+diff --git a/marketplace-infographic/src/app/api/health/route.ts b/marketplace-infographic/src/app/api/health/route.ts
+index a73d2b7b..b249d5cb 100644
+--- a/marketplace-infographic/src/app/api/health/route.ts
++++ b/marketplace-infographic/src/app/api/health/route.ts
+@@ -1,8 +1,10 @@
+ import { NextResponse } from "next/server";
++import { PIPELINE_VERSION } from "@/lib/generate-infographic-handler";
+ 
+ export async function GET() {
+   const checks = {
+     status: "ok",
++    pipelineVersion: PIPELINE_VERSION,
+     timestamp: new Date().toISOString(),
+     ollama: false,
+     database: false,
+diff --git a/marketplace-infographic/src/app/api/regenerate-background/route.ts b/marketplace-infographic/src/app/api/regenerate-background/route.ts
+index 14612057..cfaa0060 100644
+--- a/marketplace-infographic/src/app/api/regenerate-background/route.ts
++++ b/marketplace-infographic/src/app/api/regenerate-background/route.ts
+@@ -42,6 +42,8 @@ export async function POST(request: NextRequest) {
+       regenerateBackgroundOnly: true,
+       existingImageId: parsed.data.imageId,
+       backgroundSeed: seed,
++      style: parsed.data.style,
++      productImage: parsed.data.productImage,
+     });
+ 
+     return NextResponse.json(result);
+@@ -57,6 +59,19 @@ export async function POST(request: NextRequest) {
+         { status: 402 },
+       );
+     }
++    if (code === "PRODUCT_IMAGE_REQUIRED") {
++      return NextResponse.json(
++        {
++          error:
++            "Не найдено фото товара. Загрузите фото снова и повторите перегенерацию.",
++          code: "PRODUCT_IMAGE_REQUIRED",
++        },
++        { status: 400 },
++      );
++    }
++    if (code === "IMAGE_NOT_FOUND") {
++      return NextResponse.json({ error: "Изображение не найдено" }, { status: 404 });
++    }
+     console.error("regenerate-background error:", error);
+     return NextResponse.json({ error: "Не удалось перегенерировать фон" }, { status: 500 });
+   }
+diff --git a/marketplace-infographic/src/components/GenerateForm.tsx b/marketplace-infographic/src/components/GenerateForm.tsx
+index 2aceedf2..24d233a9 100644
+--- a/marketplace-infographic/src/components/GenerateForm.tsx
++++ b/marketplace-infographic/src/components/GenerateForm.tsx
+@@ -69,6 +69,7 @@ export function GenerateForm() {
+     aiSource?: string;
+     appliedStyle?: InfographicStyle;
+     backgroundSource?: "sd" | "fallback";
++    pipelineVersion?: string;
+   } | null>(null);
+ 
+   useEffect(() => {
+@@ -129,6 +130,7 @@ export function GenerateForm() {
+         aiSource?: string;
+         appliedStyle?: InfographicStyle;
+         backgroundSource?: "sd" | "fallback";
++        pipelineVersion?: string;
+       };
+ 
+       if (!res.ok) {
+@@ -145,6 +147,7 @@ export function GenerateForm() {
+         aiSource: data.aiSource,
+         appliedStyle: data.appliedStyle ?? style,
+         backgroundSource: data.backgroundSource,
++        pipelineVersion: data.pipelineVersion,
+       });
+     } catch {
+       setError("Ошибка сети");
+@@ -156,6 +159,13 @@ export function GenerateForm() {
+   async function handleRegenerateBackground() {
+     if (!result?.id) return;
+ 
++    if (!productImage) {
++      setError(
++        "Загрузите фото товара — без него перегенерация фона невозможна",
++      );
++      return;
++    }
++
+     setRegenLoading(true);
+     setError(null);
+ 
+@@ -163,7 +173,11 @@ export function GenerateForm() {
+       const res = await fetch("/api/regenerate-background", {
+         method: "POST",
+         headers: { "Content-Type": "application/json" },
+-        body: JSON.stringify({ imageId: result.id }),
++        body: JSON.stringify({
++          imageId: result.id,
++          style,
++          productImage,
++        }),
+       });
+ 
+       const data = (await res.json()) as {
+@@ -171,7 +185,9 @@ export function GenerateForm() {
+         imagePath?: string;
+         freeRemaining: number;
+         credits: number;
++        appliedStyle?: InfographicStyle;
+         backgroundSource?: "sd" | "fallback";
++        pipelineVersion?: string;
+       };
+ 
+       if (!res.ok) {
+@@ -187,6 +203,8 @@ export function GenerateForm() {
+               freeRemaining: data.freeRemaining ?? prev.freeRemaining,
+               credits: data.credits ?? prev.credits,
+               backgroundSource: data.backgroundSource ?? prev.backgroundSource,
++              appliedStyle: data.appliedStyle ?? style,
++              pipelineVersion: data.pipelineVersion ?? prev.pipelineVersion,
+             }
+           : prev,
+       );
+@@ -400,13 +418,18 @@ export function GenerateForm() {
+                   · стиль: {STYLE_LABELS[result.appliedStyle]}
+                 </span>
+               )}
++              {result.pipelineVersion && (
++                <span className="ml-2 text-emerald-500">
++                  · {result.pipelineVersion}
++                </span>
++              )}
+             </p>
+             <div className="flex flex-wrap gap-2">
+               <button
+                 type="button"
+                 onClick={handleRegenerateBackground}
+-                disabled={loading || regenLoading}
+-                className="rounded-lg border border-slate-600 px-3 py-2 text-xs font-medium text-slate-200 hover:border-brand-500 disabled:opacity-50"
++                disabled={loading || regenLoading || !productImage}
++                className="rounded-lg border border-slate-600 px-3 py-2 text-xs font-medium text-slate-200 hover:border-brand-500 disabled:cursor-not-allowed disabled:opacity-50"
+               >
+                 {regenLoading ? "Перегенерация..." : "Перегенерировать фон"}
+               </button>
+diff --git a/marketplace-infographic/src/components/MarketplacePreview.tsx b/marketplace-infographic/src/components/MarketplacePreview.tsx
+index 339d17b8..1229bb38 100644
+--- a/marketplace-infographic/src/components/MarketplacePreview.tsx
++++ b/marketplace-infographic/src/components/MarketplacePreview.tsx
+@@ -24,6 +24,7 @@ export function MarketplacePreview({ imagePath }: { imagePath: string }) {
+       {marketplace === "plain" ? (
+         /* eslint-disable-next-line @next/next/no-img-element */
+         <img
++          key={src}
+           src={src}
+           alt="Инфографика"
+           className="w-full rounded-lg border border-slate-700 shadow-lg"
+@@ -39,7 +40,7 @@ export function MarketplacePreview({ imagePath }: { imagePath: string }) {
+           <div className="bg-gray-50 p-3">
+             <div className="overflow-hidden rounded-lg bg-white shadow-sm">
+               {/* eslint-disable-next-line @next/next/no-img-element */}
+-              <img src={src} alt="Превью" className="w-full object-cover" />
++              <img key={src} src={src} alt="Превью" className="w-full object-cover" />
+             </div>
+             <div className="mt-3 space-y-2 px-1">
+               <div className="h-3 w-3/4 rounded bg-gray-200" />
+diff --git a/marketplace-infographic/src/lib/generate-infographic-handler.ts b/marketplace-infographic/src/lib/generate-infographic-handler.ts
+index 27ddf0a6..9f3cec61 100644
+--- a/marketplace-infographic/src/lib/generate-infographic-handler.ts
++++ b/marketplace-infographic/src/lib/generate-infographic-handler.ts
+@@ -8,26 +8,36 @@ import {
+   generateBackground,
+ } from "@/lib/stable-diffusion";
+ import {
+-  renderSdInfographicHtml,
+-  type InfographicSdData,
+-} from "@/lib/sd-infographic-template";
++  renderInfographicHtml,
++} from "@/lib/infographic-template";
++import { sdDataToInfographic } from "@/lib/sd-to-infographic";
++import { packSdPayload, unpackSdPayload } from "@/lib/sd-stored-payload";
++import { DEFAULT_STYLE, TRENDS, type InfographicStyle } from "@/lib/design-trends";
+ import { renderHtmlToImage } from "@/lib/puppeteer";
+ import { bufferToDataUrl } from "@/lib/background-removal";
+ import {
+   parseProductImageDataUrl,
+   processProductImageWithImgly,
+ } from "@/lib/product-image-sd";
++import type { InfographicSdInput } from "@/lib/validations";
+ import { prisma } from "@/lib/prisma";
++import {
++  mergeProductWithBackground,
++  mergedToDataUrl,
++} from "@/lib/image-compositor";
+ 
+ export type GenerateInfographicInput = {
+   userId: string;
+   prompt: string;
+   productImage?: string;
++  style?: InfographicStyle;
+   regenerateBackgroundOnly?: boolean;
+   existingImageId?: string;
+   backgroundSeed?: string;
+ };
+ 
++export const PIPELINE_VERSION = "v3-styles";
++
+ export type GenerateInfographicResult = {
+   id: string;
+   imagePath: string;
+@@ -37,6 +47,8 @@ export type GenerateInfographicResult = {
+   unlimited: boolean;
+   aiSource: string;
+   backgroundSource: "sd" | "fallback";
++  appliedStyle: InfographicStyle;
++  pipelineVersion: string;
+ };
+ 
+ async function loadProductCutout(
+@@ -78,7 +90,8 @@ export async function handleGenerateInfographic(
+   const slot = await consumeGenerationSlot(input.userId);
+ 
+   try {
+-    let sdData: InfographicSdData;
++    let sdData: InfographicSdInput;
++    let appliedStyle: InfographicStyle = input.style ?? DEFAULT_STYLE;
+     let aiSource = "mock";
+     let productCutoutPath: string | null = null;
+     let productRender: Awaited<ReturnType<typeof loadProductCutout>>;
+@@ -90,22 +103,32 @@ export async function handleGenerateInfographic(
+       if (!existing || existing.userId !== input.userId) {
+         throw new Error("IMAGE_NOT_FOUND");
+       }
+-      if (!existing.generatedJson) {
+-        throw new Error("NO_JSON_FOR_REGEN");
++
++      appliedStyle = input.style ?? DEFAULT_STYLE;
++
++      if (existing.generatedJson) {
++        const stored = unpackSdPayload(existing.generatedJson);
++        sdData = stored.data;
++        appliedStyle = input.style ?? stored.style;
++        aiSource = "regen";
++      } else {
++        const ollama = await generateSdInfographicData(existing.prompt, appliedStyle);
++        sdData = ollama.data;
++        aiSource = "regen-rebuild";
+       }
+-      sdData = JSON.parse(existing.generatedJson) as InfographicSdData;
++
+       productRender = await loadProductCutout(
+-        undefined,
++        input.productImage,
+         input.userId,
+         existing.productCutout,
+       );
+-      productCutoutPath = existing.productCutout;
+-      aiSource = "regen";
++      productCutoutPath = productRender.webPath;
+     } else {
+       if (!input.productImage) {
+         throw new Error("PRODUCT_IMAGE_REQUIRED");
+       }
+-      const ollama = await generateSdInfographicData(input.prompt);
++      appliedStyle = input.style ?? DEFAULT_STYLE;
++      const ollama = await generateSdInfographicData(input.prompt, appliedStyle);
+       sdData = ollama.data;
+       aiSource = ollama.source;
+       productRender = await loadProductCutout(input.productImage, input.userId);
+@@ -114,15 +137,20 @@ export async function handleGenerateInfographic(
+ 
+     let backgroundUrl: string | null = null;
+     let backgroundSource: "sd" | "fallback" = "sd";
++    let mergedImageDataUrl: string | undefined;
+     let backgroundDataUrl: string | undefined;
+ 
++    const variationSeed =
++      input.backgroundSeed ??
++      `gen-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
++
+     try {
+       if (!process.env.HF_API_KEY) {
+         throw new Error("HF_API_KEY missing");
+       }
+       backgroundUrl = await generateBackground(sdData.backgroundPrompt, {
+-        skipCache: Boolean(input.backgroundSeed),
+-        seedSuffix: input.backgroundSeed,
++        seedSuffix: variationSeed,
++        style: appliedStyle,
+       });
+       backgroundDataUrl = await backgroundToDataUrl(backgroundUrl);
+     } catch (error) {
+@@ -130,11 +158,34 @@ export async function handleGenerateInfographic(
+       backgroundSource = "fallback";
+     }
+ 
+-    const html = renderSdInfographicHtml(sdData, {
+-      backgroundDataUrl,
+-      backgroundCss: buildFallbackGradient(sdData.colors),
+-      productImageSrc: productRender.renderSrc,
+-      productCutout: productRender.cutout,
++    if (backgroundUrl) {
++      try {
++        const productPath = productRender.absPath || productRender.webPath;
++        const mergedPath = await mergeProductWithBackground(
++          backgroundUrl,
++          productPath,
++          { reflection: sdData.layout === "cards" },
++        );
++        mergedImageDataUrl = await mergedToDataUrl(mergedPath);
++      } catch (error) {
++        console.warn("Image compositing failed, using SD background layer:", error);
++      }
++    }
++
++    const infographicData = sdDataToInfographic(sdData, input.prompt);
++    const fallbackBg =
++      backgroundSource === "fallback"
++        ? TRENDS[appliedStyle].background
++        : buildFallbackGradient(sdData.colors);
++
++    const html = renderInfographicHtml(infographicData, {
++      style: appliedStyle,
++      mergedImageDataUrl,
++      backgroundDataUrl: mergedImageDataUrl ? undefined : backgroundDataUrl,
++      backgroundCss: !mergedImageDataUrl && !backgroundDataUrl ? fallbackBg : undefined,
++      productImageSrc:
++        mergedImageDataUrl ? undefined : productRender.renderSrc,
++      productImageCutout: productRender.cutout,
+     });
+ 
+     const filename = `${input.userId}-${Date.now()}.png`;
+@@ -147,7 +198,12 @@ export async function handleGenerateInfographic(
+     if (input.regenerateBackgroundOnly && input.existingImageId) {
+       await prisma.generatedImage.update({
+         where: { id: input.existingImageId },
+-        data: { imagePath, backgroundUrl },
++        data: {
++          imagePath,
++          backgroundUrl,
++          productCutout: productCutoutPath,
++          generatedJson: packSdPayload(sdData, appliedStyle),
++        },
+       });
+ 
+       return {
+@@ -159,6 +215,8 @@ export async function handleGenerateInfographic(
+         unlimited: balance.unlimited,
+         aiSource,
+         backgroundSource,
++        appliedStyle,
++        pipelineVersion: PIPELINE_VERSION,
+       };
+     }
+ 
+@@ -168,7 +226,7 @@ export async function handleGenerateInfographic(
+         prompt: input.prompt,
+         htmlContent: "[SD_PIPELINE]",
+         imagePath,
+-        generatedJson: JSON.stringify(sdData),
++        generatedJson: packSdPayload(sdData, appliedStyle),
+         backgroundUrl,
+         productCutout: productCutoutPath,
+         usedFreeQuota: slot.usedFreeQuota,
+@@ -184,6 +242,8 @@ export async function handleGenerateInfographic(
+       unlimited: balance.unlimited,
+       aiSource,
+       backgroundSource,
++      appliedStyle,
++      pipelineVersion: PIPELINE_VERSION,
+     };
+   } catch (error) {
+     if (!slot.usedFreeQuota && !slot.balance.unlimited) {
+diff --git a/marketplace-infographic/src/lib/image-compositor.ts b/marketplace-infographic/src/lib/image-compositor.ts
+new file mode 100644
+index 00000000..c383188c
+--- /dev/null
++++ b/marketplace-infographic/src/lib/image-compositor.ts
+@@ -0,0 +1,234 @@
++import { createHash } from "crypto";
++import { mkdir, readFile, writeFile } from "fs/promises";
++import path from "path";
++import sharp from "sharp";
++
++const CANVAS = 1200;
++const PRODUCT_MAX_W = 900;
++const PRODUCT_MAX_H = 700;
++const BOTTOM_PAD = 72;
++
++export type MergeOptions = {
++  reflection?: boolean;
++};
++
++type Rgb = { r: number; g: number; b: number };
++
++function rec709Luminance({ r, g, b }: Rgb): number {
++  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
++}
++
++async function loadImageBuffer(source: string): Promise<Buffer> {
++  const trimmed = source.trim();
++  if (trimmed.startsWith("data:")) {
++    const match = trimmed.match(/^data:image\/[\w+.-]+;base64,(.+)$/i);
++    if (!match) throw new Error("INVALID_IMAGE_DATA_URL");
++    return Buffer.from(match[1].replace(/\s/g, ""), "base64");
++  }
++  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
++    const res = await fetch(trimmed);
++    if (!res.ok) throw new Error(`FETCH_IMAGE_${res.status}`);
++    return Buffer.from(await res.arrayBuffer());
++  }
++
++  const rel = trimmed.startsWith("/") ? trimmed.slice(1) : trimmed;
++  const abs = path.isAbsolute(trimmed)
++    ? trimmed
++    : path.join(process.cwd(), "public", rel);
++  return readFile(abs);
++}
++
++async function sampleBackgroundColor(background: sharp.Sharp): Promise<Rgb> {
++  const { data, info } = await background
++    .clone()
++    .resize(1, 1, { fit: "cover" })
++    .removeAlpha()
++    .raw()
++    .toBuffer({ resolveWithObject: true });
++
++  if (info.channels < 3) {
++    return { r: 128, g: 128, b: 128 };
++  }
++  return { r: data[0], g: data[1], b: data[2] };
++}
++
++function colorCorrectProduct(
++  product: sharp.Sharp,
++  bgLuma: number,
++): sharp.Sharp {
++  const normalized = bgLuma / 255;
++  let brightness = 1.05;
++  let saturation = 0.92;
++
++  if (normalized < 0.35) {
++    brightness = 1.12;
++    saturation = 0.95;
++  } else if (normalized > 0.65) {
++    brightness = 0.96;
++    saturation = 0.88;
++  }
++
++  return product.modulate({ brightness, saturation });
++}
++
++async function prepareProductLayer(
++  productBuffer: Buffer,
++  bgLuma: number,
++): Promise<{ buffer: Buffer; width: number; height: number }> {
++  const product = colorCorrectProduct(sharp(productBuffer).ensureAlpha(), bgLuma);
++  const resized = await product
++    .resize(PRODUCT_MAX_W, PRODUCT_MAX_H, {
++      fit: "inside",
++      withoutEnlargement: false,
++    })
++    .png()
++    .toBuffer({ resolveWithObject: true });
++
++  return {
++    buffer: resized.data,
++    width: resized.info.width,
++    height: resized.info.height,
++  };
++}
++
++async function createShadowLayer(
++  productWidth: number,
++  productHeight: number,
++): Promise<{ buffer: Buffer; width: number; height: number; offsetY: number }> {
++  const shadowW = Math.round(productWidth * 0.62);
++  const shadowH = Math.max(28, Math.round(productHeight * 0.06));
++  const svg = `
++    <svg width="${shadowW}" height="${shadowH}" xmlns="http://www.w3.org/2000/svg">
++      <ellipse cx="${shadowW / 2}" cy="${shadowH / 2}" rx="${shadowW * 0.48}" ry="${shadowH * 0.42}" fill="black" fill-opacity="0.58"/>
++    </svg>`;
++
++  const shadow = await sharp(Buffer.from(svg))
++    .blur(22)
++    .ensureAlpha()
++    .png()
++    .toBuffer({ resolveWithObject: true });
++
++  return {
++    buffer: shadow.data,
++    width: shadow.info.width,
++    height: shadow.info.height,
++    offsetY: Math.round(shadowH * 0.15),
++  };
++}
++
++async function createReflectionLayer(
++  productBuffer: Buffer,
++  productWidth: number,
++  productHeight: number,
++): Promise<{ buffer: Buffer; width: number; height: number } | null> {
++  const reflectH = Math.max(40, Math.round(productHeight * 0.28));
++  const maskSvg = `
++    <svg width="${productWidth}" height="${reflectH}" xmlns="http://www.w3.org/2000/svg">
++      <defs>
++        <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
++          <stop offset="0%" stop-color="white" stop-opacity="0.32"/>
++          <stop offset="100%" stop-color="white" stop-opacity="0"/>
++        </linearGradient>
++      </defs>
++      <rect width="100%" height="100%" fill="url(#fade)"/>
++    </svg>`;
++
++  const reflection = await sharp(productBuffer)
++    .flip()
++    .resize(productWidth, reflectH, { fit: "fill" })
++    .ensureAlpha()
++    .composite([{ input: Buffer.from(maskSvg), blend: "dest-in" }])
++    .png()
++    .toBuffer({ resolveWithObject: true });
++
++  return {
++    buffer: reflection.data,
++    width: reflection.info.width,
++    height: reflection.info.height,
++  };
++}
++
++/** Объединяет фон и товар в один PNG 1200×1200 с тенью и цветокоррекцией */
++export async function mergeProductWithBackground(
++  backgroundUrl: string,
++  productUrl: string,
++  options?: MergeOptions,
++): Promise<string> {
++  const [bgBuffer, productRaw] = await Promise.all([
++    loadImageBuffer(backgroundUrl),
++    loadImageBuffer(productUrl),
++  ]);
++
++  const background = sharp(bgBuffer)
++    .resize(CANVAS, CANVAS, {
++      fit: "cover",
++      position: "centre",
++    })
++    .blur(2.5);
++
++  const bgColor = await sampleBackgroundColor(background);
++  const bgLuma = rec709Luminance(bgColor);
++
++  const product = await prepareProductLayer(productRaw, bgLuma);
++  const productLeft = Math.round((CANVAS - product.width) / 2);
++  const productTop = CANVAS - BOTTOM_PAD - product.height;
++
++  const shadow = await createShadowLayer(product.width, product.height);
++  const shadowLeft = Math.round((CANVAS - shadow.width) / 2);
++  const shadowTop = productTop + product.height - shadow.offsetY;
++
++  const composites: sharp.OverlayOptions[] = [];
++
++  if (options?.reflection) {
++    const reflection = await createReflectionLayer(
++      product.buffer,
++      product.width,
++      product.height,
++    );
++    if (reflection) {
++      composites.push({
++        input: reflection.buffer,
++        left: productLeft,
++        top: productTop + product.height - Math.round(reflection.height * 0.15),
++        blend: "over",
++      });
++    }
++  }
++
++  composites.push(
++    {
++      input: shadow.buffer,
++      left: shadowLeft,
++      top: shadowTop,
++      blend: "over",
++    },
++    {
++      input: product.buffer,
++      left: productLeft,
++      top: productTop,
++      blend: "over",
++    },
++  );
++
++  const merged = await background.composite(composites).png().toBuffer();
++
++  const hash = createHash("sha256")
++    .update(backgroundUrl)
++    .update(productUrl)
++    .update(String(options?.reflection ?? false))
++    .digest("hex")
++    .slice(0, 16);
++
++  const dir = path.join(process.cwd(), "public", "merged");
++  await mkdir(dir, { recursive: true });
++  const filename = `${hash}-${Date.now()}.png`;
++  const absPath = path.join(dir, filename);
++  await writeFile(absPath, merged);
++
++  return `/merged/${filename}`;
++}
++
++export async function mergedToDataUrl(imageUrl: string): Promise<string> {
++  const buffer = await loadImageBuffer(imageUrl);
++  return `data:image/png;base64,${buffer.toString("base64")}`;
++}
+diff --git a/marketplace-infographic/src/lib/image-url.ts b/marketplace-infographic/src/lib/image-url.ts
+index 1acd308e..8385a66d 100644
+--- a/marketplace-infographic/src/lib/image-url.ts
++++ b/marketplace-infographic/src/lib/image-url.ts
+@@ -1,9 +1,16 @@
+-export function generatedImageSrc(imagePath: string): string {
+-  if (imagePath.startsWith("/api/generated/")) {
+-    return imagePath;
++export function generatedImageSrc(imagePath: string, cacheBust?: string | number): string {
++  const base = imagePath.startsWith("/api/generated/")
++    ? imagePath
++    : (() => {
++        const filename = imagePath.split("/").pop();
++        return filename ? `/api/generated/${filename}` : imagePath;
++      })();
++
++  if (cacheBust === undefined || cacheBust === "") {
++    return base;
+   }
+-  const filename = imagePath.split("/").pop();
+-  return filename ? `/api/generated/${filename}` : imagePath;
++  const separator = base.includes("?") ? "&" : "?";
++  return `${base}${separator}v=${encodeURIComponent(String(cacheBust))}`;
+ }
+ 
+ export function generatedImageFilePath(imagePath: string): string {
+diff --git a/marketplace-infographic/src/lib/imgly-background.ts b/marketplace-infographic/src/lib/imgly-background.ts
+index 9c64d503..fd3a4091 100644
+--- a/marketplace-infographic/src/lib/imgly-background.ts
++++ b/marketplace-infographic/src/lib/imgly-background.ts
+@@ -1,3 +1,4 @@
++import sharp from "sharp";
+ import { removeBackground } from "@imgly/background-removal-node";
+ import { prepareProductImageForRender } from "./background-removal";
+ 
+@@ -8,11 +9,13 @@ export async function removeProductBackgroundImgly(input: Buffer): Promise<{
+   method: "imgly" | "sharp";
+ }> {
+   try {
+-    const blob = await removeBackground(input, {
++    const pngBuffer = await sharp(input).rotate().png().toBuffer();
++    const blob = new Blob([new Uint8Array(pngBuffer)], { type: "image/png" });
++    const result = await removeBackground(blob, {
+       model: "medium",
+       output: { format: "image/png", quality: 0.9 },
+     });
+-    const arrayBuffer = await blob.arrayBuffer();
++    const arrayBuffer = await result.arrayBuffer();
+     const buffer = Buffer.from(arrayBuffer);
+     if (buffer.length > 500) {
+       return { buffer, cutout: true, method: "imgly" };
+diff --git a/marketplace-infographic/src/lib/infographic-template.ts b/marketplace-infographic/src/lib/infographic-template.ts
+index 03c53ea7..2d27e215 100644
+--- a/marketplace-infographic/src/lib/infographic-template.ts
++++ b/marketplace-infographic/src/lib/infographic-template.ts
+@@ -5,6 +5,7 @@ import {
+   type InfographicStyle,
+ } from "./design-trends";
+ import { getSceneLayers, SCENE_PROPS_CSS } from "./scene-backgrounds";
++import { buildStyleSlideSkin } from "./style-slide-css";
+ 
+ const backgroundSceneSchema = z.enum([
+   "outdoor_home",
+@@ -78,6 +79,11 @@ export type RenderInfographicOptions = {
+   productImageSrc?: string;
+   productImageCutout?: boolean;
+   style?: InfographicStyle;
++  /** Готовый композит фон+товар (sharp) */
++  mergedImageDataUrl?: string;
++  /** SD-фон без композита — товар накладывается в HTML */
++  backgroundDataUrl?: string;
++  backgroundCss?: string;
+ };
+ 
+ function escapeHtml(text: string): string {
+@@ -201,12 +207,14 @@ function renderProductVisual(
+ 
+ function renderBadgeTopLeft(
+   spec: InfographicData["specBlocks"][number],
+-  badgeBlue: string,
++  badgeBg: string,
++  badgeExtraCss: string,
++  textColor: string,
+ ): string {
+   const big = extractBigNumber(spec.value);
+   const unit = spec.label;
+   return `
+-    <div class="badge badge-tl" style="background:${badgeBlue}">
++    <div class="badge badge-tl" style="background:${badgeBg}; color:${textColor}; ${badgeExtraCss}">
+       <div class="badge-big">${escapeHtml(big)}</div>
+       <div class="badge-sub">${escapeHtml(unit)}</div>
+     </div>`;
+@@ -214,11 +222,13 @@ function renderBadgeTopLeft(
+ 
+ function renderBadgeTopRight(
+   banner: InfographicData["mainBanner"],
+-  badgeBlue: string,
++  badgeBg: string,
++  badgeExtraCss: string,
++  textColor: string,
+ ): string {
+   const icon = banner.icon ?? "⚡";
+   return `
+-    <div class="badge badge-tr" style="background:${badgeBlue}">
++    <div class="badge badge-tr" style="background:${badgeBg}; color:${textColor}; ${badgeExtraCss}">
+       <div class="badge-icon-wrap">${escapeHtml(icon)}</div>
+       <div class="badge-tr-text">${escapeHtml(banner.title)}</div>
+     </div>`;
+@@ -227,11 +237,15 @@ function renderBadgeTopRight(
+ function renderBadgeBottomRight(
+   spec: InfographicData["specBlocks"][number],
+   accentRed: string,
++  badgeExtraCss: string,
++  circleRadius: string,
++  circleBg: string,
++  textColor: string,
+ ): string {
+   const icon = /литр|л\/|объём|бак/i.test(spec.label + spec.value) ? "💧" : "★";
+   return `
+     <div class="badge badge-br">
+-      <div class="badge-circle" style="border-color:${accentRed};color:${accentRed}">
++      <div class="badge-circle" style="border-color:${accentRed};color:${textColor};border-radius:${circleRadius};background:${circleBg}; ${badgeExtraCss}">
+         <div class="badge-circle-icon">${icon}</div>
+         <div class="badge-circle-val">${escapeHtml(spec.value)}</div>
+         <div class="badge-circle-lbl">${escapeHtml(spec.label)}</div>
+@@ -245,25 +259,50 @@ export function renderInfographicHtml(
+ ): string {
+   const style = options?.style ?? DEFAULT_STYLE;
+   const theme = buildSlideTheme(style);
++  const skin = buildStyleSlideSkin(style);
+   const accent = ACCENT[data.accentColor ?? "red"];
+-  const hasPhoto = Boolean(options?.productImageSrc);
++  const useMerged = Boolean(options?.mergedImageDataUrl);
++  const useSdBg = !useMerged && Boolean(options?.backgroundDataUrl);
++  const usePhotoBg = useMerged || useSdBg;
++  const hasPhoto = usePhotoBg || Boolean(options?.productImageSrc);
+   const cutout = Boolean(options?.productImageCutout);
+   const scene = getSceneLayers(data.backgroundScene);
+   const showLeaves =
+-    data.backgroundScene === "outdoor_home" || data.backgroundScene === "nature";
++    !usePhotoBg &&
++    (data.backgroundScene === "outdoor_home" || data.backgroundScene === "nature");
+   const visual = detectProductVisual(data);
+   const brand = extractBrandName(data);
+   const pill = extractCategoryPill(data);
+   const spec0 = data.specBlocks[0];
+   const spec1 = data.specBlocks[1] ?? data.specBlocks[0];
+-  const badgeBlue = accent.badge;
+ 
+-  const productHtml = options?.productImageSrc
+-    ? renderProductPhoto(options.productImageSrc, data.productName, cutout)
+-    : renderProductVisual(visual, accent.primary, data.productName);
+-
+-  const titleColor =
+-    style === "minimal" || style === "swiss" ? "#0f172a" : "#ffffff";
++  const badgeExtraCss = `border-radius: ${skin.badgeRadius}; ${skin.badgeExtraCss}`;
++
++  const productHtml =
++    !useMerged && options?.productImageSrc
++      ? renderProductPhoto(options.productImageSrc, data.productName, cutout)
++      : !useMerged && !useSdBg
++        ? renderProductVisual(visual, accent.primary, data.productName)
++        : useSdBg && options?.productImageSrc
++          ? renderProductPhoto(options.productImageSrc, data.productName, cutout)
++          : "";
++
++  const slideBg = useMerged
++    ? `background-image: url('${options!.mergedImageDataUrl}'); background-size: cover; background-position: center bottom; filter: ${skin.slideFilter};`
++    : useSdBg
++      ? `background-image: url('${options!.backgroundDataUrl}'); background-size: cover; background-position: center bottom; filter: ${skin.slideFilter};`
++      : options?.backgroundCss
++        ? `background: ${options.backgroundCss};`
++        : "";
++
++  const sceneLayers = usePhotoBg
++    ? `<div class="merged-overlay"></div>`
++    : `<div class="sky"></div>
++    <div class="sky-decor"></div>
++    <div class="grass"></div>
++    <div class="grass-line"></div>
++    ${scene.props}
++    ${showLeaves ? renderLeaves() : ""}`;
+ 
+   return `<!DOCTYPE html>
+ <html lang="ru">
+@@ -278,7 +317,15 @@ export function renderInfographicHtml(
+       font-family: ${theme.fontFamily}, "Segoe UI", Arial, sans-serif;
+     }
+ 
+-    .slide { position: relative; width: 1200px; height: 1200px; overflow: hidden; }
++    .slide {
++      position: relative; width: 1200px; height: 1200px; overflow: hidden;
++      ${slideBg} ${skin.slideFrameCss}
++    }
++
++    .merged-overlay {
++      position: absolute; inset: 0; z-index: 1; pointer-events: none;
++      background: ${skin.mergedOverlay};
++    }
+ 
+     .sky {
+       position: absolute; top: 0; left: 0; right: 0; height: 62%;
+@@ -311,21 +358,21 @@ export function renderInfographicHtml(
+     .hero-title {
+       font-size: 72px; font-weight: 900; line-height: 0.95;
+       letter-spacing: 0.04em; text-transform: uppercase;
+-      color: ${titleColor};
+-      text-shadow: 0 4px 24px rgba(0,0,0,0.35);
++      color: ${skin.titleColor};
++      ${skin.titleExtraCss}
+     }
+     .hero-pill {
+       display: inline-block; margin-top: 10px;
+-      background: ${accent.primary};
+-      color: #fff; font-size: 22px; font-weight: 700;
+-      padding: 8px 22px; border-radius: 8px;
+-      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
++      background: ${skin.pillBg};
++      color: ${skin.pillColor}; font-size: 22px; font-weight: 700;
++      padding: 8px 22px; border-radius: ${skin.pillRadius};
++      box-shadow: ${skin.pillShadow};
++      border: ${skin.pillBorder};
+     }
+     .hero-brand {
+-      font-size: 26px; font-weight: 800; color: ${titleColor};
++      font-size: 26px; font-weight: 800; color: ${skin.brandColor};
+       opacity: 0.92; letter-spacing: 0.06em;
+       text-transform: uppercase;
+-      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+       padding-top: 8px;
+     }
+ 
+@@ -334,7 +381,6 @@ export function renderInfographicHtml(
+     .badge-tl {
+       top: 200px; left: 44px;
+       width: 148px; min-height: 148px;
+-      border-radius: 20px;
+       display: flex; flex-direction: column;
+       align-items: center; justify-content: center;
+       padding: 16px 12px;
+@@ -352,7 +398,6 @@ export function renderInfographicHtml(
+     .badge-tr {
+       top: 210px; right: 40px;
+       max-width: 300px;
+-      border-radius: 16px;
+       padding: 16px 20px;
+       display: flex; align-items: center; gap: 14px;
+       box-shadow: 0 12px 32px rgba(0,0,0,0.28);
+@@ -501,13 +546,8 @@ export function renderInfographicHtml(
+   </style>
+ </head>
+ <body>
+-  <div class="slide">
+-    <div class="sky"></div>
+-    <div class="sky-decor"></div>
+-    <div class="grass"></div>
+-    <div class="grass-line"></div>
+-    ${scene.props}
+-    ${showLeaves ? renderLeaves() : ""}
++  <div class="slide" data-style="${style}">
++    ${sceneLayers}
+ 
+     <header class="hero-header">
+       <div>
+@@ -517,13 +557,11 @@ export function renderInfographicHtml(
+       <div class="hero-brand">${escapeHtml(brand)}</div>
+     </header>
+ 
+-    ${renderBadgeTopLeft(spec0, badgeBlue)}
+-    ${renderBadgeTopRight(data.mainBanner, badgeBlue)}
+-    ${renderBadgeBottomRight(spec1, accent.primary)}
++    ${renderBadgeTopLeft(spec0, skin.badgeBg, badgeExtraCss, skin.badgeTextColor)}
++    ${renderBadgeTopRight(data.mainBanner, skin.badgeBg, badgeExtraCss, skin.badgeTextColor)}
++    ${renderBadgeBottomRight(spec1, accent.primary, badgeExtraCss, skin.circleRadius, skin.circleBg, skin.badgeTextColor)}
+ 
+-    <div class="product-stage">
+-      ${productHtml}
+-    </div>
++    ${productHtml ? `<div class="product-stage">${productHtml}</div>` : ""}
+   </div>
+ </body>
+ </html>`;
+diff --git a/marketplace-infographic/src/lib/ollama-sd.ts b/marketplace-infographic/src/lib/ollama-sd.ts
+index 086409db..78adc2b8 100644
+--- a/marketplace-infographic/src/lib/ollama-sd.ts
++++ b/marketplace-infographic/src/lib/ollama-sd.ts
+@@ -1,4 +1,12 @@
++import { sanitizeSdInput } from "@/lib/sd-sanitize";
++import {
++  DEFAULT_STYLE,
++  STYLE_LABELS,
++  TRENDS,
++  type InfographicStyle,
++} from "@/lib/design-trends";
+ import { infographicSdSchema, type InfographicSdInput } from "@/lib/validations";
++import { applyStyleToSdColors } from "@/lib/sd-style-theme";
+ import { getOllamaStatus, OLLAMA_BASE_URL, OLLAMA_MODEL } from "./ai-status";
+ 
+ export type InfographicSdData = InfographicSdInput;
+@@ -22,31 +30,47 @@ const SD_EXAMPLE = `{
+   "backgroundPrompt": "professional marketplace product photo background, suburban garden with lush green grass, soft natural daylight, shallow depth of field, space in center for gasoline generator, photorealistic, 2025 ecommerce trend, high CTR, no text, no people, 8k"
+ }`;
+ 
+-export function generateMockSdData(prompt: string): InfographicSdData {
++export function generateMockSdData(
++  prompt: string,
++  style: InfographicStyle = DEFAULT_STYLE,
++): InfographicSdData {
+   const lower = prompt.toLowerCase();
+   const isGenerator = /генератор|бензин|квт/.test(lower);
++  const trend = TRENDS[style];
+ 
+-  return infographicSdSchema.parse({
++  const base = infographicSdSchema.parse({
+     layout: "hero",
+     title: isGenerator ? "ГЕНЕРАТОР" : "ТОВАР",
+     subtitle: isGenerator ? "бензиновый" : "новинка",
+     bullets: isGenerator
+       ? ["3 кВт мощность", "15 литров бак", "3000 Вт стабильная мощность"]
+       : ["Премиум качество", "Быстрая доставка", "Гарантия 12 месяцев"],
+-    colors: ["#e31e24", "#2563eb", "#0f172a"],
++    colors: [trend.accent, "#2563eb", "#0f172a"],
+     badge: isGenerator ? "Kronwerk" : "Brand",
+     backgroundPrompt: isGenerator
+-      ? "professional product photography background, suburban garden with green grass, soft daylight, center space for generator, photorealistic, marketplace infographic 2025, no text"
+-      : "clean studio product photography background, soft gradient, professional lighting, center space for product, photorealistic, ecommerce 2025, no text",
++      ? "professional product photography background, suburban garden with green grass, soft daylight, center space for generator, photorealistic, marketplace infographic 2025, no text, no words, no letters"
++      : "clean studio product photography background, soft gradient, professional lighting, center space for product, photorealistic, ecommerce 2025, no text, no words, no letters",
+   });
++
++  return applyStyleToSdColors(base, style);
+ }
+ 
+-async function callOllamaSd(prompt: string): Promise<InfographicSdData> {
++async function callOllamaSd(
++  prompt: string,
++  style: InfographicStyle,
++): Promise<InfographicSdData> {
++  const trend = TRENDS[style];
+   const systemPrompt = `Ты — арт-директор для Wildberries.
+ 
++Стиль дизайна слайда: ${style} (${STYLE_LABELS[style]}).
++Акцентный цвет стиля: ${trend.accent}. Используй его в colors[0].
++
+ Для каждого товара придумай текст и стиль инфографики 1200×1200, а также промпт на АНГЛИЙСКОМ для Stable Diffusion — идеальный фотореалистичный фон.
+ Фон должен соответствовать трендам 2025, повышать кликабельность, передавать контекст использования товара.
+-В backgroundPrompt: только описание сцены на английском, без текста на изображении, без людей, с местом по центру для товара.
++В backgroundPrompt: только описание сцены на английском, СТРОГО без текста/надписей/букв на изображении, без людей, с местом по центру для товара.
++Визуальная атмосфера фона должна соответствовать стилю ${style}: ${trend.css}
++
++Весь видимый текст слайда — ТОЛЬКО на русском (title, subtitle, bullets, badge).
+ 
+ Верни ТОЛЬКО JSON:
+ {
+@@ -89,20 +113,22 @@ ${SD_EXAMPLE}
+   if (!data.response) throw new Error("Пустой ответ от Ollama");
+ 
+   const parsed = JSON.parse(extractJson(data.response)) as unknown;
+-  return infographicSdSchema.parse(parsed);
++  const raw = sanitizeSdInput(parsed);
++  return applyStyleToSdColors(raw, style);
+ }
+ 
+ export async function generateSdInfographicData(
+   prompt: string,
++  style: InfographicStyle = DEFAULT_STYLE,
+ ): Promise<{ data: InfographicSdData; source: "ollama" | "mock" }> {
+   const status = await getOllamaStatus();
+   if (status.mockMode || !status.available) {
+-    return { data: generateMockSdData(prompt), source: "mock" };
++    return { data: generateMockSdData(prompt, style), source: "mock" };
+   }
+   try {
+-    return { data: await callOllamaSd(prompt), source: "ollama" };
++    return { data: await callOllamaSd(prompt, style), source: "ollama" };
+   } catch (error) {
+     console.warn("Ollama SD failed, mock fallback:", error);
+-    return { data: generateMockSdData(prompt), source: "mock" };
++    return { data: generateMockSdData(prompt, style), source: "mock" };
+   }
+ }
+diff --git a/marketplace-infographic/src/lib/sd-infographic-template.ts b/marketplace-infographic/src/lib/sd-infographic-template.ts
+index 9d97d518..98f19700 100644
+--- a/marketplace-infographic/src/lib/sd-infographic-template.ts
++++ b/marketplace-infographic/src/lib/sd-infographic-template.ts
+@@ -1,12 +1,20 @@
+ import type { InfographicSdInput as InfographicSdData } from "@/lib/validations";
++import { DEFAULT_STYLE, type InfographicStyle } from "@/lib/design-trends";
++import {
++  badgeFill,
++  buildSdVisualTheme,
++  type SdVisualTheme,
++} from "@/lib/sd-style-theme";
+ 
+ export type { InfographicSdData };
+ 
+ export type RenderSdOptions = {
++  style?: InfographicStyle;
++  mergedImageDataUrl?: string;
+   backgroundDataUrl?: string;
+   backgroundCss?: string;
+-  productImageSrc: string;
+-  productCutout: boolean;
++  productImageSrc?: string;
++  productCutout?: boolean;
+   watermarkText?: string;
+ };
+ 
+@@ -18,51 +26,76 @@ function escapeHtml(text: string): string {
+     .replace(/"/g, "&quot;");
+ }
+ 
+-export function renderSdInfographicHtml(
+-  data: InfographicSdData,
+-  options: RenderSdOptions,
+-): string {
+-  const accent = data.colors[0] ?? "#e31e24";
+-  const accent2 = data.colors[1] ?? "#2563eb";
+-  const bgStyle = options.backgroundDataUrl
+-    ? `background-image: url('${options.backgroundDataUrl}'); background-size: cover; background-position: center;`
+-    : `background: ${options.backgroundCss ?? "linear-gradient(145deg, #0f172a, #1e293b)"};`;
+-
++function renderBadges(data: InfographicSdData, visual: SdVisualTheme): string {
+   const bullets = data.bullets.slice(0, 4);
+-  const badgePositions = [
+-    { className: "badge-tl", style: `background:${accent2}` },
+-    { className: "badge-tr", style: `background:${accent2}` },
+-    { className: "badge-br", style: `border-color:${accent};color:${accent}` },
+-    { className: "badge-bl", style: `background:${accent}` },
+-  ];
++  const accent = visual.accent;
+ 
+-  const bulletsHtml = bullets
++  return bullets
+     .map((text, i) => {
+-      const pos = badgePositions[i] ?? badgePositions[0];
+-      if (pos.className === "badge-br") {
++      if (i === 2) {
+         return `
+-          <div class="badge ${pos.className}">
+-            <div class="badge-circle" style="${pos.style}">
++          <div class="badge badge-br">
++            <div class="badge-circle" style="border-color:${accent};color:${accent};${badgeFill(visual, "circle")}">
+               <div class="badge-circle-val">${escapeHtml(text)}</div>
+             </div>
+           </div>`;
+       }
++
++      const posClass =
++        i === 0 ? "badge-tl" : i === 1 ? "badge-tr" : "badge-bl";
++      const fill = badgeFill(visual, i === 1 ? "banner" : "square");
++
++      if (i === 1) {
++        const icon = /вт|квт|мощ/i.test(text) ? "⚡" : "★";
++        return `
++          <div class="badge ${posClass} badge-banner" style="${fill} color:${visual.badgeTextColor};">
++            <div class="badge-icon-wrap">${icon}</div>
++            <div class="badge-tr-text">${escapeHtml(text)}</div>
++          </div>`;
++      }
++
+       const parts = text.split(/\s+/);
+       const big = parts[0] ?? text;
+       const sub = parts.slice(1).join(" ") || "";
+       return `
+-        <div class="badge ${pos.className}" style="${pos.style}">
++        <div class="badge ${posClass}" style="${fill} color:${visual.badgeTextColor};">
+           <div class="badge-big">${escapeHtml(big)}</div>
+           ${sub ? `<div class="badge-sub">${escapeHtml(sub)}</div>` : ""}
+         </div>`;
+     })
+     .join("");
++}
++
++export function renderSdInfographicHtml(
++  data: InfographicSdData,
++  options: RenderSdOptions,
++): string {
++  const style = options.style ?? DEFAULT_STYLE;
++  const visual = buildSdVisualTheme(data, style);
++
++  const useMerged = Boolean(options.mergedImageDataUrl);
++  const bgStyle = useMerged
++    ? `background-image: url('${options.mergedImageDataUrl}'); background-size: cover; background-position: center;`
++    : options.backgroundDataUrl
++      ? `background-image: url('${options.backgroundDataUrl}'); background-size: cover; background-position: center;`
++      : `background: ${options.backgroundCss ?? "linear-gradient(145deg, #0f172a, #1e293b)"};`;
+ 
+   const productClass = options.productCutout
+     ? "product-photo product-cutout"
+     : "product-photo product-blend";
+ 
++  const productStageHtml =
++    !useMerged && options.productImageSrc
++      ? `
++    <div class="product-stage">
++      <div class="product-shadow"></div>
++      <img class="${productClass}" src="${options.productImageSrc}" alt="${escapeHtml(data.title)}" />
++    </div>`
++      : "";
++
++  const bulletsHtml = renderBadges(data, visual);
+   const watermark = options.watermarkText ?? process.env.WATERMARK_TEXT ?? "design-ai";
++  const brutalTitle = style === "brutalism" ? "text-transform: uppercase; letter-spacing: 0.06em;" : "";
+ 
+   return `<!DOCTYPE html>
+ <html lang="ru">
+@@ -72,48 +105,74 @@ export function renderSdInfographicHtml(
+   <title>${escapeHtml(data.title)}</title>
+   <style>
+     * { margin: 0; padding: 0; box-sizing: border-box; }
+-    html, body { width: 1200px; height: 1200px; overflow: hidden; font-family: "Segoe UI", Inter, sans-serif; }
++    html, body {
++      width: 1200px; height: 1200px; overflow: hidden;
++      font-family: ${visual.fontFamily}, "Segoe UI", sans-serif;
++    }
+     .slide {
+       position: relative; width: 1200px; height: 1200px; overflow: hidden;
+       ${bgStyle}
+     }
+     .overlay {
+       position: absolute; inset: 0;
+-      background: linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.08) 40%, rgba(0,0,0,0.25) 100%);
++      background: ${visual.overlayCss};
+       z-index: 1;
+     }
++    .style-tint {
++      position: absolute; inset: 0; z-index: 2; pointer-events: none;
++      background: ${visual.isLight ? "rgba(255,255,255,0.08)" : "transparent"};
++    }
+     .hero-header {
+       position: absolute; top: 40px; left: 48px; right: 48px;
+       display: flex; justify-content: space-between; align-items: flex-start;
+       z-index: 10;
+     }
+     .hero-title {
+-      font-size: 68px; font-weight: 900; color: #fff; line-height: 0.95;
+-      text-transform: uppercase; letter-spacing: 0.04em;
+-      text-shadow: 0 4px 24px rgba(0,0,0,0.5);
++      font-size: 72px; font-weight: 900; line-height: 0.95;
++      letter-spacing: 0.04em; text-transform: uppercase;
++      ${visual.titleCss} ${brutalTitle}
+     }
+     .hero-pill {
+       display: inline-block; margin-top: 12px;
+-      background: ${accent}; color: #fff;
+-      font-size: 22px; font-weight: 700; padding: 8px 22px; border-radius: 8px;
+-      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
++      font-size: 22px; font-weight: 700; padding: 8px 22px;
++      border-radius: ${visual.badgeRadius};
++      ${visual.pillCss}
+     }
+     .hero-brand {
+-      font-size: 24px; font-weight: 800; color: #fff;
+-      text-transform: uppercase; letter-spacing: 0.08em;
+-      text-shadow: 0 2px 8px rgba(0,0,0,0.4); padding-top: 8px;
++      font-size: 26px; font-weight: 800;
++      text-transform: uppercase; letter-spacing: 0.08em; padding-top: 8px;
++      ${visual.brandCss}
++    }
++    .badge {
++      position: absolute; z-index: 8;
++      border-radius: ${visual.badgeRadius};
++      ${visual.badgeExtraCss} ${visual.badgeGlassCss}
++    }
++    .badge-tl {
++      top: 200px; left: 44px; width: 148px; min-height: 148px;
++      padding: 16px 12px; display: flex; flex-direction: column;
++      align-items: center; justify-content: center;
++    }
++    .badge-tr, .badge-banner {
++      top: 210px; right: 40px; max-width: 300px;
++    }
++    .badge-banner {
++      padding: 16px 20px; display: flex; align-items: center; gap: 14px;
+     }
+-    .badge { position: absolute; z-index: 8; color: #fff; border-radius: 18px; box-shadow: 0 12px 32px rgba(0,0,0,0.35); }
+-    .badge-tl { top: 200px; left: 44px; width: 150px; min-height: 140px; padding: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+-    .badge-tr { top: 210px; right: 40px; max-width: 300px; padding: 16px 20px; }
+     .badge-bl { bottom: 320px; left: 48px; padding: 14px 20px; font-size: 15px; font-weight: 700; }
+     .badge-br { bottom: 300px; right: 52px; }
+-    .badge-big { font-size: 56px; font-weight: 900; line-height: 1; }
+-    .badge-sub { margin-top: 6px; font-size: 14px; font-weight: 700; text-align: center; }
++    .badge-big { font-size: 64px; font-weight: 900; line-height: 1; }
++    .badge-sub { margin-top: 6px; font-size: 15px; font-weight: 700; text-align: center; line-height: 1.2; }
++    .badge-icon-wrap {
++      width: 44px; height: 44px; flex-shrink: 0;
++      background: rgba(255,255,255,0.22); border-radius: 50%;
++      display: flex; align-items: center; justify-content: center; font-size: 22px;
++    }
++    .badge-tr-text { font-size: 17px; font-weight: 800; line-height: 1.25; }
+     .badge-circle {
+       width: 130px; height: 130px; border-radius: 50%; border: 5px solid;
+-      background: #fff; display: flex; align-items: center; justify-content: center;
+-      padding: 10px; box-shadow: 0 10px 28px rgba(0,0,0,0.25);
++      display: flex; align-items: center; justify-content: center;
++      padding: 10px;
+     }
+     .badge-circle-val { font-size: 16px; font-weight: 800; text-align: center; line-height: 1.2; }
+     .product-stage {
+@@ -136,15 +195,15 @@ export function renderSdInfographicHtml(
+     }
+     .watermark {
+       position: absolute; bottom: 24px; right: 24px; z-index: 12;
+-      font-size: 16px; font-weight: 600; color: rgba(255,255,255,0.9);
+-      background: rgba(0,0,0,0.35); padding: 8px 14px; border-radius: 6px;
+-      letter-spacing: 0.05em;
++      font-size: 16px; font-weight: 600; padding: 8px 14px; border-radius: 6px;
++      letter-spacing: 0.05em; ${visual.watermarkCss}
+     }
+   </style>
+ </head>
+ <body>
+-  <div class="slide">
++  <div class="slide" data-style="${style}">
+     <div class="overlay"></div>
++    <div class="style-tint"></div>
+     <header class="hero-header">
+       <div>
+         <h1 class="hero-title">${escapeHtml(data.title)}</h1>
+@@ -153,10 +212,7 @@ export function renderSdInfographicHtml(
+       <div class="hero-brand">${escapeHtml(data.badge)}</div>
+     </header>
+     ${bulletsHtml}
+-    <div class="product-stage">
+-      <div class="product-shadow"></div>
+-      <img class="${productClass}" src="${options.productImageSrc}" alt="${escapeHtml(data.title)}" />
+-    </div>
++    ${productStageHtml}
+     <div class="watermark">${escapeHtml(watermark)}</div>
+   </div>
+ </body>
+diff --git a/marketplace-infographic/src/lib/sd-sanitize.ts b/marketplace-infographic/src/lib/sd-sanitize.ts
+new file mode 100644
+index 00000000..3c3b6323
+--- /dev/null
++++ b/marketplace-infographic/src/lib/sd-sanitize.ts
+@@ -0,0 +1,63 @@
++import { infographicSdSchema, type InfographicSdInput } from "@/lib/validations";
++
++function clip(value: unknown, max: number): string {
++  return String(value ?? "").trim().slice(0, max);
++}
++
++function normalizeHex(value: unknown, fallback: string): string {
++  const raw = String(value ?? "").trim();
++  if (/^#[0-9a-fA-F]{3,8}$/.test(raw)) {
++    return raw.length <= 7 ? raw : raw.slice(0, 7);
++  }
++  if (/^[0-9a-fA-F]{3,6}$/.test(raw)) {
++    return `#${raw.slice(0, 6)}`;
++  }
++  return fallback;
++}
++
++function normalizeLayout(value: unknown): InfographicSdInput["layout"] {
++  const layouts = ["hero", "cards", "split", "minimal"] as const;
++  return layouts.includes(value as (typeof layouts)[number])
++    ? (value as InfographicSdInput["layout"])
++    : "hero";
++}
++
++/** Приводит ответ Ollama к валидной схеме SD (без падения на длинном промпте) */
++export function sanitizeSdInput(raw: unknown): InfographicSdInput {
++  const obj =
++    raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
++
++  const bullets = Array.isArray(obj.bullets)
++    ? obj.bullets
++        .map((item) => clip(item, 80))
++        .filter((item) => item.length > 0)
++        .slice(0, 5)
++    : [];
++
++  while (bullets.length < 2) {
++    bullets.push("Премиум качество");
++  }
++
++  const colors = Array.isArray(obj.colors)
++    ? obj.colors.map((c, i) =>
++        normalizeHex(c, ["#e31e24", "#2563eb", "#0f172a"][i] ?? "#0f172a"),
++      )
++    : ["#e31e24", "#2563eb", "#0f172a"];
++
++  const candidate = {
++    layout: normalizeLayout(obj.layout),
++    title: clip(obj.title || "ТОВАР", 60) || "ТОВАР",
++    subtitle: clip(obj.subtitle || "новинка", 80) || "новинка",
++    bullets,
++    colors: colors.slice(0, 5),
++    badge: clip(obj.badge || "Brand", 40) || "Brand",
++    backgroundPrompt:
++      clip(
++        obj.backgroundPrompt ||
++          "professional product photo background, soft daylight, center space for product, photorealistic, no text",
++        400,
++      ) || "professional product photo background, soft daylight, no text",
++  };
++
++  return infographicSdSchema.parse(candidate);
++}
+diff --git a/marketplace-infographic/src/lib/sd-stored-payload.ts b/marketplace-infographic/src/lib/sd-stored-payload.ts
+new file mode 100644
+index 00000000..c87a14d6
+--- /dev/null
++++ b/marketplace-infographic/src/lib/sd-stored-payload.ts
+@@ -0,0 +1,35 @@
++import { DEFAULT_STYLE, STYLE_KEYS, type InfographicStyle } from "@/lib/design-trends";
++import type { InfographicSdInput } from "@/lib/validations";
++import { sanitizeSdInput } from "@/lib/sd-sanitize";
++
++export type StoredSdPayload = {
++  data: InfographicSdInput;
++  style: InfographicStyle;
++};
++
++export function packSdPayload(
++  data: InfographicSdInput,
++  style: InfographicStyle,
++): string {
++  return JSON.stringify({ data, style } satisfies StoredSdPayload);
++}
++
++export function unpackSdPayload(json: string): StoredSdPayload {
++  const parsed = JSON.parse(json) as unknown;
++  if (
++    parsed &&
++    typeof parsed === "object" &&
++    "data" in parsed &&
++    "style" in parsed
++  ) {
++    const record = parsed as StoredSdPayload;
++    const style = STYLE_KEYS.includes(record.style as InfographicStyle)
++      ? (record.style as InfographicStyle)
++      : DEFAULT_STYLE;
++    return { data: sanitizeSdInput(record.data), style };
++  }
++  return {
++    data: sanitizeSdInput(parsed),
++    style: DEFAULT_STYLE,
++  };
++}
+diff --git a/marketplace-infographic/src/lib/sd-style-theme.ts b/marketplace-infographic/src/lib/sd-style-theme.ts
+new file mode 100644
+index 00000000..efe0421b
+--- /dev/null
++++ b/marketplace-infographic/src/lib/sd-style-theme.ts
+@@ -0,0 +1,129 @@
++import {
++  DEFAULT_STYLE,
++  TRENDS,
++  buildSlideTheme,
++  type InfographicStyle,
++} from "@/lib/design-trends";
++import type { InfographicSdInput } from "@/lib/validations";
++
++export type SdVisualTheme = {
++  style: InfographicStyle;
++  fontFamily: string;
++  accent: string;
++  accentSecondary: string;
++  foreground: string;
++  badgeRadius: string;
++  badgeExtraCss: string;
++  badgeGlassCss: string;
++  overlayCss: string;
++  titleCss: string;
++  brandCss: string;
++  pillCss: string;
++  badgeTextColor: string;
++  watermarkCss: string;
++  isLight: boolean;
++};
++
++function isLightStyle(style: InfographicStyle): boolean {
++  return style === "minimal" || style === "swiss" || style === "neumorphism" || style === "retro";
++}
++
++export function applyStyleToSdColors(
++  data: InfographicSdInput,
++  style: InfographicStyle,
++): InfographicSdInput {
++  const trend = TRENDS[style];
++  const dark = data.colors[2] ?? "#0f172a";
++  const secondary =
++    style === "modern" || style === "glassmorphism"
++      ? "#2563eb"
++      : data.colors[1] ?? trend.accent;
++  return {
++    ...data,
++    colors: [trend.accent, secondary, dark],
++  };
++}
++
++export function buildSdVisualTheme(
++  data: InfographicSdInput,
++  style: InfographicStyle = DEFAULT_STYLE,
++): SdVisualTheme {
++  const theme = buildSlideTheme(style);
++  const trend = theme.trend;
++  const isLight = isLightStyle(style);
++  const accent = data.colors[0] ?? trend.accent;
++  const accentSecondary = data.colors[1] ?? trend.accent;
++
++  const badgeRadius =
++    style === "brutalism" || style === "swiss" ? "0" : style === "3d" ? "28px" : "18px";
++
++  const badgeGlassCss =
++    style === "glassmorphism"
++      ? "backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); background: rgba(255,255,255,0.16) !important;"
++      : "";
++
++  const overlayCss = isLight
++    ? "linear-gradient(180deg, rgba(255,255,255,0.72) 0%, rgba(255,255,255,0.2) 42%, rgba(15,23,42,0.18) 100%)"
++    : style === "glassmorphism"
++      ? "linear-gradient(180deg, rgba(15,23,42,0.55) 0%, rgba(15,23,42,0.12) 45%, rgba(15,23,42,0.45) 100%)"
++      : "linear-gradient(180deg, rgba(0,0,0,0.48) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.38) 100%)";
++
++  const titleCss = isLight
++    ? `color: ${trend.foreground}; text-shadow: 0 2px 16px rgba(255,255,255,0.8);`
++    : `color: #ffffff; text-shadow: 0 4px 28px rgba(0,0,0,0.55);`;
++
++  const brandCss = isLight
++    ? `color: ${trend.accent}; text-shadow: none;`
++    : `color: #ffffff; text-shadow: 0 2px 12px rgba(0,0,0,0.45);`;
++
++  const badgeTextColor = isLight && style !== "brutalism" ? trend.foreground : "#ffffff";
++
++  return {
++    style,
++    fontFamily: theme.fontFamily,
++    accent,
++    accentSecondary,
++    foreground: trend.foreground,
++    badgeRadius,
++    badgeExtraCss: `border: ${trend.border}; box-shadow: ${trend.shadow};`,
++    badgeGlassCss,
++    overlayCss,
++    titleCss,
++    brandCss,
++    pillCss: `background: ${accent}; color: #fff; box-shadow: ${trend.shadow};`,
++    badgeTextColor,
++    watermarkCss: isLight
++      ? "color: rgba(15,23,42,0.75); background: rgba(255,255,255,0.65);"
++      : "color: rgba(255,255,255,0.92); background: rgba(0,0,0,0.38);",
++    isLight,
++  };
++}
++
++export function badgeFill(
++  visual: SdVisualTheme,
++  role: "square" | "banner" | "circle",
++): string {
++  if (visual.style === "glassmorphism") {
++    return role === "circle"
++      ? "background: rgba(255,255,255,0.92);"
++      : "background: rgba(37,99,235,0.72);";
++  }
++  if (visual.style === "neumorphism") {
++    return role === "circle"
++      ? "background: #e0e5ec;"
++      : "background: linear-gradient(145deg, #eef2f7, #d5dce6); color: #1f2937;";
++  }
++  if (visual.style === "brutalism") {
++    return role === "circle"
++      ? "background: #fff;"
++      : `background: ${visual.accentSecondary};`;
++  }
++  if (visual.style === "retro") {
++    return role === "circle"
++      ? "background: #fff7ed;"
++      : `background: ${visual.accentSecondary};`;
++  }
++  return role === "circle"
++    ? "background: #ffffff;"
++    : `background: ${visual.accentSecondary};`;
++}
+diff --git a/marketplace-infographic/src/lib/sd-to-infographic.ts b/marketplace-infographic/src/lib/sd-to-infographic.ts
+new file mode 100644
+index 00000000..f122775e
+--- /dev/null
++++ b/marketplace-infographic/src/lib/sd-to-infographic.ts
+@@ -0,0 +1,90 @@
++import type { InfographicSdInput } from "@/lib/validations";
++import type { InfographicData } from "@/lib/infographic-template";
++
++function parseBullet(bullet: string): { value: string; label: string } {
++  const trimmed = bullet.trim();
++  const numMatch = trimmed.match(
++    /^(\d+(?:[.,]\d+)?\s*(?:кВт|квт|Вт|вт|л|литр|дБ|мм|см|кг|г|ч|мАч)?)/i,
++  );
++  if (numMatch) {
++    const value = numMatch[1].trim();
++    const label = trimmed.slice(numMatch[0].length).trim() || "параметр";
++    return { value, label };
++  }
++
++  const parts = trimmed.split(/\s+/);
++  if (parts.length <= 1) {
++    return { value: trimmed, label: "параметр" };
++  }
++  return { value: parts[0], label: parts.slice(1).join(" ") };
++}
++
++function inferScene(backgroundPrompt: string, prompt?: string): InfographicData["backgroundScene"] {
++  const text = `${backgroundPrompt} ${prompt ?? ""}`.toLowerCase();
++  if (/kitchen|кухн/.test(text)) return "kitchen";
++  if (/bath|ванн/.test(text)) return "bathroom";
++  if (/office|офис/.test(text)) return "office";
++  if (/studio|студи/.test(text)) return "studio";
++  if (/nature|forest|природ|лес/.test(text)) return "nature";
++  return "outdoor_home";
++}
++
++function inferAccentColor(colors: string[]): NonNullable<InfographicData["accentColor"]> {
++  const primary = (colors[0] ?? "").toLowerCase();
++  if (/e31|ef44|dc26|b91|f00|red/.test(primary)) return "red";
++  if (/2563|3b82|1d4|00c6|blue/.test(primary)) return "blue";
++  if (/7c3|933|a855|purple|6366/.test(primary)) return "purple";
++  if (/16a3|22c5|1580|green/.test(primary)) return "green";
++  return "red";
++}
++
++function inferProductVisual(data: InfographicSdInput): InfographicData["productVisual"] {
++  const text = `${data.title} ${data.subtitle} ${data.backgroundPrompt}`.toLowerCase();
++  if (/генератор|generator|бензин|квт/.test(text)) return "generator";
++  if (/крем|сыворот|космет|spf/.test(text)) return "cosmetic";
++  if (/пылесос|чайник|робот|техник|appliance/.test(text)) return "appliance";
++  return "generic";
++}
++
++/** Конвертирует JSON SD-пайплайна в структуру WB-шаблона */
++export function sdDataToInfographic(
++  data: InfographicSdInput,
++  prompt?: string,
++): InfographicData {
++  const bullets = data.bullets.slice(0, 5);
++  const parsed = bullets.map(parseBullet);
++
++  const specBlocks = parsed.slice(0, 3).map((item, index) => ({
++    value: item.value || bullets[index],
++    label: item.label || "параметр",
++  }));
++
++  while (specBlocks.length < 2) {
++    specBlocks.push({ value: "★", label: "качество" });
++  }
++
++  const bannerBullet = bullets[2] ?? bullets[1] ?? bullets[0] ?? data.subtitle;
++  const bannerParsed = parseBullet(bannerBullet);
++
++  return {
++    headline: data.title.toUpperCase().slice(0, 40),
++    productName: data.badge,
++    categoryPill: data.subtitle,
++    brandName: data.badge,
++    productVisual: inferProductVisual(data),
++    backgroundScene: inferScene(data.backgroundPrompt, prompt),
++    specBlocks,
++    mainBanner: {
++      icon: /вт|квт|мощ|power/i.test(bannerBullet) ? "⚡" : "★",
++      title: bannerBullet,
++      description: bullets[3] ?? `${bannerParsed.value} ${bannerParsed.label}`.trim(),
++    },
++    callouts: bullets.slice(0, 4).map((text, index) => ({
++      text,
++      position:
++        (["bottom-left", "bottom-right", "middle-left", "middle-right"] as const)[index] ??
++        "bottom-left",
++    })),
++    accentColor: inferAccentColor(data.colors),
++  };
++}
+diff --git a/marketplace-infographic/src/lib/stable-diffusion.ts b/marketplace-infographic/src/lib/stable-diffusion.ts
+index 43540b19..778058fa 100644
+--- a/marketplace-infographic/src/lib/stable-diffusion.ts
++++ b/marketplace-infographic/src/lib/stable-diffusion.ts
+@@ -1,7 +1,11 @@
+ import { createHash } from "crypto";
+ import { mkdir, writeFile, readFile } from "fs/promises";
+ import path from "path";
+-import { prisma } from "@/lib/prisma";
++import type { InfographicStyle } from "@/lib/design-trends";
++import {
++  enrichBackgroundPrompt,
++  seedToNumber,
++} from "@/lib/style-background-prompt";
+ 
+ const HF_MODEL =
+   process.env.HF_SD_MODEL ??
+@@ -21,13 +25,28 @@ function sleep(ms: number): Promise<void> {
+   return new Promise((resolve) => setTimeout(resolve, ms));
+ }
+ 
+-async function requestHfImage(prompt: string): Promise<Buffer> {
++function sanitizeBackgroundPrompt(prompt: string): string {
++  const base = prompt.trim();
++  const noText =
++    "no text, no words, no letters, no typography, no watermark, no logo, no captions";
++  if (/no text|no words|no letters/i.test(base)) return base;
++  return `${base}, ${noText}`;
++}
++
++async function requestHfImage(
++  prompt: string,
++  options?: { seed?: number },
++): Promise<Buffer> {
+   const apiKey = process.env.HF_API_KEY;
+   if (!apiKey) {
+     throw new Error("HF_API_KEY is not configured");
+   }
+ 
+   let lastError = "HF API error";
++  const parameters: Record<string, number> = { width: 1024, height: 1024 };
++  if (options?.seed !== undefined) {
++    parameters.seed = options.seed;
++  }
+ 
+   for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+     const response = await fetch(HF_API_URL, {
+@@ -37,8 +56,8 @@ async function requestHfImage(prompt: string): Promise<Buffer> {
+         "Content-Type": "application/json",
+       },
+       body: JSON.stringify({
+-        inputs: prompt,
+-        parameters: { width: 1024, height: 1024 },
++        inputs: sanitizeBackgroundPrompt(prompt),
++        parameters,
+       }),
+     });
+ 
+@@ -93,47 +112,28 @@ async function saveBackground(buffer: Buffer, promptHash: string): Promise<strin
+   return `/backgrounds/${filename}`;
+ }
+ 
+-export async function getCachedBackground(promptHash: string): Promise<string | null> {
+-  const cached = await prisma.backgroundCache.findUnique({
+-    where: { promptHash },
+-  });
+-  if (!cached) return null;
+-
+-  const absPath = path.join(process.cwd(), "public", cached.imageUrl.replace(/^\//, ""));
+-  try {
+-    await readFile(absPath);
+-    return cached.imageUrl;
+-  } catch {
+-    await prisma.backgroundCache.delete({ where: { promptHash } }).catch(() => undefined);
+-    return null;
+-  }
+-}
++export type GenerateBackgroundOptions = {
++  /** Уникальный суффикс — каждая генерация получает новый фон */
++  seedSuffix?: string;
++  /** Стиль слайда — влияет на промпт и seed */
++  style?: InfographicStyle;
++};
+ 
+-/** Генерирует фон через Stable Diffusion (HF) с кэшем по хэшу промпта */
++/** Генерирует фон через Stable Diffusion (HF). Кэш отключён — каждый запрос уникален. */
+ export async function generateBackground(
+   prompt: string,
+-  options?: { skipCache?: boolean; seedSuffix?: string },
++  options?: GenerateBackgroundOptions,
+ ): Promise<string> {
+-  const promptKey = options?.seedSuffix
+-    ? `${prompt}::${options.seedSuffix}`
+-    : prompt;
+-  const promptHash = hashPrompt(promptKey);
+-
+-  if (!options?.skipCache) {
+-    const cached = await getCachedBackground(promptHash);
+-    if (cached) return cached;
+-  }
+-
+-  const buffer = await requestHfImage(prompt);
+-  const imageUrl = await saveBackground(buffer, promptHash);
+-
+-  await prisma.backgroundCache.upsert({
+-    where: { promptHash },
+-    create: { promptHash, imageUrl },
+-    update: { imageUrl },
+-  });
+-
+-  return imageUrl;
++  const variation =
++    options?.seedSuffix ??
++    `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
++  const style = options?.style ?? "modern";
++  const enrichedPrompt = enrichBackgroundPrompt(prompt, style, variation);
++  const seed = seedToNumber(`${style}:${variation}`);
++  const promptHash = hashPrompt(`${enrichedPrompt}::${variation}`);
++
++  const buffer = await requestHfImage(enrichedPrompt, { seed });
++  return saveBackground(buffer, promptHash);
+ }
+ 
+ export async function backgroundToDataUrl(imageUrl: string): Promise<string> {
+diff --git a/marketplace-infographic/src/lib/style-background-prompt.ts b/marketplace-infographic/src/lib/style-background-prompt.ts
+new file mode 100644
+index 00000000..7a9cd1b8
+--- /dev/null
++++ b/marketplace-infographic/src/lib/style-background-prompt.ts
+@@ -0,0 +1,51 @@
++import type { InfographicStyle } from "@/lib/design-trends";
++
++const STYLE_SCENE: Record<InfographicStyle, string> = {
++  brutalism:
++    "raw concrete urban wall, high contrast, harsh daylight, bold geometric shadows, industrial yard, yellow and black accents in environment",
++  glassmorphism:
++    "soft bokeh city lights through frosted glass, cool blue purple tones, dreamy blur, premium ecommerce backdrop",
++  minimal:
++    "clean white studio cyclorama, soft neutral gradient, minimal props, lots of negative space, scandinavian aesthetic",
++  modern:
++    "suburban garden with lush green grass, modern house bokeh, soft natural daylight, lifestyle product photography",
++  neumorphism:
++    "soft gray studio with subtle sculpted shapes, diffused light, matte surfaces, calm premium mood",
++  "3d":
++    "surreal colorful studio with depth, dramatic rim light, vibrant purple and gold atmosphere, cinematic",
++  retro:
++    "warm vintage living room, film grain, orange teal tones, nostalgic 80s interior soft focus",
++  swiss:
++    "strict grid-inspired studio, bold red accent wall section, white space, editorial product photography",
++};
++
++const VARIATION_WORDS = [
++  "morning light",
++  "golden hour",
++  "overcast soft light",
++  "side lighting",
++  "wide angle",
++  "shallow depth of field",
++  "different camera angle",
++  "alternate composition",
++];
++
++export function seedToNumber(seed: string): number {
++  let hash = 0;
++  for (let i = 0; i < seed.length; i++) {
++    hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
++  }
++  return hash % 2_147_483_647 || 42;
++}
++
++export function enrichBackgroundPrompt(
++  prompt: string,
++  style: InfographicStyle,
++  variationSeed: string,
++): string {
++  const scene = STYLE_SCENE[style];
++  const variation =
++    VARIATION_WORDS[seedToNumber(variationSeed) % VARIATION_WORDS.length];
++  const base = prompt.trim().replace(/\s+/g, " ");
++  return `${base}, ${scene}, ${variation}, unique scene variation ${variationSeed.slice(-8)}`;
++}
+diff --git a/marketplace-infographic/src/lib/style-slide-css.ts b/marketplace-infographic/src/lib/style-slide-css.ts
+new file mode 100644
+index 00000000..6959a7a2
+--- /dev/null
++++ b/marketplace-infographic/src/lib/style-slide-css.ts
+@@ -0,0 +1,208 @@
++import { TRENDS, type InfographicStyle } from "@/lib/design-trends";
++
++export type StyleSlideSkin = {
++  slideFrameCss: string;
++  mergedOverlay: string;
++  slideFilter: string;
++  titleColor: string;
++  titleExtraCss: string;
++  pillBg: string;
++  pillColor: string;
++  pillRadius: string;
++  pillShadow: string;
++  pillBorder: string;
++  badgeRadius: string;
++  badgeBg: string;
++  badgeTextColor: string;
++  badgeExtraCss: string;
++  circleRadius: string;
++  circleBg: string;
++  brandColor: string;
++  styleLabel: string;
++};
++
++export function buildStyleSlideSkin(style: InfographicStyle): StyleSlideSkin {
++  const trend = TRENDS[style];
++
++  switch (style) {
++    case "brutalism":
++      return {
++        slideFrameCss:
++          "border: 12px solid #111; outline: 6px solid #facc15; background-color: #facc15;",
++        mergedOverlay:
++          "linear-gradient(180deg, rgba(250,204,21,0.72) 0%, rgba(250,204,21,0.18) 42%, rgba(0,0,0,0.55) 100%)",
++        slideFilter: "contrast(1.15) saturate(0.85)",
++        titleColor: "#111",
++        titleExtraCss:
++          "background: #facc15; display: inline-block; padding: 8px 16px; border: 4px solid #111; box-shadow: 8px 8px 0 #111;",
++        pillBg: "#111",
++        pillColor: "#facc15",
++        pillRadius: "0",
++        pillShadow: "6px 6px 0 #111",
++        pillBorder: "4px solid #111",
++        badgeRadius: "0",
++        badgeBg: "#ef4444",
++        badgeTextColor: "#111",
++        badgeExtraCss: `border: 4px solid #111; box-shadow: 8px 8px 0 #111; background: #ef4444;`,
++        circleRadius: "0",
++        circleBg: "#fff",
++        brandColor: "#111",
++        styleLabel: "БРУТАЛИЗМ",
++      };
++    case "minimal":
++      return {
++        slideFrameCss: "border: 1px solid #e5e7eb; background: #fafafa;",
++        mergedOverlay:
++          "linear-gradient(180deg, rgba(255,255,255,0.78) 0%, rgba(255,255,255,0.2) 45%, rgba(15,23,42,0.22) 100%)",
++        slideFilter: "saturate(0.92) brightness(1.04)",
++        titleColor: "#111827",
++        titleExtraCss: "letter-spacing: -0.03em;",
++        pillBg: "#2563eb",
++        pillColor: "#fff",
++        pillRadius: "999px",
++        pillShadow: "0 8px 24px rgba(37,99,235,0.25)",
++        pillBorder: "none",
++        badgeRadius: "18px",
++        badgeBg: "#111827",
++        badgeTextColor: "#fff",
++        badgeExtraCss: `border: 1px solid #e5e7eb; box-shadow: ${trend.shadow}; background: #111827;`,
++        circleRadius: "50%",
++        circleBg: "#fff",
++        brandColor: "#2563eb",
++        styleLabel: "МИНИМАЛИЗМ",
++      };
++    case "glassmorphism":
++      return {
++        slideFrameCss: "border: 1px solid rgba(255,255,255,0.25);",
++        mergedOverlay:
++          "linear-gradient(180deg, rgba(14,165,233,0.45) 0%, rgba(168,85,247,0.12) 45%, rgba(15,23,42,0.5) 100%)",
++        slideFilter: "saturate(1.1)",
++        titleColor: "#fff",
++        titleExtraCss: "text-shadow: 0 4px 24px rgba(0,198,255,0.45);",
++        pillBg: "rgba(0,198,255,0.85)",
++        pillColor: "#fff",
++        pillRadius: "24px",
++        pillShadow: "0 8px 32px rgba(0,0,0,0.25)",
++        pillBorder: "1px solid rgba(255,255,255,0.35)",
++        badgeRadius: "24px",
++        badgeBg: "rgba(37,99,235,0.72)",
++        badgeTextColor: "#fff",
++        badgeExtraCss:
++          "backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.35); box-shadow: 0 8px 32px rgba(0,0,0,0.22);",
++        circleRadius: "50%",
++        circleBg: "rgba(255,255,255,0.92)",
++        brandColor: "#00c6ff",
++        styleLabel: "GLASS",
++      };
++    case "neumorphism":
++      return {
++        slideFrameCss: "background: #e0e5ec; border: 1px solid rgba(255,255,255,0.7);",
++        mergedOverlay:
++          "linear-gradient(180deg, rgba(224,229,236,0.75) 0%, rgba(224,229,236,0.2) 50%, rgba(99,102,241,0.18) 100%)",
++        slideFilter: "brightness(1.03)",
++        titleColor: "#1f2937",
++        titleExtraCss: "text-shadow: 2px 2px 4px #fff, -2px -2px 4px #bec3c9;",
++        pillBg: "#6366f1",
++        pillColor: "#fff",
++        pillRadius: "28px",
++        pillShadow: "8px 8px 16px #bec3c9, -8px -8px 16px #ffffff",
++        pillBorder: "none",
++        badgeRadius: "28px",
++        badgeBg: "linear-gradient(145deg, #eef2f7, #d5dce6)",
++        badgeTextColor: "#1f2937",
++        badgeExtraCss: "box-shadow: 12px 12px 24px #bec3c9, -12px -12px 24px #ffffff; border: 1px solid rgba(255,255,255,0.65);",
++        circleRadius: "50%",
++        circleBg: "#e0e5ec",
++        brandColor: "#6366f1",
++        styleLabel: "NEUMORPH",
++      };
++    case "retro":
++      return {
++        slideFrameCss: "border: 4px solid #7c2d12; background: #ffedd5;",
++        mergedOverlay:
++          "linear-gradient(180deg, rgba(255,237,213,0.65) 0%, rgba(234,88,12,0.12) 50%, rgba(60,29,15,0.35) 100%)",
++        slideFilter: "sepia(0.22) saturate(1.15)",
++        titleColor: "#3b1d0f",
++        titleExtraCss: "font-style: italic;",
++        pillBg: "#ea580c",
++        pillColor: "#fff7ed",
++        pillRadius: "20px",
++        pillShadow: "8px 8px 0 rgba(124,45,18,0.35)",
++        pillBorder: "3px solid #7c2d12",
++        badgeRadius: "20px",
++        badgeBg: "#ea580c",
++        badgeTextColor: "#fff7ed",
++        badgeExtraCss: "border: 3px solid #7c2d12; box-shadow: 8px 8px 0 rgba(124,45,18,0.35);",
++        circleRadius: "50%",
++        circleBg: "#fff7ed",
++        brandColor: "#7c2d12",
++        styleLabel: "РЕТРО",
++      };
++    case "swiss":
++      return {
++        slideFrameCss: "border: 3px solid #0f172a; background: #fff;",
++        mergedOverlay:
++          "linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.15) 50%, rgba(225,29,72,0.15) 100%)",
++        slideFilter: "none",
++        titleColor: "#0f172a",
++        titleExtraCss: "letter-spacing: -0.05em;",
++        pillBg: "#e11d48",
++        pillColor: "#fff",
++        pillRadius: "0",
++        pillShadow: "none",
++        pillBorder: "2px solid #0f172a",
++        badgeRadius: "0",
++        badgeBg: "#e11d48",
++        badgeTextColor: "#fff",
++        badgeExtraCss: "border: 2px solid #0f172a; box-shadow: none;",
++        circleRadius: "0",
++        circleBg: "#fff",
++        brandColor: "#e11d48",
++        styleLabel: "SWISS",
++      };
++    case "3d":
++      return {
++        slideFrameCss: "border: 1px solid rgba(255,255,255,0.2);",
++        mergedOverlay:
++          "linear-gradient(180deg, rgba(49,46,129,0.55) 0%, rgba(251,191,36,0.12) 45%, rgba(15,23,42,0.55) 100%)",
++        slideFilter: "saturate(1.2) contrast(1.08)",
++        titleColor: "#fff",
++        titleExtraCss: "text-shadow: 0 6px 0 rgba(0,0,0,0.35);",
++        pillBg: "linear-gradient(135deg, #fbbf24, #f59e0b)",
++        pillColor: "#111",
++        pillRadius: "34px",
++        pillShadow: "0 20px 40px rgba(0,0,0,0.35)",
++        pillBorder: "none",
++        badgeRadius: "28px",
++        badgeBg: "linear-gradient(135deg, #7c3aed, #4f46e5)",
++        badgeTextColor: "#fff",
++        badgeExtraCss: "box-shadow: 0 24px 48px rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.22);",
++        circleRadius: "50%",
++        circleBg: "#fff",
++        brandColor: "#fbbf24",
++        styleLabel: "3D",
++      };
++    default:
++      return {
++        slideFrameCss: "",
++        mergedOverlay:
++          "linear-gradient(180deg, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.06) 38%, rgba(0,0,0,0.28) 100%)",
++        slideFilter: "none",
++        titleColor: "#fff",
++        titleExtraCss: "",
++        pillBg: trend.accent,
++        pillColor: "#fff",
++        pillRadius: "8px",
++        pillShadow: "0 4px 16px rgba(0,0,0,0.25)",
++        pillBorder: "none",
++        badgeRadius: "20px",
++        badgeBg: "#2563eb",
++        badgeTextColor: "#fff",
++        badgeExtraCss: `border: ${trend.border}; box-shadow: ${trend.shadow};`,
++        circleRadius: "50%",
++        circleBg: "#fff",
++        brandColor: "#fff",
++        styleLabel: "MODERN",
++      };
++  }
++}
+diff --git a/marketplace-infographic/src/lib/validations.ts b/marketplace-infographic/src/lib/validations.ts
+index 1037cdd0..77e579b9 100644
+--- a/marketplace-infographic/src/lib/validations.ts
++++ b/marketplace-infographic/src/lib/validations.ts
+@@ -8,7 +8,7 @@ export const infographicSdSchema = z.object({
+   bullets: z.array(z.string().min(1).max(80)).min(2).max(5),
+   colors: z.array(z.string().min(4).max(7)).min(2).max(5),
+   badge: z.string().min(1).max(40),
+-  backgroundPrompt: z.string().min(10).max(200),
++  backgroundPrompt: z.string().min(10).max(400),
+ });
+ 
+ export type InfographicSdInput = z.infer<typeof infographicSdSchema>;
+@@ -33,6 +33,21 @@ export const generateInfographicSchema = z.object({
+ export const regenerateBackgroundSchema = z.object({
+   imageId: z.string().min(1),
+   backgroundSeed: z.string().max(64).optional(),
++  style: z.enum(STYLE_KEYS).optional(),
++  productImage: z
++    .string()
++    .trim()
++    .optional()
++    .refine(
++      (value) =>
++        !value ||
++        /^data:image\/(?:jpeg|png|webp);base64,/i.test(value),
++      "Загрузите JPG, PNG или WebP",
++    )
++    .refine(
++      (value) => !value || value.length <= 6_000_000,
++      "Фото слишком большое (макс. 4 МБ)",
++    ),
+ });
+ 
+ export const uploadImageSchema = z.object({
+diff --git a/scripts/deploy.sh b/scripts/deploy.sh
+index 4216a0f6..35e5d335 100755
+--- a/scripts/deploy.sh
++++ b/scripts/deploy.sh
+@@ -30,11 +30,15 @@ cd "${APP_DIR}/${APP_NAME}"
+ echo "==> Stopping existing PM2 process before build"
+ pm2 delete marketplace-infographic 2>/dev/null || true
+ 
++mkdir -p "${APP_DIR}/logs"
++
+ echo "==> Removing previous Next.js build"
+ rm -rf .next node_modules
+ 
+-echo "==> Installing dependencies"
+-npm ci
++echo "==> Installing dependencies (with devDependencies for build)"
++export npm_config_onnxruntime_node_install_cuda=skip
++# NODE_ENV=production on VPS skips devDeps — next build needs typescript/tailwind
++NODE_ENV=development npm ci
+ 
+ echo "==> Generating Prisma client"
+ npx prisma generate
+@@ -49,9 +53,13 @@ fi
+ echo "==> Building Next.js app"
+ npm run build
+ 
+-echo "==> Restarting PM2 process"
++echo "==> Starting PM2 process"
+ cd "${APP_DIR}"
+-pm2 start ecosystem.config.cjs --update-env
++if pm2 describe marketplace-infographic >/dev/null 2>&1; then
++  pm2 reload ecosystem.config.cjs --update-env
++else
++  pm2 start ecosystem.config.cjs --update-env
++fi
+ 
+ pm2 save
+ pm2 status marketplace-infographic
+@@ -60,4 +68,11 @@ echo "==> Verifying local app routes"
+ sleep 3
+ curl -fsS http://127.0.0.1:3000/register | grep -q "Регистрация"
+ 
++echo "==> Pipeline version"
++if curl -fsS http://127.0.0.1:3000/api/health | grep -q '"pipelineVersion":"v3-styles"'; then
++  echo "==> OK: v3-styles active"
++else
++  echo "==> WARN: старый код — проверьте git pull и ветку main"
++fi
++
+ echo "==> Deploy complete"
+diff --git a/scripts/verify-deploy.sh b/scripts/verify-deploy.sh
+new file mode 100755
+index 00000000..97640828
+--- /dev/null
++++ b/scripts/verify-deploy.sh
+@@ -0,0 +1,17 @@
++#!/usr/bin/env bash
++set -euo pipefail
++
++URL="${1:-http://127.0.0.1:3000/api/health}"
++
++echo "==> Checking ${URL}"
++BODY="$(curl -fsS "${URL}")"
++echo "${BODY}" | python3 -m json.tool 2>/dev/null || echo "${BODY}"
++
++if echo "${BODY}" | grep -q '"pipelineVersion":"v3-styles"'; then
++  echo "==> OK: новый пайплайн v3-styles задеплоен"
++  exit 0
++fi
++
++echo "==> WARN: pipelineVersion не v3-styles — на сервере СТАРЫЙ код"
++echo "    Запустите: cd /opt/design-ai && git pull && ./scripts/deploy.sh"
++exit 1

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { PIPELINE_VERSION } from "@/lib/generate-infographic-handler";
+import { PIPELINE_VERSION } from "@/lib/pipeline-version";
 
 export async function GET() {
   const checks = {
