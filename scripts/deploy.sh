@@ -33,9 +33,10 @@ pm2 delete marketplace-infographic 2>/dev/null || true
 echo "==> Removing previous Next.js build"
 rm -rf .next node_modules
 
-echo "==> Installing dependencies"
+echo "==> Installing dependencies (with devDependencies for build)"
 export npm_config_onnxruntime_node_install_cuda=skip
-npm ci
+# NODE_ENV=production on VPS skips devDeps — next build needs typescript/tailwind
+NODE_ENV=development npm ci
 
 echo "==> Generating Prisma client"
 npx prisma generate
