@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
+import { PIPELINE_VERSION } from "@/lib/generate-infographic-handler";
 
 export async function GET() {
   const checks = {
     status: "ok",
+    pipelineVersion: PIPELINE_VERSION,
     timestamp: new Date().toISOString(),
     ollama: false,
     database: false,
