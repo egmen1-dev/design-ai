@@ -21,6 +21,14 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function sanitizeBackgroundPrompt(prompt: string): string {
+  const base = prompt.trim();
+  const noText =
+    "no text, no words, no letters, no typography, no watermark, no logo, no captions";
+  if (/no text|no words|no letters/i.test(base)) return base;
+  return `${base}, ${noText}`;
+}
+
 async function requestHfImage(prompt: string): Promise<Buffer> {
   const apiKey = process.env.HF_API_KEY;
   if (!apiKey) {
@@ -37,7 +45,7 @@ async function requestHfImage(prompt: string): Promise<Buffer> {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        inputs: prompt,
+        inputs: sanitizeBackgroundPrompt(prompt),
         parameters: { width: 1024, height: 1024 },
       }),
     });

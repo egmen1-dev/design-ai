@@ -11,6 +11,8 @@ import {
   renderSdInfographicHtml,
   type InfographicSdData,
 } from "@/lib/sd-infographic-template";
+import { packSdPayload, unpackSdPayload } from "@/lib/sd-stored-payload";
+import { DEFAULT_STYLE, type InfographicStyle } from "@/lib/design-trends";
 import { renderHtmlToImage } from "@/lib/puppeteer";
 import { bufferToDataUrl } from "@/lib/background-removal";
 import {
@@ -27,6 +29,7 @@ export type GenerateInfographicInput = {
   userId: string;
   prompt: string;
   productImage?: string;
+  style?: InfographicStyle;
   regenerateBackgroundOnly?: boolean;
   existingImageId?: string;
   backgroundSeed?: string;
@@ -41,6 +44,7 @@ export type GenerateInfographicResult = {
   unlimited: boolean;
   aiSource: string;
   backgroundSource: "sd" | "fallback";
+  appliedStyle: InfographicStyle;
 };
 
 async function loadProductCutout(
@@ -83,6 +87,7 @@ export async function handleGenerateInfographic(
 
   try {
     let sdData: InfographicSdData;
+    let appliedStyle: InfographicStyle = input.style ?? DEFAULT_STYLE;
     let aiSource = "mock";
     let productCutoutPath: string | null = null;
     let productRender: Awaited<ReturnType<typeof loadProductCutout>>;
@@ -97,7 +102,9 @@ export async function handleGenerateInfographic(
       if (!existing.generatedJson) {
         throw new Error("NO_JSON_FOR_REGEN");
       }
-      sdData = JSON.parse(existing.generatedJson) as InfographicSdData;
+      const stored = unpackSdPayload(existing.generatedJson);
+      sdData = stored.data;
+      appliedStyle = input.style ?? stored.style;
       productRender = await loadProductCutout(
         undefined,
         input.userId,
@@ -109,7 +116,8 @@ export async function handleGenerateInfographic(
       if (!input.productImage) {
         throw new Error("PRODUCT_IMAGE_REQUIRED");
       }
-      const ollama = await generateSdInfographicData(input.prompt);
+      appliedStyle = input.style ?? DEFAULT_STYLE;
+      const ollama = await generateSdInfographicData(input.prompt, appliedStyle);
       sdData = ollama.data;
       aiSource = ollama.source;
       productRender = await loadProductCutout(input.productImage, input.userId);
@@ -149,6 +157,7 @@ export async function handleGenerateInfographic(
     }
 
     const html = renderSdInfographicHtml(sdData, {
+      style: appliedStyle,
       mergedImageDataUrl,
       backgroundDataUrl: mergedImageDataUrl ? undefined : backgroundDataUrl,
       backgroundCss: buildFallbackGradient(sdData.colors),
@@ -166,7 +175,11 @@ export async function handleGenerateInfographic(
     if (input.regenerateBackgroundOnly && input.existingImageId) {
       await prisma.generatedImage.update({
         where: { id: input.existingImageId },
-        data: { imagePath, backgroundUrl },
+        data: {
+          imagePath,
+          backgroundUrl,
+          generatedJson: packSdPayload(sdData, appliedStyle),
+        },
       });
 
       return {
@@ -178,6 +191,7 @@ export async function handleGenerateInfographic(
         unlimited: balance.unlimited,
         aiSource,
         backgroundSource,
+        appliedStyle,
       };
     }
 
@@ -187,7 +201,7 @@ export async function handleGenerateInfographic(
         prompt: input.prompt,
         htmlContent: "[SD_PIPELINE]",
         imagePath,
-        generatedJson: JSON.stringify(sdData),
+        generatedJson: packSdPayload(sdData, appliedStyle),
         backgroundUrl,
         productCutout: productCutoutPath,
         usedFreeQuota: slot.usedFreeQuota,
@@ -203,6 +217,7 @@ export async function handleGenerateInfographic(
       unlimited: balance.unlimited,
       aiSource,
       backgroundSource,
+      appliedStyle,
     };
   } catch (error) {
     if (!slot.usedFreeQuota && !slot.balance.unlimited) {

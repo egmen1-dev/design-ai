@@ -1,4 +1,11 @@
 import { infographicSdSchema, type InfographicSdInput } from "@/lib/validations";
+import {
+  DEFAULT_STYLE,
+  STYLE_LABELS,
+  TRENDS,
+  type InfographicStyle,
+} from "@/lib/design-trends";
+import { applyStyleToSdColors } from "@/lib/sd-style-theme";
 import { getOllamaStatus, OLLAMA_BASE_URL, OLLAMA_MODEL } from "./ai-status";
 
 export type InfographicSdData = InfographicSdInput;
@@ -22,31 +29,46 @@ const SD_EXAMPLE = `{
   "backgroundPrompt": "professional marketplace product photo background, suburban garden with lush green grass, soft natural daylight, shallow depth of field, space in center for gasoline generator, photorealistic, 2025 ecommerce trend, high CTR, no text, no people, 8k"
 }`;
 
-export function generateMockSdData(prompt: string): InfographicSdData {
+export function generateMockSdData(
+  prompt: string,
+  style: InfographicStyle = DEFAULT_STYLE,
+): InfographicSdData {
   const lower = prompt.toLowerCase();
   const isGenerator = /генератор|бензин|квт/.test(lower);
+  const trend = TRENDS[style];
 
-  return infographicSdSchema.parse({
+  const base = infographicSdSchema.parse({
     layout: "hero",
     title: isGenerator ? "ГЕНЕРАТОР" : "ТОВАР",
     subtitle: isGenerator ? "бензиновый" : "новинка",
     bullets: isGenerator
       ? ["3 кВт мощность", "15 литров бак", "3000 Вт стабильная мощность"]
       : ["Премиум качество", "Быстрая доставка", "Гарантия 12 месяцев"],
-    colors: ["#e31e24", "#2563eb", "#0f172a"],
+    colors: [trend.accent, "#2563eb", "#0f172a"],
     badge: isGenerator ? "Kronwerk" : "Brand",
     backgroundPrompt: isGenerator
-      ? "professional product photography background, suburban garden with green grass, soft daylight, center space for generator, photorealistic, marketplace infographic 2025, no text"
-      : "clean studio product photography background, soft gradient, professional lighting, center space for product, photorealistic, ecommerce 2025, no text",
+      ? "professional product photography background, suburban garden with green grass, soft daylight, center space for generator, photorealistic, marketplace infographic 2025, no text, no words, no letters"
+      : "clean studio product photography background, soft gradient, professional lighting, center space for product, photorealistic, ecommerce 2025, no text, no words, no letters",
   });
+
+  return applyStyleToSdColors(base, style);
 }
 
-async function callOllamaSd(prompt: string): Promise<InfographicSdData> {
+async function callOllamaSd(
+  prompt: string,
+  style: InfographicStyle,
+): Promise<InfographicSdData> {
+  const trend = TRENDS[style];
   const systemPrompt = `Ты — арт-директор для Wildberries.
+
+Стиль дизайна слайда: ${style} (${STYLE_LABELS[style]}).
+Акцентный цвет стиля: ${trend.accent}. Используй его в colors[0].
 
 Для каждого товара придумай текст и стиль инфографики 1200×1200, а также промпт на АНГЛИЙСКОМ для Stable Diffusion — идеальный фотореалистичный фон.
 Фон должен соответствовать трендам 2025, повышать кликабельность, передавать контекст использования товара.
-В backgroundPrompt: только описание сцены на английском, без текста на изображении, без людей, с местом по центру для товара.
+В backgroundPrompt: только описание сцены на английском, СТРОГО без текста/надписей/букв на изображении, без людей, с местом по центру для товара.
+
+Весь видимый текст слайда — ТОЛЬКО на русском (title, subtitle, bullets, badge).
 
 Верни ТОЛЬКО JSON:
 {
@@ -89,20 +111,22 @@ ${SD_EXAMPLE}
   if (!data.response) throw new Error("Пустой ответ от Ollama");
 
   const parsed = JSON.parse(extractJson(data.response)) as unknown;
-  return infographicSdSchema.parse(parsed);
+  const raw = infographicSdSchema.parse(parsed);
+  return applyStyleToSdColors(raw, style);
 }
 
 export async function generateSdInfographicData(
   prompt: string,
+  style: InfographicStyle = DEFAULT_STYLE,
 ): Promise<{ data: InfographicSdData; source: "ollama" | "mock" }> {
   const status = await getOllamaStatus();
   if (status.mockMode || !status.available) {
-    return { data: generateMockSdData(prompt), source: "mock" };
+    return { data: generateMockSdData(prompt, style), source: "mock" };
   }
   try {
-    return { data: await callOllamaSd(prompt), source: "ollama" };
+    return { data: await callOllamaSd(prompt, style), source: "ollama" };
   } catch (error) {
     console.warn("Ollama SD failed, mock fallback:", error);
-    return { data: generateMockSdData(prompt), source: "mock" };
+    return { data: generateMockSdData(prompt, style), source: "mock" };
   }
 }

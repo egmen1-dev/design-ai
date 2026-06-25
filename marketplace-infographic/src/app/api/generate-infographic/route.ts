@@ -29,6 +29,7 @@ export async function POST(request: NextRequest) {
       userId: session.user.id,
       prompt: parsed.data.prompt,
       productImage: parsed.data.productImage,
+      style: parsed.data.style,
     });
 
     return NextResponse.json(result);
