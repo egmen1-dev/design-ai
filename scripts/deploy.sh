@@ -34,6 +34,7 @@ echo "==> Removing previous Next.js build"
 rm -rf .next node_modules
 
 echo "==> Installing dependencies"
+export npm_config_onnxruntime_node_install_cuda=skip
 npm ci
 
 echo "==> Generating Prisma client"
