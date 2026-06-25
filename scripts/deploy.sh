@@ -34,7 +34,11 @@ echo "==> Generating Prisma client"
 npx prisma generate
 
 echo "==> Running database migrations"
-npx prisma migrate deploy
+if ! npx prisma migrate deploy; then
+  echo "==> Baselining existing database and retrying migrations"
+  npx prisma migrate resolve --applied 20250624000000_init || true
+  npx prisma migrate deploy
+fi
 
 echo "==> Building Next.js app"
 npm run build
