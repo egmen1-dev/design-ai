@@ -10,15 +10,19 @@ echo "==> Deploying design-ai from branch ${BRANCH}"
 cd "${APP_DIR}"
 
 if [ -d .git ]; then
-  git fetch origin
+  git fetch origin "${BRANCH}"
   git checkout "${BRANCH}"
-  git pull origin "${BRANCH}"
+  git reset --hard "origin/${BRANCH}"
+  echo "==> Checked out commit $(git rev-parse --short HEAD)"
 else
   echo "ERROR: ${APP_DIR} is not a git repository. Run setup-vps.sh first."
   exit 1
 fi
 
 cd "${APP_DIR}/${APP_NAME}"
+
+echo "==> Removing previous Next.js build"
+rm -rf .next
 
 echo "==> Installing dependencies"
 npm ci
@@ -34,8 +38,14 @@ npm run build
 
 echo "==> Restarting PM2 process"
 cd "${APP_DIR}"
-pm2 reload ecosystem.config.cjs --update-env || pm2 start ecosystem.config.cjs
+pm2 delete marketplace-infographic 2>/dev/null || true
+pm2 start ecosystem.config.cjs --update-env
 
 pm2 save
+pm2 status marketplace-infographic
+
+echo "==> Verifying local app routes"
+sleep 3
+curl -fsS http://127.0.0.1:3000/register | grep -q "Регистрация"
 
 echo "==> Deploy complete"
