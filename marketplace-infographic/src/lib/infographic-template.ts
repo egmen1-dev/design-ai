@@ -5,6 +5,7 @@ import {
   type InfographicStyle,
 } from "./design-trends";
 import { getSceneLayers, SCENE_PROPS_CSS } from "./scene-backgrounds";
+import { buildStyleSlideSkin } from "./style-slide-css";
 
 const backgroundSceneSchema = z.enum([
   "outdoor_home",
@@ -78,8 +79,11 @@ export type RenderInfographicOptions = {
   productImageSrc?: string;
   productImageCutout?: boolean;
   style?: InfographicStyle;
-  /** Готовый композит фон+товар (sharp) — скрывает слои сцены и товар */
+  /** Готовый композит фон+товар (sharp) */
   mergedImageDataUrl?: string;
+  /** SD-фон без композита — товар накладывается в HTML */
+  backgroundDataUrl?: string;
+  backgroundCss?: string;
 };
 
 function escapeHtml(text: string): string {
@@ -205,11 +209,12 @@ function renderBadgeTopLeft(
   spec: InfographicData["specBlocks"][number],
   badgeBg: string,
   badgeExtraCss: string,
+  textColor: string,
 ): string {
   const big = extractBigNumber(spec.value);
   const unit = spec.label;
   return `
-    <div class="badge badge-tl" style="background:${badgeBg}; ${badgeExtraCss}">
+    <div class="badge badge-tl" style="background:${badgeBg}; color:${textColor}; ${badgeExtraCss}">
       <div class="badge-big">${escapeHtml(big)}</div>
       <div class="badge-sub">${escapeHtml(unit)}</div>
     </div>`;
@@ -219,10 +224,11 @@ function renderBadgeTopRight(
   banner: InfographicData["mainBanner"],
   badgeBg: string,
   badgeExtraCss: string,
+  textColor: string,
 ): string {
   const icon = banner.icon ?? "⚡";
   return `
-    <div class="badge badge-tr" style="background:${badgeBg}; ${badgeExtraCss}">
+    <div class="badge badge-tr" style="background:${badgeBg}; color:${textColor}; ${badgeExtraCss}">
       <div class="badge-icon-wrap">${escapeHtml(icon)}</div>
       <div class="badge-tr-text">${escapeHtml(banner.title)}</div>
     </div>`;
@@ -232,11 +238,14 @@ function renderBadgeBottomRight(
   spec: InfographicData["specBlocks"][number],
   accentRed: string,
   badgeExtraCss: string,
+  circleRadius: string,
+  circleBg: string,
+  textColor: string,
 ): string {
   const icon = /литр|л\/|объём|бак/i.test(spec.label + spec.value) ? "💧" : "★";
   return `
     <div class="badge badge-br">
-      <div class="badge-circle" style="border-color:${accentRed};color:${accentRed}; ${badgeExtraCss}">
+      <div class="badge-circle" style="border-color:${accentRed};color:${textColor};border-radius:${circleRadius};background:${circleBg}; ${badgeExtraCss}">
         <div class="badge-circle-icon">${icon}</div>
         <div class="badge-circle-val">${escapeHtml(spec.value)}</div>
         <div class="badge-circle-lbl">${escapeHtml(spec.label)}</div>
@@ -250,13 +259,16 @@ export function renderInfographicHtml(
 ): string {
   const style = options?.style ?? DEFAULT_STYLE;
   const theme = buildSlideTheme(style);
+  const skin = buildStyleSlideSkin(style);
   const accent = ACCENT[data.accentColor ?? "red"];
   const useMerged = Boolean(options?.mergedImageDataUrl);
-  const hasPhoto = !useMerged && Boolean(options?.productImageSrc);
+  const useSdBg = !useMerged && Boolean(options?.backgroundDataUrl);
+  const usePhotoBg = useMerged || useSdBg;
+  const hasPhoto = usePhotoBg || Boolean(options?.productImageSrc);
   const cutout = Boolean(options?.productImageCutout);
   const scene = getSceneLayers(data.backgroundScene);
   const showLeaves =
-    !useMerged &&
+    !usePhotoBg &&
     (data.backgroundScene === "outdoor_home" || data.backgroundScene === "nature");
   const visual = detectProductVisual(data);
   const brand = extractBrandName(data);
@@ -264,61 +276,26 @@ export function renderInfographicHtml(
   const spec0 = data.specBlocks[0];
   const spec1 = data.specBlocks[1] ?? data.specBlocks[0];
 
-  const badgeRadius =
-    style === "brutalism" || style === "swiss"
-      ? "0"
-      : style === "3d"
-        ? "28px"
-        : style === "glassmorphism"
-          ? "24px"
-          : "20px";
-
-  const badgeGlass =
-    style === "glassmorphism"
-      ? "backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); background: rgba(37,99,235,0.78) !important;"
-      : style === "neumorphism"
-        ? "background: linear-gradient(145deg, #eef2f7, #d5dce6) !important; color: #1f2937 !important;"
-        : "";
-
-  const badgeExtraCss = `border: ${theme.trend.border}; box-shadow: ${theme.trend.shadow}; border-radius: ${badgeRadius}; ${badgeGlass}`;
-  const badgeBg =
-    style === "brutalism"
-      ? theme.trend.accent
-      : style === "retro"
-        ? theme.trend.accent
-        : accent.badge;
-  const pillBg = style === "brutalism" ? theme.trend.foreground : theme.trend.accent;
-  const pillColor = style === "brutalism" ? theme.trend.background : "#fff";
-  const pillRadius = style === "brutalism" || style === "swiss" ? "0" : "8px";
-  const pillShadow =
-    style === "brutalism" ? theme.trend.shadow : "0 4px 16px rgba(0,0,0,0.25)";
+  const badgeExtraCss = `border-radius: ${skin.badgeRadius}; ${skin.badgeExtraCss}`;
 
   const productHtml =
     !useMerged && options?.productImageSrc
       ? renderProductPhoto(options.productImageSrc, data.productName, cutout)
-      : !useMerged
+      : !useMerged && !useSdBg
         ? renderProductVisual(visual, accent.primary, data.productName)
-        : "";
-
-  const titleColor =
-    style === "minimal" || style === "swiss" || style === "neumorphism" || style === "retro"
-      ? theme.trend.foreground
-      : "#ffffff";
-
-  const mergedOverlay =
-    style === "minimal" || style === "swiss"
-      ? "linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.12) 40%, rgba(15,23,42,0.2) 100%)"
-      : style === "glassmorphism"
-        ? "linear-gradient(180deg, rgba(15,23,42,0.5) 0%, rgba(15,23,42,0.08) 42%, rgba(15,23,42,0.42) 100%)"
-        : style === "brutalism"
-          ? "linear-gradient(180deg, rgba(250,204,21,0.35) 0%, rgba(0,0,0,0.05) 45%, rgba(0,0,0,0.35) 100%)"
-          : "linear-gradient(180deg, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.06) 38%, rgba(0,0,0,0.28) 100%)";
+        : useSdBg && options?.productImageSrc
+          ? renderProductPhoto(options.productImageSrc, data.productName, cutout)
+          : "";
 
   const slideBg = useMerged
-    ? `background-image: url('${options!.mergedImageDataUrl}'); background-size: cover; background-position: center bottom;`
-    : "";
+    ? `background-image: url('${options!.mergedImageDataUrl}'); background-size: cover; background-position: center bottom; filter: ${skin.slideFilter};`
+    : useSdBg
+      ? `background-image: url('${options!.backgroundDataUrl}'); background-size: cover; background-position: center bottom; filter: ${skin.slideFilter};`
+      : options?.backgroundCss
+        ? `background: ${options.backgroundCss};`
+        : "";
 
-  const sceneLayers = useMerged
+  const sceneLayers = usePhotoBg
     ? `<div class="merged-overlay"></div>`
     : `<div class="sky"></div>
     <div class="sky-decor"></div>
@@ -340,11 +317,14 @@ export function renderInfographicHtml(
       font-family: ${theme.fontFamily}, "Segoe UI", Arial, sans-serif;
     }
 
-    .slide { position: relative; width: 1200px; height: 1200px; overflow: hidden; ${slideBg} }
+    .slide {
+      position: relative; width: 1200px; height: 1200px; overflow: hidden;
+      ${slideBg} ${skin.slideFrameCss}
+    }
 
     .merged-overlay {
       position: absolute; inset: 0; z-index: 1; pointer-events: none;
-      background: ${mergedOverlay};
+      background: ${skin.mergedOverlay};
     }
 
     .sky {
@@ -378,22 +358,21 @@ export function renderInfographicHtml(
     .hero-title {
       font-size: 72px; font-weight: 900; line-height: 0.95;
       letter-spacing: 0.04em; text-transform: uppercase;
-      color: ${titleColor};
-      text-shadow: 0 4px 24px rgba(0,0,0,0.35);
+      color: ${skin.titleColor};
+      ${skin.titleExtraCss}
     }
     .hero-pill {
       display: inline-block; margin-top: 10px;
-      background: ${pillBg};
-      color: ${pillColor}; font-size: 22px; font-weight: 700;
-      padding: 8px 22px; border-radius: ${pillRadius};
-      box-shadow: ${pillShadow};
-      border: ${style === "brutalism" ? theme.trend.border : "none"};
+      background: ${skin.pillBg};
+      color: ${skin.pillColor}; font-size: 22px; font-weight: 700;
+      padding: 8px 22px; border-radius: ${skin.pillRadius};
+      box-shadow: ${skin.pillShadow};
+      border: ${skin.pillBorder};
     }
     .hero-brand {
-      font-size: 26px; font-weight: 800; color: ${titleColor};
+      font-size: 26px; font-weight: 800; color: ${skin.brandColor};
       opacity: 0.92; letter-spacing: 0.06em;
       text-transform: uppercase;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
       padding-top: 8px;
     }
 
@@ -578,9 +557,9 @@ export function renderInfographicHtml(
       <div class="hero-brand">${escapeHtml(brand)}</div>
     </header>
 
-    ${renderBadgeTopLeft(spec0, badgeBg, badgeExtraCss)}
-    ${renderBadgeTopRight(data.mainBanner, badgeBg, badgeExtraCss)}
-    ${renderBadgeBottomRight(spec1, accent.primary, badgeExtraCss)}
+    ${renderBadgeTopLeft(spec0, skin.badgeBg, badgeExtraCss, skin.badgeTextColor)}
+    ${renderBadgeTopRight(data.mainBanner, skin.badgeBg, badgeExtraCss, skin.badgeTextColor)}
+    ${renderBadgeBottomRight(spec1, accent.primary, badgeExtraCss, skin.circleRadius, skin.circleBg, skin.badgeTextColor)}
 
     ${productHtml ? `<div class="product-stage">${productHtml}</div>` : ""}
   </div>

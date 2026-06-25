@@ -3,6 +3,8 @@ import path from "path";
 import { consumeGenerationSlot } from "@/lib/credits";
 import { generateSdInfographicData } from "@/lib/ollama-sd";
 import {
+  backgroundToDataUrl,
+  buildFallbackGradient,
   generateBackground,
 } from "@/lib/stable-diffusion";
 import {
@@ -10,7 +12,7 @@ import {
 } from "@/lib/infographic-template";
 import { sdDataToInfographic } from "@/lib/sd-to-infographic";
 import { packSdPayload, unpackSdPayload } from "@/lib/sd-stored-payload";
-import { DEFAULT_STYLE, type InfographicStyle } from "@/lib/design-trends";
+import { DEFAULT_STYLE, TRENDS, type InfographicStyle } from "@/lib/design-trends";
 import { renderHtmlToImage } from "@/lib/puppeteer";
 import { bufferToDataUrl } from "@/lib/background-removal";
 import {
@@ -34,6 +36,8 @@ export type GenerateInfographicInput = {
   backgroundSeed?: string;
 };
 
+export const PIPELINE_VERSION = "v3-styles";
+
 export type GenerateInfographicResult = {
   id: string;
   imagePath: string;
@@ -44,6 +48,7 @@ export type GenerateInfographicResult = {
   aiSource: string;
   backgroundSource: "sd" | "fallback";
   appliedStyle: InfographicStyle;
+  pipelineVersion: string;
 };
 
 async function loadProductCutout(
@@ -133,6 +138,7 @@ export async function handleGenerateInfographic(
     let backgroundUrl: string | null = null;
     let backgroundSource: "sd" | "fallback" = "sd";
     let mergedImageDataUrl: string | undefined;
+    let backgroundDataUrl: string | undefined;
 
     const variationSeed =
       input.backgroundSeed ??
@@ -143,10 +149,10 @@ export async function handleGenerateInfographic(
         throw new Error("HF_API_KEY missing");
       }
       backgroundUrl = await generateBackground(sdData.backgroundPrompt, {
-        skipCache: Boolean(input.backgroundSeed),
         seedSuffix: variationSeed,
         style: appliedStyle,
       });
+      backgroundDataUrl = await backgroundToDataUrl(backgroundUrl);
     } catch (error) {
       console.warn("SD background failed, gradient fallback:", error);
       backgroundSource = "fallback";
@@ -162,16 +168,23 @@ export async function handleGenerateInfographic(
         );
         mergedImageDataUrl = await mergedToDataUrl(mergedPath);
       } catch (error) {
-        console.warn("Image compositing failed, CSS fallback:", error);
+        console.warn("Image compositing failed, using SD background layer:", error);
       }
     }
 
     const infographicData = sdDataToInfographic(sdData, input.prompt);
+    const fallbackBg =
+      backgroundSource === "fallback"
+        ? TRENDS[appliedStyle].background
+        : buildFallbackGradient(sdData.colors);
 
     const html = renderInfographicHtml(infographicData, {
       style: appliedStyle,
       mergedImageDataUrl,
-      productImageSrc: mergedImageDataUrl ? undefined : productRender.renderSrc,
+      backgroundDataUrl: mergedImageDataUrl ? undefined : backgroundDataUrl,
+      backgroundCss: !mergedImageDataUrl && !backgroundDataUrl ? fallbackBg : undefined,
+      productImageSrc:
+        mergedImageDataUrl ? undefined : productRender.renderSrc,
       productImageCutout: productRender.cutout,
     });
 
@@ -203,6 +216,7 @@ export async function handleGenerateInfographic(
         aiSource,
         backgroundSource,
         appliedStyle,
+        pipelineVersion: PIPELINE_VERSION,
       };
     }
 
@@ -229,6 +243,7 @@ export async function handleGenerateInfographic(
       aiSource,
       backgroundSource,
       appliedStyle,
+      pipelineVersion: PIPELINE_VERSION,
     };
   } catch (error) {
     if (!slot.usedFreeQuota && !slot.balance.unlimited) {

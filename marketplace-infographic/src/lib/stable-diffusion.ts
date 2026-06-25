@@ -1,7 +1,11 @@
 import { createHash } from "crypto";
 import { mkdir, writeFile, readFile } from "fs/promises";
 import path from "path";
-import { prisma } from "@/lib/prisma";
+import type { InfographicStyle } from "@/lib/design-trends";
+import {
+  enrichBackgroundPrompt,
+  seedToNumber,
+} from "@/lib/style-background-prompt";
 
 const HF_MODEL =
   process.env.HF_SD_MODEL ??
@@ -29,13 +33,20 @@ function sanitizeBackgroundPrompt(prompt: string): string {
   return `${base}, ${noText}`;
 }
 
-async function requestHfImage(prompt: string): Promise<Buffer> {
+async function requestHfImage(
+  prompt: string,
+  options?: { seed?: number },
+): Promise<Buffer> {
   const apiKey = process.env.HF_API_KEY;
   if (!apiKey) {
     throw new Error("HF_API_KEY is not configured");
   }
 
   let lastError = "HF API error";
+  const parameters: Record<string, number> = { width: 1024, height: 1024 };
+  if (options?.seed !== undefined) {
+    parameters.seed = options.seed;
+  }
 
   for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
     const response = await fetch(HF_API_URL, {
@@ -46,7 +57,7 @@ async function requestHfImage(prompt: string): Promise<Buffer> {
       },
       body: JSON.stringify({
         inputs: sanitizeBackgroundPrompt(prompt),
-        parameters: { width: 1024, height: 1024 },
+        parameters,
       }),
     });
 
@@ -101,32 +112,14 @@ async function saveBackground(buffer: Buffer, promptHash: string): Promise<strin
   return `/backgrounds/${filename}`;
 }
 
-export async function getCachedBackground(promptHash: string): Promise<string | null> {
-  const cached = await prisma.backgroundCache.findUnique({
-    where: { promptHash },
-  });
-  if (!cached) return null;
-
-  const absPath = path.join(process.cwd(), "public", cached.imageUrl.replace(/^\//, ""));
-  try {
-    await readFile(absPath);
-    return cached.imageUrl;
-  } catch {
-    await prisma.backgroundCache.delete({ where: { promptHash } }).catch(() => undefined);
-    return null;
-  }
-}
-
 export type GenerateBackgroundOptions = {
-  /** Пропустить кэш (перегенерация фона) */
-  skipCache?: boolean;
   /** Уникальный суффикс — каждая генерация получает новый фон */
   seedSuffix?: string;
-  /** Стиль слайда — влияет на ключ кэша */
-  style?: string;
+  /** Стиль слайда — влияет на промпт и seed */
+  style?: InfographicStyle;
 };
 
-/** Генерирует фон через Stable Diffusion (HF) с кэшем по хэшу промпта+стиля+seed */
+/** Генерирует фон через Stable Diffusion (HF). Кэш отключён — каждый запрос уникален. */
 export async function generateBackground(
   prompt: string,
   options?: GenerateBackgroundOptions,
@@ -134,25 +127,13 @@ export async function generateBackground(
   const variation =
     options?.seedSuffix ??
     `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-  const stylePart = options?.style ? `style:${options.style}` : "style:modern";
-  const promptKey = `${prompt}::${stylePart}::${variation}`;
-  const promptHash = hashPrompt(promptKey);
+  const style = options?.style ?? "modern";
+  const enrichedPrompt = enrichBackgroundPrompt(prompt, style, variation);
+  const seed = seedToNumber(`${style}:${variation}`);
+  const promptHash = hashPrompt(`${enrichedPrompt}::${variation}`);
 
-  if (!options?.skipCache) {
-    const cached = await getCachedBackground(promptHash);
-    if (cached) return cached;
-  }
-
-  const buffer = await requestHfImage(prompt);
-  const imageUrl = await saveBackground(buffer, promptHash);
-
-  await prisma.backgroundCache.upsert({
-    where: { promptHash },
-    create: { promptHash, imageUrl },
-    update: { imageUrl },
-  });
-
-  return imageUrl;
+  const buffer = await requestHfImage(enrichedPrompt, { seed });
+  return saveBackground(buffer, promptHash);
 }
 
 export async function backgroundToDataUrl(imageUrl: string): Promise<string> {

@@ -69,6 +69,7 @@ export function GenerateForm() {
     aiSource?: string;
     appliedStyle?: InfographicStyle;
     backgroundSource?: "sd" | "fallback";
+    pipelineVersion?: string;
   } | null>(null);
 
   useEffect(() => {
@@ -129,6 +130,7 @@ export function GenerateForm() {
         aiSource?: string;
         appliedStyle?: InfographicStyle;
         backgroundSource?: "sd" | "fallback";
+        pipelineVersion?: string;
       };
 
       if (!res.ok) {
@@ -145,6 +147,7 @@ export function GenerateForm() {
         aiSource: data.aiSource,
         appliedStyle: data.appliedStyle ?? style,
         backgroundSource: data.backgroundSource,
+        pipelineVersion: data.pipelineVersion,
       });
     } catch {
       setError("Ошибка сети");
@@ -184,6 +187,7 @@ export function GenerateForm() {
         credits: number;
         appliedStyle?: InfographicStyle;
         backgroundSource?: "sd" | "fallback";
+        pipelineVersion?: string;
       };
 
       if (!res.ok) {
@@ -200,6 +204,7 @@ export function GenerateForm() {
               credits: data.credits ?? prev.credits,
               backgroundSource: data.backgroundSource ?? prev.backgroundSource,
               appliedStyle: data.appliedStyle ?? style,
+              pipelineVersion: data.pipelineVersion ?? prev.pipelineVersion,
             }
           : prev,
       );
@@ -411,6 +416,11 @@ export function GenerateForm() {
               {result.appliedStyle && (
                 <span className="ml-2 text-slate-500">
                   · стиль: {STYLE_LABELS[result.appliedStyle]}
+                </span>
+              )}
+              {result.pipelineVersion && (
+                <span className="ml-2 text-emerald-500">
+                  · {result.pipelineVersion}
                 </span>
               )}
             </p>
