@@ -42,7 +42,7 @@ mkdir -p node_modules.new
 cp package.json package-lock.json node_modules.new/
 (
   cd node_modules.new
-  npm ci --prefer-online --no-audit
+  npm ci --prefer-online --no-audit --ignore-scripts
 )
 mv node_modules.new/node_modules node_modules
 rm -rf node_modules.new node_modules.old
@@ -52,7 +52,7 @@ if ! node -e "require.resolve('next/dist/server/config-schema'); require.resolve
   npm cache clean --force
   NEXT_VERSION="$(node -p "require('./package-lock.json').packages['node_modules/next'].version")"
   rm -rf node_modules/next
-  npm install --no-save --prefer-online --no-audit "next@${NEXT_VERSION}"
+  npm install --no-save --prefer-online --no-audit --ignore-scripts "next@${NEXT_VERSION}"
   node -e "require.resolve('next/dist/server/config-schema'); require.resolve('next/dist/export')"
 fi
 
