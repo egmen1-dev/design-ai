@@ -156,6 +156,13 @@ export function GenerateForm() {
   async function handleRegenerateBackground() {
     if (!result?.id) return;
 
+    if (!productImage) {
+      setError(
+        "Загрузите фото товара — без него перегенерация фона невозможна",
+      );
+      return;
+    }
+
     setRegenLoading(true);
     setError(null);
 
@@ -163,7 +170,11 @@ export function GenerateForm() {
       const res = await fetch("/api/regenerate-background", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageId: result.id, style }),
+        body: JSON.stringify({
+          imageId: result.id,
+          style,
+          productImage,
+        }),
       });
 
       const data = (await res.json()) as {
@@ -407,8 +418,8 @@ export function GenerateForm() {
               <button
                 type="button"
                 onClick={handleRegenerateBackground}
-                disabled={loading || regenLoading}
-                className="rounded-lg border border-slate-600 px-3 py-2 text-xs font-medium text-slate-200 hover:border-brand-500 disabled:opacity-50"
+                disabled={loading || regenLoading || !productImage}
+                className="rounded-lg border border-slate-600 px-3 py-2 text-xs font-medium text-slate-200 hover:border-brand-500 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {regenLoading ? "Перегенерация..." : "Перегенерировать фон"}
               </button>

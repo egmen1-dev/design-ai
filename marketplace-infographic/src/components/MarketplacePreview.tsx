@@ -24,6 +24,7 @@ export function MarketplacePreview({ imagePath }: { imagePath: string }) {
       {marketplace === "plain" ? (
         /* eslint-disable-next-line @next/next/no-img-element */
         <img
+          key={src}
           src={src}
           alt="Инфографика"
           className="w-full rounded-lg border border-slate-700 shadow-lg"
@@ -39,7 +40,7 @@ export function MarketplacePreview({ imagePath }: { imagePath: string }) {
           <div className="bg-gray-50 p-3">
             <div className="overflow-hidden rounded-lg bg-white shadow-sm">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt="Превью" className="w-full object-cover" />
+              <img key={src} src={src} alt="Превью" className="w-full object-cover" />
             </div>
             <div className="mt-3 space-y-2 px-1">
               <div className="h-3 w-3/4 rounded bg-gray-200" />

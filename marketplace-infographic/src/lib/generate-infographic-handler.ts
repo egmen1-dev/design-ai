@@ -98,19 +98,26 @@ export async function handleGenerateInfographic(
       if (!existing || existing.userId !== input.userId) {
         throw new Error("IMAGE_NOT_FOUND");
       }
-      if (!existing.generatedJson) {
-        throw new Error("NO_JSON_FOR_REGEN");
+
+      appliedStyle = input.style ?? DEFAULT_STYLE;
+
+      if (existing.generatedJson) {
+        const stored = unpackSdPayload(existing.generatedJson);
+        sdData = stored.data;
+        appliedStyle = input.style ?? stored.style;
+        aiSource = "regen";
+      } else {
+        const ollama = await generateSdInfographicData(existing.prompt, appliedStyle);
+        sdData = ollama.data;
+        aiSource = "regen-rebuild";
       }
-      const stored = unpackSdPayload(existing.generatedJson);
-      sdData = stored.data;
-      appliedStyle = input.style ?? stored.style;
+
       productRender = await loadProductCutout(
-        undefined,
+        input.productImage,
         input.userId,
         existing.productCutout,
       );
-      productCutoutPath = existing.productCutout;
-      aiSource = "regen";
+      productCutoutPath = productRender.webPath;
     } else {
       if (!input.productImage) {
         throw new Error("PRODUCT_IMAGE_REQUIRED");
@@ -181,6 +188,7 @@ export async function handleGenerateInfographic(
         data: {
           imagePath,
           backgroundUrl,
+          productCutout: productCutoutPath,
           generatedJson: packSdPayload(sdData, appliedStyle),
         },
       });

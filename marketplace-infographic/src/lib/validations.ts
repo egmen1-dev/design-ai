@@ -34,6 +34,20 @@ export const regenerateBackgroundSchema = z.object({
   imageId: z.string().min(1),
   backgroundSeed: z.string().max(64).optional(),
   style: z.enum(STYLE_KEYS).optional(),
+  productImage: z
+    .string()
+    .trim()
+    .optional()
+    .refine(
+      (value) =>
+        !value ||
+        /^data:image\/(?:jpeg|png|webp);base64,/i.test(value),
+      "Загрузите JPG, PNG или WebP",
+    )
+    .refine(
+      (value) => !value || value.length <= 6_000_000,
+      "Фото слишком большое (макс. 4 МБ)",
+    ),
 });
 
 export const uploadImageSchema = z.object({
