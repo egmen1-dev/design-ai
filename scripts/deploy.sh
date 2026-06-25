@@ -14,7 +14,12 @@ if [ -d .git ]; then
   git fetch origin "${BRANCH}"
   git checkout "${BRANCH}"
   git reset --hard "origin/${BRANCH}"
-  git clean -fd
+  git clean -ffdx \
+    -e marketplace-infographic/.env \
+    -e marketplace-infographic/.env.local \
+    -e marketplace-infographic/public/generated \
+    -e "marketplace-infographic/public/generated/*"
+  rm -rf "${APP_DIR}/${APP_NAME}/src/app/admin"
   echo "==> Checked out commit $(git rev-parse --short HEAD)"
 else
   echo "ERROR: ${APP_DIR} is not a git repository. Run setup-vps.sh first."
