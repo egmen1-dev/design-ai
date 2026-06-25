@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ApprovalButton } from "./ApprovalButton";
+import { GeneratedImagePreview } from "./GeneratedImagePreview";
 import { STYLE_KEYS, type InfographicStyle } from "@/lib/design-trends";
 import type { InfographicResult } from "@/lib/validations";
 
@@ -109,8 +110,7 @@ export function GenerateForm() {
               generatedJson={result.generatedJson}
             />
           </div>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <GeneratedImagePreview
             src={result.imageUrl}
             alt="Сгенерированная инфографика"
             className="w-full rounded-lg border border-slate-700"

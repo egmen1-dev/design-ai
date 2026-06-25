@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AdminCreditGrantForm } from "@/components/AdminCreditGrantForm";
+import { GeneratedImagePreview } from "@/components/GeneratedImagePreview";
 import { auth } from "@/lib/auth";
 import { isAdminSession } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
@@ -100,8 +101,7 @@ export default async function AdminPage() {
           <div className="mt-5 space-y-4">
             {recentImages.map((image) => (
               <article key={image.id} className="flex gap-4">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <GeneratedImagePreview
                   src={image.imagePath}
                   alt={image.prompt.slice(0, 60)}
                   className="h-20 w-16 rounded border border-slate-800 object-cover"

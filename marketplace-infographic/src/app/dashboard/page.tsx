@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { GeneratedImagePreview } from "@/components/GeneratedImagePreview";
 import { auth } from "@/lib/auth";
 import { isAdminSession } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
@@ -84,8 +85,7 @@ export default async function DashboardPage({
               key={img.id}
               className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900/50"
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <GeneratedImagePreview
                 src={img.imagePath}
                 alt={img.prompt.slice(0, 80)}
                 className="w-full object-cover"

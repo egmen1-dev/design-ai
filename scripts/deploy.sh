@@ -17,6 +17,8 @@ if [ -d .git ]; then
   git clean -ffdx \
     -e marketplace-infographic/.env \
     -e marketplace-infographic/.env.local \
+    -e marketplace-infographic/generated \
+    -e "marketplace-infographic/generated/*" \
     -e marketplace-infographic/public/generated \
     -e "marketplace-infographic/public/generated/*"
   rm -rf "${APP_DIR}/${APP_NAME}/src/app/admin"

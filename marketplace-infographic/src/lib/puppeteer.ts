@@ -3,12 +3,14 @@ import path from "path";
 import puppeteer from "puppeteer";
 
 const WATERMARK_TEXT = process.env.WATERMARK_TEXT ?? "design-ai";
+export const GENERATED_IMAGES_DIR =
+  process.env.GENERATED_IMAGES_DIR ?? path.join(process.cwd(), "generated");
 
 export async function renderHtmlToImage(
   html: string,
   outputFilename: string,
 ): Promise<string> {
-  const outputDir = path.join(process.cwd(), "public", "generated");
+  const outputDir = GENERATED_IMAGES_DIR;
   await mkdir(outputDir, { recursive: true });
 
   const outputPath = path.join(outputDir, outputFilename);
@@ -26,7 +28,7 @@ export async function renderHtmlToImage(
     const watermarked = await applyWatermark(screenshot);
     await writeFile(outputPath, watermarked);
 
-    return `/generated/${outputFilename}`;
+    return `/api/generated/${encodeURIComponent(outputFilename)}`;
   } finally {
     await browser.close();
   }

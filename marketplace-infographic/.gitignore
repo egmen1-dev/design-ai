@@ -17,6 +17,8 @@ dist/
 # Generated images
 public/generated/*
 !public/generated/.gitkeep
+generated/*
+!generated/.gitkeep
 
 # Debug
 npm-debug.log*
