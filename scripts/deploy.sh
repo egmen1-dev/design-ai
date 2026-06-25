@@ -10,6 +10,7 @@ echo "==> Deploying design-ai from branch ${BRANCH}"
 cd "${APP_DIR}"
 
 if [ -d .git ]; then
+  git config --global --add safe.directory "${APP_DIR}" || true
   git fetch origin "${BRANCH}"
   git checkout "${BRANCH}"
   git reset --hard "origin/${BRANCH}"
