@@ -21,8 +21,11 @@ fi
 
 cd "${APP_DIR}/${APP_NAME}"
 
+echo "==> Stopping existing PM2 process before build"
+pm2 delete marketplace-infographic 2>/dev/null || true
+
 echo "==> Removing previous Next.js build"
-rm -rf .next
+rm -rf .next node_modules
 
 echo "==> Installing dependencies"
 npm ci
@@ -38,7 +41,6 @@ npm run build
 
 echo "==> Restarting PM2 process"
 cd "${APP_DIR}"
-pm2 delete marketplace-infographic 2>/dev/null || true
 pm2 start ecosystem.config.cjs --update-env
 
 pm2 save
