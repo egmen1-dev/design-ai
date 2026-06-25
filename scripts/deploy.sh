@@ -35,14 +35,16 @@ echo "==> Removing previous Next.js build"
 rm -rf .next node_modules
 
 echo "==> Installing dependencies"
-npm cache verify || true
-npm ci --prefer-online
+npm cache clean --force
+npm ci --prefer-online --no-audit
 
-if [ ! -f node_modules/next/dist/export/index.js ]; then
+if ! node -e "require.resolve('next/dist/server/config-schema'); require.resolve('next/dist/export')" >/dev/null 2>&1; then
   echo "==> Next.js package looks incomplete; reinstalling dependencies"
   npm cache clean --force
-  rm -rf node_modules
-  npm ci --prefer-online
+  NEXT_VERSION="$(node -p "require('./package-lock.json').packages['node_modules/next'].version")"
+  rm -rf node_modules/next
+  npm install --no-save --prefer-online --no-audit "next@${NEXT_VERSION}"
+  node -e "require.resolve('next/dist/server/config-schema'); require.resolve('next/dist/export')"
 fi
 
 echo "==> Generating Prisma client"
