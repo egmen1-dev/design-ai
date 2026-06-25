@@ -34,11 +34,18 @@ echo "==> Stopping existing PM2 process before build"
 pm2 delete marketplace-infographic 2>/dev/null || true
 
 echo "==> Removing previous Next.js build"
-rm -rf .next node_modules
+rm -rf .next node_modules node_modules.new node_modules.old
 
 echo "==> Installing dependencies"
 npm cache clean --force
-npm ci --prefer-online --no-audit
+mkdir -p node_modules.new
+cp package.json package-lock.json node_modules.new/
+(
+  cd node_modules.new
+  npm ci --prefer-online --no-audit
+)
+mv node_modules.new/node_modules node_modules
+rm -rf node_modules.new node_modules.old
 
 if ! node -e "require.resolve('next/dist/server/config-schema'); require.resolve('next/dist/export')" >/dev/null 2>&1; then
   echo "==> Next.js package looks incomplete; reinstalling dependencies"
