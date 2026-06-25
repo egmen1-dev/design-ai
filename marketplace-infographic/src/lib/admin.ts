@@ -1,14 +1,14 @@
-import type { Session } from "next-auth";
+import type { Prisma } from "@prisma/client";
 
-const DEFAULT_ADMIN_EMAILS = ["maksim00i@mail.ru"];
+const BUILTIN_ADMIN_EMAILS = ["maksim00i@mail.ru"];
 
 export function getAdminEmails(): string[] {
-  const envEmails = (process.env.ADMIN_EMAILS ?? "")
+  const fromEnv = (process.env.ADMIN_EMAILS ?? "")
     .split(",")
-    .map((email) => email.trim().toLowerCase())
+    .map((e) => e.trim().toLowerCase())
     .filter(Boolean);
 
-  return Array.from(new Set([...DEFAULT_ADMIN_EMAILS, ...envEmails]));
+  return [...new Set([...BUILTIN_ADMIN_EMAILS.map((e) => e.toLowerCase()), ...fromEnv])];
 }
 
 export function isAdminEmail(email: string | null | undefined): boolean {
@@ -16,6 +16,25 @@ export function isAdminEmail(email: string | null | undefined): boolean {
   return getAdminEmails().includes(email.toLowerCase());
 }
 
-export function isAdminSession(session: Session | null): boolean {
-  return isAdminEmail(session?.user?.email);
+export function hasUnlimitedGenerations(email: string | null | undefined): boolean {
+  return isAdminEmail(email);
+}
+
+/** Исключить админов из аналитики — только реальные пользователи */
+export function adminUserFilter(): Prisma.UserWhereInput {
+  return { email: { notIn: getAdminEmails() } };
+}
+
+export function adminActivityFilter(
+  adminUserIds: string[],
+): Prisma.GeneratedImageWhereInput {
+  if (adminUserIds.length === 0) return {};
+  return { userId: { notIn: adminUserIds } };
+}
+
+export function adminPurchaseFilter(
+  adminUserIds: string[],
+): Prisma.CreditPurchaseWhereInput {
+  if (adminUserIds.length === 0) return {};
+  return { userId: { notIn: adminUserIds } };
 }

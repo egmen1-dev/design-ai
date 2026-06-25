@@ -14,13 +14,13 @@ model User {
   emailVerified    DateTime?
   image            String?
   passwordHash     String?
-  credits          Int              @default(3)
   stripeCustomerId String?          @unique
+  credits          Int              @default(0)
   accounts         Account[]
   sessions         Session[]
   subscription     Subscription?
-  generatedImages  GeneratedImage[]
   creditPurchases  CreditPurchase[]
+  generatedImages  GeneratedImage[]
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
 }
@@ -72,30 +72,33 @@ model Subscription {
   updatedAt            DateTime @updatedAt
 }
 
-model GeneratedImage {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  prompt      String   @db.Text
-  htmlContent String   @db.Text
-  imagePath   String
-  createdAt   DateTime @default(now())
-}
-
 model CreditPurchase {
-  id          Int      @id @default(autoincrement())
-  userId      String?
-  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
-  credits     Int
-  amountCents Int?
-  provider    String   @default("manual")
-  status      String   @default("completed")
-  createdAt   DateTime @default(now())
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  credits         Int
+  priceRub        Int
+  stripeSessionId String   @unique
+  createdAt       DateTime @default(now())
 }
 
-model TrainingSample {
-  id            Int      @id @default(autoincrement())
-  prompt        String
-  correctedJson Json
+model GeneratedImage {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  prompt        String   @db.Text
+  htmlContent   String   @db.Text
+  imagePath     String
+  generatedJson String?  @db.Text
+  backgroundUrl String?
+  productCutout String?
+  usedFreeQuota Boolean  @default(true)
   createdAt     DateTime @default(now())
+}
+
+model BackgroundCache {
+  id         String   @id @default(cuid())
+  promptHash String   @unique
+  imageUrl   String
+  createdAt  DateTime @default(now())
 }
