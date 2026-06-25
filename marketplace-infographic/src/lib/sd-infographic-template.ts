@@ -3,10 +3,13 @@ import type { InfographicSdInput as InfographicSdData } from "@/lib/validations"
 export type { InfographicSdData };
 
 export type RenderSdOptions = {
+  /** Готовый композит фон+товар (sharp) */
+  mergedImageDataUrl?: string;
   backgroundDataUrl?: string;
   backgroundCss?: string;
-  productImageSrc: string;
-  productCutout: boolean;
+  /** Fallback: отдельный слой товара поверх фона */
+  productImageSrc?: string;
+  productCutout?: boolean;
   watermarkText?: string;
 };
 
@@ -24,9 +27,26 @@ export function renderSdInfographicHtml(
 ): string {
   const accent = data.colors[0] ?? "#e31e24";
   const accent2 = data.colors[1] ?? "#2563eb";
-  const bgStyle = options.backgroundDataUrl
-    ? `background-image: url('${options.backgroundDataUrl}'); background-size: cover; background-position: center;`
-    : `background: ${options.backgroundCss ?? "linear-gradient(145deg, #0f172a, #1e293b)"};`;
+
+  const useMerged = Boolean(options.mergedImageDataUrl);
+  const bgStyle = useMerged
+    ? `background-image: url('${options.mergedImageDataUrl}'); background-size: cover; background-position: center;`
+    : options.backgroundDataUrl
+      ? `background-image: url('${options.backgroundDataUrl}'); background-size: cover; background-position: center;`
+      : `background: ${options.backgroundCss ?? "linear-gradient(145deg, #0f172a, #1e293b)"};`;
+
+  const productClass = options.productCutout
+    ? "product-photo product-cutout"
+    : "product-photo product-blend";
+
+  const productStageHtml =
+    !useMerged && options.productImageSrc
+      ? `
+    <div class="product-stage">
+      <div class="product-shadow"></div>
+      <img class="${productClass}" src="${options.productImageSrc}" alt="${escapeHtml(data.title)}" />
+    </div>`
+      : "";
 
   const bullets = data.bullets.slice(0, 4);
   const badgePositions = [
@@ -57,10 +77,6 @@ export function renderSdInfographicHtml(
         </div>`;
     })
     .join("");
-
-  const productClass = options.productCutout
-    ? "product-photo product-cutout"
-    : "product-photo product-blend";
 
   const watermark = options.watermarkText ?? process.env.WATERMARK_TEXT ?? "design-ai";
 
@@ -153,10 +169,7 @@ export function renderSdInfographicHtml(
       <div class="hero-brand">${escapeHtml(data.badge)}</div>
     </header>
     ${bulletsHtml}
-    <div class="product-stage">
-      <div class="product-shadow"></div>
-      <img class="${productClass}" src="${options.productImageSrc}" alt="${escapeHtml(data.title)}" />
-    </div>
+    ${productStageHtml}
     <div class="watermark">${escapeHtml(watermark)}</div>
   </div>
 </body>

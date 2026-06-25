@@ -18,6 +18,10 @@ import {
   processProductImageWithImgly,
 } from "@/lib/product-image-sd";
 import { prisma } from "@/lib/prisma";
+import {
+  mergeProductWithBackground,
+  mergedToDataUrl,
+} from "@/lib/image-compositor";
 
 export type GenerateInfographicInput = {
   userId: string;
@@ -115,6 +119,7 @@ export async function handleGenerateInfographic(
     let backgroundUrl: string | null = null;
     let backgroundSource: "sd" | "fallback" = "sd";
     let backgroundDataUrl: string | undefined;
+    let mergedImageDataUrl: string | undefined;
 
     try {
       if (!process.env.HF_API_KEY) {
@@ -130,10 +135,24 @@ export async function handleGenerateInfographic(
       backgroundSource = "fallback";
     }
 
+    if (backgroundUrl) {
+      try {
+        const mergedPath = await mergeProductWithBackground(
+          backgroundUrl,
+          productRender.webPath,
+          { reflection: sdData.layout === "cards" },
+        );
+        mergedImageDataUrl = await mergedToDataUrl(mergedPath);
+      } catch (error) {
+        console.warn("Image compositing failed, CSS fallback:", error);
+      }
+    }
+
     const html = renderSdInfographicHtml(sdData, {
-      backgroundDataUrl,
+      mergedImageDataUrl,
+      backgroundDataUrl: mergedImageDataUrl ? undefined : backgroundDataUrl,
       backgroundCss: buildFallbackGradient(sdData.colors),
-      productImageSrc: productRender.renderSrc,
+      productImageSrc: mergedImageDataUrl ? undefined : productRender.renderSrc,
       productCutout: productRender.cutout,
     });
 
