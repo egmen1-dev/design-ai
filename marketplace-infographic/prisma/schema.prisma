@@ -14,11 +14,13 @@ model User {
   emailVerified    DateTime?
   image            String?
   passwordHash     String?
+  credits          Int              @default(3)
   stripeCustomerId String?          @unique
   accounts         Account[]
   sessions         Session[]
   subscription     Subscription?
   generatedImages  GeneratedImage[]
+  creditPurchases  CreditPurchase[]
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
 }
@@ -77,6 +79,17 @@ model GeneratedImage {
   prompt      String   @db.Text
   htmlContent String   @db.Text
   imagePath   String
+  createdAt   DateTime @default(now())
+}
+
+model CreditPurchase {
+  id          Int      @id @default(autoincrement())
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  credits     Int
+  amountCents Int?
+  provider    String   @default("manual")
+  status      String   @default("completed")
   createdAt   DateTime @default(now())
 }
 

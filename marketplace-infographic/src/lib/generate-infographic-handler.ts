@@ -31,6 +31,13 @@ export async function handleGenerateInfographic(request: NextRequest) {
   }
 
   const hasPro = isActiveSubscription(user.subscription?.status);
+  if (!hasPro && user.credits <= 0) {
+    return NextResponse.json(
+      { error: "Недостаточно кредитов", credits: user.credits },
+      { status: 402 },
+    );
+  }
+
   const limit = hasPro ? PRO_LIMIT : FREE_LIMIT;
   const rateKey = `generate:${user.id}:${ip}`;
   const rate = rateLimit(rateKey, limit, 86_400_000);
@@ -95,6 +102,16 @@ export async function handleGenerateInfographic(request: NextRequest) {
       },
     });
 
+    const credits = hasPro
+      ? user.credits
+      : (
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { credits: { decrement: 1 } },
+            select: { credits: true },
+          })
+        ).credits;
+
     return NextResponse.json(
       {
         id: image.id,
@@ -103,6 +120,7 @@ export async function handleGenerateInfographic(request: NextRequest) {
         generatedJson,
         appliedStyle: generatedJson.style,
         remaining: rate.remaining,
+        credits,
       },
       { headers: rateHeaders(rate) },
     );

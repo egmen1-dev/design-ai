@@ -37,6 +37,18 @@ export const approveTrainingSchema = z
   })
   .strict();
 
+export const grantCreditsSchema = z
+  .object({
+    email: z.string().trim().email("Введите корректный email").toLowerCase(),
+    credits: z.coerce
+      .number()
+      .int("Кредиты должны быть целым числом")
+      .min(1, "Минимум 1 кредит")
+      .max(10_000, "Слишком много кредитов за одну операцию"),
+    reason: z.string().trim().max(160).optional(),
+  })
+  .strict();
+
 export const checkoutSchema = z.object({
   priceId: z.string().min(1).optional(),
 });
@@ -61,3 +73,4 @@ export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type InfographicResult = z.infer<typeof infographicResultSchema>;
 export type ApproveTrainingInput = z.infer<typeof approveTrainingSchema>;
+export type GrantCreditsInput = z.infer<typeof grantCreditsSchema>;

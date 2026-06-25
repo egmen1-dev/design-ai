@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
+import { isAdminSession } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import { isActiveSubscription } from "@/lib/stripe";
 
@@ -24,6 +25,7 @@ export default async function DashboardPage({
   if (!user) redirect("/");
 
   const hasPro = isActiveSubscription(user.subscription?.status);
+  const isAdmin = isAdminSession(session);
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-16">
@@ -34,9 +36,16 @@ export default async function DashboardPage({
             {session.user.name ?? session.user.email}
           </p>
         </div>
-        <Link href="/" className="text-sm text-brand-500 hover:underline">
-          ← Назад
-        </Link>
+        <div className="flex items-center gap-4">
+          {isAdmin && (
+            <Link href="/admin" className="text-sm text-brand-500 hover:underline">
+              Админка
+            </Link>
+          )}
+          <Link href="/" className="text-sm text-brand-500 hover:underline">
+            ← Назад
+          </Link>
+        </div>
       </header>
 
       {params.checkout === "success" && (
@@ -49,6 +58,9 @@ export default async function DashboardPage({
         <p className="text-sm text-slate-400">Тариф</p>
         <p className="mt-1 text-xl font-semibold">
           {hasPro ? "Pro" : "Free"}
+        </p>
+        <p className="mt-3 text-sm text-slate-400">
+          Кредиты: <span className="font-semibold text-slate-200">{user.credits}</span>
         </p>
         {!hasPro && (
           <Link

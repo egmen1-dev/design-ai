@@ -15,6 +15,7 @@ export function GenerateForm() {
     generatedJson: InfographicResult;
     appliedStyle: InfographicStyle;
     remaining: number;
+    credits: number;
     prompt: string;
   } | null>(null);
 
@@ -42,6 +43,7 @@ export function GenerateForm() {
         generatedJson: data.generatedJson,
         appliedStyle: data.appliedStyle,
         remaining: data.remaining,
+        credits: data.credits,
         prompt,
       });
     } catch {
@@ -100,7 +102,7 @@ export function GenerateForm() {
           <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
             <p className="text-sm text-slate-400">
               Осталось генераций сегодня: {result.remaining}. Стиль:{" "}
-              {result.appliedStyle}
+              {result.appliedStyle}. Кредиты: {result.credits}
             </p>
             <ApprovalButton
               prompt={result.prompt}
