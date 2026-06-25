@@ -10,6 +10,8 @@ Next.js app with:
 - **NextAuth** — GitHub OAuth
 - **Ollama** — `qwen2.5:7b` for HTML generation
 - **Ollama mock** — deterministic local generator with `AI_MOCK_MODE=true`
+- **Few-shot self-learning** — approved anonymous `TrainingSample` examples
+- **Design trends** — glassmorphism, minimal, modern, neumorphism, brutalism, 3d, retro, swiss
 - **Puppeteer** — render + watermark
 - **Stripe** — checkout + webhook subscriptions
 - **Rate limit** — in-memory (no Redis)

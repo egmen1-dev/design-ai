@@ -79,3 +79,10 @@ model GeneratedImage {
   imagePath   String
   createdAt   DateTime @default(now())
 }
+
+model TrainingSample {
+  id            Int      @id @default(autoincrement())
+  prompt        String
+  correctedJson Json
+  createdAt     DateTime @default(now())
+}

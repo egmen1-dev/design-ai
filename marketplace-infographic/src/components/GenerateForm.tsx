@@ -1,14 +1,22 @@
 "use client";
 
 import { useState } from "react";
+import { ApprovalButton } from "./ApprovalButton";
+import { STYLE_KEYS, type InfographicStyle } from "@/lib/design-trends";
+import type { InfographicResult } from "@/lib/validations";
 
 export function GenerateForm() {
   const [prompt, setPrompt] = useState("");
+  const [style, setStyle] = useState<InfographicStyle>("modern");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<{ imagePath: string; remaining: number } | null>(
-    null,
-  );
+  const [result, setResult] = useState<{
+    imageUrl: string;
+    generatedJson: InfographicResult;
+    appliedStyle: InfographicStyle;
+    remaining: number;
+    prompt: string;
+  } | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -17,10 +25,10 @@ export function GenerateForm() {
     setResult(null);
 
     try {
-      const res = await fetch("/api/generate", {
+      const res = await fetch("/api/generate-infographic", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt }),
+        body: JSON.stringify({ prompt, style }),
       });
 
       const data = await res.json();
@@ -29,7 +37,13 @@ export function GenerateForm() {
         return;
       }
 
-      setResult({ imagePath: data.imagePath, remaining: data.remaining });
+      setResult({
+        imageUrl: data.imageUrl ?? data.imagePath,
+        generatedJson: data.generatedJson,
+        appliedStyle: data.appliedStyle,
+        remaining: data.remaining,
+        prompt,
+      });
     } catch {
       setError("Ошибка сети");
     } finally {
@@ -56,6 +70,21 @@ export function GenerateForm() {
         placeholder="Например: инфографика для карточки товара на Ozon с преимуществами, цифрами и CTA..."
         className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-white placeholder:text-slate-600 focus:border-brand-500 focus:outline-none"
       />
+      <label htmlFor="style" className="mt-4 block text-sm font-medium text-slate-300">
+        Стиль дизайна
+      </label>
+      <select
+        id="style"
+        value={style}
+        onChange={(e) => setStyle(e.target.value as InfographicStyle)}
+        className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-white focus:border-brand-500 focus:outline-none"
+      >
+        {STYLE_KEYS.map((key) => (
+          <option key={key} value={key}>
+            {key}
+          </option>
+        ))}
+      </select>
       <button
         type="submit"
         disabled={loading || prompt.length < 10}
@@ -68,12 +97,19 @@ export function GenerateForm() {
 
       {result && (
         <div className="mt-6">
-          <p className="mb-2 text-sm text-slate-400">
-            Осталось генераций сегодня: {result.remaining}
-          </p>
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+            <p className="text-sm text-slate-400">
+              Осталось генераций сегодня: {result.remaining}. Стиль:{" "}
+              {result.appliedStyle}
+            </p>
+            <ApprovalButton
+              prompt={result.prompt}
+              generatedJson={result.generatedJson}
+            />
+          </div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={result.imagePath}
+            src={result.imageUrl}
             alt="Сгенерированная инфографика"
             className="w-full rounded-lg border border-slate-700"
           />

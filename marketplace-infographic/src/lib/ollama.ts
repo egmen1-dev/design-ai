@@ -1,23 +1,44 @@
-import { generateMockInfographicHtml } from "./ollama-mock";
+import {
+  DEFAULT_STYLE,
+  type InfographicStyle,
+  TRENDS,
+} from "./design-trends";
+import { generateMockInfographicJson } from "./ollama-mock";
+import {
+  infographicResultSchema,
+  type InfographicResult,
+} from "./validations";
 
 const OLLAMA_BASE_URL =
-  process.env.OLLAMA_BASE_URL ?? "http://localhost:11434";
+  process.env.OLLAMA_URL ?? process.env.OLLAMA_BASE_URL ?? "http://localhost:11434";
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL ?? "qwen2.5:7b";
 const AI_MOCK_MODE =
   process.env.AI_MOCK_MODE === "true" || process.env.OLLAMA_MOCK === "true";
 
-const SYSTEM_PROMPT = `You are an expert infographic designer. Generate a complete, self-contained HTML document for a professional infographic.
+const SYSTEM_PROMPT = `You are an expert marketplace infographic designer.
 Requirements:
-- Return ONLY valid HTML starting with <!DOCTYPE html>
-- Use inline CSS only (no external stylesheets)
-- Canvas size: 1200x1600px
-- Modern, clean design with clear hierarchy
-- Use a cohesive color palette
-- Include data visualization elements where appropriate`;
+- Return ONLY valid JSON, no markdown, no code fences.
+- JSON shape: { "title": string, "subtitle": string, "bullets": string[], "colorScheme": "light"|"dark"|"gradient", "style": "glassmorphism"|"minimal"|"modern"|"neumorphism"|"brutalism"|"3d"|"retro"|"swiss", "colors"?: string[], "layout"?: "hero"|"cards"|"timeline"|"split"|"radial"|"comparison" }.
+- title must be concise and under 60 characters.
+- bullets must contain 1 to 5 short strings.
+- Use a high-converting marketplace/ecommerce visual hierarchy.
+- Respect the requested style when provided.`;
 
-export async function generateInfographicHtml(prompt: string): Promise<string> {
+export type GenerateInfographicOptions = {
+  prompt: string;
+  style?: InfographicStyle;
+  fewShotExamples?: string;
+};
+
+export async function generateInfographicJson({
+  prompt,
+  style,
+  fewShotExamples,
+}: GenerateInfographicOptions): Promise<InfographicResult> {
+  const requestedStyle = style ?? DEFAULT_STYLE;
+
   if (AI_MOCK_MODE) {
-    return generateMockInfographicHtml(prompt);
+    return generateMockInfographicJson(prompt, requestedStyle);
   }
 
   const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
@@ -25,11 +46,11 @@ export async function generateInfographicHtml(prompt: string): Promise<string> {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       model: OLLAMA_MODEL,
-      prompt: `${SYSTEM_PROMPT}\n\nUser request: ${prompt}\n\nHTML:`,
+      prompt: buildPrompt({ prompt, style: requestedStyle, fewShotExamples }),
       stream: false,
       options: {
         temperature: 0.7,
-        num_predict: 4096,
+        num_predict: 1536,
       },
     }),
   });
@@ -39,51 +60,182 @@ export async function generateInfographicHtml(prompt: string): Promise<string> {
   }
 
   const data = (await response.json()) as { response?: string };
-  let html = data.response?.trim() ?? "";
+  const parsedJson = extractJson(data.response ?? "");
+  const result = infographicResultSchema.safeParse(parsedJson);
 
-  const docStart = html.indexOf("<!DOCTYPE");
-  const htmlStart = html.indexOf("<html");
-  const start = docStart >= 0 ? docStart : htmlStart;
-
-  if (start > 0) {
-    html = html.slice(start);
+  if (!result.success) {
+    throw new Error(`Ollama returned invalid infographic JSON: ${result.error.message}`);
   }
 
-  if (!html.includes("</html>")) {
-    html = wrapFallbackHtml(prompt, html);
-  }
-
-  return html;
+  return result.data;
 }
 
-function wrapFallbackHtml(prompt: string, content: string): string {
+export function renderInfographicHtml(result: InfographicResult): string {
+  const trend = TRENDS[result.style];
+  const accent = result.colors?.[0] ?? trend.accent;
+  const secondary = result.colors?.[1] ?? trend.foreground;
+  const bulletCards = result.bullets
+    .map(
+      (bullet, index) => `
+        <article class="card">
+          <span class="number">${String(index + 1).padStart(2, "0")}</span>
+          <p>${escapeHtml(bullet)}</p>
+        </article>`,
+    )
+    .join("");
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1200, initial-scale=1" />
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      width: 1200px; height: 1600px;
-      font-family: system-ui, sans-serif;
-      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
-      color: #f8fafc; padding: 48px;
-      display: flex; flex-direction: column; gap: 32px;
+    :root {
+      --bg: ${trend.background};
+      --fg: ${trend.foreground};
+      --accent: ${accent};
+      --secondary: ${secondary};
+      --border: ${trend.border};
+      --shadow: ${trend.shadow};
+      --font: ${trend.font};
     }
-    h1 { font-size: 48px; line-height: 1.1; }
-    .content { font-size: 20px; line-height: 1.6; opacity: 0.9; white-space: pre-wrap; }
-    .badge {
-      display: inline-block; background: #0ea5e9; color: white;
-      padding: 8px 16px; border-radius: 999px; font-size: 14px;
+    * { box-sizing: border-box; }
+    body {
+      width: 1200px;
+      min-height: 1600px;
+      margin: 0;
+      padding: 64px;
+      font-family: var(--font);
+      color: var(--fg);
+      background: var(--bg);
+      overflow: hidden;
+    }
+    .canvas {
+      min-height: 1472px;
+      padding: 64px;
+      border: var(--border);
+      box-shadow: var(--shadow);
+      ${trend.css}
+      position: relative;
+    }
+    .canvas::before {
+      content: "";
+      position: absolute;
+      inset: 28px;
+      border: 1px solid color-mix(in srgb, var(--accent), transparent 65%);
+      pointer-events: none;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      border: var(--border);
+      color: var(--accent);
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      ${trend.css}
+    }
+    h1 {
+      max-width: 920px;
+      margin: 44px 0 24px;
+      font-size: 82px;
+      line-height: 0.96;
+      letter-spacing: -0.065em;
+    }
+    .subtitle {
+      max-width: 860px;
+      margin: 0;
+      color: color-mix(in srgb, var(--fg), transparent 20%);
+      font-size: 30px;
+      line-height: 1.34;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+      margin-top: 72px;
+    }
+    .card {
+      min-height: 220px;
+      padding: 32px;
+      border: var(--border);
+      box-shadow: var(--shadow);
+      ${trend.css}
+      background: color-mix(in srgb, var(--bg), white 12%);
+    }
+    .number {
+      display: block;
+      margin-bottom: 24px;
+      color: var(--accent);
+      font-size: 48px;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .card p {
+      margin: 0;
+      font-size: 27px;
+      font-weight: 700;
+      line-height: 1.22;
+    }
+    .footer {
+      position: absolute;
+      left: 64px;
+      right: 64px;
+      bottom: 54px;
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      color: color-mix(in srgb, var(--fg), transparent 35%);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
     }
   </style>
 </head>
 <body>
-  <span class="badge">AI-инфографика</span>
-  <h1>${escapeHtml(prompt.slice(0, 80))}</h1>
-  <div class="content">${escapeHtml(content || "Сгенерированный контент инфографики")}</div>
+  <main class="canvas">
+    <div class="eyebrow">${escapeHtml(result.style)} / ${escapeHtml(result.colorScheme)}</div>
+    <h1>${escapeHtml(result.title)}</h1>
+    <p class="subtitle">${escapeHtml(result.subtitle)}</p>
+    <section class="cards">${bulletCards}</section>
+    <footer class="footer">
+      <span>${escapeHtml(result.layout ?? "cards")}</span>
+      <span>AI marketplace infographic</span>
+    </footer>
+  </main>
 </body>
 </html>`;
+}
+
+function buildPrompt({
+  prompt,
+  style,
+  fewShotExamples,
+}: Required<Pick<GenerateInfographicOptions, "prompt">> &
+  Pick<GenerateInfographicOptions, "style" | "fewShotExamples">): string {
+  const examples = fewShotExamples?.trim()
+    ? `Approved examples for few-shot learning:\n${fewShotExamples.trim()}\n\n`
+    : "";
+
+  return `${examples}${SYSTEM_PROMPT}\n\nRequested style: ${style ?? DEFAULT_STYLE}\nUser description: "${prompt}"\n\nJSON:`;
+}
+
+function extractJson(raw: string): unknown {
+  const trimmed = raw.trim().replace(/^```(?:json)?/i, "").replace(/```$/i, "").trim();
+  try {
+    return JSON.parse(trimmed);
+  } catch {
+    const start = trimmed.indexOf("{");
+    const end = trimmed.lastIndexOf("}");
+    if (start >= 0 && end > start) {
+      return JSON.parse(trimmed.slice(start, end + 1));
+    }
+    throw new Error("Ollama response did not contain JSON");
+  }
 }
 
 function escapeHtml(text: string): string {
