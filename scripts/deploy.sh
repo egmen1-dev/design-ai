@@ -23,6 +23,8 @@ if [ -d .git ]; then
     -e "marketplace-infographic/public/generated/*"
   rm -rf "${APP_DIR}/${APP_NAME}/src/app/admin"
   echo "==> Checked out commit $(git rev-parse --short HEAD)"
+  test -f "${APP_DIR}/${APP_NAME}/src/components/ApprovalButton.tsx"
+  test -f "${APP_DIR}/${APP_NAME}/src/lib/generate-infographic-handler.ts"
 else
   echo "ERROR: ${APP_DIR} is not a git repository. Run setup-vps.sh first."
   exit 1
