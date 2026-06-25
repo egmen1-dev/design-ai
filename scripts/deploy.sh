@@ -35,7 +35,15 @@ echo "==> Removing previous Next.js build"
 rm -rf .next node_modules
 
 echo "==> Installing dependencies"
-npm ci
+npm cache verify || true
+npm ci --prefer-online
+
+if [ ! -f node_modules/next/dist/export/index.js ]; then
+  echo "==> Next.js package looks incomplete; reinstalling dependencies"
+  npm cache clean --force
+  rm -rf node_modules
+  npm ci --prefer-online
+fi
 
 echo "==> Generating Prisma client"
 npx prisma generate
