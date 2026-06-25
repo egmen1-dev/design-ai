@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { RegisterForm } from "@/components/RegisterForm";
 import { SignInButton } from "@/components/SignInButton";
 import { auth } from "@/lib/auth";
 
@@ -49,16 +50,27 @@ export default async function RegisterPage() {
         <div className="rounded-3xl border border-slate-800 bg-slate-900/60 p-8 shadow-2xl shadow-slate-950/40">
           <h2 className="text-2xl font-semibold">Создать аккаунт</h2>
           <p className="mt-3 text-sm text-slate-400">
-            Используем NextAuth и GitHub OAuth. Пароли в приложении не хранятся.
+            Зарегистрируйтесь по email и паролю или используйте GitHub OAuth.
+            Пароли хранятся только в виде bcrypt-хеша.
           </p>
 
-          <div className="mt-8">
+          <RegisterForm />
+
+          <div className="my-6 flex items-center gap-3">
+            <div className="h-px flex-1 bg-slate-800" />
+            <span className="text-xs uppercase tracking-widest text-slate-500">
+              или
+            </span>
+            <div className="h-px flex-1 bg-slate-800" />
+          </div>
+
+          <div>
             <SignInButton label="Зарегистрироваться через GitHub" />
           </div>
 
           <p className="mt-6 text-xs leading-5 text-slate-500">
-            Нажимая кнопку, вы переходите на GitHub для безопасной авторизации,
-            после чего вернётесь в приложение.
+            После регистрации вы попадёте в кабинет, где сохраняется история
+            сгенерированных изображений.
           </p>
         </div>
       </section>

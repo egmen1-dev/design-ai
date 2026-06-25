@@ -31,7 +31,7 @@ echo "==> Generating Prisma client"
 npx prisma generate
 
 echo "==> Running database migrations"
-npx prisma migrate deploy 2>/dev/null || npx prisma db push
+npx prisma migrate deploy
 
 echo "==> Building Next.js app"
 npm run build
