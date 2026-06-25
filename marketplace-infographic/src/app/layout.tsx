@@ -1,20 +1,20 @@
 import type { Metadata } from "next";
-import { Toaster } from "sonner";
 import "./globals.css";
+import { Providers } from "@/components/Providers";
 
 export const metadata: Metadata = {
-  title: "Design AI — Инфографика для маркетплейсов",
-  description: "Генерация инфографики для маркетплейсов с AI",
+  title: "design-ai — инфографика для Wildberries и Ozon",
+  description:
+    "Генерация карточек товаров 1200×1200 через AI. 5 бесплатных в день. Без платных API.",
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="ru">
       <body className="min-h-screen bg-slate-950 text-slate-100 antialiased">
-        {children}
-        <Toaster richColors position="top-right" />
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

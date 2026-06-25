@@ -5,26 +5,21 @@ APP_DIR="${APP_DIR:-/opt/design-ai}"
 APP_NAME="marketplace-infographic"
 BRANCH="${DEPLOY_BRANCH:-main}"
 
+if [ -f "${APP_DIR}/.deploy-skip-git" ]; then
+  export SKIP_GIT_PULL=1
+fi
+
 echo "==> Deploying design-ai from branch ${BRANCH}"
 
 cd "${APP_DIR}"
 
-if [ -d .git ]; then
-  git config --global --add safe.directory "${APP_DIR}" || true
+if [ "${SKIP_GIT_PULL:-}" = "1" ]; then
+  echo "==> SKIP_GIT_PULL=1 — оставляем код на диске без git reset"
+elif [ -d .git ]; then
   git fetch origin "${BRANCH}"
   git checkout "${BRANCH}"
   git reset --hard "origin/${BRANCH}"
-  git clean -ffdx \
-    -e marketplace-infographic/.env \
-    -e marketplace-infographic/.env.local \
-    -e marketplace-infographic/generated \
-    -e "marketplace-infographic/generated/*" \
-    -e marketplace-infographic/public/generated \
-    -e "marketplace-infographic/public/generated/*"
-  rm -rf "${APP_DIR}/${APP_NAME}/src/app/admin"
   echo "==> Checked out commit $(git rev-parse --short HEAD)"
-  test -f "${APP_DIR}/${APP_NAME}/src/components/ApprovalButton.tsx"
-  test -f "${APP_DIR}/${APP_NAME}/src/lib/generate-infographic-handler.ts"
 else
   echo "ERROR: ${APP_DIR} is not a git repository. Run setup-vps.sh first."
   exit 1
@@ -36,27 +31,10 @@ echo "==> Stopping existing PM2 process before build"
 pm2 delete marketplace-infographic 2>/dev/null || true
 
 echo "==> Removing previous Next.js build"
-rm -rf .next node_modules node_modules.new node_modules.old
+rm -rf .next node_modules
 
 echo "==> Installing dependencies"
-npm cache clean --force
-mkdir -p node_modules.new
-cp package.json package-lock.json node_modules.new/
-(
-  cd node_modules.new
-  npm ci --prefer-online --no-audit --ignore-scripts
-)
-mv node_modules.new/node_modules node_modules
-rm -rf node_modules.new node_modules.old
-
-if ! node -e "require.resolve('next/dist/server/config-schema'); require.resolve('next/dist/export')" >/dev/null 2>&1; then
-  echo "==> Next.js package looks incomplete; reinstalling dependencies"
-  npm cache clean --force
-  NEXT_VERSION="$(node -p "require('./package-lock.json').packages['node_modules/next'].version")"
-  rm -rf node_modules/next
-  npm install --no-save --prefer-online --no-audit --ignore-scripts "next@${NEXT_VERSION}"
-  node -e "require.resolve('next/dist/server/config-schema'); require.resolve('next/dist/export')"
-fi
+npm ci
 
 echo "==> Generating Prisma client"
 npx prisma generate

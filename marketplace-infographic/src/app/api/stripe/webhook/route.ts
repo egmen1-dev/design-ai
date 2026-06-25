@@ -1,91 +1,62 @@
 import { NextRequest, NextResponse } from "next/server";
-import Stripe from "stripe";
+import type Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
-import { getStripe, PRO_PLAN } from "@/lib/stripe";
+import { CREDIT_PACKAGE_AMOUNT, CREDIT_PACKAGE_PRICE_RUB } from "@/lib/pricing";
+import { getStripe } from "@/lib/stripe";
 
 export async function POST(request: NextRequest) {
   const body = await request.text();
   const signature = request.headers.get("stripe-signature");
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-
-  if (!webhookSecret || !process.env.STRIPE_SECRET_KEY) {
-    return NextResponse.json(
-      { error: "Stripe webhook is not configured yet" },
-      { status: 503 },
-    );
-  }
 
   if (!signature) {
     return NextResponse.json({ error: "Missing signature" }, { status: 400 });
   }
 
-  const stripe = getStripe();
   let event: Stripe.Event;
   try {
-    event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+    event = getStripe().webhooks.constructEvent(
+      body,
+      signature,
+      process.env.STRIPE_WEBHOOK_SECRET!,
+    );
   } catch (error) {
     console.error("Webhook signature verification failed:", error);
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
   try {
-    switch (event.type) {
-      case "checkout.session.completed": {
-        const session = event.data.object as Stripe.Checkout.Session;
-        if (session.mode !== "subscription" || !session.subscription) break;
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object as Stripe.Checkout.Session;
 
-        const subscription = await stripe.subscriptions.retrieve(
-          session.subscription as string,
-        );
-
+      if (session.mode === "payment" && session.payment_status === "paid") {
         const userId = session.metadata?.userId;
-        if (!userId) break;
+        if (!userId) return NextResponse.json({ received: true });
 
-        const priceId = subscription.items.data[0]?.price.id ?? "";
-        const periodEnd = new Date(subscription.current_period_end * 1000);
-
-        await prisma.subscription.upsert({
-          where: { userId },
-          create: {
-            userId,
-            stripeSubscriptionId: subscription.id,
-            stripePriceId: priceId,
-            status: subscription.status,
-            plan: PRO_PLAN,
-            currentPeriodEnd: periodEnd,
-          },
-          update: {
-            stripeSubscriptionId: subscription.id,
-            stripePriceId: priceId,
-            status: subscription.status,
-            plan: PRO_PLAN,
-            currentPeriodEnd: periodEnd,
-          },
+        const existing = await prisma.creditPurchase.findUnique({
+          where: { stripeSessionId: session.id },
         });
-        break;
+        if (existing) return NextResponse.json({ received: true });
+
+        const credits =
+          Number(session.metadata?.credits) || CREDIT_PACKAGE_AMOUNT;
+        const priceRub =
+          Number(session.metadata?.priceRub) || CREDIT_PACKAGE_PRICE_RUB;
+
+        await prisma.$transaction([
+          prisma.user.update({
+            where: { id: userId },
+            data: { credits: { increment: credits } },
+          }),
+          prisma.creditPurchase.create({
+            data: {
+              userId,
+              credits,
+              priceRub,
+              stripeSessionId: session.id,
+            },
+          }),
+        ]);
       }
-
-      case "customer.subscription.updated":
-      case "customer.subscription.deleted": {
-        const subscription = event.data.object as Stripe.Subscription;
-        const existing = await prisma.subscription.findUnique({
-          where: { stripeSubscriptionId: subscription.id },
-        });
-        if (!existing) break;
-
-        const periodEnd = new Date(subscription.current_period_end * 1000);
-        await prisma.subscription.update({
-          where: { stripeSubscriptionId: subscription.id },
-          data: {
-            status: subscription.status,
-            currentPeriodEnd: periodEnd,
-          },
-        });
-        break;
-      }
-
-      default:
-        break;
     }
   } catch (error) {
     console.error("Webhook handler error:", error);

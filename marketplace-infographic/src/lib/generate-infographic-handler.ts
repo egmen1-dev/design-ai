@@ -1,142 +1,197 @@
-import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
-import { generateInfographicJson, renderInfographicHtml } from "@/lib/ollama";
+import { readFile } from "fs/promises";
+import path from "path";
+import { consumeGenerationSlot } from "@/lib/credits";
+import { generateSdInfographicData } from "@/lib/ollama-sd";
+import {
+  backgroundToDataUrl,
+  buildFallbackGradient,
+  generateBackground,
+} from "@/lib/stable-diffusion";
+import {
+  renderSdInfographicHtml,
+  type InfographicSdData,
+} from "@/lib/sd-infographic-template";
 import { renderHtmlToImage } from "@/lib/puppeteer";
-import { rateLimit } from "@/lib/rate-limit";
+import { bufferToDataUrl } from "@/lib/background-removal";
+import {
+  parseProductImageDataUrl,
+  processProductImageWithImgly,
+} from "@/lib/product-image-sd";
 import { prisma } from "@/lib/prisma";
-import { isActiveSubscription } from "@/lib/stripe";
-import { generateSchema } from "@/lib/validations";
 
-const FREE_LIMIT = 3;
-const PRO_LIMIT = 30;
+export type GenerateInfographicInput = {
+  userId: string;
+  prompt: string;
+  productImage?: string;
+  regenerateBackgroundOnly?: boolean;
+  existingImageId?: string;
+  backgroundSeed?: string;
+};
 
-export async function handleGenerateInfographic(request: NextRequest) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+export type GenerateInfographicResult = {
+  id: string;
+  imagePath: string;
+  backgroundUrl: string | null;
+  freeRemaining: number;
+  credits: number;
+  unlimited: boolean;
+  aiSource: string;
+  backgroundSource: "sd" | "fallback";
+};
+
+async function loadProductCutout(
+  productImage: string | undefined,
+  userId: string,
+  existingPath?: string | null,
+): Promise<{ renderSrc: string; absPath: string; webPath: string; cutout: boolean }> {
+  if (existingPath) {
+    const webPath = existingPath.startsWith("/")
+      ? existingPath
+      : `/${existingPath.replace(/^\/+/, "")}`;
+    const absPath = path.isAbsolute(existingPath)
+      ? existingPath
+      : path.join(process.cwd(), "public", webPath.replace(/^\//, ""));
+    try {
+      const buffer = await readFile(absPath);
+      return {
+        renderSrc: bufferToDataUrl(buffer),
+        absPath,
+        webPath,
+        cutout: true,
+      };
+    } catch {
+      // fall through to re-process if file missing
+    }
   }
 
-  const ip =
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    request.headers.get("x-real-ip") ??
-    "unknown";
-
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    include: { subscription: true },
-  });
-
-  if (!user) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  if (!productImage) {
+    throw new Error("PRODUCT_IMAGE_REQUIRED");
   }
 
-  const hasPro = isActiveSubscription(user.subscription?.status);
-  if (!hasPro && user.credits <= 0) {
-    return NextResponse.json(
-      { error: "Недостаточно кредитов", credits: user.credits },
-      { status: 402 },
-    );
-  }
+  const { buffer } = parseProductImageDataUrl(productImage);
+  return processProductImageWithImgly(buffer, userId);
+}
 
-  const limit = hasPro ? PRO_LIMIT : FREE_LIMIT;
-  const rateKey = `generate:${user.id}:${ip}`;
-  const rate = rateLimit(rateKey, limit, 86_400_000);
-
-  if (!rate.success) {
-    return NextResponse.json(
-      {
-        error: "Rate limit exceeded",
-        resetAt: rate.resetAt,
-        limit: rate.limit,
-      },
-      {
-        status: 429,
-        headers: rateHeaders(rate),
-      },
-    );
-  }
-
-  let body: unknown;
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
-  }
-
-  const parsed = generateSchema.safeParse(body);
-  if (!parsed.success) {
-    return NextResponse.json(
-      { error: "Validation failed", details: parsed.error.flatten() },
-      { status: 400 },
-    );
-  }
+export async function handleGenerateInfographic(
+  input: GenerateInfographicInput,
+): Promise<GenerateInfographicResult> {
+  const slot = await consumeGenerationSlot(input.userId);
 
   try {
-    const trainingSamples = await prisma.trainingSample.findMany({
-      orderBy: { createdAt: "desc" },
-      take: 10,
+    let sdData: InfographicSdData;
+    let aiSource = "mock";
+    let productCutoutPath: string | null = null;
+    let productRender: Awaited<ReturnType<typeof loadProductCutout>>;
+
+    if (input.regenerateBackgroundOnly && input.existingImageId) {
+      const existing = await prisma.generatedImage.findUnique({
+        where: { id: input.existingImageId },
+      });
+      if (!existing || existing.userId !== input.userId) {
+        throw new Error("IMAGE_NOT_FOUND");
+      }
+      if (!existing.generatedJson) {
+        throw new Error("NO_JSON_FOR_REGEN");
+      }
+      sdData = JSON.parse(existing.generatedJson) as InfographicSdData;
+      productRender = await loadProductCutout(
+        undefined,
+        input.userId,
+        existing.productCutout,
+      );
+      productCutoutPath = existing.productCutout;
+      aiSource = "regen";
+    } else {
+      if (!input.productImage) {
+        throw new Error("PRODUCT_IMAGE_REQUIRED");
+      }
+      const ollama = await generateSdInfographicData(input.prompt);
+      sdData = ollama.data;
+      aiSource = ollama.source;
+      productRender = await loadProductCutout(input.productImage, input.userId);
+      productCutoutPath = productRender.webPath;
+    }
+
+    let backgroundUrl: string | null = null;
+    let backgroundSource: "sd" | "fallback" = "sd";
+    let backgroundDataUrl: string | undefined;
+
+    try {
+      if (!process.env.HF_API_KEY) {
+        throw new Error("HF_API_KEY missing");
+      }
+      backgroundUrl = await generateBackground(sdData.backgroundPrompt, {
+        skipCache: Boolean(input.backgroundSeed),
+        seedSuffix: input.backgroundSeed,
+      });
+      backgroundDataUrl = await backgroundToDataUrl(backgroundUrl);
+    } catch (error) {
+      console.warn("SD background failed, gradient fallback:", error);
+      backgroundSource = "fallback";
+    }
+
+    const html = renderSdInfographicHtml(sdData, {
+      backgroundDataUrl,
+      backgroundCss: buildFallbackGradient(sdData.colors),
+      productImageSrc: productRender.renderSrc,
+      productCutout: productRender.cutout,
     });
 
-    const fewShotExamples = trainingSamples
-      .map(
-        (sample) =>
-          `Описание: "${sample.prompt}" -> ${JSON.stringify(sample.correctedJson)}`,
-      )
-      .join("\n");
+    const filename = `${input.userId}-${Date.now()}.png`;
+    const imagePath = await renderHtmlToImage(html, filename);
 
-    const generatedJson = await generateInfographicJson({
-      prompt: parsed.data.prompt,
-      style: parsed.data.style,
-      fewShotExamples,
-    });
-    const html = renderInfographicHtml(generatedJson);
-    const filename = `${user.id}-${Date.now()}.png`;
-    const imageUrl = await renderHtmlToImage(html, filename);
+    const balance = slot.usedFreeQuota
+      ? { ...slot.balance, freeRemaining: slot.balance.freeRemaining - 1 }
+      : slot.balance;
+
+    if (input.regenerateBackgroundOnly && input.existingImageId) {
+      await prisma.generatedImage.update({
+        where: { id: input.existingImageId },
+        data: { imagePath, backgroundUrl },
+      });
+
+      return {
+        id: input.existingImageId,
+        imagePath,
+        backgroundUrl,
+        freeRemaining: balance.unlimited ? -1 : balance.freeRemaining,
+        credits: balance.credits,
+        unlimited: balance.unlimited,
+        aiSource,
+        backgroundSource,
+      };
+    }
 
     const image = await prisma.generatedImage.create({
       data: {
-        userId: user.id,
-        prompt: parsed.data.prompt,
-        htmlContent: html,
-        imagePath: imageUrl,
+        userId: input.userId,
+        prompt: input.prompt,
+        htmlContent: "[SD_PIPELINE]",
+        imagePath,
+        generatedJson: JSON.stringify(sdData),
+        backgroundUrl,
+        productCutout: productCutoutPath,
+        usedFreeQuota: slot.usedFreeQuota,
       },
     });
 
-    const credits = hasPro
-      ? user.credits
-      : (
-          await prisma.user.update({
-            where: { id: user.id },
-            data: { credits: { decrement: 1 } },
-            select: { credits: true },
-          })
-        ).credits;
-
-    return NextResponse.json(
-      {
-        id: image.id,
-        imageUrl,
-        imagePath: imageUrl,
-        generatedJson,
-        appliedStyle: generatedJson.style,
-        remaining: rate.remaining,
-        credits,
-      },
-      { headers: rateHeaders(rate) },
-    );
+    return {
+      id: image.id,
+      imagePath,
+      backgroundUrl,
+      freeRemaining: balance.unlimited ? -1 : balance.freeRemaining,
+      credits: balance.credits,
+      unlimited: balance.unlimited,
+      aiSource,
+      backgroundSource,
+    };
   } catch (error) {
-    console.error("Generate error:", error);
-    return NextResponse.json(
-      { error: "Failed to generate infographic" },
-      { status: 500 },
-    );
+    if (!slot.usedFreeQuota && !slot.balance.unlimited) {
+      await prisma.user.update({
+        where: { id: input.userId },
+        data: { credits: { increment: 1 } },
+      });
+    }
+    throw error;
   }
-}
-
-function rateHeaders(rate: ReturnType<typeof rateLimit>) {
-  return {
-    "X-RateLimit-Limit": String(rate.limit),
-    "X-RateLimit-Remaining": String(rate.remaining),
-    "X-RateLimit-Reset": String(rate.resetAt),
-  };
 }
