@@ -35,7 +35,15 @@ export default async function HomePage() {
               Кабинет
             </Link>
           ) : (
-            <SignInButton />
+            <>
+              <Link
+                href="/register"
+                className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium hover:bg-brand-700"
+              >
+                Регистрация
+              </Link>
+              <SignInButton />
+            </>
           )}
         </nav>
       </header>
@@ -65,7 +73,13 @@ export default async function HomePage() {
             <p className="text-slate-400">
               Войдите, чтобы создавать инфографику
             </p>
-            <div className="mt-4">
+            <div className="mt-4 flex flex-col items-center gap-3">
+              <Link
+                href="/register"
+                className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium hover:bg-brand-700"
+              >
+                Зарегистрироваться
+              </Link>
               <SignInButton />
             </div>
           </div>
