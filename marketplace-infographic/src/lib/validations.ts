@@ -8,7 +8,7 @@ export const infographicSdSchema = z.object({
   bullets: z.array(z.string().min(1).max(80)).min(2).max(5),
   colors: z.array(z.string().min(4).max(7)).min(2).max(5),
   badge: z.string().min(1).max(40),
-  backgroundPrompt: z.string().min(10).max(200),
+  backgroundPrompt: z.string().min(10).max(400),
 });
 
 export type InfographicSdInput = z.infer<typeof infographicSdSchema>;

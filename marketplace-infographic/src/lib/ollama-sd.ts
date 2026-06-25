@@ -1,10 +1,11 @@
-import { infographicSdSchema, type InfographicSdInput } from "@/lib/validations";
+import { sanitizeSdInput } from "@/lib/sd-sanitize";
 import {
   DEFAULT_STYLE,
   STYLE_LABELS,
   TRENDS,
   type InfographicStyle,
 } from "@/lib/design-trends";
+import { infographicSdSchema, type InfographicSdInput } from "@/lib/validations";
 import { applyStyleToSdColors } from "@/lib/sd-style-theme";
 import { getOllamaStatus, OLLAMA_BASE_URL, OLLAMA_MODEL } from "./ai-status";
 
@@ -112,7 +113,7 @@ ${SD_EXAMPLE}
   if (!data.response) throw new Error("Пустой ответ от Ollama");
 
   const parsed = JSON.parse(extractJson(data.response)) as unknown;
-  const raw = infographicSdSchema.parse(parsed);
+  const raw = sanitizeSdInput(parsed);
   return applyStyleToSdColors(raw, style);
 }
 

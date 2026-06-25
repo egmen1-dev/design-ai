@@ -1,5 +1,6 @@
 import { DEFAULT_STYLE, STYLE_KEYS, type InfographicStyle } from "@/lib/design-trends";
-import { infographicSdSchema, type InfographicSdInput } from "@/lib/validations";
+import type { InfographicSdInput } from "@/lib/validations";
+import { sanitizeSdInput } from "@/lib/sd-sanitize";
 
 export type StoredSdPayload = {
   data: InfographicSdInput;
@@ -25,10 +26,10 @@ export function unpackSdPayload(json: string): StoredSdPayload {
     const style = STYLE_KEYS.includes(record.style as InfographicStyle)
       ? (record.style as InfographicStyle)
       : DEFAULT_STYLE;
-    return { data: infographicSdSchema.parse(record.data), style };
+    return { data: sanitizeSdInput(record.data), style };
   }
   return {
-    data: infographicSdSchema.parse(parsed),
+    data: sanitizeSdInput(parsed),
     style: DEFAULT_STYLE,
   };
 }
