@@ -97,6 +97,16 @@ export function GenerateForm() {
     setError(data.error ?? "Ошибка генерации");
   }
 
+  function networkErrorMessage(err: unknown): string {
+    if (err instanceof DOMException && err.name === "AbortError") {
+      return "Превышено время ожидания. Генерация может занять до 5 минут — попробуйте ещё раз.";
+    }
+    if (err instanceof TypeError) {
+      return "Ошибка сети. Откройте https://design-ai.shop или http://194.226.115.138";
+    }
+    return "Ошибка сети";
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
@@ -149,8 +159,8 @@ export function GenerateForm() {
         backgroundSource: data.backgroundSource,
         pipelineVersion: data.pipelineVersion,
       });
-    } catch {
-      setError("Ошибка сети");
+    } catch (err) {
+      setError(networkErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -208,8 +218,8 @@ export function GenerateForm() {
             }
           : prev,
       );
-    } catch {
-      setError("Ошибка сети");
+    } catch (err) {
+      setError(networkErrorMessage(err));
     } finally {
       setRegenLoading(false);
     }
