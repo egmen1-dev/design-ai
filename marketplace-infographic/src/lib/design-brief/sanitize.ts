@@ -51,6 +51,14 @@ export function sanitizeDesignBrief(
   const candidate = {
     ...obj,
     layout: obj.layout ?? "marketplace",
+    designProcess: obj.designProcess ?? undefined,
+    visualHook:
+      obj.visualHook ??
+      (obj.designProcess &&
+      typeof obj.designProcess === "object" &&
+      "visualHook" in (obj.designProcess as object)
+        ? (obj.designProcess as { visualHook: unknown }).visualHook
+        : undefined),
     headline: clip(obj.headline ?? obj.title ?? "Товар", 60),
     title: clip(obj.title ?? obj.headline ?? "Товар", 60),
     subtitle: clip(obj.subtitle ?? obj.subHeadline ?? "новинка", 80),

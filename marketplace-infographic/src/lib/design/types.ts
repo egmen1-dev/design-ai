@@ -63,6 +63,7 @@ export type CompositionEngineInput = {
   objectScale?: number;
   styleHint?: InfographicStyle;
   seed?: string;
+  visualHook?: import("@/lib/design-process/types").VisualHook;
 };
 
 export type CompositionScore = {

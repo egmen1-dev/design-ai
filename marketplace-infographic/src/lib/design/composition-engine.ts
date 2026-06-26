@@ -10,6 +10,7 @@ import type {
   CompositionResult,
   CompositionScenarioId,
 } from "./types";
+import { applyVisualHookToDna } from "@/lib/design-process/visual-hook";
 
 const MIN_SCORE = 90;
 const MAX_ATTEMPTS = 10;
@@ -33,8 +34,11 @@ export function generateComposition(input: CompositionEngineInput): CompositionR
   for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
     const seed = `${baseSeed}:a${attempt}`;
     const rng = createSeededRng(seed);
-    const dna = generateDesignDNA(input.category, seed, input.styleHint);
-    const scenario = selectScenario(dna, input.category, rng);
+    const dna = applyVisualHookToDna(
+      generateDesignDNA(input.category, seed, input.styleHint),
+      input.visualHook,
+    );
+    const scenario = selectScenario(dna, input.category, rng, input.visualHook);
 
     const compInput: CompositionInput = {
       category: input.category,

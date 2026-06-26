@@ -15,6 +15,16 @@ import { buildProductAnalysisPrompt, buildPhotographyPrompt } from "./product-an
 import { buildQualityChecklistPrompt } from "./quality";
 import { buildJsonSchemaPrompt } from "./json-schema";
 
+export function buildDesignProcessOverview(): string {
+  return `# 11. МНОГОЭТАПНЫЙ ПРОЦЕСС ПРОЕКТИРОВАНИЯ
+
+Не заполняй шаблон. Работай как арт-директор:
+1. Анализ товара → 2. Художественная концепция → 3. visualHook (почему остановят взгляд)
+→ 4. Композиция → 5. Типографика → 6. Цвета → 7. Декор → 8. Самопроверка ≥90.
+
+visualHook — одна сильная идея, вокруг которой строится весь макет.`;
+}
+
 export type AssemblePromptInput = {
   productPrompt: string;
   style: InfographicStyle;
@@ -31,6 +41,7 @@ export function assembleDesignBriefPrompt(input: AssemblePromptInput): string {
 
   const sections = [
     buildSystemPrompt(),
+    buildDesignProcessOverview(),
     buildProductAnalysisPrompt(input.analysis),
     buildStylePrompt(input.style, input.analysis),
     buildCompositionRules(),

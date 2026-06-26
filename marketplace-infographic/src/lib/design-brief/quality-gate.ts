@@ -7,9 +7,54 @@ export type QualityReport = {
   issues: string[];
 };
 
+export type ProcessReviewReport = {
+  overallScore: number;
+  issues: string[];
+};
+
 function hasDuplicateBullets(bullets: string[]): boolean {
   const keys = bullets.map((b) => b.toLowerCase().replace(/\s+/g, " "));
   return new Set(keys).size !== keys.length;
+}
+
+export function evaluateDesignProcessReview(brief: DesignBrief): ProcessReviewReport {
+  const stage7 = brief.designProcess?.stage7;
+  const hook = brief.designProcess?.visualHook ?? brief.visualHook;
+  const issues: string[] = [];
+
+  if (!hook?.type) issues.push("missing_visual_hook");
+  if (!hook?.reason) issues.push("missing_hook_reason");
+  if (hook && hook.confidence < 70) issues.push("weak_visual_hook");
+
+  if (!brief.designProcess?.stage2?.concept && !brief.designConcept) {
+    issues.push("missing_artistic_concept");
+  }
+
+  if (!stage7) {
+    return { overallScore: issues.length > 0 ? 72 : 85, issues };
+  }
+
+  const scores = [
+    stage7.visualBalance,
+    stage7.readability,
+    stage7.professionalism,
+    stage7.categoryFit,
+    stage7.premiumFeel,
+    stage7.conversionPotential,
+  ].filter((s): s is number => typeof s === "number");
+
+  const overallScore =
+    stage7.overallScore ??
+    (scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0);
+
+  if (overallScore < 90) issues.push("self_review_below_90");
+  for (const [key, val] of Object.entries(stage7) as Array<[string, unknown]>) {
+    if (typeof val === "number" && val < 90 && key !== "overallScore") {
+      issues.push(`low_${key}`);
+    }
+  }
+
+  return { overallScore, issues };
 }
 
 export function evaluateDesignBrief(brief: DesignBrief): QualityReport {
@@ -34,7 +79,20 @@ export function evaluateDesignBrief(brief: DesignBrief): QualityReport {
     issues.push("accent_too_light");
   }
 
-  const score = Math.max(0, 100 - issues.length * 18);
+  const processReview = evaluateDesignProcessReview(brief);
+  issues.push(...processReview.issues.filter((i) => i.startsWith("missing_")));
+
+  const score = Math.max(
+    0,
+    Math.min(
+      100,
+      Math.round(
+        (100 - issues.filter((i) => !i.startsWith("low_")).length * 14) * 0.6 +
+          processReview.overallScore * 0.4,
+      ),
+    ),
+  );
+
   return {
     passed: issues.length === 0,
     score,
@@ -44,5 +102,5 @@ export function evaluateDesignBrief(brief: DesignBrief): QualityReport {
 
 export function buildQualityRetryHint(issues: string[]): string {
   if (issues.length === 0) return "";
-  return `ИСПРАВЬ ОШИБКИ: ${issues.join(", ")}. Пересоздай JSON с нуля, соблюдая все правила.`;
+  return `ИСПРАВЬ ОШИБКИ (этап 7 — пересобери композицию): ${issues.join(", ")}. Пересоздай JSON с нуля, соблюдая visualHook и все правила.`;
 }

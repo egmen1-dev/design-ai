@@ -1,4 +1,3 @@
-import { createHash } from "crypto";
 import {
   DEFAULT_STYLE,
   type InfographicStyle,
@@ -17,7 +16,9 @@ import {
 } from "@/lib/design-brief/quality-gate";
 import { sanitizeDesignBrief } from "@/lib/design-brief/sanitize";
 import { cacheGet, cacheKey, cacheSet } from "@/lib/cache/generation-cache";
-import { assembleDesignBriefPrompt } from "@/lib/prompt/assemble";
+import { buildMockFoundation } from "@/lib/design-process/mock";
+import { runDesignProcessPipeline } from "@/lib/design-process/pipeline";
+import { objectScaleFromHook } from "@/lib/design-process/visual-hook";
 import {
   filterConsistentBullets,
   gardenTrimmerBatteryBullets,
@@ -32,7 +33,7 @@ import {
 import { selectRelevantExamples } from "@/lib/select-relevant-examples";
 import type { InfographicSdInput } from "@/lib/validations";
 import { applyStyleToSdColors } from "@/lib/sd-style-theme";
-import { getOllamaStatus, OLLAMA_BASE_URL, OLLAMA_MODEL } from "./ai-status";
+import { getOllamaStatus } from "./ai-status";
 
 export type InfographicSdData = InfographicSdInput;
 
@@ -49,15 +50,6 @@ export type GenerationResult = {
   source: "ollama" | "mock";
   qualityScore: number;
 };
-
-function extractJson(text: string): string {
-  const start = text.indexOf("{");
-  const end = text.lastIndexOf("}");
-  if (start === -1 || end === -1 || end < start) {
-    throw new Error("Ollama не вернула валидный JSON");
-  }
-  return text.slice(start, end + 1);
-}
 
 function applyAssetSelection(
   brief: DesignBrief,
@@ -81,6 +73,7 @@ function buildMockBrief(
   referenceContext?: ResolvedReferenceContext,
 ): DesignBrief {
   const analysis = analyzeProductPrompt(prompt);
+  const foundation = buildMockFoundation(prompt, analysis.category);
   const isTrimmer = analysis.category === "garden_tools";
   const isBattery = /аккумулятор|акб|battery/i.test(prompt);
   const colors = referenceContext?.colors?.length
@@ -93,9 +86,32 @@ function buildMockBrief(
 
   const raw = sanitizeDesignBrief(
     {
-      designConcept: isTrimmer
-        ? "Премиальная садовая карточка с акцентом на мощность"
-        : "Коммерческая карточка WB/Ozon",
+      designConcept: foundation.stage2.concept,
+      designProcess: {
+        stage1: foundation.stage1,
+        visualHook: foundation.visualHook,
+        stage2: foundation.stage2,
+        stage3: {
+          mainSubject: "товар",
+          eyeFlow: "заголовок → товар → УТП",
+          textPlacement: "слева",
+          plaquePlacement: "компактные плашки слева и справа",
+          negativeSpace: "20–30%",
+          balance: "правило третей",
+          depth: "передний план — товар",
+          perspective: "three-quarter",
+        },
+        stage7: {
+          visualBalance: 94,
+          readability: 95,
+          professionalism: 93,
+          categoryFit: 92,
+          premiumFeel: 91,
+          conversionPotential: 94,
+          overallScore: 93,
+        },
+      },
+      visualHook: foundation.visualHook,
       layout: "marketplace",
       headline: isTrimmer ? "Садовый триммер" : "Товар",
       subHeadline: isTrimmer ? (isBattery ? "аккумуляторный" : "мощный") : "новинка",
@@ -108,7 +124,7 @@ function buildMockBrief(
         "sunny suburban lawn garden path, wooden fence blurred, golden hour daylight, clear empty grass foreground, ultra realistic, no objects, no text",
       fontId: null,
       badgeId: null,
-      objectScale: 0.78,
+      objectScale: objectScaleFromHook(foundation.visualHook, 0.78),
       lightDirection: "top-left",
       lightTemperature: "5500K",
       shadowType: "contact-soft",
@@ -117,53 +133,6 @@ function buildMockBrief(
   );
 
   return applyAssetSelection(raw, library, analysis, style);
-}
-
-async function callOllamaDesignBrief(
-  prompt: string,
-  style: InfographicStyle,
-  context: OllamaSdContext,
-  retryHint?: string,
-): Promise<DesignBrief> {
-  const analysis = analyzeProductPrompt(prompt);
-  const ref =
-    context.referenceContext ??
-    resolveReferenceContext(prompt, style, context.examples ?? []);
-
-  const systemPrompt = assembleDesignBriefPrompt({
-    productPrompt: prompt,
-    style,
-    analysis,
-    library: context.library ?? { fonts: [], badges: [] },
-    examples: context.examples ?? [],
-    referenceContext: ref,
-    retryHint,
-  });
-
-  const ollamaTimeoutMs = Number(process.env.OLLAMA_TIMEOUT_MS ?? 120_000);
-
-  const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: OLLAMA_MODEL,
-      prompt: systemPrompt,
-      stream: false,
-      options: { temperature: 0.32, num_predict: 2048 },
-    }),
-    signal: AbortSignal.timeout(ollamaTimeoutMs),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Ollama недоступна: ${response.status}`);
-  }
-
-  const data = (await response.json()) as { response?: string };
-  if (!data.response) throw new Error("Пустой ответ от Ollama");
-
-  const parsed = JSON.parse(extractJson(data.response)) as unknown;
-  const brief = sanitizeDesignBrief(parsed, analysis.category);
-  return applyAssetSelection(brief, context.library, analysis, style);
 }
 
 function clampLibraryIds(
@@ -190,9 +159,10 @@ export async function generateSdInfographicData(
     resolveReferenceContext(prompt, style, context.examples ?? []);
 
   const enrichedContext: OllamaSdContext = { ...context, referenceContext };
+  const analysis = analyzeProductPrompt(prompt);
   const cacheId = cacheKey([
-    "brief",
-    createHash("sha256").update(prompt).digest("hex").slice(0, 16),
+    "brief-v9",
+    prompt.slice(0, 80),
     style,
     referenceContext.topExample?.id ?? "none",
   ]);
@@ -227,25 +197,21 @@ export async function generateSdInfographicData(
   }
 
   try {
-    let brief = await callOllamaDesignBrief(prompt, style, enrichedContext);
-    let quality = evaluateDesignBrief(brief);
+    const { brief } = await runDesignProcessPipeline({
+      productPrompt: prompt,
+      style,
+      analysis,
+      library: context.library,
+      examples: context.examples,
+      referenceContext,
+    });
 
-    if (!quality.passed && quality.score < 70) {
-      const retryHint = buildQualityRetryHint(quality.issues);
-      try {
-        brief = await callOllamaDesignBrief(prompt, style, enrichedContext, retryHint);
-        quality = evaluateDesignBrief(brief);
-      } catch {
-        // keep first attempt
-      }
-    }
-
-    const result = finalize(brief, "ollama");
-    result.qualityScore = quality.score;
+    const withAssets = applyAssetSelection(brief, context.library, analysis, style);
+    const result = finalize(withAssets, "ollama");
     cacheSet(cacheId, result);
     return result;
   } catch (error) {
-    console.warn("Ollama design brief failed, mock fallback:", error);
+    console.warn("Ollama design process failed, mock fallback:", error);
     const brief = buildMockBrief(prompt, style, context.library, referenceContext);
     return finalize(brief, "mock");
   }

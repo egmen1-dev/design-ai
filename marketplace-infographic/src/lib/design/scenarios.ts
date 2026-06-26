@@ -1,5 +1,7 @@
 import type { ProductCategory } from "@/lib/product-analysis";
 import type { CompositionScenario, DesignDNA } from "./types";
+import type { VisualHook } from "@/lib/design-process/types";
+import { scenarioBoostFromHook } from "@/lib/design-process/visual-hook";
 
 function affinity(weights: Partial<Record<keyof DesignDNA, number>>) {
   return (dna: DesignDNA, _category: ProductCategory) => {
@@ -210,10 +212,14 @@ export function selectScenario(
   dna: DesignDNA,
   category: ProductCategory,
   rng: () => number,
+  visualHook?: VisualHook,
 ): CompositionScenario {
   const ranked = COMPOSITION_SCENARIOS.map((s) => ({
     scenario: s,
-    score: s.dnaAffinity(dna, category) + rng() * 12,
+    score:
+      s.dnaAffinity(dna, category) +
+      rng() * 12 +
+      scenarioBoostFromHook(visualHook, s.id),
   })).sort((a, b) => b.score - a.score);
 
   return ranked[0]?.scenario ?? COMPOSITION_SCENARIOS[0];

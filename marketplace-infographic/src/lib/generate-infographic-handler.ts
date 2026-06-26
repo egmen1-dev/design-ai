@@ -31,6 +31,7 @@ import {
 import { resolveMarketplaceAccent } from "@/lib/accent-color";
 import { analyzeProductPrompt } from "@/lib/product-analysis";
 import { generateComposition } from "@/lib/design";
+import { objectScaleFromHook } from "@/lib/design-process/visual-hook";
 import { PIPELINE_VERSION } from "@/lib/pipeline-version";
 
 export type GenerateInfographicInput = {
@@ -234,6 +235,8 @@ export async function handleGenerateInfographic(
     const analysis = analyzeProductPrompt(input.prompt);
     const accentHex = resolveMarketplaceAccent(sdData.colors, analysis.category);
 
+    const visualHook = designBrief?.designProcess?.visualHook ?? designBrief?.visualHook;
+
     const compositionResult =
       sdData.layout === "marketplace"
         ? generateComposition({
@@ -242,9 +245,13 @@ export async function handleGenerateInfographic(
             bulletCount: sdData.bullets.length,
             hasLeftPanel: true,
             hasRightSidebar: true,
-            objectScale: compositingHints?.objectScale,
+            objectScale: objectScaleFromHook(
+              visualHook,
+              compositingHints?.objectScale ?? designBrief?.objectScale,
+            ),
             styleHint: appliedStyle,
             seed: variationSeed,
+            visualHook,
           })
         : null;
 

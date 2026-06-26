@@ -8,8 +8,99 @@ import type { InfographicSdInput } from "@/lib/validations";
 
 const hex = z.string().regex(/^#[0-9a-fA-F]{6}$/);
 
+const visualHookSchema = z.object({
+  type: z.string(),
+  reason: z.string().max(300),
+  confidence: z.number().min(0).max(100),
+});
+
+const designProcessSchema = z
+  .object({
+    stage1: z
+      .object({
+        category: z.string().optional(),
+        dimensions: z.string().optional(),
+        shape: z.string().optional(),
+        materials: z.array(z.string()).optional(),
+        color: z.string().optional(),
+        purpose: z.string().optional(),
+        priceSegment: z.string().optional(),
+        emotionalPerception: z.string().optional(),
+        targetAudience: z.string().optional(),
+      })
+      .optional(),
+    visualHook: visualHookSchema.optional(),
+    stage2: z
+      .object({
+        concept: z.string().optional(),
+        creativeDirection: z.string().optional(),
+        mood: z.string().optional(),
+        references: z.array(z.string()).optional(),
+        whyThisConcept: z.string().optional(),
+      })
+      .optional(),
+    stage3: z
+      .object({
+        mainSubject: z.string().optional(),
+        eyeFlow: z.string().optional(),
+        textPlacement: z.string().optional(),
+        plaquePlacement: z.string().optional(),
+        negativeSpace: z.string().optional(),
+        balance: z.string().optional(),
+        depth: z.string().optional(),
+        perspective: z.string().optional(),
+      })
+      .optional(),
+    stage4: z
+      .object({
+        fontStyle: z.string().optional(),
+        weight: z.string().optional(),
+        sizeStrategy: z.string().optional(),
+        spacing: z.string().optional(),
+        textColor: z.string().optional(),
+        contrastLevel: z.string().optional(),
+        accents: z.string().optional(),
+        rationale: z.string().optional(),
+      })
+      .optional(),
+    stage5: z
+      .object({
+        primary: z.string().optional(),
+        secondary: z.string().optional(),
+        accent: z.string().optional(),
+        background: z.string().optional(),
+        textColor: z.string().optional(),
+        plaqueColor: z.string().optional(),
+        contrastLevel: z.string().optional(),
+        systemRationale: z.string().optional(),
+      })
+      .optional(),
+    stage6: z
+      .object({
+        useDecorations: z.boolean().optional(),
+        elements: z.array(z.string()).optional(),
+        rationale: z.string().optional(),
+      })
+      .optional(),
+    stage7: z
+      .object({
+        visualBalance: z.number().optional(),
+        readability: z.number().optional(),
+        professionalism: z.number().optional(),
+        categoryFit: z.number().optional(),
+        premiumFeel: z.number().optional(),
+        conversionPotential: z.number().optional(),
+        overallScore: z.number().optional(),
+        revisions: z.array(z.string()).optional(),
+      })
+      .optional(),
+  })
+  .optional();
+
 export const designBriefSchema = z.object({
   designConcept: z.string().max(300).optional(),
+  designProcess: designProcessSchema,
+  visualHook: visualHookSchema.optional(),
   audienceAnalysis: z
     .object({
       category: z.string().optional(),
