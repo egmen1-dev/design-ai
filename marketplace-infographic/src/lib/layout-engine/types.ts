@@ -60,6 +60,7 @@ export type LayoutEngineInput = {
   productShape?: ProductShapeHint;
   seed?: string;
   templateId?: LayoutTemplateId;
+  excludeTemplateIds?: LayoutTemplateId[];
 };
 
 export type LayoutQualityIssue = {

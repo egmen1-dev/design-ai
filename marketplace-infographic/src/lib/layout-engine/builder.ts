@@ -26,7 +26,7 @@ function computeMetrics(layout: Omit<CompositionLayout, "metrics" | "valid" | "i
     zoneAreaPct(layout.leftPanel.width, layout.leftPanel.height) +
     zoneAreaPct(layout.rightSidebar.width, layout.rightSidebar.height);
   let overlapPct = 0;
-  const textZones = [layout.headline, layout.subtitle, layout.leftPanel, layout.bullets];
+  const textZones = [layout.headline, layout.subtitle, layout.leftPanel, layout.rightSidebar, layout.bullets];
   for (const z of textZones) {
     if (z.width > 0 && zonesOverlap(layout.product, z)) {
       overlapPct += 5;
@@ -103,28 +103,51 @@ export function buildLayoutFromTemplate(
     fontSizePct: headlineFit.fontSizePct,
   };
 
-  const subtitle = {
-    left: headline.left,
-    top: headline.top + headline.height + 0.8,
-    width: clampPct(template.headlineWidth * 0.85, 20, 50),
-    height: 4,
-    fontSizePct: fontPxToSizePct(28),
-  };
+  const subtitle =
+    meaning.subtitle.trim().length > 0
+      ? {
+          left: headline.left,
+          top: headline.top + headline.height + 0.8,
+          width: clampPct(template.headlineWidth * 0.85, 20, 50),
+          height: 4,
+          fontSizePct: fontPxToSizePct(28),
+        }
+      : { left: 0, top: 0, width: 0, height: 0, fontSizePct: 0 };
 
   const plaqueH = (PLAQUE_HEIGHT_MIN_PCT + PLAQUE_HEIGHT_MAX_PCT) / 2;
-  const plaqueW = clampPct(estimatePlaqueWidthPct(meaning.feature), 12, PLAQUE_WIDTH_MAX_PCT);
+  const plaqueW = clampPct(estimatePlaqueWidthPct(meaning.feature || "0"), 12, PLAQUE_WIDTH_MAX_PCT);
+  const badgeW = meaning.badge
+    ? clampPct(estimatePlaqueWidthPct(meaning.badge), 10, PLAQUE_WIDTH_MAX_PCT * 0.6)
+    : 0;
+  const badgeH = meaning.badge ? PLAQUE_HEIGHT_MIN_PCT : 0;
+  const featureTop = clampPct(headline.top + headline.height + 8, 22, 38);
 
   const leftPanel =
     template.featureSide === "left" && meaning.feature
       ? {
           left: clampPct(6, 5, 12),
-          top: clampPct(headline.top + headline.height + 8, 22, 38),
+          top: featureTop,
           width: plaqueW,
           height: plaqueH,
         }
       : { left: 0, top: 0, width: 0, height: 0 };
 
-  const rightSidebar = { left: 0, top: 0, width: 0, height: 0 };
+  const rightSidebar =
+    template.featureSide === "right" && meaning.feature
+      ? {
+          left: clampPct(100 - plaqueW - 6, 55, 92),
+          top: featureTop,
+          width: plaqueW,
+          height: plaqueH,
+        }
+      : meaning.badge && template.featureSide !== "bottom"
+        ? {
+            left: clampPct(headline.left, 5, 90),
+            top: clampPct(featureTop + (meaning.feature ? plaqueH + 1.2 : 0), 24, 42),
+            width: badgeW,
+            height: badgeH,
+          }
+        : { left: 0, top: 0, width: 0, height: 0 };
 
   const draft: Omit<CompositionLayout, "metrics" | "valid" | "issues" | "adjustments"> = {
     canvas: { width: WB_COVER.width, height: WB_COVER.height },

@@ -25,9 +25,11 @@ export function computeProfessionalLayout(
 ): ProfessionalLayoutResult {
   const seed = input.seed ?? `layout-${Date.now()}`;
   const shape: ProductShapeHint = input.productShape ?? "standard";
-  const ranked = input.templateId
+  const rankedBase = input.templateId
     ? [getTemplate(input.templateId), ...rankTemplatesForProduct(shape, input.meaning.priority, seed).filter((t) => t.id !== input.templateId)]
     : rankTemplatesForProduct(shape, input.meaning.priority, seed);
+  const exclude = new Set(input.excludeTemplateIds ?? []);
+  const ranked = rankedBase.filter((t) => !exclude.has(t.id));
 
   let best: ProfessionalLayoutResult | null = null;
 

@@ -42,7 +42,8 @@ import {
   computeProfessionalLayout,
   toCompositionResult,
 } from "@/lib/layout-engine";
-import type { CardMeaning, ProductShapeHint } from "@/lib/layout-engine/types";
+import type { CardMeaning, LayoutTemplateId, ProductShapeHint } from "@/lib/layout-engine/types";
+import { runSeniorArtDirector, type SeniorArtDirectorReview } from "@/lib/agents";
 import { creativeConceptToCardMeaning } from "@/lib/design-process/card-meaning";
 import type { ProductVisualProfile } from "@/lib/design/scene-planner";
 import type { CreativeDirectorResult } from "@/lib/design-process/creative-concept";
@@ -50,7 +51,7 @@ import type { ScenePlan } from "@/lib/design/scene-planner";
 import type { QualityValidationResult } from "@/lib/design/quality-validator";
 import type { ArtDirectorModeId } from "@/lib/design-process/art-director-modes";
 import { PIPELINE_VERSION } from "@/lib/pipeline-version";
-import { USE_FAST_CUTOUT, MAX_CONCEPT_RENDER_RETRIES } from "@/lib/pipeline-config";
+import { USE_FAST_CUTOUT, MAX_CONCEPT_RENDER_RETRIES, MAX_SENIOR_AD_LAYOUT_RETRIES } from "@/lib/pipeline-config";
 import type { CoverConceptId } from "@/lib/cover-concepts";
 import { evaluateFinalQuality } from "@/lib/design/final-quality-validator";
 import { applyPosterRules } from "@/lib/design-process/pipeline";
@@ -88,6 +89,8 @@ export type GenerateInfographicResult = {
   conceptCandidates?: number;
   layoutTemplateId?: string;
   designScore?: number;
+  seniorAdScore?: number;
+  seniorAdApproved?: boolean;
 };
 
 function briefMeta(brief?: DesignBrief) {
@@ -176,7 +179,13 @@ function buildProfessionalComposition(input: {
   category: import("@/lib/product-analysis").ProductCategory;
   productVisual?: ProductVisualProfile;
   seed: string;
-}): { compositionResult: CompositionResult; cardMeaning: CardMeaning } {
+  excludeTemplateIds?: LayoutTemplateId[];
+}): {
+  compositionResult: CompositionResult;
+  cardMeaning: CardMeaning;
+  headlineFontPx: number;
+  templateId: LayoutTemplateId;
+} {
   const cardMeaning = normalizeCardMeaning(
     input.designBrief?.cardMeaning ??
       (input.activeCreative && input.designBrief
@@ -198,12 +207,86 @@ function buildProfessionalComposition(input: {
     productShape: toProductShapeHint(input.productVisual),
     seed: input.seed,
     backgroundHint: input.designBrief?.backgroundPrompt,
+    excludeTemplateIds: input.excludeTemplateIds,
   });
 
   return {
     compositionResult: toCompositionResult(pro, input.category),
     cardMeaning,
+    headlineFontPx: pro.headlineFontPx,
+    templateId: pro.templateId,
   };
+}
+
+async function buildLayoutWithSeniorArtDirector(input: {
+  designBrief?: DesignBrief;
+  activeCreative?: CreativeDirectorResult;
+  analysis: import("@/lib/product-analysis").ProductAnalysis;
+  productVisual?: ProductVisualProfile;
+  productPrompt: string;
+  seed: string;
+}): Promise<{
+  compositionResult: CompositionResult;
+  cardMeaning: CardMeaning;
+  seniorAdReview: SeniorArtDirectorReview;
+  headlineFontPx: number;
+  templateId: LayoutTemplateId;
+}> {
+  const excluded: LayoutTemplateId[] = [];
+  let last:
+    | {
+        compositionResult: CompositionResult;
+        cardMeaning: CardMeaning;
+        seniorAdReview: SeniorArtDirectorReview;
+        headlineFontPx: number;
+        templateId: LayoutTemplateId;
+      }
+    | undefined;
+
+  for (let attempt = 0; attempt <= MAX_SENIOR_AD_LAYOUT_RETRIES; attempt++) {
+    const built = buildProfessionalComposition({
+      designBrief: input.designBrief,
+      activeCreative: input.activeCreative,
+      category: input.analysis.category,
+      productVisual: input.productVisual,
+      seed: attempt === 0 ? input.seed : `${input.seed}:sad-${attempt}`,
+      excludeTemplateIds: excluded,
+    });
+
+    const elementCount =
+      (built.cardMeaning.feature ? 1 : 0) +
+      (built.cardMeaning.badge ? 1 : 0) +
+      (built.cardMeaning.subtitle ? 1 : 0) +
+      1;
+
+    const seniorAdReview = await runSeniorArtDirector({
+      meaning: built.cardMeaning,
+      layout: built.compositionResult.layout,
+      templateId: built.templateId,
+      creative: input.activeCreative,
+      analysis: input.analysis,
+      productPrompt: input.productPrompt,
+      headlineFontPx: built.headlineFontPx,
+      elementCount,
+    });
+
+    last = { ...built, seniorAdReview };
+
+    if (seniorAdReview.approved) {
+      if (attempt > 0) {
+        console.info(`[senior-ad] approved on template retry ${attempt}: ${built.templateId}`);
+      }
+      return last;
+    }
+
+    console.warn(
+      `[senior-ad] score ${seniorAdReview.score}/100 template ${built.templateId}`,
+      seniorAdReview.criticalProblems,
+    );
+    excluded.push(built.templateId);
+  }
+
+  return last!;
 }
 
 async function loadProductCutout(
@@ -377,20 +460,23 @@ export async function handleGenerateInfographic(
 
     const scenePlan = storedScenePlan ?? plannedScene;
 
-    // ── 2. Layout Engine — детерминированная композиция (без Ollama) ──
+    // ── 2. Layout Engine + Senior Art Director ───────────────────────
     let compositionResult: CompositionResult | null = null;
     let cardMeaning: CardMeaning | undefined;
+    let seniorAdReview: SeniorArtDirectorReview | undefined;
 
     if (sdData.layout === "marketplace") {
-      const built = buildProfessionalComposition({
+      const built = await buildLayoutWithSeniorArtDirector({
         designBrief,
         activeCreative,
-        category: analysis.category,
+        analysis,
         productVisual,
+        productPrompt: input.prompt,
         seed: variationSeed,
       });
       compositionResult = built.compositionResult;
       cardMeaning = built.cardMeaning;
+      seniorAdReview = built.seniorAdReview;
       if (designBrief && !designBrief.cardMeaning) {
         designBrief = { ...designBrief, cardMeaning };
       }
@@ -525,16 +611,18 @@ export async function handleGenerateInfographic(
       }
 
       if (sdData.layout === "marketplace") {
-        const rebuilt = buildProfessionalComposition({
+        const rebuilt = await buildLayoutWithSeniorArtDirector({
           designBrief,
           activeCreative: nextConcept,
-          category: analysis.category,
+          analysis,
           productVisual,
+          productPrompt: input.prompt,
           seed: `${variationSeed}:concept-${conceptRetryIndex}`,
         });
         compositionResult = rebuilt.compositionResult;
         compositionLayout = compositionResult.layout;
         objectScale = layoutObjectScale(compositionLayout.metrics?.productAreaPct);
+        seniorAdReview = rebuilt.seniorAdReview;
       }
 
       const retryScene = planScene({
@@ -679,6 +767,7 @@ export async function handleGenerateInfographic(
       composition: compositionMeta,
       scenePlan,
       qualityValidation,
+      seniorArtDirector: seniorAdReview,
     };
 
     if (input.regenerateBackgroundOnly && input.existingImageId) {
@@ -705,6 +794,8 @@ export async function handleGenerateInfographic(
         qualityScore: qualityValidation?.total,
         layoutTemplateId: compositionResult?.layout?.scenarioId,
         designScore: compositionResult?.score?.total,
+        seniorAdScore: seniorAdReview?.score,
+        seniorAdApproved: seniorAdReview?.approved,
         ...briefMeta(designBrief),
       };
     }
@@ -735,6 +826,8 @@ export async function handleGenerateInfographic(
       qualityScore: qualityValidation?.total,
       layoutTemplateId: compositionResult?.layout?.scenarioId,
       designScore: compositionResult?.score?.total,
+      seniorAdScore: seniorAdReview?.score,
+      seniorAdApproved: seniorAdReview?.approved,
       ...briefMeta(designBrief),
     };
   } catch (error) {
