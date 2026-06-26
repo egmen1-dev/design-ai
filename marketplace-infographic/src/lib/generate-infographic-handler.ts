@@ -17,6 +17,7 @@ import { bufferToDataUrl } from "@/lib/background-removal";
 import {
   parseProductImageDataUrl,
   processProductImageForCover,
+  processProductImageForGeneration,
 } from "@/lib/product-image-sd";
 import type { CompositingHints, DesignBrief } from "@/lib/design-brief/schema";
 import type { InfographicSdInput } from "@/lib/validations";
@@ -41,6 +42,7 @@ import type { QualityValidationResult } from "@/lib/design/quality-validator";
 import { objectScaleFromHook } from "@/lib/design-process/visual-hook";
 import type { CoverConceptId } from "@/lib/cover-concepts";
 import { PIPELINE_VERSION } from "@/lib/pipeline-version";
+import { USE_FAST_CUTOUT } from "@/lib/pipeline-config";
 
 export type GenerateInfographicInput = {
   userId: string;
@@ -69,8 +71,6 @@ export type GenerateInfographicResult = {
   pipelineVersion: string;
   qualityScore?: number;
 };
-
-const MAX_SCENE_ATTEMPTS = 3;
 
 function briefMeta(brief?: DesignBrief) {
   const hook = brief?.designProcess?.visualHook ?? brief?.visualHook;
@@ -127,6 +127,19 @@ async function loadProductCutout(
   }
 
   const { buffer } = parseProductImageDataUrl(productImage);
+  if (USE_FAST_CUTOUT) {
+    return processProductImageForGeneration(buffer, userId);
+  }
+  return processProductImageForCover(buffer, userId);
+}
+
+async function cutoutFromBuffer(
+  buffer: Buffer,
+  userId: string,
+): Promise<{ renderSrc: string; absPath: string; webPath: string; cutout: boolean }> {
+  if (USE_FAST_CUTOUT) {
+    return processProductImageForGeneration(buffer, userId);
+  }
   return processProductImageForCover(buffer, userId);
 }
 
@@ -145,6 +158,8 @@ export async function handleGenerateInfographic(
     let designBrief: DesignBrief | undefined;
     let referenceContext: ResolvedReferenceContext | undefined;
     let storedScenePlan: ScenePlan | undefined;
+    let preloadedProductVisual: Awaited<ReturnType<typeof analyzeProductVisual>> | undefined;
+    let preloadedCutout: Awaited<ReturnType<typeof loadProductCutout>> | undefined;
 
     const variationSeed =
       input.backgroundSeed ??
@@ -200,20 +215,31 @@ export async function handleGenerateInfographic(
         appliedStyle = referenceContext.style;
       }
 
-      const ollama = await generateSdInfographicData(input.prompt, styleHint, {
-        ...input.ollamaContext,
-        referenceContext,
-      });
+      const { buffer: productBuffer } = parseProductImageDataUrl(input.productImage);
+
+      // Ollama + анализ фото + вырезка товара — параллельно (~2–3 мин экономии)
+      const [ollama, productVisual, earlyCutout] = await Promise.all([
+        generateSdInfographicData(input.prompt, styleHint, {
+          ...input.ollamaContext,
+          referenceContext,
+        }),
+        analyzeProductVisual(productBuffer),
+        cutoutFromBuffer(productBuffer, input.userId),
+      ]);
+
       sdData = ollama.data;
       compositingHints = ollama.compositingHints;
       qualityScore = ollama.qualityScore;
       designBrief = ollama.brief;
       aiSource = ollama.source;
+
+      preloadedProductVisual = productVisual;
+      preloadedCutout = earlyCutout;
     }
 
     // ── 1. Анализ товара + Scene Planner ──────────────────────────────
-    let productVisual;
-    if (input.productImage) {
+    let productVisual = preloadedProductVisual;
+    if (!productVisual && input.productImage) {
       const { buffer } = parseProductImageDataUrl(input.productImage);
       productVisual = await analyzeProductVisual(buffer);
     }
@@ -270,56 +296,58 @@ export async function handleGenerateInfographic(
     let backgroundDataUrl: string | undefined;
     let compositeResult: Awaited<ReturnType<typeof compositeProductIntoScene>> | undefined;
     let qualityValidation: QualityValidationResult | undefined;
-    let productRender: Awaited<ReturnType<typeof loadProductCutout>> | undefined;
+    let productRender: Awaited<ReturnType<typeof loadProductCutout>> | undefined =
+      preloadedCutout;
 
-    for (let attempt = 0; attempt < MAX_SCENE_ATTEMPTS; attempt++) {
-      const attemptSeed = `${variationSeed}:bg${attempt}`;
+    const usePhotorealMerge =
+      sdData.layout === "marketplace" && process.env.MARKETPLACE_HTML_PRODUCT !== "1";
 
+    // SD фон + вырезка (если ещё нет) — параллельно
+    const cutoutPromise =
+      productRender
+        ? Promise.resolve(productRender)
+        : loadProductCutout(
+            input.productImage,
+            input.userId,
+            input.regenerateBackgroundOnly ? productCutoutPath ?? undefined : undefined,
+          );
+
+    const bgPromise = (async () => {
+      if (!process.env.HF_API_KEY) throw new Error("HF_API_KEY missing");
+      const url = await generateBackground(sdData.backgroundPrompt, {
+        seedSuffix: variationSeed,
+        style: appliedStyle,
+      });
+      return { url, dataUrl: await backgroundToDataUrl(url) };
+    })();
+
+    try {
+      const [bg, cutout] = await Promise.all([bgPromise, cutoutPromise]);
+      backgroundUrl = bg.url;
+      backgroundDataUrl = bg.dataUrl;
+      backgroundSource = "sd";
+      productRender = cutout;
+      productCutoutPath = cutout.webPath;
+    } catch (error) {
+      console.warn("SD background failed, gradient fallback:", error);
+      backgroundSource = "fallback";
       try {
-        if (!process.env.HF_API_KEY) {
-          throw new Error("HF_API_KEY missing");
-        }
-        backgroundUrl = await generateBackground(sdData.backgroundPrompt, {
-          seedSuffix: attemptSeed,
-          style: appliedStyle,
-        });
-        backgroundDataUrl = await backgroundToDataUrl(backgroundUrl);
-        backgroundSource = "sd";
-      } catch (error) {
-        console.warn(`SD background attempt ${attempt + 1} failed:`, error);
-        if (attempt === MAX_SCENE_ATTEMPTS - 1) {
-          backgroundSource = "fallback";
-          backgroundUrl = null;
-          backgroundDataUrl = undefined;
-        }
-        continue;
-      }
-
-      // ── 4. Background Removal (после SD) ────────────────────────────
-      if (!productRender) {
-        productRender = await loadProductCutout(
-          input.productImage,
-          input.userId,
-          input.regenerateBackgroundOnly ? productCutoutPath ?? undefined : undefined,
-        );
+        productRender = await cutoutPromise;
         productCutoutPath = productRender.webPath;
+      } catch (cutoutError) {
+        console.warn("Cutout failed:", cutoutError);
       }
+    }
 
-      const usePhotorealMerge =
-        sdData.layout === "marketplace" && process.env.MARKETPLACE_HTML_PRODUCT !== "1";
-
-      if (
-        !usePhotorealMerge ||
-        !productRender.cutout ||
-        !productCutoutPath ||
-        backgroundSource !== "sd"
-      ) {
-        break;
-      }
-
+    if (
+      usePhotorealMerge &&
+      productRender?.cutout &&
+      productCutoutPath &&
+      backgroundUrl &&
+      backgroundSource === "sd"
+    ) {
       try {
-        // ── 5–9. Lighting → Color → Shadow → Reflection → Composite ──
-        compositeResult = await compositeProductIntoScene(backgroundUrl!, productCutoutPath, {
+        compositeResult = await compositeProductIntoScene(backgroundUrl, productCutoutPath, {
           layout: "marketplace",
           scene: scenePlan,
           compositionLayout,
@@ -336,28 +364,17 @@ export async function handleGenerateInfographic(
           hasReflection: scenePlan.reflectionEnabled,
           hasShadows: true,
         });
-
         qualityScore = qualityValidation.total;
 
-        if (qualityValidation.passed) {
-          break;
+        if (!qualityValidation.passed) {
+          console.warn(
+            `[quality] score ${qualityValidation.total}/${QUALITY_PASS_THRESHOLD} (no retry in fast mode)`,
+            qualityValidation.issues,
+          );
         }
-
-        console.warn(
-          `[quality] score ${qualityValidation.total}/${QUALITY_PASS_THRESHOLD} — retry background (${attempt + 1}/${MAX_SCENE_ATTEMPTS})`,
-          qualityValidation.issues,
-        );
       } catch (error) {
         console.warn("Scene composite failed:", error);
-        if (attempt === MAX_SCENE_ATTEMPTS - 1) {
-          compositeResult = undefined;
-        }
       }
-    }
-
-    if (!productRender && input.productImage) {
-      productRender = await loadProductCutout(input.productImage, input.userId);
-      productCutoutPath = productRender.webPath;
     }
 
     const infographicData = sdDataToInfographic(sdData, input.prompt);

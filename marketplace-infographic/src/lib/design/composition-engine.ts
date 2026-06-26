@@ -10,10 +10,14 @@ import type {
   CompositionResult,
   CompositionScenarioId,
 } from "./types";
+import {
+  COMPOSITION_MAX_ATTEMPTS,
+  COMPOSITION_MIN_SCORE,
+} from "@/lib/pipeline-config";
 import { applyVisualHookToDna } from "@/lib/design-process/visual-hook";
 
-const MIN_SCORE = 90;
-const MAX_ATTEMPTS = 10;
+const MIN_SCORE = COMPOSITION_MIN_SCORE;
+const MAX_ATTEMPTS = COMPOSITION_MAX_ATTEMPTS;
 
 function attachScore(layout: CompositionLayout): CompositionLayout {
   const score = scoreComposition(layout, layout.dna!);

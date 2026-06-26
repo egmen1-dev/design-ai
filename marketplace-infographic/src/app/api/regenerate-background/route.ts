@@ -4,7 +4,7 @@ import { handleGenerateInfographic } from "@/lib/generate-infographic-handler";
 import { prisma } from "@/lib/prisma";
 import { regenerateBackgroundSchema } from "@/lib/validations";
 
-export const maxDuration = 600;
+export const maxDuration = 720;
 
 export async function POST(request: NextRequest) {
   const session = await auth();

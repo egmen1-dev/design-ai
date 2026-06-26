@@ -13,6 +13,7 @@ import {
 } from "@/lib/design-brief/quality-gate";
 import type { DesignProcessFoundation } from "./types";
 import { buildFoundationStagePrompt, buildDesignStagePrompt } from "./prompts";
+import { OLLAMA_NUM_PREDICT, OLLAMA_TIMEOUT_MS, SKIP_OLLAMA_QUALITY_RETRY } from "@/lib/pipeline-config";
 import { buildMockFoundation } from "./mock";
 
 export type DesignProcessContext = {
@@ -35,8 +36,6 @@ function extractJson(text: string): string {
 }
 
 async function callOllamaJson<T>(prompt: string, temperature = 0.32): Promise<T> {
-  const ollamaTimeoutMs = Number(process.env.OLLAMA_TIMEOUT_MS ?? 120_000);
-
   const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -44,9 +43,9 @@ async function callOllamaJson<T>(prompt: string, temperature = 0.32): Promise<T>
       model: OLLAMA_MODEL,
       prompt,
       stream: false,
-      options: { temperature, num_predict: 2800 },
+      options: { temperature, num_predict: OLLAMA_NUM_PREDICT },
     }),
-    signal: AbortSignal.timeout(ollamaTimeoutMs),
+    signal: AbortSignal.timeout(OLLAMA_TIMEOUT_MS),
   });
 
   if (!response.ok) {
@@ -138,7 +137,10 @@ export async function runDesignProcessPipeline(
   let quality = evaluateDesignBrief(brief);
   let processReview = evaluateDesignProcessReview(brief);
 
-  if ((!quality.passed && quality.score < 70) || processReview.overallScore < 90) {
+  if (
+    !SKIP_OLLAMA_QUALITY_RETRY &&
+    ((!quality.passed && quality.score < 70) || processReview.overallScore < 90)
+  ) {
     const issues = [...quality.issues, ...processReview.issues];
     const retryHint = buildQualityRetryHint(issues);
     try {

@@ -8,6 +8,7 @@ import {
   enrichBackgroundPrompt,
   seedToNumber,
 } from "@/lib/style-background-prompt";
+import { HF_MAX_ATTEMPTS, HF_TOTAL_TIMEOUT_MS } from "@/lib/pipeline-config";
 
 const HF_MODEL =
   process.env.HF_SD_MODEL ??
@@ -16,9 +17,9 @@ const HF_INFERENCE_BASE =
   process.env.HF_INFERENCE_BASE_URL?.replace(/\/$/, "") ??
   "https://router.huggingface.co/hf-inference";
 const HF_API_URL = `${HF_INFERENCE_BASE}/models/${HF_MODEL}`;
-const MAX_ATTEMPTS = 6;
-const POLL_MS = 4_000;
-const HF_TOTAL_TIMEOUT_MS = 180_000;
+const MAX_ATTEMPTS = HF_MAX_ATTEMPTS;
+const POLL_MS = 3_000;
+const HF_TOTAL_TIMEOUT_MS_LOCAL = HF_TOTAL_TIMEOUT_MS;
 
 function hashPrompt(prompt: string): string {
   return createHash("sha256").update(prompt.trim().toLowerCase()).digest("hex");
@@ -56,7 +57,7 @@ async function requestHfImage(
     parameters.seed = options.seed;
   }
 
-  const deadline = Date.now() + HF_TOTAL_TIMEOUT_MS;
+  const deadline = Date.now() + HF_TOTAL_TIMEOUT_MS_LOCAL;
 
   for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
     if (Date.now() > deadline) {
@@ -151,7 +152,10 @@ export async function generateBackground(
     options?.seedSuffix ??
     `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
   const style = options?.style ?? "modern";
-  const enrichedPrompt = enrichBackgroundPrompt(prompt, style, variation);
+  const isScenePrompt = prompt.trim().length > 180;
+  const enrichedPrompt = isScenePrompt
+    ? prompt.trim().replace(/\s+/g, " ")
+    : enrichBackgroundPrompt(prompt, style, variation);
   const seed = seedToNumber(`${style}:${variation}`);
   const promptHash = hashPrompt(`${enrichedPrompt}::${variation}`);
 

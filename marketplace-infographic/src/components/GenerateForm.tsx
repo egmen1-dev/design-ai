@@ -132,7 +132,7 @@ export function GenerateForm() {
 
   function networkErrorMessage(err: unknown): string {
     if (err instanceof DOMException && err.name === "AbortError") {
-      return "Превышено время ожидания (10 мин). Попробуйте ещё раз или упростите описание.";
+      return "Превышено время ожидания (12 мин). Попробуйте ещё раз или упростите описание.";
     }
     if (err instanceof TypeError) {
       return "Соединение прервано. Сервер ещё может дорабатывать картинку — подождите 30 сек и обновите страницу «Мои генерации», либо попробуйте снова.";
@@ -162,7 +162,7 @@ export function GenerateForm() {
 
     try {
       const controller = new AbortController();
-      const timeoutId = window.setTimeout(() => controller.abort(), 600_000);
+      const timeoutId = window.setTimeout(() => controller.abort(), 720_000);
 
       const res = await fetch("/api/generate-infographic", {
         method: "POST",
@@ -245,7 +245,7 @@ export function GenerateForm() {
 
     try {
       const controller = new AbortController();
-      const timeoutId = window.setTimeout(() => controller.abort(), 600_000);
+      const timeoutId = window.setTimeout(() => controller.abort(), 720_000);
 
       const res = await fetch("/api/regenerate-background", {
         method: "POST",
@@ -502,7 +502,7 @@ export function GenerateForm() {
           <p className="mt-3 text-xs text-slate-500">
             Прошло: <span className="font-mono text-slate-300">{formatElapsed(elapsedSec)}</span>
             {" · "}
-            обычно 3–6 минут. Не закрывайте вкладку.
+            обычно 2–5 минут. Не закрывайте вкладку.
           </p>
         </div>
       )}
