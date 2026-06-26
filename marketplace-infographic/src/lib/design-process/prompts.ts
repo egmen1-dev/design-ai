@@ -7,6 +7,7 @@ export type DesignPromptInput = FoundationPromptInput & {
   creativeDirector: CreativeDirectorResult;
   referenceHint?: string;
   retryHint?: string;
+  knowledgeBlock?: string;
 };
 
 export function buildFoundationStagePrompt(input: FoundationPromptInput): string {
@@ -122,6 +123,7 @@ ${cd.sceneNarrative}
 }
 
 Холст 900×1200. Wildberries.
+${input.knowledgeBlock ? `\n## БАЗА ЗНАНИЙ (статистика успешных карточек)\n${input.knowledgeBlock}\n` : ""}
 ${input.referenceHint ? `РЕФЕРЕНС: ${input.referenceHint}` : ""}
 ${input.retryHint ? input.retryHint : ""}
 

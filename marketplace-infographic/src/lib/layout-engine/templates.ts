@@ -1,4 +1,6 @@
 import { getMemoryLayoutBoost } from "@/lib/agents/design-memory/apply";
+import { getKnowledgeLayoutBoost } from "@/lib/design/knowledge-engine";
+import type { KnowledgeCategory } from "@/lib/design/knowledge-engine";
 import type { ProductCategory } from "@/lib/product-analysis";
 import type { LayoutTemplate, LayoutTemplateId } from "./types";
 
@@ -35,6 +37,7 @@ export function rankTemplatesForProduct(
   priority: import("./types").CardMeaning["priority"],
   seed: string,
   category?: ProductCategory,
+  knowledgeCategory?: KnowledgeCategory,
 ): LayoutTemplate[] {
   const jitter = seed.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % 100;
   return [...LAYOUT_TEMPLATES]
@@ -46,6 +49,9 @@ export function rankTemplatesForProduct(
       if (shape === "standard") score += 8;
       score += (jitter + t.id.length) % 12;
       score += getMemoryLayoutBoost(t.id, category);
+      if (knowledgeCategory) {
+        score += getKnowledgeLayoutBoost(knowledgeCategory, t.id);
+      }
       return { t, score };
     })
     .sort((a, b) => b.score - a.score)

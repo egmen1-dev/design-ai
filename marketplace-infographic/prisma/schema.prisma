@@ -153,3 +153,54 @@ model DesignExample {
   tags         String[]
   createdAt    DateTime      @default(now())
 }
+
+model DesignPattern {
+  id              String   @id @default(cuid())
+  patternKey      String   @unique
+  category        String
+  layoutTemplate  String
+  compositionType String
+  backgroundType  String
+  lightingType    String
+  fontFamily      String
+  badgeStyle      String
+  productScale    Float    @default(0.65)
+  textDensity     Float    @default(0.3)
+  negativeSpace   Float    @default(0.25)
+  primaryColor    String   @default("#1a1a2e")
+  secondaryColor  String   @default("#f97316")
+  designScore     Float    @default(0)
+  ctrPrediction   Float    @default(0)
+  likes           Int      @default(0)
+  dislikes        Int      @default(0)
+  usages          Int      @default(0)
+  successWeight   Float    @default(1)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([category, successWeight])
+  @@index([category, layoutTemplate])
+}
+
+model GenerationHistory {
+  id                 String   @id @default(cuid())
+  category           String
+  prompt             String   @db.Text
+  ollamaJson         Json?
+  scenePlanner       Json?
+  layoutEngine       Json?
+  font               String?
+  badge              String?
+  backgroundPrompt   String?  @db.Text
+  designScore        Float?
+  artDirectorScore   Float?
+  marketplaceScore   Float?
+  photographerScore  Float?
+  userLiked          Boolean?
+  generatedImage     String?
+  generatedImageId   String?
+  createdAt          DateTime @default(now())
+
+  @@index([category, createdAt])
+  @@index([createdAt])
+}

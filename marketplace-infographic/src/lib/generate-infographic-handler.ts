@@ -36,7 +36,12 @@ import {
   buildSceneBackgroundPrompt,
   validateQuality,
   QUALITY_PASS_THRESHOLD,
+  retrieveKnowledgeContext,
+  collectGenerationPattern,
+  preloadKnowledgeAnalysis,
 } from "@/lib/design";
+import type { KnowledgeCategory } from "@/lib/design/knowledge-engine";
+import { analyzeProductPrompt } from "@/lib/product-analysis";
 import type { CompositionResult } from "@/lib/design/types";
 import {
   computeProfessionalLayout,
@@ -101,6 +106,9 @@ export type GenerateInfographicResult = {
   estimatedScoreAfterFix?: number;
   designMemoryUpdate?: boolean;
   designMemoryAdvice?: string[];
+  knowledgeCategory?: string;
+  knowledgePatternsUsed?: number;
+  knowledgeAnalysisTriggered?: boolean;
 };
 
 function briefMeta(brief?: DesignBrief) {
@@ -191,6 +199,7 @@ function buildProfessionalComposition(input: {
   seed: string;
   excludeTemplateIds?: LayoutTemplateId[];
   templateId?: LayoutTemplateId;
+  knowledgeCategory?: KnowledgeCategory;
 }): {
   compositionResult: CompositionResult;
   cardMeaning: CardMeaning;
@@ -220,6 +229,7 @@ function buildProfessionalComposition(input: {
     backgroundHint: input.designBrief?.backgroundPrompt,
     excludeTemplateIds: input.excludeTemplateIds,
     templateId: input.templateId,
+    knowledgeCategory: input.knowledgeCategory,
   });
 
   return {
@@ -237,6 +247,7 @@ async function buildLayoutWithAgentReview(input: {
   productVisual?: ProductVisualProfile;
   productPrompt: string;
   seed: string;
+  knowledgeCategory?: KnowledgeCategory;
 }): Promise<{
   compositionResult: CompositionResult;
   cardMeaning: CardMeaning;
@@ -265,6 +276,7 @@ async function buildLayoutWithAgentReview(input: {
       productVisual: input.productVisual,
       seed: attempt === 0 ? input.seed : `${input.seed}:agent-${attempt}`,
       excludeTemplateIds: excluded,
+      knowledgeCategory: input.knowledgeCategory,
     });
 
     const elementCount =
@@ -365,6 +377,9 @@ export async function handleGenerateInfographic(
     await loadDesignMemoryStore().catch((error) => {
       console.warn("[design-memory] preload failed:", error);
     });
+    await preloadKnowledgeAnalysis().catch((error) => {
+      console.warn("[knowledge-engine] preload failed:", error);
+    });
 
     let sdData: InfographicSdInput;
     let appliedStyle: InfographicStyle = input.style ?? DEFAULT_STYLE;
@@ -378,6 +393,8 @@ export async function handleGenerateInfographic(
     let preloadedProductVisual: Awaited<ReturnType<typeof analyzeProductVisual>> | undefined;
     let preloadedCutout: Awaited<ReturnType<typeof loadProductCutout>> | undefined;
     let conceptRenderQueue: CreativeDirectorResult[] = [];
+    let knowledgeCategory: KnowledgeCategory | undefined;
+    let knowledgePatternsUsed = 0;
 
     const variationSeed =
       input.backgroundSeed ??
@@ -434,6 +451,10 @@ export async function handleGenerateInfographic(
       }
 
       const { buffer: productBuffer } = parseProductImageDataUrl(input.productImage);
+      const earlyAnalysis = analyzeProductPrompt(input.prompt);
+      const knowledge = await retrieveKnowledgeContext(input.prompt, earlyAnalysis.category);
+      knowledgeCategory = knowledge.category;
+      knowledgePatternsUsed = knowledge.patterns.length;
 
       // Ollama + анализ фото + вырезка товара — параллельно (~2–3 мин экономии)
       const [ollama, productVisual, earlyCutout] = await Promise.all([
@@ -442,6 +463,7 @@ export async function handleGenerateInfographic(
           referenceContext,
           userId: input.userId,
           artDirectorMode: input.artDirectorMode,
+          knowledgeBlock: knowledge.promptBlock || undefined,
         }),
         analyzeProductVisual(productBuffer),
         cutoutFromBuffer(productBuffer, input.userId),
@@ -499,6 +521,7 @@ export async function handleGenerateInfographic(
         productVisual,
         productPrompt: input.prompt,
         seed: variationSeed,
+        knowledgeCategory,
       });
       compositionResult = built.compositionResult;
       cardMeaning = built.cardMeaning;
@@ -692,6 +715,7 @@ export async function handleGenerateInfographic(
             seed: `${variationSeed}:chief-layout`,
             templateId: hints.preferTemplateId,
             excludeTemplateIds: currentTemplate ? [currentTemplate] : undefined,
+            knowledgeCategory,
           });
           compositionResult = fixed.compositionResult;
           compositionLayout = compositionResult.layout;
@@ -791,6 +815,7 @@ export async function handleGenerateInfographic(
           productVisual,
           productPrompt: input.prompt,
           seed: `${variationSeed}:concept-${conceptRetryIndex}`,
+          knowledgeCategory,
         });
         compositionResult = rebuilt.compositionResult;
         compositionLayout = compositionResult.layout;
@@ -959,6 +984,7 @@ export async function handleGenerateInfographic(
     };
 
     let designMemory: DesignMemoryUpdateResult | undefined;
+    let knowledgeAnalysisTriggered = false;
     if (sdData.layout === "marketplace") {
       try {
         designMemory = await runDesignMemory({
@@ -978,6 +1004,26 @@ export async function handleGenerateInfographic(
         payloadExtras.designMemory = designMemory;
       } catch (error) {
         console.warn("[design-memory] learn failed:", error);
+      }
+
+      try {
+        const collected = await collectGenerationPattern({
+          prompt: input.prompt,
+          productCategory: analysis.category,
+          sdData,
+          scenePlan,
+          compositionResult,
+          fontName: libraryFont?.name ?? libraryFont?.fontFamily ?? null,
+          badgeName: libraryBadge?.name ?? null,
+          imagePath,
+          seniorAdReview,
+          ctrReview,
+          photoReview,
+        });
+        knowledgeAnalysisTriggered = collected.analysisTriggered;
+        if (!knowledgeCategory) knowledgeCategory = collected.category;
+      } catch (error) {
+        console.warn("[knowledge-engine] collect failed:", error);
       }
     }
 
@@ -1017,6 +1063,9 @@ export async function handleGenerateInfographic(
         estimatedScoreAfterFix: chiefPlan?.estimatedScoreAfterFix,
         designMemoryUpdate: designMemory?.memoryUpdate,
         designMemoryAdvice: designMemory?.nextGenerationAdvice,
+        knowledgeCategory,
+        knowledgePatternsUsed,
+        knowledgeAnalysisTriggered,
         ...briefMeta(designBrief),
       };
     }
@@ -1033,6 +1082,17 @@ export async function handleGenerateInfographic(
         usedFreeQuota: slot.usedFreeQuota,
       },
     });
+
+    if (sdData.layout === "marketplace") {
+      try {
+        await prisma.generationHistory.updateMany({
+          where: { generatedImage: imagePath },
+          data: { generatedImageId: image.id },
+        });
+      } catch {
+        // non-blocking
+      }
+    }
 
     return {
       id: image.id,
@@ -1059,6 +1119,9 @@ export async function handleGenerateInfographic(
       estimatedScoreAfterFix: chiefPlan?.estimatedScoreAfterFix,
       designMemoryUpdate: designMemory?.memoryUpdate,
       designMemoryAdvice: designMemory?.nextGenerationAdvice,
+      knowledgeCategory,
+      knowledgePatternsUsed,
+      knowledgeAnalysisTriggered,
       ...briefMeta(designBrief),
     };
   } catch (error) {

@@ -11,6 +11,13 @@ export { validateQuality, QUALITY_PASS_THRESHOLD } from "./quality-validator";
 export { evaluateArtistic, ARTISTIC_PASS_THRESHOLD } from "./artistic-evaluator";
 export { evaluateFinalQuality, FINAL_QUALITY_PASS } from "./final-quality-validator";
 export type { QualityValidationResult } from "./quality-validator";
+export {
+  retrieveKnowledgeContext,
+  collectGenerationPattern,
+  preloadKnowledgeAnalysis,
+  resolveKnowledgeCategory,
+} from "./knowledge-engine";
+export type { KnowledgeCategory, KnowledgeContext } from "./knowledge-engine";
 export type {
   CompositionEngineInput,
   CompositionResult,

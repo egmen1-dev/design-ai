@@ -17,6 +17,7 @@ import { generateDesignDNA } from "@/lib/design/dna";
 export type ProfessionalLayoutInput = LayoutEngineInput & {
   category: ProductCategory;
   backgroundHint?: string;
+  knowledgeCategory?: import("@/lib/design/knowledge-engine").KnowledgeCategory;
 };
 
 /** Layout Engine — полностью детерминированный, без Ollama */
@@ -26,8 +27,8 @@ export function computeProfessionalLayout(
   const seed = input.seed ?? `layout-${Date.now()}`;
   const shape: ProductShapeHint = input.productShape ?? "standard";
   const rankedBase = input.templateId
-    ? [getTemplate(input.templateId), ...rankTemplatesForProduct(shape, input.meaning.priority, seed, input.category).filter((t) => t.id !== input.templateId)]
-    : rankTemplatesForProduct(shape, input.meaning.priority, seed, input.category);
+    ? [getTemplate(input.templateId), ...rankTemplatesForProduct(shape, input.meaning.priority, seed, input.category, input.knowledgeCategory).filter((t) => t.id !== input.templateId)]
+    : rankTemplatesForProduct(shape, input.meaning.priority, seed, input.category, input.knowledgeCategory);
   const exclude = new Set(input.excludeTemplateIds ?? []);
   const ranked = rankedBase.filter((t) => !exclude.has(t.id));
 

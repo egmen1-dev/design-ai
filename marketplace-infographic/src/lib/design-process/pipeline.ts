@@ -39,6 +39,7 @@ export type DesignProcessContext = {
   retryHint?: string;
   artDirectorMode?: ArtDirectorModeId;
   userId?: string;
+  knowledgeBlock?: string;
 };
 
 export type DesignProcessResult = {
@@ -198,6 +199,7 @@ async function runDesignStage(
     creativeDirector: creative,
     referenceHint: ctx.referenceContext?.compositionHint ?? undefined,
     retryHint: retryHint ?? ctx.retryHint,
+    knowledgeBlock: ctx.knowledgeBlock,
   });
 
   const raw = await callOllamaJson<unknown>(prompt, 0.28);
