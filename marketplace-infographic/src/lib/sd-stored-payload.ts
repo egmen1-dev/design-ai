@@ -1,6 +1,8 @@
 import { DEFAULT_STYLE, STYLE_KEYS, type InfographicStyle } from "@/lib/design-trends";
 import type { CompositingHints, DesignBrief } from "@/lib/design-brief/schema";
 import type { CompositionResult } from "@/lib/design/types";
+import type { ScenePlan } from "@/lib/design/scene-planner";
+import type { QualityValidationResult } from "@/lib/design/quality-validator";
 import type { InfographicSdInput } from "@/lib/validations";
 import { sanitizeSdInput } from "@/lib/sd-sanitize";
 
@@ -11,6 +13,8 @@ export type StoredSdPayload = {
   compositingHints?: CompositingHints;
   qualityScore?: number;
   composition?: Pick<CompositionResult, "dna" | "scenarioId" | "score" | "seed" | "attempts">;
+  scenePlan?: ScenePlan;
+  qualityValidation?: QualityValidationResult;
 };
 
 export function packSdPayload(
@@ -21,6 +25,8 @@ export function packSdPayload(
     compositingHints?: CompositingHints;
     qualityScore?: number;
     composition?: StoredSdPayload["composition"];
+    scenePlan?: ScenePlan;
+    qualityValidation?: QualityValidationResult;
   },
 ): string {
   return JSON.stringify({
@@ -30,6 +36,8 @@ export function packSdPayload(
     compositingHints: extras?.compositingHints,
     qualityScore: extras?.qualityScore,
     composition: extras?.composition,
+    scenePlan: extras?.scenePlan,
+    qualityValidation: extras?.qualityValidation,
   } satisfies StoredSdPayload);
 }
 
@@ -52,6 +60,8 @@ export function unpackSdPayload(json: string): StoredSdPayload {
       compositingHints: record.compositingHints,
       qualityScore: record.qualityScore,
       composition: record.composition,
+      scenePlan: record.scenePlan,
+      qualityValidation: record.qualityValidation,
     };
   }
   return {

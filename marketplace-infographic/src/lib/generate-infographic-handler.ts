@@ -8,9 +8,7 @@ import {
   buildFallbackGradient,
   generateBackground,
 } from "@/lib/stable-diffusion";
-import {
-  renderInfographicHtml,
-} from "@/lib/infographic-template";
+import { renderInfographicHtml } from "@/lib/infographic-template";
 import { sdDataToInfographic } from "@/lib/sd-to-infographic";
 import { packSdPayload, unpackSdPayload } from "@/lib/sd-stored-payload";
 import { DEFAULT_STYLE, TRENDS, type InfographicStyle } from "@/lib/design-trends";
@@ -19,25 +17,29 @@ import { bufferToDataUrl } from "@/lib/background-removal";
 import {
   parseProductImageDataUrl,
   processProductImageForCover,
-  processProductImageForGeneration,
 } from "@/lib/product-image-sd";
 import type { CompositingHints, DesignBrief } from "@/lib/design-brief/schema";
 import type { InfographicSdInput } from "@/lib/validations";
 import { prisma } from "@/lib/prisma";
-import { resolveReferenceContext, type ResolvedReferenceContext } from "@/lib/reference-style-resolver";
 import {
-  mergeProductWithBackground,
-  mergedToDataUrl,
-} from "@/lib/image-compositor";
+  resolveReferenceContext,
+  type ResolvedReferenceContext,
+} from "@/lib/reference-style-resolver";
+import { mergedToDataUrl } from "@/lib/image-compositor";
+import { compositeProductIntoScene } from "@/lib/compositing/scene-compositor";
+import { analyzeProductVisual } from "@/lib/compositing/product-visual-analysis";
 import { resolveMarketplaceAccent } from "@/lib/accent-color";
-import { analyzeProductPrompt } from "@/lib/product-analysis";
-import { generateComposition } from "@/lib/design";
+import {
+  generateComposition,
+  planScene,
+  buildSceneBackgroundPrompt,
+  validateQuality,
+  QUALITY_PASS_THRESHOLD,
+} from "@/lib/design";
+import type { ScenePlan } from "@/lib/design/scene-planner";
+import type { QualityValidationResult } from "@/lib/design/quality-validator";
 import { objectScaleFromHook } from "@/lib/design-process/visual-hook";
 import type { CoverConceptId } from "@/lib/cover-concepts";
-import {
-  enrichBackgroundWithConcept,
-  resolveCoverConcept,
-} from "@/lib/cover-concepts";
 import { PIPELINE_VERSION } from "@/lib/pipeline-version";
 
 export type GenerateInfographicInput = {
@@ -61,12 +63,14 @@ export type GenerateInfographicResult = {
   unlimited: boolean;
   aiSource: string;
   backgroundSource: "sd" | "fallback";
-  /** @deprecated Внутренний legacy; в UI не показываем */
   appliedStyle?: InfographicStyle;
   designConcept?: string;
   visualHook?: { type: string; reason: string; confidence?: number };
   pipelineVersion: string;
+  qualityScore?: number;
 };
+
+const MAX_SCENE_ATTEMPTS = 3;
 
 function briefMeta(brief?: DesignBrief) {
   const hook = brief?.designProcess?.visualHook ?? brief?.visualHook;
@@ -75,6 +79,21 @@ function briefMeta(brief?: DesignBrief) {
     visualHook: hook
       ? { type: hook.type, reason: hook.reason, confidence: hook.confidence }
       : undefined,
+  };
+}
+
+function sceneToCompositingHints(scene: ScenePlan, objectScale: number): CompositingHints {
+  return {
+    lightDirection: scene.lightingDirection,
+    lightTemperature: Number(scene.lightingTemperature.replace(/\D/g, "")) || 5500,
+    shadowType:
+      scene.shadowProfile === "ambient"
+        ? "ambient-soft"
+        : scene.shadowProfile === "contact"
+          ? "contact-hard"
+          : "contact-soft",
+    reflection: scene.reflectionEnabled,
+    objectScale,
   };
 }
 
@@ -99,7 +118,7 @@ async function loadProductCutout(
         cutout: true,
       };
     } catch {
-      // fall through to re-process if file missing
+      // fall through
     }
   }
 
@@ -121,11 +140,15 @@ export async function handleGenerateInfographic(
     let appliedStyle: InfographicStyle = input.style ?? DEFAULT_STYLE;
     let aiSource = "mock";
     let productCutoutPath: string | null = null;
-    let productRender: Awaited<ReturnType<typeof loadProductCutout>>;
     let compositingHints: CompositingHints | undefined;
     let qualityScore: number | undefined;
     let designBrief: DesignBrief | undefined;
     let referenceContext: ResolvedReferenceContext | undefined;
+    let storedScenePlan: ScenePlan | undefined;
+
+    const variationSeed =
+      input.backgroundSeed ??
+      `gen-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 
     if (input.regenerateBackgroundOnly && input.existingImageId) {
       const existing = await prisma.generatedImage.findUnique({
@@ -144,6 +167,8 @@ export async function handleGenerateInfographic(
         compositingHints = stored.compositingHints;
         qualityScore = stored.qualityScore;
         designBrief = stored.brief;
+        storedScenePlan = stored.scenePlan;
+        productCutoutPath = existing.productCutout;
         aiSource = "regen";
       } else {
         const ollama = await generateSdInfographicData(
@@ -157,37 +182,28 @@ export async function handleGenerateInfographic(
         designBrief = ollama.brief;
         aiSource = "regen-rebuild";
       }
-
-      productRender = await loadProductCutout(
-        input.productImage,
-        input.userId,
-        existing.productCutout,
-      );
-      productCutoutPath = productRender.webPath;
     } else {
       if (!input.productImage) {
         throw new Error("PRODUCT_IMAGE_REQUIRED");
       }
-      appliedStyle = input.style ?? DEFAULT_STYLE;
 
+      appliedStyle = input.style ?? DEFAULT_STYLE;
       referenceContext = resolveReferenceContext(
         input.prompt,
         appliedStyle,
         input.ollamaContext?.examples ?? [],
       );
-      const styleHint = input.style ?? (referenceContext.hasStrongReference ? referenceContext.style : undefined);
+      const styleHint =
+        input.style ??
+        (referenceContext.hasStrongReference ? referenceContext.style : undefined);
       if (referenceContext.hasStrongReference && !input.style) {
         appliedStyle = referenceContext.style;
       }
 
-      productRender = await loadProductCutout(input.productImage, input.userId);
-      productCutoutPath = productRender.webPath;
-
-      const ollama = await generateSdInfographicData(
-        input.prompt,
-        styleHint,
-        { ...input.ollamaContext, referenceContext },
-      );
+      const ollama = await generateSdInfographicData(input.prompt, styleHint, {
+        ...input.ollamaContext,
+        referenceContext,
+      });
       sdData = ollama.data;
       compositingHints = ollama.compositingHints;
       qualityScore = ollama.qualityScore;
@@ -195,27 +211,32 @@ export async function handleGenerateInfographic(
       aiSource = ollama.source;
     }
 
-    const variationSeed =
-      input.backgroundSeed ??
-      `gen-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-
-    const analysis = analyzeProductPrompt(input.prompt);
-    const coverConcept = resolveCoverConcept(input.coverConcept, analysis.category);
-    sdData.backgroundPrompt = enrichBackgroundWithConcept(
-      sdData.backgroundPrompt,
-      coverConcept,
-    );
-    compositingHints = {
-      ...compositingHints,
-      lightDirection: coverConcept.lightDirection,
-      lightTemperature: Number(coverConcept.lightTemperature.replace(/\D/g, "")) || 5500,
-      shadowType: coverConcept.shadowType,
-      reflection: coverConcept.reflection,
-      objectScale: compositingHints?.objectScale ?? designBrief?.objectScale ?? 0.78,
-    };
+    // ── 1. Анализ товара + Scene Planner ──────────────────────────────
+    let productVisual;
+    if (input.productImage) {
+      const { buffer } = parseProductImageDataUrl(input.productImage);
+      productVisual = await analyzeProductVisual(buffer);
+    }
 
     const visualHook = designBrief?.designProcess?.visualHook ?? designBrief?.visualHook;
 
+    const { analysis, scene: plannedScene } = planScene({
+      prompt: input.prompt,
+      coverConceptId: input.coverConcept ?? storedScenePlan?.coverConceptId,
+      visualHook,
+      styleHint: input.style ?? (referenceContext?.hasStrongReference ? referenceContext.style : undefined),
+      seed: variationSeed,
+      productVisual,
+    });
+
+    const scenePlan = storedScenePlan ?? plannedScene;
+    const objectScale = objectScaleFromHook(
+      visualHook,
+      compositingHints?.objectScale ?? designBrief?.objectScale ?? 0.78,
+    );
+    compositingHints = sceneToCompositingHints(scenePlan, objectScale);
+
+    // ── 2. Composition Engine (диапазоны из Scene Planner) ──────────
     const compositionResult =
       sdData.layout === "marketplace"
         ? generateComposition({
@@ -224,34 +245,119 @@ export async function handleGenerateInfographic(
             bulletCount: sdData.bullets.length,
             hasLeftPanel: true,
             hasRightSidebar: true,
-            objectScale: objectScaleFromHook(
-              visualHook,
-              compositingHints.objectScale,
-            ),
-            styleHint: input.style ?? (referenceContext?.hasStrongReference ? referenceContext.style : undefined),
+            objectScale,
+            styleHint:
+              input.style ??
+              (referenceContext?.hasStrongReference ? referenceContext.style : undefined),
             seed: variationSeed,
             visualHook,
+            scenarioId: scenePlan.compositionScenario,
+            productSafeZone: scenePlan.productSafeZone,
           })
         : null;
 
     const compositionLayout = compositionResult?.layout;
 
+    // ── 3. Prompt Builder → SD фон ────────────────────────────────────
+    const scenePrompt = buildSceneBackgroundPrompt(scenePlan, analysis, {
+      dominantColors: productVisual?.dominantColors,
+      shape: productVisual?.shape,
+    });
+    sdData.backgroundPrompt = scenePrompt;
+
     let backgroundUrl: string | null = null;
     let backgroundSource: "sd" | "fallback" = "sd";
     let backgroundDataUrl: string | undefined;
+    let compositeResult: Awaited<ReturnType<typeof compositeProductIntoScene>> | undefined;
+    let qualityValidation: QualityValidationResult | undefined;
+    let productRender: Awaited<ReturnType<typeof loadProductCutout>> | undefined;
 
-    try {
-      if (!process.env.HF_API_KEY) {
-        throw new Error("HF_API_KEY missing");
+    for (let attempt = 0; attempt < MAX_SCENE_ATTEMPTS; attempt++) {
+      const attemptSeed = `${variationSeed}:bg${attempt}`;
+
+      try {
+        if (!process.env.HF_API_KEY) {
+          throw new Error("HF_API_KEY missing");
+        }
+        backgroundUrl = await generateBackground(sdData.backgroundPrompt, {
+          seedSuffix: attemptSeed,
+          style: appliedStyle,
+        });
+        backgroundDataUrl = await backgroundToDataUrl(backgroundUrl);
+        backgroundSource = "sd";
+      } catch (error) {
+        console.warn(`SD background attempt ${attempt + 1} failed:`, error);
+        if (attempt === MAX_SCENE_ATTEMPTS - 1) {
+          backgroundSource = "fallback";
+          backgroundUrl = null;
+          backgroundDataUrl = undefined;
+        }
+        continue;
       }
-      backgroundUrl = await generateBackground(sdData.backgroundPrompt, {
-        seedSuffix: variationSeed,
-        style: appliedStyle,
-      });
-      backgroundDataUrl = await backgroundToDataUrl(backgroundUrl);
-    } catch (error) {
-      console.warn("SD background failed, gradient fallback:", error);
-      backgroundSource = "fallback";
+
+      // ── 4. Background Removal (после SD) ────────────────────────────
+      if (!productRender) {
+        productRender = await loadProductCutout(
+          input.productImage,
+          input.userId,
+          input.regenerateBackgroundOnly ? productCutoutPath ?? undefined : undefined,
+        );
+        productCutoutPath = productRender.webPath;
+      }
+
+      const usePhotorealMerge =
+        sdData.layout === "marketplace" && process.env.MARKETPLACE_HTML_PRODUCT !== "1";
+
+      if (
+        !usePhotorealMerge ||
+        !productRender.cutout ||
+        !productCutoutPath ||
+        backgroundSource !== "sd"
+      ) {
+        break;
+      }
+
+      try {
+        // ── 5–9. Lighting → Color → Shadow → Reflection → Composite ──
+        compositeResult = await compositeProductIntoScene(backgroundUrl!, productCutoutPath, {
+          layout: "marketplace",
+          scene: scenePlan,
+          compositionLayout,
+          objectScale,
+        });
+
+        qualityValidation = validateQuality({
+          compositionLayout,
+          compositionScore: compositionResult?.score,
+          dna: compositionResult?.dna,
+          scene: scenePlan,
+          lighting: compositeResult.lighting,
+          productAreaPct: compositionLayout?.metrics?.productAreaPct,
+          hasReflection: scenePlan.reflectionEnabled,
+          hasShadows: true,
+        });
+
+        qualityScore = qualityValidation.total;
+
+        if (qualityValidation.passed) {
+          break;
+        }
+
+        console.warn(
+          `[quality] score ${qualityValidation.total}/${QUALITY_PASS_THRESHOLD} — retry background (${attempt + 1}/${MAX_SCENE_ATTEMPTS})`,
+          qualityValidation.issues,
+        );
+      } catch (error) {
+        console.warn("Scene composite failed:", error);
+        if (attempt === MAX_SCENE_ATTEMPTS - 1) {
+          compositeResult = undefined;
+        }
+      }
+    }
+
+    if (!productRender && input.productImage) {
+      productRender = await loadProductCutout(input.productImage, input.userId);
+      productCutoutPath = productRender.webPath;
     }
 
     const infographicData = sdDataToInfographic(sdData, input.prompt);
@@ -265,51 +371,24 @@ export async function handleGenerateInfographic(
         : buildFallbackGradient(sdData.colors);
 
     let mergedImageDataUrl: string | undefined;
-    const usePhotorealMerge =
-      sdData.layout === "marketplace" && process.env.MARKETPLACE_HTML_PRODUCT !== "1";
-
-    if (
-      usePhotorealMerge &&
-      backgroundUrl &&
-      backgroundSource === "sd" &&
-      productRender.cutout &&
-      productCutoutPath
-    ) {
-      try {
-        const mergedUrl = await mergeProductWithBackground(
-          backgroundUrl,
-          productCutoutPath,
-          {
-            layout: "marketplace",
-            compositingHints,
-            reflection: compositingHints?.reflection,
-            compositionLayout,
-          },
-        );
-        mergedImageDataUrl = await mergedToDataUrl(mergedUrl);
-      } catch (error) {
-        console.warn("Photoreal merge failed, HTML overlay fallback:", error);
-      }
+    if (compositeResult) {
+      mergedImageDataUrl = await mergedToDataUrl(compositeResult.mergedPath);
     } else if (
       sdData.layout !== "marketplace" &&
       backgroundUrl &&
       backgroundSource === "sd" &&
-      productRender.cutout &&
+      productRender?.cutout &&
       productCutoutPath
     ) {
       try {
-        const mergedUrl = await mergeProductWithBackground(
-          backgroundUrl,
-          productCutoutPath,
-          {
-            layout: "center",
-            compositingHints,
-            reflection: compositingHints?.reflection,
-          },
-        );
-        mergedImageDataUrl = await mergedToDataUrl(mergedUrl);
+        compositeResult = await compositeProductIntoScene(backgroundUrl, productCutoutPath, {
+          layout: "center",
+          scene: scenePlan,
+          objectScale,
+        });
+        mergedImageDataUrl = await mergedToDataUrl(compositeResult.mergedPath);
       } catch (error) {
-        console.warn("Product merge failed:", error);
+        console.warn("Non-marketplace composite failed:", error);
       }
     }
 
@@ -325,20 +404,15 @@ export async function handleGenerateInfographic(
         }
       : undefined;
 
-    if (compositionResult && compositionResult.score.total < 90) {
-      console.warn(
-        `[composition] best score ${compositionResult.score.total}/100 after ${compositionResult.attempts} attempts`,
-      );
-    }
-
+    // ── 10. Layout Renderer ───────────────────────────────────────────
     const html = renderInfographicHtml(infographicData, {
       style: appliedStyle,
       layout: sdData.layout,
       mergedImageDataUrl,
       backgroundDataUrl: mergedImageDataUrl ? undefined : backgroundDataUrl,
       backgroundCss: !backgroundDataUrl && !mergedImageDataUrl ? fallbackBg : undefined,
-      productImageSrc: mergedImageDataUrl ? undefined : productRender.renderSrc,
-      productImageCutout: productRender.cutout,
+      productImageSrc: mergedImageDataUrl ? undefined : productRender?.renderSrc,
+      productImageCutout: productRender?.cutout ?? false,
       libraryFont,
       libraryBadge,
       accentHex,
@@ -352,6 +426,15 @@ export async function handleGenerateInfographic(
       ? { ...slot.balance, freeRemaining: slot.balance.freeRemaining - 1 }
       : slot.balance;
 
+    const payloadExtras = {
+      brief: designBrief,
+      compositingHints,
+      qualityScore: qualityValidation?.total ?? qualityScore,
+      composition: compositionMeta,
+      scenePlan,
+      qualityValidation,
+    };
+
     if (input.regenerateBackgroundOnly && input.existingImageId) {
       await prisma.generatedImage.update({
         where: { id: input.existingImageId },
@@ -359,12 +442,7 @@ export async function handleGenerateInfographic(
           imagePath,
           backgroundUrl,
           productCutout: productCutoutPath,
-          generatedJson: packSdPayload(sdData, appliedStyle, {
-            brief: designBrief,
-            compositingHints,
-            qualityScore,
-            composition: compositionMeta,
-          }),
+          generatedJson: packSdPayload(sdData, appliedStyle, payloadExtras),
         },
       });
 
@@ -378,6 +456,7 @@ export async function handleGenerateInfographic(
         aiSource,
         backgroundSource,
         pipelineVersion: PIPELINE_VERSION,
+        qualityScore: qualityValidation?.total,
         ...briefMeta(designBrief),
       };
     }
@@ -386,14 +465,9 @@ export async function handleGenerateInfographic(
       data: {
         userId: input.userId,
         prompt: input.prompt,
-        htmlContent: "[SD_PIPELINE]",
+        htmlContent: "[SCENE_PIPELINE]",
         imagePath,
-        generatedJson: packSdPayload(sdData, appliedStyle, {
-          brief: designBrief,
-          compositingHints,
-          qualityScore,
-          composition: compositionMeta,
-        }),
+        generatedJson: packSdPayload(sdData, appliedStyle, payloadExtras),
         backgroundUrl,
         productCutout: productCutoutPath,
         usedFreeQuota: slot.usedFreeQuota,
@@ -410,6 +484,7 @@ export async function handleGenerateInfographic(
       aiSource,
       backgroundSource,
       pipelineVersion: PIPELINE_VERSION,
+      qualityScore: qualityValidation?.total,
       ...briefMeta(designBrief),
     };
   } catch (error) {

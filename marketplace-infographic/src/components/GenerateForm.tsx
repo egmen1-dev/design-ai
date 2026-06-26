@@ -38,12 +38,13 @@ const TEMPLATES = [
 ];
 
 const GENERATION_STEPS = [
-  "AI анализирует товар и аудиторию",
-  "Определяет визуальный хук и концепцию",
-  "Строит композицию и типографику",
-  "Генерирует фотореалистичный фон (SD)",
-  "Встраивает товар в сцену (photoreal merge)",
-  "Собирает инфографику 900×1200",
+  "Анализ товара и проектирование сцены",
+  "Построение композиции и safe zones",
+  "Генерация детального промпта сцены",
+  "Stable Diffusion — фотореалистичный фон",
+  "Вырезка товара и интеграция в сцену",
+  "Lighting / Color / Shadow / Reflection",
+  "Сборка инфографики и проверка качества",
 ];
 
 const HOOK_LABELS: Record<string, string> = {
@@ -386,8 +387,8 @@ export function GenerateForm() {
       <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950/50 px-4 py-3">
         <p className="text-sm font-medium text-slate-300">Сцена обложки</p>
         <p className="mt-1 text-xs leading-relaxed text-slate-500">
-          Как у Aidentika: товар встраивается в фотореалистичную сцену, а не накладывается
-          поверх фона. По умолчанию сцена подбирается по категории товара.
+          Scene-first пайплайн: сначала проектируется сцена (свет, перспектива, safe zones),
+          затем товар встраивается в неё через lighting/color matching — как при реальной съёмке.
         </p>
         <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
           <button

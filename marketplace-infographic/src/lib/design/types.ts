@@ -64,6 +64,10 @@ export type CompositionEngineInput = {
   styleHint?: InfographicStyle;
   seed?: string;
   visualHook?: import("@/lib/design-process/types").VisualHook;
+  /** Scene-first: фиксированный сценарий из Scene Planner */
+  scenarioId?: CompositionScenarioId;
+  /** Scene-first: диапазоны зоны товара */
+  productSafeZone?: import("./scene-planner").ProductSafeZone;
 };
 
 export type CompositionScore = {

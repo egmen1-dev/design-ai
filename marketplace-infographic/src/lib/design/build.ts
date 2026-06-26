@@ -7,6 +7,7 @@ import type {
   CompositionZone,
 } from "@/lib/composition/types";
 import type { CompositionScenario, DesignDNA } from "./types";
+import type { ProductSafeZone } from "./scene-planner";
 import { applyJitter, createSeededRng, JITTER, pickRange, type Rng } from "./variability";
 
 function zonesOverlap(a: CompositionZone, b: CompositionZone): boolean {
@@ -97,6 +98,7 @@ export function buildLayoutFromDNA(
   dna: DesignDNA,
   scenario: CompositionScenario,
   seed: string,
+  sceneProductZone?: ProductSafeZone,
 ): CompositionLayout {
   const rng = createSeededRng(`layout:${seed}:${scenario.id}`);
   const catRules = getCategoryRules(input.category);
@@ -106,18 +108,28 @@ export function buildLayoutFromDNA(
 
   const dominanceBias = (dna.productDominance - 50) / 100;
   const scaleBias = ((input.objectScale ?? 0.78) - 0.5) * 10;
+
+  const zoneW = sceneProductZone?.widthPct;
+  const zoneH = sceneProductZone?.heightPct;
+  const zoneCX = sceneProductZone?.centerX;
+  const zoneCY = sceneProductZone?.centerY;
+
   const widthPct = applyJitter(
     rng,
-    pickRange(rng, scenario.biases.productWidth[0], scenario.biases.productWidth[1]) +
-      dominanceBias * 6 +
-      scaleBias * 0.5,
+    zoneW
+      ? pickRange(rng, zoneW[0], zoneW[1])
+      : pickRange(rng, scenario.biases.productWidth[0], scenario.biases.productWidth[1]) +
+          dominanceBias * 6 +
+          scaleBias * 0.5,
     JITTER.product,
   );
   const heightPct = applyJitter(
     rng,
-    pickRange(rng, scenario.biases.productHeight[0], scenario.biases.productHeight[1]) +
-      dominanceBias * 5 +
-      scaleBias,
+    zoneH
+      ? pickRange(rng, zoneH[0], zoneH[1])
+      : pickRange(rng, scenario.biases.productHeight[0], scenario.biases.productHeight[1]) +
+          dominanceBias * 5 +
+          scaleBias,
     JITTER.product,
   );
 
@@ -141,15 +153,21 @@ export function buildLayoutFromDNA(
 
   let centerX = applyJitter(
     rng,
-    pickRange(rng, scenario.biases.productCenterX[0], scenario.biases.productCenterX[1]),
+    zoneCX
+      ? pickRange(rng, zoneCX[0], zoneCX[1])
+      : pickRange(rng, scenario.biases.productCenterX[0], scenario.biases.productCenterX[1]),
     JITTER.product,
   );
-  if (textSide === "left") centerX = clampPct(centerX + 4, 52, 66);
-  else centerX = clampPct(centerX - 2, 38, 55);
+  if (!zoneCX) {
+    if (textSide === "left") centerX = clampPct(centerX + 4, 52, 66);
+    else centerX = clampPct(centerX - 2, 38, 55);
+  }
 
   const centerY = applyJitter(
     rng,
-    pickRange(rng, scenario.biases.productCenterY[0], scenario.biases.productCenterY[1]),
+    zoneCY
+      ? pickRange(rng, zoneCY[0], zoneCY[1])
+      : pickRange(rng, scenario.biases.productCenterY[0], scenario.biases.productCenterY[1]),
     JITTER.product,
   );
 

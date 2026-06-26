@@ -20,6 +20,18 @@ function attachScore(layout: CompositionLayout): CompositionLayout {
   return { ...layout, score: score.total };
 }
 
+function resolveScenario(
+  input: CompositionEngineInput,
+  dna: ReturnType<typeof generateDesignDNA>,
+  rng: ReturnType<typeof createSeededRng>,
+) {
+  if (input.scenarioId) {
+    const forced = COMPOSITION_SCENARIOS.find((s) => s.id === input.scenarioId);
+    if (forced) return forced;
+  }
+  return selectScenario(dna, input.category, rng, input.visualHook);
+}
+
 /**
  * Интеллектуальный Composition Engine.
  * Каждая генерация — новая DNA + сценарий + jitter в диапазонах.
@@ -38,7 +50,7 @@ export function generateComposition(input: CompositionEngineInput): CompositionR
       generateDesignDNA(input.category, seed, input.styleHint),
       input.visualHook,
     );
-    const scenario = selectScenario(dna, input.category, rng, input.visualHook);
+    const scenario = resolveScenario(input, dna, rng);
 
     const compInput: CompositionInput = {
       category: input.category,
@@ -50,7 +62,7 @@ export function generateComposition(input: CompositionEngineInput): CompositionR
       objectScale: input.objectScale,
     };
 
-    let layout = buildLayoutFromDNA(compInput, dna, scenario, seed);
+    let layout = buildLayoutFromDNA(compInput, dna, scenario, seed, input.productSafeZone);
     layout = validateAndAdjustComposition({
       ...layout,
       dna,
