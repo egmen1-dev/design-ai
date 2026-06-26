@@ -53,8 +53,7 @@ fi
 echo "==> Building Next.js app"
 npm run build
 
-echo "==> Syncing standalone runtime assets"
-npm run prepare-standalone
+echo "==> Syncing standalone env"
 cp .env .next/standalone/.env 2>/dev/null || true
 
 echo "==> Starting PM2 process"
