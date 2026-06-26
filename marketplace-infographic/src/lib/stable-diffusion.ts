@@ -14,8 +14,9 @@ const HF_INFERENCE_BASE =
   process.env.HF_INFERENCE_BASE_URL?.replace(/\/$/, "") ??
   "https://router.huggingface.co/hf-inference";
 const HF_API_URL = `${HF_INFERENCE_BASE}/models/${HF_MODEL}`;
-const MAX_ATTEMPTS = 12;
-const POLL_MS = 5_000;
+const MAX_ATTEMPTS = 6;
+const POLL_MS = 4_000;
+const HF_TOTAL_TIMEOUT_MS = 180_000;
 
 function hashPrompt(prompt: string): string {
   return createHash("sha256").update(prompt.trim().toLowerCase()).digest("hex");
@@ -27,10 +28,10 @@ function sleep(ms: number): Promise<void> {
 
 function sanitizeBackgroundPrompt(prompt: string): string {
   const base = prompt.trim();
-  const noText =
-    "no text, no words, no letters, no typography, no watermark, no logo, no captions";
+  const noProduct =
+    "no text, no words, no letters, no typography, no watermark, no logo, no captions, no product, no equipment, no generator, no appliance, no machinery, empty foreground, backdrop only";
   if (/no text|no words|no letters/i.test(base)) return base;
-  return `${base}, ${noText}`;
+  return `${base}, ${noProduct}`;
 }
 
 async function requestHfImage(
@@ -48,7 +49,13 @@ async function requestHfImage(
     parameters.seed = options.seed;
   }
 
+  const deadline = Date.now() + HF_TOTAL_TIMEOUT_MS;
+
   for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+    if (Date.now() > deadline) {
+      throw new Error(`HF API timeout: ${lastError}`);
+    }
+
     const response = await fetch(HF_API_URL, {
       method: "POST",
       headers: {
@@ -59,6 +66,7 @@ async function requestHfImage(
         inputs: sanitizeBackgroundPrompt(prompt),
         parameters,
       }),
+      signal: AbortSignal.timeout(45_000),
     });
 
     if (response.status === 503) {

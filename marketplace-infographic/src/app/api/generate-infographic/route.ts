@@ -59,6 +59,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Загрузите фото товара" }, { status: 400 });
     }
     console.error("generate-infographic error:", error);
-    return NextResponse.json({ error: "Ошибка генерации" }, { status: 500 });
+    const message =
+      error instanceof Error && error.message.includes("timeout")
+        ? "Генерация заняла слишком много времени. Попробуйте снова."
+        : "Ошибка генерации";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

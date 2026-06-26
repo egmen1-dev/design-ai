@@ -107,7 +107,7 @@ export function formatExamplesForPrompt(
       ];
 
       if (synonyms.length > 0) {
-        lines.push(`synonyms: [${synonyms.slice(0, 12).join(", ")}]`);
+        lines.push(`synonyms: [${synonyms.slice(0, 6).join(", ")}]`);
       }
 
       if (example.imageUrl) {

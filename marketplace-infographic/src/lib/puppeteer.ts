@@ -18,7 +18,10 @@ export async function renderHtmlToImage(
   try {
     const page = await browser.newPage();
     await page.setViewport({ width: 1200, height: 1200, deviceScaleFactor: 2 });
-    await page.setContent(html, { waitUntil: "load" });
+    await page.setContent(html, { waitUntil: "load", timeout: 45_000 });
+    await page.evaluate(async () => {
+      await document.fonts.ready;
+    });
     await page.evaluate(async () => {
       const images = Array.from(document.images);
       await Promise.all(

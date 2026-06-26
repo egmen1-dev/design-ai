@@ -59,6 +59,7 @@ export function GenerateForm() {
   const [loading, setLoading] = useState(false);
   const [regenLoading, setRegenLoading] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
+  const [elapsedSec, setElapsedSec] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<{
     id: string;
@@ -75,17 +76,32 @@ export function GenerateForm() {
   useEffect(() => {
     if (!loading && !regenLoading) {
       setStepIndex(0);
+      setElapsedSec(0);
       return;
     }
 
-    const timer = setInterval(() => {
+    const startedAt = Date.now();
+    const stepTimer = setInterval(() => {
       setStepIndex((current) =>
         current < GENERATION_STEPS.length - 1 ? current + 1 : current,
       );
-    }, 1800);
+    }, 2200);
 
-    return () => clearInterval(timer);
+    const clockTimer = setInterval(() => {
+      setElapsedSec(Math.floor((Date.now() - startedAt) / 1000));
+    }, 1000);
+
+    return () => {
+      clearInterval(stepTimer);
+      clearInterval(clockTimer);
+    };
   }, [loading, regenLoading]);
+
+  function formatElapsed(seconds: number): string {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes}:${secs.toString().padStart(2, "0")}`;
+  }
 
   async function handleApiError(res: Response, data: { error?: string }) {
     if (res.status === 402) {
@@ -99,12 +115,20 @@ export function GenerateForm() {
 
   function networkErrorMessage(err: unknown): string {
     if (err instanceof DOMException && err.name === "AbortError") {
-      return "Превышено время ожидания. Генерация может занять до 5 минут — попробуйте ещё раз.";
+      return "Превышено время ожидания (10 мин). Попробуйте ещё раз или упростите описание.";
     }
     if (err instanceof TypeError) {
-      return "Ошибка сети. Откройте https://design-ai.shop или http://194.226.115.138";
+      return "Соединение прервано. Сервер ещё может дорабатывать картинку — подождите 30 сек и обновите страницу «Мои генерации», либо попробуйте снова.";
     }
-    return "Ошибка сети";
+    return "Ошибка сети. Попробуйте ещё раз через минуту.";
+  }
+
+  async function parseJsonResponse<T>(res: Response): Promise<T | null> {
+    try {
+      return (await res.json()) as T;
+    } catch {
+      return null;
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -120,6 +144,9 @@ export function GenerateForm() {
     setResult(null);
 
     try {
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), 600_000);
+
       const res = await fetch("/api/generate-infographic", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -128,9 +155,12 @@ export function GenerateForm() {
           style,
           productImage,
         }),
+        signal: controller.signal,
       });
 
-      const data = (await res.json()) as {
+      window.clearTimeout(timeoutId);
+
+      const data = await parseJsonResponse<{
         error?: string;
         id?: string;
         imagePath?: string;
@@ -141,7 +171,16 @@ export function GenerateForm() {
         appliedStyle?: InfographicStyle;
         backgroundSource?: "sd" | "fallback";
         pipelineVersion?: string;
-      };
+      }>(res);
+
+      if (!data) {
+        setError(
+          res.status >= 500
+            ? "Сервер не успел ответить. Если генерация долгая — обновите страницу через минуту."
+            : "Пустой ответ сервера",
+        );
+        return;
+      }
 
       if (!res.ok) {
         await handleApiError(res, data);
@@ -180,6 +219,9 @@ export function GenerateForm() {
     setError(null);
 
     try {
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), 600_000);
+
       const res = await fetch("/api/regenerate-background", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -188,9 +230,12 @@ export function GenerateForm() {
           style,
           productImage,
         }),
+        signal: controller.signal,
       });
 
-      const data = (await res.json()) as {
+      window.clearTimeout(timeoutId);
+
+      const data = await parseJsonResponse<{
         error?: string;
         imagePath?: string;
         freeRemaining: number;
@@ -198,7 +243,12 @@ export function GenerateForm() {
         appliedStyle?: InfographicStyle;
         backgroundSource?: "sd" | "fallback";
         pipelineVersion?: string;
-      };
+      }>(res);
+
+      if (!data) {
+        setError("Сервер не успел ответить при перегенерации фона");
+        return;
+      }
 
       if (!res.ok) {
         await handleApiError(res, data);
@@ -401,6 +451,11 @@ export function GenerateForm() {
               />
             ))}
           </div>
+          <p className="mt-3 text-xs text-slate-500">
+            Прошло: <span className="font-mono text-slate-300">{formatElapsed(elapsedSec)}</span>
+            {" · "}
+            обычно 2–5 минут. Не закрывайте вкладку.
+          </p>
         </div>
       )}
 

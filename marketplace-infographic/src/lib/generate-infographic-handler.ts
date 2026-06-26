@@ -129,14 +129,15 @@ export async function handleGenerateInfographic(
         throw new Error("PRODUCT_IMAGE_REQUIRED");
       }
       appliedStyle = input.style ?? DEFAULT_STYLE;
-      const ollama = await generateSdInfographicData(
-        input.prompt,
-        appliedStyle,
-        input.ollamaContext,
-      );
+
+      const [ollama, cutout] = await Promise.all([
+        generateSdInfographicData(input.prompt, appliedStyle, input.ollamaContext),
+        loadProductCutout(input.productImage, input.userId),
+      ]);
+
       sdData = ollama.data;
       aiSource = ollama.source;
-      productRender = await loadProductCutout(input.productImage, input.userId);
+      productRender = cutout;
       productCutoutPath = productRender.webPath;
     }
 

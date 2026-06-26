@@ -129,6 +129,8 @@ ${SD_EXAMPLE}
 Товар:
 "${prompt}"`;
 
+  const ollamaTimeoutMs = Number(process.env.OLLAMA_TIMEOUT_MS ?? 120_000);
+
   const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -138,6 +140,7 @@ ${SD_EXAMPLE}
       stream: false,
       options: { temperature: 0.4, num_predict: 1536 },
     }),
+    signal: AbortSignal.timeout(ollamaTimeoutMs),
   });
 
   if (!response.ok) {
