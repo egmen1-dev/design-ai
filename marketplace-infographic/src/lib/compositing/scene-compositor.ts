@@ -15,6 +15,7 @@ import { matchLightingToScene } from "./lighting-matcher";
 import { matchColorToScene } from "./color-matcher";
 import { generateShadows } from "./shadow-generator";
 import { generateReflection } from "./reflection-generator";
+import { applyFilmGrain } from "./grain-matcher";
 
 const CANVAS_W = WB_COVER.width;
 const CANVAS_H = WB_COVER.height;
@@ -246,7 +247,9 @@ export async function compositeProductIntoScene(
     blend: "over",
   });
 
-  const mergedBuffer = await sharp(bgPrepared).composite(composites).png().toBuffer();
+  const mergedBuffer = await applyFilmGrain(
+    await sharp(bgPrepared).composite(composites).png().toBuffer(),
+  );
 
   const hash = createHash("sha256")
     .update(backgroundUrl)

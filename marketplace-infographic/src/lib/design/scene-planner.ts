@@ -77,6 +77,7 @@ export type ScenePlannerInput = {
   seed: string;
   productVisual?: ProductVisualProfile;
   sceneNarrative?: string;
+  compositionScenarioId?: CompositionScenarioId;
 };
 
 const CONCEPT_TO_SCENARIO: Record<CoverConceptId, CompositionScenarioId> = {
@@ -306,6 +307,7 @@ export function planScene(input: ScenePlannerInput): {
     analysis.category === "electronics" || rng() > 0.45 ? "left" : "right";
 
   let compositionScenario =
+    input.compositionScenarioId ??
     HOOK_SCENARIO_OVERRIDE[input.visualHook?.type ?? ""] ??
     CONCEPT_TO_SCENARIO[concept.id];
 

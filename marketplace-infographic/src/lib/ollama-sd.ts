@@ -153,7 +153,7 @@ export async function generateSdInfographicData(
   const enrichedContext: OllamaSdContext = { ...context, referenceContext };
   const analysis = analyzeProductPrompt(prompt);
   const cacheId = cacheKey([
-    "brief-v12-poster",
+    "brief-v13-cd2",
     prompt.slice(0, 80),
     style ?? "auto",
     referenceContext.topExample?.id ?? "none",

@@ -92,10 +92,23 @@ function briefMeta(brief?: DesignBrief) {
 
 function creativeFromBrief(brief?: DesignBrief): CreativeDirectorResult | undefined {
   if (!brief?.creativeConcept || !brief.oneThought) return undefined;
+  const cc = brief.creativeConcept;
   return {
-    creativeConcept: brief.creativeConcept,
+    creativeConcept: {
+      title: cc.title,
+      mainIdea: cc.mainIdea,
+      visualHook: cc.visualHook,
+      emotion: cc.emotion,
+      marketingGoal: cc.marketingGoal,
+      reason: cc.reason,
+      targetAudience: cc.targetAudience ?? "покупатели маркетплейса",
+      toneOfVoice: cc.toneOfVoice ?? "уверенный",
+      styleKeywords: cc.styleKeywords ?? [],
+      whatToSayInOneSecond: cc.whatToSayInOneSecond ?? cc.title,
+    },
     oneThought: brief.oneThought,
     sceneNarrative: brief.sceneNarrative ?? brief.backgroundPrompt?.slice(0, 400) ?? "",
+    compositionScenarioId: brief.compositionScenarioId as CreativeDirectorResult["compositionScenarioId"],
   };
 }
 
@@ -274,6 +287,9 @@ export async function handleGenerateInfographic(
       seed: variationSeed,
       productVisual,
       sceneNarrative,
+      compositionScenarioId: designBrief?.compositionScenarioId as
+        | import("@/lib/design/types").CompositionScenarioId
+        | undefined,
     });
 
     const scenePlan = storedScenePlan ?? plannedScene;

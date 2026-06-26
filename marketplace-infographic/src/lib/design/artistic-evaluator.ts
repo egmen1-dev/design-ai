@@ -35,12 +35,17 @@ export function evaluateArtistic(input: ArtisticEvaluatorInput): ArtisticScore {
 
   const premiumFeel =
     input.creativeConcept.emotion.includes("престиж") ||
-    input.creativeConcept.mainIdea.length > 20
+    input.creativeConcept.mainIdea.length > 20 ||
+    (input.creativeConcept.styleKeywords?.length ?? 0) >= 3
       ? 92
       : 88;
 
   const instantComprehension =
-    input.oneThought.headline.length <= 45 && input.oneThought.answer.length <= 8 ? 95 : 80;
+    input.oneThought.headline.length <= 45 &&
+    input.oneThought.answer.length <= 8 &&
+    (input.creativeConcept.whatToSayInOneSecond?.length ?? 0) <= 60
+      ? 95
+      : 80;
 
   const professionalFeel =
     input.creativeConcept.reason.length > 30 ? 93 : 85;

@@ -81,6 +81,11 @@ export function buildDesignStagePrompt(input: DesignPromptInput): string {
 ## Creative Concept (НЕ МЕНЯТЬ)
 ${JSON.stringify(cd.creativeConcept, null, 2)}
 
+## Целевая аудитория: ${cd.creativeConcept.targetAudience}
+## Тон: ${cd.creativeConcept.toneOfVoice}
+## За 1 секунду: ${cd.creativeConcept.whatToSayInOneSecond}
+## Сценарий композиции: ${cd.compositionScenarioId ?? "hero_product"}
+
 ## Одна мысль обложки (НЕ МЕНЯТЬ)
 Заголовок: "${cd.oneThought.headline}"
 Герой-цифра: ${cd.oneThought.answer} ${cd.oneThought.answerLabel}

@@ -16,6 +16,10 @@ const creativeConceptSchema = z.object({
   emotion: z.string().max(80),
   marketingGoal: z.string().max(120),
   reason: z.string().max(300),
+  targetAudience: z.string().max(120).optional(),
+  toneOfVoice: z.string().max(80).optional(),
+  styleKeywords: z.array(z.string().max(30)).max(8).optional(),
+  whatToSayInOneSecond: z.string().max(80).optional(),
 });
 
 const oneThoughtSchema = z.object({
@@ -121,6 +125,7 @@ export const designBriefSchema = z.object({
   creativeConcept: creativeConceptSchema.optional(),
   oneThought: oneThoughtSchema.optional(),
   sceneNarrative: z.string().max(400).optional(),
+  compositionScenarioId: z.string().max(40).optional(),
   deferredBullets: z.array(z.string().max(80)).max(6).optional(),
   designProcess: designProcessSchema.optional(),
   visualHook: visualHookSchema.optional(),

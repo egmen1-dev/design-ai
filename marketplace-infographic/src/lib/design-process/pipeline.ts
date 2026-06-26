@@ -1,4 +1,5 @@
 import { OLLAMA_BASE_URL, OLLAMA_MODEL } from "@/lib/ai-status";
+import { getOllamaStatus } from "@/lib/ai-status";
 import type { InfographicStyle } from "@/lib/design-trends";
 import type { DesignLibrary } from "@/lib/design-library";
 import type { DesignExampleRecord } from "@/lib/select-relevant-examples";
@@ -13,13 +14,12 @@ import {
 } from "@/lib/design-brief/quality-gate";
 import type { DesignProcessFoundation } from "./types";
 import { buildDesignStagePrompt } from "./prompts";
-import { buildCreativeDirectorPrompt } from "./creative-director-prompt";
 import {
   buildMockCreativeDirector,
-  sanitizeCreativeConcept,
-  sanitizeOneThought,
   type CreativeDirectorResult,
 } from "./creative-concept";
+import { generateAndSelectConcept } from "./concept-generator";
+import { CONCEPT_PASS_THRESHOLD } from "./concept-evaluator";
 import { OLLAMA_NUM_PREDICT, OLLAMA_TIMEOUT_MS, SKIP_OLLAMA_QUALITY_RETRY } from "@/lib/pipeline-config";
 import { buildMockFoundation } from "./mock";
 
@@ -37,6 +37,7 @@ export type DesignProcessResult = {
   brief: DesignBrief;
   foundation: DesignProcessFoundation;
   creativeDirector: CreativeDirectorResult;
+  conceptCandidates?: number;
 };
 
 function extractJson(text: string): string {
@@ -81,13 +82,13 @@ function foundationFromCreative(
     visualHook: {
       type: "oversized_product",
       reason: creative.creativeConcept.visualHook,
-      confidence: 92,
+      confidence: creative.conceptScore ?? 92,
     },
     stage2: {
       concept: creative.creativeConcept.title,
       creativeDirection: creative.creativeConcept.mainIdea,
       mood: creative.creativeConcept.emotion,
-      references: [],
+      references: creative.creativeConcept.styleKeywords ?? [],
       whyThisConcept: creative.creativeConcept.reason,
     },
   };
@@ -118,30 +119,36 @@ export function applyPosterRules(
     creativeConcept: creative.creativeConcept,
     oneThought: ot,
     deferredBullets: ot.deferredSpecs,
+    compositionScenarioId: creative.compositionScenarioId,
   };
 }
 
+/** Engine 2.0 — 6–8 концептов, выбор лучшего */
 export async function runCreativeDirectorStage(
   ctx: DesignProcessContext,
-): Promise<CreativeDirectorResult> {
-  const fallback = buildMockCreativeDirector(ctx.productPrompt, ctx.analysis);
-  const prompt = buildCreativeDirectorPrompt({
-    productPrompt: ctx.productPrompt,
-    category: ctx.analysis.category,
-    priceSegment: ctx.analysis.priceSegment,
-    style: ctx.style ?? "auto",
-  });
+): Promise<{ creative: CreativeDirectorResult; evaluatedCount: number }> {
+  const status = await getOllamaStatus();
+  const useOllama = status.available && !status.mockMode;
 
-  try {
-    const raw = await callOllamaJson<Record<string, unknown>>(prompt, 0.42);
-    return {
-      creativeConcept: sanitizeCreativeConcept(raw, fallback.creativeConcept),
-      oneThought: sanitizeOneThought(raw, fallback.oneThought),
-      sceneNarrative: String(raw.sceneNarrative ?? fallback.sceneNarrative).slice(0, 400),
-    };
-  } catch {
-    return fallback;
+  const result = await generateAndSelectConcept(
+    {
+      productPrompt: ctx.productPrompt,
+      category: ctx.analysis.category,
+      priceSegment: ctx.analysis.priceSegment,
+      style: ctx.style ?? "auto",
+      analysis: ctx.analysis,
+    },
+    useOllama,
+  );
+
+  if (result.selected.conceptScore && result.selected.conceptScore < CONCEPT_PASS_THRESHOLD) {
+    const alt = result.candidates.find((c) => c.evaluation.total >= CONCEPT_PASS_THRESHOLD);
+    if (alt) {
+      return { creative: alt.concept, evaluatedCount: result.evaluatedCount };
+    }
   }
+
+  return { creative: result.selected, evaluatedCount: result.evaluatedCount };
 }
 
 async function runDesignStage(
@@ -179,9 +186,29 @@ async function runDesignStage(
 export async function runDesignProcessPipeline(
   ctx: DesignProcessContext,
 ): Promise<DesignProcessResult> {
-  const creative = await runCreativeDirectorStage(ctx);
+  const { creative, evaluatedCount } = await runCreativeDirectorStage(ctx);
   const foundation = foundationFromCreative(creative, ctx.analysis);
-  let brief = await runDesignStage(ctx, foundation, creative);
+
+  let brief: DesignBrief;
+  const status = await getOllamaStatus();
+
+  if (status.mockMode || !status.available) {
+    brief = applyPosterRules(
+      sanitizeDesignBrief(
+        {
+          layout: "marketplace",
+          objectScale: 0.72,
+          glassEffects: true,
+          backgroundPrompt: `${creative.sceneNarrative}, ultra realistic, no text`,
+        } as DesignBrief,
+        ctx.analysis.category,
+        ctx.productPrompt,
+      ),
+      creative,
+    );
+  } else {
+    brief = await runDesignStage(ctx, foundation, creative);
+  }
 
   const quality = evaluateDesignBrief(brief);
   const processReview = evaluateDesignProcessReview(brief);
@@ -199,5 +226,10 @@ export async function runDesignProcessPipeline(
     }
   }
 
-  return { brief, foundation, creativeDirector: creative };
+  return {
+    brief,
+    foundation,
+    creativeDirector: creative,
+    conceptCandidates: evaluatedCount,
+  };
 }
