@@ -53,3 +53,17 @@ export type {
   TopProblem,
   FixApplicationHints,
 } from "./chief-design-director/agent";
+export {
+  DESIGN_MEMORY_AGENT,
+  runDesignMemory,
+  loadDesignMemoryStore,
+  getMemoryLayoutBoost,
+  computeOutcomeScore,
+} from "./design-memory/agent";
+export type {
+  DesignMemoryLearnInput,
+  DesignMemoryStore,
+  DesignMemoryUpdateResult,
+  PatternCombo,
+  WeightChange,
+} from "./design-memory/agent";

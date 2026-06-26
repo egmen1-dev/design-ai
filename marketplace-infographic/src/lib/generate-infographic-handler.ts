@@ -43,7 +43,7 @@ import {
   toCompositionResult,
 } from "@/lib/layout-engine";
 import type { CardMeaning, LayoutTemplateId, ProductShapeHint } from "@/lib/layout-engine/types";
-import { runSeniorArtDirector, runMarketplaceCtrExpert, runCommercialPhotographer, runChiefDesignDirector, deriveFixApplicationHints, type SeniorArtDirectorReview, type MarketplaceCtrReview, type CommercialPhotographerReview, type ChiefDesignDirectorPlan } from "@/lib/agents";
+import { runSeniorArtDirector, runMarketplaceCtrExpert, runCommercialPhotographer, runChiefDesignDirector, runDesignMemory, loadDesignMemoryStore, deriveFixApplicationHints, type SeniorArtDirectorReview, type MarketplaceCtrReview, type CommercialPhotographerReview, type ChiefDesignDirectorPlan, type DesignMemoryUpdateResult } from "@/lib/agents";
 import { creativeConceptToCardMeaning } from "@/lib/design-process/card-meaning";
 import type { ProductVisualProfile } from "@/lib/design/scene-planner";
 import type { CreativeDirectorResult } from "@/lib/design-process/creative-concept";
@@ -99,6 +99,8 @@ export type GenerateInfographicResult = {
   looksLikePhoto?: boolean;
   chiefApproved?: boolean;
   estimatedScoreAfterFix?: number;
+  designMemoryUpdate?: boolean;
+  designMemoryAdvice?: string[];
 };
 
 function briefMeta(brief?: DesignBrief) {
@@ -360,6 +362,10 @@ export async function handleGenerateInfographic(
   const slot = await consumeGenerationSlot(input.userId);
 
   try {
+    await loadDesignMemoryStore().catch((error) => {
+      console.warn("[design-memory] preload failed:", error);
+    });
+
     let sdData: InfographicSdInput;
     let appliedStyle: InfographicStyle = input.style ?? DEFAULT_STYLE;
     let aiSource = "mock";
@@ -949,7 +955,31 @@ export async function handleGenerateInfographic(
       marketplaceCtrExpert: ctrReview,
       commercialPhotographer: photoReview,
       chiefDesignDirector: chiefPlan,
+      designMemory: undefined as DesignMemoryUpdateResult | undefined,
     };
+
+    let designMemory: DesignMemoryUpdateResult | undefined;
+    if (sdData.layout === "marketplace") {
+      try {
+        designMemory = await runDesignMemory({
+          productPrompt: input.prompt,
+          category: analysis.category,
+          templateId: compositionResult?.layout?.scenarioId as LayoutTemplateId | undefined,
+          fontId: sdData.fontId,
+          badgeId: sdData.badgeId,
+          scenePlan,
+          designScore: compositionResult?.score?.total,
+          cardMeaning,
+          seniorAdReview,
+          ctrReview,
+          photoReview,
+          chiefPlan,
+        });
+        payloadExtras.designMemory = designMemory;
+      } catch (error) {
+        console.warn("[design-memory] learn failed:", error);
+      }
+    }
 
     if (input.regenerateBackgroundOnly && input.existingImageId) {
       await prisma.generatedImage.update({
@@ -985,6 +1015,8 @@ export async function handleGenerateInfographic(
         looksLikePhoto: photoReview?.looksLikePhoto,
         chiefApproved: chiefPlan?.approved,
         estimatedScoreAfterFix: chiefPlan?.estimatedScoreAfterFix,
+        designMemoryUpdate: designMemory?.memoryUpdate,
+        designMemoryAdvice: designMemory?.nextGenerationAdvice,
         ...briefMeta(designBrief),
       };
     }
@@ -1025,6 +1057,8 @@ export async function handleGenerateInfographic(
       looksLikePhoto: photoReview?.looksLikePhoto,
       chiefApproved: chiefPlan?.approved,
       estimatedScoreAfterFix: chiefPlan?.estimatedScoreAfterFix,
+      designMemoryUpdate: designMemory?.memoryUpdate,
+      designMemoryAdvice: designMemory?.nextGenerationAdvice,
       ...briefMeta(designBrief),
     };
   } catch (error) {

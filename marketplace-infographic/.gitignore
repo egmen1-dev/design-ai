@@ -41,3 +41,6 @@ prisma/*.db-journal
 
 # Puppeteer
 .cache/
+
+# Design Memory runtime store
+data/design-memory.json

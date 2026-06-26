@@ -1,3 +1,5 @@
+import { getMemoryLayoutBoost } from "@/lib/agents/design-memory/apply";
+import type { ProductCategory } from "@/lib/product-analysis";
 import type { LayoutTemplate, LayoutTemplateId } from "./types";
 
 /** 20 шаблонов — только сетка, координаты вычисляет движок */
@@ -32,6 +34,7 @@ export function rankTemplatesForProduct(
   shape: import("./types").ProductShapeHint,
   priority: import("./types").CardMeaning["priority"],
   seed: string,
+  category?: ProductCategory,
 ): LayoutTemplate[] {
   const jitter = seed.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % 100;
   return [...LAYOUT_TEMPLATES]
@@ -42,6 +45,7 @@ export function rankTemplatesForProduct(
       if (shape === "tall" && t.suitsTall) score += 15;
       if (shape === "standard") score += 8;
       score += (jitter + t.id.length) % 12;
+      score += getMemoryLayoutBoost(t.id, category);
       return { t, score };
     })
     .sort((a, b) => b.score - a.score)
