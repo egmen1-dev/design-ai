@@ -1,5 +1,6 @@
 import type { InfographicStyle } from "@/lib/design-trends";
 import { prisma } from "@/lib/prisma";
+import { expandQueryTerms, termsMatch } from "@/lib/query-terms";
 
 export type DesignExampleRecord = Awaited<ReturnType<typeof loadDesignExamples>>[number];
 
@@ -14,14 +15,6 @@ export async function loadDesignExamples(limit = 100) {
   });
 }
 
-function tokenize(text: string): string[] {
-  return text
-    .toLowerCase()
-    .split(/[^\p{L}\p{N}]+/u)
-    .map((word) => word.trim())
-    .filter((word) => word.length > 2);
-}
-
 export async function selectRelevantExamples(
   prompt: string,
   limit = 5,
@@ -30,17 +23,18 @@ export async function selectRelevantExamples(
   const pool = await loadDesignExamples(120);
   if (pool.length === 0) return [];
 
-  const words = tokenize(prompt);
+  const words = expandQueryTerms(prompt);
   const scored = pool.map((example) => {
-    const haystack = `${example.prompt} ${example.notes ?? ""} ${example.tags.join(" ")} ${example.appliedStyle}`.toLowerCase();
+    const haystack = `${example.prompt} ${example.notes ?? ""} ${example.tags.join(" ")} ${example.appliedStyle}`;
     let score = 0;
 
     for (const word of words) {
-      if (haystack.includes(word)) score += 1;
+      if (termsMatch(haystack, word)) score += 1;
     }
 
     for (const tag of example.tags) {
-      if (words.includes(tag.toLowerCase())) score += 2;
+      if (words.some((word) => termsMatch(tag, word))) score += 2;
+      if (words.some((word) => termsMatch(haystack, tag))) score += 1;
     }
 
     if (style && example.appliedStyle === style) {
@@ -60,7 +54,9 @@ export async function selectRelevantExamples(
 
   const matched = scored
     .filter((item) => item.score > 0)
-    .sort((a, b) => b.score - a.score || b.example.createdAt.getTime() - a.example.createdAt.getTime())
+    .sort(
+      (a, b) => b.score - a.score || b.example.createdAt.getTime() - a.example.createdAt.getTime(),
+    )
     .map((item) => item.example);
 
   const unique: typeof pool = [];
@@ -99,12 +95,20 @@ export function formatExamplesForPrompt(
         parsed = { raw: example.resultJson.slice(0, 400) };
       }
 
+      const synonyms = Array.isArray(parsed.synonyms)
+        ? parsed.synonyms.filter((s): s is string => typeof s === "string")
+        : [];
+
       const lines = [
         `Референс ${index + 1} (карточка товара WB/Ozon):`,
         `prompt: "${example.prompt}"`,
         `appliedStyle: ${example.appliedStyle}`,
         `tags: [${example.tags.join(", ")}]`,
       ];
+
+      if (synonyms.length > 0) {
+        lines.push(`synonyms: [${synonyms.slice(0, 12).join(", ")}]`);
+      }
 
       if (example.imageUrl) {
         lines.push(`referenceImage: ${example.imageUrl}`);

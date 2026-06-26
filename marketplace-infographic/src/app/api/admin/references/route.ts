@@ -1,21 +1,27 @@
 import { randomUUID } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { DEFAULT_STYLE, STYLE_KEYS } from "@/lib/design-trends";
+import { enrichReferenceUpload } from "@/lib/reference-enrichment";
 import { publicReferenceUrl, saveReferenceImage } from "@/lib/reference-storage";
 import { requireAdmin, validationError } from "@/lib/require-admin";
 
 export const runtime = "nodejs";
-export const maxDuration = 60;
+export const maxDuration = 180;
 
 const MAX_BYTES = 8 * 1024 * 1024;
 const ALLOWED_TYPES = new Set(["image/png", "image/jpeg", "image/webp"]);
 
-function buildReferenceResultJson(imageUrl: string, notes: string | null): string {
+function buildReferenceResultJson(
+  imageUrl: string,
+  enrichment: Awaited<ReturnType<typeof enrichReferenceUpload>>,
+): string {
   return JSON.stringify({
     type: "reference_card",
     imageUrl,
-    notes,
+    notes: enrichment.compositionNotes,
+    synonyms: enrichment.synonyms,
+    styleReason: enrichment.styleReason,
+    autoEnriched: true,
     source: "admin_reference_upload",
   });
 }
@@ -53,51 +59,34 @@ export async function POST(request: NextRequest) {
     return validationError("Описание слишком длинное");
   }
 
-  const styleRaw = formData.get("appliedStyle");
-  const appliedStyle =
-    typeof styleRaw === "string" && STYLE_KEYS.includes(styleRaw as (typeof STYLE_KEYS)[number])
-      ? styleRaw
-      : DEFAULT_STYLE;
-
-  const tagsRaw = formData.get("tags");
-  let tags: string[] = [];
-  if (typeof tagsRaw === "string" && tagsRaw.trim()) {
-    try {
-      const parsed = JSON.parse(tagsRaw) as unknown;
-      if (Array.isArray(parsed)) {
-        tags = parsed
-          .filter((tag): tag is string => typeof tag === "string")
-          .map((tag) => tag.trim())
-          .filter(Boolean)
-          .slice(0, 20);
-      }
-    } catch {
-      return validationError("Некорректный формат tags");
-    }
-  }
-
   const notesRaw = formData.get("notes");
   const notes =
     typeof notesRaw === "string" && notesRaw.trim() ? notesRaw.trim().slice(0, 2000) : null;
 
+  const imageBuffer = Buffer.from(await imageField.arrayBuffer());
+  const enrichment = await enrichReferenceUpload({ prompt, notes, imageBuffer });
+
   const batchId = randomUUID();
-  const saved = await saveReferenceImage(imageField, batchId);
+  const saved = await saveReferenceImage(
+    new File([imageBuffer], imageField.name, { type: imageField.type }),
+    batchId,
+  );
 
   const example = await prisma.designExample.create({
     data: {
       prompt,
       imageUrl: saved.url,
-      notes,
-      appliedStyle,
-      tags,
-      resultJson: buildReferenceResultJson(saved.url, notes),
+      notes: enrichment.compositionNotes,
+      appliedStyle: enrichment.appliedStyle,
+      tags: enrichment.tags,
+      resultJson: buildReferenceResultJson(saved.url, enrichment),
     },
   });
 
   await prisma.referenceImage.create({
     data: {
       originalUrl: publicReferenceUrl(saved.filename),
-      notes: notes ?? prompt.slice(0, 500),
+      notes: enrichment.compositionNotes ?? prompt.slice(0, 500),
     },
   });
 
@@ -109,6 +98,8 @@ export async function POST(request: NextRequest) {
       notes: example.notes,
       appliedStyle: example.appliedStyle,
       tags: example.tags,
+      synonyms: enrichment.synonyms,
+      styleReason: enrichment.styleReason,
       createdAt: example.createdAt.toISOString(),
     },
   });

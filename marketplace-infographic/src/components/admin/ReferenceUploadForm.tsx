@@ -2,12 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import {
-  DEFAULT_STYLE,
-  STYLE_KEYS,
-  STYLE_LABELS,
-  type InfographicStyle,
-} from "@/lib/design-trends";
+import { STYLE_LABELS, type InfographicStyle } from "@/lib/design-trends";
 
 type UploadedExample = {
   id: string;
@@ -16,43 +11,15 @@ type UploadedExample = {
   notes: string | null;
   appliedStyle: string;
   tags: string[];
+  synonyms?: string[];
+  styleReason?: string;
   createdAt: string;
 };
 
-function StyleTagPicker({
-  selected,
-  onChange,
-}: {
-  selected: string[];
-  onChange: (tags: string[]) => void;
-}) {
-  function toggle(tag: string) {
-    onChange(
-      selected.includes(tag)
-        ? selected.filter((item) => item !== tag)
-        : [...selected, tag],
-    );
-  }
-
-  return (
-    <div className="flex flex-wrap gap-2">
-      {STYLE_KEYS.map((tag) => (
-        <button
-          key={tag}
-          type="button"
-          onClick={() => toggle(tag)}
-          className={`rounded-full px-3 py-1 text-xs ${
-            selected.includes(tag)
-              ? "bg-brand-600 text-white"
-              : "border border-slate-700 text-slate-400 hover:border-brand-500"
-          }`}
-        >
-          {STYLE_LABELS[tag]}
-        </button>
-      ))}
-    </div>
-  );
-}
+type UploadResponse = {
+  example?: UploadedExample;
+  error?: string;
+};
 
 export function ReferenceUploadForm({
   initialExamples,
@@ -62,22 +29,20 @@ export function ReferenceUploadForm({
   const [examples, setExamples] = useState(initialExamples);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [lastEnrichment, setLastEnrichment] = useState<UploadResponse["example"] | null>(null);
   const [prompt, setPrompt] = useState("");
-  const [appliedStyle, setAppliedStyle] = useState<InfographicStyle>(DEFAULT_STYLE);
-  const [styleTags, setStyleTags] = useState<string[]>([DEFAULT_STYLE]);
   const [notes, setNotes] = useState("");
   const router = useRouter();
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
+    setLastEnrichment(null);
     setLoading(true);
 
     const form = event.currentTarget;
     const formData = new FormData(form);
     formData.set("prompt", prompt.trim());
-    formData.set("appliedStyle", appliedStyle);
-    formData.set("tags", JSON.stringify(styleTags));
 
     try {
       const response = await fetch("/api/admin/references", {
@@ -85,9 +50,9 @@ export function ReferenceUploadForm({
         body: formData,
       });
 
-      let data: { example?: UploadedExample; error?: string };
+      let data: UploadResponse;
       try {
-        data = (await response.json()) as typeof data;
+        data = (await response.json()) as UploadResponse;
       } catch {
         setError("Неожиданный ответ сервера");
         return;
@@ -99,6 +64,7 @@ export function ReferenceUploadForm({
       }
 
       setExamples((prev) => [data.example!, ...prev]);
+      setLastEnrichment(data.example);
       setPrompt("");
       setNotes("");
       form.reset();
@@ -132,8 +98,8 @@ export function ReferenceUploadForm({
         <div>
           <h2 className="text-lg font-semibold">Добавить карточку в обучение</h2>
           <p className="mt-1 text-sm text-slate-500">
-            Загрузите готовую карточку WB/Ozon. При генерации система подберёт похожие
-            примеры по описанию товара, стилю и тегам.
+            Загрузите карточку WB/Ozon и кратко опишите товар. Стиль и синонимы для поиска
+            подберутся автоматически — вручную выбирать не нужно.
           </p>
         </div>
 
@@ -162,34 +128,14 @@ export function ReferenceUploadForm({
         </label>
 
         <label className="block text-sm">
-          <span className="text-slate-400">Стиль карточки</span>
-          <select
-            value={appliedStyle}
-            onChange={(event) => setAppliedStyle(event.target.value as InfographicStyle)}
-            className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
-          >
-            {STYLE_KEYS.map((style) => (
-              <option key={style} value={style}>
-                {STYLE_LABELS[style]}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <div>
-          <p className="mb-2 text-sm text-slate-400">Теги для подбора (стили дизайна)</p>
-          <StyleTagPicker selected={styleTags} onChange={setStyleTags} />
-        </div>
-
-        <label className="block text-sm">
-          <span className="text-slate-400">Заметки о композиции (опционально)</span>
+          <span className="text-slate-400">Заметки (опционально)</span>
           <textarea
             name="notes"
             value={notes}
             onChange={(event) => setNotes(event.target.value)}
             rows={2}
             className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
-            placeholder="Крупный заголовок сверху, 3 УТП слева, товар справа..."
+            placeholder="Если хотите уточнить контекст — иначе система опишет композицию сама"
           />
         </label>
 
@@ -197,12 +143,37 @@ export function ReferenceUploadForm({
 
         <button
           type="submit"
-          disabled={loading || styleTags.length === 0}
+          disabled={loading}
           className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-500 disabled:opacity-50"
         >
-          {loading ? "Сохранение…" : "Добавить в обучение"}
+          {loading ? "Анализ карточки и подбор синонимов…" : "Добавить в обучение"}
         </button>
       </form>
+
+      {lastEnrichment && (
+        <div className="rounded-xl border border-brand-500/30 bg-brand-950/20 p-5 text-sm">
+          <p className="font-medium text-brand-300">Автоматически определено</p>
+          <p className="mt-2 text-slate-300">
+            Стиль:{" "}
+            <span className="text-white">
+              {STYLE_LABELS[lastEnrichment.appliedStyle as InfographicStyle] ??
+                lastEnrichment.appliedStyle}
+            </span>
+          </p>
+          {lastEnrichment.styleReason && (
+            <p className="mt-1 text-slate-400">{lastEnrichment.styleReason}</p>
+          )}
+          {lastEnrichment.synonyms && lastEnrichment.synonyms.length > 0 && (
+            <p className="mt-3 text-slate-400">
+              Синонимы и похожие запросы ({lastEnrichment.synonyms.length}):{" "}
+              <span className="text-slate-300">
+                {lastEnrichment.synonyms.slice(0, 10).join(", ")}
+                {lastEnrichment.synonyms.length > 10 ? "…" : ""}
+              </span>
+            </p>
+          )}
+        </div>
+      )}
 
       {examples.length > 0 && (
         <section>
@@ -230,7 +201,10 @@ export function ReferenceUploadForm({
                       example.appliedStyle}
                   </p>
                   {example.tags.length > 0 && (
-                    <p className="text-xs text-slate-500">{example.tags.join(" · ")}</p>
+                    <p className="line-clamp-2 text-xs text-slate-500">
+                      {example.tags.slice(0, 8).join(" · ")}
+                      {example.tags.length > 8 ? "…" : ""}
+                    </p>
                   )}
                   <p className="text-xs text-slate-600">
                     {new Date(example.createdAt).toLocaleString("ru-RU")}

@@ -34,8 +34,8 @@ export default async function AdminReferencesPage() {
           <p className="text-sm font-medium text-brand-500">Админ</p>
           <h1 className="text-3xl font-bold">Референсы</h1>
           <p className="mt-1 max-w-2xl text-sm text-slate-500">
-            Карточки товаров как примеры для генерации: система подбирает похожие по
-            описанию, стилю и тегам и передаёт их в промпт Ollama при создании инфографики.
+            Загрузите карточки товаров — система сама определит стиль, сгенерирует синонимы и
+            будет подбирать их при похожих запросах при генерации инфографики.
           </p>
         </div>
         <div className="flex gap-4 text-sm">
