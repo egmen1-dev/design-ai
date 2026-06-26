@@ -43,7 +43,7 @@ import {
   toCompositionResult,
 } from "@/lib/layout-engine";
 import type { CardMeaning, LayoutTemplateId, ProductShapeHint } from "@/lib/layout-engine/types";
-import { runSeniorArtDirector, runMarketplaceCtrExpert, type SeniorArtDirectorReview, type MarketplaceCtrReview } from "@/lib/agents";
+import { runSeniorArtDirector, runMarketplaceCtrExpert, runCommercialPhotographer, type SeniorArtDirectorReview, type MarketplaceCtrReview, type CommercialPhotographerReview } from "@/lib/agents";
 import { creativeConceptToCardMeaning } from "@/lib/design-process/card-meaning";
 import type { ProductVisualProfile } from "@/lib/design/scene-planner";
 import type { CreativeDirectorResult } from "@/lib/design-process/creative-concept";
@@ -51,7 +51,7 @@ import type { ScenePlan } from "@/lib/design/scene-planner";
 import type { QualityValidationResult } from "@/lib/design/quality-validator";
 import type { ArtDirectorModeId } from "@/lib/design-process/art-director-modes";
 import { PIPELINE_VERSION } from "@/lib/pipeline-version";
-import { USE_FAST_CUTOUT, MAX_CONCEPT_RENDER_RETRIES, MAX_SENIOR_AD_LAYOUT_RETRIES } from "@/lib/pipeline-config";
+import { USE_FAST_CUTOUT, MAX_CONCEPT_RENDER_RETRIES, MAX_SENIOR_AD_LAYOUT_RETRIES, MAX_PHOTO_BG_RETRIES } from "@/lib/pipeline-config";
 import type { CoverConceptId } from "@/lib/cover-concepts";
 import { evaluateFinalQuality } from "@/lib/design/final-quality-validator";
 import { applyPosterRules } from "@/lib/design-process/pipeline";
@@ -94,6 +94,9 @@ export type GenerateInfographicResult = {
   ctrScore?: number;
   ctrPrediction?: number;
   wouldClick?: boolean;
+  photoScore?: number;
+  photoRealism?: number;
+  looksLikePhoto?: boolean;
 };
 
 function briefMeta(brief?: DesignBrief) {
@@ -514,6 +517,7 @@ export async function handleGenerateInfographic(
     let backgroundDataUrl: string | undefined;
     let compositeResult: Awaited<ReturnType<typeof compositeProductIntoScene>> | undefined;
     let qualityValidation: QualityValidationResult | undefined;
+    let photoReview: CommercialPhotographerReview | undefined;
     let mergedImageDataUrl: string | undefined;
     let productRender: Awaited<ReturnType<typeof loadProductCutout>> | undefined =
       preloadedCutout;
@@ -558,6 +562,19 @@ export async function handleGenerateInfographic(
       }
     }
 
+    const runPhotoReview = async () => {
+      photoReview = await runCommercialPhotographer({
+        scene: scenePlan,
+        lighting: compositeResult?.lighting,
+        qualityValidation,
+        hasComposite: !!compositeResult,
+        hasReflection: scenePlan.reflectionEnabled,
+        hasShadows: !!compositeResult,
+        backgroundSource,
+        productPrompt: input.prompt,
+      });
+    };
+
     if (
       usePhotorealMerge &&
       productRender?.cutout &&
@@ -565,35 +582,66 @@ export async function handleGenerateInfographic(
       backgroundUrl &&
       backgroundSource === "sd"
     ) {
-      try {
-        compositeResult = await compositeProductIntoScene(backgroundUrl, productCutoutPath, {
-          layout: "marketplace",
-          scene: scenePlan,
-          compositionLayout,
-          objectScale,
-        });
+      let photoBgRetry = 0;
+      while (photoBgRetry <= MAX_PHOTO_BG_RETRIES) {
+        try {
+          if (photoBgRetry > 0) {
+            if (!process.env.HF_API_KEY) break;
+            const url = await generateBackground(sdData.backgroundPrompt, {
+              seedSuffix: `${variationSeed}:photo-${photoBgRetry}`,
+              style: appliedStyle,
+            });
+            backgroundUrl = url;
+            backgroundDataUrl = await backgroundToDataUrl(url);
+          }
 
-        qualityValidation = validateQuality({
-          compositionLayout,
-          compositionScore: compositionResult?.score,
-          dna: compositionResult?.dna,
-          scene: scenePlan,
-          lighting: compositeResult.lighting,
-          productAreaPct: compositionLayout?.metrics?.productAreaPct,
-          hasReflection: scenePlan.reflectionEnabled,
-          hasShadows: true,
-        });
-        qualityScore = qualityValidation.total;
+          compositeResult = await compositeProductIntoScene(backgroundUrl, productCutoutPath, {
+            layout: "marketplace",
+            scene: scenePlan,
+            compositionLayout,
+            objectScale,
+          });
 
-        if (!qualityValidation.passed) {
+          qualityValidation = validateQuality({
+            compositionLayout,
+            compositionScore: compositionResult?.score,
+            dna: compositionResult?.dna,
+            scene: scenePlan,
+            lighting: compositeResult.lighting,
+            productAreaPct: compositionLayout?.metrics?.productAreaPct,
+            hasReflection: scenePlan.reflectionEnabled,
+            hasShadows: true,
+          });
+          qualityScore = qualityValidation.total;
+
+          await runPhotoReview();
+
+          if (photoReview?.looksLikePhoto || photoBgRetry >= MAX_PHOTO_BG_RETRIES) {
+            if (photoBgRetry > 0 && photoReview?.looksLikePhoto) {
+              console.info(`[commercial-photographer] passed after bg retry ${photoBgRetry}`);
+            }
+            break;
+          }
+
           console.warn(
-            `[quality] score ${qualityValidation.total}/${QUALITY_PASS_THRESHOLD} (no retry in fast mode)`,
-            qualityValidation.issues,
+            `[commercial-photographer] score ${photoReview?.score} realism ${photoReview?.realism}`,
+            photoReview?.problems,
           );
+          photoBgRetry++;
+        } catch (error) {
+          console.warn("Scene composite failed:", error);
+          break;
         }
-      } catch (error) {
-        console.warn("Scene composite failed:", error);
       }
+
+      if (qualityValidation && !qualityValidation.passed) {
+        console.warn(
+          `[quality] score ${qualityValidation.total}/${QUALITY_PASS_THRESHOLD}`,
+          qualityValidation.issues,
+        );
+      }
+    } else {
+      await runPhotoReview();
     }
 
     let finalQuality = activeCreative
@@ -686,6 +734,16 @@ export async function handleGenerateInfographic(
             productAreaPct: compositionLayout?.metrics?.productAreaPct,
             hasReflection: retryScene.reflectionEnabled,
             hasShadows: true,
+          });
+          photoReview = await runCommercialPhotographer({
+            scene: retryScene,
+            lighting: compositeResult.lighting,
+            qualityValidation,
+            hasComposite: true,
+            hasReflection: retryScene.reflectionEnabled,
+            hasShadows: true,
+            backgroundSource: "sd",
+            productPrompt: input.prompt,
           });
         }
       } catch (error) {
@@ -784,6 +842,7 @@ export async function handleGenerateInfographic(
       qualityValidation,
       seniorArtDirector: seniorAdReview,
       marketplaceCtrExpert: ctrReview,
+      commercialPhotographer: photoReview,
     };
 
     if (input.regenerateBackgroundOnly && input.existingImageId) {
@@ -815,6 +874,9 @@ export async function handleGenerateInfographic(
         ctrScore: ctrReview?.score,
         ctrPrediction: ctrReview?.ctrPrediction,
         wouldClick: ctrReview?.wouldClick,
+        photoScore: photoReview?.score,
+        photoRealism: photoReview?.realism,
+        looksLikePhoto: photoReview?.looksLikePhoto,
         ...briefMeta(designBrief),
       };
     }
@@ -850,6 +912,9 @@ export async function handleGenerateInfographic(
       ctrScore: ctrReview?.score,
       ctrPrediction: ctrReview?.ctrPrediction,
       wouldClick: ctrReview?.wouldClick,
+      photoScore: photoReview?.score,
+      photoRealism: photoReview?.realism,
+      looksLikePhoto: photoReview?.looksLikePhoto,
       ...briefMeta(designBrief),
     };
   } catch (error) {

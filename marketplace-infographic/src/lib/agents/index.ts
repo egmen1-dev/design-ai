@@ -25,3 +25,16 @@ export type {
   MarketplaceCtrReview,
   MarketplaceCtrDimensionScores,
 } from "./marketplace-ctr-expert/types";
+export {
+  COMMERCIAL_PHOTOGRAPHER_AGENT,
+  runCommercialPhotographer,
+  evaluateCommercialPhotographerHeuristic,
+  buildCommercialPhotographerPrompt,
+  PHOTO_BEHANCE_SCORE,
+  PHOTO_PNG_OVERLAY_CAP,
+} from "./commercial-photographer/agent";
+export type {
+  CommercialPhotographerInput,
+  CommercialPhotographerReview,
+  CommercialPhotographerDimensionScores,
+} from "./commercial-photographer/types";
