@@ -8,6 +8,8 @@ function serializeExample(example: {
   id: string;
   prompt: string;
   resultJson: string;
+  imageUrl: string | null;
+  notes: string | null;
   fontId: string | null;
   badgeId: string | null;
   appliedStyle: string;
@@ -20,6 +22,8 @@ function serializeExample(example: {
     id: example.id,
     prompt: example.prompt,
     resultJson: example.resultJson,
+    imageUrl: example.imageUrl,
+    notes: example.notes,
     fontId: example.fontId,
     badgeId: example.badgeId,
     appliedStyle: example.appliedStyle,
@@ -93,6 +97,8 @@ export async function POST(request: NextRequest) {
     data: {
       prompt: parsed.data.prompt,
       resultJson: parsed.data.resultJson,
+      imageUrl: parsed.data.imageUrl ?? null,
+      notes: parsed.data.notes ?? null,
       fontId: parsed.data.fontId ?? null,
       badgeId: parsed.data.badgeId ?? null,
       appliedStyle: parsed.data.appliedStyle,

@@ -1,3 +1,4 @@
+import type { InfographicStyle } from "@/lib/design-trends";
 import { prisma } from "@/lib/prisma";
 
 export type DesignExampleRecord = Awaited<ReturnType<typeof loadDesignExamples>>[number];
@@ -21,13 +22,17 @@ function tokenize(text: string): string[] {
     .filter((word) => word.length > 2);
 }
 
-export async function selectRelevantExamples(prompt: string, limit = 5) {
+export async function selectRelevantExamples(
+  prompt: string,
+  limit = 5,
+  style?: InfographicStyle,
+) {
   const pool = await loadDesignExamples(120);
   if (pool.length === 0) return [];
 
   const words = tokenize(prompt);
   const scored = pool.map((example) => {
-    const haystack = `${example.prompt} ${example.tags.join(" ")} ${example.appliedStyle}`.toLowerCase();
+    const haystack = `${example.prompt} ${example.notes ?? ""} ${example.tags.join(" ")} ${example.appliedStyle}`.toLowerCase();
     let score = 0;
 
     for (const word of words) {
@@ -38,7 +43,15 @@ export async function selectRelevantExamples(prompt: string, limit = 5) {
       if (words.includes(tag.toLowerCase())) score += 2;
     }
 
-    if (words.some((word) => example.appliedStyle.toLowerCase().includes(word))) {
+    if (style && example.appliedStyle === style) {
+      score += 4;
+    }
+
+    if (style && example.tags.includes(style)) {
+      score += 2;
+    }
+
+    if (example.imageUrl) {
       score += 1;
     }
 
@@ -74,7 +87,7 @@ export function formatExamplesForPrompt(
   examples: Awaited<ReturnType<typeof selectRelevantExamples>>,
 ): string {
   if (examples.length === 0) {
-    return "Примеры одобренных дизайнов: нет.";
+    return "Референсные карточки товаров: пока нет. Ориентируйся только на библиотеку и стиль.";
   }
 
   return examples
@@ -86,13 +99,33 @@ export function formatExamplesForPrompt(
         parsed = { raw: example.resultJson.slice(0, 400) };
       }
 
-      return `Пример ${index + 1}:
-prompt: "${example.prompt}"
-appliedStyle: ${example.appliedStyle}
-tags: [${example.tags.join(", ")}]
-fontId: ${example.fontId ?? "null"}
-badgeId: ${example.badgeId ?? "null"}
-result: ${JSON.stringify(parsed)}`;
+      const lines = [
+        `Референс ${index + 1} (карточка товара WB/Ozon):`,
+        `prompt: "${example.prompt}"`,
+        `appliedStyle: ${example.appliedStyle}`,
+        `tags: [${example.tags.join(", ")}]`,
+      ];
+
+      if (example.imageUrl) {
+        lines.push(`referenceImage: ${example.imageUrl}`);
+      }
+
+      if (example.notes) {
+        lines.push(`compositionNotes: "${example.notes}"`);
+      }
+
+      if (example.fontId) lines.push(`fontId: ${example.fontId}`);
+      if (example.badgeId) lines.push(`badgeId: ${example.badgeId}`);
+
+      if (parsed.type !== "reference_card") {
+        lines.push(`approvedLayout: ${JSON.stringify(parsed)}`);
+      } else {
+        lines.push(
+          "Задача: повтори композицию и подачу похожих карточек — крупный заголовок, УТП, акценты, расположение товара.",
+        );
+      }
+
+      return lines.join("\n");
     })
     .join("\n\n");
 }

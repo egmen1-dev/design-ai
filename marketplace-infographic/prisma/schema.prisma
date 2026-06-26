@@ -143,6 +143,8 @@ model DesignExample {
   id           String        @id @default(uuid())
   prompt       String        @db.Text
   resultJson   String        @db.Text
+  imageUrl     String?
+  notes        String?
   fontId       String?
   font         LibraryFont?  @relation(fields: [fontId], references: [id], onDelete: SetNull)
   badgeId      String?

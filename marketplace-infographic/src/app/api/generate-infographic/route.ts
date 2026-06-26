@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
   try {
     const [library, examples] = await Promise.all([
       loadDesignLibrary(),
-      selectRelevantExamples(parsed.data.prompt, 5),
+      selectRelevantExamples(parsed.data.prompt, 5, parsed.data.style),
     ]);
 
     const result = await handleGenerateInfographic({

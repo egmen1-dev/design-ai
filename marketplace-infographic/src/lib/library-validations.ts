@@ -81,6 +81,8 @@ export type CreateLibraryBadgeInput = z.infer<typeof createLibraryBadgeSchema>;
 export const createDesignExampleSchema = z.object({
   prompt: z.string().min(1).max(5000),
   resultJson: z.string().min(2).max(100_000),
+  imageUrl: z.string().max(500).nullable().optional(),
+  notes: z.string().max(2000).nullable().optional(),
   fontId: z.string().uuid().nullable().optional(),
   badgeId: z.string().uuid().nullable().optional(),
   appliedStyle: z.enum(STYLE_KEYS),

@@ -6,20 +6,13 @@ import potrace from "potrace";
 import sharp from "sharp";
 import { createWorker } from "tesseract.js";
 import { removeReferenceBackgroundSharp } from "@/lib/background-removal";
-import { persistentDataDir } from "@/lib/runtime-paths";
+
+export { publicReferenceUrl, referencesDir } from "@/lib/reference-storage";
 
 const potraceTrace = promisify(potrace.trace) as (
   input: Buffer,
   options?: { threshold?: number; turdSize?: number; optTolerance?: number },
 ) => Promise<string>;
-
-export function referencesDir(): string {
-  return persistentDataDir("references");
-}
-
-export function publicReferenceUrl(filename: string): string {
-  return `/api/references/${filename}`;
-}
 
 export type BadgeExtractionResult = {
   pngUrl: string;

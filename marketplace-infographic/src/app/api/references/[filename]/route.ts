@@ -1,7 +1,7 @@
 import { readFile } from "fs/promises";
 import path from "path";
 import { NextRequest, NextResponse } from "next/server";
-import { referencesDir } from "@/lib/reference-analyzer";
+import { referencesDir } from "@/lib/reference-storage";
 
 const MIME: Record<string, string> = {
   ".png": "image/png",

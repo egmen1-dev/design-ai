@@ -7,9 +7,8 @@ import {
   buildDraftBadgeHtml,
   detectFontFromImage,
   extractBadgeFromImage,
-  publicReferenceUrl,
-  referencesDir,
 } from "@/lib/reference-analyzer";
+import { publicReferenceUrl, referencesDir, saveReferenceImage } from "@/lib/reference-storage";
 import { requireAdmin, validationError } from "@/lib/require-admin";
 
 export const runtime = "nodejs";

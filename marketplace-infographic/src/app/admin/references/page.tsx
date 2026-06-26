@@ -11,10 +11,21 @@ export default async function AdminReferencesPage() {
     redirect("/");
   }
 
-  const references = await prisma.referenceImage.findMany({
+  const examples = await prisma.designExample.findMany({
+    where: { imageUrl: { not: null } },
     orderBy: { createdAt: "desc" },
-    take: 20,
+    take: 50,
   });
+
+  const initialExamples = examples.map((example) => ({
+    id: example.id,
+    prompt: example.prompt,
+    imageUrl: example.imageUrl!,
+    notes: example.notes,
+    appliedStyle: example.appliedStyle,
+    tags: example.tags,
+    createdAt: example.createdAt.toISOString(),
+  }));
 
   return (
     <main className="mx-auto max-w-6xl px-6 py-16">
@@ -22,8 +33,9 @@ export default async function AdminReferencesPage() {
         <div>
           <p className="text-sm font-medium text-brand-500">Админ</p>
           <h1 className="text-3xl font-bold">Референсы</h1>
-          <p className="mt-1 text-sm text-slate-500">
-            Загрузка Pinterest/WB-референсов: вырезка плашки и подсказка по шрифту
+          <p className="mt-1 max-w-2xl text-sm text-slate-500">
+            Карточки товаров как примеры для генерации: система подбирает похожие по
+            описанию, стилю и тегам и передаёт их в промпт Ollama при создании инфографики.
           </p>
         </div>
         <div className="flex gap-4 text-sm">
@@ -36,38 +48,7 @@ export default async function AdminReferencesPage() {
         </div>
       </header>
 
-      <ReferenceUploadForm />
-
-      {references.length > 0 && (
-        <section className="mt-12">
-          <h2 className="mb-4 text-xl font-semibold">Недавние референсы</h2>
-          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {references.map((reference) => (
-              <li
-                key={reference.id}
-                className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900/50"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={reference.originalUrl}
-                  alt="Референс"
-                  className="h-40 w-full object-cover"
-                />
-                <div className="p-4">
-                  <p className="text-xs text-slate-500">
-                    {reference.createdAt.toLocaleString("ru-RU")}
-                  </p>
-                  {reference.notes && (
-                    <p className="mt-2 line-clamp-2 text-sm text-slate-300">
-                      {reference.notes}
-                    </p>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      <ReferenceUploadForm initialExamples={initialExamples} />
     </main>
   );
 }
