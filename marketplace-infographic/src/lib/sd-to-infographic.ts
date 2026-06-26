@@ -72,26 +72,32 @@ function splitMarketplaceBullets(bullets: string[]): MarketplaceZones {
     ![...used].some((key) => overlaps(text, key) || bulletKey(text) === key);
 
   const leftBullets: string[] = [];
-  for (const bullet of clean) {
-    if (leftBullets.length >= 2) break;
-    if (!/\d/.test(bullet)) continue;
-    if (/акб|насад|батар/i.test(bullet) && !/вт|квт|об\/мин|дБ|литр|л\b/i.test(bullet)) continue;
-    if (!isAvailable(bullet)) continue;
-    leftBullets.push(bullet);
-    markUsed(bullet);
+
+  const heroCandidate =
+    clean.find((b) => isAvailable(b) && /об\/мин|rpm/i.test(b)) ??
+    clean.find((b) => isAvailable(b) && /\d/.test(b) && !/акб|насад|подар|очк|перчат/i.test(b));
+
+  if (heroCandidate) {
+    leftBullets.push(heroCandidate);
+    markUsed(heroCandidate);
   }
 
-  while (leftBullets.length < 2) {
-    const filler = clean.find((b) => isAvailable(b) && !leftBullets.includes(b));
-    if (!filler) break;
-    leftBullets.push(filler);
-    markUsed(filler);
+  const secondaryCandidate = clean.find(
+    (b) =>
+      isAvailable(b) &&
+      /\d/.test(b) &&
+      /дБ|шум|тих/i.test(b) &&
+      !/акб|насад/i.test(b),
+  );
+  if (secondaryCandidate) {
+    leftBullets.push(secondaryCandidate);
+    markUsed(secondaryCandidate);
   }
 
   const gift =
     clean.find(
       (b) =>
-        isAvailable(b) && /подар|очк|перчат|в подарок/i.test(b) && !/насад|акб/i.test(b),
+        isAvailable(b) && /подар|очк|перчат|в подарок|комплект/i.test(b) && !/насад|акб/i.test(b),
     ) ?? null;
   if (gift) markUsed(gift);
 
@@ -100,7 +106,7 @@ function splitMarketplaceBullets(bullets: string[]): MarketplaceZones {
     if (sidebar.length >= 2) break;
     if (!isAvailable(bullet)) continue;
     if (!/\d/.test(bullet)) continue;
-    if (/акб|насад|батар|шт/i.test(bullet) || sidebar.length > 0) {
+    if (/акб|насад|батар|шт/i.test(bullet)) {
       const parsed = parseBullet(bullet);
       sidebar.push({ value: parsed.value, label: parsed.label });
       markUsed(bullet);
@@ -111,17 +117,16 @@ function splitMarketplaceBullets(bullets: string[]): MarketplaceZones {
     clean.find(
       (b) =>
         isAvailable(b) &&
-        (/технолог|немец|качеств|гарант|премиум/i.test(b) || b.split(/\s+/).length >= 3),
+        /технолог|немец|качеств|гарант|премиум|бренд/i.test(b) &&
+        !/лёгк|легк|компакт/i.test(b),
     ) ?? null;
   if (footer) markUsed(footer);
 
   const bottom =
     clean.find(
       (b) =>
-        isAvailable(b) && /лёгк|легк|компакт|тих|удобн|эргоном/i.test(b),
-    ) ??
-    clean.find((b) => isAvailable(b) && !/\d/.test(b)) ??
-    null;
+        isAvailable(b) && /лёгк|легк|компакт|тих|удобн|эргоном/i.test(b) && !/дБ/i.test(b),
+    ) ?? null;
 
   return { leftBullets, gift, sidebar, footer, bottom };
 }
@@ -176,6 +181,10 @@ export function sdDataToInfographic(
 
     while (specBlocks.length < 2) {
       specBlocks.push({ value: "—", label: "характеристика" });
+    }
+
+    if (specBlocks[0]?.value === "—" && specBlocks.length > 1) {
+      specBlocks.splice(1);
     }
 
     const title = data.title.slice(0, 40);

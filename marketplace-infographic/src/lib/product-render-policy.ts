@@ -6,9 +6,9 @@
 export const PRODUCT_BG_NEGATIVE =
   "no product, no equipment, no generator, no appliance, no trimmer, no garden tool, no power tool, no machinery, no object in foreground, no objects on grass, empty center foreground, clear foreground, backdrop only, environment only, scenery only";
 
-export const PRODUCT_TARGET_HEIGHT_RATIO = 0.58;
-export const PRODUCT_TARGET_MAX_HEIGHT_PX = 720;
-export const PRODUCT_BOTTOM_PAD_PX = 48;
+export const PRODUCT_TARGET_HEIGHT_RATIO = 0.72;
+export const PRODUCT_TARGET_MAX_HEIGHT_PX = 860;
+export const PRODUCT_BOTTOM_PAD_PX = 28;
 
 const PRODUCT_WORDS =
   /\b(trim(?:m)?er|generator|appliance|tool|product|equipment|machinery|device|object|weed whacker|grass cutter|триммер|генератор|товар|инструмент|техник[аи]|косилк[аи]|бензопил[аы])\b/gi;

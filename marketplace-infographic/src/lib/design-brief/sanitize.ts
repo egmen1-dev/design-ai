@@ -66,7 +66,7 @@ export function sanitizeDesignBrief(
     objectScale:
       typeof obj.objectScale === "number"
         ? Math.min(0.9, Math.max(0.3, obj.objectScale))
-        : 0.72,
+        : 0.78,
     reflection: Boolean(obj.reflection),
   };
 

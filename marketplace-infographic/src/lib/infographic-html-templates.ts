@@ -273,7 +273,8 @@ export function renderLayoutHtml(
       OVERLAY_HTML: overlayHtml,
       DESIGN_SYSTEM_CSS: designCss,
       SKIN_CSS: `${buildSkinCss(style, accent, libraryFont)}
-    :root { --accent: ${accentHex}; --accent-readable: ${accentHex}; --accent-dark: ${accentHex}; }`,
+    :root { --accent: ${accentHex}; --accent-readable: ${accentHex}; --accent-dark: ${accentHex}; }
+    .mp-title { text-shadow: none !important; color: ${accentHex} !important; }`,
       EXTRA_HEAD_HTML: libraryFont?.cssImport ?? "",
     };
 

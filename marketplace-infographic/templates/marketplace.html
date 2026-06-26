@@ -14,14 +14,12 @@
 {{SKIN_CSS}}
 
     .layout-marketplace {
-      --safe-top: 40px;
-      --safe-side: 36px;
-      --safe-bottom: 32px;
-      --text-max-width: 72%;
-      --product-safe-bottom: 24px;
+      --safe-top: 36px;
+      --safe-side: 32px;
+      --safe-bottom: 28px;
       display: grid;
       grid-template-rows: auto 1fr auto;
-      gap: 12px;
+      gap: 8px;
       padding: var(--safe-top) var(--safe-side) var(--safe-bottom);
       height: 100%;
       box-sizing: border-box;
@@ -31,119 +29,154 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      gap: 14px;
-      max-width: var(--text-max-width);
-      padding-right: 8%;
+      gap: 12px;
+      max-width: 68%;
+      z-index: 5;
     }
 
     .mp-title {
       font-family: var(--font-display);
-      font-size: 58px;
+      font-size: 54px;
       font-weight: 800;
-      line-height: 1.05;
-      letter-spacing: -0.02em;
-      color: var(--accent-readable, var(--accent));
+      line-height: 1.02;
+      letter-spacing: -0.025em;
+      color: var(--accent-readable, var(--accent)) !important;
       text-transform: none;
-      text-shadow: 0 2px 12px rgba(255,255,255,0.85), 0 1px 3px rgba(0,0,0,0.12);
+      text-shadow: none !important;
+      margin: 0;
     }
 
     .mp-pill {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 10px 22px;
+      padding: 9px 20px;
       border-radius: 999px;
       color: #fff;
-      box-shadow: 0 10px 28px rgba(0,0,0,0.18);
+      box-shadow: 0 8px 22px rgba(0,0,0,0.16);
     }
 
-    .mp-pill__icon { font-size: 22px; }
+    .mp-pill__icon { font-size: 20px; }
     .mp-pill__text {
       font-family: var(--font-display);
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 800;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.05em;
     }
 
     .mp-body {
       display: grid;
-      grid-template-columns: 200px 1fr 132px;
-      gap: 8px;
-      align-items: stretch;
+      grid-template-columns: 168px 1fr 118px;
+      gap: 0;
+      align-items: start;
       min-height: 0;
       position: relative;
     }
 
     .mp-body--no-sidebar {
-      grid-template-columns: 200px 1fr;
+      grid-template-columns: 168px 1fr;
     }
 
     .mp-left {
+      z-index: 5;
+      padding-top: 4px;
+    }
+
+    /* ——— Левая плашка (референс) ——— */
+    .mp-left-panel {
+      background: rgba(255,255,255,0.97);
+      border-radius: 20px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.06);
+      overflow: hidden;
+      width: 168px;
+    }
+
+    .mp-left-panel__hero {
+      position: relative;
+      padding: 18px 14px 12px;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
-      gap: 14px;
-      padding-top: 8px;
-      z-index: 4;
+      gap: 2px;
     }
 
-    .mp-left-stack {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .mp-stat-card {
-      background: rgba(255,255,255,0.94);
-      border-radius: 18px;
-      padding: 16px 14px;
-      box-shadow: 0 12px 32px rgba(0,0,0,0.14);
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .mp-stat-card__icon .material-symbols-outlined { font-size: 28px; }
-    .mp-stat-card__body { display: flex; flex-direction: column; gap: 2px; }
-    .mp-stat-card__value {
-      font-family: var(--font-display);
-      font-size: 34px;
-      font-weight: 900;
-      line-height: 1;
-      color: var(--accent-readable, #0f172a) !important;
-    }
-    .mp-stat-card__label {
-      font-size: 14px;
-      font-weight: 700;
+    .mp-left-panel__hero-label {
+      font-size: 13px;
+      font-weight: 800;
       color: #334155;
-      line-height: 1.2;
+      letter-spacing: 0.02em;
+      text-transform: lowercase;
     }
 
-    .mp-gift-card {
-      background: rgba(255,255,255,0.94);
-      border-radius: 18px;
-      padding: 12px;
-      box-shadow: 0 12px 32px rgba(0,0,0,0.14);
-      border-bottom: 4px solid var(--accent);
+    .mp-left-panel__hero-value {
+      font-family: var(--font-display);
+      font-size: 42px;
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.03em;
     }
 
-    .mp-gift-card__thumb {
-      width: 100%;
-      height: 56px;
+    .mp-left-panel__hero-icon {
+      position: absolute;
+      top: 16px;
+      right: 12px;
+      font-size: 26px;
+      opacity: 0.85;
+    }
+
+    .mp-left-panel__secondary {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 14px 10px;
+      font-size: 12px;
+      color: #475569;
+    }
+
+    .mp-left-panel__secondary-value {
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .mp-left-panel__secondary-label {
+      font-weight: 600;
+    }
+
+    .mp-left-panel__gift-visual {
+      display: flex;
+      gap: 8px;
+      padding: 8px 12px 12px;
+      justify-content: center;
+    }
+
+    .mp-left-panel__gift-icon {
+      flex: 1;
+      height: 52px;
       border-radius: 12px;
-      background: linear-gradient(135deg, #e2e8f0, #f8fafc);
+      background: linear-gradient(145deg, #f1f5f9, #e2e8f0);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 8px;
       color: #64748b;
     }
 
-    .mp-gift-card__text {
-      font-size: 13px;
-      font-weight: 700;
-      color: #1e293b;
+    .mp-left-panel__gift-icon .material-symbols-outlined { font-size: 28px; }
+
+    .mp-left-panel__gift-visual--placeholder {
+      height: 52px;
+      margin: 0 12px 12px;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #f1f5f9, #e2e8f0);
+      color: #64748b;
+    }
+
+    .mp-left-panel__footer {
+      padding: 12px 14px;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
       line-height: 1.25;
+      letter-spacing: 0.01em;
+      text-align: center;
     }
 
     .mp-product {
@@ -151,26 +184,29 @@
       display: flex;
       align-items: flex-end;
       justify-content: center;
-      min-height: 620px;
+      min-height: 0;
+      height: 100%;
       z-index: 3;
-      padding: 0 8px var(--product-safe-bottom);
+      padding: 0 0 8px;
+      margin-top: -20px;
     }
 
     .mp-product .product-frame {
-      transform: rotate(-12deg) translateX(16px) translateY(8px);
+      transform: rotate(-17deg) translateX(24px) translateY(-12px);
       transform-origin: center bottom;
-      filter: drop-shadow(0 24px 40px rgba(0,0,0,0.22));
+      filter: drop-shadow(0 28px 48px rgba(0,0,0,0.28));
     }
 
     .mp-product .product-photo--cutout {
-      max-height: 680px;
-      max-width: 480px;
+      max-height: 820px;
+      max-width: 520px;
     }
 
     .mp-product--merged {
       pointer-events: none;
       min-height: 0;
       padding: 0;
+      margin-top: 0;
     }
 
     .mp-product--merged .product-frame {
@@ -178,38 +214,37 @@
     }
 
     .mp-product .ground-contact-shadow {
-      position: absolute;
-      bottom: 18px;
-      left: 50%;
-      transform: translateX(-10%) scaleX(1.1);
-      width: 280px;
-      height: 36px;
-      background: radial-gradient(ellipse, rgba(0,0,0,0.28) 0%, transparent 72%);
-      z-index: 1;
+      display: none;
     }
 
+    /* ——— Правая плашка (компактная) ——— */
     .mp-sidebar-wrap {
+      z-index: 5;
+      padding-top: 48px;
       display: flex;
-      align-items: stretch;
-      z-index: 4;
+      justify-content: flex-end;
     }
 
     .mp-sidebar {
-      width: 100%;
+      width: 118px;
       border-radius: 20px 0 0 20px;
-      padding: 24px 10px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      gap: 28px;
-      color: #fff;
-      box-shadow: -6px 0 24px rgba(0,0,0,0.1);
+      background: linear-gradient(
+        180deg,
+        var(--sidebar-accent, #00a8b5) 0%,
+        color-mix(in srgb, var(--sidebar-accent, #00a8b5) 88%, #000) 55%,
+        color-mix(in srgb, var(--sidebar-accent, #00a8b5) 35%, transparent) 100%
+      );
+      box-shadow: -8px 12px 32px rgba(0,0,0,0.14);
+      overflow: hidden;
     }
 
-    .mp-sidebar__icon {
-      font-size: 28px;
-      opacity: 0.9;
-      margin-bottom: 2px;
+    .mp-sidebar__inner {
+      padding: 22px 10px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      min-height: 320px;
+      max-height: 420px;
     }
 
     .mp-sidebar__item {
@@ -217,59 +252,71 @@
       flex-direction: column;
       align-items: center;
       text-align: center;
-      gap: 2px;
+      gap: 4px;
+      color: #fff;
+    }
+
+    .mp-sidebar__icon {
+      font-size: 26px;
+      opacity: 0.92;
     }
 
     .mp-sidebar__value {
       font-family: var(--font-display);
-      font-size: 64px;
+      font-size: 56px;
       font-weight: 900;
-      line-height: 0.95;
-      letter-spacing: -0.03em;
+      line-height: 0.92;
+      letter-spacing: -0.04em;
     }
 
     .mp-sidebar__label {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 800;
-      letter-spacing: 0.03em;
+      letter-spacing: 0.04em;
       line-height: 1.2;
       opacity: 0.95;
-      max-width: 110px;
+      max-width: 100px;
     }
 
-    .mp-sidebar__item--footer {
+    .mp-sidebar__footer {
       margin-top: auto;
-      padding-top: 12px;
-      border-top: 1px solid rgba(255,255,255,0.25);
+      padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,0.28);
+      text-align: center;
     }
 
-    .mp-sidebar__item--footer .mp-sidebar__label {
-      font-size: 11px;
-      letter-spacing: 0.06em;
+    .mp-sidebar__footer-text {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      line-height: 1.3;
+      color: #fff;
+      opacity: 0.95;
     }
 
     .mp-footer {
       display: flex;
       justify-content: center;
-      padding-top: 4px;
+      padding-top: 2px;
+      z-index: 5;
     }
 
     .mp-bottom-ribbon {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 14px 36px;
+      padding: 12px 32px;
       border-radius: 999px;
       color: #fff;
-      box-shadow: 0 12px 28px rgba(0,0,0,0.18);
-      max-width: 92%;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.16);
+      max-width: 88%;
     }
 
     .mp-bottom-ribbon__text {
       font-family: var(--font-display);
-      font-size: 22px;
+      font-size: 18px;
       font-weight: 800;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.03em;
       text-align: center;
     }
   </style>
@@ -291,7 +338,6 @@
         </aside>
 
         <section class="mp-product{{MERGED_PRODUCT_CLASS}}" aria-label="Товар">
-          <div class="ground-contact-shadow" aria-hidden="true"></div>
           {{PRODUCT_HTML}}
         </section>
 

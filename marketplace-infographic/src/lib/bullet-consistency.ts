@@ -31,10 +31,10 @@ export function filterConsistentBullets(
 
 export function gardenTrimmerBatteryBullets(): string[] {
   return [
-    "40 В мощность",
-    "65 дБ тихая работа",
+    "25000 об/мин",
+    "Очки и перчатки в подарок",
     "3 мощных АКБ",
     "8 насадок",
-    "лёгкий и компактный",
+    "Немецкие технологии",
   ];
 }

@@ -108,7 +108,7 @@ function buildMockBrief(
         "sunny suburban lawn garden path, wooden fence blurred, golden hour daylight, clear empty grass foreground, ultra realistic, no objects, no text",
       fontId: null,
       badgeId: null,
-      objectScale: 0.72,
+      objectScale: 0.78,
       lightDirection: "top-left",
       lightTemperature: "5500K",
       shadowType: "contact-soft",

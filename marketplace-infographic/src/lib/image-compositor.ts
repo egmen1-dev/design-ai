@@ -11,7 +11,7 @@ import type { CompositingHints } from "@/lib/design-brief/schema";
 import { matchProductToBackground } from "@/lib/compositing/color-match";
 
 const CANVAS = 1200;
-const PRODUCT_MAX_W = 920;
+const PRODUCT_MAX_W = 980;
 const PRODUCT_MAX_H = PRODUCT_TARGET_MAX_HEIGHT_PX;
 const BOTTOM_PAD = PRODUCT_BOTTOM_PAD_PX;
 
@@ -97,7 +97,7 @@ function prepareProductLayer(
 
   if (layout === "marketplace") {
     return pipeline
-      .rotate(-11, { background: { r: 0, g: 0, b: 0, alpha: 0 } })
+      .rotate(-17, { background: { r: 0, g: 0, b: 0, alpha: 0 } })
       .png()
       .toBuffer({ resolveWithObject: true })
       .then((resized) => ({
@@ -197,10 +197,10 @@ export async function mergeProductWithBackground(
 
   const bgPrepared = await softenBackgroundCenter(bgRaw);
   const hints = options?.compositingHints;
-  const objectScale = hints?.objectScale ?? 0.72;
+  const objectScale = hints?.objectScale ?? 0.78;
   const scaleFactor =
     layout === "marketplace"
-      ? Math.max(1.08, 0.82 + objectScale * 0.38)
+      ? Math.max(1.24, 0.92 + objectScale * 0.44)
       : 0.75 + objectScale * 0.45;
   const productMatched = hints
     ? await matchProductToBackground(productRaw, bgPrepared, hints)
@@ -211,8 +211,8 @@ export async function mergeProductWithBackground(
   let productTop = CANVAS - BOTTOM_PAD - product.height;
 
   if (layout === "marketplace") {
-    productLeft = Math.round((CANVAS - product.width) / 2) + 36;
-    productTop = CANVAS - BOTTOM_PAD - product.height + 12;
+    productLeft = Math.round((CANVAS - product.width) / 2) + 72;
+    productTop = CANVAS - BOTTOM_PAD - product.height - 8;
   }
 
   const shadow = await createShadowLayer(
@@ -223,7 +223,7 @@ export async function mergeProductWithBackground(
   );
   let shadowLeft = Math.round((CANVAS - shadow.width) / 2);
   if (layout === "marketplace") {
-    shadowLeft += 28;
+    shadowLeft += 56;
   }
   const shadowTop = productTop + product.height - shadow.offsetY;
 
