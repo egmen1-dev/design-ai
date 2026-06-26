@@ -6,8 +6,12 @@ import potrace from "potrace";
 import sharp from "sharp";
 import { createWorker } from "tesseract.js";
 import { removeReferenceBackgroundSharp } from "@/lib/background-removal";
+import {
+  publicReferenceUrl,
+  referencesDir,
+} from "@/lib/reference-storage";
 
-export { publicReferenceUrl, referencesDir } from "@/lib/reference-storage";
+export { publicReferenceUrl, referencesDir };
 
 const potraceTrace = promisify(potrace.trace) as (
   input: Buffer,
