@@ -247,11 +247,16 @@ export function renderLayoutHtml(
     const accentHex = options?.accentHex ?? accent.primary;
     const headline = formatMarketplaceHeadline(data.headline);
     const subtitle = data.categoryPill ?? data.productName;
-    const bullets = data.callouts.map((c) => c.text);
 
     const template = loadTemplate("marketplace");
     const designCss = loadDesignSystemCss();
     const libraryFont = options?.libraryFont;
+
+    const sidebarHtml = buildMarketplaceSidebarHtml(data, accentHex);
+    const bodyClass = sidebarHtml ? "" : " mp-body--no-sidebar";
+    const sidebarWrapHtml = sidebarHtml
+      ? `<aside class="mp-sidebar-wrap" aria-label="Преимущества">${sidebarHtml}</aside>`
+      : "";
 
     const vars: Record<string, string> = {
       PRODUCT_NAME: escapeHtml(data.productName),
@@ -259,8 +264,9 @@ export function renderLayoutHtml(
       HEADLINE: escapeHtml(headline),
       PILL_HTML: buildMarketplacePillHtml(subtitle, accentHex),
       LEFT_SPECS_HTML: buildMarketplaceLeftSpecsHtml(data, accentHex),
-      SIDEBAR_HTML: buildMarketplaceSidebarHtml(data, accentHex),
-      BOTTOM_RIBBON_HTML: buildMarketplaceBottomRibbonHtml(bullets, accentHex),
+      BODY_CLASS: bodyClass,
+      SIDEBAR_WRAP_HTML: sidebarWrapHtml,
+      BOTTOM_RIBBON_HTML: buildMarketplaceBottomRibbonHtml(data, accentHex),
       PRODUCT_HTML: buildProductHtml(productInner, hasPhoto, layout),
       BACKGROUND_STYLE: backgroundStyle,
       OVERLAY_HTML: overlayHtml,

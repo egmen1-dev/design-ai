@@ -60,11 +60,15 @@
 
     .mp-body {
       display: grid;
-      grid-template-columns: 210px 1fr 148px;
-      gap: 10px;
+      grid-template-columns: 200px 1fr 132px;
+      gap: 8px;
       align-items: stretch;
       min-height: 0;
       position: relative;
+    }
+
+    .mp-body--no-sidebar {
+      grid-template-columns: 200px 1fr;
     }
 
     .mp-left {
@@ -145,15 +149,14 @@
     }
 
     .mp-product .product-frame {
-      transform: rotate(-18deg) translateX(24px);
+      transform: rotate(-12deg) translateX(16px) translateY(8px);
       transform-origin: center bottom;
-      filter: drop-shadow(0 28px 48px rgba(0,0,0,0.28));
+      filter: drop-shadow(0 24px 40px rgba(0,0,0,0.22));
     }
 
-    .mp-product .product-photo {
-      max-height: 700px;
-      max-width: 520px;
-      object-fit: contain;
+    .mp-product .product-photo--cutout {
+      max-height: 680px;
+      max-width: 480px;
     }
 
     .mp-product .ground-contact-shadow {
@@ -175,14 +178,20 @@
 
     .mp-sidebar {
       width: 100%;
-      border-radius: 22px 0 0 22px;
-      padding: 28px 14px;
+      border-radius: 20px 0 0 20px;
+      padding: 24px 10px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      gap: 18px;
+      justify-content: flex-start;
+      gap: 28px;
       color: #fff;
-      box-shadow: -8px 0 28px rgba(0,0,0,0.12);
+      box-shadow: -6px 0 24px rgba(0,0,0,0.1);
+    }
+
+    .mp-sidebar__icon {
+      font-size: 28px;
+      opacity: 0.9;
+      margin-bottom: 2px;
     }
 
     .mp-sidebar__item {
@@ -190,23 +199,24 @@
       flex-direction: column;
       align-items: center;
       text-align: center;
-      gap: 4px;
+      gap: 2px;
     }
 
     .mp-sidebar__value {
       font-family: var(--font-display);
-      font-size: 72px;
+      font-size: 64px;
       font-weight: 900;
       line-height: 0.95;
       letter-spacing: -0.03em;
     }
 
     .mp-sidebar__label {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 800;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.03em;
       line-height: 1.2;
       opacity: 0.95;
+      max-width: 110px;
     }
 
     .mp-sidebar__item--footer {
@@ -257,7 +267,7 @@
         {{PILL_HTML}}
       </header>
 
-      <div class="mp-body">
+      <div class="mp-body{{BODY_CLASS}}">
         <aside class="mp-left" aria-label="Характеристики">
           {{LEFT_SPECS_HTML}}
         </aside>
@@ -267,9 +277,7 @@
           {{PRODUCT_HTML}}
         </section>
 
-        <aside class="mp-sidebar-wrap" aria-label="Преимущества">
-          {{SIDEBAR_HTML}}
-        </aside>
+        {{SIDEBAR_WRAP_HTML}}
       </div>
 
       <footer class="mp-footer">

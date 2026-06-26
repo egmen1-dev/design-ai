@@ -42,7 +42,7 @@ const SD_EXAMPLE_MARKETPLACE = `{
   "layout": "marketplace",
   "title": "Садовый триммер",
   "subtitle": "аккумуляторный",
-  "bullets": ["25000 об/мин", "3 мощных АКБ", "8 насадок", "лёгкий и компактный", "немецкие технологии"],
+  "bullets": ["1300 Вт мощность", "65 дБ тихая работа", "3 мощных АКБ", "8 насадок", "лёгкий и компактный"],
   "colors": ["#00a8b5", "#ffffff", "#0f172a"],
   "badge": "GardenPro",
   "backgroundPrompt": "professional marketplace product photo, sunny suburban backyard with green lawn, wooden house blurred in background, soft natural daylight, shallow depth of field, center space for garden trimmer, photorealistic, no text, no people, 8k",
@@ -88,7 +88,7 @@ export function generateMockSdData(
     title: isTrimmer ? "Садовый триммер" : isGenerator ? "ГЕНЕРАТОР" : "ТОВАР",
     subtitle: isTrimmer ? "аккумуляторный" : isGenerator ? "бензиновый" : "новинка",
     bullets: isTrimmer
-      ? ["25000 об/мин", "3 мощных АКБ", "8 насадок", "лёгкий и компактный"]
+      ? ["1300 Вт мощность", "65 дБ тихая работа", "3 мощных АКБ", "8 насадок", "лёгкий и компактный"]
       : isGenerator
         ? ["3 кВт мощность", "15 литров бак", "3000 Вт стабильная мощность"]
         : ["Премиум качество", "Быстрая доставка", "Гарантия 12 месяцев"],
@@ -133,9 +133,16 @@ async function callOllamaSd(
     ? `ОБЯЗАТЕЛЬНО layout: "marketplace" — профессиональная карточка Wildberries/Ozon.
 title — с заглавной буквы (НЕ КАПСОМ), например "Садовый триммер".
 subtitle — короткий тип товара для pill-кнопки, например "аккумуляторный".
-bullets — 4-5 УТП: первые 2-3 с крупными цифрами (об/мин, кол-во АКБ, насадок), последние — преимущества.
-colors — используй палитру референса: [${referenceColors}].
-НЕ добавляй watermark "WILDBERRIES" или бренд маркетплейса на слайд.`
+bullets — РОВНО 5 строк, каждая уникальна, без повторов:
+  [0] левая карточка: мощность/обороты (например "1300 Вт мощность")
+  [1] левая карточка: второй тех. параметр (например "65 дБ тихая работа")
+  [2] правая колонка: кол-во АКБ (например "3 мощных АКБ")
+  [3] правая колонка: кол-во насадок (например "8 насадок")
+  [4] низ слайда: качество (например "лёгкий и компактный")
+Опционально вместо [1] можно подарок: "Очки и перчатки в подарок".
+Пиши грамотно по-русски: "литра", не "итра". Не дублируй один параметр в разных bullets.
+colors — палитра референса: [${referenceColors}].
+НЕ добавляй watermark "WILDBERRIES" на слайд.`
     : `layout: "hero" | "cards" | "split" | "minimal"`;
 
   const compositionHint = ref.compositionHint

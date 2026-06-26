@@ -37,14 +37,17 @@ export function buildMarketplaceLeftSpecsHtml(
   accent: string,
 ): string {
   const blocks = data.specBlocks.slice(0, 2);
-  const giftBlock = data.mainBanner;
 
   const cards = blocks.map((spec) => {
     const icon = /об\/мин|rpm|скорост/i.test(spec.label)
       ? "speed"
       : /вт|квт|мощ/i.test(spec.label)
         ? "bolt"
-        : "tune";
+        : /дБ|шум|тих/i.test(spec.label)
+          ? "volume_down"
+          : /л|литр|бак|объём/i.test(spec.label)
+            ? "water_drop"
+            : "tune";
     return `
       <div class="mp-stat-card">
         <div class="mp-stat-card__icon" style="color:${accent};">
@@ -57,54 +60,63 @@ export function buildMarketplaceLeftSpecsHtml(
       </div>`;
   });
 
-  const giftHtml = giftBlock
+  const giftText = data.marketplaceGift;
+  const giftHtml = giftText
     ? `
       <div class="mp-gift-card">
         <div class="mp-gift-card__thumb" aria-hidden="true">
-          <span class="material-symbols-outlined">visibility</span>
+          <span class="material-symbols-outlined">redeem</span>
         </div>
-        <p class="mp-gift-card__text">${escapeHtml(giftBlock.title)}</p>
+        <p class="mp-gift-card__text">${escapeHtml(giftText)}</p>
       </div>`
     : "";
 
   return `<div class="mp-left-stack">${cards.join("")}${giftHtml}</div>`;
 }
 
-function parseFeatureNumber(text: string): { value: string; label: string } {
-  const match = text.match(/^(\d+(?:[.,]\d+)?)\s*(.*)$/);
-  if (match) {
-    return { value: match[1], label: match[2].trim() || "параметр" };
-  }
-  const parts = text.split(/\s+/);
-  return { value: parts[0] ?? text, label: parts.slice(1).join(" ") || "преимущество" };
-}
-
 export function buildMarketplaceSidebarHtml(
   data: InfographicData,
   accent: string,
 ): string {
-  const features = data.callouts.slice(0, 3);
-  const items = features.map((callout, index) => {
-    const parsed = parseFeatureNumber(callout.text);
-    const isLast = index === features.length - 1;
+  const sidebar = data.marketplaceSidebar ?? [];
+  const footer = data.marketplaceFooter;
+
+  if (sidebar.length === 0 && !footer) {
+    return "";
+  }
+
+  const items = sidebar.slice(0, 2).map((item) => {
+    const icon = /акб|батар/i.test(item.label)
+      ? "battery_full"
+      : /насад/i.test(item.label)
+        ? "construction"
+        : "star";
     return `
-      <div class="mp-sidebar__item${isLast ? " mp-sidebar__item--footer" : ""}">
-        ${index < 2 ? `<span class="mp-sidebar__value">${escapeHtml(parsed.value)}</span>` : ""}
-        <span class="mp-sidebar__label">${escapeHtml(isLast ? callout.text.toUpperCase() : parsed.label.toUpperCase())}</span>
+      <div class="mp-sidebar__item">
+        <span class="material-symbols-outlined mp-sidebar__icon" aria-hidden="true">${icon}</span>
+        <span class="mp-sidebar__value">${escapeHtml(item.value)}</span>
+        <span class="mp-sidebar__label">${escapeHtml(item.label)}</span>
       </div>`;
   });
 
+  const footerHtml = footer
+    ? `<div class="mp-sidebar__item mp-sidebar__item--footer">
+        <span class="mp-sidebar__label">${escapeHtml(footer.toUpperCase())}</span>
+      </div>`
+    : "";
+
   return `
-    <div class="mp-sidebar" style="background:${accent};">
+    <div class="mp-sidebar" style="background:linear-gradient(180deg, ${accent} 0%, ${accent}dd 100%);">
       ${items.join("")}
+      ${footerHtml}
     </div>`;
 }
 
 export function buildMarketplaceBottomRibbonHtml(
-  bullets: string[],
+  data: InfographicData,
   accent: string,
 ): string {
-  const text = bullets[bullets.length - 1] ?? bullets[0] ?? "";
+  const text = data.marketplaceBottom;
   if (!text) return "";
 
   return `

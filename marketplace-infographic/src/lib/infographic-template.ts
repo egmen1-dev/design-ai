@@ -65,6 +65,19 @@ export const infographicDataSchema = z.object({
     .min(2)
     .max(4),
   accentColor: z.enum(["red", "blue", "purple", "green"]).optional(),
+  /** Зоны marketplace-шаблона (без дублирования текста) */
+  marketplaceGift: z.string().max(80).optional(),
+  marketplaceSidebar: z
+    .array(
+      z.object({
+        value: z.string().max(12),
+        label: z.string().max(50),
+      }),
+    )
+    .max(3)
+    .optional(),
+  marketplaceFooter: z.string().max(60).optional(),
+  marketplaceBottom: z.string().max(60).optional(),
 });
 
 export type InfographicData = z.infer<typeof infographicDataSchema>;

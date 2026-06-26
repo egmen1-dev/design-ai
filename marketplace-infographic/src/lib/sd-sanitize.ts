@@ -40,7 +40,9 @@ export function sanitizeSdInput(raw: unknown): InfographicSdInput {
 
   const bullets = Array.isArray(obj.bullets)
     ? obj.bullets
-        .map((item) => clip(item, 80))
+        .map((item) =>
+          clip(String(item).replace(/\bитра\b/gi, "литра"), 80),
+        )
         .filter((item) => item.length > 0)
         .slice(0, 5)
     : [];
