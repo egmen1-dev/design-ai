@@ -1,5 +1,13 @@
-import type { FoundationPromptInput, DesignPromptInput } from "./types";
+import type { FoundationPromptInput } from "./types";
+import type { CreativeDirectorResult } from "./creative-concept";
 import { buildSystemPrompt } from "@/lib/prompt/system";
+
+export type DesignPromptInput = FoundationPromptInput & {
+  foundation: import("./types").DesignProcessFoundation;
+  creativeDirector: CreativeDirectorResult;
+  referenceHint?: string;
+  retryHint?: string;
+};
 
 export function buildFoundationStagePrompt(input: FoundationPromptInput): string {
   return `${buildSystemPrompt()}
@@ -62,87 +70,61 @@ contrast_pop | editorial_typography | power_number
 
 export function buildDesignStagePrompt(input: DesignPromptInput): string {
   const f = input.foundation;
+  const cd = input.creativeDirector;
 
   return `${buildSystemPrompt()}
 
-# МНОГОЭТАПНЫЙ ПРОЦЕСС — ФАЗА 2 (Композиция → Финальный Design Brief)
+# DESIGN EXECUTOR — Фаза 2 (минимальный постер)
 
-На основе завершённой Фазы 1 пройди этапы 3–7 и собери финальный Design Brief.
-Вся композиция должна строиться вокруг visualHook: ${f.visualHook.type} — ${f.visualHook.reason}
+Ты НЕ креативный директор. Идея УЖЕ принята. Твоя задача — технически оформить постер.
 
-## Уже принято (не меняй без веской причины)
-Анализ: ${JSON.stringify(f.stage1)}
-Концепция: ${f.stage2.concept} — ${f.stage2.creativeDirection}
-Хук: ${f.visualHook.type} (confidence ${f.visualHook.confidence})
+## Creative Concept (НЕ МЕНЯТЬ)
+${JSON.stringify(cd.creativeConcept, null, 2)}
 
-## Этап 3. Композиция
-Главный объект, направление взгляда, текст, плашки, свободное пространство, баланс, глубина, перспектива.
+## Одна мысль обложки (НЕ МЕНЯТЬ)
+Заголовок: "${cd.oneThought.headline}"
+Герой-цифра: ${cd.oneThought.answer} ${cd.oneThought.answerLabel}
+Бейдж: ${cd.oneThought.badge ?? "нет"}
+Отложено на другие слайды: ${cd.oneThought.deferredSpecs.join(", ")}
 
-## Этап 4. Типографика
-Шрифт, насыщенность, размер, интервалы, цвет, контраст, акценты + обоснование.
+## Сцена
+${cd.sceneNarrative}
 
-## Этап 5. Цветовая система
-Основной, вторичный, акцент, фон, текст, плашки, контрастность — единая система.
-
-## Этап 6. Декоративные элементы
-Реши, нужны ли геометрия, стекло, частицы, линии, градиенты, текстуры.
-Если не улучшают — useDecorations: false.
-
-## Этап 7. Самопроверка
-Оцени 0–100: баланс, читаемость, профессиональность, соответствие категории, премиальность, конверсия.
-overallScore = среднее. Если overallScore < 90 — пересмотри композицию и параметры в JSON.
+## СТРОГИЕ ЛИМИТЫ (нарушение = провал)
+- bullets: ТОЛЬКО 1 элемент для обложки + deferredSpecs для хранения (не для отображения)
+- headline = рекламный заголовок из oneThought, НЕ название товара
+- subHeadline = badge (3 кВт), максимум 3 слова
+- НЕТ больших плашек, панелей, списков преимуществ на обложке
+- objectScale: 0.68–0.75 (товар 60–75% кадра)
+- useDecorations: false
+- glassEffects: true
 
 Верни ТОЛЬКО JSON Design Brief:
 {
-  "designConcept": "из stage2.concept",
-  "designProcess": {
-    "stage1": { ...как в фазе 1... },
-    "visualHook": { ... },
-    "stage2": { ... },
-    "stage3": {
-      "mainSubject": "", "eyeFlow": "", "textPlacement": "", "plaquePlacement": "",
-      "negativeSpace": "", "balance": "", "depth": "", "perspective": ""
-    },
-    "stage4": {
-      "fontStyle": "", "weight": "", "sizeStrategy": "", "spacing": "",
-      "textColor": "", "contrastLevel": "", "accents": "", "rationale": ""
-    },
-    "stage5": {
-      "primary": "#hex", "secondary": "#hex", "accent": "#hex", "background": "описание",
-      "textColor": "#hex", "plaqueColor": "#hex", "contrastLevel": "", "systemRationale": ""
-    },
-    "stage6": { "useDecorations": false, "elements": [], "rationale": "" },
-    "stage7": {
-      "visualBalance": 95, "readability": 94, "professionalism": 96,
-      "categoryFit": 93, "premiumFeel": 95, "conversionPotential": 94,
-      "overallScore": 94, "revisions": []
-    }
-  },
-  "audienceAnalysis": { "category": "", "priceSegment": "" },
-  "marketingStrategy": "УТП",
-  "composition": { "rule": "rule-of-thirds", "focusPoint": "product", "visualFlow": "Z-pattern" },
+  "designConcept": "${cd.creativeConcept.title}",
+  "creativeConcept": { ...как выше... },
+  "oneThought": { ...как выше... },
   "layout": "marketplace",
-  "cameraAngle": "three-quarter",
-  "objectScale": 0.58,
+  "headline": "${cd.oneThought.headline}",
+  "subHeadline": "${cd.oneThought.badge ?? "новинка"}",
+  "bullets": ["${cd.oneThought.answer} ${cd.oneThought.answerLabel}"],
+  "deferredBullets": ${JSON.stringify(cd.oneThought.deferredSpecs)},
+  "objectScale": 0.72,
+  "cameraAngle": "three-quarter hero",
   "lightDirection": "top-left",
   "lightTemperature": "5500K",
   "shadowType": "contact-soft",
   "reflection": false,
-  "backgroundPrompt": "english only, premium scene, NO product, NO text",
+  "backgroundPrompt": "english scene description, NO product, NO text, ${cd.sceneNarrative.slice(0, 120)}",
   "colorPalette": ["#hex", "#hex", "#hex"],
   "fontId": null,
-  "fontReason": "почему этот шрифт",
   "badgeId": null,
-  "badgeReason": "почему этот badge",
-  "headline": "Title Case",
-  "subHeadline": "короткий тип",
-  "bullets": ["5 уникальных УТП на русском"],
   "badge": "бренд",
-  "negativePrompt": "no product in background",
-  "qualityChecklist": ["композиция сбалансирована", "хук ${f.visualHook.type} реализован"]
+  "glassEffects": true,
+  "decorations": []
 }
 
-Холст Wildberries: 900×1200. objectScale 0.55–0.72 для marketplace.
+Холст 900×1200. Wildberries.
 ${input.referenceHint ? `РЕФЕРЕНС: ${input.referenceHint}` : ""}
 ${input.retryHint ? input.retryHint : ""}
 

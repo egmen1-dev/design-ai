@@ -17,7 +17,11 @@ import {
 import { sanitizeDesignBrief } from "@/lib/design-brief/sanitize";
 import { cacheGet, cacheKey, cacheSet } from "@/lib/cache/generation-cache";
 import { buildMockFoundation } from "@/lib/design-process/mock";
-import { runDesignProcessPipeline } from "@/lib/design-process/pipeline";
+import {
+  applyPosterRules,
+  runDesignProcessPipeline,
+} from "@/lib/design-process/pipeline";
+import { buildMockCreativeDirector } from "@/lib/design-process/creative-concept";
 import { objectScaleFromHook } from "@/lib/design-process/visual-hook";
 import {
   filterConsistentBullets,
@@ -73,6 +77,7 @@ function buildMockBrief(
   referenceContext?: ResolvedReferenceContext,
 ): DesignBrief {
   const analysis = analyzeProductPrompt(prompt);
+  const creative = buildMockCreativeDirector(prompt, analysis);
   const foundation = buildMockFoundation(prompt, analysis.category);
   const isTrimmer = analysis.category === "garden_tools";
   const isGenerator = /генератор|generator/i.test(prompt);
@@ -86,64 +91,35 @@ function buildMockBrief(
     : ["1300 Вт мощность", "65 дБ тихая работа", "3 мощных АКБ", "8 насадок", "лёгкий и компактный"];
 
   const raw = sanitizeDesignBrief(
-    {
-      designConcept: foundation.stage2.concept,
-      designProcess: {
-        stage1: foundation.stage1,
+    applyPosterRules(
+      {
+        designConcept: creative.creativeConcept.title,
+        creativeConcept: creative.creativeConcept,
+        oneThought: creative.oneThought,
+        designProcess: {
+          stage1: foundation.stage1,
+          visualHook: foundation.visualHook,
+          stage2: foundation.stage2,
+        },
         visualHook: foundation.visualHook,
-        stage2: foundation.stage2,
-        stage3: {
-          mainSubject: "товар",
-          eyeFlow: "заголовок → товар → УТП",
-          textPlacement: "слева",
-          plaquePlacement: "компактные плашки слева и справа",
-          negativeSpace: "20–30%",
-          balance: "правило третей",
-          depth: "передний план — товар",
-          perspective: "three-quarter",
-        },
-        stage7: {
-          visualBalance: 94,
-          readability: 95,
-          professionalism: 93,
-          categoryFit: 92,
-          premiumFeel: 91,
-          conversionPotential: 94,
-          overallScore: 93,
-        },
-      },
-      visualHook: foundation.visualHook,
-      layout: "marketplace",
-      headline: isTrimmer ? "Садовый триммер" : isGenerator ? "Бензиновый генератор" : "Товар",
-      subHeadline: isTrimmer
-        ? isBattery
-          ? "аккумуляторный"
-          : "мощный"
-        : isGenerator
-          ? "3 кВт"
-          : "новинка",
-      bullets: isTrimmer
-        ? trimmerBullets
-        : isGenerator
-          ? [
-              "3 кВт мощность",
-              "бак 15 литров",
-              "расход 1,25 л/час",
-              "65 дБ тихая работа",
-              "гарантия 12 месяцев",
-            ]
-          : ["Быстрая доставка", "Гарантия 12 месяцев"],
-      colorPalette: colors,
-      badge: "Brand",
-      backgroundPrompt:
-        "sunny suburban lawn garden path, wooden fence blurred, golden hour daylight, clear empty grass foreground, ultra realistic, no objects, no text",
-      fontId: null,
-      badgeId: null,
-      objectScale: objectScaleFromHook(foundation.visualHook, 0.78),
-      lightDirection: "top-left",
-      lightTemperature: "5500K",
-      shadowType: "contact-soft",
-    },
+        layout: "marketplace",
+        headline: creative.oneThought.headline,
+        subHeadline: creative.oneThought.badge ?? "новинка",
+        bullets: [`${creative.oneThought.answer} ${creative.oneThought.answerLabel}`.trim()],
+        deferredBullets: creative.oneThought.deferredSpecs,
+        colorPalette: colors,
+        badge: "Brand",
+        backgroundPrompt: `${creative.sceneNarrative}, ultra realistic, no text, no product`,
+        fontId: null,
+        badgeId: null,
+        objectScale: 0.72,
+        lightDirection: "top-left",
+        lightTemperature: "5500K",
+        shadowType: "contact-soft",
+        glassEffects: true,
+      } as DesignBrief,
+      creative,
+    ),
     analysis.category,
     prompt,
   );
@@ -177,7 +153,7 @@ export async function generateSdInfographicData(
   const enrichedContext: OllamaSdContext = { ...context, referenceContext };
   const analysis = analyzeProductPrompt(prompt);
   const cacheId = cacheKey([
-    "brief-v9",
+    "brief-v12-poster",
     prompt.slice(0, 80),
     style ?? "auto",
     referenceContext.topExample?.id ?? "none",

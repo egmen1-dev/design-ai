@@ -35,8 +35,10 @@ import {
   planScene,
   buildSceneBackgroundPrompt,
   validateQuality,
+  evaluateArtistic,
   QUALITY_PASS_THRESHOLD,
 } from "@/lib/design";
+import type { CreativeDirectorResult } from "@/lib/design-process/creative-concept";
 import type { ScenePlan } from "@/lib/design/scene-planner";
 import type { QualityValidationResult } from "@/lib/design/quality-validator";
 import { objectScaleFromHook } from "@/lib/design-process/visual-hook";
@@ -75,10 +77,22 @@ export type GenerateInfographicResult = {
 function briefMeta(brief?: DesignBrief) {
   const hook = brief?.designProcess?.visualHook ?? brief?.visualHook;
   return {
-    designConcept: brief?.designConcept ?? brief?.designProcess?.stage2?.concept,
+    designConcept: brief?.creativeConcept?.title ?? brief?.designConcept ?? brief?.designProcess?.stage2?.concept,
+    creativeMainIdea: brief?.creativeConcept?.mainIdea,
     visualHook: hook
-      ? { type: hook.type, reason: hook.reason, confidence: hook.confidence }
-      : undefined,
+      ? { type: hook.type, reason: brief?.creativeConcept?.visualHook ?? hook.reason, confidence: hook.confidence }
+      : brief?.creativeConcept
+        ? { type: "creative_story", reason: brief.creativeConcept.visualHook, confidence: 92 }
+        : undefined,
+  };
+}
+
+function creativeFromBrief(brief?: DesignBrief): CreativeDirectorResult | undefined {
+  if (!brief?.creativeConcept || !brief.oneThought) return undefined;
+  return {
+    creativeConcept: brief.creativeConcept,
+    oneThought: brief.oneThought,
+    sceneNarrative: brief.backgroundPrompt?.slice(0, 400) ?? "",
   };
 }
 
@@ -246,6 +260,9 @@ export async function handleGenerateInfographic(
 
     const visualHook = designBrief?.designProcess?.visualHook ?? designBrief?.visualHook;
 
+    const creativeDirector = creativeFromBrief(designBrief);
+    const sceneNarrative = creativeDirector?.sceneNarrative;
+
     const { analysis, scene: plannedScene } = planScene({
       prompt: input.prompt,
       coverConceptId: input.coverConcept ?? storedScenePlan?.coverConceptId,
@@ -253,6 +270,7 @@ export async function handleGenerateInfographic(
       styleHint: input.style ?? (referenceContext?.hasStrongReference ? referenceContext.style : undefined),
       seed: variationSeed,
       productVisual,
+      sceneNarrative,
     });
 
     const scenePlan = storedScenePlan ?? plannedScene;
@@ -262,15 +280,15 @@ export async function handleGenerateInfographic(
     );
     compositingHints = sceneToCompositingHints(scenePlan, objectScale);
 
-    // ── 2. Composition Engine (диапазоны из Scene Planner) ──────────
-    const compositionResult =
+    // ── 2. Composition Engine — вокруг рекламной идеи ───────────────
+    let compositionResult =
       sdData.layout === "marketplace"
         ? generateComposition({
             category: analysis.category,
             layout: "marketplace",
-            bulletCount: sdData.bullets.length,
+            bulletCount: 1,
             hasLeftPanel: true,
-            hasRightSidebar: true,
+            hasRightSidebar: false,
             objectScale,
             styleHint:
               input.style ??
@@ -282,12 +300,49 @@ export async function handleGenerateInfographic(
           })
         : null;
 
+    if (creativeDirector && compositionResult) {
+      let artistic = evaluateArtistic({
+        creativeConcept: creativeDirector.creativeConcept,
+        oneThought: creativeDirector.oneThought,
+        compositionLayout: compositionResult.layout,
+        elementCount: 3,
+      });
+      if (!artistic.passed) {
+        compositionResult = generateComposition({
+          category: analysis.category,
+          layout: "marketplace",
+          bulletCount: 1,
+          hasLeftPanel: true,
+          hasRightSidebar: false,
+          objectScale: Math.min(0.75, objectScale + 0.04),
+          styleHint:
+            input.style ??
+            (referenceContext?.hasStrongReference ? referenceContext.style : undefined),
+          seed: `${variationSeed}:artistic-retry`,
+          visualHook,
+          scenarioId: scenePlan.compositionScenario,
+          productSafeZone: scenePlan.productSafeZone,
+        });
+        artistic = evaluateArtistic({
+          creativeConcept: creativeDirector.creativeConcept,
+          oneThought: creativeDirector.oneThought,
+          compositionLayout: compositionResult.layout,
+          elementCount: 3,
+        });
+      }
+      if (!artistic.passed) {
+        console.warn(`[artistic] score ${artistic.total}/100`, artistic);
+      }
+    }
+
     const compositionLayout = compositionResult?.layout;
 
     // ── 3. Prompt Builder → SD фон ────────────────────────────────────
     const scenePrompt = buildSceneBackgroundPrompt(scenePlan, analysis, {
       dominantColors: productVisual?.dominantColors,
       shape: productVisual?.shape,
+      sceneNarrative: creativeDirector?.sceneNarrative,
+      visualHookStory: creativeDirector?.creativeConcept.visualHook,
     });
     sdData.backgroundPrompt = scenePrompt;
 

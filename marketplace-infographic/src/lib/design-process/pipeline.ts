@@ -12,7 +12,14 @@ import {
   evaluateDesignProcessReview,
 } from "@/lib/design-brief/quality-gate";
 import type { DesignProcessFoundation } from "./types";
-import { buildFoundationStagePrompt, buildDesignStagePrompt } from "./prompts";
+import { buildDesignStagePrompt } from "./prompts";
+import { buildCreativeDirectorPrompt } from "./creative-director-prompt";
+import {
+  buildMockCreativeDirector,
+  sanitizeCreativeConcept,
+  sanitizeOneThought,
+  type CreativeDirectorResult,
+} from "./creative-concept";
 import { OLLAMA_NUM_PREDICT, OLLAMA_TIMEOUT_MS, SKIP_OLLAMA_QUALITY_RETRY } from "@/lib/pipeline-config";
 import { buildMockFoundation } from "./mock";
 
@@ -24,6 +31,12 @@ export type DesignProcessContext = {
   examples?: DesignExampleRecord[];
   referenceContext?: ResolvedReferenceContext;
   retryHint?: string;
+};
+
+export type DesignProcessResult = {
+  brief: DesignBrief;
+  foundation: DesignProcessFoundation;
+  creativeDirector: CreativeDirectorResult;
 };
 
 function extractJson(text: string): string {
@@ -58,50 +71,82 @@ async function callOllamaJson<T>(prompt: string, temperature = 0.32): Promise<T>
   return JSON.parse(extractJson(data.response)) as T;
 }
 
-function sanitizeFoundation(raw: unknown, fallback: DesignProcessFoundation): DesignProcessFoundation {
-  const obj = raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
-  const stage1 = (obj.stage1 ?? fallback.stage1) as DesignProcessFoundation["stage1"];
-  const stage2 = (obj.stage2 ?? fallback.stage2) as DesignProcessFoundation["stage2"];
-  const hookRaw = (obj.visualHook ?? fallback.visualHook) as Record<string, unknown>;
-
+function foundationFromCreative(
+  creative: CreativeDirectorResult,
+  analysis: ProductAnalysis,
+): DesignProcessFoundation {
+  const fallback = buildMockFoundation("", analysis.category);
   return {
-    stage1: {
-      ...fallback.stage1,
-      ...stage1,
-      category: String(stage1?.category ?? fallback.stage1.category),
-    },
+    stage1: { ...fallback.stage1, category: analysis.category },
     visualHook: {
-      type: String(hookRaw?.type ?? fallback.visualHook.type),
-      reason: String(hookRaw?.reason ?? fallback.visualHook.reason).slice(0, 300),
-      confidence: Math.min(100, Math.max(0, Number(hookRaw?.confidence ?? 85))),
+      type: "oversized_product",
+      reason: creative.creativeConcept.visualHook,
+      confidence: 92,
     },
     stage2: {
-      ...fallback.stage2,
-      ...stage2,
-      concept: String(stage2?.concept ?? fallback.stage2.concept).slice(0, 200),
-      creativeDirection: String(stage2?.creativeDirection ?? fallback.stage2.creativeDirection).slice(0, 400),
+      concept: creative.creativeConcept.title,
+      creativeDirection: creative.creativeConcept.mainIdea,
+      mood: creative.creativeConcept.emotion,
+      references: [],
+      whyThisConcept: creative.creativeConcept.reason,
     },
   };
 }
 
-export async function runFoundationStage(
+/** Применяет правила постера: одна мысль, минимум элементов */
+export function applyPosterRules(
+  brief: DesignBrief,
+  creative: CreativeDirectorResult,
+): DesignBrief {
+  const ot = creative.oneThought;
+  const heroBullet = `${ot.answer} ${ot.answerLabel}`.trim();
+
+  return {
+    ...brief,
+    designConcept: creative.creativeConcept.title,
+    headline: ot.headline,
+    subHeadline: ot.badge ?? brief.subHeadline,
+    title: ot.headline,
+    subtitle: ot.badge,
+    bullets: [heroBullet, ...ot.deferredSpecs],
+    benefits: [heroBullet, ...ot.deferredSpecs],
+    objectScale: Math.max(0.68, brief.objectScale ?? 0.72),
+    backgroundPrompt: `${creative.sceneNarrative}, ${brief.backgroundPrompt ?? ""}`.slice(0, 480),
+    decorations: [],
+    glassEffects: true,
+    creativeConcept: creative.creativeConcept,
+    oneThought: ot,
+    deferredBullets: ot.deferredSpecs,
+  };
+}
+
+export async function runCreativeDirectorStage(
   ctx: DesignProcessContext,
-): Promise<DesignProcessFoundation> {
-  const fallback = buildMockFoundation(ctx.productPrompt, ctx.analysis.category);
-  const prompt = buildFoundationStagePrompt({
+): Promise<CreativeDirectorResult> {
+  const fallback = buildMockCreativeDirector(ctx.productPrompt, ctx.analysis);
+  const prompt = buildCreativeDirectorPrompt({
     productPrompt: ctx.productPrompt,
     category: ctx.analysis.category,
     priceSegment: ctx.analysis.priceSegment,
     style: ctx.style ?? "auto",
   });
 
-  const raw = await callOllamaJson<unknown>(prompt, 0.38);
-  return sanitizeFoundation(raw, fallback);
+  try {
+    const raw = await callOllamaJson<Record<string, unknown>>(prompt, 0.42);
+    return {
+      creativeConcept: sanitizeCreativeConcept(raw, fallback.creativeConcept),
+      oneThought: sanitizeOneThought(raw, fallback.oneThought),
+      sceneNarrative: String(raw.sceneNarrative ?? fallback.sceneNarrative).slice(0, 400),
+    };
+  } catch {
+    return fallback;
+  }
 }
 
 async function runDesignStage(
   ctx: DesignProcessContext,
   foundation: DesignProcessFoundation,
+  creative: CreativeDirectorResult,
   retryHint?: string,
 ): Promise<DesignBrief> {
   const prompt = buildDesignStagePrompt({
@@ -110,17 +155,19 @@ async function runDesignStage(
     priceSegment: ctx.analysis.priceSegment,
     style: ctx.style ?? "auto",
     foundation,
+    creativeDirector: creative,
     referenceHint: ctx.referenceContext?.compositionHint ?? undefined,
     retryHint: retryHint ?? ctx.retryHint,
   });
 
-  const raw = await callOllamaJson<unknown>(prompt, 0.3);
-  const brief = sanitizeDesignBrief(raw, ctx.analysis.category, ctx.productPrompt);
+  const raw = await callOllamaJson<unknown>(prompt, 0.28);
+  let brief = sanitizeDesignBrief(raw, ctx.analysis.category, ctx.productPrompt);
+  brief = applyPosterRules(brief, creative);
 
   return {
     ...brief,
-    designConcept: brief.designConcept ?? foundation.stage2.concept,
-    designProcess: brief.designProcess ?? {
+    designProcess: {
+      ...(brief.designProcess ?? {}),
       stage1: foundation.stage1,
       visualHook: foundation.visualHook,
       stage2: foundation.stage2,
@@ -130,12 +177,13 @@ async function runDesignStage(
 
 export async function runDesignProcessPipeline(
   ctx: DesignProcessContext,
-): Promise<{ brief: DesignBrief; foundation: DesignProcessFoundation }> {
-  const foundation = await runFoundationStage(ctx);
-  let brief = await runDesignStage(ctx, foundation);
+): Promise<DesignProcessResult> {
+  const creative = await runCreativeDirectorStage(ctx);
+  const foundation = foundationFromCreative(creative, ctx.analysis);
+  let brief = await runDesignStage(ctx, foundation, creative);
 
-  let quality = evaluateDesignBrief(brief);
-  let processReview = evaluateDesignProcessReview(brief);
+  const quality = evaluateDesignBrief(brief);
+  const processReview = evaluateDesignProcessReview(brief);
 
   if (
     !SKIP_OLLAMA_QUALITY_RETRY &&
@@ -144,11 +192,11 @@ export async function runDesignProcessPipeline(
     const issues = [...quality.issues, ...processReview.issues];
     const retryHint = buildQualityRetryHint(issues);
     try {
-      brief = await runDesignStage(ctx, foundation, retryHint);
+      brief = await runDesignStage(ctx, foundation, creative, retryHint);
     } catch {
-      // keep first design stage result
+      // keep first result
     }
   }
 
-  return { brief, foundation };
+  return { brief, foundation, creativeDirector: creative };
 }

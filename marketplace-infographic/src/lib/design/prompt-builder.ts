@@ -22,7 +22,12 @@ function productZonePrompt(zone: ScenePlan["productSafeZone"]): string {
 export function buildSceneBackgroundPrompt(
   scene: ScenePlan,
   analysis: ProductAnalysis,
-  productContext?: { dominantColors?: string[]; shape?: string },
+  productContext?: {
+    dominantColors?: string[];
+    shape?: string;
+    sceneNarrative?: string;
+    visualHookStory?: string;
+  },
 ): string {
   const categoryLabel = analysis.category.replace(/_/g, " ");
   const safeZones = formatSafeZones(scene.textSafeZones);
@@ -83,8 +88,13 @@ export function buildSceneBackgroundPrompt(
 
   const parts = [
     "ultra realistic commercial product photography background",
-    `for ${categoryLabel} marketplace card`,
-    environment,
+    `for ${categoryLabel} marketplace advertising poster`,
+    productContext?.sceneNarrative
+      ? `creative scene story: ${productContext.sceneNarrative}`
+      : environment,
+    productContext?.visualHookStory
+      ? `visual storytelling: ${productContext.visualHookStory}`
+      : `visual mood: ${scene.visualMood}`,
     surface,
     `camera: ${scene.cameraAngle}, ${scene.cameraHeight}, ${scene.cameraDistance}`,
     `depth of field: ${scene.depthOfField}`,

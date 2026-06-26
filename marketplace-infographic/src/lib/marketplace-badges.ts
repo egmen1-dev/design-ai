@@ -224,7 +224,10 @@ export function buildSideBadgesRightHtml(
   style: InfographicStyle,
 ): string {
   const spec = data.specBlocks[1] ?? data.specBlocks[0];
-  const banner = data.mainBanner;
+  const banner = data.mainBanner ?? {
+    title: data.headline,
+    description: data.categoryPill ?? data.productName,
+  };
   const set = STYLE_PLAQUES[style];
 
   const top = buildPlaqueHtml(
@@ -259,7 +262,7 @@ export function buildSideBadgesRightHtml(
 }
 
 export function buildPromoPlaqueHtml(
-  banner: InfographicData["mainBanner"],
+  banner: { title: string; description?: string; icon?: string },
   skin: StyleSlideSkin,
   accentPrimary: string,
   style: InfographicStyle,

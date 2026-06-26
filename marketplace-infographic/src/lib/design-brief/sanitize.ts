@@ -17,12 +17,12 @@ function normalizeHex(value: unknown, fallback: string): string {
 }
 
 function normalizeBullets(value: unknown): string[] {
-  if (!Array.isArray(value)) return [];
+  if (!Array.isArray(value)) return ["Премиум качество"];
   const bullets = value
     .map((item) => clip(String(item).replace(/\bитра\b/gi, "литра"), 80))
     .filter(Boolean);
-  while (bullets.length < 2) bullets.push("Быстрая доставка");
-  return bullets.slice(0, 5);
+  if (bullets.length === 0) bullets.push("Премиум качество");
+  return bullets.slice(0, 1);
 }
 
 export function sanitizeDesignBrief(

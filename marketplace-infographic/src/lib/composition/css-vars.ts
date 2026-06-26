@@ -173,7 +173,51 @@ export function compositionToCssBlock(layout: CompositionLayout): string {
       max-width: calc(var(--comp-plaque-lg) * var(--canvas-w-num) / 100 * 1.4px);
     }
 
-    .mp-left-panel__gift-icon .material-symbols-outlined,
+    .mp-glass-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: calc(var(--comp-plaque-height) * var(--canvas-h-num) / 100 * 0.35px) calc(var(--comp-safe) * var(--canvas-w-num) / 100 * 0.35px);
+      border-radius: calc(var(--canvas-w-num) * 0.018px);
+      background: rgba(255,255,255,0.22);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.35);
+      box-shadow: 0 calc(var(--canvas-h-num) * 0.008px) calc(var(--canvas-h-num) * 0.02px) rgba(15,23,42,0.12);
+      width: 100%;
+    }
+
+    .mp-glass-badge__value {
+      font-family: var(--font-display);
+      font-weight: 900;
+      line-height: 0.95;
+      color: var(--badge-accent, var(--accent));
+      font-size: calc(var(--comp-hero-value-size-pct) * var(--canvas-h-num) / 100 * 1px) !important;
+    }
+
+    .mp-glass-badge__label {
+      font-size: calc(var(--comp-sidebar-label-size-pct) * var(--canvas-h-num) / 100 * 1px);
+      font-weight: 700;
+      color: #334155;
+      text-transform: lowercase;
+    }
+
+    .mp-pill--glass {
+      background: rgba(255,255,255,0.18) !important;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #0f172a !important;
+    }
+
+    .mp-left-panel,
+    .mp-left-panel__gift-visual,
+    .mp-left-panel__footer,
+    .mp-sidebar-wrap,
+    .mp-bottom-ribbon {
+      display: none !important;
+    }
+
     .mp-left-panel__hero-icon {
       font-size: calc(var(--comp-icon-size) * var(--canvas-w-num) / 100 * 0.85px) !important;
     }

@@ -133,20 +133,20 @@ export function buildLayoutFromDNA(
     JITTER.product,
   );
 
-  const clampedW = clampPct(widthPct, catRules.widthPct[0], catRules.widthPct[1]);
-  const clampedH = clampPct(heightPct, catRules.heightPct[0], catRules.heightPct[1]);
+  const clampedW = clampPct(widthPct, Math.max(catRules.widthPct[0], 58), Math.min(catRules.widthPct[1], 74));
+  const clampedH = clampPct(heightPct, Math.max(catRules.heightPct[0], 62), Math.min(catRules.heightPct[1], 90));
 
   let productWidth = clampedW;
   let productHeight = clampedH;
   let productArea = zoneAreaPct(productWidth, productHeight);
-  if (productArea < 55) {
-    const scale = Math.sqrt(55 / productArea);
-    productWidth = clampPct(productWidth * scale, 42, 74);
-    productHeight = clampPct(productHeight * scale, 68, 90);
+  if (productArea < 60) {
+    const scale = Math.sqrt(60 / productArea);
+    productWidth = clampPct(productWidth * scale, 58, 74);
+    productHeight = clampPct(productHeight * scale, 62, 90);
     productArea = zoneAreaPct(productWidth, productHeight);
   }
-  if (productArea > 72) {
-    const scale = Math.sqrt(72 / productArea);
+  if (productArea > 75) {
+    const scale = Math.sqrt(75 / productArea);
     productWidth = productWidth * scale;
     productHeight = productHeight * scale;
   }
@@ -222,41 +222,29 @@ export function buildLayoutFromDNA(
     fontSizePct: headline.fontSizePct * (0.48 + dna.minimalism / 250),
   };
 
-  const panelW = applyJitter(rng, 16 * spread, JITTER.plaque);
-  const panelH = applyJitter(rng, 26 * spread, JITTER.plaque);
+  const panelW = applyJitter(rng, 11 * spread, JITTER.plaque);
+  const panelH = applyJitter(rng, 10 * spread, JITTER.plaque);
 
   const leftPanel: CompositionZone =
     input.hasLeftPanel && textSide === "left"
       ? {
           left: safeInsetPct,
-          top: clampPct(headline.top + headline.height + 4, 14, 20),
-          width: clampPct(panelW, 14, 20),
-          height: clampPct(panelH, 16, 22),
+          top: clampPct(headline.top + headline.height + 6, 22, 32),
+          width: clampPct(panelW, 10, 14),
+          height: clampPct(panelH, 8, 12),
         }
       : { left: 0, top: 0, width: 0, height: 0 };
 
-  const rightSidebar: CompositionZone = input.hasRightSidebar
-    ? {
-        left: clampPct(
-          100 - safeInsetPct - applyJitter(rng, 12 * spread, JITTER.plaque),
-          84,
-          90,
-        ),
-        top: clampPct(18 + rng() * 8, 16, 28),
-        width: clampPct(applyJitter(rng, 11.5 * spread, JITTER.plaque), 10, 15),
-        height: clampPct(applyJitter(rng, 30 * spread, JITTER.plaque), 26, 38),
-      }
-    : { left: 0, top: 0, width: 0, height: 0 };
+  const rightSidebar: CompositionZone = { left: 0, top: 0, width: 0, height: 0 };
 
-  const bulletCount = Math.min(5, input.bulletCount);
   const bullets = {
-    left: textSide === "left" ? leftPanel.left : 100 - 28,
-    top: clampPct(50 + rng() * 6, 45, 58),
-    width: clampPct(24 + dna.textDensity / 8, 20, 32),
-    height: clampPct(Math.min(28, bulletCount * 5), 18, 30),
-    itemHeightPct: applyJitter(rng, 4, JITTER.icon),
-    gapPct: applyJitter(rng, 1.4, JITTER.icon),
-    maxCount: 5,
+    left: 0,
+    top: 0,
+    width: 0,
+    height: 0,
+    itemHeightPct: 0,
+    gapPct: 0,
+    maxCount: 1,
   };
 
   const decorScale = 0.7 + dna.decorDensity / 200;

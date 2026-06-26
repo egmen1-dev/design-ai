@@ -9,6 +9,24 @@ import type { InfographicSdInput } from "@/lib/validations";
 
 const hex = z.string().regex(/^#[0-9a-fA-F]{6}$/);
 
+const creativeConceptSchema = z.object({
+  title: z.string().max(80),
+  mainIdea: z.string().max(200),
+  visualHook: z.string().max(300),
+  emotion: z.string().max(80),
+  marketingGoal: z.string().max(120),
+  reason: z.string().max(300),
+});
+
+const oneThoughtSchema = z.object({
+  question: z.string().max(100),
+  answer: z.string().max(20),
+  answerLabel: z.string().max(40),
+  headline: z.string().max(60),
+  badge: z.string().max(24).optional(),
+  deferredSpecs: z.array(z.string().max(80)).max(6),
+});
+
 const visualHookSchema = z.object({
   type: z.string(),
   reason: z.string().max(300),
@@ -100,7 +118,10 @@ const designProcessSchema = z
 
 export const designBriefSchema = z.object({
   designConcept: z.string().max(300).optional(),
-  designProcess: designProcessSchema,
+  creativeConcept: creativeConceptSchema.optional(),
+  oneThought: oneThoughtSchema.optional(),
+  deferredBullets: z.array(z.string().max(80)).max(6).optional(),
+  designProcess: designProcessSchema.optional(),
   visualHook: visualHookSchema.optional(),
   audienceAnalysis: z
     .object({
@@ -195,13 +216,21 @@ export function briefToCompositingHints(brief: DesignBrief): CompositingHints {
 }
 
 export function briefToSdInput(brief: DesignBrief, productContext = ""): InfographicSdInput {
-  const headline = extractProductTitle(productContext, brief.headline ?? brief.title ?? "Товар");
-  const sub = extractProductSubtitle(productContext, brief.subHeadline ?? brief.subtitle ?? "новинка");
-  const rawBullets =
-    brief.bullets ??
-    brief.benefits ??
-    brief.blocks?.map((b) => (b.value ? `${b.value} ${b.label}` : b.label)) ??
-    ["Премиум качество", "Быстрая доставка"];
+  const posterHeadline =
+    brief.oneThought?.headline ?? brief.headline ?? brief.title ?? "Товар";
+  const posterBadge = brief.oneThought?.badge ?? brief.subHeadline ?? brief.subtitle ?? "новинка";
+  const heroBullet = brief.oneThought
+    ? `${brief.oneThought.answer} ${brief.oneThought.answerLabel}`.trim()
+    : undefined;
+
+  const headline = extractProductTitle(productContext, posterHeadline);
+  const sub = extractProductSubtitle(productContext, posterBadge);
+  const rawBullets = heroBullet
+    ? [heroBullet, ...(brief.deferredBullets ?? brief.oneThought?.deferredSpecs ?? [])]
+    : (brief.bullets ??
+      brief.benefits ??
+      brief.blocks?.map((b) => (b.value ? `${b.value} ${b.label}` : b.label)) ??
+      ["Премиум качество"]);
 
   const analysis = analyzeProductPrompt(`${productContext} ${headline} ${sub}`);
   const bullets = filterConsistentBullets(rawBullets, productContext, sub);
@@ -215,11 +244,16 @@ export function briefToSdInput(brief: DesignBrief, productContext = ""): Infogra
     layout: brief.layout ?? "marketplace",
     title: headline,
     subtitle: sub,
-    bullets: bullets.slice(0, 5),
+    bullets: bullets.slice(0, 1),
+    deferredBullets: bullets.slice(1, 6),
     colors: colors.slice(0, 5),
     badge: brief.badge ?? "Brand",
     backgroundPrompt: brief.backgroundPrompt,
     fontId: brief.fontId ?? null,
     badgeId: brief.badgeId ?? null,
+    creativeHeadline: posterHeadline,
+    heroMetric: brief.oneThought
+      ? { value: brief.oneThought.answer, label: brief.oneThought.answerLabel }
+      : undefined,
   };
 }

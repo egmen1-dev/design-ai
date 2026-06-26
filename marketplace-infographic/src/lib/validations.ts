@@ -8,12 +8,20 @@ export const infographicSdSchema = z.object({
   layout: z.enum(["hero", "cards", "split", "minimal", "marketplace"]).default("marketplace"),
   title: z.string().min(1).max(60),
   subtitle: z.string().min(1).max(80),
-  bullets: z.array(z.string().min(1).max(80)).min(2).max(5),
+  bullets: z.array(z.string().min(1).max(80)).min(1).max(1),
+  deferredBullets: z.array(z.string().min(1).max(80)).max(6).optional(),
   colors: z.array(z.string().min(4).max(7)).min(2).max(5),
   badge: z.string().min(1).max(40),
   backgroundPrompt: z.string().min(10).max(400),
   fontId: z.string().uuid().nullable().optional().default(null),
   badgeId: z.string().uuid().nullable().optional().default(null),
+  creativeHeadline: z.string().max(60).optional(),
+  heroMetric: z
+    .object({
+      value: z.string().max(20),
+      label: z.string().max(40),
+    })
+    .optional(),
 });
 
 export type InfographicSdInput = z.infer<typeof infographicSdSchema>;

@@ -12,7 +12,17 @@ export type {
   VisualHookType,
 } from "./types";
 export { buildFoundationStagePrompt, buildDesignStagePrompt } from "./prompts";
-export { runDesignProcessPipeline, runFoundationStage } from "./pipeline";
+export { runDesignProcessPipeline, runCreativeDirectorStage, applyPosterRules } from "./pipeline";
+export type { DesignProcessResult } from "./pipeline";
+export { buildCreativeDirectorPrompt } from "./creative-director-prompt";
+export {
+  buildMockCreativeDirector,
+  sanitizeCreativeConcept,
+  sanitizeOneThought,
+  type CreativeConcept,
+  type CreativeDirectorResult,
+  type OneThought,
+} from "./creative-concept";
 export { buildMockFoundation } from "./mock";
 export {
   applyVisualHookToDna,

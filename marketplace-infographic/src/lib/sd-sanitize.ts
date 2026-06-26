@@ -45,12 +45,22 @@ export function sanitizeSdInput(raw: unknown): InfographicSdInput {
           clip(String(item).replace(/\bитра\b/gi, "литра"), 80),
         )
         .filter((item) => item.length > 0)
-        .slice(0, 5)
+        .slice(0, 1)
     : [];
 
-  while (bullets.length < 2) {
+  if (bullets.length === 0) {
     bullets.push("Премиум качество");
   }
+
+  const deferredBullets = Array.isArray(obj.deferredBullets)
+    ? obj.deferredBullets.map((item) => clip(String(item), 80)).filter(Boolean).slice(0, 6)
+    : undefined;
+
+  const heroMetricRaw = obj.heroMetric as Record<string, unknown> | undefined;
+  const heroMetric =
+    heroMetricRaw && heroMetricRaw.value
+      ? { value: clip(heroMetricRaw.value, 20), label: clip(heroMetricRaw.label, 40) || "параметр" }
+      : undefined;
 
   const colors = Array.isArray(obj.colors)
     ? obj.colors.map((c, i) =>
@@ -63,8 +73,11 @@ export function sanitizeSdInput(raw: unknown): InfographicSdInput {
     title: clip(obj.title || "ТОВАР", 60) || "ТОВАР",
     subtitle: clip(obj.subtitle || "новинка", 80) || "новинка",
     bullets,
+    deferredBullets,
     colors: colors.slice(0, 5),
     badge: clip(obj.badge || "Brand", 40) || "Brand",
+    creativeHeadline: clip(obj.creativeHeadline, 60) || undefined,
+    heroMetric,
     backgroundPrompt: stripProductFromBackgroundPrompt(
       clip(
         obj.backgroundPrompt ||

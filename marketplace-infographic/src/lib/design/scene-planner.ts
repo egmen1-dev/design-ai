@@ -76,6 +76,7 @@ export type ScenePlannerInput = {
   styleHint?: InfographicStyle;
   seed: string;
   productVisual?: ProductVisualProfile;
+  sceneNarrative?: string;
 };
 
 const CONCEPT_TO_SCENARIO: Record<CoverConceptId, CompositionScenarioId> = {

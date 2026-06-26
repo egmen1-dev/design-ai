@@ -34,7 +34,7 @@ const productVisualSchema = z.enum([
 
 export const infographicDataSchema = z.object({
   /** Одно слово КАПСОМ — тип товара: ГЕНЕРАТОР, КРЕМ, НАУШНИКИ */
-  headline: z.string().min(1).max(40),
+  headline: z.string().min(1).max(60),
   productName: z.string().min(1).max(80),
   categoryPill: z.string().min(1).max(30).optional(),
   brandName: z.string().min(1).max(40).optional(),
@@ -49,13 +49,15 @@ export const infographicDataSchema = z.object({
         hint: z.string().max(80).optional(),
       }),
     )
-    .min(2)
-    .max(4),
-  mainBanner: z.object({
-    icon: z.string().max(4).optional(),
-    title: z.string().min(1).max(60),
-    description: z.string().min(1).max(120),
-  }),
+    .min(1)
+    .max(2),
+  mainBanner: z
+    .object({
+      icon: z.string().max(4).optional(),
+      title: z.string().min(1).max(60),
+      description: z.string().min(1).max(120),
+    })
+    .optional(),
   callouts: z
     .array(
       z.object({
@@ -63,8 +65,10 @@ export const infographicDataSchema = z.object({
         position: calloutPositionSchema,
       }),
     )
-    .min(2)
-    .max(4),
+    .max(4)
+    .optional()
+    .default([]),
+  posterMode: z.boolean().optional(),
   accentColor: z.enum(["red", "blue", "purple", "green"]).optional(),
   /** Зоны marketplace-шаблона (без дублирования текста) */
   marketplaceGift: z.string().max(80).optional(),

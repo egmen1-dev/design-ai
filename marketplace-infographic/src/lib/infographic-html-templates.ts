@@ -240,7 +240,7 @@ export function renderLayoutHtml(
   const skin = buildStyleSlideSkin(style);
   const accent = ACCENT_HEX[data.accentColor ?? "red"];
 
-  const bullets = data.callouts.map((c) => c.text);
+  const bullets = (data.callouts ?? []).map((c) => c.text);
   const specExclude =
     layout === "hero" || layout === "minimal"
       ? data.specBlocks.flatMap((s) => [s.value, s.label, `${s.value} ${s.label}`])
@@ -259,7 +259,7 @@ export function renderLayoutHtml(
     const designCss = loadDesignSystemCss();
     const libraryFont = options?.libraryFont;
 
-    const sidebarHtml = buildMarketplaceSidebarHtml(data, accentHex);
+    const sidebarHtml = buildMarketplaceSidebarHtml();
     const bodyClass = sidebarHtml ? "" : " mp-body--no-sidebar";
     const sidebarWrapHtml = sidebarHtml
       ? `<aside class="mp-sidebar-wrap" aria-label="Преимущества">${sidebarHtml}</aside>`
@@ -278,7 +278,7 @@ export function renderLayoutHtml(
       BODY_CLASS: bodyClass,
       MERGED_PRODUCT_CLASS: options?.mergedImageDataUrl ? " mp-product--merged" : "",
       SIDEBAR_WRAP_HTML: sidebarWrapHtml,
-      BOTTOM_RIBBON_HTML: buildMarketplaceBottomRibbonHtml(data, accentHex),
+      BOTTOM_RIBBON_HTML: buildMarketplaceBottomRibbonHtml(),
       PRODUCT_HTML: buildProductHtml(productInner, hasPhoto && !options?.mergedImageDataUrl, layout),
       BACKGROUND_STYLE: backgroundStyle,
       OVERLAY_HTML: overlayHtml,
@@ -297,7 +297,7 @@ export function renderLayoutHtml(
   const designCss = loadDesignSystemCss();
   const libraryBadge = options?.libraryBadge;
   const libraryFont = options?.libraryFont;
-  const badgeText = data.mainBanner.title;
+  const badgeText = data.mainBanner?.title ?? data.headline;
   const badgeColor = accent.primary;
 
   const libraryBadgeHtml = libraryBadge
@@ -313,14 +313,19 @@ export function renderLayoutHtml(
     HEADLINE: escapeHtml(data.headline),
     SUBTITLE: escapeHtml(data.categoryPill ?? data.productName),
     BRAND: escapeHtml(data.brandName ?? data.productName),
-    BULLETS_HTML: buildBulletsHtml(bullets, data.mainBanner.title, specExclude),
+    BULLETS_HTML: buildBulletsHtml(bullets, badgeText, specExclude),
     SPEC_CARDS_HTML: buildSpecPlaquesHtml(data.specBlocks, skin, accent.primary, style),
     PROMO_HTML:
       isHeroLike
         ? ""
         : useLibraryBadge
           ? libraryBadgeHtml
-          : buildPromoPlaqueHtml(data.mainBanner, skin, accent.primary, style),
+          : buildPromoPlaqueHtml(
+              data.mainBanner ?? { title: badgeText, description: data.categoryPill ?? "" },
+              skin,
+              accent.primary,
+              style,
+            ),
     SIDE_BADGES_LEFT:
       isHeroLike && useLibraryBadge
         ? `<div class="product-row__library-badge">${libraryBadgeHtml}</div>`

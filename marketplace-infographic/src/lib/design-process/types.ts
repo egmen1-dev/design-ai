@@ -114,9 +114,3 @@ export type FoundationPromptInput = {
   priceSegment: string;
   style: string;
 };
-
-export type DesignPromptInput = FoundationPromptInput & {
-  foundation: DesignProcessFoundation;
-  referenceHint?: string;
-  retryHint?: string;
-};
