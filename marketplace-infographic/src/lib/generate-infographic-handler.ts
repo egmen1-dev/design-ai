@@ -205,7 +205,10 @@ export async function handleGenerateInfographic(
         : buildFallbackGradient(sdData.colors);
 
     let mergedImageDataUrl: string | undefined;
+    const useHtmlProduct = sdData.layout === "marketplace";
+
     if (
+      !useHtmlProduct &&
       backgroundUrl &&
       backgroundSource === "sd" &&
       productRender.cutout &&

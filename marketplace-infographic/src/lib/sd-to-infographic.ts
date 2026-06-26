@@ -30,6 +30,12 @@ function overlaps(a: string, b: string): boolean {
 
 function parseBullet(bullet: string): { value: string; label: string } {
   const trimmed = sanitizeBulletText(bullet);
+
+  const rpmMatch = trimmed.match(/^(\d[\d\s.,]*)\s*об\/мин/i);
+  if (rpmMatch) {
+    return { value: rpmMatch[1].replace(/\s/g, ""), label: "об/мин" };
+  }
+
   const numMatch = trimmed.match(
     /^(\d+(?:[.,]\d+)?\s*(?:кВт|квт|Вт|вт|л|литр|литра|дБ|мм|см|кг|г|ч|мАч|об\/мин|об)?)/i,
   );

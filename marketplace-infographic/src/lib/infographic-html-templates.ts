@@ -194,9 +194,15 @@ function buildBackgroundLayers(
   }
 
   if (useSdBg) {
+    const isMarketplace = options?.layout === "marketplace";
+    const scrim = isMarketplace
+      ? "linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 22%, transparent 78%, rgba(15,23,42,0.1) 100%)"
+      : skin.mergedOverlay;
     return {
-      backgroundStyle: `background-image: url('${options!.backgroundDataUrl}'); background-size: cover; background-position: center bottom;`,
-      overlayHtml: `<div class="canvas-overlay" style="background:${skin.mergedOverlay};"></div>
+      backgroundStyle: `background-image: url('${options!.backgroundDataUrl}'); background-size: cover; background-position: center center;`,
+      overlayHtml: isMarketplace
+        ? `<div class="canvas-overlay" style="background:${scrim};"></div>`
+        : `<div class="canvas-overlay" style="background:${skin.mergedOverlay};"></div>
         <div class="canvas-overlay ground-vignette"></div>`,
     };
   }

@@ -41,11 +41,11 @@ export function buildMarketplaceLeftSpecsHtml(
   const secondary = data.specBlocks[1];
   const giftText = data.marketplaceGift;
 
-  const heroLabel = /об\/мин|rpm/i.test(`${hero?.label} ${hero?.value}`)
-    ? "об/мин"
-    : hero?.label ?? "параметр";
-
-  const heroValue = hero?.value ?? "—";
+  const heroIsRpm = /об\/мин|rpm/i.test(`${hero?.label} ${hero?.value}`);
+  const heroLabel = heroIsRpm ? "об/мин" : (hero?.label ?? "параметр");
+  const heroValue = heroIsRpm
+    ? String(hero?.value ?? "").replace(/\s*об\/мин\s*/gi, "").trim() || "—"
+    : (hero?.value ?? "—");
 
   const secondaryHtml =
     secondary && secondary.value !== "—"
