@@ -43,7 +43,7 @@ import {
   toCompositionResult,
 } from "@/lib/layout-engine";
 import type { CardMeaning, LayoutTemplateId, ProductShapeHint } from "@/lib/layout-engine/types";
-import { runSeniorArtDirector, type SeniorArtDirectorReview } from "@/lib/agents";
+import { runSeniorArtDirector, runMarketplaceCtrExpert, type SeniorArtDirectorReview, type MarketplaceCtrReview } from "@/lib/agents";
 import { creativeConceptToCardMeaning } from "@/lib/design-process/card-meaning";
 import type { ProductVisualProfile } from "@/lib/design/scene-planner";
 import type { CreativeDirectorResult } from "@/lib/design-process/creative-concept";
@@ -91,6 +91,9 @@ export type GenerateInfographicResult = {
   designScore?: number;
   seniorAdScore?: number;
   seniorAdApproved?: boolean;
+  ctrScore?: number;
+  ctrPrediction?: number;
+  wouldClick?: boolean;
 };
 
 function briefMeta(brief?: DesignBrief) {
@@ -218,7 +221,7 @@ function buildProfessionalComposition(input: {
   };
 }
 
-async function buildLayoutWithSeniorArtDirector(input: {
+async function buildLayoutWithAgentReview(input: {
   designBrief?: DesignBrief;
   activeCreative?: CreativeDirectorResult;
   analysis: import("@/lib/product-analysis").ProductAnalysis;
@@ -229,6 +232,7 @@ async function buildLayoutWithSeniorArtDirector(input: {
   compositionResult: CompositionResult;
   cardMeaning: CardMeaning;
   seniorAdReview: SeniorArtDirectorReview;
+  ctrReview: MarketplaceCtrReview;
   headlineFontPx: number;
   templateId: LayoutTemplateId;
 }> {
@@ -238,6 +242,7 @@ async function buildLayoutWithSeniorArtDirector(input: {
         compositionResult: CompositionResult;
         cardMeaning: CardMeaning;
         seniorAdReview: SeniorArtDirectorReview;
+        ctrReview: MarketplaceCtrReview;
         headlineFontPx: number;
         templateId: LayoutTemplateId;
       }
@@ -249,7 +254,7 @@ async function buildLayoutWithSeniorArtDirector(input: {
       activeCreative: input.activeCreative,
       category: input.analysis.category,
       productVisual: input.productVisual,
-      seed: attempt === 0 ? input.seed : `${input.seed}:sad-${attempt}`,
+      seed: attempt === 0 ? input.seed : `${input.seed}:agent-${attempt}`,
       excludeTemplateIds: excluded,
     });
 
@@ -259,29 +264,36 @@ async function buildLayoutWithSeniorArtDirector(input: {
       (built.cardMeaning.subtitle ? 1 : 0) +
       1;
 
-    const seniorAdReview = await runSeniorArtDirector({
+    const agentBase = {
       meaning: built.cardMeaning,
       layout: built.compositionResult.layout,
       templateId: built.templateId,
       creative: input.activeCreative,
       analysis: input.analysis,
       productPrompt: input.productPrompt,
-      headlineFontPx: built.headlineFontPx,
       elementCount,
-    });
+    };
 
-    last = { ...built, seniorAdReview };
+    const [seniorAdReview, ctrReview] = await Promise.all([
+      runSeniorArtDirector({ ...agentBase, headlineFontPx: built.headlineFontPx }),
+      runMarketplaceCtrExpert(agentBase),
+    ]);
 
-    if (seniorAdReview.approved) {
+    last = { ...built, seniorAdReview, ctrReview };
+
+    const layoutApproved = seniorAdReview.approved && ctrReview.wouldClick;
+    if (layoutApproved) {
       if (attempt > 0) {
-        console.info(`[senior-ad] approved on template retry ${attempt}: ${built.templateId}`);
+        console.info(
+          `[agents] approved on retry ${attempt}: ${built.templateId} (ad=${seniorAdReview.score}, ctr=${ctrReview.score})`,
+        );
       }
       return last;
     }
 
     console.warn(
-      `[senior-ad] score ${seniorAdReview.score}/100 template ${built.templateId}`,
-      seniorAdReview.criticalProblems,
+      `[agents] rejected template ${built.templateId} ad=${seniorAdReview.score} ctr=${ctrReview.score} wouldClick=${ctrReview.wouldClick}`,
+      [...seniorAdReview.criticalProblems, ...ctrReview.mainProblems],
     );
     excluded.push(built.templateId);
   }
@@ -464,9 +476,10 @@ export async function handleGenerateInfographic(
     let compositionResult: CompositionResult | null = null;
     let cardMeaning: CardMeaning | undefined;
     let seniorAdReview: SeniorArtDirectorReview | undefined;
+    let ctrReview: MarketplaceCtrReview | undefined;
 
     if (sdData.layout === "marketplace") {
-      const built = await buildLayoutWithSeniorArtDirector({
+      const built = await buildLayoutWithAgentReview({
         designBrief,
         activeCreative,
         analysis,
@@ -477,6 +490,7 @@ export async function handleGenerateInfographic(
       compositionResult = built.compositionResult;
       cardMeaning = built.cardMeaning;
       seniorAdReview = built.seniorAdReview;
+      ctrReview = built.ctrReview;
       if (designBrief && !designBrief.cardMeaning) {
         designBrief = { ...designBrief, cardMeaning };
       }
@@ -611,7 +625,7 @@ export async function handleGenerateInfographic(
       }
 
       if (sdData.layout === "marketplace") {
-        const rebuilt = await buildLayoutWithSeniorArtDirector({
+        const rebuilt = await buildLayoutWithAgentReview({
           designBrief,
           activeCreative: nextConcept,
           analysis,
@@ -623,6 +637,7 @@ export async function handleGenerateInfographic(
         compositionLayout = compositionResult.layout;
         objectScale = layoutObjectScale(compositionLayout.metrics?.productAreaPct);
         seniorAdReview = rebuilt.seniorAdReview;
+        ctrReview = rebuilt.ctrReview;
       }
 
       const retryScene = planScene({
@@ -768,6 +783,7 @@ export async function handleGenerateInfographic(
       scenePlan,
       qualityValidation,
       seniorArtDirector: seniorAdReview,
+      marketplaceCtrExpert: ctrReview,
     };
 
     if (input.regenerateBackgroundOnly && input.existingImageId) {
@@ -796,6 +812,9 @@ export async function handleGenerateInfographic(
         designScore: compositionResult?.score?.total,
         seniorAdScore: seniorAdReview?.score,
         seniorAdApproved: seniorAdReview?.approved,
+        ctrScore: ctrReview?.score,
+        ctrPrediction: ctrReview?.ctrPrediction,
+        wouldClick: ctrReview?.wouldClick,
         ...briefMeta(designBrief),
       };
     }
@@ -828,6 +847,9 @@ export async function handleGenerateInfographic(
       designScore: compositionResult?.score?.total,
       seniorAdScore: seniorAdReview?.score,
       seniorAdApproved: seniorAdReview?.approved,
+      ctrScore: ctrReview?.score,
+      ctrPrediction: ctrReview?.ctrPrediction,
+      wouldClick: ctrReview?.wouldClick,
       ...briefMeta(designBrief),
     };
   } catch (error) {

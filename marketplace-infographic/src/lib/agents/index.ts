@@ -12,3 +12,16 @@ export type {
   SeniorArtDirectorReview,
   SeniorArtDirectorDimensionScores,
 } from "./senior-art-director/types";
+export {
+  MARKETPLACE_CTR_EXPERT_AGENT,
+  runMarketplaceCtrExpert,
+  evaluateMarketplaceCtrHeuristic,
+  buildMarketplaceCtrExpertPrompt,
+  CTR_CLICK_SCORE,
+  CTR_AVERAGE_CAP,
+} from "./marketplace-ctr-expert/agent";
+export type {
+  MarketplaceCtrExpertInput,
+  MarketplaceCtrReview,
+  MarketplaceCtrDimensionScores,
+} from "./marketplace-ctr-expert/types";
