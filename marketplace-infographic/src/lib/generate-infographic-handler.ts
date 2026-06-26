@@ -30,6 +30,7 @@ import {
 } from "@/lib/image-compositor";
 import { resolveMarketplaceAccent } from "@/lib/accent-color";
 import { analyzeProductPrompt } from "@/lib/product-analysis";
+import { computeComposition } from "@/lib/composition";
 import { PIPELINE_VERSION } from "@/lib/pipeline-version";
 
 export type GenerateInfographicInput = {
@@ -233,6 +234,18 @@ export async function handleGenerateInfographic(
     const analysis = analyzeProductPrompt(input.prompt);
     const accentHex = resolveMarketplaceAccent(sdData.colors, analysis.category);
 
+    const compositionLayout =
+      sdData.layout === "marketplace"
+        ? computeComposition({
+            category: analysis.category,
+            layout: "marketplace",
+            bulletCount: sdData.bullets.length,
+            hasLeftPanel: true,
+            hasRightSidebar: true,
+            objectScale: compositingHints?.objectScale,
+          })
+        : undefined;
+
     const html = renderInfographicHtml(infographicData, {
       style: appliedStyle,
       layout: sdData.layout,
@@ -244,6 +257,7 @@ export async function handleGenerateInfographic(
       libraryFont,
       libraryBadge,
       accentHex,
+      compositionLayout,
     });
 
     const filename = `${input.userId}-${Date.now()}.png`;

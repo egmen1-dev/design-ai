@@ -11,6 +11,7 @@ import {
 } from "@/lib/marketplace-badges";
 import { buildStyleSlideSkin } from "@/lib/style-slide-css";
 import { getSceneLayers } from "@/lib/scene-backgrounds";
+import { compositionToCssBlock } from "@/lib/composition/css-vars";
 import type { InfographicData, RenderInfographicOptions } from "@/lib/infographic-template";
 import type { InfographicSdInput } from "@/lib/validations";
 import {
@@ -264,6 +265,10 @@ export function renderLayoutHtml(
       ? `<aside class="mp-sidebar-wrap" aria-label="Преимущества">${sidebarHtml}</aside>`
       : "";
 
+    const compositionCss = options?.compositionLayout
+      ? compositionToCssBlock(options.compositionLayout)
+      : "";
+
     const vars: Record<string, string> = {
       PRODUCT_NAME: escapeHtml(data.productName),
       STYLE: style,
@@ -278,6 +283,7 @@ export function renderLayoutHtml(
       BACKGROUND_STYLE: backgroundStyle,
       OVERLAY_HTML: overlayHtml,
       DESIGN_SYSTEM_CSS: designCss,
+      COMPOSITION_CSS: compositionCss,
       SKIN_CSS: `${buildSkinCss(style, accent, libraryFont)}
     :root { --accent: ${accentHex}; --accent-readable: ${accentHex}; --accent-dark: ${accentHex}; }
     .mp-title { text-shadow: none !important; color: ${accentHex} !important; }`,

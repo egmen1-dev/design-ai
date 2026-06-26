@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { CompositionLayout } from "@/lib/composition/types";
 import {
   type InfographicStyle,
 } from "./design-trends";
@@ -108,6 +109,8 @@ export type RenderInfographicOptions = {
   } | null;
   /** Точный hex акцента (из референса / Ollama colors[0]) */
   accentHex?: string;
+  /** Design Composition Engine — размеры в % от холста WB */
+  compositionLayout?: CompositionLayout;
 };
 
 function escapeHtml(text: string): string {

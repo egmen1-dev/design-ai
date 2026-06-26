@@ -55,5 +55,10 @@ export function assembleDesignBriefPrompt(input: AssemblePromptInput): string {
 
   sections.push(`ОПИСАНИЕ ТОВАРА:\n"${input.productPrompt}"`);
 
+  sections.push(`КОМПОЗИЦИЯ (Design Composition Engine)
+Холст Wildberries: 900×1200 (3:4). Все размеры — в % от ширины/высоты.
+Товар: 55–72% площади (категория уточняет), высота 68–88%, отступ от краёв ≥5%.
+Плашки: ≤12% площади кадра. Safe area 5%. Белое пространство 20–35%.`);
+
   return sections.join("\n\n");
 }

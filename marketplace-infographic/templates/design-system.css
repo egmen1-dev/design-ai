@@ -1,11 +1,11 @@
-/* design-ai — макет 1200×1200, контент в зоне WB/Ozon 3:4 (900×1200 по центру) */
+/* design-ai — обложка Wildberries / Ozon 900×1200 (3:4) */
 
 :root {
-  --canvas-w: 1200px;
+  --canvas-w: 900px;
   --canvas-h: 1200px;
   --marketplace-frame-w: 900px;
-  --pad-x: 48px;
-  --pad-y: 56px;
+  --pad-x: 5.5%;
+  --pad-y: 5.5%;
   --gap-lg: 48px;
   --gap-md: 30px;
   --gap-sm: 20px;

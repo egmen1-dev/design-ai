@@ -7,10 +7,12 @@ import {
   PRODUCT_BOTTOM_PAD_PX,
   PRODUCT_TARGET_MAX_HEIGHT_PX,
 } from "@/lib/product-render-policy";
+import { WB_COVER } from "@/lib/composition/canvas";
 import type { CompositingHints } from "@/lib/design-brief/schema";
 import { matchProductToBackground } from "@/lib/compositing/color-match";
 
-const CANVAS = 1200;
+const CANVAS_W = WB_COVER.width;
+const CANVAS_H = WB_COVER.height;
 const PRODUCT_MAX_W = 980;
 const PRODUCT_MAX_H = PRODUCT_TARGET_MAX_HEIGHT_PX;
 const BOTTOM_PAD = PRODUCT_BOTTOM_PAD_PX;
@@ -44,13 +46,13 @@ async function loadImageBuffer(source: string): Promise<Buffer> {
 /** Размывает центр фона — убирает «призрак» товара от FLUX */
 export async function softenBackgroundCenter(bgBuffer: Buffer): Promise<Buffer> {
   const resized = await sharp(bgBuffer)
-    .resize(CANVAS, CANVAS, { fit: "cover", position: "centre" })
+    .resize(CANVAS_W, CANVAS_H, { fit: "cover", position: "centre" })
     .toBuffer();
 
-  const pw = Math.round(CANVAS * 0.5);
-  const ph = Math.round(CANVAS * 0.46);
-  const left = Math.round((CANVAS - pw) / 2);
-  const top = Math.round(CANVAS * 0.38);
+  const pw = Math.round(CANVAS_W * 0.5);
+  const ph = Math.round(CANVAS_H * 0.46);
+  const left = Math.round((CANVAS_W - pw) / 2);
+  const top = Math.round(CANVAS_H * 0.38);
 
   const patch = await sharp(resized)
     .extract({ left, top, width: pw, height: ph })
@@ -207,12 +209,12 @@ export async function mergeProductWithBackground(
     : productRaw;
   const product = await prepareProductLayer(productMatched, layout, scaleFactor);
 
-  let productLeft = Math.round((CANVAS - product.width) / 2);
-  let productTop = CANVAS - BOTTOM_PAD - product.height;
+  let productLeft = Math.round((CANVAS_W - product.width) / 2);
+  let productTop = CANVAS_H - BOTTOM_PAD - product.height;
 
   if (layout === "marketplace") {
-    productLeft = Math.round((CANVAS - product.width) / 2) + 72;
-    productTop = CANVAS - BOTTOM_PAD - product.height - 8;
+    productLeft = Math.round((CANVAS_W - product.width) / 2) + Math.round(CANVAS_W * 0.06);
+    productTop = CANVAS_H - BOTTOM_PAD - product.height - Math.round(CANVAS_H * 0.006);
   }
 
   const shadow = await createShadowLayer(
@@ -221,9 +223,9 @@ export async function mergeProductWithBackground(
     layout,
     hints?.shadowType,
   );
-  let shadowLeft = Math.round((CANVAS - shadow.width) / 2);
+  let shadowLeft = Math.round((CANVAS_W - shadow.width) / 2);
   if (layout === "marketplace") {
-    shadowLeft += 56;
+    shadowLeft += Math.round(CANVAS_W * 0.05);
   }
   const shadowTop = productTop + product.height - shadow.offsetY;
 

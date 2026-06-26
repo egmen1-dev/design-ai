@@ -1,7 +1,9 @@
 import { createHash } from "crypto";
 import { mkdir, writeFile, readFile } from "fs/promises";
 import path from "path";
+import sharp from "sharp";
 import type { InfographicStyle } from "@/lib/design-trends";
+import { WB_COVER } from "@/lib/composition/canvas";
 import {
   enrichBackgroundPrompt,
   seedToNumber,
@@ -46,7 +48,10 @@ async function requestHfImage(
   }
 
   let lastError = "HF API error";
-  const parameters: Record<string, number> = { width: 1024, height: 1024 };
+  const parameters: Record<string, number> = {
+    width: 768,
+    height: 1024,
+  };
   if (options?.seed !== undefined) {
     parameters.seed = options.seed;
   }
@@ -113,12 +118,20 @@ async function requestHfImage(
   throw new Error(`HF API timeout: ${lastError}`);
 }
 
+async function normalizeToWbCover(buffer: Buffer): Promise<Buffer> {
+  return sharp(buffer)
+    .resize(WB_COVER.width, WB_COVER.height, { fit: "cover", position: "centre" })
+    .png()
+    .toBuffer();
+}
+
 async function saveBackground(buffer: Buffer, promptHash: string): Promise<string> {
+  const normalized = await normalizeToWbCover(buffer);
   const dir = path.join(process.cwd(), "public", "backgrounds");
   await mkdir(dir, { recursive: true });
   const filename = `${promptHash.slice(0, 16)}-${Date.now()}.png`;
   const absPath = path.join(dir, filename);
-  await writeFile(absPath, buffer);
+  await writeFile(absPath, normalized);
   return `/backgrounds/${filename}`;
 }
 
