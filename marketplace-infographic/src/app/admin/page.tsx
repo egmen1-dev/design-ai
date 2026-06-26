@@ -85,6 +85,9 @@ export default async function AdminPage() {
           <Link href="/admin/assets" className="text-sm text-amber-400 hover:text-amber-300">
             Библиотека ассетов →
           </Link>
+          <Link href="/admin/references" className="text-sm text-amber-400 hover:text-amber-300">
+            Референсы →
+          </Link>
         </div>
       </header>
 

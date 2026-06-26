@@ -56,6 +56,9 @@ export default async function AdminAssetsPage() {
           <Link href="/admin" className="text-brand-500 hover:underline">
             Статистика
           </Link>
+          <Link href="/admin/references" className="text-amber-400 hover:text-amber-300">
+            Референсы
+          </Link>
           <Link href="/" className="text-slate-400 hover:text-slate-300">
             На главную
           </Link>

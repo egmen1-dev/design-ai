@@ -23,6 +23,8 @@ const nextConfig: NextConfig = {
     "@imgly/background-removal-node",
     "sharp",
     "onnxruntime-node",
+    "tesseract.js",
+    "potrace",
   ],
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];

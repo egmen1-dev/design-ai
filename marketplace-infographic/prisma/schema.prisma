@@ -129,3 +129,10 @@ model LibraryBadge {
   styleTags    String[]
   createdAt    DateTime @default(now())
 }
+
+model ReferenceImage {
+  id          String   @id @default(uuid())
+  originalUrl String
+  notes       String?
+  createdAt   DateTime @default(now())
+}

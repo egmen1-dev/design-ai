@@ -63,7 +63,15 @@ export const createLibraryBadgeSchema = z.object({
       "htmlTemplate должен содержать плейсхолдер {{text}}",
     ),
   svgTemplate: z.string().max(50_000).optional().nullable(),
-  pngUrl: z.string().url("Некорректный URL").max(2000).optional().nullable(),
+  pngUrl: z
+    .string()
+    .max(2000)
+    .refine(
+      (value) => value.startsWith("/") || /^https?:\/\//i.test(value),
+      "Некорректный URL",
+    )
+    .optional()
+    .nullable(),
   styleTags: styleTagsSchema,
 });
 
