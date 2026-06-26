@@ -4,13 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { DownloadButton } from "@/components/DownloadButton";
 import { MarketplacePreview } from "@/components/MarketplacePreview";
 import { PromptHints } from "@/components/PromptHints";
-import {
-  DEFAULT_STYLE,
-  STYLE_KEYS,
-  STYLE_LABELS,
-  TRENDS,
-  type InfographicStyle,
-} from "@/lib/design-trends";
 
 const MAX_IMAGE_BYTES = 4 * 1024 * 1024;
 
@@ -43,17 +36,35 @@ const TEMPLATES = [
 ];
 
 const GENERATION_STEPS = [
-  "AI анализирует описание товара",
-  "Придумываем промпт фона (Ollama)",
-  "Генерируем фотореалистичный фон (Stable Diffusion)",
-  "Вырезаем фон у фото товара",
-  "Собираем инфографику 1200×1200",
+  "AI анализирует товар и аудиторию",
+  "Определяет визуальный хук и концепцию",
+  "Строит композицию и типографику",
+  "Генерирует фотореалистичный фон (SD)",
+  "Собирает инфографику 900×1200",
 ];
+
+const HOOK_LABELS: Record<string, string> = {
+  oversized_product: "Крупный товар",
+  premium_badge: "Премиальная плашка",
+  emotional_background: "Эмоциональный фон",
+  dynamic_diagonal: "Динамичная диагональ",
+  spec_highlight: "Акцент на характеристиках",
+  luxury_minimal: "Люкс-минимализм",
+  lifestyle_scene: "Lifestyle-сцена",
+  tech_showcase: "Техно-витрина",
+  gift_bundle: "Подарочный комплект",
+  contrast_pop: "Контрастный акцент",
+  editorial_typography: "Редакционная типографика",
+  power_number: "Сильная цифра",
+};
+
+function hookLabel(type: string): string {
+  return HOOK_LABELS[type] ?? type.replace(/_/g, " ");
+}
 
 export function GenerateForm() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [prompt, setPrompt] = useState("");
-  const [style, setStyle] = useState<InfographicStyle>(DEFAULT_STYLE);
   const [productImage, setProductImage] = useState<string | null>(null);
   const [productFileName, setProductFileName] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -68,7 +79,8 @@ export function GenerateForm() {
     credits: number;
     unlimited?: boolean;
     aiSource?: string;
-    appliedStyle?: InfographicStyle;
+    designConcept?: string;
+    visualHook?: { type: string; reason: string; confidence?: number };
     backgroundSource?: "sd" | "fallback";
     pipelineVersion?: string;
   } | null>(null);
@@ -85,7 +97,7 @@ export function GenerateForm() {
       setStepIndex((current) =>
         current < GENERATION_STEPS.length - 1 ? current + 1 : current,
       );
-    }, 2200);
+    }, 2800);
 
     const clockTimer = setInterval(() => {
       setElapsedSec(Math.floor((Date.now() - startedAt) / 1000));
@@ -152,7 +164,6 @@ export function GenerateForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           prompt,
-          style,
           productImage,
         }),
         signal: controller.signal,
@@ -168,7 +179,8 @@ export function GenerateForm() {
         credits: number;
         unlimited?: boolean;
         aiSource?: string;
-        appliedStyle?: InfographicStyle;
+        designConcept?: string;
+        visualHook?: { type: string; reason: string; confidence?: number };
         backgroundSource?: "sd" | "fallback";
         pipelineVersion?: string;
       }>(res);
@@ -200,7 +212,8 @@ export function GenerateForm() {
         credits: data.credits ?? 0,
         unlimited: data.unlimited,
         aiSource: data.aiSource,
-        appliedStyle: data.appliedStyle ?? style,
+        designConcept: data.designConcept,
+        visualHook: data.visualHook,
         backgroundSource: data.backgroundSource,
         pipelineVersion: data.pipelineVersion,
       });
@@ -233,7 +246,6 @@ export function GenerateForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           imageId: result.id,
-          style,
           productImage,
         }),
         signal: controller.signal,
@@ -246,7 +258,8 @@ export function GenerateForm() {
         imagePath?: string;
         freeRemaining: number;
         credits: number;
-        appliedStyle?: InfographicStyle;
+        designConcept?: string;
+        visualHook?: { type: string; reason: string };
         backgroundSource?: "sd" | "fallback";
         pipelineVersion?: string;
       }>(res);
@@ -273,7 +286,8 @@ export function GenerateForm() {
               freeRemaining: data.freeRemaining ?? prev.freeRemaining,
               credits: data.credits ?? prev.credits,
               backgroundSource: data.backgroundSource ?? prev.backgroundSource,
-              appliedStyle: data.appliedStyle ?? style,
+              designConcept: data.designConcept ?? prev.designConcept,
+              visualHook: data.visualHook ?? prev.visualHook,
               pipelineVersion: data.pipelineVersion ?? prev.pipelineVersion,
             }
           : prev,
@@ -324,8 +338,8 @@ export function GenerateForm() {
         Опишите товар для инфографики
       </label>
       <p className="mt-1 text-xs text-slate-500">
-        AI возьмёт из текста название, цифры и УТП, придумает фон для Stable Diffusion
-        и соберёт слайд 1200×1200
+        AI проанализирует товар, определит визуальный хук и соберёт уникальную
+        карточку 900×1200 для Wildberries
       </p>
 
       <div className="mt-3 flex flex-wrap gap-2">
@@ -355,36 +369,13 @@ export function GenerateForm() {
 
       <PromptHints prompt={prompt} onInsert={setPrompt} />
 
-      <div className="mt-4">
-        <p className="text-sm font-medium text-slate-300">Стиль дизайна</p>
-        <p className="mt-1 text-xs text-slate-500">
-          Влияет на фон, шрифты, блоки УТП и общее настроение слайда
+      <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950/50 px-4 py-3">
+        <p className="text-sm font-medium text-slate-300">Дизайн подбирается автоматически</p>
+        <p className="mt-1 text-xs leading-relaxed text-slate-500">
+          Вместо фиксированных стилей AI строит уникальную композицию: анализ товара →
+          визуальный хук → Design DNA → параметрический макет. Каждая карточка — новая
+          комбинация, как у профессионального арт-директора.
         </p>
-        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
-          {STYLE_KEYS.map((key) => {
-            const trend = TRENDS[key];
-            const selected = style === key;
-            return (
-              <button
-                key={key}
-                type="button"
-                onClick={() => setStyle(key)}
-                className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-left text-xs transition ${
-                  selected
-                    ? "border-brand-500 bg-brand-600/10 text-brand-300"
-                    : "border-slate-700 text-slate-400 hover:border-slate-500"
-                }`}
-              >
-                <span
-                  className="h-4 w-4 shrink-0 rounded-full border border-white/20"
-                  style={{ background: trend.accent }}
-                  aria-hidden
-                />
-                <span className="font-medium">{STYLE_LABELS[key]}</span>
-              </button>
-            );
-          })}
-        </div>
       </div>
 
       <div className="mt-4 rounded-lg border border-dashed border-slate-700 bg-slate-950/60 p-4">
@@ -464,7 +455,7 @@ export function GenerateForm() {
           <p className="mt-3 text-xs text-slate-500">
             Прошло: <span className="font-mono text-slate-300">{formatElapsed(elapsedSec)}</span>
             {" · "}
-            обычно 2–5 минут. Не закрывайте вкладку.
+            обычно 3–6 минут. Не закрывайте вкладку.
           </p>
         </div>
       )}
@@ -474,31 +465,39 @@ export function GenerateForm() {
       {result && (
         <div className="mt-6">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-            <p className="text-sm text-slate-400">
-              {result.unlimited ? (
-                <span>Безлимит · Админ</span>
-              ) : (
-                <>
-                  Бесплатно сегодня: {result.freeRemaining} · Кредиты: {result.credits}
-                </>
+            <div className="text-sm text-slate-400">
+              <p>
+                {result.unlimited ? (
+                  <span>Безлимит · Админ</span>
+                ) : (
+                  <>
+                    Бесплатно сегодня: {result.freeRemaining} · Кредиты: {result.credits}
+                  </>
+                )}
+                {result.aiSource === "mock" && (
+                  <span className="ml-2 text-amber-400">· демо-режим</span>
+                )}
+                {result.backgroundSource === "fallback" && (
+                  <span className="ml-2 text-amber-400">· градиент вместо SD</span>
+                )}
+                {result.pipelineVersion && (
+                  <span className="ml-2 text-emerald-500">· {result.pipelineVersion}</span>
+                )}
+              </p>
+              {result.designConcept && (
+                <p className="mt-1 text-xs text-slate-500">
+                  Концепция: <span className="text-slate-300">{result.designConcept}</span>
+                </p>
               )}
-              {result.aiSource === "mock" && (
-                <span className="ml-2 text-amber-400">· демо-режим</span>
+              {result.visualHook && (
+                <p className="mt-0.5 text-xs text-slate-500">
+                  Хук:{" "}
+                  <span className="text-brand-300">{hookLabel(result.visualHook.type)}</span>
+                  {" — "}
+                  {result.visualHook.reason}
+                </p>
               )}
-              {result.backgroundSource === "fallback" && (
-                <span className="ml-2 text-amber-400">· градиент вместо SD</span>
-              )}
-              {result.appliedStyle && (
-                <span className="ml-2 text-slate-500">
-                  · стиль: {STYLE_LABELS[result.appliedStyle]}
-                </span>
-              )}
-              {result.pipelineVersion && (
-                <span className="ml-2 text-emerald-500">
-                  · {result.pipelineVersion}
-                </span>
-              )}
-            </p>
+            </div>
             <div className="flex flex-wrap gap-2">
               <button
                 type="button"

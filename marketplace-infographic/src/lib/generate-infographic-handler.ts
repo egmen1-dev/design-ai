@@ -23,7 +23,7 @@ import {
 import type { CompositingHints, DesignBrief } from "@/lib/design-brief/schema";
 import type { InfographicSdInput } from "@/lib/validations";
 import { prisma } from "@/lib/prisma";
-import { resolveReferenceContext } from "@/lib/reference-style-resolver";
+import { resolveReferenceContext, type ResolvedReferenceContext } from "@/lib/reference-style-resolver";
 import {
   mergeProductWithBackground,
   mergedToDataUrl,
@@ -54,9 +54,22 @@ export type GenerateInfographicResult = {
   unlimited: boolean;
   aiSource: string;
   backgroundSource: "sd" | "fallback";
-  appliedStyle: InfographicStyle;
+  /** @deprecated Внутренний legacy; в UI не показываем */
+  appliedStyle?: InfographicStyle;
+  designConcept?: string;
+  visualHook?: { type: string; reason: string; confidence?: number };
   pipelineVersion: string;
 };
+
+function briefMeta(brief?: DesignBrief) {
+  const hook = brief?.designProcess?.visualHook ?? brief?.visualHook;
+  return {
+    designConcept: brief?.designConcept ?? brief?.designProcess?.stage2?.concept,
+    visualHook: hook
+      ? { type: hook.type, reason: hook.reason, confidence: hook.confidence }
+      : undefined,
+  };
+}
 
 async function loadProductCutout(
   productImage: string | undefined,
@@ -105,6 +118,7 @@ export async function handleGenerateInfographic(
     let compositingHints: CompositingHints | undefined;
     let qualityScore: number | undefined;
     let designBrief: DesignBrief | undefined;
+    let referenceContext: ResolvedReferenceContext | undefined;
 
     if (input.regenerateBackgroundOnly && input.existingImageId) {
       const existing = await prisma.generatedImage.findUnique({
@@ -119,7 +133,7 @@ export async function handleGenerateInfographic(
       if (existing.generatedJson) {
         const stored = unpackSdPayload(existing.generatedJson);
         sdData = stored.data;
-        appliedStyle = input.style ?? stored.style;
+        appliedStyle = input.style ?? stored.style ?? DEFAULT_STYLE;
         compositingHints = stored.compositingHints;
         qualityScore = stored.qualityScore;
         designBrief = stored.brief;
@@ -149,12 +163,13 @@ export async function handleGenerateInfographic(
       }
       appliedStyle = input.style ?? DEFAULT_STYLE;
 
-      const referenceContext = resolveReferenceContext(
+      referenceContext = resolveReferenceContext(
         input.prompt,
         appliedStyle,
         input.ollamaContext?.examples ?? [],
       );
-      if (referenceContext.hasStrongReference) {
+      const styleHint = input.style ?? (referenceContext.hasStrongReference ? referenceContext.style : undefined);
+      if (referenceContext.hasStrongReference && !input.style) {
         appliedStyle = referenceContext.style;
       }
 
@@ -163,7 +178,7 @@ export async function handleGenerateInfographic(
 
       const ollama = await generateSdInfographicData(
         input.prompt,
-        appliedStyle,
+        styleHint,
         { ...input.ollamaContext, referenceContext },
       );
       sdData = ollama.data;
@@ -249,7 +264,7 @@ export async function handleGenerateInfographic(
               visualHook,
               compositingHints?.objectScale ?? designBrief?.objectScale,
             ),
-            styleHint: appliedStyle,
+            styleHint: input.style ?? (referenceContext?.hasStrongReference ? referenceContext.style : undefined),
             seed: variationSeed,
             visualHook,
           })
@@ -319,8 +334,8 @@ export async function handleGenerateInfographic(
         unlimited: balance.unlimited,
         aiSource,
         backgroundSource,
-        appliedStyle,
         pipelineVersion: PIPELINE_VERSION,
+        ...briefMeta(designBrief),
       };
     }
 
@@ -351,8 +366,8 @@ export async function handleGenerateInfographic(
       unlimited: balance.unlimited,
       aiSource,
       backgroundSource,
-      appliedStyle,
       pipelineVersion: PIPELINE_VERSION,
+      ...briefMeta(designBrief),
     };
   } catch (error) {
     if (!slot.usedFreeQuota && !slot.balance.unlimited) {

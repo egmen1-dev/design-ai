@@ -17,7 +17,7 @@ import { buildMockFoundation } from "./mock";
 
 export type DesignProcessContext = {
   productPrompt: string;
-  style: InfographicStyle;
+  style?: InfographicStyle;
   analysis: ProductAnalysis;
   library?: DesignLibrary;
   examples?: DesignExampleRecord[];
@@ -93,7 +93,7 @@ export async function runFoundationStage(
     productPrompt: ctx.productPrompt,
     category: ctx.analysis.category,
     priceSegment: ctx.analysis.priceSegment,
-    style: ctx.style,
+    style: ctx.style ?? "auto",
   });
 
   const raw = await callOllamaJson<unknown>(prompt, 0.38);
@@ -109,7 +109,7 @@ async function runDesignStage(
     productPrompt: ctx.productPrompt,
     category: ctx.analysis.category,
     priceSegment: ctx.analysis.priceSegment,
-    style: ctx.style,
+    style: ctx.style ?? "auto",
     foundation,
     referenceHint: ctx.referenceContext?.compositionHint ?? undefined,
     retryHint: retryHint ?? ctx.retryHint,

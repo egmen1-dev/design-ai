@@ -24,7 +24,7 @@ export default async function HomePage() {
             AI-карточки товаров через Ollama
           </h2>
           <p className="mt-4 text-slate-400">
-            Опишите товар — получите готовую инфографику 1200×1200 для Wildberries
+            Опишите товар — получите готовую инфографику 900×1200 для Wildberries
             и Ozon. Локальная модель qwen2.5:7b, без платных API.
           </p>
           <ul className="mt-6 space-y-2 text-sm text-slate-400">

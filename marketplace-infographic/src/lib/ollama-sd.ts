@@ -151,19 +151,19 @@ function clampLibraryIds(
 
 export async function generateSdInfographicData(
   prompt: string,
-  style: InfographicStyle = DEFAULT_STYLE,
+  style?: InfographicStyle,
   context: OllamaSdContext = {},
 ): Promise<GenerationResult> {
   const referenceContext =
     context.referenceContext ??
-    resolveReferenceContext(prompt, style, context.examples ?? []);
+    resolveReferenceContext(prompt, style ?? DEFAULT_STYLE, context.examples ?? []);
 
   const enrichedContext: OllamaSdContext = { ...context, referenceContext };
   const analysis = analyzeProductPrompt(prompt);
   const cacheId = cacheKey([
     "brief-v9",
     prompt.slice(0, 80),
-    style,
+    style ?? "auto",
     referenceContext.topExample?.id ?? "none",
   ]);
 
@@ -175,7 +175,7 @@ export async function generateSdInfographicData(
   const finalize = (brief: DesignBrief, source: "ollama" | "mock"): GenerationResult => {
     let sd = briefToSdInput(brief, prompt);
     sd = applyReferenceToSdData(sd, referenceContext);
-    if (!referenceContext.hasStrongReference) {
+    if (!referenceContext.hasStrongReference && style) {
       sd = applyStyleToSdColors(sd, style);
     }
     sd = clampLibraryIds(sd, context.library);
@@ -192,7 +192,7 @@ export async function generateSdInfographicData(
   };
 
   if (status.mockMode || !status.available) {
-    const brief = buildMockBrief(prompt, style, context.library, referenceContext);
+    const brief = buildMockBrief(prompt, style ?? DEFAULT_STYLE, context.library, referenceContext);
     return finalize(brief, "mock");
   }
 
@@ -206,13 +206,18 @@ export async function generateSdInfographicData(
       referenceContext,
     });
 
-    const withAssets = applyAssetSelection(brief, context.library, analysis, style);
+    const withAssets = applyAssetSelection(
+      brief,
+      context.library,
+      analysis,
+      style ?? DEFAULT_STYLE,
+    );
     const result = finalize(withAssets, "ollama");
     cacheSet(cacheId, result);
     return result;
   } catch (error) {
     console.warn("Ollama design process failed, mock fallback:", error);
-    const brief = buildMockBrief(prompt, style, context.library, referenceContext);
+    const brief = buildMockBrief(prompt, style ?? DEFAULT_STYLE, context.library, referenceContext);
     return finalize(brief, "mock");
   }
 }

@@ -29,7 +29,8 @@ export const generateInfographicSchema = z.object({
       "Загрузите JPG, PNG или WebP",
     )
     .refine((value) => value.length <= 6_000_000, "Фото слишком большое (макс. 4 МБ)"),
-  style: z.enum(STYLE_KEYS).optional().default(DEFAULT_STYLE),
+  /** @deprecated Стили заменены на Design DNA — поле игнорируется при генерации */
+  style: z.enum(STYLE_KEYS).optional(),
 });
 
 export const regenerateBackgroundSchema = z.object({
