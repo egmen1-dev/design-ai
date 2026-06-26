@@ -1,6 +1,7 @@
 import type { InfographicStyle } from "@/lib/design-trends";
 import { prisma } from "@/lib/prisma";
-import { scoreExamples } from "@/lib/reference-style-resolver";
+import { rankExamplesForProduct } from "@/lib/example-engine";
+import { analyzeProductPrompt } from "@/lib/product-analysis";
 
 export type DesignExampleRecord = Awaited<ReturnType<typeof loadDesignExamples>>[number];
 
@@ -23,29 +24,8 @@ export async function selectRelevantExamples(
   const pool = await loadDesignExamples(120);
   if (pool.length === 0) return [];
 
-  const scored = scoreExamples(prompt, pool, style);
-  const matched = scored.filter((item) => item.score > 0);
-
-  const unique: typeof pool = [];
-  const seen = new Set<string>();
-
-  for (const { example } of matched) {
-    if (seen.has(example.id)) continue;
-    seen.add(example.id);
-    unique.push(example);
-    if (unique.length >= limit) break;
-  }
-
-  if (unique.length < limit && matched.length === 0) {
-    for (const example of pool) {
-      if (unique.length >= limit) break;
-      if (seen.has(example.id)) continue;
-      seen.add(example.id);
-      unique.push(example);
-    }
-  }
-
-  return unique.slice(0, limit);
+  const analysis = analyzeProductPrompt(prompt);
+  return rankExamplesForProduct(prompt, pool, analysis.category, style, limit);
 }
 
 export function formatExamplesForPrompt(

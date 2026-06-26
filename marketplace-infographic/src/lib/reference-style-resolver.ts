@@ -164,13 +164,13 @@ export function resolveReferenceContext(
   const topExample = top?.example ?? null;
 
   if (!hasStrongReference || !topExample) {
-    const hasAnyReferenceCard = examples.some((e) => Boolean(e.imageUrl));
+    const colors = topExample ? pickAccentColors(topExample) : null;
     return {
       hasStrongReference: false,
       layout: "marketplace",
       style: userStyle,
-      colors: null,
-      blueprint: null,
+      colors,
+      blueprint: topExample ? pickBlueprint(topExample) : null,
       topExample,
       compositionHint: null,
     };
@@ -201,7 +201,15 @@ export function applyReferenceToSdData(
   ref: ResolvedReferenceContext,
 ): InfographicSdInput {
   if (!ref.hasStrongReference) {
-    return { ...data, layout: ref.layout };
+    const next: InfographicSdInput = { ...data, layout: ref.layout };
+    if (ref.colors && ref.colors.length >= 2) {
+      next.colors = [
+        ref.colors[0],
+        ref.colors[1] ?? ref.colors[0],
+        ref.colors[2] ?? "#0f172a",
+      ];
+    }
+    return next;
   }
 
   const next: InfographicSdInput = {

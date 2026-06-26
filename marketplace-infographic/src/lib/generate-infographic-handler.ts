@@ -20,6 +20,7 @@ import {
   parseProductImageDataUrl,
   processProductImageForGeneration,
 } from "@/lib/product-image-sd";
+import type { CompositingHints, DesignBrief } from "@/lib/design-brief/schema";
 import type { InfographicSdInput } from "@/lib/validations";
 import { prisma } from "@/lib/prisma";
 import { resolveReferenceContext } from "@/lib/reference-style-resolver";
@@ -97,6 +98,9 @@ export async function handleGenerateInfographic(
     let aiSource = "mock";
     let productCutoutPath: string | null = null;
     let productRender: Awaited<ReturnType<typeof loadProductCutout>>;
+    let compositingHints: CompositingHints | undefined;
+    let qualityScore: number | undefined;
+    let designBrief: DesignBrief | undefined;
 
     if (input.regenerateBackgroundOnly && input.existingImageId) {
       const existing = await prisma.generatedImage.findUnique({
@@ -112,6 +116,9 @@ export async function handleGenerateInfographic(
         const stored = unpackSdPayload(existing.generatedJson);
         sdData = stored.data;
         appliedStyle = input.style ?? stored.style;
+        compositingHints = stored.compositingHints;
+        qualityScore = stored.qualityScore;
+        designBrief = stored.brief;
         aiSource = "regen";
       } else {
         const ollama = await generateSdInfographicData(
@@ -120,6 +127,9 @@ export async function handleGenerateInfographic(
           input.ollamaContext,
         );
         sdData = ollama.data;
+        compositingHints = ollama.compositingHints;
+        qualityScore = ollama.qualityScore;
+        designBrief = ollama.brief;
         aiSource = "regen-rebuild";
       }
 
@@ -153,6 +163,9 @@ export async function handleGenerateInfographic(
         { ...input.ollamaContext, referenceContext },
       );
       sdData = ollama.data;
+      compositingHints = ollama.compositingHints;
+      qualityScore = ollama.qualityScore;
+      designBrief = ollama.brief;
       aiSource = ollama.source;
     }
 
@@ -202,6 +215,8 @@ export async function handleGenerateInfographic(
           productCutoutPath,
           {
             layout: sdData.layout === "marketplace" ? "marketplace" : "center",
+            compositingHints,
+            reflection: compositingHints?.reflection,
           },
         );
         mergedImageDataUrl = await mergedToDataUrl(mergedUrl);
@@ -237,7 +252,11 @@ export async function handleGenerateInfographic(
           imagePath,
           backgroundUrl,
           productCutout: productCutoutPath,
-          generatedJson: packSdPayload(sdData, appliedStyle),
+          generatedJson: packSdPayload(sdData, appliedStyle, {
+            brief: designBrief,
+            compositingHints,
+            qualityScore,
+          }),
         },
       });
 
@@ -261,7 +280,11 @@ export async function handleGenerateInfographic(
         prompt: input.prompt,
         htmlContent: "[SD_PIPELINE]",
         imagePath,
-        generatedJson: packSdPayload(sdData, appliedStyle),
+        generatedJson: packSdPayload(sdData, appliedStyle, {
+          brief: designBrief,
+          compositingHints,
+          qualityScore,
+        }),
         backgroundUrl,
         productCutout: productCutoutPath,
         usedFreeQuota: slot.usedFreeQuota,

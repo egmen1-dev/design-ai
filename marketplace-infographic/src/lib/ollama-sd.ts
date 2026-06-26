@@ -1,23 +1,32 @@
-import { sanitizeSdInput } from "@/lib/sd-sanitize";
+import { createHash } from "crypto";
 import {
   DEFAULT_STYLE,
-  STYLE_LABELS,
-  TRENDS,
   type InfographicStyle,
 } from "@/lib/design-trends";
 import type { DesignLibrary } from "@/lib/design-library";
-import { formatLibraryForPrompt } from "@/lib/design-library";
+import { pickBestBadgeId, pickBestFontId } from "@/lib/asset-selection";
 import {
-  formatExamplesForPrompt,
-  selectRelevantExamples,
-} from "@/lib/select-relevant-examples";
+  briefToCompositingHints,
+  briefToSdInput,
+  type CompositingHints,
+  type DesignBrief,
+} from "@/lib/design-brief/schema";
+import {
+  buildQualityRetryHint,
+  evaluateDesignBrief,
+} from "@/lib/design-brief/quality-gate";
+import { sanitizeDesignBrief } from "@/lib/design-brief/sanitize";
+import { cacheGet, cacheKey, cacheSet } from "@/lib/cache/generation-cache";
+import { assembleDesignBriefPrompt } from "@/lib/prompt/assemble";
+import { analyzeProductPrompt } from "@/lib/product-analysis";
 import {
   applyReferenceToSdData,
   defaultMarketplaceColors,
   resolveReferenceContext,
   type ResolvedReferenceContext,
 } from "@/lib/reference-style-resolver";
-import { infographicSdSchema, type InfographicSdInput } from "@/lib/validations";
+import { selectRelevantExamples } from "@/lib/select-relevant-examples";
+import type { InfographicSdInput } from "@/lib/validations";
 import { applyStyleToSdColors } from "@/lib/sd-style-theme";
 import { getOllamaStatus, OLLAMA_BASE_URL, OLLAMA_MODEL } from "./ai-status";
 
@@ -29,6 +38,14 @@ export type OllamaSdContext = {
   referenceContext?: ResolvedReferenceContext;
 };
 
+export type GenerationResult = {
+  data: InfographicSdData;
+  brief: DesignBrief;
+  compositingHints: CompositingHints;
+  source: "ollama" | "mock";
+  qualityScore: number;
+};
+
 function extractJson(text: string): string {
   const start = text.indexOf("{");
   const end = text.lastIndexOf("}");
@@ -38,163 +55,81 @@ function extractJson(text: string): string {
   return text.slice(start, end + 1);
 }
 
-const SD_EXAMPLE_MARKETPLACE = `{
-  "layout": "marketplace",
-  "title": "Садовый триммер",
-  "subtitle": "аккумуляторный",
-  "bullets": ["1300 Вт мощность", "65 дБ тихая работа", "3 мощных АКБ", "8 насадок", "лёгкий и компактный"],
-  "colors": ["#00a8b5", "#ffffff", "#0f172a"],
-  "badge": "GardenPro",
-  "backgroundPrompt": "sunny suburban backyard, green lawn garden path, wooden house blurred in distance, soft natural daylight, shallow depth of field, clear empty grass foreground, photorealistic, no text, no people, no objects",
-  "fontId": null,
-  "badgeId": null
-}`;
+function applyAssetSelection(
+  brief: DesignBrief,
+  library: DesignLibrary | undefined,
+  analysis: ReturnType<typeof analyzeProductPrompt>,
+  style: InfographicStyle,
+): DesignBrief {
+  if (!library) return brief;
+  const accent = brief.colorPalette?.[0] ?? defaultMarketplaceColors()[0];
 
-const SD_EXAMPLE = `{
-  "layout": "hero",
-  "title": "ГЕНЕРАТОР",
-  "subtitle": "бензиновый",
-  "bullets": ["3 кВт мощность", "15 литров бак", "3000 Вт стабильная мощность", "тихая работа 65 дБ"],
-  "colors": ["#e31e24", "#2563eb", "#0f172a"],
-  "badge": "Kronwerk",
-  "backgroundPrompt": "professional marketplace product photo background, suburban garden with lush green grass, soft natural daylight, shallow depth of field, space in center for gasoline generator, photorealistic, 2025 ecommerce trend, high CTR, no text, no people, 8k",
-  "fontId": null,
-  "badgeId": null
-}`;
+  const fontId = pickBestFontId(library.fonts, analysis, style, brief.fontId);
+  const badgeId = pickBestBadgeId(library.badges, analysis, style, accent, brief.badgeId);
 
-export function generateMockSdData(
-  prompt: string,
-  style: InfographicStyle = DEFAULT_STYLE,
-  library?: DesignLibrary,
-  referenceContext?: ResolvedReferenceContext,
-): InfographicSdData {
-  const lower = prompt.toLowerCase();
-  const isTrimmer = /триммер|газон|косил|садов/.test(lower);
-  const isGenerator = /генератор|бензин|квт/.test(lower);
-  const trend = TRENDS[style];
-  const useMarketplace = true;
-
-  const styleFont = library?.fonts.find((font) => font.styleTags.includes(style));
-  const styleBadge = library?.badges.find((badge) => badge.styleTags.includes(style));
-
-  const colors = referenceContext?.colors?.length
-    ? referenceContext.colors
-    : useMarketplace
-      ? defaultMarketplaceColors()
-      : [trend.accent, "#2563eb", "#0f172a"];
-
-  const base = infographicSdSchema.parse({
-    layout: useMarketplace ? "marketplace" : "hero",
-    title: isTrimmer ? "Садовый триммер" : isGenerator ? "ГЕНЕРАТОР" : "ТОВАР",
-    subtitle: isTrimmer ? "аккумуляторный" : isGenerator ? "бензиновый" : "новинка",
-    bullets: isTrimmer
-      ? ["1300 Вт мощность", "65 дБ тихая работа", "3 мощных АКБ", "8 насадок", "лёгкий и компактный"]
-      : isGenerator
-        ? ["3 кВт мощность", "15 литров бак", "3000 Вт стабильная мощность"]
-        : ["Премиум качество", "Быстрая доставка", "Гарантия 12 месяцев"],
-    colors,
-    badge: isTrimmer ? "GardenPro" : isGenerator ? "Kronwerk" : "Brand",
-    backgroundPrompt: isTrimmer
-      ? "sunny suburban backyard, green lawn garden path, wooden fence blurred, soft natural daylight, clear empty grass foreground, photorealistic, no text, no people, no objects"
-      : isGenerator
-        ? "suburban garden with green grass, soft daylight, clear empty lawn foreground, photorealistic, no text, no objects"
-        : "clean studio gradient, soft lighting, clear empty foreground, photorealistic, no text, no objects",
-    fontId: styleFont?.id ?? null,
-    badgeId: styleBadge?.id ?? null,
-  });
-
-  if (referenceContext?.hasStrongReference) {
-    return applyReferenceToSdData(base, referenceContext);
-  }
-
-  return applyStyleToSdColors(base, style);
+  return { ...brief, fontId, badgeId };
 }
 
-async function callOllamaSd(
+function buildMockBrief(
   prompt: string,
   style: InfographicStyle,
-  context: OllamaSdContext = {},
-): Promise<InfographicSdData> {
-  const ref = context.referenceContext ?? resolveReferenceContext(
-    prompt,
-    style,
-    context.examples ?? [],
+  library?: DesignLibrary,
+  referenceContext?: ResolvedReferenceContext,
+): DesignBrief {
+  const analysis = analyzeProductPrompt(prompt);
+  const isTrimmer = analysis.category === "garden_tools";
+  const colors = referenceContext?.colors?.length
+    ? referenceContext.colors
+    : defaultMarketplaceColors();
+
+  const raw = sanitizeDesignBrief(
+    {
+      designConcept: isTrimmer
+        ? "Премиальная садовая карточка с акцентом на мощность"
+        : "Коммерческая карточка WB/Ozon",
+      layout: "marketplace",
+      headline: isTrimmer ? "Садовый триммер" : "Товар",
+      subHeadline: isTrimmer ? "аккумуляторный" : "новинка",
+      bullets: isTrimmer
+        ? ["1300 Вт мощность", "65 дБ тихая работа", "3 мощных АКБ", "8 насадок", "лёгкий и компактный"]
+        : ["Премиум качество", "Быстрая доставка", "Гарантия 12 месяцев"],
+      colorPalette: colors,
+      badge: "Brand",
+      backgroundPrompt:
+        "sunny suburban lawn garden path, wooden fence blurred, golden hour daylight, clear empty grass foreground, ultra realistic, no objects, no text",
+      fontId: null,
+      badgeId: null,
+      objectScale: 0.58,
+      lightDirection: "top-left",
+      lightTemperature: "5500K",
+      shadowType: "contact-soft",
+    },
+    analysis.category,
   );
-  const effectiveStyle = ref.hasStrongReference ? ref.style : style;
-  const trend = TRENDS[effectiveStyle];
-  const libraryBlock = context.library
-    ? formatLibraryForPrompt(context.library)
-    : "Библиотека шрифтов и плашек пуста — используй fontId: null, badgeId: null.";
-  const examplesBlock = formatExamplesForPrompt(context.examples ?? []);
-  const useMarketplace = true;
-  const referenceColors = ref.colors?.join(", ") ?? defaultMarketplaceColors().join(", ");
 
-  const layoutInstruction = useMarketplace
-    ? `ОБЯЗАТЕЛЬНО layout: "marketplace" — профессиональная карточка Wildberries/Ozon.
-title — с заглавной буквы (НЕ КАПСОМ), например "Садовый триммер".
-subtitle — короткий тип товара для pill-кнопки, например "аккумуляторный".
-bullets — РОВНО 5 строк, каждая уникальна, без повторов:
-  [0] левая карточка: мощность/обороты (например "1300 Вт мощность")
-  [1] левая карточка: второй тех. параметр (например "65 дБ тихая работа")
-  [2] правая колонка: кол-во АКБ (например "3 мощных АКБ")
-  [3] правая колонка: кол-во насадок (например "8 насадок")
-  [4] низ слайда: качество (например "лёгкий и компактный")
-Опционально вместо [1] можно подарок: "Очки и перчатки в подарок".
-Пиши грамотно по-русски: "литра", не "итра". Не дублируй один параметр в разных bullets.
-colors — палитра референса: [${referenceColors}].
-НЕ добавляй watermark "WILDBERRIES" на слайд.`
-    : `layout: "hero" | "cards" | "split" | "minimal"`;
-
-  const compositionHint = ref.compositionHint
-    ? `\nКомпозиция лучшего референса: ${ref.compositionHint}`
-    : "";
-
-  const systemPrompt = `Ты — арт-директор для Wildberries/Ozon.
-
-Стиль дизайна слайда: ${effectiveStyle} (${STYLE_LABELS[effectiveStyle]}).
-${useMarketplace ? `Акцентный цвет из референса: ${ref.colors?.[0] ?? "#00a8b5"}.` : `Акцентный цвет стиля: ${trend.accent}. Используй его в colors[0].`}
-
-Для каждого товара придумай текст и стиль инфографики 1200×1200, а также промпт на АНГЛИЙСКОМ для Stable Diffusion — идеальный фотореалистичный фон.
-Фон должен соответствовать трендам 2025, повышать кликабельность, передавать контекст использования товара.
-В backgroundPrompt: только ОПИСАНИЕ СРЕДЫ на английском — газон, сад, студия. ЗАПРЕЩЕНО упоминать товар (trimmer, generator, product, tool). Пиши "clear empty grass foreground", "no objects". Без текста и людей.
-Визуальная атмосфера фона должна соответствовать стилю ${effectiveStyle}: ${trend.css}
-
-Весь видимый текст слайда — ТОЛЬКО на русском (title, subtitle, bullets, badge).
-
-${examplesBlock}
-
-${libraryBlock}
-
-Выбирай fontId и badgeId только из списков выше. Если ничего не подходит — null.
-Предпочитай ассеты, у которых styleTags содержит "${effectiveStyle}".
-
-Референсы выше — реальные карточки маркетплейса. Повторяй их композицию: структуру заголовка, УТП, акценты, баланс текста и товара.${compositionHint}
-
-Верни ТОЛЬКО JSON:
-{
-  "layout": ${useMarketplace ? '"marketplace"' : '"hero" | "cards" | "split" | "minimal"'},
-  "title": "тип товара",
-  "subtitle": "короткий подтип строчными",
-  "bullets": ["2-5 УТП с цифрами из описания"],
-  "colors": ["#hex", "#hex", "#hex"],
-  "badge": "бренд",
-  "backgroundPrompt": "english prompt for SD XL, 10-200 chars, photorealistic scene",
-  "fontId": "uuid из библиотеки или null",
-  "badgeId": "uuid из библиотеки или null"
+  return applyAssetSelection(raw, library, analysis, style);
 }
 
-Правила:
-- ${layoutInstruction}
-- Факты только из описания товара
-- backgroundPrompt строго на английском
-- colors: accent, secondary, dark tone
-- fontId/badgeId — только из библиотеки или null
+async function callOllamaDesignBrief(
+  prompt: string,
+  style: InfographicStyle,
+  context: OllamaSdContext,
+  retryHint?: string,
+): Promise<DesignBrief> {
+  const analysis = analyzeProductPrompt(prompt);
+  const ref =
+    context.referenceContext ??
+    resolveReferenceContext(prompt, style, context.examples ?? []);
 
-Пример:
-${useMarketplace ? SD_EXAMPLE_MARKETPLACE : SD_EXAMPLE}
-
-Товар:
-"${prompt}"`;
+  const systemPrompt = assembleDesignBriefPrompt({
+    productPrompt: prompt,
+    style,
+    analysis,
+    library: context.library ?? { fonts: [], badges: [] },
+    examples: context.examples ?? [],
+    referenceContext: ref,
+    retryHint,
+  });
 
   const ollamaTimeoutMs = Number(process.env.OLLAMA_TIMEOUT_MS ?? 120_000);
 
@@ -205,7 +140,7 @@ ${useMarketplace ? SD_EXAMPLE_MARKETPLACE : SD_EXAMPLE}
       model: OLLAMA_MODEL,
       prompt: systemPrompt,
       stream: false,
-      options: { temperature: 0.35, num_predict: 1536 },
+      options: { temperature: 0.32, num_predict: 2048 },
     }),
     signal: AbortSignal.timeout(ollamaTimeoutMs),
   });
@@ -218,14 +153,8 @@ ${useMarketplace ? SD_EXAMPLE_MARKETPLACE : SD_EXAMPLE}
   if (!data.response) throw new Error("Пустой ответ от Ollama");
 
   const parsed = JSON.parse(extractJson(data.response)) as unknown;
-  const raw = sanitizeSdInput(parsed);
-  const withReference = applyReferenceToSdData(raw, ref);
-
-  if (ref.hasStrongReference) {
-    return withReference;
-  }
-
-  return applyStyleToSdColors(withReference, effectiveStyle);
+  const brief = sanitizeDesignBrief(parsed, analysis.category);
+  return applyAssetSelection(brief, context.library, analysis, style);
 }
 
 function clampLibraryIds(
@@ -233,10 +162,8 @@ function clampLibraryIds(
   library?: DesignLibrary,
 ): InfographicSdData {
   if (!library) return data;
-
-  const fontIds = new Set(library.fonts.map((font) => font.id));
-  const badgeIds = new Set(library.badges.map((badge) => badge.id));
-
+  const fontIds = new Set(library.fonts.map((f) => f.id));
+  const badgeIds = new Set(library.badges.map((b) => b.id));
   return {
     ...data,
     fontId: data.fontId && fontIds.has(data.fontId) ? data.fontId : null,
@@ -248,37 +175,70 @@ export async function generateSdInfographicData(
   prompt: string,
   style: InfographicStyle = DEFAULT_STYLE,
   context: OllamaSdContext = {},
-): Promise<{ data: InfographicSdData; source: "ollama" | "mock" }> {
+): Promise<GenerationResult> {
   const referenceContext =
     context.referenceContext ??
     resolveReferenceContext(prompt, style, context.examples ?? []);
 
-  const enrichedContext: OllamaSdContext = {
-    ...context,
-    referenceContext,
-  };
+  const enrichedContext: OllamaSdContext = { ...context, referenceContext };
+  const cacheId = cacheKey([
+    "brief",
+    createHash("sha256").update(prompt).digest("hex").slice(0, 16),
+    style,
+    referenceContext.topExample?.id ?? "none",
+  ]);
+
+  const cached = cacheGet<GenerationResult>(cacheId);
+  if (cached) return cached;
 
   const status = await getOllamaStatus();
+
+  const finalize = (brief: DesignBrief, source: "ollama" | "mock"): GenerationResult => {
+    let sd = briefToSdInput(brief);
+    sd = applyReferenceToSdData(sd, referenceContext);
+    if (!referenceContext.hasStrongReference) {
+      sd = applyStyleToSdColors(sd, style);
+    }
+    sd = clampLibraryIds(sd, context.library);
+
+    const result: GenerationResult = {
+      data: sd,
+      brief,
+      compositingHints: briefToCompositingHints(brief),
+      source,
+      qualityScore: evaluateDesignBrief(brief).score,
+    };
+    cacheSet(cacheId, result);
+    return result;
+  };
+
   if (status.mockMode || !status.available) {
-    const data = clampLibraryIds(
-      generateMockSdData(prompt, style, context.library, referenceContext),
-      context.library,
-    );
-    return { data, source: "mock" };
+    const brief = buildMockBrief(prompt, style, context.library, referenceContext);
+    return finalize(brief, "mock");
   }
+
   try {
-    const data = clampLibraryIds(
-      await callOllamaSd(prompt, style, enrichedContext),
-      context.library,
-    );
-    return { data, source: "ollama" };
+    let brief = await callOllamaDesignBrief(prompt, style, enrichedContext);
+    let quality = evaluateDesignBrief(brief);
+
+    if (!quality.passed && quality.score < 70) {
+      const retryHint = buildQualityRetryHint(quality.issues);
+      try {
+        brief = await callOllamaDesignBrief(prompt, style, enrichedContext, retryHint);
+        quality = evaluateDesignBrief(brief);
+      } catch {
+        // keep first attempt
+      }
+    }
+
+    const result = finalize(brief, "ollama");
+    result.qualityScore = quality.score;
+    cacheSet(cacheId, result);
+    return result;
   } catch (error) {
-    console.warn("Ollama SD failed, mock fallback:", error);
-    const data = clampLibraryIds(
-      generateMockSdData(prompt, style, context.library, referenceContext),
-      context.library,
-    );
-    return { data, source: "mock" };
+    console.warn("Ollama design brief failed, mock fallback:", error);
+    const brief = buildMockBrief(prompt, style, context.library, referenceContext);
+    return finalize(brief, "mock");
   }
 }
 
@@ -291,11 +251,9 @@ export async function buildOllamaSdContext(
     selectRelevantExamples(prompt, 5),
   ]);
 
-  const referenceContext = resolveReferenceContext(prompt, DEFAULT_STYLE, examples);
-
   return {
     library: loadedLibrary,
     examples,
-    referenceContext,
+    referenceContext: resolveReferenceContext(prompt, DEFAULT_STYLE, examples),
   };
 }

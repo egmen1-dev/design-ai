@@ -14,11 +14,17 @@
 {{SKIN_CSS}}
 
     .layout-marketplace {
+      --safe-top: 40px;
+      --safe-side: 36px;
+      --safe-bottom: 32px;
+      --text-max-width: 72%;
+      --product-safe-bottom: 24px;
       display: grid;
       grid-template-rows: auto 1fr auto;
       gap: 12px;
-      padding: 40px 36px 32px;
+      padding: var(--safe-top) var(--safe-side) var(--safe-bottom);
       height: 100%;
+      box-sizing: border-box;
     }
 
     .mp-header {
@@ -26,7 +32,8 @@
       flex-direction: column;
       align-items: flex-start;
       gap: 14px;
-      max-width: 72%;
+      max-width: var(--text-max-width);
+      padding-right: 8%;
     }
 
     .mp-title {
@@ -145,7 +152,7 @@
       justify-content: center;
       min-height: 620px;
       z-index: 3;
-      padding: 0 8px 24px;
+      padding: 0 8px var(--product-safe-bottom);
     }
 
     .mp-product .product-frame {

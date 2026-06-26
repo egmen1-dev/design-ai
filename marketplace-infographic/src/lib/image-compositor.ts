@@ -7,6 +7,8 @@ import {
   PRODUCT_BOTTOM_PAD_PX,
   PRODUCT_TARGET_MAX_HEIGHT_PX,
 } from "@/lib/product-render-policy";
+import type { CompositingHints } from "@/lib/design-brief/schema";
+import { matchProductToBackground } from "@/lib/compositing/color-match";
 
 const CANVAS = 1200;
 const PRODUCT_MAX_W = 920;
@@ -16,6 +18,7 @@ const BOTTOM_PAD = PRODUCT_BOTTOM_PAD_PX;
 export type MergeOptions = {
   reflection?: boolean;
   layout?: "center" | "marketplace";
+  compositingHints?: CompositingHints;
 };
 
 async function loadImageBuffer(source: string): Promise<Buffer> {
@@ -81,10 +84,13 @@ export async function softenBackgroundCenter(bgBuffer: Buffer): Promise<Buffer> 
 function prepareProductLayer(
   productBuffer: Buffer,
   layout: MergeOptions["layout"],
+  scale = 1,
 ): Promise<{ buffer: Buffer; width: number; height: number }> {
+  const maxW = Math.round(PRODUCT_MAX_W * scale);
+  const maxH = Math.round(PRODUCT_MAX_H * scale);
   const pipeline = sharp(productBuffer)
     .ensureAlpha()
-    .resize(PRODUCT_MAX_W, PRODUCT_MAX_H, {
+    .resize(maxW, maxH, {
       fit: "inside",
       withoutEnlargement: false,
     });
@@ -112,11 +118,15 @@ async function createShadowLayer(
   productWidth: number,
   productHeight: number,
   layout: MergeOptions["layout"],
+  shadowType?: string,
 ): Promise<{ buffer: Buffer; width: number; height: number; offsetY: number }> {
-  const scale = layout === "marketplace" ? 0.72 : 0.62;
+  const isHard = shadowType?.includes("contact");
+  const isAmbient = shadowType?.includes("ambient");
+  const scale = layout === "marketplace" ? 0.72 : isAmbient ? 0.78 : 0.62;
   const shadowW = Math.round(productWidth * scale);
-  const shadowH = Math.max(24, Math.round(productHeight * 0.055));
-  const opacity = layout === "marketplace" ? 0.48 : 0.58;
+  const shadowH = Math.max(24, Math.round(productHeight * (isHard ? 0.045 : 0.055)));
+  const opacity = isHard ? 0.42 : isAmbient ? 0.32 : layout === "marketplace" ? 0.48 : 0.58;
+  const blur = isHard ? 12 : isAmbient ? 28 : layout === "marketplace" ? 16 : 22;
 
   const svg = `
     <svg width="${shadowW}" height="${shadowH}" xmlns="http://www.w3.org/2000/svg">
@@ -124,7 +134,7 @@ async function createShadowLayer(
     </svg>`;
 
   const shadow = await sharp(Buffer.from(svg))
-    .blur(layout === "marketplace" ? 16 : 22)
+    .blur(blur)
     .ensureAlpha()
     .png()
     .toBuffer({ resolveWithObject: true });
@@ -135,6 +145,41 @@ async function createShadowLayer(
     height: shadow.info.height,
     offsetY: Math.round(shadowH * 0.12),
   };
+}
+
+/** Создаёт отражение товара под ним */
+async function createReflectionLayer(
+  productBuffer: Buffer,
+  productWidth: number,
+  productHeight: number,
+): Promise<{ buffer: Buffer; width: number; height: number }> {
+  const reflectH = Math.round(productHeight * 0.22);
+  const reflected = await sharp(productBuffer)
+    .flip()
+    .resize(productWidth, reflectH, { fit: "cover", position: "top" })
+    .linear(1, -40)
+    .blur(1.5)
+    .ensureAlpha()
+    .png()
+    .toBuffer({ resolveWithObject: true });
+
+  const fadeSvg = `
+    <svg width="${productWidth}" height="${reflectH}" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="white" stop-opacity="0.35"/>
+          <stop offset="100%" stop-color="white" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#fade)"/>
+    </svg>`;
+
+  const faded = await sharp(reflected.data)
+    .composite([{ input: Buffer.from(fadeSvg), blend: "dest-in" }])
+    .png()
+    .toBuffer();
+
+  return { buffer: faded, width: productWidth, height: reflectH };
 }
 
 /** Объединяет фон и товар в один PNG 1200×1200 с тенью */
@@ -151,7 +196,13 @@ export async function mergeProductWithBackground(
   ]);
 
   const bgPrepared = await softenBackgroundCenter(bgRaw);
-  const product = await prepareProductLayer(productRaw, layout);
+  const hints = options?.compositingHints;
+  const objectScale = hints?.objectScale ?? 0.58;
+  const scaleFactor = 0.75 + objectScale * 0.45;
+  const productMatched = hints
+    ? await matchProductToBackground(productRaw, bgPrepared, hints)
+    : productRaw;
+  const product = await prepareProductLayer(productMatched, layout, scaleFactor);
 
   let productLeft = Math.round((CANVAS - product.width) / 2);
   let productTop = CANVAS - BOTTOM_PAD - product.height;
@@ -161,7 +212,12 @@ export async function mergeProductWithBackground(
     productTop = CANVAS - BOTTOM_PAD - product.height + 12;
   }
 
-  const shadow = await createShadowLayer(product.width, product.height, layout);
+  const shadow = await createShadowLayer(
+    product.width,
+    product.height,
+    layout,
+    hints?.shadowType,
+  );
   let shadowLeft = Math.round((CANVAS - shadow.width) / 2);
   if (layout === "marketplace") {
     shadowLeft += 28;
@@ -169,19 +225,25 @@ export async function mergeProductWithBackground(
   const shadowTop = productTop + product.height - shadow.offsetY;
 
   const composites: sharp.OverlayOptions[] = [
-    {
-      input: shadow.buffer,
-      left: shadowLeft,
-      top: shadowTop,
-      blend: "over",
-    },
-    {
-      input: product.buffer,
-      left: productLeft,
-      top: productTop,
-      blend: "over",
-    },
+    { input: shadow.buffer, left: shadowLeft, top: shadowTop, blend: "over" },
+    { input: product.buffer, left: productLeft, top: productTop, blend: "over" },
   ];
+
+  const useReflection = options?.reflection ?? hints?.reflection ?? false;
+  if (useReflection) {
+    const reflection = await createReflectionLayer(
+      product.buffer,
+      product.width,
+      product.height,
+    );
+    const reflectTop = productTop + product.height - 4;
+    composites.splice(1, 0, {
+      input: reflection.buffer,
+      left: productLeft,
+      top: reflectTop,
+      blend: "over",
+    });
+  }
 
   const merged = await sharp(bgPrepared).composite(composites).png().toBuffer();
 
