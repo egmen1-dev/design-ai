@@ -5,7 +5,7 @@ import "server-only";
 import potrace from "potrace";
 import sharp from "sharp";
 import { createWorker } from "tesseract.js";
-import { removeProductBackgroundImgly } from "@/lib/imgly-background";
+import { removeReferenceBackgroundSharp } from "@/lib/background-removal";
 
 const potraceTrace = promisify(potrace.trace) as (
   input: Buffer,
@@ -30,8 +30,21 @@ export type FontDetectionResult = {
   fontName: string | null;
 };
 
-const OCR_TIMEOUT_MS = 90_000;
-const WHATTHEFONT_TIMEOUT_MS = 20_000;
+const OCR_TIMEOUT_MS = 60_000;
+const WHATTHEFONT_TIMEOUT_MS = 15_000;
+const REFERENCE_MAX_EDGE = 1200;
+
+async function loadReferenceImageBuffer(imagePath: string): Promise<Buffer> {
+  const inputBuffer = await readFile(imagePath);
+  return sharp(inputBuffer)
+    .rotate()
+    .resize(REFERENCE_MAX_EDGE, REFERENCE_MAX_EDGE, {
+      fit: "inside",
+      withoutEnlargement: true,
+    })
+    .png()
+    .toBuffer();
+}
 
 function parseWhatTheFontResponse(data: unknown): string | null {
   if (!data || typeof data !== "object") return null;
@@ -143,9 +156,14 @@ function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise
   });
 }
 
-async function recognizeText(imagePath: string): Promise<string> {
+async function recognizeText(imageBuffer: Buffer): Promise<string> {
   const cachePath = path.join(process.cwd(), ".tesseract-cache");
   await mkdir(cachePath, { recursive: true });
+
+  const ocrInput = await sharp(imageBuffer)
+    .resize(900, 900, { fit: "inside", withoutEnlargement: true })
+    .png()
+    .toBuffer();
 
   try {
     return await withTimeout(
@@ -155,7 +173,7 @@ async function recognizeText(imagePath: string): Promise<string> {
           logger: () => undefined,
         });
         try {
-          const { data } = await worker.recognize(imagePath);
+          const { data } = await worker.recognize(ocrInput);
           return data.text.replace(/\s+/g, " ").trim();
         } finally {
           await worker.terminate();
@@ -174,8 +192,8 @@ export async function extractBadgeFromImage(
   imagePath: string,
   outputBasename: string,
 ): Promise<BadgeExtractionResult> {
-  const inputBuffer = await readFile(imagePath);
-  const { buffer: cutout } = await removeProductBackgroundImgly(inputBuffer);
+  const prepared = await loadReferenceImageBuffer(imagePath);
+  const cutout = await removeReferenceBackgroundSharp(prepared);
 
   const dir = referencesDir();
   await mkdir(dir, { recursive: true });
@@ -202,11 +220,9 @@ export async function extractBadgeFromImage(
 }
 
 export async function detectFontFromImage(imagePath: string): Promise<FontDetectionResult> {
-  const imageBuffer = await readFile(imagePath);
-  const [text, fontName] = await Promise.all([
-    recognizeText(imagePath),
-    identifyFontWithWhatTheFont(imageBuffer),
-  ]);
+  const imageBuffer = await loadReferenceImageBuffer(imagePath);
+  const text = await recognizeText(imageBuffer);
+  const fontName = await identifyFontWithWhatTheFont(imageBuffer);
 
   return {
     text,

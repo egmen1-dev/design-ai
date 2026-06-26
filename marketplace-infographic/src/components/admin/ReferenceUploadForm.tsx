@@ -95,7 +95,19 @@ export function ReferenceUploadForm() {
         body: formData,
         signal: controller.signal,
       });
-      const data = (await response.json()) as AnalyzeResult & { error?: string };
+
+      let data: AnalyzeResult & { error?: string };
+      try {
+        data = (await response.json()) as AnalyzeResult & { error?: string };
+      } catch {
+        setError(
+          response.status >= 500
+            ? "Сервер перезагрузился во время анализа. Попробуйте снова."
+            : "Неожиданный ответ сервера",
+        );
+        return;
+      }
+
       if (!response.ok) {
         setError(data.error ?? "Ошибка анализа");
         return;

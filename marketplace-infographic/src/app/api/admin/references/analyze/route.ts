@@ -71,10 +71,8 @@ export async function POST(request: NextRequest) {
   });
 
   try {
-    const [badgeAssets, fontSuggestion] = await Promise.all([
-      extractBadgeFromImage(originalPath, batchId),
-      detectFontFromImage(originalPath),
-    ]);
+    const badgeAssets = await extractBadgeFromImage(originalPath, batchId);
+    const fontSuggestion = await detectFontFromImage(originalPath);
 
     const svgContent = await readFile(
       path.join(referencesDir(), `${batchId}.svg`),

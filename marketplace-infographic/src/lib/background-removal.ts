@@ -54,6 +54,11 @@ function readPixel(
   return { r: data[i], g: data[i + 1], b: data[i + 2] };
 }
 
+/** Лёгкая вырезка фона для референсов (без imgly/onnx). */
+export async function removeReferenceBackgroundSharp(input: Buffer): Promise<Buffer> {
+  return removeBackgroundWithSharp(input);
+}
+
 async function removeBackgroundWithSharp(input: Buffer): Promise<Buffer> {
   const { data, info } = await sharp(input)
     .rotate()
