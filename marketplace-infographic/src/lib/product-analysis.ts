@@ -29,7 +29,7 @@ const CATEGORY_RULES: Array<{ category: ProductCategory; pattern: RegExp }> = [
   { category: "garden_tools", pattern: /триммер|газон|косил|садов|лопат|грабл|опрыск/i },
   { category: "electronics", pattern: /наушник|телефон|планшет|bluetooth|usb|акб|аккумулятор|электрон/i },
   { category: "cosmetics", pattern: /крем|сыворот|космет|spf|шампун|маск[аи]|парфюм/i },
-  { category: "home_appliances", pattern: /пылесос|чайник|робот|бытов|микровол|утюг|стирал/i },
+  { category: "home_appliances", pattern: /генератор|generator|пылесос|чайник|робот|бытов|микровол|утюг|стирал|квт|кВт/i },
   { category: "fashion", pattern: /куртк|плать|одежд|обув|размер|хлопок|ткан/i },
   { category: "food", pattern: /еда|продукт|вкус|органик|нутри|калори|состав/i },
   { category: "sport", pattern: /спорт|фитнес|трениров|бег|йог|гантел/i },

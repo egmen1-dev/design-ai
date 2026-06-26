@@ -144,7 +144,7 @@ export function buildLayoutFromDNA(
     pickRange(rng, scenario.biases.productCenterX[0], scenario.biases.productCenterX[1]),
     JITTER.product,
   );
-  if (textSide === "left") centerX = clampPct(centerX + 2, 45, 62);
+  if (textSide === "left") centerX = clampPct(centerX + 4, 52, 66);
   else centerX = clampPct(centerX - 2, 38, 55);
 
   const centerY = applyJitter(
@@ -166,7 +166,7 @@ export function buildLayoutFromDNA(
   );
   const productTop = clampPct(
     centerY - productHeight / 2,
-    safeInsetPct + 6,
+    input.hasLeftPanel ? 28 : safeInsetPct + 6,
     100 - safeInsetPct - productHeight,
   );
 
@@ -211,9 +211,9 @@ export function buildLayoutFromDNA(
     input.hasLeftPanel && textSide === "left"
       ? {
           left: safeInsetPct,
-          top: clampPct(20 + rng() * 6, 18, 30),
-          width: clampPct(panelW, 14, 22),
-          height: clampPct(panelH, 22, 34),
+          top: clampPct(headline.top + headline.height + 4, 14, 20),
+          width: clampPct(panelW, 14, 20),
+          height: clampPct(panelH, 16, 22),
         }
       : { left: 0, top: 0, width: 0, height: 0 };
 

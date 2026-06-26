@@ -4,6 +4,7 @@ import {
 } from "@/lib/bullet-consistency";
 import { analyzeProductPrompt } from "@/lib/product-analysis";
 import { normalizeMarketplacePalette } from "@/lib/accent-color";
+import { extractProductSubtitle, extractProductTitle } from "@/lib/title-extract";
 import type { InfographicSdInput } from "@/lib/validations";
 
 const hex = z.string().regex(/^#[0-9a-fA-F]{6}$/);
@@ -194,8 +195,8 @@ export function briefToCompositingHints(brief: DesignBrief): CompositingHints {
 }
 
 export function briefToSdInput(brief: DesignBrief, productContext = ""): InfographicSdInput {
-  const headline = brief.headline ?? brief.title ?? "Товар";
-  const sub = brief.subHeadline ?? brief.subtitle ?? "новинка";
+  const headline = extractProductTitle(productContext, brief.headline ?? brief.title ?? "Товар");
+  const sub = extractProductSubtitle(productContext, brief.subHeadline ?? brief.subtitle ?? "новинка");
   const rawBullets =
     brief.bullets ??
     brief.benefits ??

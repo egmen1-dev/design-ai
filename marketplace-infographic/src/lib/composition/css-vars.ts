@@ -18,8 +18,6 @@ export function compositionToCssBlock(layout: CompositionLayout): string {
       --comp-product-width: ${p.maxWidthPct}%;
       --comp-product-height: ${p.maxHeightPct}%;
       --comp-product-rotate: ${p.rotationDeg}deg;
-      --comp-product-center-x: ${p.centerX}%;
-      --comp-product-center-y: ${p.centerY}%;
 
       --comp-headline-left: ${h.left}%;
       --comp-headline-top: ${h.top}%;
@@ -28,7 +26,6 @@ export function compositionToCssBlock(layout: CompositionLayout): string {
       --comp-headline-size-pct: ${h.fontSizePct};
 
       --comp-subtitle-size-pct: ${s.fontSizePct};
-      --comp-subtitle-top: ${s.top}%;
 
       --comp-left-panel-left: ${lp.left}%;
       --comp-left-panel-top: ${lp.top}%;
@@ -53,37 +50,93 @@ export function compositionToCssBlock(layout: CompositionLayout): string {
       --comp-hero-value-size-pct: ${h.fontSizePct * 1.35};
     }
 
+    .canvas-grid.layout-marketplace {
+      position: relative !important;
+      display: block !important;
+      padding: 0 !important;
+      height: 100% !important;
+      gap: 0 !important;
+    }
+
+    .mp-header {
+      position: absolute;
+      z-index: 8;
+      left: calc(var(--comp-headline-left) * var(--canvas-w-num) / 100 * 1px);
+      top: calc(var(--comp-headline-top) * var(--canvas-h-num) / 100 * 1px);
+      max-width: calc(var(--comp-headline-width) * var(--canvas-w-num) / 100 * 1px);
+      padding: 0;
+      margin: 0;
+    }
+
     .mp-title {
       font-size: calc(var(--comp-headline-size-pct) * var(--canvas-h-num) / 100 * 1px) !important;
-      max-width: var(--comp-headline-width);
-      margin-top: var(--comp-headline-top);
-      margin-left: var(--comp-headline-left);
+      max-width: 100%;
+      margin: 0 !important;
+      line-height: 1.05;
+      overflow-wrap: break-word;
     }
 
     .mp-pill {
-      margin-left: var(--comp-headline-left);
-      margin-top: 1.2%;
+      margin-left: 0;
+      margin-top: calc(var(--canvas-h-num) * 0.008px);
+      max-width: calc(var(--comp-plaque-lg) * var(--canvas-w-num) / 100 * 1px);
+    }
+
+    .mp-body {
+      position: absolute;
+      inset: 0;
+      min-height: 0 !important;
+    }
+
+    .mp-left {
+      position: absolute;
+      z-index: 7;
+      left: calc(var(--comp-left-panel-left) * var(--canvas-w-num) / 100 * 1px);
+      top: calc(var(--comp-left-panel-top) * var(--canvas-h-num) / 100 * 1px);
+      width: calc(var(--comp-left-panel-width) * var(--canvas-w-num) / 100 * 1px);
+      max-width: calc(var(--comp-left-panel-width) * var(--canvas-w-num) / 100 * 1px);
     }
 
     .mp-left-panel {
-      width: calc(var(--comp-left-panel-width) * var(--canvas-w-num) / 100 * 1px);
-      margin-left: var(--comp-left-panel-left);
-      margin-top: calc(var(--comp-left-panel-top) * var(--canvas-h-num) / 100 * 1px - var(--comp-headline-top) * var(--canvas-h-num) / 100 * 1px);
+      width: 100%;
+      max-height: calc(var(--comp-left-panel-height) * var(--canvas-h-num) / 100 * 1px);
+      margin: 0 !important;
+    }
+
+    .mp-left-panel__hero {
+      padding: calc(var(--comp-plaque-height) * var(--canvas-h-num) / 100 * 0.28px) calc(var(--comp-safe) * var(--canvas-w-num) / 100 * 0.35px);
     }
 
     .mp-left-panel__hero-value {
-      font-size: calc(var(--comp-hero-value-size-pct) * var(--canvas-h-num) / 100 * 1px) !important;
+      font-size: calc(var(--comp-hero-value-size-pct) * var(--canvas-h-num) / 100 * 0.9px) !important;
+    }
+
+    .mp-left-panel__gift-visual {
+      display: none;
+    }
+
+    .mp-left-panel__footer {
+      padding: calc(var(--comp-plaque-height) * var(--canvas-h-num) / 100 * 0.22px) calc(var(--comp-safe) * var(--canvas-w-num) / 100 * 0.3px);
+      font-size: calc(var(--comp-sidebar-label-size-pct) * var(--canvas-h-num) / 100 * 0.9px);
+    }
+
+    .mp-sidebar-wrap {
+      position: absolute;
+      z-index: 7;
+      left: calc(var(--comp-sidebar-left) * var(--canvas-w-num) / 100 * 1px);
+      top: calc(var(--comp-sidebar-top) * var(--canvas-h-num) / 100 * 1px);
+      right: auto;
     }
 
     .mp-sidebar {
       width: calc(var(--comp-sidebar-width) * var(--canvas-w-num) / 100 * 1px);
-      min-height: calc(var(--comp-sidebar-height) * var(--canvas-h-num) / 100 * 1px);
+      min-height: auto;
       max-height: calc(var(--comp-sidebar-height) * var(--canvas-h-num) / 100 * 1px);
-      margin-top: calc(var(--comp-sidebar-top) * var(--canvas-h-num) / 100 * 1px);
+      margin-top: 0 !important;
     }
 
     .mp-sidebar__value {
-      font-size: calc(var(--comp-sidebar-value-size-pct) * var(--canvas-h-num) / 100 * 1px) !important;
+      font-size: calc(var(--comp-sidebar-value-size-pct) * var(--canvas-h-num) / 100 * 0.85px) !important;
     }
 
     .mp-sidebar__label {
@@ -95,10 +148,11 @@ export function compositionToCssBlock(layout: CompositionLayout): string {
       right: calc(100% - var(--comp-product-left) - var(--comp-product-width));
       top: calc(var(--comp-product-top) * var(--canvas-h-num) / 100 * 1px);
       bottom: calc(var(--comp-safe) * var(--canvas-h-num) / 100 * 1px);
+      z-index: 3;
     }
 
     .mp-product .product-frame {
-      transform: rotate(var(--comp-product-rotate)) translateX(4%) translateY(0);
+      transform: rotate(var(--comp-product-rotate)) translateX(2%) translateY(0);
     }
 
     .mp-product .product-photo--cutout {
@@ -106,9 +160,22 @@ export function compositionToCssBlock(layout: CompositionLayout): string {
       max-width: calc(var(--comp-product-width) * var(--canvas-w-num) / 100 * 1px);
     }
 
+    .mp-footer {
+      position: absolute;
+      z-index: 8;
+      left: 0;
+      right: 0;
+      bottom: calc(var(--comp-safe) * var(--canvas-h-num) / 100 * 0.6px);
+      padding: 0 calc(var(--comp-safe) * var(--canvas-w-num) / 100 * 1px);
+    }
+
+    .mp-bottom-ribbon {
+      max-width: calc(var(--comp-plaque-lg) * var(--canvas-w-num) / 100 * 1.4px);
+    }
+
     .mp-left-panel__gift-icon .material-symbols-outlined,
     .mp-left-panel__hero-icon {
-      font-size: calc(var(--comp-icon-size) * var(--canvas-w-num) / 100 * 1px) !important;
+      font-size: calc(var(--comp-icon-size) * var(--canvas-w-num) / 100 * 0.85px) !important;
     }
   `.trim();
 }

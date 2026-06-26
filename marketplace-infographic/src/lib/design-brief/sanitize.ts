@@ -3,6 +3,7 @@ import { enrichBriefBackgroundPrompt } from "@/lib/prompt/background";
 import type { ProductCategory } from "@/lib/product-analysis";
 import { normalizeMarketplacePalette } from "@/lib/accent-color";
 import { stripProductFromBackgroundPrompt } from "@/lib/product-render-policy";
+import { extractProductSubtitle, extractProductTitle } from "@/lib/title-extract";
 
 function clip(value: unknown, max: number): string {
   return String(value ?? "").trim().slice(0, max);
@@ -20,13 +21,14 @@ function normalizeBullets(value: unknown): string[] {
   const bullets = value
     .map((item) => clip(String(item).replace(/\bитра\b/gi, "литра"), 80))
     .filter(Boolean);
-  while (bullets.length < 2) bullets.push("Премиум качество");
+  while (bullets.length < 2) bullets.push("Быстрая доставка");
   return bullets.slice(0, 5);
 }
 
 export function sanitizeDesignBrief(
   raw: unknown,
   category: ProductCategory,
+  productPrompt = "",
 ): DesignBrief {
   const obj = raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
 
@@ -59,10 +61,22 @@ export function sanitizeDesignBrief(
       "visualHook" in (obj.designProcess as object)
         ? (obj.designProcess as { visualHook: unknown }).visualHook
         : undefined),
-    headline: clip(obj.headline ?? obj.title ?? "Товар", 60),
-    title: clip(obj.title ?? obj.headline ?? "Товар", 60),
-    subtitle: clip(obj.subtitle ?? obj.subHeadline ?? "новинка", 80),
-    subHeadline: clip(obj.subHeadline ?? obj.subtitle, 80),
+    headline: clip(
+      extractProductTitle(productPrompt, clip(obj.headline ?? obj.title ?? "Товар", 60)),
+      60,
+    ),
+    title: clip(
+      extractProductTitle(productPrompt, clip(obj.title ?? obj.headline ?? "Товар", 60)),
+      60,
+    ),
+    subtitle: clip(
+      extractProductSubtitle(productPrompt, clip(obj.subtitle ?? obj.subHeadline ?? "новинка", 80)),
+      80,
+    ),
+    subHeadline: clip(
+      extractProductSubtitle(productPrompt, clip(obj.subHeadline ?? obj.subtitle ?? "новинка", 80)),
+      80,
+    ),
     bullets: normalizeBullets(obj.bullets ?? obj.benefits),
     benefits: normalizeBullets(obj.benefits ?? obj.bullets),
     colorPalette: normalizedPalette,

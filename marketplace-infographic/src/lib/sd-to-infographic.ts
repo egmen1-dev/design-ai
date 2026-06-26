@@ -1,6 +1,7 @@
 import type { InfographicSdInput } from "@/lib/validations";
 import type { InfographicData } from "@/lib/infographic-template";
 import { filterConsistentBullets } from "@/lib/bullet-consistency";
+import { extractProductSubtitle, extractProductTitle } from "@/lib/title-extract";
 
 function sanitizeBulletText(text: string): string {
   return text
@@ -66,8 +67,10 @@ type MarketplaceZones = {
   bottom: string | null;
 };
 
-function splitMarketplaceBullets(bullets: string[]): MarketplaceZones {
+function splitMarketplaceBullets(bullets: string[], prompt?: string): MarketplaceZones {
   const clean = bullets.map(sanitizeBulletText).filter(Boolean);
+  const context = (prompt ?? "").toLowerCase();
+  const isGenerator = /генератор|generator|квт|кВт/.test(context);
   const used = new Set<string>();
 
   const markUsed = (text: string) => {
@@ -81,7 +84,21 @@ function splitMarketplaceBullets(bullets: string[]): MarketplaceZones {
 
   const heroCandidate =
     clean.find((b) => isAvailable(b) && /об\/мин|rpm/i.test(b)) ??
-    clean.find((b) => isAvailable(b) && /\d/.test(b) && !/акб|насад|подар|очк|перчат/i.test(b));
+    (isGenerator
+      ? clean.find(
+          (b) =>
+            isAvailable(b) &&
+            /\d/.test(b) &&
+            /квт|кВт|л\/ч|литр|л\s|бак|мощност/i.test(b) &&
+            !/гарант|месяц|премиум/i.test(b),
+        )
+      : undefined) ??
+    clean.find(
+      (b) =>
+        isAvailable(b) &&
+        /\d/.test(b) &&
+        !/акб|насад|подар|очк|перчат|гарант|месяц|премиум/i.test(b),
+    );
 
   if (heroCandidate) {
     leftBullets.push(heroCandidate);
@@ -123,15 +140,17 @@ function splitMarketplaceBullets(bullets: string[]): MarketplaceZones {
     clean.find(
       (b) =>
         isAvailable(b) &&
-        /технолог|немец|качеств|гарант|премиум|бренд/i.test(b) &&
-        !/лёгк|легк|компакт/i.test(b),
+        /технолог|немец|качеств|гарант|бренд/i.test(b) &&
+        !/лёгк|легк|компакт|премиум/i.test(b),
     ) ?? null;
   if (footer) markUsed(footer);
 
   const bottom =
     clean.find(
       (b) =>
-        isAvailable(b) && /лёгк|легк|компакт|тих|удобн|эргоном/i.test(b) && !/дБ/i.test(b),
+        isAvailable(b) &&
+        /лёгк|легк|компакт|тих|удобн|эргоном/i.test(b) &&
+        !/дБ|гарант|премиум|месяц/i.test(b),
     ) ?? null;
 
   return { leftBullets, gift, sidebar, footer, bottom };
@@ -159,7 +178,7 @@ function inferAccentColor(colors: string[]): NonNullable<InfographicData["accent
 
 function inferProductVisual(data: InfographicSdInput): InfographicData["productVisual"] {
   const text = `${data.title} ${data.subtitle} ${data.backgroundPrompt}`.toLowerCase();
-  if (/генератор|generator|бензин|квт/.test(text)) return "generator";
+  if (/генератор|generator/.test(text)) return "generator";
   if (/крем|сыворот|космет|spf/.test(text)) return "cosmetic";
   if (/пылесос|чайник|робот|техник|appliance/.test(text)) return "appliance";
   return "generic";
@@ -178,7 +197,7 @@ export function sdDataToInfographic(
   const isMarketplace = data.layout === "marketplace";
 
   if (isMarketplace) {
-    const zones = splitMarketplaceBullets(bullets);
+    const zones = splitMarketplaceBullets(bullets, prompt);
     const leftParsed = zones.leftBullets.map(parseBullet);
     const specBlocks = leftParsed.map((item, index) => ({
       value: item.value || zones.leftBullets[index],
@@ -193,12 +212,13 @@ export function sdDataToInfographic(
       specBlocks.splice(1);
     }
 
-    const title = data.title.slice(0, 40);
+    const title = extractProductTitle(prompt ?? "", data.title);
+    const subtitle = extractProductSubtitle(prompt ?? "", data.subtitle);
 
     return {
       headline: title,
       productName: data.badge,
-      categoryPill: data.subtitle,
+      categoryPill: subtitle,
       brandName: undefined,
       productVisual: inferProductVisual(data),
       backgroundScene: inferScene(data.backgroundPrompt, prompt),

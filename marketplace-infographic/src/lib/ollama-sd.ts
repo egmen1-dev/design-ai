@@ -75,6 +75,7 @@ function buildMockBrief(
   const analysis = analyzeProductPrompt(prompt);
   const foundation = buildMockFoundation(prompt, analysis.category);
   const isTrimmer = analysis.category === "garden_tools";
+  const isGenerator = /генератор|generator/i.test(prompt);
   const isBattery = /аккумулятор|акб|battery/i.test(prompt);
   const colors = referenceContext?.colors?.length
     ? referenceContext.colors
@@ -113,11 +114,25 @@ function buildMockBrief(
       },
       visualHook: foundation.visualHook,
       layout: "marketplace",
-      headline: isTrimmer ? "Садовый триммер" : "Товар",
-      subHeadline: isTrimmer ? (isBattery ? "аккумуляторный" : "мощный") : "новинка",
+      headline: isTrimmer ? "Садовый триммер" : isGenerator ? "Бензиновый генератор" : "Товар",
+      subHeadline: isTrimmer
+        ? isBattery
+          ? "аккумуляторный"
+          : "мощный"
+        : isGenerator
+          ? "3 кВт"
+          : "новинка",
       bullets: isTrimmer
         ? trimmerBullets
-        : ["Премиум качество", "Быстрая доставка", "Гарантия 12 месяцев"],
+        : isGenerator
+          ? [
+              "3 кВт мощность",
+              "бак 15 литров",
+              "расход 1,25 л/час",
+              "65 дБ тихая работа",
+              "гарантия 12 месяцев",
+            ]
+          : ["Быстрая доставка", "Гарантия 12 месяцев"],
       colorPalette: colors,
       badge: "Brand",
       backgroundPrompt:
@@ -130,6 +145,7 @@ function buildMockBrief(
       shadowType: "contact-soft",
     },
     analysis.category,
+    prompt,
   );
 
   return applyAssetSelection(raw, library, analysis, style);

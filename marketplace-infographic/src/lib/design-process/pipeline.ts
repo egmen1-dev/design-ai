@@ -116,7 +116,7 @@ async function runDesignStage(
   });
 
   const raw = await callOllamaJson<unknown>(prompt, 0.3);
-  const brief = sanitizeDesignBrief(raw, ctx.analysis.category);
+  const brief = sanitizeDesignBrief(raw, ctx.analysis.category, ctx.productPrompt);
 
   return {
     ...brief,
