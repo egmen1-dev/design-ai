@@ -20,6 +20,7 @@ import {
   processProductImageForGeneration,
 } from "@/lib/product-image-sd";
 import type { CompositingHints, DesignBrief } from "@/lib/design-brief/schema";
+import { briefToSdInput } from "@/lib/design-brief/schema";
 import type { InfographicSdInput } from "@/lib/validations";
 import { prisma } from "@/lib/prisma";
 import {
@@ -31,24 +32,28 @@ import { compositeProductIntoScene } from "@/lib/compositing/scene-compositor";
 import { analyzeProductVisual } from "@/lib/compositing/product-visual-analysis";
 import { resolveMarketplaceAccent } from "@/lib/accent-color";
 import {
-  generateComposition,
   planScene,
   buildSceneBackgroundPrompt,
   validateQuality,
-  evaluateArtistic,
   QUALITY_PASS_THRESHOLD,
 } from "@/lib/design";
+import type { CompositionResult } from "@/lib/design/types";
+import {
+  computeProfessionalLayout,
+  toCompositionResult,
+} from "@/lib/layout-engine";
+import type { CardMeaning, ProductShapeHint } from "@/lib/layout-engine/types";
+import { creativeConceptToCardMeaning } from "@/lib/design-process/card-meaning";
+import type { ProductVisualProfile } from "@/lib/design/scene-planner";
 import type { CreativeDirectorResult } from "@/lib/design-process/creative-concept";
 import type { ScenePlan } from "@/lib/design/scene-planner";
 import type { QualityValidationResult } from "@/lib/design/quality-validator";
-import { objectScaleFromHook } from "@/lib/design-process/visual-hook";
-import type { CoverConceptId } from "@/lib/cover-concepts";
 import type { ArtDirectorModeId } from "@/lib/design-process/art-director-modes";
 import { PIPELINE_VERSION } from "@/lib/pipeline-version";
 import { USE_FAST_CUTOUT, MAX_CONCEPT_RENDER_RETRIES } from "@/lib/pipeline-config";
+import type { CoverConceptId } from "@/lib/cover-concepts";
 import { evaluateFinalQuality } from "@/lib/design/final-quality-validator";
 import { applyPosterRules } from "@/lib/design-process/pipeline";
-import { briefToSdInput } from "@/lib/design-brief/schema";
 
 export type GenerateInfographicInput = {
   userId: string;
@@ -81,6 +86,8 @@ export type GenerateInfographicResult = {
   qualityScore?: number;
   selectedArchetypeId?: string;
   conceptCandidates?: number;
+  layoutTemplateId?: string;
+  designScore?: number;
 };
 
 function briefMeta(brief?: DesignBrief) {
@@ -134,6 +141,68 @@ function sceneToCompositingHints(scene: ScenePlan, objectScale: number): Composi
           : "contact-soft",
     reflection: scene.reflectionEnabled,
     objectScale,
+  };
+}
+
+function toProductShapeHint(visual?: ProductVisualProfile): ProductShapeHint {
+  if (!visual) return "standard";
+  if (visual.shape === "wide") return "wide";
+  if (visual.shape === "tall") return "tall";
+  return "standard";
+}
+
+function layoutObjectScale(areaPct?: number): number {
+  const pct = areaPct ?? 65;
+  return Math.min(0.75, Math.max(0.55, pct / 100));
+}
+
+function normalizeCardMeaning(
+  partial: DesignBrief["cardMeaning"] | CardMeaning,
+): CardMeaning {
+  return {
+    title: partial?.title ?? "Товар",
+    subtitle: partial?.subtitle ?? "",
+    feature: partial?.feature ?? "",
+    badge: partial?.badge ?? "",
+    emotion: partial?.emotion ?? "Надёжность",
+    style: partial?.style ?? "Premium Lifestyle",
+    priority: partial?.priority ?? "product",
+  };
+}
+
+function buildProfessionalComposition(input: {
+  designBrief?: DesignBrief;
+  activeCreative?: CreativeDirectorResult;
+  category: import("@/lib/product-analysis").ProductCategory;
+  productVisual?: ProductVisualProfile;
+  seed: string;
+}): { compositionResult: CompositionResult; cardMeaning: CardMeaning } {
+  const cardMeaning = normalizeCardMeaning(
+    input.designBrief?.cardMeaning ??
+      (input.activeCreative && input.designBrief
+        ? creativeConceptToCardMeaning(input.activeCreative, input.designBrief)
+        : {
+            title: input.designBrief?.headline ?? "Товар",
+            subtitle: input.designBrief?.subtitle ?? "",
+            feature: input.designBrief?.subHeadline ?? "",
+            badge: input.designBrief?.badge ?? "",
+            emotion: "Надёжность",
+            style: "Premium Lifestyle",
+            priority: "product" as const,
+          }),
+  );
+
+  const pro = computeProfessionalLayout({
+    meaning: cardMeaning,
+    category: input.category,
+    productShape: toProductShapeHint(input.productVisual),
+    seed: input.seed,
+    backgroundHint: input.designBrief?.backgroundPrompt,
+  });
+
+  return {
+    compositionResult: toCompositionResult(pro, input.category),
+    cardMeaning,
   };
 }
 
@@ -307,72 +376,29 @@ export async function handleGenerateInfographic(
     });
 
     const scenePlan = storedScenePlan ?? plannedScene;
-    const objectScale = objectScaleFromHook(
-      visualHook,
-      compositingHints?.objectScale ?? designBrief?.objectScale ?? 0.78,
-    );
-    compositingHints = sceneToCompositingHints(scenePlan, objectScale);
 
-    // ── 2. Composition Engine — вокруг рекламной идеи ───────────────
-    const compositionBase = {
-      category: analysis.category,
-      layout: "marketplace" as const,
-      bulletCount: 1,
-      hasRightSidebar: false,
-      styleHint:
-        input.style ??
-        (referenceContext?.hasStrongReference ? referenceContext.style : undefined),
-      visualHook,
-      scenarioId: scenePlan.compositionScenario,
-      productSafeZone: scenePlan.productSafeZone,
-    };
+    // ── 2. Layout Engine — детерминированная композиция (без Ollama) ──
+    let compositionResult: CompositionResult | null = null;
+    let cardMeaning: CardMeaning | undefined;
 
-    let compositionResult =
-      sdData.layout === "marketplace"
-        ? generateComposition({
-            ...compositionBase,
-            hasLeftPanel: true,
-            objectScale,
-            seed: variationSeed,
-          })
-        : null;
-
-    if (activeCreative && compositionResult) {
-      let artistic = evaluateArtistic({
-        creativeConcept: activeCreative.creativeConcept,
-        oneThought: activeCreative.oneThought,
-        compositionLayout: compositionResult.layout,
-        elementCount: 3,
+    if (sdData.layout === "marketplace") {
+      const built = buildProfessionalComposition({
+        designBrief,
+        activeCreative,
+        category: analysis.category,
+        productVisual,
+        seed: variationSeed,
       });
-
-      const maxArtisticAttempts = 3;
-      let attemptObjectScale = objectScale;
-      let hasLeftPanel = true;
-
-      for (let attempt = 1; !artistic.passed && attempt < maxArtisticAttempts; attempt++) {
-        attemptObjectScale = Math.min(0.75, attemptObjectScale + 0.03);
-        if (attempt >= maxArtisticAttempts - 1) hasLeftPanel = false;
-
-        compositionResult = generateComposition({
-          ...compositionBase,
-          hasLeftPanel,
-          objectScale: attemptObjectScale,
-          seed: `${variationSeed}:artistic-retry-${attempt}`,
-        });
-        artistic = evaluateArtistic({
-          creativeConcept: activeCreative.creativeConcept,
-          oneThought: activeCreative.oneThought,
-          compositionLayout: compositionResult.layout,
-          elementCount: hasLeftPanel ? 3 : 2,
-        });
-      }
-
-      if (!artistic.passed) {
-        console.warn(`[artistic] score ${artistic.total}/100 after retries`, artistic);
+      compositionResult = built.compositionResult;
+      cardMeaning = built.cardMeaning;
+      if (designBrief && !designBrief.cardMeaning) {
+        designBrief = { ...designBrief, cardMeaning };
       }
     }
 
-    const compositionLayout = compositionResult?.layout;
+    let compositionLayout = compositionResult?.layout;
+    let objectScale = layoutObjectScale(compositionLayout?.metrics?.productAreaPct);
+    compositingHints = sceneToCompositingHints(scenePlan, objectScale);
 
     // ── 3. Prompt Builder → SD фон ────────────────────────────────────
     const scenePrompt = buildSceneBackgroundPrompt(scenePlan, analysis, {
@@ -492,8 +518,23 @@ export async function handleGenerateInfographic(
       const nextConcept = conceptRenderQueue[conceptRetryIndex];
       activeCreative = nextConcept;
       if (designBrief) {
-        designBrief = applyPosterRules(designBrief, nextConcept);
+        const retryMeaning = creativeConceptToCardMeaning(nextConcept, designBrief);
+        designBrief = applyPosterRules(designBrief, nextConcept, retryMeaning, analysis.category);
         sdData = briefToSdInput(designBrief, input.prompt);
+        cardMeaning = retryMeaning;
+      }
+
+      if (sdData.layout === "marketplace") {
+        const rebuilt = buildProfessionalComposition({
+          designBrief,
+          activeCreative: nextConcept,
+          category: analysis.category,
+          productVisual,
+          seed: `${variationSeed}:concept-${conceptRetryIndex}`,
+        });
+        compositionResult = rebuilt.compositionResult;
+        compositionLayout = compositionResult.layout;
+        objectScale = layoutObjectScale(compositionLayout.metrics?.productAreaPct);
       }
 
       const retryScene = planScene({
@@ -662,6 +703,8 @@ export async function handleGenerateInfographic(
         backgroundSource,
         pipelineVersion: PIPELINE_VERSION,
         qualityScore: qualityValidation?.total,
+        layoutTemplateId: compositionResult?.layout?.scenarioId,
+        designScore: compositionResult?.score?.total,
         ...briefMeta(designBrief),
       };
     }
@@ -690,6 +733,8 @@ export async function handleGenerateInfographic(
       backgroundSource,
       pipelineVersion: PIPELINE_VERSION,
       qualityScore: qualityValidation?.total,
+      layoutTemplateId: compositionResult?.layout?.scenarioId,
+      designScore: compositionResult?.score?.total,
       ...briefMeta(designBrief),
     };
   } catch (error) {

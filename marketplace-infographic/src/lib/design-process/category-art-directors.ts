@@ -145,11 +145,13 @@ export const GENERATOR_ART_DIRECTOR: CategoryArtDirector = {
   styleKeywords: ["power", "reliability", "outdoor", "evening light", "contrast"],
   preferredScenarios: ["hero_product", "lifestyle", "focus_frame", "commercial_studio"],
   sceneEnvironments: [
-    "загородный дом на закате, тёплый золотой свет",
-    "терраса с резервным питанием",
-    "гараж с мягким контровым светом",
+    "участок загородного дома на закате",
+    "современный гараж с мягким контровым светом",
+    "мастерская с контрастным светом",
+    "загородный дом с террасой",
+    "терраса с тёплым вечерним светом",
   ],
-  forbiddenScenes: ["гостиная", "спальня", "ванная", "кухня"],
+  forbiddenScenes: ["гостиная", "офис", "спальня", "детская комната", "кухня"],
 };
 
 export function resolveArtDirector(

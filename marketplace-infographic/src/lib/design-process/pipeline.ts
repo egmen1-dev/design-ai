@@ -21,6 +21,13 @@ import { loadRecentConceptFingerprints } from "./recent-concepts";
 import type { ArtDirectorModeId } from "./art-director-modes";
 import { OLLAMA_NUM_PREDICT, OLLAMA_TIMEOUT_MS, SKIP_OLLAMA_QUALITY_RETRY } from "@/lib/pipeline-config";
 import { buildMockFoundation } from "./mock";
+import {
+  creativeConceptToCardMeaning,
+  generateCardMeaning,
+} from "./card-meaning";
+import type { ProductCategory } from "@/lib/product-analysis";
+import type { CardMeaning } from "@/lib/layout-engine/types";
+import { pickAllowedEnvironment } from "@/lib/layout-engine/background-categories";
 
 export type DesignProcessContext = {
   productPrompt: string;
@@ -38,6 +45,7 @@ export type DesignProcessResult = {
   brief: DesignBrief;
   foundation: DesignProcessFoundation;
   creativeDirector: CreativeDirectorResult;
+  cardMeaning: CardMeaning;
   conceptCandidates?: number;
   conceptRenderQueue?: CreativeDirectorResult[];
 };
@@ -97,31 +105,39 @@ function foundationFromCreative(
 export function applyPosterRules(
   brief: DesignBrief,
   creative: CreativeDirectorResult,
+  cardMeaning?: CardMeaning,
+  category: ProductCategory = "generic",
 ): DesignBrief {
+  const meaning = cardMeaning ?? creativeConceptToCardMeaning(creative, brief);
   const ot = creative.oneThought;
-  const heroBullet = `${ot.answer} ${ot.answerLabel}`.trim();
+  const heroBullet = meaning.feature || `${ot.answer} ${ot.answerLabel}`.trim();
+  const allowedEnv = pickAllowedEnvironment(category, creative.sceneNarrative, creative.archetypeId ?? "seed");
+  const narrative = creative.sceneNarrative || allowedEnv;
   const bg =
     creative.multiConcept?.backgroundPrompt ??
-    `${creative.sceneNarrative}, ultra realistic, no text, no product`;
+    `${allowedEnv}, ${narrative}, ultra realistic, no text, no product`;
 
   return {
     ...brief,
     designConcept: creative.creativeConcept.title,
-    headline: ot.headline,
-    subHeadline: ot.badge ?? brief.subHeadline,
-    title: ot.headline,
-    subtitle: ot.badge,
-    bullets: [heroBullet, ...ot.deferredSpecs],
-    benefits: [heroBullet, ...ot.deferredSpecs],
-    objectScale: Math.max(0.68, brief.objectScale ?? 0.72),
-    sceneNarrative: creative.sceneNarrative,
+    headline: meaning.title,
+    subHeadline: meaning.feature || meaning.badge || brief.subHeadline,
+    title: meaning.title,
+    subtitle: meaning.subtitle || meaning.badge,
+    bullets: heroBullet ? [heroBullet] : brief.bullets,
+    benefits: heroBullet ? [heroBullet] : brief.benefits,
+    cardMeaning: meaning,
+    sceneNarrative: narrative,
     backgroundPrompt: bg.slice(0, 480),
     decorations: [],
     glassEffects: true,
     creativeConcept: creative.creativeConcept,
-    oneThought: ot,
+    oneThought: {
+      ...ot,
+      headline: meaning.title,
+      badge: meaning.feature || meaning.badge || ot.badge,
+    },
     deferredBullets: ot.deferredSpecs,
-    compositionScenarioId: creative.compositionScenarioId,
     selectedArchetypeId: creative.archetypeId,
     designDnaOverride: creative.multiConcept?.designDNA,
   };
@@ -170,6 +186,7 @@ async function runDesignStage(
   ctx: DesignProcessContext,
   foundation: DesignProcessFoundation,
   creative: CreativeDirectorResult,
+  cardMeaning: CardMeaning,
   retryHint?: string,
 ): Promise<DesignBrief> {
   const prompt = buildDesignStagePrompt({
@@ -185,7 +202,7 @@ async function runDesignStage(
 
   const raw = await callOllamaJson<unknown>(prompt, 0.28);
   let brief = sanitizeDesignBrief(raw, ctx.analysis.category, ctx.productPrompt);
-  brief = applyPosterRules(brief, creative);
+  brief = applyPosterRules(brief, creative, cardMeaning, ctx.analysis.category);
   return {
     ...brief,
     designProcess: {
@@ -203,6 +220,13 @@ export async function runDesignProcessPipeline(
   const { creative, evaluatedCount, renderQueue } = await runCreativeDirectorStage(ctx);
   const foundation = foundationFromCreative(creative, ctx.analysis);
 
+  const stubBrief = sanitizeDesignBrief(
+    { layout: "marketplace", backgroundPrompt: creative.sceneNarrative } as DesignBrief,
+    ctx.analysis.category,
+    ctx.productPrompt,
+  );
+  let cardMeaning = creativeConceptToCardMeaning(creative, stubBrief);
+
   let brief: DesignBrief;
   const status = await getOllamaStatus();
 
@@ -211,7 +235,6 @@ export async function runDesignProcessPipeline(
       sanitizeDesignBrief(
         {
           layout: "marketplace",
-          objectScale: 0.72,
           glassEffects: true,
           artDirectorMode: ctx.artDirectorMode,
         } as DesignBrief,
@@ -219,13 +242,22 @@ export async function runDesignProcessPipeline(
         ctx.productPrompt,
       ),
       creative,
+      cardMeaning,
+      ctx.analysis.category,
     );
   } else {
-    brief = await runDesignStage(ctx, foundation, creative);
+    try {
+      cardMeaning = await generateCardMeaning(stubBrief, creative);
+    } catch {
+      cardMeaning = creativeConceptToCardMeaning(creative, stubBrief);
+    }
+    brief = await runDesignStage(ctx, foundation, creative, cardMeaning);
+    brief = applyPosterRules(brief, creative, cardMeaning, ctx.analysis.category);
   }
 
   brief = {
     ...brief,
+    cardMeaning,
     artDirectorMode: ctx.artDirectorMode,
     conceptRenderQueue: renderQueue.map((c) => c.archetypeId).filter(Boolean) as string[],
   };
@@ -240,7 +272,7 @@ export async function runDesignProcessPipeline(
     const issues = [...quality.issues, ...processReview.issues];
     const retryHint = buildQualityRetryHint(issues);
     try {
-      brief = await runDesignStage(ctx, foundation, creative, retryHint);
+      brief = await runDesignStage(ctx, foundation, creative, cardMeaning, retryHint);
     } catch {
       // keep first
     }
@@ -250,6 +282,7 @@ export async function runDesignProcessPipeline(
     brief,
     foundation,
     creativeDirector: creative,
+    cardMeaning,
     conceptCandidates: evaluatedCount,
     conceptRenderQueue: renderQueue,
   };

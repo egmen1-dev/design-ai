@@ -22,6 +22,16 @@ const creativeConceptSchema = z.object({
   whatToSayInOneSecond: z.string().max(80).optional(),
 });
 
+const cardMeaningSchema = z.object({
+  title: z.string().max(80),
+  subtitle: z.string().max(120).optional(),
+  feature: z.string().max(40).optional(),
+  badge: z.string().max(40).optional(),
+  emotion: z.string().max(40).optional(),
+  style: z.string().max(40).optional(),
+  priority: z.enum(["product", "text", "balanced"]).default("product"),
+});
+
 const oneThoughtSchema = z.object({
   question: z.string().max(100),
   answer: z.string().max(20),
@@ -123,6 +133,7 @@ const designProcessSchema = z
 export const designBriefSchema = z.object({
   designConcept: z.string().max(300).optional(),
   creativeConcept: creativeConceptSchema.optional(),
+  cardMeaning: cardMeaningSchema.optional(),
   oneThought: oneThoughtSchema.optional(),
   sceneNarrative: z.string().max(400).optional(),
   compositionScenarioId: z.string().max(40).optional(),
@@ -227,8 +238,18 @@ export function briefToCompositingHints(brief: DesignBrief): CompositingHints {
 
 export function briefToSdInput(brief: DesignBrief, productContext = ""): InfographicSdInput {
   const posterHeadline =
-    brief.oneThought?.headline ?? brief.headline ?? brief.title ?? "Товар";
-  const posterBadge = brief.oneThought?.badge ?? brief.subHeadline ?? brief.subtitle ?? "новинка";
+    brief.cardMeaning?.title ??
+    brief.oneThought?.headline ??
+    brief.headline ??
+    brief.title ??
+    "Товар";
+  const posterBadge =
+    brief.cardMeaning?.feature ??
+    brief.cardMeaning?.badge ??
+    brief.oneThought?.badge ??
+    brief.subHeadline ??
+    brief.subtitle ??
+    "новинка";
   const heroBullet = brief.oneThought
     ? `${brief.oneThought.answer} ${brief.oneThought.answerLabel}`.trim()
     : undefined;

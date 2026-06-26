@@ -162,7 +162,7 @@ export async function generateSdInfographicData(
   const enrichedContext: OllamaSdContext = { ...context, referenceContext };
   const analysis = analyzeProductPrompt(prompt);
   const cacheId = cacheKey([
-    "brief-v14-multi",
+    "brief-v15-layout",
     prompt.slice(0, 80),
     style ?? "auto",
     context.artDirectorMode ?? "marketplace_ctr",

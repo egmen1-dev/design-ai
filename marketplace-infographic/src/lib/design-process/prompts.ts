@@ -84,43 +84,35 @@ ${JSON.stringify(cd.creativeConcept, null, 2)}
 ## Целевая аудитория: ${cd.creativeConcept.targetAudience}
 ## Тон: ${cd.creativeConcept.toneOfVoice}
 ## За 1 секунду: ${cd.creativeConcept.whatToSayInOneSecond}
-## Сценарий композиции: ${cd.compositionScenarioId ?? "hero_product"}
 
-## Одна мысль обложки (НЕ МЕНЯТЬ)
+## Одна мысль обложки (НЕ МЕНЯТЬ — только цвета и сцена)
 Заголовок: "${cd.oneThought.headline}"
 Герой-цифра: ${cd.oneThought.answer} ${cd.oneThought.answerLabel}
 Бейдж: ${cd.oneThought.badge ?? "нет"}
-Отложено на другие слайды: ${cd.oneThought.deferredSpecs.join(", ")}
 
-## Сцена
+## Сцена (только описание фона, без координат)
 ${cd.sceneNarrative}
 
-## СТРОГИЕ ЛИМИТЫ (нарушение = провал)
-- bullets: ТОЛЬКО 1 элемент для обложки + deferredSpecs для хранения (не для отображения)
-- headline = рекламный заголовок из oneThought, НЕ название товара
-- subHeadline = badge (3 кВт), максимум 3 слова
-- НЕТ больших плашек, панелей, списков преимуществ на обложке
-- objectScale: 0.68–0.75 (товар 60–75% кадра)
+## СТРОГИЕ ЛИМИТЫ
+- НЕ указывай objectScale, координаты, layout, compositionScenarioId, размеры, проценты
+- Композицию и расположение элементов вычисляет Layout Engine — не ты
+- bullets: ТОЛЬКО 1 элемент для обложки
 - useDecorations: false
 - glassEffects: true
 
 Верни ТОЛЬКО JSON Design Brief:
 {
   "designConcept": "${cd.creativeConcept.title}",
-  "creativeConcept": { ...как выше... },
-  "oneThought": { ...как выше... },
   "layout": "marketplace",
   "headline": "${cd.oneThought.headline}",
   "subHeadline": "${cd.oneThought.badge ?? "новинка"}",
   "bullets": ["${cd.oneThought.answer} ${cd.oneThought.answerLabel}"],
-  "deferredBullets": ${JSON.stringify(cd.oneThought.deferredSpecs)},
-  "objectScale": 0.72,
   "cameraAngle": "three-quarter hero",
   "lightDirection": "top-left",
   "lightTemperature": "5500K",
   "shadowType": "contact-soft",
   "reflection": false,
-  "backgroundPrompt": "english scene description, NO product, NO text, ${cd.sceneNarrative.slice(0, 120)}",
+  "backgroundPrompt": "english scene description, NO product, NO text, allowed environment only",
   "colorPalette": ["#hex", "#hex", "#hex"],
   "fontId": null,
   "badgeId": null,
