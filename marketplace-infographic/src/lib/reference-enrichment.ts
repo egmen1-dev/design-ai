@@ -2,7 +2,7 @@ import sharp from "sharp";
 import {
   DEFAULT_STYLE,
   STYLE_KEYS,
-  TRENDS,
+  STYLE_LABELS,
   type InfographicStyle,
 } from "@/lib/design-trends";
 import { getOllamaStatus, OLLAMA_BASE_URL, OLLAMA_MODEL } from "@/lib/ai-status";
@@ -297,7 +297,7 @@ export async function enrichReferenceUpload(input: {
         heuristic,
       );
       appliedStyle = styleResult.style;
-      styleReason = styleResult.styleReason;
+      styleReason = styleResult.reason;
       if (styleResult.compositionNotes) {
         compositionNotes = input.notes
           ? `${input.notes}\n${styleResult.compositionNotes}`
