@@ -1,6 +1,9 @@
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";
-import { bufferToDataUrl } from "./background-removal";
+import {
+  bufferToDataUrl,
+  prepareProductImageFast,
+} from "./background-removal";
 import { removeProductBackgroundImgly } from "./imgly-background";
 
 const MAX_BYTES = 4 * 1024 * 1024;
@@ -58,5 +61,25 @@ export async function processProductImageWithImgly(
     webPath,
     cutout,
     method,
+  };
+}
+
+/** Быстрая вырезка sharp-only — без imgly/onnx, стабильно при генерации. */
+export async function processProductImageForGeneration(
+  buffer: Buffer,
+  userId: string,
+): Promise<{
+  renderSrc: string;
+  absPath: string;
+  webPath: string;
+  cutout: boolean;
+}> {
+  const { buffer: cutoutBuffer, cutout } = await prepareProductImageFast(buffer);
+  const { absPath, webPath } = await saveProductCutout(cutoutBuffer, userId);
+  return {
+    renderSrc: bufferToDataUrl(cutoutBuffer),
+    absPath,
+    webPath,
+    cutout,
   };
 }

@@ -18,7 +18,7 @@ import { renderHtmlToImage } from "@/lib/puppeteer";
 import { bufferToDataUrl } from "@/lib/background-removal";
 import {
   parseProductImageDataUrl,
-  processProductImageWithImgly,
+  processProductImageForGeneration,
 } from "@/lib/product-image-sd";
 import type { InfographicSdInput } from "@/lib/validations";
 import { prisma } from "@/lib/prisma";
@@ -78,7 +78,7 @@ async function loadProductCutout(
   }
 
   const { buffer } = parseProductImageDataUrl(productImage);
-  return processProductImageWithImgly(buffer, userId);
+  return processProductImageForGeneration(buffer, userId);
 }
 
 export async function handleGenerateInfographic(
@@ -130,15 +130,16 @@ export async function handleGenerateInfographic(
       }
       appliedStyle = input.style ?? DEFAULT_STYLE;
 
-      const [ollama, cutout] = await Promise.all([
-        generateSdInfographicData(input.prompt, appliedStyle, input.ollamaContext),
-        loadProductCutout(input.productImage, input.userId),
-      ]);
+      productRender = await loadProductCutout(input.productImage, input.userId);
+      productCutoutPath = productRender.webPath;
 
+      const ollama = await generateSdInfographicData(
+        input.prompt,
+        appliedStyle,
+        input.ollamaContext,
+      );
       sdData = ollama.data;
       aiSource = ollama.source;
-      productRender = cutout;
-      productCutoutPath = productRender.webPath;
     }
 
     let backgroundUrl: string | null = null;

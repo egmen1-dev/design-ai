@@ -144,6 +144,25 @@ async function isValidCutout(buffer: Buffer): Promise<boolean> {
   }
 }
 
+/** Быстрая вырезка без imgly/rembg — стабильно на VPS. */
+export async function prepareProductImageFast(
+  input: Buffer,
+): Promise<{ buffer: Buffer; cutout: boolean }> {
+  let cutoutBuffer = await removeBackgroundWithSharp(input);
+  if (!(await isValidCutout(cutoutBuffer))) {
+    cutoutBuffer = await sharp(input).rotate().png().toBuffer();
+    return { buffer: cutoutBuffer, cutout: false };
+  }
+
+  const optimized = await sharp(cutoutBuffer)
+    .resize(1100, 1100, { fit: "inside", withoutEnlargement: true })
+    .png()
+    .toBuffer();
+
+  return { buffer: optimized, cutout: true };
+}
+
+/** Полная вырезка (rembg + sharp) — для превью и регенерации фона. */
 export async function prepareProductImageForRender(
   input: Buffer,
 ): Promise<{ buffer: Buffer; cutout: boolean }> {
