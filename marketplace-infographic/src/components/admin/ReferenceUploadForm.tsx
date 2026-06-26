@@ -232,6 +232,10 @@ export function ReferenceUploadForm() {
         <div className="grid gap-8 lg:grid-cols-2">
           <section className="space-y-4 rounded-xl border border-slate-800 bg-slate-900/50 p-5">
             <h3 className="font-semibold">Плашка</h3>
+            <p className="mb-2 text-xs text-slate-500">
+              Лучше загружать крупный кадр плашки/бейджа на прозрачном или однотонном фоне.
+              На полной карточке товара вырезка и OCR будут неточными.
+            </p>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="rounded-lg border border-slate-700 bg-slate-950 p-3">
                 <p className="mb-2 text-xs text-slate-500">PNG (без фона)</p>

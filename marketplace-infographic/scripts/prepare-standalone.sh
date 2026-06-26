@@ -11,6 +11,11 @@ fi
 
 echo "==> Preparing standalone runtime assets"
 
+mkdir -p "${ROOT}/data/references"
+mkdir -p "${STANDALONE}/public"
+rm -rf "${STANDALONE}/public/references"
+ln -sfn "${ROOT}/data/references" "${STANDALONE}/public/references"
+
 mkdir -p "${STANDALONE}/.next"
 cp -r "${ROOT}/.next/static" "${STANDALONE}/.next/static"
 cp -r "${ROOT}/templates" "${STANDALONE}/templates"

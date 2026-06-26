@@ -6,6 +6,7 @@ import potrace from "potrace";
 import sharp from "sharp";
 import { createWorker } from "tesseract.js";
 import { removeReferenceBackgroundSharp } from "@/lib/background-removal";
+import { persistentDataDir } from "@/lib/runtime-paths";
 
 const potraceTrace = promisify(potrace.trace) as (
   input: Buffer,
@@ -13,11 +14,11 @@ const potraceTrace = promisify(potrace.trace) as (
 ) => Promise<string>;
 
 export function referencesDir(): string {
-  return path.join(process.cwd(), "public", "references");
+  return persistentDataDir("references");
 }
 
 export function publicReferenceUrl(filename: string): string {
-  return `/references/${filename}`;
+  return `/api/references/${filename}`;
 }
 
 export type BadgeExtractionResult = {
@@ -161,7 +162,10 @@ async function recognizeText(imageBuffer: Buffer): Promise<string> {
   await mkdir(cachePath, { recursive: true });
 
   const ocrInput = await sharp(imageBuffer)
-    .resize(900, 900, { fit: "inside", withoutEnlargement: true })
+    .resize(1200, 1200, { fit: "inside", withoutEnlargement: true })
+    .greyscale()
+    .normalize()
+    .sharpen()
     .png()
     .toBuffer();
 
