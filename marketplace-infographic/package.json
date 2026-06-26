@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "npx prisma generate && next build && npm run prepare-standalone",
-    "prepare-standalone": "cp -r .next/static .next/standalone/.next/static && cp -r templates .next/standalone/templates",
+    "prepare-standalone": "bash scripts/prepare-standalone.sh",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "npx prisma generate",

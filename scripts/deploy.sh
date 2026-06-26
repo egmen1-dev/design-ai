@@ -53,6 +53,10 @@ fi
 echo "==> Building Next.js app"
 npm run build
 
+echo "==> Syncing standalone runtime assets"
+npm run prepare-standalone
+cp .env .next/standalone/.env 2>/dev/null || true
+
 echo "==> Starting PM2 process"
 cd "${APP_DIR}"
 if pm2 describe marketplace-infographic >/dev/null 2>&1; then

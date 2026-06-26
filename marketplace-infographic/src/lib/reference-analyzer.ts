@@ -30,6 +30,9 @@ export type FontDetectionResult = {
   fontName: string | null;
 };
 
+const OCR_TIMEOUT_MS = 90_000;
+const WHATTHEFONT_TIMEOUT_MS = 20_000;
+
 function parseWhatTheFontResponse(data: unknown): string | null {
   if (!data || typeof data !== "object") return null;
   const record = data as Record<string, unknown>;
@@ -85,6 +88,7 @@ async function identifyFontWithWhatTheFont(imageBuffer: Buffer): Promise<string 
         image: imageBuffer.toString("base64"),
         format: "png",
       }),
+      signal: AbortSignal.timeout(WHATTHEFONT_TIMEOUT_MS),
     });
 
     if (jsonResponse.ok) {
@@ -108,6 +112,7 @@ async function identifyFontWithWhatTheFont(imageBuffer: Buffer): Promise<string 
         "X-Api-Key": apiKey,
       },
       body: form,
+      signal: AbortSignal.timeout(WHATTHEFONT_TIMEOUT_MS),
     });
 
     if (!formResponse.ok) return null;
@@ -120,13 +125,48 @@ async function identifyFontWithWhatTheFont(imageBuffer: Buffer): Promise<string 
   }
 }
 
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      reject(new Error(`${label} timed out after ${ms}ms`));
+    }, ms);
+
+    promise
+      .then((value) => {
+        clearTimeout(timer);
+        resolve(value);
+      })
+      .catch((error) => {
+        clearTimeout(timer);
+        reject(error);
+      });
+  });
+}
+
 async function recognizeText(imagePath: string): Promise<string> {
-  const worker = await createWorker("rus+eng");
+  const cachePath = path.join(process.cwd(), ".tesseract-cache");
+  await mkdir(cachePath, { recursive: true });
+
   try {
-    const { data } = await worker.recognize(imagePath);
-    return data.text.replace(/\s+/g, " ").trim();
-  } finally {
-    await worker.terminate();
+    return await withTimeout(
+      (async () => {
+        const worker = await createWorker("rus+eng", undefined, {
+          cachePath,
+          logger: () => undefined,
+        });
+        try {
+          const { data } = await worker.recognize(imagePath);
+          return data.text.replace(/\s+/g, " ").trim();
+        } finally {
+          await worker.terminate();
+        }
+      })(),
+      OCR_TIMEOUT_MS,
+      "Tesseract OCR",
+    );
+  } catch (error) {
+    console.warn("Tesseract OCR failed:", error);
+    return "";
   }
 }
 

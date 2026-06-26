@@ -86,10 +86,14 @@ export function ReferenceUploadForm() {
     const form = event.currentTarget;
     const formData = new FormData(form);
 
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 150_000);
+
     try {
       const response = await fetch("/api/admin/references/analyze", {
         method: "POST",
         body: formData,
+        signal: controller.signal,
       });
       const data = (await response.json()) as AnalyzeResult & { error?: string };
       if (!response.ok) {
@@ -101,7 +105,14 @@ export function ReferenceUploadForm() {
       setBadgeName("Плашка из референса");
       setFontName(data.fontSuggestion.fontName ?? "");
       setFontCategory("sans-serif");
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        setError("Анализ занял слишком много времени. Попробуйте снова или уменьшите изображение.");
+        return;
+      }
+      setError("Не удалось связаться с сервером");
     } finally {
+      window.clearTimeout(timeoutId);
       setLoading(false);
     }
   }
