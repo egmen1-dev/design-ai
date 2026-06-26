@@ -38,3 +38,18 @@ export type {
   CommercialPhotographerReview,
   CommercialPhotographerDimensionScores,
 } from "./commercial-photographer/types";
+export {
+  CHIEF_DESIGN_DIRECTOR_AGENT,
+  runChiefDesignDirector,
+  buildChiefDesignDirectorHeuristic,
+  buildChiefDesignDirectorPrompt,
+  deriveFixApplicationHints,
+  CHIEF_APPROVE_SCORE,
+} from "./chief-design-director/agent";
+export type {
+  ChiefDesignDirectorInput,
+  ChiefDesignDirectorPlan,
+  FixAction,
+  TopProblem,
+  FixApplicationHints,
+} from "./chief-design-director/agent";

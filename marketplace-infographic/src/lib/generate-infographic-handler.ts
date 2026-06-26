@@ -43,7 +43,7 @@ import {
   toCompositionResult,
 } from "@/lib/layout-engine";
 import type { CardMeaning, LayoutTemplateId, ProductShapeHint } from "@/lib/layout-engine/types";
-import { runSeniorArtDirector, runMarketplaceCtrExpert, runCommercialPhotographer, type SeniorArtDirectorReview, type MarketplaceCtrReview, type CommercialPhotographerReview } from "@/lib/agents";
+import { runSeniorArtDirector, runMarketplaceCtrExpert, runCommercialPhotographer, runChiefDesignDirector, deriveFixApplicationHints, type SeniorArtDirectorReview, type MarketplaceCtrReview, type CommercialPhotographerReview, type ChiefDesignDirectorPlan } from "@/lib/agents";
 import { creativeConceptToCardMeaning } from "@/lib/design-process/card-meaning";
 import type { ProductVisualProfile } from "@/lib/design/scene-planner";
 import type { CreativeDirectorResult } from "@/lib/design-process/creative-concept";
@@ -51,7 +51,7 @@ import type { ScenePlan } from "@/lib/design/scene-planner";
 import type { QualityValidationResult } from "@/lib/design/quality-validator";
 import type { ArtDirectorModeId } from "@/lib/design-process/art-director-modes";
 import { PIPELINE_VERSION } from "@/lib/pipeline-version";
-import { USE_FAST_CUTOUT, MAX_CONCEPT_RENDER_RETRIES, MAX_SENIOR_AD_LAYOUT_RETRIES, MAX_PHOTO_BG_RETRIES } from "@/lib/pipeline-config";
+import { USE_FAST_CUTOUT, MAX_CONCEPT_RENDER_RETRIES, MAX_SENIOR_AD_LAYOUT_RETRIES, MAX_PHOTO_BG_RETRIES, MAX_CHIEF_FIX_RETRIES } from "@/lib/pipeline-config";
 import type { CoverConceptId } from "@/lib/cover-concepts";
 import { evaluateFinalQuality } from "@/lib/design/final-quality-validator";
 import { applyPosterRules } from "@/lib/design-process/pipeline";
@@ -97,6 +97,8 @@ export type GenerateInfographicResult = {
   photoScore?: number;
   photoRealism?: number;
   looksLikePhoto?: boolean;
+  chiefApproved?: boolean;
+  estimatedScoreAfterFix?: number;
 };
 
 function briefMeta(brief?: DesignBrief) {
@@ -186,6 +188,7 @@ function buildProfessionalComposition(input: {
   productVisual?: ProductVisualProfile;
   seed: string;
   excludeTemplateIds?: LayoutTemplateId[];
+  templateId?: LayoutTemplateId;
 }): {
   compositionResult: CompositionResult;
   cardMeaning: CardMeaning;
@@ -214,6 +217,7 @@ function buildProfessionalComposition(input: {
     seed: input.seed,
     backgroundHint: input.designBrief?.backgroundPrompt,
     excludeTemplateIds: input.excludeTemplateIds,
+    templateId: input.templateId,
   });
 
   return {
@@ -644,6 +648,107 @@ export async function handleGenerateInfographic(
       await runPhotoReview();
     }
 
+    let chiefPlan: ChiefDesignDirectorPlan | undefined;
+    if (cardMeaning && compositionLayout && seniorAdReview && ctrReview && photoReview) {
+      chiefPlan = await runChiefDesignDirector({
+        cardMeaning,
+        layout: compositionLayout,
+        designScore: compositionResult?.score?.total,
+        templateId: compositionResult?.layout?.scenarioId,
+        seniorArtDirector: seniorAdReview,
+        marketplaceExpert: ctrReview,
+        commercialPhotographer: photoReview,
+        productPrompt: input.prompt,
+      });
+
+      if (!chiefPlan.approved && MAX_CHIEF_FIX_RETRIES > 0) {
+        const hints = deriveFixApplicationHints(
+          chiefPlan,
+          analysis.category,
+          input.prompt,
+          `${variationSeed}:chief`,
+        );
+
+        if (hints.simplifyCardMeaning && cardMeaning) {
+          cardMeaning = { ...cardMeaning, subtitle: "", badge: "" };
+          if (designBrief) {
+            designBrief = { ...designBrief, cardMeaning };
+          }
+        }
+
+        if (hints.needsLayoutRetry && sdData.layout === "marketplace") {
+          const currentTemplate = compositionResult?.layout?.scenarioId as LayoutTemplateId | undefined;
+          const fixed = buildProfessionalComposition({
+            designBrief,
+            activeCreative,
+            category: analysis.category,
+            productVisual,
+            seed: `${variationSeed}:chief-layout`,
+            templateId: hints.preferTemplateId,
+            excludeTemplateIds: currentTemplate ? [currentTemplate] : undefined,
+          });
+          compositionResult = fixed.compositionResult;
+          compositionLayout = compositionResult.layout;
+          objectScale = layoutObjectScale(compositionLayout.metrics?.productAreaPct);
+          cardMeaning = fixed.cardMeaning;
+        }
+
+        if (
+          hints.needsBackgroundRetry &&
+          hints.backgroundEnvironment &&
+          productCutoutPath &&
+          backgroundUrl &&
+          usePhotorealMerge
+        ) {
+          const bgPrompt = `${hints.backgroundEnvironment}, ultra realistic commercial photography, no text, no product`;
+          if (designBrief) {
+            designBrief = { ...designBrief, backgroundPrompt: bgPrompt.slice(0, 480) };
+          }
+          sdData.backgroundPrompt = bgPrompt;
+          try {
+            if (!process.env.HF_API_KEY) throw new Error("HF_API_KEY missing");
+            const url = await generateBackground(bgPrompt, {
+              seedSuffix: `${variationSeed}:chief-bg`,
+              style: appliedStyle,
+            });
+            backgroundUrl = url;
+            backgroundDataUrl = await backgroundToDataUrl(url);
+            compositeResult = await compositeProductIntoScene(url, productCutoutPath, {
+              layout: "marketplace",
+              scene: scenePlan,
+              compositionLayout,
+              objectScale,
+            });
+            mergedImageDataUrl = await mergedToDataUrl(compositeResult.mergedPath);
+            qualityValidation = validateQuality({
+              compositionLayout,
+              compositionScore: compositionResult?.score,
+              dna: compositionResult?.dna,
+              scene: scenePlan,
+              lighting: compositeResult.lighting,
+              productAreaPct: compositionLayout?.metrics?.productAreaPct,
+              hasReflection: scenePlan.reflectionEnabled,
+              hasShadows: true,
+            });
+            await runPhotoReview();
+            chiefPlan = await runChiefDesignDirector({
+              cardMeaning,
+              layout: compositionLayout,
+              designScore: compositionResult?.score?.total,
+              templateId: compositionResult?.layout?.scenarioId,
+              seniorArtDirector: seniorAdReview!,
+              marketplaceExpert: ctrReview!,
+              commercialPhotographer: photoReview!,
+              productPrompt: input.prompt,
+            });
+            console.info(`[chief-design-director] fix retry → approved=${chiefPlan.approved} est=${chiefPlan.estimatedScoreAfterFix}`);
+          } catch (error) {
+            console.warn("[chief-design-director] fix retry failed:", error);
+          }
+        }
+      }
+    }
+
     let finalQuality = activeCreative
       ? evaluateFinalQuality({
           creative: activeCreative,
@@ -843,6 +948,7 @@ export async function handleGenerateInfographic(
       seniorArtDirector: seniorAdReview,
       marketplaceCtrExpert: ctrReview,
       commercialPhotographer: photoReview,
+      chiefDesignDirector: chiefPlan,
     };
 
     if (input.regenerateBackgroundOnly && input.existingImageId) {
@@ -877,6 +983,8 @@ export async function handleGenerateInfographic(
         photoScore: photoReview?.score,
         photoRealism: photoReview?.realism,
         looksLikePhoto: photoReview?.looksLikePhoto,
+        chiefApproved: chiefPlan?.approved,
+        estimatedScoreAfterFix: chiefPlan?.estimatedScoreAfterFix,
         ...briefMeta(designBrief),
       };
     }
@@ -915,6 +1023,8 @@ export async function handleGenerateInfographic(
       photoScore: photoReview?.score,
       photoRealism: photoReview?.realism,
       looksLikePhoto: photoReview?.looksLikePhoto,
+      chiefApproved: chiefPlan?.approved,
+      estimatedScoreAfterFix: chiefPlan?.estimatedScoreAfterFix,
       ...briefMeta(designBrief),
     };
   } catch (error) {
