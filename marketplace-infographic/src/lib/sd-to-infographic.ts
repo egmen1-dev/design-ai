@@ -1,5 +1,6 @@
 import type { InfographicSdInput } from "@/lib/validations";
 import type { InfographicData } from "@/lib/infographic-template";
+import { filterConsistentBullets } from "@/lib/bullet-consistency";
 
 function sanitizeBulletText(text: string): string {
   return text
@@ -158,7 +159,11 @@ export function sdDataToInfographic(
   data: InfographicSdInput,
   prompt?: string,
 ): InfographicData {
-  const bullets = data.bullets.map(sanitizeBulletText).slice(0, 5);
+  const bullets = filterConsistentBullets(
+    data.bullets.map(sanitizeBulletText).slice(0, 5),
+    prompt ?? data.title,
+    data.subtitle,
+  );
   const isMarketplace = data.layout === "marketplace";
 
   if (isMarketplace) {

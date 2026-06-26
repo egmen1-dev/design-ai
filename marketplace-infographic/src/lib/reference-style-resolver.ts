@@ -3,6 +3,7 @@ import {
   STYLE_KEYS,
   type InfographicStyle,
 } from "@/lib/design-trends";
+import { normalizeMarketplacePalette } from "@/lib/accent-color";
 import type { InfographicSdInput } from "@/lib/validations";
 import type { DesignExampleRecord } from "@/lib/select-relevant-examples";
 import { expandQueryTerms, termsMatch } from "@/lib/query-terms";
@@ -203,11 +204,7 @@ export function applyReferenceToSdData(
   if (!ref.hasStrongReference) {
     const next: InfographicSdInput = { ...data, layout: ref.layout };
     if (ref.colors && ref.colors.length >= 2) {
-      next.colors = [
-        ref.colors[0],
-        ref.colors[1] ?? ref.colors[0],
-        ref.colors[2] ?? "#0f172a",
-      ];
+      next.colors = [...normalizeMarketplacePalette(ref.colors)];
     }
     return next;
   }
@@ -218,11 +215,7 @@ export function applyReferenceToSdData(
   };
 
   if (ref.colors && ref.colors.length >= 2) {
-    next.colors = [
-      ref.colors[0],
-      ref.colors[1] ?? ref.colors[0],
-      ref.colors[2] ?? "#0f172a",
-    ];
+    next.colors = [...normalizeMarketplacePalette(ref.colors)];
   }
 
   if (ref.topExample?.fontId) next.fontId = ref.topExample.fontId;

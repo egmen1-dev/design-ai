@@ -28,6 +28,8 @@ import {
   mergeProductWithBackground,
   mergedToDataUrl,
 } from "@/lib/image-compositor";
+import { resolveMarketplaceAccent } from "@/lib/accent-color";
+import { analyzeProductPrompt } from "@/lib/product-analysis";
 import { PIPELINE_VERSION } from "@/lib/pipeline-version";
 
 export type GenerateInfographicInput = {
@@ -225,6 +227,9 @@ export async function handleGenerateInfographic(
       }
     }
 
+    const analysis = analyzeProductPrompt(input.prompt);
+    const accentHex = resolveMarketplaceAccent(sdData.colors, analysis.category);
+
     const html = renderInfographicHtml(infographicData, {
       style: appliedStyle,
       layout: sdData.layout,
@@ -235,7 +240,7 @@ export async function handleGenerateInfographic(
       productImageCutout: productRender.cutout,
       libraryFont,
       libraryBadge,
-      accentHex: sdData.colors[0],
+      accentHex,
     });
 
     const filename = `${input.userId}-${Date.now()}.png`;

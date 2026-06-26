@@ -1,3 +1,4 @@
+import { hexLuminance } from "@/lib/accent-color";
 import type { DesignBrief } from "./schema";
 
 export type QualityReport = {
@@ -28,7 +29,10 @@ export function evaluateDesignBrief(brief: DesignBrief): QualityReport {
     issues.push("weak_palette");
   }
 
-  if (bullets.some((b) => b.length > 70)) issues.push("text_too_long");
+  const accent = brief.colorPalette?.[0] ?? brief.colors?.[0];
+  if (accent && hexLuminance(accent) > 0.72) {
+    issues.push("accent_too_light");
+  }
 
   const score = Math.max(0, 100 - issues.length * 18);
   return {

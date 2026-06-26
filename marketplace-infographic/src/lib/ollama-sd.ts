@@ -18,6 +18,10 @@ import {
 import { sanitizeDesignBrief } from "@/lib/design-brief/sanitize";
 import { cacheGet, cacheKey, cacheSet } from "@/lib/cache/generation-cache";
 import { assembleDesignBriefPrompt } from "@/lib/prompt/assemble";
+import {
+  filterConsistentBullets,
+  gardenTrimmerBatteryBullets,
+} from "@/lib/bullet-consistency";
 import { analyzeProductPrompt } from "@/lib/product-analysis";
 import {
   applyReferenceToSdData,
@@ -78,9 +82,14 @@ function buildMockBrief(
 ): DesignBrief {
   const analysis = analyzeProductPrompt(prompt);
   const isTrimmer = analysis.category === "garden_tools";
+  const isBattery = /аккумулятор|акб|battery/i.test(prompt);
   const colors = referenceContext?.colors?.length
     ? referenceContext.colors
     : defaultMarketplaceColors();
+
+  const trimmerBullets = isBattery
+    ? gardenTrimmerBatteryBullets()
+    : ["1300 Вт мощность", "65 дБ тихая работа", "3 мощных АКБ", "8 насадок", "лёгкий и компактный"];
 
   const raw = sanitizeDesignBrief(
     {
@@ -89,9 +98,9 @@ function buildMockBrief(
         : "Коммерческая карточка WB/Ozon",
       layout: "marketplace",
       headline: isTrimmer ? "Садовый триммер" : "Товар",
-      subHeadline: isTrimmer ? "аккумуляторный" : "новинка",
+      subHeadline: isTrimmer ? (isBattery ? "аккумуляторный" : "мощный") : "новинка",
       bullets: isTrimmer
-        ? ["1300 Вт мощность", "65 дБ тихая работа", "3 мощных АКБ", "8 насадок", "лёгкий и компактный"]
+        ? trimmerBullets
         : ["Премиум качество", "Быстрая доставка", "Гарантия 12 месяцев"],
       colorPalette: colors,
       badge: "Brand",
@@ -99,7 +108,7 @@ function buildMockBrief(
         "sunny suburban lawn garden path, wooden fence blurred, golden hour daylight, clear empty grass foreground, ultra realistic, no objects, no text",
       fontId: null,
       badgeId: null,
-      objectScale: 0.58,
+      objectScale: 0.72,
       lightDirection: "top-left",
       lightTemperature: "5500K",
       shadowType: "contact-soft",
@@ -194,7 +203,7 @@ export async function generateSdInfographicData(
   const status = await getOllamaStatus();
 
   const finalize = (brief: DesignBrief, source: "ollama" | "mock"): GenerationResult => {
-    let sd = briefToSdInput(brief);
+    let sd = briefToSdInput(brief, prompt);
     sd = applyReferenceToSdData(sd, referenceContext);
     if (!referenceContext.hasStrongReference) {
       sd = applyStyleToSdColors(sd, style);

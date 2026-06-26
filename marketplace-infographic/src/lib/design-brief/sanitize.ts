@@ -1,6 +1,7 @@
 import { designBriefSchema, type DesignBrief } from "./schema";
 import { enrichBriefBackgroundPrompt } from "@/lib/prompt/background";
 import type { ProductCategory } from "@/lib/product-analysis";
+import { normalizeMarketplacePalette } from "@/lib/accent-color";
 import { stripProductFromBackgroundPrompt } from "@/lib/product-render-policy";
 
 function clip(value: unknown, max: number): string {
@@ -35,6 +36,12 @@ export function sanitizeDesignBrief(
       ? obj.colors
       : ["#00a8b5", "#ffffff", "#0f172a"];
 
+  const [accent, light, dark] = normalizeMarketplacePalette(
+    colorsRaw.map((c) => String(c)),
+    category,
+  );
+  const normalizedPalette = [accent, light, dark];
+
   const bgRaw = clip(obj.backgroundPrompt, 500);
   const backgroundPrompt = enrichBriefBackgroundPrompt(
     stripProductFromBackgroundPrompt(bgRaw),
@@ -50,12 +57,8 @@ export function sanitizeDesignBrief(
     subHeadline: clip(obj.subHeadline ?? obj.subtitle, 80),
     bullets: normalizeBullets(obj.bullets ?? obj.benefits),
     benefits: normalizeBullets(obj.benefits ?? obj.bullets),
-    colorPalette: colorsRaw.map((c, i) =>
-      normalizeHex(c, ["#00a8b5", "#ffffff", "#0f172a"][i] ?? "#0f172a"),
-    ),
-    colors: colorsRaw.map((c, i) =>
-      normalizeHex(c, ["#00a8b5", "#ffffff", "#0f172a"][i] ?? "#0f172a"),
-    ),
+    colorPalette: normalizedPalette,
+    colors: normalizedPalette,
     backgroundPrompt,
     badge: clip(obj.badge ?? "Brand", 40),
     fontId: obj.fontId === null ? null : typeof obj.fontId === "string" ? obj.fontId : null,
@@ -63,7 +66,7 @@ export function sanitizeDesignBrief(
     objectScale:
       typeof obj.objectScale === "number"
         ? Math.min(0.9, Math.max(0.3, obj.objectScale))
-        : 0.58,
+        : 0.72,
     reflection: Boolean(obj.reflection),
   };
 

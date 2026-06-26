@@ -54,7 +54,7 @@ export function buildMarketplaceLeftSpecsHtml(
           <span class="material-symbols-outlined" aria-hidden="true">${icon}</span>
         </div>
         <div class="mp-stat-card__body">
-          <span class="mp-stat-card__value" style="color:${accent};">${escapeHtml(spec.value)}</span>
+          <span class="mp-stat-card__value">${escapeHtml(spec.value)}</span>
           <span class="mp-stat-card__label">${escapeHtml(spec.label)}</span>
         </div>
       </div>`;

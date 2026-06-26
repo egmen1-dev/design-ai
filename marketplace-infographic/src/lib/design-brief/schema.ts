@@ -1,4 +1,9 @@
 import { z } from "zod";
+import {
+  filterConsistentBullets,
+} from "@/lib/bullet-consistency";
+import { analyzeProductPrompt } from "@/lib/product-analysis";
+import { normalizeMarketplacePalette } from "@/lib/accent-color";
 import type { InfographicSdInput } from "@/lib/validations";
 
 const hex = z.string().regex(/^#[0-9a-fA-F]{6}$/);
@@ -97,16 +102,22 @@ export function briefToCompositingHints(brief: DesignBrief): CompositingHints {
   };
 }
 
-export function briefToSdInput(brief: DesignBrief): InfographicSdInput {
+export function briefToSdInput(brief: DesignBrief, productContext = ""): InfographicSdInput {
   const headline = brief.headline ?? brief.title ?? "Товар";
   const sub = brief.subHeadline ?? brief.subtitle ?? "новинка";
-  const bullets =
+  const rawBullets =
     brief.bullets ??
     brief.benefits ??
     brief.blocks?.map((b) => (b.value ? `${b.value} ${b.label}` : b.label)) ??
     ["Премиум качество", "Быстрая доставка"];
 
-  const colors = brief.colorPalette ?? brief.colors ?? ["#00a8b5", "#ffffff", "#0f172a"];
+  const analysis = analyzeProductPrompt(`${productContext} ${headline} ${sub}`);
+  const bullets = filterConsistentBullets(rawBullets, productContext, sub);
+
+  const colors = normalizeMarketplacePalette(
+    brief.colorPalette ?? brief.colors ?? ["#00a8b5", "#ffffff", "#0f172a"],
+    analysis.category,
+  );
 
   return {
     layout: brief.layout ?? "marketplace",

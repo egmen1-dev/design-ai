@@ -16,7 +16,8 @@ export function buildColorsPrompt(
   const palette = referenceColors?.length ? referenceColors : defaults;
 
   return `ЦВЕТ
-colorPalette: [accent, secondary, dark] = [${palette.join(", ")}]
+colorPalette: [accent, secondary, dark] — accent НИКОГДА не белый (#fff) и не светло-серый
+Первый цвет — насыщенный брендовый акцент для текста на белых карточках: [${palette.join(", ")}]
 contrast: высокий для читаемости на фоне
 Учитывай категорию ${analysis.category} и сегмент ${analysis.priceSegment}`;
 }

@@ -125,8 +125,8 @@ async function createShadowLayer(
   const scale = layout === "marketplace" ? 0.72 : isAmbient ? 0.78 : 0.62;
   const shadowW = Math.round(productWidth * scale);
   const shadowH = Math.max(24, Math.round(productHeight * (isHard ? 0.045 : 0.055)));
-  const opacity = isHard ? 0.42 : isAmbient ? 0.32 : layout === "marketplace" ? 0.48 : 0.58;
-  const blur = isHard ? 12 : isAmbient ? 28 : layout === "marketplace" ? 16 : 22;
+  const opacity = isHard ? 0.52 : isAmbient ? 0.36 : layout === "marketplace" ? 0.55 : 0.58;
+  const blur = isHard ? 10 : isAmbient ? 28 : layout === "marketplace" ? 14 : 22;
 
   const svg = `
     <svg width="${shadowW}" height="${shadowH}" xmlns="http://www.w3.org/2000/svg">
@@ -197,8 +197,11 @@ export async function mergeProductWithBackground(
 
   const bgPrepared = await softenBackgroundCenter(bgRaw);
   const hints = options?.compositingHints;
-  const objectScale = hints?.objectScale ?? 0.58;
-  const scaleFactor = 0.75 + objectScale * 0.45;
+  const objectScale = hints?.objectScale ?? 0.72;
+  const scaleFactor =
+    layout === "marketplace"
+      ? Math.max(1.08, 0.82 + objectScale * 0.38)
+      : 0.75 + objectScale * 0.45;
   const productMatched = hints
     ? await matchProductToBackground(productRaw, bgPrepared, hints)
     : productRaw;
