@@ -1,5 +1,8 @@
 import { z } from "zod";
 import { DEFAULT_STYLE, STYLE_KEYS } from "./design-trends";
+import { COVER_CONCEPTS, type CoverConceptId } from "./cover-concepts";
+
+const COVER_CONCEPT_IDS = COVER_CONCEPTS.map((c) => c.id) as [CoverConceptId, ...CoverConceptId[]];
 
 export const infographicSdSchema = z.object({
   layout: z.enum(["hero", "cards", "split", "minimal", "marketplace"]).default("marketplace"),
@@ -31,6 +34,7 @@ export const generateInfographicSchema = z.object({
     .refine((value) => value.length <= 6_000_000, "Фото слишком большое (макс. 4 МБ)"),
   /** @deprecated Стили заменены на Design DNA — поле игнорируется при генерации */
   style: z.enum(STYLE_KEYS).optional(),
+  coverConcept: z.enum(COVER_CONCEPT_IDS).optional(),
 });
 
 export const regenerateBackgroundSchema = z.object({

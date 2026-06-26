@@ -64,6 +64,30 @@ export async function processProductImageWithImgly(
   };
 }
 
+/** Imgly cutout с fallback на sharp — для фотореалистичной обложки */
+export async function processProductImageForCover(
+  buffer: Buffer,
+  userId: string,
+): Promise<{
+  renderSrc: string;
+  absPath: string;
+  webPath: string;
+  cutout: boolean;
+  method: string;
+}> {
+  if (process.env.DISABLE_IMGLY === "1") {
+    const fast = await processProductImageForGeneration(buffer, userId);
+    return { ...fast, method: "sharp-fast" };
+  }
+  try {
+    return await processProductImageWithImgly(buffer, userId);
+  } catch (error) {
+    console.warn("Imgly cutout failed, sharp fallback:", error);
+    const fast = await processProductImageForGeneration(buffer, userId);
+    return { ...fast, method: "sharp-fallback" };
+  }
+}
+
 /** Быстрая вырезка sharp-only — без imgly/onnx, стабильно при генерации. */
 export async function processProductImageForGeneration(
   buffer: Buffer,

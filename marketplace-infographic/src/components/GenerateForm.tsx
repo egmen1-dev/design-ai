@@ -5,6 +5,8 @@ import { DownloadButton } from "@/components/DownloadButton";
 import { MarketplacePreview } from "@/components/MarketplacePreview";
 import { PromptHints } from "@/components/PromptHints";
 
+import { COVER_CONCEPTS, type CoverConceptId } from "@/lib/cover-concepts";
+
 const MAX_IMAGE_BYTES = 4 * 1024 * 1024;
 
 const TEMPLATES = [
@@ -40,6 +42,7 @@ const GENERATION_STEPS = [
   "Определяет визуальный хук и концепцию",
   "Строит композицию и типографику",
   "Генерирует фотореалистичный фон (SD)",
+  "Встраивает товар в сцену (photoreal merge)",
   "Собирает инфографику 900×1200",
 ];
 
@@ -67,6 +70,7 @@ export function GenerateForm() {
   const [prompt, setPrompt] = useState("");
   const [productImage, setProductImage] = useState<string | null>(null);
   const [productFileName, setProductFileName] = useState<string | null>(null);
+  const [coverConcept, setCoverConcept] = useState<CoverConceptId | "auto">("auto");
   const [loading, setLoading] = useState(false);
   const [regenLoading, setRegenLoading] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
@@ -165,6 +169,7 @@ export function GenerateForm() {
         body: JSON.stringify({
           prompt,
           productImage,
+          ...(coverConcept !== "auto" ? { coverConcept } : {}),
         }),
         signal: controller.signal,
       });
@@ -376,6 +381,47 @@ export function GenerateForm() {
           визуальный хук → Design DNA → параметрический макет. Каждая карточка — новая
           комбинация, как у профессионального арт-директора.
         </p>
+      </div>
+
+      <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950/50 px-4 py-3">
+        <p className="text-sm font-medium text-slate-300">Сцена обложки</p>
+        <p className="mt-1 text-xs leading-relaxed text-slate-500">
+          Как у Aidentika: товар встраивается в фотореалистичную сцену, а не накладывается
+          поверх фона. По умолчанию сцена подбирается по категории товара.
+        </p>
+        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+          <button
+            type="button"
+            onClick={() => setCoverConcept("auto")}
+            className={`rounded-lg border px-3 py-2 text-left transition ${
+              coverConcept === "auto"
+                ? "border-brand-500 bg-brand-500/10"
+                : "border-slate-700 hover:border-slate-500"
+            }`}
+          >
+            <span className="block text-xs font-medium text-slate-200">Авто</span>
+            <span className="mt-0.5 block text-[10px] leading-snug text-slate-500">
+              По категории товара
+            </span>
+          </button>
+          {COVER_CONCEPTS.map((concept) => (
+            <button
+              key={concept.id}
+              type="button"
+              onClick={() => setCoverConcept(concept.id)}
+              className={`rounded-lg border px-3 py-2 text-left transition ${
+                coverConcept === concept.id
+                  ? "border-brand-500 bg-brand-500/10"
+                  : "border-slate-700 hover:border-slate-500"
+              }`}
+            >
+              <span className="block text-xs font-medium text-slate-200">{concept.label}</span>
+              <span className="mt-0.5 block text-[10px] leading-snug text-slate-500">
+                {concept.description}
+              </span>
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="mt-4 rounded-lg border border-dashed border-slate-700 bg-slate-950/60 p-4">

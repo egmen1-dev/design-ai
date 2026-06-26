@@ -18,6 +18,7 @@ import { renderHtmlToImage } from "@/lib/puppeteer";
 import { bufferToDataUrl } from "@/lib/background-removal";
 import {
   parseProductImageDataUrl,
+  processProductImageForCover,
   processProductImageForGeneration,
 } from "@/lib/product-image-sd";
 import type { CompositingHints, DesignBrief } from "@/lib/design-brief/schema";
@@ -32,6 +33,11 @@ import { resolveMarketplaceAccent } from "@/lib/accent-color";
 import { analyzeProductPrompt } from "@/lib/product-analysis";
 import { generateComposition } from "@/lib/design";
 import { objectScaleFromHook } from "@/lib/design-process/visual-hook";
+import type { CoverConceptId } from "@/lib/cover-concepts";
+import {
+  enrichBackgroundWithConcept,
+  resolveCoverConcept,
+} from "@/lib/cover-concepts";
 import { PIPELINE_VERSION } from "@/lib/pipeline-version";
 
 export type GenerateInfographicInput = {
@@ -43,6 +49,7 @@ export type GenerateInfographicInput = {
   existingImageId?: string;
   backgroundSeed?: string;
   ollamaContext?: OllamaSdContext;
+  coverConcept?: CoverConceptId;
 };
 
 export type GenerateInfographicResult = {
@@ -101,7 +108,7 @@ async function loadProductCutout(
   }
 
   const { buffer } = parseProductImageDataUrl(productImage);
-  return processProductImageForGeneration(buffer, userId);
+  return processProductImageForCover(buffer, userId);
 }
 
 export async function handleGenerateInfographic(
@@ -188,13 +195,50 @@ export async function handleGenerateInfographic(
       aiSource = ollama.source;
     }
 
-    let backgroundUrl: string | null = null;
-    let backgroundSource: "sd" | "fallback" = "sd";
-    let backgroundDataUrl: string | undefined;
-
     const variationSeed =
       input.backgroundSeed ??
       `gen-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+
+    const analysis = analyzeProductPrompt(input.prompt);
+    const coverConcept = resolveCoverConcept(input.coverConcept, analysis.category);
+    sdData.backgroundPrompt = enrichBackgroundWithConcept(
+      sdData.backgroundPrompt,
+      coverConcept,
+    );
+    compositingHints = {
+      ...compositingHints,
+      lightDirection: coverConcept.lightDirection,
+      lightTemperature: Number(coverConcept.lightTemperature.replace(/\D/g, "")) || 5500,
+      shadowType: coverConcept.shadowType,
+      reflection: coverConcept.reflection,
+      objectScale: compositingHints?.objectScale ?? designBrief?.objectScale ?? 0.78,
+    };
+
+    const visualHook = designBrief?.designProcess?.visualHook ?? designBrief?.visualHook;
+
+    const compositionResult =
+      sdData.layout === "marketplace"
+        ? generateComposition({
+            category: analysis.category,
+            layout: "marketplace",
+            bulletCount: sdData.bullets.length,
+            hasLeftPanel: true,
+            hasRightSidebar: true,
+            objectScale: objectScaleFromHook(
+              visualHook,
+              compositingHints.objectScale,
+            ),
+            styleHint: input.style ?? (referenceContext?.hasStrongReference ? referenceContext.style : undefined),
+            seed: variationSeed,
+            visualHook,
+          })
+        : null;
+
+    const compositionLayout = compositionResult?.layout;
+
+    let backgroundUrl: string | null = null;
+    let backgroundSource: "sd" | "fallback" = "sd";
+    let backgroundDataUrl: string | undefined;
 
     try {
       if (!process.env.HF_API_KEY) {
@@ -210,7 +254,6 @@ export async function handleGenerateInfographic(
       backgroundSource = "fallback";
     }
 
-    // Товар вшивается в фон через sharp (тень + без ореола), текст — поверх в HTML
     const infographicData = sdDataToInfographic(sdData, input.prompt);
     const { font: libraryFont, badge: libraryBadge } = await resolveLibraryAssets(
       sdData.fontId,
@@ -222,10 +265,11 @@ export async function handleGenerateInfographic(
         : buildFallbackGradient(sdData.colors);
 
     let mergedImageDataUrl: string | undefined;
-    const useHtmlProduct = sdData.layout === "marketplace";
+    const usePhotorealMerge =
+      sdData.layout === "marketplace" && process.env.MARKETPLACE_HTML_PRODUCT !== "1";
 
     if (
-      !useHtmlProduct &&
+      usePhotorealMerge &&
       backgroundUrl &&
       backgroundSource === "sd" &&
       productRender.cutout &&
@@ -236,41 +280,40 @@ export async function handleGenerateInfographic(
           backgroundUrl,
           productCutoutPath,
           {
-            layout: sdData.layout === "marketplace" ? "marketplace" : "center",
+            layout: "marketplace",
+            compositingHints,
+            reflection: compositingHints?.reflection,
+            compositionLayout,
+          },
+        );
+        mergedImageDataUrl = await mergedToDataUrl(mergedUrl);
+      } catch (error) {
+        console.warn("Photoreal merge failed, HTML overlay fallback:", error);
+      }
+    } else if (
+      sdData.layout !== "marketplace" &&
+      backgroundUrl &&
+      backgroundSource === "sd" &&
+      productRender.cutout &&
+      productCutoutPath
+    ) {
+      try {
+        const mergedUrl = await mergeProductWithBackground(
+          backgroundUrl,
+          productCutoutPath,
+          {
+            layout: "center",
             compositingHints,
             reflection: compositingHints?.reflection,
           },
         );
         mergedImageDataUrl = await mergedToDataUrl(mergedUrl);
       } catch (error) {
-        console.warn("Product merge failed, HTML overlay fallback:", error);
+        console.warn("Product merge failed:", error);
       }
     }
 
-    const analysis = analyzeProductPrompt(input.prompt);
     const accentHex = resolveMarketplaceAccent(sdData.colors, analysis.category);
-
-    const visualHook = designBrief?.designProcess?.visualHook ?? designBrief?.visualHook;
-
-    const compositionResult =
-      sdData.layout === "marketplace"
-        ? generateComposition({
-            category: analysis.category,
-            layout: "marketplace",
-            bulletCount: sdData.bullets.length,
-            hasLeftPanel: true,
-            hasRightSidebar: true,
-            objectScale: objectScaleFromHook(
-              visualHook,
-              compositingHints?.objectScale ?? designBrief?.objectScale,
-            ),
-            styleHint: input.style ?? (referenceContext?.hasStrongReference ? referenceContext.style : undefined),
-            seed: variationSeed,
-            visualHook,
-          })
-        : null;
-
-    const compositionLayout = compositionResult?.layout;
 
     const compositionMeta = compositionResult
       ? {

@@ -7,7 +7,8 @@ import {
   PRODUCT_BOTTOM_PAD_PX,
   PRODUCT_TARGET_MAX_HEIGHT_PX,
 } from "@/lib/product-render-policy";
-import { WB_COVER } from "@/lib/composition/canvas";
+import { WB_COVER, xPct, yPct } from "@/lib/composition/canvas";
+import type { CompositionLayout } from "@/lib/composition/types";
 import type { CompositingHints } from "@/lib/design-brief/schema";
 import { matchProductToBackground } from "@/lib/compositing/color-match";
 
@@ -21,6 +22,7 @@ export type MergeOptions = {
   reflection?: boolean;
   layout?: "center" | "marketplace";
   compositingHints?: CompositingHints;
+  compositionLayout?: CompositionLayout;
 };
 
 async function loadImageBuffer(source: string): Promise<Buffer> {
@@ -87,26 +89,23 @@ function prepareProductLayer(
   productBuffer: Buffer,
   layout: MergeOptions["layout"],
   scale = 1,
+  rotationDeg = 0,
+  maxWidthPx?: number,
+  maxHeightPx?: number,
 ): Promise<{ buffer: Buffer; width: number; height: number }> {
-  const maxW = Math.round(PRODUCT_MAX_W * scale);
-  const maxH = Math.round(PRODUCT_MAX_H * scale);
-  const pipeline = sharp(productBuffer)
+  const maxW = maxWidthPx ?? Math.round(PRODUCT_MAX_W * scale);
+  const maxH = maxHeightPx ?? Math.round(PRODUCT_MAX_H * scale);
+  let pipeline = sharp(productBuffer)
     .ensureAlpha()
     .resize(maxW, maxH, {
       fit: "inside",
       withoutEnlargement: false,
     });
 
-  if (layout === "marketplace") {
-    return pipeline
-      .rotate(-17, { background: { r: 0, g: 0, b: 0, alpha: 0 } })
-      .png()
-      .toBuffer({ resolveWithObject: true })
-      .then((resized) => ({
-        buffer: resized.data,
-        width: resized.info.width,
-        height: resized.info.height,
-      }));
+  if (layout === "marketplace" && rotationDeg === 0) {
+    pipeline = pipeline.rotate(-12, { background: { r: 0, g: 0, b: 0, alpha: 0 } });
+  } else if (rotationDeg !== 0) {
+    pipeline = pipeline.rotate(rotationDeg, { background: { r: 0, g: 0, b: 0, alpha: 0 } });
   }
 
   return pipeline.png().toBuffer({ resolveWithObject: true }).then((resized) => ({
@@ -207,12 +206,30 @@ export async function mergeProductWithBackground(
   const productMatched = hints
     ? await matchProductToBackground(productRaw, bgPrepared, hints)
     : productRaw;
-  const product = await prepareProductLayer(productMatched, layout, scaleFactor);
+
+  const comp = options?.compositionLayout?.product;
+  const rotationDeg = comp?.rotationDeg ?? 0;
+  const targetW = comp ? Math.round(xPct(comp.maxWidthPct)) : undefined;
+  const targetH = comp ? Math.round(yPct(comp.maxHeightPct)) : undefined;
+
+  const product = await prepareProductLayer(
+    productMatched,
+    layout,
+    scaleFactor,
+    rotationDeg,
+    targetW,
+    targetH,
+  );
 
   let productLeft = Math.round((CANVAS_W - product.width) / 2);
   let productTop = CANVAS_H - BOTTOM_PAD - product.height;
 
-  if (layout === "marketplace") {
+  if (comp) {
+    productLeft = Math.round(xPct(comp.left));
+    productTop = Math.round(yPct(comp.top));
+    productLeft = Math.min(Math.max(0, productLeft), CANVAS_W - product.width);
+    productTop = Math.min(Math.max(0, productTop), CANVAS_H - product.height);
+  } else if (layout === "marketplace") {
     productLeft = Math.round((CANVAS_W - product.width) / 2) + Math.round(CANVAS_W * 0.06);
     productTop = CANVAS_H - BOTTOM_PAD - product.height - Math.round(CANVAS_H * 0.006);
   }
@@ -224,7 +241,9 @@ export async function mergeProductWithBackground(
     hints?.shadowType,
   );
   let shadowLeft = Math.round((CANVAS_W - shadow.width) / 2);
-  if (layout === "marketplace") {
+  if (comp) {
+    shadowLeft = productLeft + Math.round((product.width - shadow.width) / 2);
+  } else if (layout === "marketplace") {
     shadowLeft += Math.round(CANVAS_W * 0.05);
   }
   const shadowTop = productTop + product.height - shadow.offsetY;

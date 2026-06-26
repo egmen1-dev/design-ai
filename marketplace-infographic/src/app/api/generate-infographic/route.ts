@@ -39,6 +39,7 @@ export async function POST(request: NextRequest) {
       prompt: parsed.data.prompt,
       productImage: parsed.data.productImage,
       style: parsed.data.style,
+      coverConcept: parsed.data.coverConcept,
       ollamaContext: { library, examples },
     });
 
