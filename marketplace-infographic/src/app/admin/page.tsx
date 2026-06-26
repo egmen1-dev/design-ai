@@ -78,9 +78,14 @@ export default async function AdminPage() {
             Только реальные пользователи — ваши тестовые генерации скрыты
           </p>
         </div>
-        <Link href="/" className="text-sm text-brand-500 hover:underline">
-          ← На главную
-        </Link>
+        <div className="flex gap-4">
+          <Link href="/" className="text-sm text-brand-500 hover:underline">
+            ← На главную
+          </Link>
+          <Link href="/admin/assets" className="text-sm text-amber-400 hover:text-amber-300">
+            Библиотека ассетов →
+          </Link>
+        </div>
       </header>
 
       <div className="mb-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

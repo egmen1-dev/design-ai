@@ -102,3 +102,30 @@ model BackgroundCache {
   imageUrl   String
   createdAt  DateTime @default(now())
 }
+
+enum FontCategory {
+  sans_serif
+  serif
+  display
+  monospace
+}
+
+model LibraryFont {
+  id         String       @id @default(uuid())
+  name       String
+  cssImport  String       @db.Text
+  fontFamily String
+  category   FontCategory
+  styleTags  String[]
+  createdAt  DateTime     @default(now())
+}
+
+model LibraryBadge {
+  id           String   @id @default(uuid())
+  name         String
+  htmlTemplate String   @db.Text
+  svgTemplate  String?  @db.Text
+  pngUrl       String?
+  styleTags    String[]
+  createdAt    DateTime @default(now())
+}
