@@ -1,5 +1,6 @@
 import { DEFAULT_STYLE, STYLE_KEYS, type InfographicStyle } from "@/lib/design-trends";
 import type { CompositingHints, DesignBrief } from "@/lib/design-brief/schema";
+import type { CompositionResult } from "@/lib/design/types";
 import type { InfographicSdInput } from "@/lib/validations";
 import { sanitizeSdInput } from "@/lib/sd-sanitize";
 
@@ -9,6 +10,7 @@ export type StoredSdPayload = {
   brief?: DesignBrief;
   compositingHints?: CompositingHints;
   qualityScore?: number;
+  composition?: Pick<CompositionResult, "dna" | "scenarioId" | "score" | "seed" | "attempts">;
 };
 
 export function packSdPayload(
@@ -18,6 +20,7 @@ export function packSdPayload(
     brief?: DesignBrief;
     compositingHints?: CompositingHints;
     qualityScore?: number;
+    composition?: StoredSdPayload["composition"];
   },
 ): string {
   return JSON.stringify({
@@ -26,6 +29,7 @@ export function packSdPayload(
     brief: extras?.brief,
     compositingHints: extras?.compositingHints,
     qualityScore: extras?.qualityScore,
+    composition: extras?.composition,
   } satisfies StoredSdPayload);
 }
 
@@ -47,6 +51,7 @@ export function unpackSdPayload(json: string): StoredSdPayload {
       brief: record.brief,
       compositingHints: record.compositingHints,
       qualityScore: record.qualityScore,
+      composition: record.composition,
     };
   }
   return {

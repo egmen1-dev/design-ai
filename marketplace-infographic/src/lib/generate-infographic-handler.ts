@@ -30,7 +30,7 @@ import {
 } from "@/lib/image-compositor";
 import { resolveMarketplaceAccent } from "@/lib/accent-color";
 import { analyzeProductPrompt } from "@/lib/product-analysis";
-import { computeComposition } from "@/lib/composition";
+import { generateComposition } from "@/lib/design";
 import { PIPELINE_VERSION } from "@/lib/pipeline-version";
 
 export type GenerateInfographicInput = {
@@ -234,17 +234,37 @@ export async function handleGenerateInfographic(
     const analysis = analyzeProductPrompt(input.prompt);
     const accentHex = resolveMarketplaceAccent(sdData.colors, analysis.category);
 
-    const compositionLayout =
+    const compositionResult =
       sdData.layout === "marketplace"
-        ? computeComposition({
+        ? generateComposition({
             category: analysis.category,
             layout: "marketplace",
             bulletCount: sdData.bullets.length,
             hasLeftPanel: true,
             hasRightSidebar: true,
             objectScale: compositingHints?.objectScale,
+            styleHint: appliedStyle,
+            seed: variationSeed,
           })
-        : undefined;
+        : null;
+
+    const compositionLayout = compositionResult?.layout;
+
+    const compositionMeta = compositionResult
+      ? {
+          dna: compositionResult.dna,
+          scenarioId: compositionResult.scenarioId,
+          score: compositionResult.score,
+          seed: compositionResult.seed,
+          attempts: compositionResult.attempts,
+        }
+      : undefined;
+
+    if (compositionResult && compositionResult.score.total < 90) {
+      console.warn(
+        `[composition] best score ${compositionResult.score.total}/100 after ${compositionResult.attempts} attempts`,
+      );
+    }
 
     const html = renderInfographicHtml(infographicData, {
       style: appliedStyle,
@@ -278,6 +298,7 @@ export async function handleGenerateInfographic(
             brief: designBrief,
             compositingHints,
             qualityScore,
+            composition: compositionMeta,
           }),
         },
       });
@@ -306,6 +327,7 @@ export async function handleGenerateInfographic(
           brief: designBrief,
           compositingHints,
           qualityScore,
+          composition: compositionMeta,
         }),
         backgroundUrl,
         productCutout: productCutoutPath,

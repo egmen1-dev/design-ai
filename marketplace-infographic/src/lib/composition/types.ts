@@ -56,6 +56,11 @@ export type CompositionLayout = {
   valid: boolean;
   issues: string[];
   adjustments: string[];
+  /** Design DNA и сценарий этой генерации */
+  scenarioId?: string;
+  dna?: import("@/lib/design/types").DesignDNA;
+  seed?: string;
+  score?: number;
 };
 
 export type CompositionInput = {
@@ -66,4 +71,6 @@ export type CompositionInput = {
   hasRightSidebar: boolean;
   hasLogo?: boolean;
   objectScale?: number;
+  styleHint?: import("@/lib/design-trends").InfographicStyle;
+  seed?: string;
 };

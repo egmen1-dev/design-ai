@@ -1,2 +1,2 @@
 /** Версия SD-пайплайна — проверяйте через GET /api/health */
-export const PIPELINE_VERSION = "v7-composition-engine-wb900x1200";
+export const PIPELINE_VERSION = "v8-intelligent-composition";
