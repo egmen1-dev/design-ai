@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { STYLE_KEYS, STYLE_LABELS } from "@/lib/design-trends";
 import type { FontCategoryApi } from "@/lib/library-validations";
-import { suggestGoogleFontCss } from "@/lib/reference-analyzer";
+import { suggestGoogleFontCss } from "@/lib/google-font-suggest";
 
 const FONT_CATEGORIES: FontCategoryApi[] = [
   "sans-serif",

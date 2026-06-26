@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
 import { promisify } from "node:util";
+import "server-only";
 import potrace from "potrace";
 import sharp from "sharp";
 import { createWorker } from "tesseract.js";
@@ -170,18 +171,6 @@ export async function detectFontFromImage(imagePath: string): Promise<FontDetect
   return {
     text,
     fontName,
-  };
-}
-
-export function suggestGoogleFontCss(fontName: string): {
-  cssImport: string;
-  fontFamily: string;
-} {
-  const family = fontName.trim();
-  const query = family.replace(/\s+/g, "+");
-  return {
-    cssImport: `<link href="https://fonts.googleapis.com/css2?family=${query}:wght@400;600;700&display=swap" rel="stylesheet">`,
-    fontFamily: `'${family}', sans-serif`,
   };
 }
 
