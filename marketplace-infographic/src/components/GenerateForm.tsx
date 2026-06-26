@@ -38,13 +38,12 @@ const TEMPLATES = [
 ];
 
 const GENERATION_STEPS = [
-  "Анализ товара и проектирование сцены",
-  "Построение композиции и safe zones",
-  "Генерация детального промпта сцены",
-  "Stable Diffusion — фотореалистичный фон",
-  "Вырезка товара и интеграция в сцену",
-  "Lighting / Color / Shadow / Reflection",
-  "Сборка инфографики и проверка качества",
+  "Creative Director: рекламная идея",
+  "Одна мысль для обложки",
+  "Композиция вокруг визуального хука",
+  "Генерация сцены (Stable Diffusion)",
+  "Интеграция товара в кадр",
+  "Художественная проверка и рендер",
 ];
 
 const HOOK_LABELS: Record<string, string> = {
@@ -85,6 +84,8 @@ export function GenerateForm() {
     unlimited?: boolean;
     aiSource?: string;
     designConcept?: string;
+    creativeMainIdea?: string;
+    oneThoughtHeadline?: string;
     visualHook?: { type: string; reason: string; confidence?: number };
     backgroundSource?: "sd" | "fallback";
     pipelineVersion?: string;
@@ -186,6 +187,8 @@ export function GenerateForm() {
         unlimited?: boolean;
         aiSource?: string;
         designConcept?: string;
+        creativeMainIdea?: string;
+        oneThoughtHeadline?: string;
         visualHook?: { type: string; reason: string; confidence?: number };
         backgroundSource?: "sd" | "fallback";
         pipelineVersion?: string;
@@ -219,6 +222,8 @@ export function GenerateForm() {
         unlimited: data.unlimited,
         aiSource: data.aiSource,
         designConcept: data.designConcept,
+        creativeMainIdea: data.creativeMainIdea,
+        oneThoughtHeadline: data.oneThoughtHeadline,
         visualHook: data.visualHook,
         backgroundSource: data.backgroundSource,
         pipelineVersion: data.pipelineVersion,
@@ -387,8 +392,8 @@ export function GenerateForm() {
       <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950/50 px-4 py-3">
         <p className="text-sm font-medium text-slate-300">Сцена обложки</p>
         <p className="mt-1 text-xs leading-relaxed text-slate-500">
-          Scene-first пайплайн: сначала проектируется сцена (свет, перспектива, safe zones),
-          затем товар встраивается в неё через lighting/color matching — как при реальной съёмке.
+          Creative Director сначала придумывает рекламную историю (не вёрстку), затем на обложке
+          остаётся одна мысль: заголовок + одна цифра + компактный бейдж.
         </p>
         <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
           <button
@@ -531,6 +536,16 @@ export function GenerateForm() {
                   <span className="ml-2 text-emerald-500">· {result.pipelineVersion}</span>
                 )}
               </p>
+              {result.oneThoughtHeadline && (
+                <p className="mt-1 text-sm font-medium text-slate-200">
+                  «{result.oneThoughtHeadline}»
+                </p>
+              )}
+              {result.creativeMainIdea && (
+                <p className="mt-0.5 text-xs text-slate-500">
+                  Идея: <span className="text-slate-300">{result.creativeMainIdea}</span>
+                </p>
+              )}
               {result.designConcept && (
                 <p className="mt-1 text-xs text-slate-500">
                   Концепция: <span className="text-slate-300">{result.designConcept}</span>

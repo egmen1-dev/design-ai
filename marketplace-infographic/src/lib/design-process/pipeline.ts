@@ -111,6 +111,7 @@ export function applyPosterRules(
     bullets: [heroBullet, ...ot.deferredSpecs],
     benefits: [heroBullet, ...ot.deferredSpecs],
     objectScale: Math.max(0.68, brief.objectScale ?? 0.72),
+    sceneNarrative: creative.sceneNarrative,
     backgroundPrompt: `${creative.sceneNarrative}, ${brief.backgroundPrompt ?? ""}`.slice(0, 480),
     decorations: [],
     glassEffects: true,

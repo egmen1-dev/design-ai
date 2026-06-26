@@ -69,6 +69,8 @@ export type GenerateInfographicResult = {
   backgroundSource: "sd" | "fallback";
   appliedStyle?: InfographicStyle;
   designConcept?: string;
+  creativeMainIdea?: string;
+  oneThoughtHeadline?: string;
   visualHook?: { type: string; reason: string; confidence?: number };
   pipelineVersion: string;
   qualityScore?: number;
@@ -79,6 +81,7 @@ function briefMeta(brief?: DesignBrief) {
   return {
     designConcept: brief?.creativeConcept?.title ?? brief?.designConcept ?? brief?.designProcess?.stage2?.concept,
     creativeMainIdea: brief?.creativeConcept?.mainIdea,
+    oneThoughtHeadline: brief?.oneThought?.headline,
     visualHook: hook
       ? { type: hook.type, reason: brief?.creativeConcept?.visualHook ?? hook.reason, confidence: hook.confidence }
       : brief?.creativeConcept
@@ -92,7 +95,7 @@ function creativeFromBrief(brief?: DesignBrief): CreativeDirectorResult | undefi
   return {
     creativeConcept: brief.creativeConcept,
     oneThought: brief.oneThought,
-    sceneNarrative: brief.backgroundPrompt?.slice(0, 400) ?? "",
+    sceneNarrative: brief.sceneNarrative ?? brief.backgroundPrompt?.slice(0, 400) ?? "",
   };
 }
 
@@ -281,22 +284,26 @@ export async function handleGenerateInfographic(
     compositingHints = sceneToCompositingHints(scenePlan, objectScale);
 
     // ── 2. Composition Engine — вокруг рекламной идеи ───────────────
+    const compositionBase = {
+      category: analysis.category,
+      layout: "marketplace" as const,
+      bulletCount: 1,
+      hasRightSidebar: false,
+      styleHint:
+        input.style ??
+        (referenceContext?.hasStrongReference ? referenceContext.style : undefined),
+      visualHook,
+      scenarioId: scenePlan.compositionScenario,
+      productSafeZone: scenePlan.productSafeZone,
+    };
+
     let compositionResult =
       sdData.layout === "marketplace"
         ? generateComposition({
-            category: analysis.category,
-            layout: "marketplace",
-            bulletCount: 1,
+            ...compositionBase,
             hasLeftPanel: true,
-            hasRightSidebar: false,
             objectScale,
-            styleHint:
-              input.style ??
-              (referenceContext?.hasStrongReference ? referenceContext.style : undefined),
             seed: variationSeed,
-            visualHook,
-            scenarioId: scenePlan.compositionScenario,
-            productSafeZone: scenePlan.productSafeZone,
           })
         : null;
 
@@ -307,31 +314,31 @@ export async function handleGenerateInfographic(
         compositionLayout: compositionResult.layout,
         elementCount: 3,
       });
-      if (!artistic.passed) {
+
+      const maxArtisticAttempts = 3;
+      let attemptObjectScale = objectScale;
+      let hasLeftPanel = true;
+
+      for (let attempt = 1; !artistic.passed && attempt < maxArtisticAttempts; attempt++) {
+        attemptObjectScale = Math.min(0.75, attemptObjectScale + 0.03);
+        if (attempt >= maxArtisticAttempts - 1) hasLeftPanel = false;
+
         compositionResult = generateComposition({
-          category: analysis.category,
-          layout: "marketplace",
-          bulletCount: 1,
-          hasLeftPanel: true,
-          hasRightSidebar: false,
-          objectScale: Math.min(0.75, objectScale + 0.04),
-          styleHint:
-            input.style ??
-            (referenceContext?.hasStrongReference ? referenceContext.style : undefined),
-          seed: `${variationSeed}:artistic-retry`,
-          visualHook,
-          scenarioId: scenePlan.compositionScenario,
-          productSafeZone: scenePlan.productSafeZone,
+          ...compositionBase,
+          hasLeftPanel,
+          objectScale: attemptObjectScale,
+          seed: `${variationSeed}:artistic-retry-${attempt}`,
         });
         artistic = evaluateArtistic({
           creativeConcept: creativeDirector.creativeConcept,
           oneThought: creativeDirector.oneThought,
           compositionLayout: compositionResult.layout,
-          elementCount: 3,
+          elementCount: hasLeftPanel ? 3 : 2,
         });
       }
+
       if (!artistic.passed) {
-        console.warn(`[artistic] score ${artistic.total}/100`, artistic);
+        console.warn(`[artistic] score ${artistic.total}/100 after retries`, artistic);
       }
     }
 

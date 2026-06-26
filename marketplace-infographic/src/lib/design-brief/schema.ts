@@ -120,6 +120,7 @@ export const designBriefSchema = z.object({
   designConcept: z.string().max(300).optional(),
   creativeConcept: creativeConceptSchema.optional(),
   oneThought: oneThoughtSchema.optional(),
+  sceneNarrative: z.string().max(400).optional(),
   deferredBullets: z.array(z.string().max(80)).max(6).optional(),
   designProcess: designProcessSchema.optional(),
   visualHook: visualHookSchema.optional(),
