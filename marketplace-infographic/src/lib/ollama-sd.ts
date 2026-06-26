@@ -22,6 +22,7 @@ import {
   runDesignProcessPipeline,
 } from "@/lib/design-process/pipeline";
 import { buildMockCreativeDirector } from "@/lib/design-process/creative-concept";
+import { buildConceptVariants } from "@/lib/design-process/creative-concept";
 import { objectScaleFromHook } from "@/lib/design-process/visual-hook";
 import {
   filterConsistentBullets,
@@ -39,12 +40,17 @@ import type { InfographicSdInput } from "@/lib/validations";
 import { applyStyleToSdColors } from "@/lib/sd-style-theme";
 import { getOllamaStatus } from "./ai-status";
 
+import type { ArtDirectorModeId } from "@/lib/design-process/art-director-modes";
+import type { CreativeDirectorResult } from "@/lib/design-process/creative-concept";
+
 export type InfographicSdData = InfographicSdInput;
 
 export type OllamaSdContext = {
   library?: DesignLibrary;
   examples?: Awaited<ReturnType<typeof selectRelevantExamples>>;
   referenceContext?: ResolvedReferenceContext;
+  userId?: string;
+  artDirectorMode?: ArtDirectorModeId;
 };
 
 export type GenerationResult = {
@@ -53,6 +59,8 @@ export type GenerationResult = {
   compositingHints: CompositingHints;
   source: "ollama" | "mock";
   qualityScore: number;
+  conceptRenderQueue?: CreativeDirectorResult[];
+  conceptCandidates?: number;
 };
 
 function applyAssetSelection(
@@ -75,9 +83,10 @@ function buildMockBrief(
   style: InfographicStyle,
   library?: DesignLibrary,
   referenceContext?: ResolvedReferenceContext,
+  artDirectorMode?: ArtDirectorModeId,
 ): DesignBrief {
   const analysis = analyzeProductPrompt(prompt);
-  const creative = buildMockCreativeDirector(prompt, analysis);
+  const creative = buildMockCreativeDirector(prompt, analysis, artDirectorMode ?? "marketplace_ctr");
   const foundation = buildMockFoundation(prompt, analysis.category);
   const isTrimmer = analysis.category === "garden_tools";
   const isGenerator = /генератор|generator/i.test(prompt);
@@ -153,9 +162,11 @@ export async function generateSdInfographicData(
   const enrichedContext: OllamaSdContext = { ...context, referenceContext };
   const analysis = analyzeProductPrompt(prompt);
   const cacheId = cacheKey([
-    "brief-v13-cd2",
+    "brief-v14-multi",
     prompt.slice(0, 80),
     style ?? "auto",
+    context.artDirectorMode ?? "marketplace_ctr",
+    context.userId?.slice(0, 8) ?? "anon",
     referenceContext.topExample?.id ?? "none",
   ]);
 
@@ -164,7 +175,11 @@ export async function generateSdInfographicData(
 
   const status = await getOllamaStatus();
 
-  const finalize = (brief: DesignBrief, source: "ollama" | "mock"): GenerationResult => {
+  const finalize = (
+    brief: DesignBrief,
+    source: "ollama" | "mock",
+    extras?: Pick<GenerationResult, "conceptRenderQueue" | "conceptCandidates">,
+  ): GenerationResult => {
     let sd = briefToSdInput(brief, prompt);
     sd = applyReferenceToSdData(sd, referenceContext);
     if (!referenceContext.hasStrongReference && style) {
@@ -178,25 +193,40 @@ export async function generateSdInfographicData(
       compositingHints: briefToCompositingHints(brief),
       source,
       qualityScore: evaluateDesignBrief(brief).score,
+      conceptRenderQueue: extras?.conceptRenderQueue,
+      conceptCandidates: extras?.conceptCandidates,
     };
     cacheSet(cacheId, result);
     return result;
   };
 
   if (status.mockMode || !status.available) {
-    const brief = buildMockBrief(prompt, style ?? DEFAULT_STYLE, context.library, referenceContext);
-    return finalize(brief, "mock");
+    const brief = buildMockBrief(
+      prompt,
+      style ?? DEFAULT_STYLE,
+      context.library,
+      referenceContext,
+      context.artDirectorMode,
+    );
+    const variants = buildConceptVariants(prompt, analysis, context.artDirectorMode ?? "marketplace_ctr");
+    return finalize(brief, "mock", {
+      conceptRenderQueue: variants,
+      conceptCandidates: variants.length,
+    });
   }
 
   try {
-    const { brief } = await runDesignProcessPipeline({
+    const pipelineResult = await runDesignProcessPipeline({
       productPrompt: prompt,
       style,
       analysis,
       library: context.library,
       examples: context.examples,
       referenceContext,
+      artDirectorMode: context.artDirectorMode,
+      userId: context.userId,
     });
+    const { brief } = pipelineResult;
 
     const withAssets = applyAssetSelection(
       brief,
@@ -204,13 +234,26 @@ export async function generateSdInfographicData(
       analysis,
       style ?? DEFAULT_STYLE,
     );
-    const result = finalize(withAssets, "ollama");
+    const result = finalize(withAssets, "ollama", {
+      conceptRenderQueue: pipelineResult.conceptRenderQueue,
+      conceptCandidates: pipelineResult.conceptCandidates,
+    });
     cacheSet(cacheId, result);
     return result;
   } catch (error) {
     console.warn("Ollama design process failed, mock fallback:", error);
-    const brief = buildMockBrief(prompt, style ?? DEFAULT_STYLE, context.library, referenceContext);
-    return finalize(brief, "mock");
+    const brief = buildMockBrief(
+      prompt,
+      style ?? DEFAULT_STYLE,
+      context.library,
+      referenceContext,
+      context.artDirectorMode,
+    );
+    const variants = buildConceptVariants(prompt, analysis, context.artDirectorMode ?? "marketplace_ctr");
+    return finalize(brief, "mock", {
+      conceptRenderQueue: variants,
+      conceptCandidates: variants.length,
+    });
   }
 }
 

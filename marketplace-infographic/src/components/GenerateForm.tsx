@@ -6,6 +6,7 @@ import { MarketplacePreview } from "@/components/MarketplacePreview";
 import { PromptHints } from "@/components/PromptHints";
 
 import { COVER_CONCEPTS, type CoverConceptId } from "@/lib/cover-concepts";
+import { ART_DIRECTOR_MODES, type ArtDirectorModeId } from "@/lib/design-process/art-director-modes";
 
 const MAX_IMAGE_BYTES = 4 * 1024 * 1024;
 
@@ -38,12 +39,12 @@ const TEMPLATES = [
 ];
 
 const GENERATION_STEPS = [
-  "Creative Director: 6–8 рекламных концептов",
-  "Оценка и выбор лучшей идеи",
-  "Art Director: сцена и композиция",
-  "Генерация фона (Stable Diffusion)",
-  "Интеграция товара: свет, тени, grain",
-  "Художественная проверка и рендер",
+  "Анализ товара",
+  "Генерация 8 концепций",
+  "Оценка и выбор лучшей",
+  "Scene Planner + композиция",
+  "Stable Diffusion + композитинг",
+  "Финальная проверка и рендер",
 ];
 
 const HOOK_LABELS: Record<string, string> = {
@@ -71,6 +72,7 @@ export function GenerateForm() {
   const [productImage, setProductImage] = useState<string | null>(null);
   const [productFileName, setProductFileName] = useState<string | null>(null);
   const [coverConcept, setCoverConcept] = useState<CoverConceptId | "auto">("auto");
+  const [artDirectorMode, setArtDirectorMode] = useState<ArtDirectorModeId>("marketplace_ctr");
   const [loading, setLoading] = useState(false);
   const [regenLoading, setRegenLoading] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
@@ -88,6 +90,8 @@ export function GenerateForm() {
     oneThoughtHeadline?: string;
     visualHook?: { type: string; reason: string; confidence?: number };
     backgroundSource?: "sd" | "fallback";
+    selectedArchetypeId?: string;
+    conceptCandidates?: number;
     pipelineVersion?: string;
   } | null>(null);
 
@@ -172,6 +176,7 @@ export function GenerateForm() {
           prompt,
           productImage,
           ...(coverConcept !== "auto" ? { coverConcept } : {}),
+          artDirectorMode,
         }),
         signal: controller.signal,
       });
@@ -189,6 +194,8 @@ export function GenerateForm() {
         designConcept?: string;
         creativeMainIdea?: string;
         oneThoughtHeadline?: string;
+        selectedArchetypeId?: string;
+        conceptCandidates?: number;
         visualHook?: { type: string; reason: string; confidence?: number };
         backgroundSource?: "sd" | "fallback";
         pipelineVersion?: string;
@@ -227,6 +234,8 @@ export function GenerateForm() {
         visualHook: data.visualHook,
         backgroundSource: data.backgroundSource,
         pipelineVersion: data.pipelineVersion,
+        selectedArchetypeId: data.selectedArchetypeId,
+        conceptCandidates: data.conceptCandidates,
       });
     } catch (err) {
       setError(networkErrorMessage(err));
@@ -390,6 +399,32 @@ export function GenerateForm() {
       </div>
 
       <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950/50 px-4 py-3">
+        <p className="text-sm font-medium text-slate-300">Режим арт-директора</p>
+        <p className="mt-1 text-xs leading-relaxed text-slate-500">
+          Система сгенерирует 8 разных концепций, оценит их и отрендерит лучшую.
+        </p>
+        <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+          {ART_DIRECTOR_MODES.map((mode) => (
+            <button
+              key={mode.id}
+              type="button"
+              onClick={() => setArtDirectorMode(mode.id)}
+              className={`rounded-lg border px-3 py-2 text-left transition ${
+                artDirectorMode === mode.id
+                  ? "border-brand-500 bg-brand-500/10"
+                  : "border-slate-700 hover:border-slate-500"
+              }`}
+            >
+              <span className="block text-xs font-medium text-slate-200">{mode.label}</span>
+              <span className="mt-0.5 block text-[10px] leading-snug text-slate-500">
+                {mode.description}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950/50 px-4 py-3">
         <p className="text-sm font-medium text-slate-300">Сцена обложки</p>
         <p className="mt-1 text-xs leading-relaxed text-slate-500">
           Creative Director сначала придумывает рекламную историю (не вёрстку), затем на обложке
@@ -549,6 +584,12 @@ export function GenerateForm() {
               {result.designConcept && (
                 <p className="mt-1 text-xs text-slate-500">
                   Концепция: <span className="text-slate-300">{result.designConcept}</span>
+                </p>
+              )}
+              {result.selectedArchetypeId && (
+                <p className="mt-0.5 text-xs text-emerald-500">
+                  Концепт: {result.selectedArchetypeId.replace(/_/g, " ")}
+                  {result.conceptCandidates ? ` · из ${result.conceptCandidates} вариантов` : ""}
                 </p>
               )}
               {result.visualHook && (

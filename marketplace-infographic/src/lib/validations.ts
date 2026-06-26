@@ -1,8 +1,13 @@
 import { z } from "zod";
 import { DEFAULT_STYLE, STYLE_KEYS } from "./design-trends";
 import { COVER_CONCEPTS, type CoverConceptId } from "./cover-concepts";
+import { ART_DIRECTOR_MODES } from "./design-process/art-director-modes";
 
 const COVER_CONCEPT_IDS = COVER_CONCEPTS.map((c) => c.id) as [CoverConceptId, ...CoverConceptId[]];
+const ART_DIRECTOR_MODE_IDS = ART_DIRECTOR_MODES.map((m) => m.id) as [
+  (typeof ART_DIRECTOR_MODES)[number]["id"],
+  ...(typeof ART_DIRECTOR_MODES)[number]["id"][],
+];
 
 export const infographicSdSchema = z.object({
   layout: z.enum(["hero", "cards", "split", "minimal", "marketplace"]).default("marketplace"),
@@ -43,6 +48,7 @@ export const generateInfographicSchema = z.object({
   /** @deprecated Стили заменены на Design DNA — поле игнорируется при генерации */
   style: z.enum(STYLE_KEYS).optional(),
   coverConcept: z.enum(COVER_CONCEPT_IDS).optional(),
+  artDirectorMode: z.enum(ART_DIRECTOR_MODE_IDS).optional(),
 });
 
 export const regenerateBackgroundSchema = z.object({

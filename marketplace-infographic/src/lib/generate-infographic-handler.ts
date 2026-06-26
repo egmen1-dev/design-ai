@@ -43,8 +43,12 @@ import type { ScenePlan } from "@/lib/design/scene-planner";
 import type { QualityValidationResult } from "@/lib/design/quality-validator";
 import { objectScaleFromHook } from "@/lib/design-process/visual-hook";
 import type { CoverConceptId } from "@/lib/cover-concepts";
+import type { ArtDirectorModeId } from "@/lib/design-process/art-director-modes";
 import { PIPELINE_VERSION } from "@/lib/pipeline-version";
-import { USE_FAST_CUTOUT } from "@/lib/pipeline-config";
+import { USE_FAST_CUTOUT, MAX_CONCEPT_RENDER_RETRIES } from "@/lib/pipeline-config";
+import { evaluateFinalQuality } from "@/lib/design/final-quality-validator";
+import { applyPosterRules } from "@/lib/design-process/pipeline";
+import { briefToSdInput } from "@/lib/design-brief/schema";
 
 export type GenerateInfographicInput = {
   userId: string;
@@ -56,6 +60,7 @@ export type GenerateInfographicInput = {
   backgroundSeed?: string;
   ollamaContext?: OllamaSdContext;
   coverConcept?: CoverConceptId;
+  artDirectorMode?: ArtDirectorModeId;
 };
 
 export type GenerateInfographicResult = {
@@ -74,6 +79,8 @@ export type GenerateInfographicResult = {
   visualHook?: { type: string; reason: string; confidence?: number };
   pipelineVersion: string;
   qualityScore?: number;
+  selectedArchetypeId?: string;
+  conceptCandidates?: number;
 };
 
 function briefMeta(brief?: DesignBrief) {
@@ -82,6 +89,8 @@ function briefMeta(brief?: DesignBrief) {
     designConcept: brief?.creativeConcept?.title ?? brief?.designConcept ?? brief?.designProcess?.stage2?.concept,
     creativeMainIdea: brief?.creativeConcept?.mainIdea,
     oneThoughtHeadline: brief?.oneThought?.headline,
+    selectedArchetypeId: brief?.selectedArchetypeId,
+    conceptCandidates: brief?.conceptRenderQueue?.length,
     visualHook: hook
       ? { type: hook.type, reason: brief?.creativeConcept?.visualHook ?? hook.reason, confidence: hook.confidence }
       : brief?.creativeConcept
@@ -109,6 +118,7 @@ function creativeFromBrief(brief?: DesignBrief): CreativeDirectorResult | undefi
     oneThought: brief.oneThought,
     sceneNarrative: brief.sceneNarrative ?? brief.backgroundPrompt?.slice(0, 400) ?? "",
     compositionScenarioId: brief.compositionScenarioId as CreativeDirectorResult["compositionScenarioId"],
+    archetypeId: brief.selectedArchetypeId as CreativeDirectorResult["archetypeId"],
   };
 }
 
@@ -190,6 +200,7 @@ export async function handleGenerateInfographic(
     let storedScenePlan: ScenePlan | undefined;
     let preloadedProductVisual: Awaited<ReturnType<typeof analyzeProductVisual>> | undefined;
     let preloadedCutout: Awaited<ReturnType<typeof loadProductCutout>> | undefined;
+    let conceptRenderQueue: CreativeDirectorResult[] = [];
 
     const variationSeed =
       input.backgroundSeed ??
@@ -252,6 +263,8 @@ export async function handleGenerateInfographic(
         generateSdInfographicData(input.prompt, styleHint, {
           ...input.ollamaContext,
           referenceContext,
+          userId: input.userId,
+          artDirectorMode: input.artDirectorMode,
         }),
         analyzeProductVisual(productBuffer),
         cutoutFromBuffer(productBuffer, input.userId),
@@ -261,6 +274,7 @@ export async function handleGenerateInfographic(
       compositingHints = ollama.compositingHints;
       qualityScore = ollama.qualityScore;
       designBrief = ollama.brief;
+      conceptRenderQueue = ollama.conceptRenderQueue ?? [];
       aiSource = ollama.source;
 
       preloadedProductVisual = productVisual;
@@ -276,8 +290,8 @@ export async function handleGenerateInfographic(
 
     const visualHook = designBrief?.designProcess?.visualHook ?? designBrief?.visualHook;
 
-    const creativeDirector = creativeFromBrief(designBrief);
-    const sceneNarrative = creativeDirector?.sceneNarrative;
+    let activeCreative = creativeFromBrief(designBrief);
+    const sceneNarrative = activeCreative?.sceneNarrative;
 
     const { analysis, scene: plannedScene } = planScene({
       prompt: input.prompt,
@@ -323,10 +337,10 @@ export async function handleGenerateInfographic(
           })
         : null;
 
-    if (creativeDirector && compositionResult) {
+    if (activeCreative && compositionResult) {
       let artistic = evaluateArtistic({
-        creativeConcept: creativeDirector.creativeConcept,
-        oneThought: creativeDirector.oneThought,
+        creativeConcept: activeCreative.creativeConcept,
+        oneThought: activeCreative.oneThought,
         compositionLayout: compositionResult.layout,
         elementCount: 3,
       });
@@ -346,8 +360,8 @@ export async function handleGenerateInfographic(
           seed: `${variationSeed}:artistic-retry-${attempt}`,
         });
         artistic = evaluateArtistic({
-          creativeConcept: creativeDirector.creativeConcept,
-          oneThought: creativeDirector.oneThought,
+          creativeConcept: activeCreative.creativeConcept,
+          oneThought: activeCreative.oneThought,
           compositionLayout: compositionResult.layout,
           elementCount: hasLeftPanel ? 3 : 2,
         });
@@ -364,8 +378,8 @@ export async function handleGenerateInfographic(
     const scenePrompt = buildSceneBackgroundPrompt(scenePlan, analysis, {
       dominantColors: productVisual?.dominantColors,
       shape: productVisual?.shape,
-      sceneNarrative: creativeDirector?.sceneNarrative,
-      visualHookStory: creativeDirector?.creativeConcept.visualHook,
+      sceneNarrative: activeCreative?.sceneNarrative,
+      visualHookStory: activeCreative?.creativeConcept.visualHook,
     });
     sdData.backgroundPrompt = scenePrompt;
 
@@ -374,6 +388,7 @@ export async function handleGenerateInfographic(
     let backgroundDataUrl: string | undefined;
     let compositeResult: Awaited<ReturnType<typeof compositeProductIntoScene>> | undefined;
     let qualityValidation: QualityValidationResult | undefined;
+    let mergedImageDataUrl: string | undefined;
     let productRender: Awaited<ReturnType<typeof loadProductCutout>> | undefined =
       preloadedCutout;
 
@@ -455,6 +470,102 @@ export async function handleGenerateInfographic(
       }
     }
 
+    let finalQuality = activeCreative
+      ? evaluateFinalQuality({
+          creative: activeCreative,
+          analysis,
+          productPrompt: input.prompt,
+          compositionLayout,
+          qualityValidation,
+          hasComposite: !!compositeResult,
+        })
+      : undefined;
+
+    let conceptRetryIndex = 0;
+    while (
+      finalQuality &&
+      !finalQuality.passed &&
+      conceptRetryIndex < MAX_CONCEPT_RENDER_RETRIES &&
+      conceptRenderQueue[conceptRetryIndex + 1]
+    ) {
+      conceptRetryIndex++;
+      const nextConcept = conceptRenderQueue[conceptRetryIndex];
+      activeCreative = nextConcept;
+      if (designBrief) {
+        designBrief = applyPosterRules(designBrief, nextConcept);
+        sdData = briefToSdInput(designBrief, input.prompt);
+      }
+
+      const retryScene = planScene({
+        prompt: input.prompt,
+        coverConceptId: input.coverConcept,
+        visualHook,
+        styleHint: input.style,
+        seed: `${variationSeed}:concept-${conceptRetryIndex}`,
+        productVisual,
+        sceneNarrative: nextConcept.sceneNarrative,
+        compositionScenarioId: nextConcept.compositionScenarioId,
+      }).scene;
+
+      const retryPrompt = buildSceneBackgroundPrompt(retryScene, analysis, {
+        dominantColors: productVisual?.dominantColors,
+        shape: productVisual?.shape,
+        sceneNarrative: nextConcept.sceneNarrative,
+        visualHookStory: nextConcept.creativeConcept.visualHook,
+      });
+      sdData.backgroundPrompt = retryPrompt;
+
+      try {
+        if (!process.env.HF_API_KEY) throw new Error("HF_API_KEY missing");
+        const url = await generateBackground(sdData.backgroundPrompt, {
+          seedSuffix: `${variationSeed}:c${conceptRetryIndex}`,
+          style: appliedStyle,
+        });
+        backgroundUrl = url;
+        backgroundDataUrl = await backgroundToDataUrl(url);
+        backgroundSource = "sd";
+
+        if (productCutoutPath && usePhotorealMerge) {
+          compositeResult = await compositeProductIntoScene(url, productCutoutPath, {
+            layout: "marketplace",
+            scene: retryScene,
+            compositionLayout,
+            objectScale,
+          });
+          mergedImageDataUrl = await mergedToDataUrl(compositeResult.mergedPath);
+          qualityValidation = validateQuality({
+            compositionLayout,
+            compositionScore: compositionResult?.score,
+            dna: compositionResult?.dna,
+            scene: retryScene,
+            lighting: compositeResult.lighting,
+            productAreaPct: compositionLayout?.metrics?.productAreaPct,
+            hasReflection: retryScene.reflectionEnabled,
+            hasShadows: true,
+          });
+        }
+      } catch (error) {
+        console.warn(`[concept-retry] ${nextConcept.archetypeId} failed:`, error);
+        break;
+      }
+
+      finalQuality = evaluateFinalQuality({
+        creative: nextConcept,
+        analysis,
+        productPrompt: input.prompt,
+        compositionLayout,
+        qualityValidation,
+        hasComposite: !!compositeResult,
+      });
+      if (finalQuality.passed) {
+        console.info(`[concept-retry] passed with ${nextConcept.archetypeId}`);
+      }
+    }
+
+    if (finalQuality && !finalQuality.passed) {
+      console.warn(`[final-quality] ${finalQuality.total}/100`, finalQuality.issues);
+    }
+
     const infographicData = sdDataToInfographic(sdData, input.prompt);
     const { font: libraryFont, badge: libraryBadge } = await resolveLibraryAssets(
       sdData.fontId,
@@ -465,8 +576,7 @@ export async function handleGenerateInfographic(
         ? TRENDS[appliedStyle].background
         : buildFallbackGradient(sdData.colors);
 
-    let mergedImageDataUrl: string | undefined;
-    if (compositeResult) {
+    if (!mergedImageDataUrl && compositeResult) {
       mergedImageDataUrl = await mergedToDataUrl(compositeResult.mergedPath);
     } else if (
       sdData.layout !== "marketplace" &&

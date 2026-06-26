@@ -40,6 +40,7 @@ export async function POST(request: NextRequest) {
       productImage: parsed.data.productImage,
       style: parsed.data.style,
       coverConcept: parsed.data.coverConcept,
+      artDirectorMode: parsed.data.artDirectorMode,
       ollamaContext: { library, examples },
     });
 

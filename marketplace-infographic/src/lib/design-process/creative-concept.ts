@@ -1,10 +1,17 @@
 import type { CompositionScenarioId } from "@/lib/design/types";
 import type { ProductAnalysis } from "@/lib/product-analysis";
 import { analyzeProductPrompt } from "@/lib/product-analysis";
-import { resolveArtDirector } from "./category-art-directors";
+import {
+  buildEightMultiConcepts,
+  multiConceptToCreativeDirector,
+  type MultiConcept,
+} from "./multi-concept";
+import type { ArtDirectorModeId } from "./art-director-modes";
 import { evaluateConcept } from "./concept-evaluator";
+import type { ConceptEvaluation } from "./concept-evaluator";
+import type { ConceptArchetypeId } from "./concept-archetypes";
 
-/** Рекламная идея карточки — до любой вёрстки (Engine 2.0) */
+/** Рекламная идея карточки — до любой вёрстки */
 export type CreativeConcept = {
   title: string;
   mainIdea: string;
@@ -33,173 +40,45 @@ export type CreativeDirectorResult = {
   sceneNarrative: string;
   compositionScenarioId?: CompositionScenarioId;
   conceptScore?: number;
+  archetypeId?: ConceptArchetypeId;
+  multiConcept?: MultiConcept;
 };
 
 export type ScoredConcept = {
   concept: CreativeDirectorResult;
-  evaluation: import("./concept-evaluator").ConceptEvaluation;
+  evaluation: ConceptEvaluation;
 };
 
-function extractSpecs(prompt: string): string[] {
-  const parts = prompt
-    .split(/[.!?\n;]+/)
-    .map((s) => s.trim())
-    .filter((s) => s.length > 4);
-  return parts.slice(0, 8);
-}
-
-function pickHeroSpec(prompt: string, specs: string[]): { value: string; label: string } {
-  const kw = prompt.toLowerCase();
-  const kwt = specs.find((s) => /\d[\d.,]*\s*квт/i.test(s));
-  if (kwt) {
-    const m = kwt.match(/(\d[\d.,]*)\s*кВт/i);
-    return { value: m?.[1] ?? "3", label: "кВт" };
-  }
-  const db = specs.find((s) => /\d+\s*дБ/i.test(s));
-  if (db) {
-    const m = db.match(/(\d+)\s*дБ/i);
-    return { value: m?.[1] ?? "65", label: "дБ" };
-  }
-  const warranty = specs.find((s) => /гарант|месяц/i.test(s));
-  if (warranty) {
-    const m = warranty.match(/(\d+)\s*месяц/i);
-    return { value: m?.[1] ?? "12", label: "мес. гарантии" };
-  }
-  const liters = specs.find((s) => /\d+\s*л(?:итр)?/i.test(s));
-  if (liters) {
-    const m = liters.match(/(\d+)\s*л/i);
-    return { value: m?.[1] ?? "15", label: "литров" };
-  }
-  if (/генератор|generator/i.test(kw)) {
-    return { value: "3", label: "кВт" };
-  }
-  const spf = specs.find((s) => /spf\s*\d+/i.test(s));
-  if (spf) {
-    const m = spf.match(/spf\s*(\d+)/i);
-    return { value: m?.[1] ?? "30", label: "SPF" };
-  }
-  const hours = specs.find((s) => /\d+\s*час/i.test(s));
-  if (hours) {
-    const m = hours.match(/(\d+)\s*час/i);
-    return { value: m?.[1] ?? "30", label: "часов" };
-  }
-  const first = specs.find((s) => /\d/.test(s));
-  if (first) {
-    const m = first.match(/(\d+(?:[.,]\d+)?)/);
-    return { value: m?.[1] ?? "1", label: first.replace(/\d+(?:[.,]\d+)?\s*/, "").slice(0, 20) || "параметр" };
-  }
-  return { value: "★", label: "премиум" };
-}
-
-function buildConceptBase(
-  analysis: ProductAnalysis,
-  prompt: string,
-  scenarioId: CompositionScenarioId,
-  variantIndex: number,
-): CreativeDirectorResult {
-  const director = resolveArtDirector(analysis.category, prompt);
-  const specs = extractSpecs(prompt);
-  const hero = pickHeroSpec(prompt, specs);
-  const deferred = specs
-    .filter(
-      (s) =>
-        !s.includes(hero.value) ||
-        !s.toLowerCase().includes(hero.label.toLowerCase().slice(0, 3)),
-    )
-    .slice(0, 5);
-
-  const env =
-    director.sceneEnvironments[variantIndex % director.sceneEnvironments.length] ??
-    director.sceneEnvironments[0];
-
-  const headlines = [
-    "Электричество всегда под рукой",
-    "Надёжность в любой ситуации",
-    "Сила, на которую можно положиться",
-    "Всегда включён",
-    "Тишина и мощность",
-    "Резерв, который не подведёт",
-    "Профессиональный выбор",
-    "Создан для вашего комфорта",
-  ];
-
-  const isGenerator = /генератор|generator/i.test(prompt);
-
-  const headline = isGenerator
-    ? headlines[variantIndex % 3]
-    : variantIndex % 2 === 0
-      ? "Профессиональный выбор"
-      : "Создан для вашего комфорта";
-
-  const mainIdea = isGenerator
-    ? "Генератор, который всегда выручит в загородном доме"
-    : `${director.label}: ${director.visualStyle.split(",")[0]}`;
-
-  const visualHook = isGenerator
-    ? `Огромный генератор на 70% кадра, ${env}, тёплый свет — ощущение надёжности`
-    : `Крупный товар 65–70% кадра, ${env}, ${director.visualStyle}`;
-
-  return {
-    creativeConcept: {
-      title: headline,
-      mainIdea,
-      visualHook,
-      emotion: director.defaultEmotion,
-      marketingGoal: "остановить взгляд и продать одну ключевую мысль",
-      reason: "Первая карточка продаёт внимание через эмоцию и визуальный хук, не таблицу характеристик",
-      targetAudience: director.targetAudience,
-      toneOfVoice: director.toneOfVoice,
-      styleKeywords: director.styleKeywords,
-      whatToSayInOneSecond: isGenerator
-        ? "Электричество всегда под рукой"
-        : `${hero.value} ${hero.label}`.trim(),
-    },
-    oneThought: {
-      question: variantIndex % 2 === 0 ? "Почему этот товар?" : "Главное преимущество?",
-      answer: hero.value,
-      answerLabel: hero.label,
-      headline,
-      badge: `${hero.value} ${hero.label}`.trim(),
-      deferredSpecs: deferred.length ? deferred : ["гарантия", "качество", "новинка"],
-    },
-    sceneNarrative: `${env}, товар на переднем плане, рекламная постановка`,
-    compositionScenarioId: scenarioId,
-  };
-}
-
-/** 6–8 детерминированных концептов по категории и сценариям */
+/** 8 архетипов → CreativeDirectorResult */
 export function buildConceptVariants(
   prompt: string,
   analysis?: ProductAnalysis,
+  modeId: ArtDirectorModeId = "marketplace_ctr",
 ): CreativeDirectorResult[] {
   const a = analysis ?? analyzeProductPrompt(prompt);
-  const director = resolveArtDirector(a.category, prompt);
-  const scenarios = director.preferredScenarios;
-  const count = Math.min(8, Math.max(6, scenarios.length + 2));
-
-  const variants: CreativeDirectorResult[] = [];
-  for (let i = 0; i < count; i++) {
-    const scenarioId = scenarios[i % scenarios.length] ?? "hero_product";
-    variants.push(buildConceptBase(a, prompt, scenarioId, i));
-  }
-  return variants;
+  return buildEightMultiConcepts(prompt, a, modeId).map((mc) =>
+    multiConceptToCreativeDirector(mc, prompt, a, modeId),
+  );
 }
 
-/** Детерминированный fallback — лучший вариант из набора */
 export function buildMockCreativeDirector(
   prompt: string,
   analysis?: ProductAnalysis,
+  modeId: ArtDirectorModeId = "marketplace_ctr",
 ): CreativeDirectorResult {
   const a = analysis ?? analyzeProductPrompt(prompt);
-  const variants = buildConceptVariants(prompt, a);
+  const variants = buildConceptVariants(prompt, a, modeId);
   const scored = variants
-    .map((concept) => ({ concept, evaluation: evaluateConcept(concept, a, prompt) }))
-    .sort((x, y) => y.evaluation.total - x.evaluation.total);
+    .map((concept, i) => ({
+      concept,
+      evaluation: evaluateConcept(concept, a, prompt, { modeId, archetypeIndex: i }),
+    }))
+    .sort((x, y) => y.evaluation.finalScore - x.evaluation.finalScore);
 
   const best = scored[0]?.concept ?? variants[0];
   return {
     ...best,
-    conceptScore: scored[0]?.evaluation.total,
+    conceptScore: scored[0]?.evaluation.finalScore,
   };
 }
 
@@ -259,5 +138,6 @@ export function sanitizeCreativeDirectorResult(
     oneThought: sanitizeOneThought(raw, fallback.oneThought),
     sceneNarrative: String(o.sceneNarrative ?? fallback.sceneNarrative).slice(0, 400),
     compositionScenarioId: scenarioId,
+    archetypeId: (o.archetypeId as ConceptArchetypeId) ?? fallback.archetypeId,
   };
 }

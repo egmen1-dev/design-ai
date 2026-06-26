@@ -9,6 +9,7 @@ export type { ScenePlan, ScenePlannerInput, ProductSafeZone, SafeZone } from "./
 export { buildSceneBackgroundPrompt } from "./prompt-builder";
 export { validateQuality, QUALITY_PASS_THRESHOLD } from "./quality-validator";
 export { evaluateArtistic, ARTISTIC_PASS_THRESHOLD } from "./artistic-evaluator";
+export { evaluateFinalQuality, FINAL_QUALITY_PASS } from "./final-quality-validator";
 export type { QualityValidationResult } from "./quality-validator";
 export type {
   CompositionEngineInput,

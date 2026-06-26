@@ -14,12 +14,11 @@ import {
 } from "@/lib/design-brief/quality-gate";
 import type { DesignProcessFoundation } from "./types";
 import { buildDesignStagePrompt } from "./prompts";
-import {
-  buildMockCreativeDirector,
-  type CreativeDirectorResult,
-} from "./creative-concept";
+import type { CreativeDirectorResult } from "./creative-concept";
 import { generateAndSelectConcept } from "./concept-generator";
 import { CONCEPT_PASS_THRESHOLD } from "./concept-evaluator";
+import { loadRecentConceptFingerprints } from "./recent-concepts";
+import type { ArtDirectorModeId } from "./art-director-modes";
 import { OLLAMA_NUM_PREDICT, OLLAMA_TIMEOUT_MS, SKIP_OLLAMA_QUALITY_RETRY } from "@/lib/pipeline-config";
 import { buildMockFoundation } from "./mock";
 
@@ -31,6 +30,8 @@ export type DesignProcessContext = {
   examples?: DesignExampleRecord[];
   referenceContext?: ResolvedReferenceContext;
   retryHint?: string;
+  artDirectorMode?: ArtDirectorModeId;
+  userId?: string;
 };
 
 export type DesignProcessResult = {
@@ -38,6 +39,7 @@ export type DesignProcessResult = {
   foundation: DesignProcessFoundation;
   creativeDirector: CreativeDirectorResult;
   conceptCandidates?: number;
+  conceptRenderQueue?: CreativeDirectorResult[];
 };
 
 function extractJson(text: string): string {
@@ -62,9 +64,7 @@ async function callOllamaJson<T>(prompt: string, temperature = 0.32): Promise<T>
     signal: AbortSignal.timeout(OLLAMA_TIMEOUT_MS),
   });
 
-  if (!response.ok) {
-    throw new Error(`Ollama недоступна: ${response.status}`);
-  }
+  if (!response.ok) throw new Error(`Ollama недоступна: ${response.status}`);
 
   const data = (await response.json()) as { response?: string };
   if (!data.response) throw new Error("Пустой ответ от Ollama");
@@ -80,7 +80,7 @@ function foundationFromCreative(
   return {
     stage1: { ...fallback.stage1, category: analysis.category },
     visualHook: {
-      type: "oversized_product",
+      type: creative.archetypeId ?? "oversized_product",
       reason: creative.creativeConcept.visualHook,
       confidence: creative.conceptScore ?? 92,
     },
@@ -94,13 +94,15 @@ function foundationFromCreative(
   };
 }
 
-/** Применяет правила постера: одна мысль, минимум элементов */
 export function applyPosterRules(
   brief: DesignBrief,
   creative: CreativeDirectorResult,
 ): DesignBrief {
   const ot = creative.oneThought;
   const heroBullet = `${ot.answer} ${ot.answerLabel}`.trim();
+  const bg =
+    creative.multiConcept?.backgroundPrompt ??
+    `${creative.sceneNarrative}, ultra realistic, no text, no product`;
 
   return {
     ...brief,
@@ -113,42 +115,55 @@ export function applyPosterRules(
     benefits: [heroBullet, ...ot.deferredSpecs],
     objectScale: Math.max(0.68, brief.objectScale ?? 0.72),
     sceneNarrative: creative.sceneNarrative,
-    backgroundPrompt: `${creative.sceneNarrative}, ${brief.backgroundPrompt ?? ""}`.slice(0, 480),
+    backgroundPrompt: bg.slice(0, 480),
     decorations: [],
     glassEffects: true,
     creativeConcept: creative.creativeConcept,
     oneThought: ot,
     deferredBullets: ot.deferredSpecs,
     compositionScenarioId: creative.compositionScenarioId,
+    selectedArchetypeId: creative.archetypeId,
+    designDnaOverride: creative.multiConcept?.designDNA,
   };
 }
 
-/** Engine 2.0 — 6–8 концептов, выбор лучшего */
 export async function runCreativeDirectorStage(
   ctx: DesignProcessContext,
-): Promise<{ creative: CreativeDirectorResult; evaluatedCount: number }> {
-  const status = await getOllamaStatus();
-  const useOllama = status.available && !status.mockMode;
+): Promise<{
+  creative: CreativeDirectorResult;
+  evaluatedCount: number;
+  renderQueue: CreativeDirectorResult[];
+}> {
+  const recentFingerprints = ctx.userId
+    ? await loadRecentConceptFingerprints(ctx.userId)
+    : [];
 
-  const result = await generateAndSelectConcept(
-    {
-      productPrompt: ctx.productPrompt,
-      category: ctx.analysis.category,
-      priceSegment: ctx.analysis.priceSegment,
-      style: ctx.style ?? "auto",
-      analysis: ctx.analysis,
-    },
-    useOllama,
-  );
+  const result = await generateAndSelectConcept({
+    productPrompt: ctx.productPrompt,
+    category: ctx.analysis.category,
+    priceSegment: ctx.analysis.priceSegment,
+    style: ctx.style ?? "auto",
+    analysis: ctx.analysis,
+    artDirectorMode: ctx.artDirectorMode,
+    recentFingerprints,
+  });
 
   if (result.selected.conceptScore && result.selected.conceptScore < CONCEPT_PASS_THRESHOLD) {
-    const alt = result.candidates.find((c) => c.evaluation.total >= CONCEPT_PASS_THRESHOLD);
+    const alt = result.candidates.find((c) => c.evaluation.finalScore >= CONCEPT_PASS_THRESHOLD);
     if (alt) {
-      return { creative: alt.concept, evaluatedCount: result.evaluatedCount };
+      return {
+        creative: alt.concept,
+        evaluatedCount: result.evaluatedCount,
+        renderQueue: result.renderQueue,
+      };
     }
   }
 
-  return { creative: result.selected, evaluatedCount: result.evaluatedCount };
+  return {
+    creative: result.selected,
+    evaluatedCount: result.evaluatedCount,
+    renderQueue: result.renderQueue,
+  };
 }
 
 async function runDesignStage(
@@ -171,7 +186,6 @@ async function runDesignStage(
   const raw = await callOllamaJson<unknown>(prompt, 0.28);
   let brief = sanitizeDesignBrief(raw, ctx.analysis.category, ctx.productPrompt);
   brief = applyPosterRules(brief, creative);
-
   return {
     ...brief,
     designProcess: {
@@ -186,7 +200,7 @@ async function runDesignStage(
 export async function runDesignProcessPipeline(
   ctx: DesignProcessContext,
 ): Promise<DesignProcessResult> {
-  const { creative, evaluatedCount } = await runCreativeDirectorStage(ctx);
+  const { creative, evaluatedCount, renderQueue } = await runCreativeDirectorStage(ctx);
   const foundation = foundationFromCreative(creative, ctx.analysis);
 
   let brief: DesignBrief;
@@ -199,7 +213,7 @@ export async function runDesignProcessPipeline(
           layout: "marketplace",
           objectScale: 0.72,
           glassEffects: true,
-          backgroundPrompt: `${creative.sceneNarrative}, ultra realistic, no text`,
+          artDirectorMode: ctx.artDirectorMode,
         } as DesignBrief,
         ctx.analysis.category,
         ctx.productPrompt,
@@ -209,6 +223,12 @@ export async function runDesignProcessPipeline(
   } else {
     brief = await runDesignStage(ctx, foundation, creative);
   }
+
+  brief = {
+    ...brief,
+    artDirectorMode: ctx.artDirectorMode,
+    conceptRenderQueue: renderQueue.map((c) => c.archetypeId).filter(Boolean) as string[],
+  };
 
   const quality = evaluateDesignBrief(brief);
   const processReview = evaluateDesignProcessReview(brief);
@@ -222,7 +242,7 @@ export async function runDesignProcessPipeline(
     try {
       brief = await runDesignStage(ctx, foundation, creative, retryHint);
     } catch {
-      // keep first result
+      // keep first
     }
   }
 
@@ -231,5 +251,6 @@ export async function runDesignProcessPipeline(
     foundation,
     creativeDirector: creative,
     conceptCandidates: evaluatedCount,
+    conceptRenderQueue: renderQueue,
   };
 }

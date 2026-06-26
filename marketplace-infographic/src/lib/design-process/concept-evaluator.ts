@@ -1,12 +1,12 @@
 import type { ProductAnalysis } from "@/lib/product-analysis";
 import type { CreativeDirectorResult } from "./creative-concept";
 import { resolveArtDirector } from "./category-art-directors";
+import { resolveArtDirectorMode, type ArtDirectorModeId } from "./art-director-modes";
 
 export type ConceptScoreDimension = {
   id: string;
   label: string;
   score: number;
-  weight: number;
 };
 
 export type ConceptEvaluation = {
@@ -14,124 +14,175 @@ export type ConceptEvaluation = {
   passed: boolean;
   dimensions: ConceptScoreDimension[];
   issues: string[];
+  /** Взвешенный итог по формуле Multi Concept Engine */
+  finalScore: number;
 };
 
 const PASS_THRESHOLD = 90;
 
-function scoreIdeaClarity(c: CreativeDirectorResult): number {
-  const cc = c.creativeConcept;
-  let score = 70;
-  if (cc.mainIdea.length >= 20) score += 10;
-  if (cc.whatToSayInOneSecond && cc.whatToSayInOneSecond.length <= 60) score += 12;
-  if (cc.reason.length >= 30) score += 8;
-  return Math.min(100, score);
+const FINAL_WEIGHTS = {
+  visualImpact: 0.3,
+  commercialAppeal: 0.2,
+  readability: 0.15,
+  professionalLook: 0.15,
+  categoryMatch: 0.1,
+  realism: 0.1,
+} as const;
+
+function modeBias(modeId: ArtDirectorModeId | undefined, key: string): number {
+  const bias = resolveArtDirectorMode(modeId).scoringBias as Record<string, number>;
+  return bias[key] ?? 1;
 }
 
-function scoreVisualHook(c: CreativeDirectorResult): number {
+function clamp(n: number) {
+  return Math.max(0, Math.min(100, Math.round(n)));
+}
+
+function scoreVisualImpact(c: CreativeDirectorResult): number {
   const hook = c.creativeConcept.visualHook;
-  let score = 65;
-  if (hook.length >= 40) score += 15;
-  if (hook.length >= 80) score += 10;
-  if (/70%|60%|крупн|огромн|доминир/i.test(hook)) score += 8;
-  if (/закат|свет|сцен|фон/i.test(hook)) score += 5;
-  return Math.min(100, score);
+  let s = 65;
+  if (hook.length >= 50) s += 12;
+  if (/70%|крупн|огромн|доминир|hero/i.test(hook)) s += 15;
+  if (c.archetypeId === "hero_product" || c.archetypeId === "outdoor_advertising") s += 8;
+  return clamp(s);
 }
 
-function scoreInstantRead(c: CreativeDirectorResult): number {
+function scoreReadability(c: CreativeDirectorResult): number {
   const ot = c.oneThought;
-  let score = 70;
-  if (ot.headline.length <= 45) score += 15;
-  if (ot.answer.length <= 8) score += 10;
-  if (ot.badge && ot.badge.length <= 12) score += 5;
-  if (ot.deferredSpecs.length >= 1) score += 5;
-  return Math.min(100, score);
+  let s = 70;
+  if (ot.headline.length <= 40) s += 15;
+  if (ot.answer.length <= 8) s += 10;
+  if (ot.badge && ot.badge.length <= 14) s += 5;
+  return clamp(s);
 }
 
-function scoreOneThoughtRule(c: CreativeDirectorResult): number {
+function scoreCommercialAppeal(c: CreativeDirectorResult, modeId?: ArtDirectorModeId): number {
+  let s = 72;
+  if (c.creativeConcept.whatToSayInOneSecond.length <= 50) s += 10;
+  if (/реклам|story|lifestyle|outdoor/i.test(c.creativeConcept.visualHook)) s += 8;
+  s *= modeBias(modeId, "commercialAppeal");
+  return clamp(s);
+}
+
+function scoreProfessionalLook(c: CreativeDirectorResult): number {
+  const premium = /premium|премиум|studio|commercial|professional/i;
+  let s = 78;
+  if (premium.test(c.creativeConcept.visualHook + c.multiConcept?.environment)) s += 12;
+  if (c.archetypeId === "premium_studio" || c.archetypeId === "commercial_photography") s += 8;
+  return clamp(s);
+}
+
+function scoreCtrPrediction(c: CreativeDirectorResult): number {
   const ot = c.oneThought;
-  const hasSingleHero = ot.answer.length > 0 && ot.headline.length > 0;
-  const notOverloaded = ot.deferredSpecs.length <= 6;
-  return hasSingleHero && notOverloaded ? 95 : 60;
+  let s = 70;
+  if (ot.headline.length <= 35) s += 12;
+  if (/\d/.test(ot.answer)) s += 10;
+  if (c.archetypeId === "hero_product" || c.archetypeId === "outdoor_advertising") s += 8;
+  return clamp(s);
 }
 
-function scoreCategoryFit(c: CreativeDirectorResult, analysis: ProductAnalysis, prompt: string): number {
+function scoreCompositionBalance(c: CreativeDirectorResult): number {
+  const mc = c.multiConcept;
+  if (!mc) return 80;
+  let s = 75;
+  if (mc.composition.includes("70%") || mc.composition.includes("воздух")) s += 10;
+  if (c.compositionScenarioId) s += 8;
+  return clamp(s);
+}
+
+function scoreCategoryMatch(
+  c: CreativeDirectorResult,
+  analysis: ProductAnalysis,
+  prompt: string,
+): number {
   const director = resolveArtDirector(analysis.category, prompt);
-  const text = `${c.sceneNarrative} ${c.creativeConcept.visualHook}`.toLowerCase();
-  let score = 80;
-
+  const text = `${c.sceneNarrative} ${c.multiConcept?.environment ?? ""}`.toLowerCase();
+  let s = 80;
   for (const forbidden of director.forbiddenScenes) {
     const key = forbidden.split(" ")[0]?.toLowerCase();
-    if (key && text.includes(key)) score -= 25;
+    if (key && text.includes(key)) s -= 30;
   }
-
-  const envMatch = director.sceneEnvironments.some((env) => {
-    const token = env.split(" ")[0]?.toLowerCase();
-    return token && text.includes(token);
-  });
-  if (envMatch) score += 12;
-
-  const keywordHits = director.styleKeywords.filter((kw) =>
-    text.includes(kw.toLowerCase().split(" ")[0] ?? ""),
-  ).length;
-  score += Math.min(10, keywordHits * 3);
-
-  return Math.max(40, Math.min(100, score));
+  const envOk = director.sceneEnvironments.some((e) =>
+    text.includes((e.split(" ")[0] ?? "").toLowerCase()),
+  );
+  if (envOk) s += 12;
+  return clamp(s);
 }
 
-function scorePremiumFeel(c: CreativeDirectorResult): number {
-  const cc = c.creativeConcept;
-  const premiumWords = /премиум|premium|люкс|профессион|editorial|дорог/i;
-  let score = 82;
-  if (premiumWords.test(cc.emotion + cc.toneOfVoice + cc.visualHook)) score += 10;
-  if (cc.styleKeywords.length >= 3) score += 5;
-  return Math.min(100, score);
+function scoreOriginality(c: CreativeDirectorResult, archetypeIndex: number): number {
+  return clamp(88 - archetypeIndex * 2 + (c.archetypeId === "emotional_story" ? 5 : 0));
 }
 
-function scoreProductHeroPotential(c: CreativeDirectorResult): number {
-  const hook = c.creativeConcept.visualHook.toLowerCase();
-  if (/70%|75%|крупн|огромн|доминир|герой/i.test(hook)) return 96;
-  if (/60%|больш/i.test(hook)) return 90;
-  if (/минимум текста.*максимум/i.test(hook)) return 92;
-  return 75;
+function scoreRealism(c: CreativeDirectorResult): number {
+  const mc = c.multiConcept;
+  let s = 78;
+  if (mc?.lighting.includes("натураль") || mc?.lighting.includes("студий")) s += 10;
+  if (c.archetypeId === "lifestyle" || c.archetypeId === "outdoor_advertising") s += 8;
+  return clamp(s);
 }
 
-function scoreScenarioFit(c: CreativeDirectorResult): number {
-  return c.compositionScenarioId ? 92 : 78;
+function computeFinalScore(dims: Record<keyof typeof FINAL_WEIGHTS, number>): number {
+  return clamp(
+    dims.visualImpact * FINAL_WEIGHTS.visualImpact +
+      dims.commercialAppeal * FINAL_WEIGHTS.commercialAppeal +
+      dims.readability * FINAL_WEIGHTS.readability +
+      dims.professionalLook * FINAL_WEIGHTS.professionalLook +
+      dims.categoryMatch * FINAL_WEIGHTS.categoryMatch +
+      dims.realism * FINAL_WEIGHTS.realism,
+  );
 }
 
-/** Оценка концепта 0–100 до генерации изображения */
 export function evaluateConcept(
   concept: CreativeDirectorResult,
   analysis: ProductAnalysis,
   productPrompt: string,
+  options?: { modeId?: ArtDirectorModeId; archetypeIndex?: number },
 ): ConceptEvaluation {
+  const modeId = options?.modeId;
+  const idx = options?.archetypeIndex ?? 0;
+
+  const visualImpact = clamp(scoreVisualImpact(concept) * modeBias(modeId, "visualImpact"));
+  const readability = scoreReadability(concept);
+  const commercialAppeal = scoreCommercialAppeal(concept, modeId);
+  const professionalLook = clamp(scoreProfessionalLook(concept) * modeBias(modeId, "professionalLook"));
+  const marketplaceCtr = scoreCtrPrediction(concept);
+  const compositionBalance = scoreCompositionBalance(concept);
+  const categoryMatch = scoreCategoryMatch(concept, analysis, productPrompt);
+  const originality = scoreOriginality(concept, idx);
+  const realism = clamp(scoreRealism(concept) * modeBias(modeId, "realism"));
+
+  const dims = {
+    visualImpact: clamp(visualImpact),
+    commercialAppeal: clamp(commercialAppeal),
+    readability: clamp(readability),
+    professionalLook: clamp(professionalLook),
+    categoryMatch: clamp(categoryMatch),
+    realism: clamp(realism),
+  };
+
+  const finalScore = computeFinalScore(dims);
+
   const dimensions: ConceptScoreDimension[] = [
-    { id: "idea_clarity", label: "Ясность идеи", score: scoreIdeaClarity(concept), weight: 0.14 },
-    { id: "visual_hook", label: "Сила визуального хука", score: scoreVisualHook(concept), weight: 0.16 },
-    { id: "instant_read", label: "Понятность за 1–2 сек", score: scoreInstantRead(concept), weight: 0.14 },
-    { id: "one_thought", label: "Правило одной мысли", score: scoreOneThoughtRule(concept), weight: 0.12 },
-    { id: "category_fit", label: "Соответствие категории", score: scoreCategoryFit(concept, analysis, productPrompt), weight: 0.12 },
-    { id: "premium_feel", label: "Ощущение «дорого»", score: scorePremiumFeel(concept), weight: 0.08 },
-    { id: "product_hero", label: "Потенциал героя-кадра", score: scoreProductHeroPotential(concept), weight: 0.14 },
-    { id: "scenario_fit", label: "Композиционный сценарий", score: scoreScenarioFit(concept), weight: 0.1 },
+    { id: "visual_impact", label: "Visual Impact", score: dims.visualImpact },
+    { id: "readability", label: "Readability", score: dims.readability },
+    { id: "commercial_appeal", label: "Commercial Appeal", score: dims.commercialAppeal },
+    { id: "professional_look", label: "Professional Look", score: dims.professionalLook },
+    { id: "marketplace_ctr", label: "Marketplace CTR", score: marketplaceCtr },
+    { id: "composition_balance", label: "Composition Balance", score: compositionBalance },
+    { id: "category_match", label: "Category Match", score: dims.categoryMatch },
+    { id: "originality", label: "Originality", score: originality },
+    { id: "realism", label: "Realism", score: dims.realism },
   ];
 
-  const weightSum = dimensions.reduce((s, d) => s + d.weight, 0);
-  const total = Math.round(
-    dimensions.reduce((s, d) => s + d.score * d.weight, 0) / weightSum,
-  );
-
-  const issues: string[] = [];
-  for (const d of dimensions) {
-    if (d.score < PASS_THRESHOLD) issues.push(`${d.id}:${d.score}`);
-  }
+  const issues = dimensions.filter((d) => d.score < PASS_THRESHOLD).map((d) => `${d.id}:${d.score}`);
 
   return {
-    total,
-    passed: total >= PASS_THRESHOLD && dimensions.every((d) => d.score >= 70),
+    total: finalScore,
+    finalScore,
+    passed: finalScore >= PASS_THRESHOLD,
     dimensions,
     issues,
   };
 }
 
-export { PASS_THRESHOLD as CONCEPT_PASS_THRESHOLD };
+export { PASS_THRESHOLD as CONCEPT_PASS_THRESHOLD, FINAL_WEIGHTS };
