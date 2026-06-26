@@ -152,6 +152,22 @@ ${SD_EXAMPLE}
   return applyStyleToSdColors(raw, style);
 }
 
+function clampLibraryIds(
+  data: InfographicSdData,
+  library?: DesignLibrary,
+): InfographicSdData {
+  if (!library) return data;
+
+  const fontIds = new Set(library.fonts.map((font) => font.id));
+  const badgeIds = new Set(library.badges.map((badge) => badge.id));
+
+  return {
+    ...data,
+    fontId: data.fontId && fontIds.has(data.fontId) ? data.fontId : null,
+    badgeId: data.badgeId && badgeIds.has(data.badgeId) ? data.badgeId : null,
+  };
+}
+
 export async function generateSdInfographicData(
   prompt: string,
   style: InfographicStyle = DEFAULT_STYLE,
@@ -159,13 +175,19 @@ export async function generateSdInfographicData(
 ): Promise<{ data: InfographicSdData; source: "ollama" | "mock" }> {
   const status = await getOllamaStatus();
   if (status.mockMode || !status.available) {
-    return { data: generateMockSdData(prompt, style, context.library), source: "mock" };
+    const data = clampLibraryIds(generateMockSdData(prompt, style, context.library), context.library);
+    return { data, source: "mock" };
   }
   try {
-    return { data: await callOllamaSd(prompt, style, context), source: "ollama" };
+    const data = clampLibraryIds(
+      await callOllamaSd(prompt, style, context),
+      context.library,
+    );
+    return { data, source: "ollama" };
   } catch (error) {
     console.warn("Ollama SD failed, mock fallback:", error);
-    return { data: generateMockSdData(prompt, style, context.library), source: "mock" };
+    const data = clampLibraryIds(generateMockSdData(prompt, style, context.library), context.library);
+    return { data, source: "mock" };
   }
 }
 
