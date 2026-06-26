@@ -77,3 +77,24 @@ export const createLibraryBadgeSchema = z.object({
 
 export type CreateLibraryFontInput = z.infer<typeof createLibraryFontSchema>;
 export type CreateLibraryBadgeInput = z.infer<typeof createLibraryBadgeSchema>;
+
+export const createDesignExampleSchema = z.object({
+  prompt: z.string().min(1).max(5000),
+  resultJson: z.string().min(2).max(100_000),
+  fontId: z.string().uuid().nullable().optional(),
+  badgeId: z.string().uuid().nullable().optional(),
+  appliedStyle: z.enum(STYLE_KEYS),
+  tags: z.array(z.string().min(1).max(40)).max(20).default([]),
+});
+
+export const approveTrainingSchema = z.object({
+  prompt: z.string().min(1).max(5000),
+  generatedJson: z.union([z.string().min(2).max(100_000), z.record(z.string(), z.unknown())]),
+  fontId: z.string().uuid().nullable().optional(),
+  badgeId: z.string().uuid().nullable().optional(),
+  appliedStyle: z.enum(STYLE_KEYS),
+  tags: z.array(z.string().min(1).max(40)).max(20).optional().default([]),
+});
+
+export type CreateDesignExampleInput = z.infer<typeof createDesignExampleSchema>;
+export type ApproveTrainingInput = z.infer<typeof approveTrainingSchema>;

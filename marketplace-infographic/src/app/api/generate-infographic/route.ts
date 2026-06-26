@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { loadDesignLibrary } from "@/lib/design-library";
 import { handleGenerateInfographic } from "@/lib/generate-infographic-handler";
+import { selectRelevantExamples } from "@/lib/select-relevant-examples";
 import { generateInfographicSchema } from "@/lib/validations";
+
+export const maxDuration = 600;
 
 export async function POST(request: NextRequest) {
   const session = await auth();
@@ -25,11 +29,17 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    const [library, examples] = await Promise.all([
+      loadDesignLibrary(),
+      selectRelevantExamples(parsed.data.prompt, 5),
+    ]);
+
     const result = await handleGenerateInfographic({
       userId: session.user.id,
       prompt: parsed.data.prompt,
       productImage: parsed.data.productImage,
       style: parsed.data.style,
+      ollamaContext: { library, examples },
     });
 
     return NextResponse.json(result);

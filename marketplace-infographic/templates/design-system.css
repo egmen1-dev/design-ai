@@ -412,6 +412,15 @@ body {
   align-items: flex-start;
 }
 
+.product-row__library-badge {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 72px;
+  z-index: 5;
+  max-width: 100%;
+}
+
 .product-row__center {
   position: relative;
   display: flex;

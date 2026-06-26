@@ -9,6 +9,8 @@ export const infographicSdSchema = z.object({
   colors: z.array(z.string().min(4).max(7)).min(2).max(5),
   badge: z.string().min(1).max(40),
   backgroundPrompt: z.string().min(10).max(400),
+  fontId: z.string().uuid().nullable().optional().default(null),
+  badgeId: z.string().uuid().nullable().optional().default(null),
 });
 
 export type InfographicSdInput = z.infer<typeof infographicSdSchema>;

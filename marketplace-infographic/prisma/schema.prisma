@@ -111,23 +111,25 @@ enum FontCategory {
 }
 
 model LibraryFont {
-  id         String       @id @default(uuid())
-  name       String
-  cssImport  String       @db.Text
-  fontFamily String
-  category   FontCategory
-  styleTags  String[]
-  createdAt  DateTime     @default(now())
+  id             String          @id @default(uuid())
+  name           String
+  cssImport      String          @db.Text
+  fontFamily     String
+  category       FontCategory
+  styleTags      String[]
+  createdAt      DateTime        @default(now())
+  designExamples DesignExample[]
 }
 
 model LibraryBadge {
-  id           String   @id @default(uuid())
-  name         String
-  htmlTemplate String   @db.Text
-  svgTemplate  String?  @db.Text
-  pngUrl       String?
-  styleTags    String[]
-  createdAt    DateTime @default(now())
+  id             String          @id @default(uuid())
+  name           String
+  htmlTemplate   String          @db.Text
+  svgTemplate    String?         @db.Text
+  pngUrl         String?
+  styleTags      String[]
+  createdAt      DateTime        @default(now())
+  designExamples DesignExample[]
 }
 
 model ReferenceImage {
@@ -135,4 +137,17 @@ model ReferenceImage {
   originalUrl String
   notes       String?
   createdAt   DateTime @default(now())
+}
+
+model DesignExample {
+  id           String        @id @default(uuid())
+  prompt       String        @db.Text
+  resultJson   String        @db.Text
+  fontId       String?
+  font         LibraryFont?  @relation(fields: [fontId], references: [id], onDelete: SetNull)
+  badgeId      String?
+  badge        LibraryBadge? @relation(fields: [badgeId], references: [id], onDelete: SetNull)
+  appliedStyle String
+  tags         String[]
+  createdAt    DateTime      @default(now())
 }

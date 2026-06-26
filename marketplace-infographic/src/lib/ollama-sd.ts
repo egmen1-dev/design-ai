@@ -5,11 +5,22 @@ import {
   TRENDS,
   type InfographicStyle,
 } from "@/lib/design-trends";
+import type { DesignLibrary } from "@/lib/design-library";
+import { formatLibraryForPrompt } from "@/lib/design-library";
+import {
+  formatExamplesForPrompt,
+  selectRelevantExamples,
+} from "@/lib/select-relevant-examples";
 import { infographicSdSchema, type InfographicSdInput } from "@/lib/validations";
 import { applyStyleToSdColors } from "@/lib/sd-style-theme";
 import { getOllamaStatus, OLLAMA_BASE_URL, OLLAMA_MODEL } from "./ai-status";
 
 export type InfographicSdData = InfographicSdInput;
+
+export type OllamaSdContext = {
+  library?: DesignLibrary;
+  examples?: Awaited<ReturnType<typeof selectRelevantExamples>>;
+};
 
 function extractJson(text: string): string {
   const start = text.indexOf("{");
@@ -27,16 +38,22 @@ const SD_EXAMPLE = `{
   "bullets": ["3 кВт мощность", "15 литров бак", "3000 Вт стабильная мощность", "тихая работа 65 дБ"],
   "colors": ["#e31e24", "#2563eb", "#0f172a"],
   "badge": "Kronwerk",
-  "backgroundPrompt": "professional marketplace product photo background, suburban garden with lush green grass, soft natural daylight, shallow depth of field, space in center for gasoline generator, photorealistic, 2025 ecommerce trend, high CTR, no text, no people, 8k"
+  "backgroundPrompt": "professional marketplace product photo background, suburban garden with lush green grass, soft natural daylight, shallow depth of field, space in center for gasoline generator, photorealistic, 2025 ecommerce trend, high CTR, no text, no people, 8k",
+  "fontId": null,
+  "badgeId": null
 }`;
 
 export function generateMockSdData(
   prompt: string,
   style: InfographicStyle = DEFAULT_STYLE,
+  library?: DesignLibrary,
 ): InfographicSdData {
   const lower = prompt.toLowerCase();
   const isGenerator = /генератор|бензин|квт/.test(lower);
   const trend = TRENDS[style];
+
+  const styleFont = library?.fonts.find((font) => font.styleTags.includes(style));
+  const styleBadge = library?.badges.find((badge) => badge.styleTags.includes(style));
 
   const base = infographicSdSchema.parse({
     layout: "hero",
@@ -50,6 +67,8 @@ export function generateMockSdData(
     backgroundPrompt: isGenerator
       ? "professional product photography background, suburban garden with green grass, soft daylight, center space for generator, photorealistic, marketplace infographic 2025, no text, no words, no letters"
       : "clean studio product photography background, soft gradient, professional lighting, center space for product, photorealistic, ecommerce 2025, no text, no words, no letters",
+    fontId: styleFont?.id ?? null,
+    badgeId: styleBadge?.id ?? null,
   });
 
   return applyStyleToSdColors(base, style);
@@ -58,8 +77,14 @@ export function generateMockSdData(
 async function callOllamaSd(
   prompt: string,
   style: InfographicStyle,
+  context: OllamaSdContext = {},
 ): Promise<InfographicSdData> {
   const trend = TRENDS[style];
+  const libraryBlock = context.library
+    ? formatLibraryForPrompt(context.library)
+    : "Библиотека шрифтов и плашек пуста — используй fontId: null, badgeId: null.";
+  const examplesBlock = formatExamplesForPrompt(context.examples ?? []);
+
   const systemPrompt = `Ты — арт-директор для Wildberries.
 
 Стиль дизайна слайда: ${style} (${STYLE_LABELS[style]}).
@@ -72,6 +97,13 @@ async function callOllamaSd(
 
 Весь видимый текст слайда — ТОЛЬКО на русском (title, subtitle, bullets, badge).
 
+${libraryBlock}
+
+Выбирай fontId и badgeId только из списков выше. Если ничего не подходит — null.
+Предпочитай ассеты, у которых styleTags содержит "${style}".
+
+${examplesBlock}
+
 Верни ТОЛЬКО JSON:
 {
   "layout": "hero" | "cards" | "split" | "minimal",
@@ -80,13 +112,16 @@ async function callOllamaSd(
   "bullets": ["2-5 УТП с цифрами из описания"],
   "colors": ["#hex", "#hex", "#hex"],
   "badge": "бренд",
-  "backgroundPrompt": "english prompt for SD XL, 10-200 chars, photorealistic scene"
+  "backgroundPrompt": "english prompt for SD XL, 10-200 chars, photorealistic scene",
+  "fontId": "uuid из библиотеки или null",
+  "badgeId": "uuid из библиотеки или null"
 }
 
 Правила:
 - Факты только из описания товара
 - backgroundPrompt строго на английском
 - colors: accent, secondary, dark tone
+- fontId/badgeId — только из библиотеки или null
 
 Пример:
 ${SD_EXAMPLE}
@@ -120,15 +155,31 @@ ${SD_EXAMPLE}
 export async function generateSdInfographicData(
   prompt: string,
   style: InfographicStyle = DEFAULT_STYLE,
+  context: OllamaSdContext = {},
 ): Promise<{ data: InfographicSdData; source: "ollama" | "mock" }> {
   const status = await getOllamaStatus();
   if (status.mockMode || !status.available) {
-    return { data: generateMockSdData(prompt, style), source: "mock" };
+    return { data: generateMockSdData(prompt, style, context.library), source: "mock" };
   }
   try {
-    return { data: await callOllamaSd(prompt, style), source: "ollama" };
+    return { data: await callOllamaSd(prompt, style, context), source: "ollama" };
   } catch (error) {
     console.warn("Ollama SD failed, mock fallback:", error);
-    return { data: generateMockSdData(prompt, style), source: "mock" };
+    return { data: generateMockSdData(prompt, style, context.library), source: "mock" };
   }
+}
+
+export async function buildOllamaSdContext(
+  prompt: string,
+  library?: DesignLibrary,
+): Promise<OllamaSdContext> {
+  const [loadedLibrary, examples] = await Promise.all([
+    library ? Promise.resolve(library) : import("@/lib/design-library").then((m) => m.loadDesignLibrary()),
+    selectRelevantExamples(prompt, 5),
+  ]);
+
+  return {
+    library: loadedLibrary,
+    examples,
+  };
 }

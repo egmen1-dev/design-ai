@@ -1,7 +1,8 @@
 import { readFile } from "fs/promises";
 import path from "path";
 import { consumeGenerationSlot } from "@/lib/credits";
-import { generateSdInfographicData } from "@/lib/ollama-sd";
+import { resolveLibraryAssets } from "@/lib/design-library";
+import { generateSdInfographicData, type OllamaSdContext } from "@/lib/ollama-sd";
 import {
   backgroundToDataUrl,
   buildFallbackGradient,
@@ -21,10 +22,6 @@ import {
 } from "@/lib/product-image-sd";
 import type { InfographicSdInput } from "@/lib/validations";
 import { prisma } from "@/lib/prisma";
-import {
-  mergeProductWithBackground,
-  mergedToDataUrl,
-} from "@/lib/image-compositor";
 import { PIPELINE_VERSION } from "@/lib/pipeline-version";
 
 export type GenerateInfographicInput = {
@@ -35,6 +32,7 @@ export type GenerateInfographicInput = {
   regenerateBackgroundOnly?: boolean;
   existingImageId?: string;
   backgroundSeed?: string;
+  ollamaContext?: OllamaSdContext;
 };
 
 export type GenerateInfographicResult = {
@@ -111,7 +109,11 @@ export async function handleGenerateInfographic(
         appliedStyle = input.style ?? stored.style;
         aiSource = "regen";
       } else {
-        const ollama = await generateSdInfographicData(existing.prompt, appliedStyle);
+        const ollama = await generateSdInfographicData(
+          existing.prompt,
+          appliedStyle,
+          input.ollamaContext,
+        );
         sdData = ollama.data;
         aiSource = "regen-rebuild";
       }
@@ -127,7 +129,11 @@ export async function handleGenerateInfographic(
         throw new Error("PRODUCT_IMAGE_REQUIRED");
       }
       appliedStyle = input.style ?? DEFAULT_STYLE;
-      const ollama = await generateSdInfographicData(input.prompt, appliedStyle);
+      const ollama = await generateSdInfographicData(
+        input.prompt,
+        appliedStyle,
+        input.ollamaContext,
+      );
       sdData = ollama.data;
       aiSource = ollama.source;
       productRender = await loadProductCutout(input.productImage, input.userId);
@@ -136,7 +142,6 @@ export async function handleGenerateInfographic(
 
     let backgroundUrl: string | null = null;
     let backgroundSource: "sd" | "fallback" = "sd";
-    let mergedImageDataUrl: string | undefined;
     let backgroundDataUrl: string | undefined;
 
     const variationSeed =
@@ -157,21 +162,12 @@ export async function handleGenerateInfographic(
       backgroundSource = "fallback";
     }
 
-    if (backgroundUrl) {
-      try {
-        const productPath = productRender.absPath || productRender.webPath;
-        const mergedPath = await mergeProductWithBackground(
-          backgroundUrl,
-          productPath,
-          { reflection: sdData.layout === "cards" },
-        );
-        mergedImageDataUrl = await mergedToDataUrl(mergedPath);
-      } catch (error) {
-        console.warn("Image compositing failed, using SD background layer:", error);
-      }
-    }
-
+    // Товар — только cutout поверх SD-фона (без merge в HF-слой). См. product-render-policy.ts
     const infographicData = sdDataToInfographic(sdData, input.prompt);
+    const { font: libraryFont, badge: libraryBadge } = await resolveLibraryAssets(
+      sdData.fontId,
+      sdData.badgeId,
+    );
     const fallbackBg =
       backgroundSource === "fallback"
         ? TRENDS[appliedStyle].background
@@ -179,12 +175,13 @@ export async function handleGenerateInfographic(
 
     const html = renderInfographicHtml(infographicData, {
       style: appliedStyle,
-      mergedImageDataUrl,
-      backgroundDataUrl: mergedImageDataUrl ? undefined : backgroundDataUrl,
-      backgroundCss: !mergedImageDataUrl && !backgroundDataUrl ? fallbackBg : undefined,
-      productImageSrc:
-        mergedImageDataUrl ? undefined : productRender.renderSrc,
+      layout: sdData.layout,
+      backgroundDataUrl,
+      backgroundCss: !backgroundDataUrl ? fallbackBg : undefined,
+      productImageSrc: productRender.renderSrc,
       productImageCutout: productRender.cutout,
+      libraryFont,
+      libraryBadge,
     });
 
     const filename = `${input.userId}-${Date.now()}.png`;

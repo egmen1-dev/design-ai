@@ -7,6 +7,7 @@ import {
   buildSideBadgesLeftHtml,
   buildSideBadgesRightHtml,
   buildSpecPlaquesHtml,
+  renderLibraryBadgeHtml,
 } from "@/lib/marketplace-badges";
 import { buildStyleSlideSkin } from "@/lib/style-slide-css";
 import { getSceneLayers } from "@/lib/scene-backgrounds";
@@ -114,8 +115,24 @@ function buildBulletsHtml(
 function buildSkinCss(
   style: InfographicStyle,
   accent: (typeof ACCENT_HEX)[keyof typeof ACCENT_HEX],
+  libraryFont?: RenderInfographicOptions["libraryFont"],
 ): string {
   const skin = buildStyleSlideSkin(style);
+  const fontCss = libraryFont
+    ? `
+    .canvas,
+    .display-title,
+    .display-subtitle,
+    .brand-mark,
+    .bullet-text,
+    .plaque,
+    .plaque__value,
+    .plaque__text,
+    .plaque__label {
+      font-family: ${libraryFont.fontFamily} !important;
+    }`
+    : "";
+
   return `
     :root {
       --accent: ${accent.primary};
@@ -129,6 +146,7 @@ function buildSkinCss(
     .display-title { ${skin.titleExtraCss} }
     .accent-pill { background: ${skin.badgeBg}; color: ${skin.badgeTextColor}; border-radius: ${skin.pillRadius}; box-shadow: ${skin.pillShadow}; }
     .bullet-item { border-radius: ${skin.badgeRadius}; background: ${skin.badgeBg}; color: ${skin.badgeTextColor}; ${skin.badgeExtraCss} }
+    ${fontCss}
     ${buildPlaqueSkinCss(style, skin)}
   `;
 }
@@ -218,6 +236,17 @@ export function renderLayoutHtml(
 
   const template = loadTemplate(layout);
   const designCss = loadDesignSystemCss();
+  const libraryBadge = options?.libraryBadge;
+  const libraryFont = options?.libraryFont;
+  const badgeText = data.mainBanner.title;
+  const badgeColor = accent.primary;
+
+  const libraryBadgeHtml = libraryBadge
+    ? renderLibraryBadgeHtml(libraryBadge.htmlTemplate, badgeText, badgeColor)
+    : "";
+
+  const useLibraryBadge = Boolean(libraryBadgeHtml);
+  const isHeroLike = layout === "hero" || layout === "minimal";
 
   const vars: Record<string, string> = {
     PRODUCT_NAME: escapeHtml(data.productName),
@@ -228,22 +257,27 @@ export function renderLayoutHtml(
     BULLETS_HTML: buildBulletsHtml(bullets, data.mainBanner.title, specExclude),
     SPEC_CARDS_HTML: buildSpecPlaquesHtml(data.specBlocks, skin, accent.primary, style),
     PROMO_HTML:
-      layout === "hero" || layout === "minimal"
+      isHeroLike
         ? ""
-        : buildPromoPlaqueHtml(data.mainBanner, skin, accent.primary, style),
+        : useLibraryBadge
+          ? libraryBadgeHtml
+          : buildPromoPlaqueHtml(data.mainBanner, skin, accent.primary, style),
     SIDE_BADGES_LEFT:
-      layout === "hero" || layout === "minimal"
-        ? buildSideBadgesLeftHtml(data, skin, accent.primary, style)
-        : "",
+      isHeroLike && useLibraryBadge
+        ? `<div class="product-row__library-badge">${libraryBadgeHtml}</div>`
+        : isHeroLike
+          ? buildSideBadgesLeftHtml(data, skin, accent.primary, style)
+          : "",
     SIDE_BADGES_RIGHT:
-      layout === "hero" || layout === "minimal"
+      isHeroLike && !useLibraryBadge
         ? buildSideBadgesRightHtml(data, skin, accent.primary, style)
         : "",
     PRODUCT_HTML: buildProductHtml(productInner, hasPhoto, layout),
     BACKGROUND_STYLE: backgroundStyle,
     OVERLAY_HTML: overlayHtml,
     DESIGN_SYSTEM_CSS: designCss,
-    SKIN_CSS: buildSkinCss(style, accent),
+    SKIN_CSS: buildSkinCss(style, accent, libraryFont),
+    EXTRA_HEAD_HTML: libraryFont?.cssImport ?? "",
   };
 
   return replaceAll(template, vars);

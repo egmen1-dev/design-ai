@@ -22,6 +22,17 @@ function normalizeLayout(value: unknown): InfographicSdInput["layout"] {
     : "hero";
 }
 
+function normalizeUuidOrNull(value: unknown): string | null {
+  if (value === null || value === undefined || value === "null" || value === "") {
+    return null;
+  }
+  const raw = String(value).trim();
+  if (/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(raw)) {
+    return raw;
+  }
+  return null;
+}
+
 /** Приводит ответ Ollama к валидной схеме SD (без падения на длинном промпте) */
 export function sanitizeSdInput(raw: unknown): InfographicSdInput {
   const obj =
@@ -57,6 +68,8 @@ export function sanitizeSdInput(raw: unknown): InfographicSdInput {
           "professional product photo background, soft daylight, center space for product, photorealistic, no text",
         400,
       ) || "professional product photo background, soft daylight, no text",
+    fontId: normalizeUuidOrNull(obj.fontId),
+    badgeId: normalizeUuidOrNull(obj.badgeId),
   };
 
   return infographicSdSchema.parse(candidate);

@@ -400,3 +400,16 @@ export function buildPlaqueSkinCss(style: InfographicStyle, skin: StyleSlideSkin
     .accent-pill.plaque { margin-top: 16px; }
   `;
 }
+
+export function renderLibraryBadgeHtml(
+  template: string,
+  text: string,
+  color: string,
+): string {
+  const safeText = text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+  return template.replaceAll("{{text}}", safeText).replaceAll("{{color}}", color);
+}
