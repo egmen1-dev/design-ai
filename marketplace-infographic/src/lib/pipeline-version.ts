@@ -1,2 +1,2 @@
 /** Версия SD-пайплайна — проверяйте через GET /api/health */
-export const PIPELINE_VERSION = "v3-styles";
+export const PIPELINE_VERSION = "v3-grounded";

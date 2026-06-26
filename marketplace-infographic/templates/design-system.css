@@ -149,6 +149,106 @@ body {
   border-color: rgba(15, 23, 42, 0.08);
 }
 
+/* ——— Marketplace plaques (WB/Ozon конструктор) ——— */
+
+.plaque {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.plaque--stat {
+  padding: 16px 14px;
+  min-width: 108px;
+}
+
+.plaque--ribbon,
+.plaque--notch,
+.plaque--tag {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  text-align: left;
+}
+
+.plaque--ribbon {
+  padding-right: 22px;
+}
+
+.plaque--notch {
+  padding-bottom: 18px;
+}
+
+.plaque--seal {
+  width: 124px;
+  height: 124px;
+  padding: 10px;
+  flex-shrink: 0;
+}
+
+.plaque--stack-wrap {
+  min-width: 118px;
+}
+
+.plaque__value {
+  font-family: var(--font-display);
+  font-size: 48px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.plaque__label {
+  margin-top: 6px;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.2;
+  opacity: 0.92;
+}
+
+.plaque__text {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.plaque__icon {
+  font-family: "Material Symbols Outlined";
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.plaque--seal .plaque__value {
+  font-size: 22px;
+}
+
+.plaque--seal .plaque__label {
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.spec-row--plaques {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap-md);
+  width: 100%;
+}
+
+.spec-row--plaques .plaque__value {
+  font-size: 56px;
+}
+
+.spec-row--plaques .plaque__label {
+  font-size: 24px;
+}
+
 /* ——— Accent pill / promo badge ——— */
 
 .accent-pill {
@@ -440,82 +540,6 @@ body {
 .product-shadow {
   display: none;
 }
-
-/* ——— Side badges (боковые колонки, не поверх товара) ——— */
-
-.side-badge {
-  position: relative;
-  border-radius: var(--radius-card);
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  box-shadow: var(--shadow-soft);
-  color: #fff;
-  text-align: center;
-  max-width: 100%;
-}
-
-.side-badge--compact {
-  padding: 16px 14px;
-  min-width: 0;
-}
-
-.side-badge--banner {
-  padding: 14px 16px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-align: left;
-}
-
-.side-badge__big {
-  font-family: var(--font-display);
-  font-size: 48px;
-  font-weight: 900;
-  line-height: 1;
-}
-
-.side-badge__sub {
-  margin-top: 6px;
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 1.2;
-}
-
-.side-badge__circle {
-  width: 124px;
-  height: 124px;
-  border-radius: 50%;
-  border: 5px solid var(--accent);
-  background: rgba(255, 255, 255, 0.95);
-  color: var(--accent);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-}
-
-.side-badge__circle-val {
-  font-size: 22px;
-  font-weight: 900;
-  line-height: 1.1;
-  text-align: center;
-}
-
-.side-badge__circle-lbl {
-  font-size: 13px;
-  font-weight: 700;
-  margin-top: 4px;
-  text-align: center;
-}
-
-/* overlap fallback — только если явно помечено */
-.side-badge--overlap {
-  position: absolute;
-  z-index: 6;
-}
-
 
 .deco-line {
   height: 3px;
