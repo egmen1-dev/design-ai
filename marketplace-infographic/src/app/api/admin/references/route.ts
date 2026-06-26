@@ -21,6 +21,8 @@ function buildReferenceResultJson(
     notes: enrichment.compositionNotes,
     synonyms: enrichment.synonyms,
     styleReason: enrichment.styleReason,
+    dominantColors: enrichment.dominantColors,
+    layoutBlueprint: enrichment.layoutBlueprint,
     autoEnriched: true,
     source: "admin_reference_upload",
   });

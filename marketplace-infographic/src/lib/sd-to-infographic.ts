@@ -4,7 +4,7 @@ import type { InfographicData } from "@/lib/infographic-template";
 function parseBullet(bullet: string): { value: string; label: string } {
   const trimmed = bullet.trim();
   const numMatch = trimmed.match(
-    /^(\d+(?:[.,]\d+)?\s*(?:кВт|квт|Вт|вт|л|литр|дБ|мм|см|кг|г|ч|мАч)?)/i,
+    /^(\d+(?:[.,]\d+)?\s*(?:кВт|квт|Вт|вт|л|литр|дБ|мм|см|кг|г|ч|мАч|об\/мин|об)?)/i,
   );
   if (numMatch) {
     const value = numMatch[1].trim();
@@ -31,11 +31,12 @@ function inferScene(backgroundPrompt: string, prompt?: string): InfographicData[
 
 function inferAccentColor(colors: string[]): NonNullable<InfographicData["accentColor"]> {
   const primary = (colors[0] ?? "").toLowerCase();
+  if (/00a8|00b|0aa|14b8|06b6|0891|0d9|teal|cyan/.test(primary)) return "blue";
   if (/e31|ef44|dc26|b91|f00|red/.test(primary)) return "red";
   if (/2563|3b82|1d4|00c6|blue/.test(primary)) return "blue";
   if (/7c3|933|a855|purple|6366/.test(primary)) return "purple";
   if (/16a3|22c5|1580|green/.test(primary)) return "green";
-  return "red";
+  return "blue";
 }
 
 function inferProductVisual(data: InfographicSdInput): InfographicData["productVisual"] {
@@ -53,6 +54,7 @@ export function sdDataToInfographic(
 ): InfographicData {
   const bullets = data.bullets.slice(0, 5);
   const parsed = bullets.map(parseBullet);
+  const isMarketplace = data.layout === "marketplace";
 
   const specBlocks = parsed.slice(0, 3).map((item, index) => ({
     value: item.value || bullets[index],
@@ -66,17 +68,23 @@ export function sdDataToInfographic(
   const bannerBullet = bullets[2] ?? bullets[1] ?? bullets[0] ?? data.subtitle;
   const bannerParsed = parseBullet(bannerBullet);
 
+  const title = isMarketplace
+    ? data.title.slice(0, 40)
+    : data.title.toUpperCase().slice(0, 40);
+
   return {
-    headline: data.title.toUpperCase().slice(0, 40),
+    headline: title,
     productName: data.badge,
     categoryPill: data.subtitle,
-    brandName: data.badge,
+    brandName: isMarketplace ? undefined : data.badge,
     productVisual: inferProductVisual(data),
     backgroundScene: inferScene(data.backgroundPrompt, prompt),
     specBlocks,
     mainBanner: {
-      icon: /вт|квт|мощ|power/i.test(bannerBullet) ? "⚡" : "★",
-      title: bannerBullet,
+      icon: /вт|квт|мощ|power|подар|очк/i.test(bannerBullet) ? "⚡" : "★",
+      title: isMarketplace
+        ? bullets.find((b) => /подар|комплект|очк|перчат/i.test(b)) ?? bannerBullet
+        : bannerBullet,
       description: bullets[3] ?? `${bannerParsed.value} ${bannerParsed.label}`.trim(),
     },
     callouts: bullets.slice(0, 4).map((text, index) => ({

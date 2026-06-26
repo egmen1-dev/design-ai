@@ -22,6 +22,7 @@ import {
 } from "@/lib/product-image-sd";
 import type { InfographicSdInput } from "@/lib/validations";
 import { prisma } from "@/lib/prisma";
+import { resolveReferenceContext } from "@/lib/reference-style-resolver";
 import { PIPELINE_VERSION } from "@/lib/pipeline-version";
 
 export type GenerateInfographicInput = {
@@ -130,13 +131,22 @@ export async function handleGenerateInfographic(
       }
       appliedStyle = input.style ?? DEFAULT_STYLE;
 
+      const referenceContext = resolveReferenceContext(
+        input.prompt,
+        appliedStyle,
+        input.ollamaContext?.examples ?? [],
+      );
+      if (referenceContext.hasStrongReference) {
+        appliedStyle = referenceContext.style;
+      }
+
       productRender = await loadProductCutout(input.productImage, input.userId);
       productCutoutPath = productRender.webPath;
 
       const ollama = await generateSdInfographicData(
         input.prompt,
         appliedStyle,
-        input.ollamaContext,
+        { ...input.ollamaContext, referenceContext },
       );
       sdData = ollama.data;
       aiSource = ollama.source;
@@ -184,6 +194,7 @@ export async function handleGenerateInfographic(
       productImageCutout: productRender.cutout,
       libraryFont,
       libraryBadge,
+      accentHex: sdData.colors[0],
     });
 
     const filename = `${input.userId}-${Date.now()}.png`;

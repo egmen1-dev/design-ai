@@ -16,10 +16,10 @@ function normalizeHex(value: unknown, fallback: string): string {
 }
 
 function normalizeLayout(value: unknown): InfographicSdInput["layout"] {
-  const layouts = ["hero", "cards", "split", "minimal"] as const;
+  const layouts = ["hero", "cards", "split", "minimal", "marketplace"] as const;
   return layouts.includes(value as (typeof layouts)[number])
     ? (value as InfographicSdInput["layout"])
-    : "hero";
+    : "marketplace";
 }
 
 function normalizeUuidOrNull(value: unknown): string | null {

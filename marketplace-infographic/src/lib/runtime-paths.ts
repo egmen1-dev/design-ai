@@ -21,8 +21,15 @@ export function publicDir(...segments: string[]): string {
   return path.join(runtimeRoot(), "public", ...segments);
 }
 
+export function projectRoot(): string {
+  const root = runtimeRoot();
+  if (root.replace(/\\/g, "/").includes("/.next/standalone")) {
+    return path.resolve(root, "..", "..");
+  }
+  return root;
+}
+
 /** Персистентное хранилище вне .next (переживает rebuild). */
 export function persistentDataDir(...segments: string[]): string {
-  const projectRoot = path.join(runtimeRoot(), "..", "..");
-  return path.join(projectRoot, "data", ...segments);
+  return path.join(projectRoot(), "data", ...segments);
 }

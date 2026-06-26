@@ -2,7 +2,7 @@ import { z } from "zod";
 import { DEFAULT_STYLE, STYLE_KEYS } from "./design-trends";
 
 export const infographicSdSchema = z.object({
-  layout: z.enum(["hero", "cards", "split", "minimal"]).default("hero"),
+  layout: z.enum(["hero", "cards", "split", "minimal", "marketplace"]).default("marketplace"),
   title: z.string().min(1).max(60),
   subtitle: z.string().min(1).max(80),
   bullets: z.array(z.string().min(1).max(80)).min(2).max(5),

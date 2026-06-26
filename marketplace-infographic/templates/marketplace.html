@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1200, height=1200" />
+  <title>{{PRODUCT_NAME}}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Montserrat:wght@600;700;800;900&subset=cyrillic,cyrillic-ext&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet" />
+  {{EXTRA_HEAD_HTML}}
+  <style>
+{{DESIGN_SYSTEM_CSS}}
+{{SKIN_CSS}}
+
+    .layout-marketplace {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 12px;
+      padding: 40px 36px 32px;
+      height: 100%;
+    }
+
+    .mp-header {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 14px;
+      max-width: 72%;
+    }
+
+    .mp-title {
+      font-family: var(--font-display);
+      font-size: 58px;
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--accent);
+      text-transform: none;
+      text-shadow: 0 2px 18px rgba(255,255,255,0.55);
+    }
+
+    .mp-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: 999px;
+      color: #fff;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.18);
+    }
+
+    .mp-pill__icon { font-size: 22px; }
+    .mp-pill__text {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
+    .mp-body {
+      display: grid;
+      grid-template-columns: 210px 1fr 148px;
+      gap: 10px;
+      align-items: stretch;
+      min-height: 0;
+      position: relative;
+    }
+
+    .mp-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 14px;
+      padding-top: 8px;
+      z-index: 4;
+    }
+
+    .mp-left-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .mp-stat-card {
+      background: rgba(255,255,255,0.94);
+      border-radius: 18px;
+      padding: 16px 14px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.14);
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .mp-stat-card__icon .material-symbols-outlined { font-size: 28px; }
+    .mp-stat-card__body { display: flex; flex-direction: column; gap: 2px; }
+    .mp-stat-card__value {
+      font-family: var(--font-display);
+      font-size: 34px;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .mp-stat-card__label {
+      font-size: 14px;
+      font-weight: 700;
+      color: #334155;
+      line-height: 1.2;
+    }
+
+    .mp-gift-card {
+      background: rgba(255,255,255,0.94);
+      border-radius: 18px;
+      padding: 12px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.14);
+      border-bottom: 4px solid var(--accent);
+    }
+
+    .mp-gift-card__thumb {
+      width: 100%;
+      height: 56px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #e2e8f0, #f8fafc);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+      color: #64748b;
+    }
+
+    .mp-gift-card__text {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1e293b;
+      line-height: 1.25;
+    }
+
+    .mp-product {
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      min-height: 620px;
+      z-index: 3;
+      padding: 0 8px 24px;
+    }
+
+    .mp-product .product-frame {
+      transform: rotate(-18deg) translateX(24px);
+      transform-origin: center bottom;
+      filter: drop-shadow(0 28px 48px rgba(0,0,0,0.28));
+    }
+
+    .mp-product .product-photo {
+      max-height: 700px;
+      max-width: 520px;
+      object-fit: contain;
+    }
+
+    .mp-product .ground-contact-shadow {
+      position: absolute;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-10%) scaleX(1.1);
+      width: 280px;
+      height: 36px;
+      background: radial-gradient(ellipse, rgba(0,0,0,0.28) 0%, transparent 72%);
+      z-index: 1;
+    }
+
+    .mp-sidebar-wrap {
+      display: flex;
+      align-items: stretch;
+      z-index: 4;
+    }
+
+    .mp-sidebar {
+      width: 100%;
+      border-radius: 22px 0 0 22px;
+      padding: 28px 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+      color: #fff;
+      box-shadow: -8px 0 28px rgba(0,0,0,0.12);
+    }
+
+    .mp-sidebar__item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 4px;
+    }
+
+    .mp-sidebar__value {
+      font-family: var(--font-display);
+      font-size: 72px;
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+    }
+
+    .mp-sidebar__label {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      line-height: 1.2;
+      opacity: 0.95;
+    }
+
+    .mp-sidebar__item--footer {
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.25);
+    }
+
+    .mp-sidebar__item--footer .mp-sidebar__label {
+      font-size: 11px;
+      letter-spacing: 0.06em;
+    }
+
+    .mp-footer {
+      display: flex;
+      justify-content: center;
+      padding-top: 4px;
+    }
+
+    .mp-bottom-ribbon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 36px;
+      border-radius: 999px;
+      color: #fff;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+      max-width: 92%;
+    }
+
+    .mp-bottom-ribbon__text {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="canvas" data-layout="marketplace" data-style="{{STYLE}}">
+    <div class="canvas-bg" style="{{BACKGROUND_STYLE}}"></div>
+    {{OVERLAY_HTML}}
+
+    <div class="canvas-grid layout-marketplace">
+      <header class="mp-header">
+        <h1 class="mp-title">{{HEADLINE}}</h1>
+        {{PILL_HTML}}
+      </header>
+
+      <div class="mp-body">
+        <aside class="mp-left" aria-label="Характеристики">
+          {{LEFT_SPECS_HTML}}
+        </aside>
+
+        <section class="mp-product" aria-label="Товар">
+          <div class="ground-contact-shadow" aria-hidden="true"></div>
+          {{PRODUCT_HTML}}
+        </section>
+
+        <aside class="mp-sidebar-wrap" aria-label="Преимущества">
+          {{SIDEBAR_HTML}}
+        </aside>
+      </div>
+
+      <footer class="mp-footer">
+        {{BOTTOM_RIBBON_HTML}}
+      </footer>
+    </div>
+  </div>
+</body>
+</html>

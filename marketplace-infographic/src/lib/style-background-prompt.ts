@@ -1,4 +1,5 @@
 import type { InfographicStyle } from "@/lib/design-trends";
+import { PRODUCT_BG_NEGATIVE } from "@/lib/product-render-policy";
 
 const STYLE_SCENE: Record<InfographicStyle, string> = {
   brutalism:
@@ -47,5 +48,5 @@ export function enrichBackgroundPrompt(
   const variation =
     VARIATION_WORDS[seedToNumber(variationSeed) % VARIATION_WORDS.length];
   const base = prompt.trim().replace(/\s+/g, " ");
-  return `${base}, ${scene}, ${variation}, unique scene variation ${variationSeed.slice(-8)}`;
+  return `${base}, ${scene}, ${variation}, ${PRODUCT_BG_NEGATIVE}, unique scene variation ${variationSeed.slice(-8)}`;
 }

@@ -1,6 +1,6 @@
 import type { InfographicStyle } from "@/lib/design-trends";
 import { prisma } from "@/lib/prisma";
-import { expandQueryTerms, termsMatch } from "@/lib/query-terms";
+import { scoreExamples } from "@/lib/reference-style-resolver";
 
 export type DesignExampleRecord = Awaited<ReturnType<typeof loadDesignExamples>>[number];
 
@@ -23,57 +23,26 @@ export async function selectRelevantExamples(
   const pool = await loadDesignExamples(120);
   if (pool.length === 0) return [];
 
-  const words = expandQueryTerms(prompt);
-  const scored = pool.map((example) => {
-    const haystack = `${example.prompt} ${example.notes ?? ""} ${example.tags.join(" ")} ${example.appliedStyle}`;
-    let score = 0;
-
-    for (const word of words) {
-      if (termsMatch(haystack, word)) score += 1;
-    }
-
-    for (const tag of example.tags) {
-      if (words.some((word) => termsMatch(tag, word))) score += 2;
-      if (words.some((word) => termsMatch(haystack, tag))) score += 1;
-    }
-
-    if (style && example.appliedStyle === style) {
-      score += 4;
-    }
-
-    if (style && example.tags.includes(style)) {
-      score += 2;
-    }
-
-    if (example.imageUrl) {
-      score += 1;
-    }
-
-    return { example, score };
-  });
-
-  const matched = scored
-    .filter((item) => item.score > 0)
-    .sort(
-      (a, b) => b.score - a.score || b.example.createdAt.getTime() - a.example.createdAt.getTime(),
-    )
-    .map((item) => item.example);
+  const scored = scoreExamples(prompt, pool, style);
+  const matched = scored.filter((item) => item.score > 0);
 
   const unique: typeof pool = [];
   const seen = new Set<string>();
 
-  for (const example of matched) {
+  for (const { example } of matched) {
     if (seen.has(example.id)) continue;
     seen.add(example.id);
     unique.push(example);
     if (unique.length >= limit) break;
   }
 
-  for (const example of pool) {
-    if (unique.length >= limit) break;
-    if (seen.has(example.id)) continue;
-    seen.add(example.id);
-    unique.push(example);
+  if (unique.length < limit && matched.length === 0) {
+    for (const example of pool) {
+      if (unique.length >= limit) break;
+      if (seen.has(example.id)) continue;
+      seen.add(example.id);
+      unique.push(example);
+    }
   }
 
   return unique.slice(0, limit);
@@ -124,9 +93,23 @@ export function formatExamplesForPrompt(
       if (parsed.type !== "reference_card") {
         lines.push(`approvedLayout: ${JSON.stringify(parsed)}`);
       } else {
+        const blueprint = parsed.layoutBlueprint as Record<string, unknown> | undefined;
+        const colors = Array.isArray(parsed.dominantColors)
+          ? parsed.dominantColors.filter((c): c is string => typeof c === "string")
+          : [];
+
         lines.push(
-          "Задача: повтори композицию и подачу похожих карточек — крупный заголовок, УТП, акценты, расположение товара.",
+          "layout: marketplace (профессиональная карточка WB/Ozon)",
+          "композиция: заголовок слева вверху (без КАПСА), подзаголовок в цветной pill, слева белые блоки с цифрами, справа вертикальная цветная колонка с крупными числами, товар по диагонали по центру",
         );
+
+        if (colors.length > 0) {
+          lines.push(`dominantColors: [${colors.join(", ")}]`);
+        }
+
+        if (blueprint) {
+          lines.push(`layoutBlueprint: ${JSON.stringify(blueprint)}`);
+        }
       }
 
       return lines.join("\n");

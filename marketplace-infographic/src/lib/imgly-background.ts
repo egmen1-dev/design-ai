@@ -2,7 +2,7 @@ import sharp from "sharp";
 import { removeBackground } from "@imgly/background-removal-node";
 import { prepareProductImageForRender } from "./background-removal";
 
-/** Вырезка фона: imgly (качество) → sharp fallback */
+/** Вырезка фона: imgly (качество) → sharp fallback. Только cutout — без генерации/дорисовки товара. */
 export async function removeProductBackgroundImgly(input: Buffer): Promise<{
   buffer: Buffer;
   cutout: boolean;

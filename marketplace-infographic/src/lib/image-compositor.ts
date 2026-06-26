@@ -3,20 +3,20 @@ import { mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
 import sharp from "sharp";
 
+import {
+  PRODUCT_BG_NEGATIVE,
+  PRODUCT_BOTTOM_PAD_PX,
+  PRODUCT_TARGET_MAX_HEIGHT_PX,
+} from "@/lib/product-render-policy";
+
 const CANVAS = 1200;
-const PRODUCT_MAX_W = 900;
-const PRODUCT_MAX_H = 700;
-const BOTTOM_PAD = 72;
+const PRODUCT_MAX_W = 1050;
+const PRODUCT_MAX_H = PRODUCT_TARGET_MAX_HEIGHT_PX;
+const BOTTOM_PAD = PRODUCT_BOTTOM_PAD_PX;
 
 export type MergeOptions = {
   reflection?: boolean;
 };
-
-type Rgb = { r: number; g: number; b: number };
-
-function rec709Luminance({ r, g, b }: Rgb): number {
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-}
 
 async function loadImageBuffer(source: string): Promise<Buffer> {
   const trimmed = source.trim();
@@ -38,57 +38,22 @@ async function loadImageBuffer(source: string): Promise<Buffer> {
   return readFile(abs);
 }
 
-async function sampleBackgroundColor(background: sharp.Sharp): Promise<Rgb> {
-  const { data, info } = await background
-    .clone()
-    .resize(1, 1, { fit: "cover" })
-    .removeAlpha()
-    .raw()
-    .toBuffer({ resolveWithObject: true });
-
-  if (info.channels < 3) {
-    return { r: 128, g: 128, b: 128 };
-  }
-  return { r: data[0], g: data[1], b: data[2] };
-}
-
-function colorCorrectProduct(
-  product: sharp.Sharp,
-  bgLuma: number,
-): sharp.Sharp {
-  const normalized = bgLuma / 255;
-  let brightness = 1.05;
-  let saturation = 0.92;
-
-  if (normalized < 0.35) {
-    brightness = 1.12;
-    saturation = 0.95;
-  } else if (normalized > 0.65) {
-    brightness = 0.96;
-    saturation = 0.88;
-  }
-
-  return product.modulate({ brightness, saturation });
-}
-
-async function prepareProductLayer(
+function prepareProductLayer(
   productBuffer: Buffer,
-  bgLuma: number,
 ): Promise<{ buffer: Buffer; width: number; height: number }> {
-  const product = colorCorrectProduct(sharp(productBuffer).ensureAlpha(), bgLuma);
-  const resized = await product
+  return sharp(productBuffer)
+    .ensureAlpha()
     .resize(PRODUCT_MAX_W, PRODUCT_MAX_H, {
       fit: "inside",
       withoutEnlargement: false,
     })
     .png()
-    .toBuffer({ resolveWithObject: true });
-
-  return {
-    buffer: resized.data,
-    width: resized.info.width,
-    height: resized.info.height,
-  };
+    .toBuffer({ resolveWithObject: true })
+    .then((resized) => ({
+      buffer: resized.data,
+      width: resized.info.width,
+      height: resized.info.height,
+    }));
 }
 
 async function createShadowLayer(
@@ -164,12 +129,9 @@ export async function mergeProductWithBackground(
       fit: "cover",
       position: "centre",
     })
-    .blur(2.5);
+    .blur(10);
 
-  const bgColor = await sampleBackgroundColor(background);
-  const bgLuma = rec709Luminance(bgColor);
-
-  const product = await prepareProductLayer(productRaw, bgLuma);
+  const product = await prepareProductLayer(productRaw);
   const productLeft = Math.round((CANVAS - product.width) / 2);
   const productTop = CANVAS - BOTTOM_PAD - product.height;
 

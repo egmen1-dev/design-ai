@@ -13,6 +13,16 @@ export type ReferenceEnrichment = {
   synonyms: string[];
   tags: string[];
   compositionNotes: string | null;
+  dominantColors: string[];
+  layoutBlueprint: {
+    layout: "marketplace";
+    titleCase: boolean;
+    subtitlePill: boolean;
+    leftStatCards: boolean;
+    rightVerticalBar: boolean;
+    productDiagonal: boolean;
+    dominantColors: string[];
+  };
 };
 
 type VisualStats = {
@@ -339,5 +349,15 @@ export async function enrichReferenceUpload(input: {
     synonyms: uniqueTerms(synonyms, 28),
     tags,
     compositionNotes,
+    dominantColors: stats.dominantHex.slice(0, 5),
+    layoutBlueprint: {
+      layout: "marketplace",
+      titleCase: true,
+      subtitlePill: true,
+      leftStatCards: true,
+      rightVerticalBar: true,
+      productDiagonal: true,
+      dominantColors: stats.dominantHex.slice(0, 5),
+    },
   };
 }

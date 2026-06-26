@@ -13,6 +13,13 @@ import { buildStyleSlideSkin } from "@/lib/style-slide-css";
 import { getSceneLayers } from "@/lib/scene-backgrounds";
 import type { InfographicData, RenderInfographicOptions } from "@/lib/infographic-template";
 import type { InfographicSdInput } from "@/lib/validations";
+import {
+  buildMarketplaceBottomRibbonHtml,
+  buildMarketplaceLeftSpecsHtml,
+  buildMarketplacePillHtml,
+  buildMarketplaceSidebarHtml,
+  formatMarketplaceHeadline,
+} from "@/lib/marketplace-layout";
 
 export type LayoutType = InfographicSdInput["layout"];
 
@@ -51,11 +58,13 @@ function loadDesignSystemCss(): string {
 
 function loadTemplate(layout: LayoutType): string {
   const file =
-    layout === "cards"
-      ? "cards.html"
-      : layout === "split"
-        ? "split.html"
-        : "hero.html";
+    layout === "marketplace"
+      ? "marketplace.html"
+      : layout === "cards"
+        ? "cards.html"
+        : layout === "split"
+          ? "split.html"
+          : "hero.html";
 
   const cached = templateCache.get(file);
   if (cached) return cached;
@@ -233,6 +242,36 @@ export function renderLayoutHtml(
 
   const productInner = options?.productStageHtml ?? "";
   const hasPhoto = Boolean(options?.hasPhoto ?? options?.productImageSrc);
+
+  if (layout === "marketplace") {
+    const accentHex = options?.accentHex ?? accent.primary;
+    const headline = formatMarketplaceHeadline(data.headline);
+    const subtitle = data.categoryPill ?? data.productName;
+    const bullets = data.callouts.map((c) => c.text);
+
+    const template = loadTemplate("marketplace");
+    const designCss = loadDesignSystemCss();
+    const libraryFont = options?.libraryFont;
+
+    const vars: Record<string, string> = {
+      PRODUCT_NAME: escapeHtml(data.productName),
+      STYLE: style,
+      HEADLINE: escapeHtml(headline),
+      PILL_HTML: buildMarketplacePillHtml(subtitle, accentHex),
+      LEFT_SPECS_HTML: buildMarketplaceLeftSpecsHtml(data, accentHex),
+      SIDEBAR_HTML: buildMarketplaceSidebarHtml(data, accentHex),
+      BOTTOM_RIBBON_HTML: buildMarketplaceBottomRibbonHtml(bullets, accentHex),
+      PRODUCT_HTML: buildProductHtml(productInner, hasPhoto, layout),
+      BACKGROUND_STYLE: backgroundStyle,
+      OVERLAY_HTML: overlayHtml,
+      DESIGN_SYSTEM_CSS: designCss,
+      SKIN_CSS: `${buildSkinCss(style, accent, libraryFont)}
+    :root { --accent: ${accentHex}; --accent-dark: ${accentHex}; }`,
+      EXTRA_HEAD_HTML: libraryFont?.cssImport ?? "",
+    };
+
+    return replaceAll(template, vars);
+  }
 
   const template = loadTemplate(layout);
   const designCss = loadDesignSystemCss();

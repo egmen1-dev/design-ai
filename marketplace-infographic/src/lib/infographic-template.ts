@@ -93,6 +93,8 @@ export type RenderInfographicOptions = {
   libraryBadge?: {
     htmlTemplate: string;
   } | null;
+  /** Точный hex акцента (из референса / Ollama colors[0]) */
+  accentHex?: string;
 };
 
 function escapeHtml(text: string): string {
