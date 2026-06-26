@@ -26,12 +26,14 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+import { stripProductFromBackgroundPrompt } from "@/lib/product-render-policy";
+
 function sanitizeBackgroundPrompt(prompt: string): string {
-  const base = prompt.trim();
+  const stripped = stripProductFromBackgroundPrompt(prompt.trim());
   const noProduct =
-    "no text, no words, no letters, no typography, no watermark, no logo, no captions, no product, no equipment, no generator, no appliance, no machinery, empty foreground, backdrop only";
-  if (/no text|no words|no letters/i.test(base)) return base;
-  return `${base}, ${noProduct}`;
+    "no text, no words, no letters, no typography, no watermark, no logo, no captions, no product, no trimmer, no garden tool, no equipment, no generator, no appliance, no machinery, no objects on grass, empty foreground, clear center, backdrop only";
+  if (/no text|no words|no letters/i.test(stripped)) return stripped;
+  return `${stripped}, ${noProduct}`;
 }
 
 async function requestHfImage(

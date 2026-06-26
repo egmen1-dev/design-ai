@@ -1,5 +1,8 @@
 import type { InfographicStyle } from "@/lib/design-trends";
-import { PRODUCT_BG_NEGATIVE } from "@/lib/product-render-policy";
+import {
+  PRODUCT_BG_NEGATIVE,
+  stripProductFromBackgroundPrompt,
+} from "@/lib/product-render-policy";
 
 const STYLE_SCENE: Record<InfographicStyle, string> = {
   brutalism:
@@ -47,6 +50,6 @@ export function enrichBackgroundPrompt(
   const scene = STYLE_SCENE[style];
   const variation =
     VARIATION_WORDS[seedToNumber(variationSeed) % VARIATION_WORDS.length];
-  const base = prompt.trim().replace(/\s+/g, " ");
-  return `${base}, ${scene}, ${variation}, ${PRODUCT_BG_NEGATIVE}, unique scene variation ${variationSeed.slice(-8)}`;
+  const base = stripProductFromBackgroundPrompt(prompt.trim().replace(/\s+/g, " "));
+  return `${base}, ${scene}, ${variation}, empty center foreground clear grass only, ${PRODUCT_BG_NEGATIVE}, unique scene variation ${variationSeed.slice(-8)}`;
 }

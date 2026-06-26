@@ -1,21 +1,26 @@
 /**
- * Политика рендера товара на инфографике.
- *
- * РАЗРЕШЕНО только:
- * - вырезка фона (imgly / sharp)
- * - масштаб и позиция на холсте
- * - тень под товаром (drop-shadow / ellipse)
- *
- * ЗАПРЕЩЕНО:
- * - генерация / дорисовка / inpainting товара через SD/FLUX
- * - «улучшение» формы, добавление деталей, запчастей, кнопок
- * - встраивание товара в AI-фон (merge с HF-слоем) — только отдельный PNG-cutout поверх фона
- * - цветокоррекция, меняющая вид товара (brightness/saturation modulate)
+ * Промпт фона: только среда, без товара.
+ * Товар накладывается отдельным PNG-cutout поверх.
  */
 
 export const PRODUCT_BG_NEGATIVE =
-  "no product, no equipment, no generator, no appliance, no object in foreground, no machinery, empty center foreground, backdrop only, environment only";
+  "no product, no equipment, no generator, no appliance, no trimmer, no garden tool, no power tool, no machinery, no object in foreground, no objects on grass, empty center foreground, clear foreground, backdrop only, environment only, scenery only";
 
 export const PRODUCT_TARGET_HEIGHT_RATIO = 0.58;
 export const PRODUCT_TARGET_MAX_HEIGHT_PX = 720;
-export const PRODUCT_BOTTOM_PAD_PX = 40;
+export const PRODUCT_BOTTOM_PAD_PX = 48;
+
+const PRODUCT_WORDS =
+  /\b(trim(?:m)?er|generator|appliance|tool|product|equipment|machinery|device|object|weed whacker|grass cutter|триммер|генератор|товар|инструмент|техник[аи]|косилк[аи]|бензопил[аы])\b/gi;
+
+/** Убирает из промпта фона упоминания товара — иначе FLUX рисует призрак за cutout */
+export function stripProductFromBackgroundPrompt(prompt: string): string {
+  return prompt
+    .replace(/center space for[\w\s,-]*/gi, "clear empty lawn foreground")
+    .replace(/space in center for[\w\s,-]*/gi, "clear empty center foreground")
+    .replace(/room for[\w\s,-]*product[\w\s,-]*/gi, "clear empty foreground")
+    .replace(PRODUCT_WORDS, "")
+    .replace(/\s{2,}/g, " ")
+    .replace(/,\s*,/g, ",")
+    .trim();
+}

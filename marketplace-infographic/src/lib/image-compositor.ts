@@ -4,18 +4,18 @@ import path from "path";
 import sharp from "sharp";
 
 import {
-  PRODUCT_BG_NEGATIVE,
   PRODUCT_BOTTOM_PAD_PX,
   PRODUCT_TARGET_MAX_HEIGHT_PX,
 } from "@/lib/product-render-policy";
 
 const CANVAS = 1200;
-const PRODUCT_MAX_W = 1050;
+const PRODUCT_MAX_W = 920;
 const PRODUCT_MAX_H = PRODUCT_TARGET_MAX_HEIGHT_PX;
 const BOTTOM_PAD = PRODUCT_BOTTOM_PAD_PX;
 
 export type MergeOptions = {
   reflection?: boolean;
+  layout?: "center" | "marketplace";
 };
 
 async function loadImageBuffer(source: string): Promise<Buffer> {
@@ -38,37 +38,93 @@ async function loadImageBuffer(source: string): Promise<Buffer> {
   return readFile(abs);
 }
 
+/** Размывает центр фона — убирает «призрак» товара от FLUX */
+export async function softenBackgroundCenter(bgBuffer: Buffer): Promise<Buffer> {
+  const resized = await sharp(bgBuffer)
+    .resize(CANVAS, CANVAS, { fit: "cover", position: "centre" })
+    .toBuffer();
+
+  const pw = Math.round(CANVAS * 0.5);
+  const ph = Math.round(CANVAS * 0.46);
+  const left = Math.round((CANVAS - pw) / 2);
+  const top = Math.round(CANVAS * 0.38);
+
+  const patch = await sharp(resized)
+    .extract({ left, top, width: pw, height: ph })
+    .blur(22)
+    .modulate({ brightness: 1.04, saturation: 0.92 })
+    .toBuffer();
+
+  const maskSvg = `
+    <svg width="${pw}" height="${ph}" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="g" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="white" stop-opacity="1"/>
+          <stop offset="72%" stop-color="white" stop-opacity="0.55"/>
+          <stop offset="100%" stop-color="white" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#g)"/>
+    </svg>`;
+
+  const feathered = await sharp(patch)
+    .composite([{ input: Buffer.from(maskSvg), blend: "dest-in" }])
+    .png()
+    .toBuffer();
+
+  return sharp(resized)
+    .composite([{ input: feathered, left, top, blend: "over" }])
+    .png()
+    .toBuffer();
+}
+
 function prepareProductLayer(
   productBuffer: Buffer,
+  layout: MergeOptions["layout"],
 ): Promise<{ buffer: Buffer; width: number; height: number }> {
-  return sharp(productBuffer)
+  const pipeline = sharp(productBuffer)
     .ensureAlpha()
     .resize(PRODUCT_MAX_W, PRODUCT_MAX_H, {
       fit: "inside",
       withoutEnlargement: false,
-    })
-    .png()
-    .toBuffer({ resolveWithObject: true })
-    .then((resized) => ({
-      buffer: resized.data,
-      width: resized.info.width,
-      height: resized.info.height,
-    }));
+    });
+
+  if (layout === "marketplace") {
+    return pipeline
+      .rotate(-11, { background: { r: 0, g: 0, b: 0, alpha: 0 } })
+      .png()
+      .toBuffer({ resolveWithObject: true })
+      .then((resized) => ({
+        buffer: resized.data,
+        width: resized.info.width,
+        height: resized.info.height,
+      }));
+  }
+
+  return pipeline.png().toBuffer({ resolveWithObject: true }).then((resized) => ({
+    buffer: resized.data,
+    width: resized.info.width,
+    height: resized.info.height,
+  }));
 }
 
 async function createShadowLayer(
   productWidth: number,
   productHeight: number,
+  layout: MergeOptions["layout"],
 ): Promise<{ buffer: Buffer; width: number; height: number; offsetY: number }> {
-  const shadowW = Math.round(productWidth * 0.62);
-  const shadowH = Math.max(28, Math.round(productHeight * 0.06));
+  const scale = layout === "marketplace" ? 0.72 : 0.62;
+  const shadowW = Math.round(productWidth * scale);
+  const shadowH = Math.max(24, Math.round(productHeight * 0.055));
+  const opacity = layout === "marketplace" ? 0.48 : 0.58;
+
   const svg = `
     <svg width="${shadowW}" height="${shadowH}" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="${shadowW / 2}" cy="${shadowH / 2}" rx="${shadowW * 0.48}" ry="${shadowH * 0.42}" fill="black" fill-opacity="0.58"/>
+      <ellipse cx="${shadowW / 2}" cy="${shadowH / 2}" rx="${shadowW * 0.46}" ry="${shadowH * 0.4}" fill="black" fill-opacity="${opacity}"/>
     </svg>`;
 
   const shadow = await sharp(Buffer.from(svg))
-    .blur(22)
+    .blur(layout === "marketplace" ? 16 : 22)
     .ensureAlpha()
     .png()
     .toBuffer({ resolveWithObject: true });
@@ -77,87 +133,42 @@ async function createShadowLayer(
     buffer: shadow.data,
     width: shadow.info.width,
     height: shadow.info.height,
-    offsetY: Math.round(shadowH * 0.15),
+    offsetY: Math.round(shadowH * 0.12),
   };
 }
 
-async function createReflectionLayer(
-  productBuffer: Buffer,
-  productWidth: number,
-  productHeight: number,
-): Promise<{ buffer: Buffer; width: number; height: number } | null> {
-  const reflectH = Math.max(40, Math.round(productHeight * 0.28));
-  const maskSvg = `
-    <svg width="${productWidth}" height="${reflectH}" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="white" stop-opacity="0.32"/>
-          <stop offset="100%" stop-color="white" stop-opacity="0"/>
-        </linearGradient>
-      </defs>
-      <rect width="100%" height="100%" fill="url(#fade)"/>
-    </svg>`;
-
-  const reflection = await sharp(productBuffer)
-    .flip()
-    .resize(productWidth, reflectH, { fit: "fill" })
-    .ensureAlpha()
-    .composite([{ input: Buffer.from(maskSvg), blend: "dest-in" }])
-    .png()
-    .toBuffer({ resolveWithObject: true });
-
-  return {
-    buffer: reflection.data,
-    width: reflection.info.width,
-    height: reflection.info.height,
-  };
-}
-
-/** Объединяет фон и товар в один PNG 1200×1200 с тенью и цветокоррекцией */
+/** Объединяет фон и товар в один PNG 1200×1200 с тенью */
 export async function mergeProductWithBackground(
   backgroundUrl: string,
   productUrl: string,
   options?: MergeOptions,
 ): Promise<string> {
-  const [bgBuffer, productRaw] = await Promise.all([
+  const layout = options?.layout ?? "center";
+
+  const [bgRaw, productRaw] = await Promise.all([
     loadImageBuffer(backgroundUrl),
     loadImageBuffer(productUrl),
   ]);
 
-  const background = sharp(bgBuffer)
-    .resize(CANVAS, CANVAS, {
-      fit: "cover",
-      position: "centre",
-    })
-    .blur(10);
+  const bgPrepared = await softenBackgroundCenter(bgRaw);
+  const product = await prepareProductLayer(productRaw, layout);
 
-  const product = await prepareProductLayer(productRaw);
-  const productLeft = Math.round((CANVAS - product.width) / 2);
-  const productTop = CANVAS - BOTTOM_PAD - product.height;
+  let productLeft = Math.round((CANVAS - product.width) / 2);
+  let productTop = CANVAS - BOTTOM_PAD - product.height;
 
-  const shadow = await createShadowLayer(product.width, product.height);
-  const shadowLeft = Math.round((CANVAS - shadow.width) / 2);
-  const shadowTop = productTop + product.height - shadow.offsetY;
-
-  const composites: sharp.OverlayOptions[] = [];
-
-  if (options?.reflection) {
-    const reflection = await createReflectionLayer(
-      product.buffer,
-      product.width,
-      product.height,
-    );
-    if (reflection) {
-      composites.push({
-        input: reflection.buffer,
-        left: productLeft,
-        top: productTop + product.height - Math.round(reflection.height * 0.15),
-        blend: "over",
-      });
-    }
+  if (layout === "marketplace") {
+    productLeft = Math.round((CANVAS - product.width) / 2) + 36;
+    productTop = CANVAS - BOTTOM_PAD - product.height + 12;
   }
 
-  composites.push(
+  const shadow = await createShadowLayer(product.width, product.height, layout);
+  let shadowLeft = Math.round((CANVAS - shadow.width) / 2);
+  if (layout === "marketplace") {
+    shadowLeft += 28;
+  }
+  const shadowTop = productTop + product.height - shadow.offsetY;
+
+  const composites: sharp.OverlayOptions[] = [
     {
       input: shadow.buffer,
       left: shadowLeft,
@@ -170,14 +181,14 @@ export async function mergeProductWithBackground(
       top: productTop,
       blend: "over",
     },
-  );
+  ];
 
-  const merged = await background.composite(composites).png().toBuffer();
+  const merged = await sharp(bgPrepared).composite(composites).png().toBuffer();
 
   const hash = createHash("sha256")
     .update(backgroundUrl)
     .update(productUrl)
-    .update(String(options?.reflection ?? false))
+    .update(layout)
     .digest("hex")
     .slice(0, 16);
 

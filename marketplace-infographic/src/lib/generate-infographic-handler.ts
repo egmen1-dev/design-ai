@@ -23,6 +23,10 @@ import {
 import type { InfographicSdInput } from "@/lib/validations";
 import { prisma } from "@/lib/prisma";
 import { resolveReferenceContext } from "@/lib/reference-style-resolver";
+import {
+  mergeProductWithBackground,
+  mergedToDataUrl,
+} from "@/lib/image-compositor";
 import { PIPELINE_VERSION } from "@/lib/pipeline-version";
 
 export type GenerateInfographicInput = {
@@ -174,7 +178,7 @@ export async function handleGenerateInfographic(
       backgroundSource = "fallback";
     }
 
-    // Товар — только cutout поверх SD-фона (без merge в HF-слой). См. product-render-policy.ts
+    // Товар вшивается в фон через sharp (тень + без ореола), текст — поверх в HTML
     const infographicData = sdDataToInfographic(sdData, input.prompt);
     const { font: libraryFont, badge: libraryBadge } = await resolveLibraryAssets(
       sdData.fontId,
@@ -185,12 +189,34 @@ export async function handleGenerateInfographic(
         ? TRENDS[appliedStyle].background
         : buildFallbackGradient(sdData.colors);
 
+    let mergedImageDataUrl: string | undefined;
+    if (
+      backgroundUrl &&
+      backgroundSource === "sd" &&
+      productRender.cutout &&
+      productCutoutPath
+    ) {
+      try {
+        const mergedUrl = await mergeProductWithBackground(
+          backgroundUrl,
+          productCutoutPath,
+          {
+            layout: sdData.layout === "marketplace" ? "marketplace" : "center",
+          },
+        );
+        mergedImageDataUrl = await mergedToDataUrl(mergedUrl);
+      } catch (error) {
+        console.warn("Product merge failed, HTML overlay fallback:", error);
+      }
+    }
+
     const html = renderInfographicHtml(infographicData, {
       style: appliedStyle,
       layout: sdData.layout,
-      backgroundDataUrl,
-      backgroundCss: !backgroundDataUrl ? fallbackBg : undefined,
-      productImageSrc: productRender.renderSrc,
+      mergedImageDataUrl,
+      backgroundDataUrl: mergedImageDataUrl ? undefined : backgroundDataUrl,
+      backgroundCss: !backgroundDataUrl && !mergedImageDataUrl ? fallbackBg : undefined,
+      productImageSrc: mergedImageDataUrl ? undefined : productRender.renderSrc,
       productImageCutout: productRender.cutout,
       libraryFont,
       libraryBadge,

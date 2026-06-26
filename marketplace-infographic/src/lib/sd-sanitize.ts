@@ -1,3 +1,4 @@
+import { stripProductFromBackgroundPrompt } from "@/lib/product-render-policy";
 import { infographicSdSchema, type InfographicSdInput } from "@/lib/validations";
 
 function clip(value: unknown, max: number): string {
@@ -64,12 +65,13 @@ export function sanitizeSdInput(raw: unknown): InfographicSdInput {
     bullets,
     colors: colors.slice(0, 5),
     badge: clip(obj.badge || "Brand", 40) || "Brand",
-    backgroundPrompt:
+    backgroundPrompt: stripProductFromBackgroundPrompt(
       clip(
         obj.backgroundPrompt ||
-          "professional product photo background, soft daylight, center space for product, photorealistic, no text",
+          "professional garden lawn path, suburban backyard, wooden fence blurred, sunny daylight, clear empty grass foreground, photorealistic, no text",
         400,
-      ) || "professional product photo background, soft daylight, no text",
+      ),
+    ) || "sunny garden lawn, clear empty grass foreground, blurred fence, photorealistic, no text, no objects",
     fontId: normalizeUuidOrNull(obj.fontId),
     badgeId: normalizeUuidOrNull(obj.badgeId),
   };

@@ -144,6 +144,32 @@ async function isValidCutout(buffer: Buffer): Promise<boolean> {
   }
 }
 
+/** Убирает белый ореол по краям cutout */
+async function defringeCutout(input: Buffer): Promise<Buffer> {
+  const { data, info } = await sharp(input)
+    .ensureAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+
+  const { width, height, channels } = info;
+  for (let i = 0; i < data.length; i += channels) {
+    const a = data[i + 3];
+    if (a < 8) continue;
+    const r = data[i];
+    const g = data[i + 1];
+    const b = data[i + 2];
+    const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+    if (lum > 248) {
+      data[i + 3] = 0;
+    } else if (lum > 215 && a > 180) {
+      const t = (lum - 215) / 33;
+      data[i + 3] = Math.round(a * (1 - t * 0.85));
+    }
+  }
+
+  return sharp(data, { raw: { width, height, channels: 4 } }).png().toBuffer();
+}
+
 /** Быстрая вырезка без imgly/rembg — стабильно на VPS. */
 export async function prepareProductImageFast(
   input: Buffer,
@@ -153,6 +179,8 @@ export async function prepareProductImageFast(
     cutoutBuffer = await sharp(input).rotate().png().toBuffer();
     return { buffer: cutoutBuffer, cutout: false };
   }
+
+  cutoutBuffer = await defringeCutout(cutoutBuffer);
 
   const optimized = await sharp(cutoutBuffer)
     .resize(1100, 1100, { fit: "inside", withoutEnlargement: true })

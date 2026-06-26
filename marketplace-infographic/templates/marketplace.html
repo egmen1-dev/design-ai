@@ -159,6 +159,16 @@
       max-width: 480px;
     }
 
+    .mp-product--merged {
+      pointer-events: none;
+      min-height: 0;
+      padding: 0;
+    }
+
+    .mp-product--merged .product-frame {
+      display: none;
+    }
+
     .mp-product .ground-contact-shadow {
       position: absolute;
       bottom: 18px;
@@ -272,7 +282,7 @@
           {{LEFT_SPECS_HTML}}
         </aside>
 
-        <section class="mp-product" aria-label="Товар">
+        <section class="mp-product{{MERGED_PRODUCT_CLASS}}" aria-label="Товар">
           <div class="ground-contact-shadow" aria-hidden="true"></div>
           {{PRODUCT_HTML}}
         </section>

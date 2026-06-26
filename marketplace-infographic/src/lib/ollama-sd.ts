@@ -45,7 +45,7 @@ const SD_EXAMPLE_MARKETPLACE = `{
   "bullets": ["1300 Вт мощность", "65 дБ тихая работа", "3 мощных АКБ", "8 насадок", "лёгкий и компактный"],
   "colors": ["#00a8b5", "#ffffff", "#0f172a"],
   "badge": "GardenPro",
-  "backgroundPrompt": "professional marketplace product photo, sunny suburban backyard with green lawn, wooden house blurred in background, soft natural daylight, shallow depth of field, center space for garden trimmer, photorealistic, no text, no people, 8k",
+  "backgroundPrompt": "sunny suburban backyard, green lawn garden path, wooden house blurred in distance, soft natural daylight, shallow depth of field, clear empty grass foreground, photorealistic, no text, no people, no objects",
   "fontId": null,
   "badgeId": null
 }`;
@@ -95,10 +95,10 @@ export function generateMockSdData(
     colors,
     badge: isTrimmer ? "GardenPro" : isGenerator ? "Kronwerk" : "Brand",
     backgroundPrompt: isTrimmer
-      ? "professional marketplace product photo, sunny suburban backyard with green lawn, wooden house blurred in background, soft natural daylight, shallow depth of field, center space for garden trimmer, photorealistic, no text, no people, 8k"
+      ? "sunny suburban backyard, green lawn garden path, wooden fence blurred, soft natural daylight, clear empty grass foreground, photorealistic, no text, no people, no objects"
       : isGenerator
-        ? "professional product photography background, suburban garden with green grass, soft daylight, center space for generator, photorealistic, marketplace infographic 2025, no text, no words, no letters"
-        : "clean studio product photography background, soft gradient, professional lighting, center space for product, photorealistic, ecommerce 2025, no text, no words, no letters",
+        ? "suburban garden with green grass, soft daylight, clear empty lawn foreground, photorealistic, no text, no objects"
+        : "clean studio gradient, soft lighting, clear empty foreground, photorealistic, no text, no objects",
     fontId: styleFont?.id ?? null,
     badgeId: styleBadge?.id ?? null,
   });
@@ -156,7 +156,7 @@ ${useMarketplace ? `Акцентный цвет из референса: ${ref.c
 
 Для каждого товара придумай текст и стиль инфографики 1200×1200, а также промпт на АНГЛИЙСКОМ для Stable Diffusion — идеальный фотореалистичный фон.
 Фон должен соответствовать трендам 2025, повышать кликабельность, передавать контекст использования товара.
-В backgroundPrompt: только описание сцены на английском, СТРОГО без текста/надписей/букв на изображении, без людей, с местом по центру для товара.
+В backgroundPrompt: только ОПИСАНИЕ СРЕДЫ на английском — газон, сад, студия. ЗАПРЕЩЕНО упоминать товар (trimmer, generator, product, tool). Пиши "clear empty grass foreground", "no objects". Без текста и людей.
 Визуальная атмосфера фона должна соответствовать стилю ${effectiveStyle}: ${trend.css}
 
 Весь видимый текст слайда — ТОЛЬКО на русском (title, subtitle, bullets, badge).
