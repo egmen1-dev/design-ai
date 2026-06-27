@@ -33,6 +33,7 @@ ${JSON.stringify(input.marketplaceExpert, null, 2)}
 
 ОТЧЕТ COMMERCIAL PHOTOGRAPHER:
 ${JSON.stringify(input.commercialPhotographer, null, 2)}
+${input.marketIntelligenceSnippet ? `\nРЫНОЧНАЯ РАЗВЕДКА:\n${input.marketIntelligenceSnippet}\n` : ""}
 
 Если карточка уже ≥95 и все эксперты одобрили — approved: true, минимум изменений.
 

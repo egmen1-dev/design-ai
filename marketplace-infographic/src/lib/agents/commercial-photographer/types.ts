@@ -30,6 +30,7 @@ export type CommercialPhotographerInput = {
   hasShadows?: boolean;
   backgroundSource: "sd" | "fallback";
   productPrompt: string;
+  marketIntelligenceSnippet?: string;
 };
 
 /** Редко выше 90; PNG-оверлей — не выше 60 */

@@ -39,6 +39,7 @@ export function buildMarketplaceCtrExpertPrompt(input: MarketplaceCtrExpertInput
 
 КАТЕГОРИЯ: ${input.analysis.category}
 ТОВАР: ${input.productPrompt.slice(0, 220)}
+${input.marketIntelligenceSnippet ? `\nРЫНОЧНАЯ РАЗВЕДКА:\n${input.marketIntelligenceSnippet}\n` : ""}
 
 ДАННЫЕ КАРТОЧКИ:
 ${JSON.stringify(card, null, 2)}

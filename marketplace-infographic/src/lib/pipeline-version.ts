@@ -1,2 +1,2 @@
 /** Версия пайплайна — отображается в /api/health и ответе генерации */
-export const PIPELINE_VERSION = "v15.6-design-knowledge-engine";
+export const PIPELINE_VERSION = "v15.7-market-intelligence";

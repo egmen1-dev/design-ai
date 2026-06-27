@@ -52,6 +52,7 @@ export type OllamaSdContext = {
   userId?: string;
   artDirectorMode?: ArtDirectorModeId;
   knowledgeBlock?: string;
+  marketIntelligenceBlock?: string;
 };
 
 export type GenerationResult = {
@@ -227,6 +228,7 @@ export async function generateSdInfographicData(
       artDirectorMode: context.artDirectorMode,
       userId: context.userId,
       knowledgeBlock: context.knowledgeBlock,
+      marketIntelligenceBlock: context.marketIntelligenceBlock,
     });
     const { brief } = pipelineResult;
 

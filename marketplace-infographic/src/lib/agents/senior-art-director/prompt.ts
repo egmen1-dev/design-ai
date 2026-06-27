@@ -64,6 +64,7 @@ export function buildSeniorArtDirectorPrompt(input: SeniorArtDirectorInput): str
 
 КАТЕГОРИЯ: ${input.analysis.category}
 ТОВАР: ${input.productPrompt.slice(0, 200)}
+${input.marketIntelligenceSnippet ? `РЫНОЧНАЯ РАЗВЕДКА: ${input.marketIntelligenceSnippet}\nСнизь оценку, если карточка слишком похожа на средний рынок.\n` : ""}
 КОНЦЕПЦИЯ: ${input.creative?.creativeConcept.title ?? "—"}
 ЭМОЦИЯ: ${input.meaning.emotion}
 СТИЛЬ: ${input.meaning.style}

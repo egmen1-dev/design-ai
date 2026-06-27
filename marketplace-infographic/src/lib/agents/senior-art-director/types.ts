@@ -32,6 +32,7 @@ export type SeniorArtDirectorInput = {
   headlineFontPx?: number;
   hasComposite?: boolean;
   elementCount?: number;
+  marketIntelligenceSnippet?: string;
 };
 
 export const SENIOR_AD_APPROVE_SCORE = 90;

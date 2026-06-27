@@ -1,5 +1,6 @@
 import { getMemoryLayoutBoost } from "@/lib/agents/design-memory/apply";
 import { getKnowledgeLayoutBoost } from "@/lib/design/knowledge-engine";
+import { getMarketIntelligenceLayoutBoost } from "@/lib/design/market-intelligence";
 import type { KnowledgeCategory } from "@/lib/design/knowledge-engine";
 import type { ProductCategory } from "@/lib/product-analysis";
 import type { LayoutTemplate, LayoutTemplateId } from "./types";
@@ -51,6 +52,7 @@ export function rankTemplatesForProduct(
       score += getMemoryLayoutBoost(t.id, category);
       if (knowledgeCategory) {
         score += getKnowledgeLayoutBoost(knowledgeCategory, t.id);
+        score += getMarketIntelligenceLayoutBoost(knowledgeCategory, t.id);
       }
       return { t, score };
     })

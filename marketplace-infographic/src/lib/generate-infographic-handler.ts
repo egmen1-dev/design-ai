@@ -39,8 +39,12 @@ import {
   retrieveKnowledgeContext,
   collectGenerationPattern,
   preloadKnowledgeAnalysis,
+  retrieveMarketIntelligence,
+  buildCombinedMarketPromptBlock,
+  computeNoveltyScore,
 } from "@/lib/design";
 import type { KnowledgeCategory } from "@/lib/design/knowledge-engine";
+import type { MarketIntelligenceContext } from "@/lib/design/market-intelligence";
 import { analyzeProductPrompt } from "@/lib/product-analysis";
 import type { CompositionResult } from "@/lib/design/types";
 import {
@@ -109,6 +113,9 @@ export type GenerateInfographicResult = {
   knowledgeCategory?: string;
   knowledgePatternsUsed?: number;
   knowledgeAnalysisTriggered?: boolean;
+  marketIntelligenceVersion?: number;
+  marketProductsAnalyzed?: number;
+  marketNoveltyScore?: number;
 };
 
 function briefMeta(brief?: DesignBrief) {
@@ -248,6 +255,7 @@ async function buildLayoutWithAgentReview(input: {
   productPrompt: string;
   seed: string;
   knowledgeCategory?: KnowledgeCategory;
+  marketIntelligenceSnippet?: string;
 }): Promise<{
   compositionResult: CompositionResult;
   cardMeaning: CardMeaning;
@@ -293,6 +301,7 @@ async function buildLayoutWithAgentReview(input: {
       analysis: input.analysis,
       productPrompt: input.productPrompt,
       elementCount,
+      marketIntelligenceSnippet: input.marketIntelligenceSnippet,
     };
 
     const [seniorAdReview, ctrReview] = await Promise.all([
@@ -395,6 +404,8 @@ export async function handleGenerateInfographic(
     let conceptRenderQueue: CreativeDirectorResult[] = [];
     let knowledgeCategory: KnowledgeCategory | undefined;
     let knowledgePatternsUsed = 0;
+    let marketIntelligence: MarketIntelligenceContext | undefined;
+    let marketNoveltyScore: number | undefined;
 
     const variationSeed =
       input.backgroundSeed ??
@@ -452,9 +463,15 @@ export async function handleGenerateInfographic(
 
       const { buffer: productBuffer } = parseProductImageDataUrl(input.productImage);
       const earlyAnalysis = analyzeProductPrompt(input.prompt);
-      const knowledge = await retrieveKnowledgeContext(input.prompt, earlyAnalysis.category);
+      const [knowledge, market] = await Promise.all([
+        retrieveKnowledgeContext(input.prompt, earlyAnalysis.category),
+        retrieveMarketIntelligence(input.prompt, earlyAnalysis.category),
+      ]);
       knowledgeCategory = knowledge.category;
       knowledgePatternsUsed = knowledge.patterns.length;
+      marketIntelligence = market;
+
+      const marketBlock = buildCombinedMarketPromptBlock(market);
 
       // Ollama + анализ фото + вырезка товара — параллельно (~2–3 мин экономии)
       const [ollama, productVisual, earlyCutout] = await Promise.all([
@@ -464,6 +481,7 @@ export async function handleGenerateInfographic(
           userId: input.userId,
           artDirectorMode: input.artDirectorMode,
           knowledgeBlock: knowledge.promptBlock || undefined,
+          marketIntelligenceBlock: marketBlock || undefined,
         }),
         analyzeProductVisual(productBuffer),
         cutoutFromBuffer(productBuffer, input.userId),
@@ -522,6 +540,7 @@ export async function handleGenerateInfographic(
         productPrompt: input.prompt,
         seed: variationSeed,
         knowledgeCategory,
+        marketIntelligenceSnippet: marketIntelligence?.agentSnippet,
       });
       compositionResult = built.compositionResult;
       cardMeaning = built.cardMeaning;
@@ -605,6 +624,7 @@ export async function handleGenerateInfographic(
         hasShadows: !!compositeResult,
         backgroundSource,
         productPrompt: input.prompt,
+        marketIntelligenceSnippet: marketIntelligence?.agentSnippet,
       });
     };
 
@@ -688,6 +708,7 @@ export async function handleGenerateInfographic(
         marketplaceExpert: ctrReview,
         commercialPhotographer: photoReview,
         productPrompt: input.prompt,
+        marketIntelligenceSnippet: marketIntelligence?.agentSnippet,
       });
 
       if (!chiefPlan.approved && MAX_CHIEF_FIX_RETRIES > 0) {
@@ -770,6 +791,7 @@ export async function handleGenerateInfographic(
               marketplaceExpert: ctrReview!,
               commercialPhotographer: photoReview!,
               productPrompt: input.prompt,
+              marketIntelligenceSnippet: marketIntelligence?.agentSnippet,
             });
             console.info(`[chief-design-director] fix retry → approved=${chiefPlan.approved} est=${chiefPlan.estimatedScoreAfterFix}`);
           } catch (error) {
@@ -816,6 +838,7 @@ export async function handleGenerateInfographic(
           productPrompt: input.prompt,
           seed: `${variationSeed}:concept-${conceptRetryIndex}`,
           knowledgeCategory,
+          marketIntelligenceSnippet: marketIntelligence?.agentSnippet,
         });
         compositionResult = rebuilt.compositionResult;
         compositionLayout = compositionResult.layout;
@@ -969,6 +992,15 @@ export async function handleGenerateInfographic(
       ? { ...slot.balance, freeRemaining: slot.balance.freeRemaining - 1 }
       : slot.balance;
 
+    if (marketIntelligence && compositionResult?.layout) {
+      marketNoveltyScore = computeNoveltyScore({
+        productScale: compositionResult.layout.metrics?.productAreaPct,
+        backgroundType: scenePlan.backgroundType,
+        layoutTemplate: compositionResult.layout.scenarioId,
+        market: marketIntelligence,
+      });
+    }
+
     const payloadExtras = {
       brief: designBrief,
       compositingHints,
@@ -981,6 +1013,14 @@ export async function handleGenerateInfographic(
       commercialPhotographer: photoReview,
       chiefDesignDirector: chiefPlan,
       designMemory: undefined as DesignMemoryUpdateResult | undefined,
+      marketIntelligence: marketIntelligence
+        ? {
+            category: marketIntelligence.category,
+            marketVersion: marketIntelligence.marketVersion,
+            productsAnalyzed: marketIntelligence.productsAnalyzed,
+            noveltyScore: marketNoveltyScore,
+          }
+        : undefined,
     };
 
     let designMemory: DesignMemoryUpdateResult | undefined;
@@ -1066,6 +1106,9 @@ export async function handleGenerateInfographic(
         knowledgeCategory,
         knowledgePatternsUsed,
         knowledgeAnalysisTriggered,
+        marketIntelligenceVersion: marketIntelligence?.marketVersion,
+        marketProductsAnalyzed: marketIntelligence?.productsAnalyzed,
+        marketNoveltyScore,
         ...briefMeta(designBrief),
       };
     }
@@ -1122,6 +1165,9 @@ export async function handleGenerateInfographic(
       knowledgeCategory,
       knowledgePatternsUsed,
       knowledgeAnalysisTriggered,
+      marketIntelligenceVersion: marketIntelligence?.marketVersion,
+      marketProductsAnalyzed: marketIntelligence?.productsAnalyzed,
+      marketNoveltyScore,
       ...briefMeta(designBrief),
     };
   } catch (error) {

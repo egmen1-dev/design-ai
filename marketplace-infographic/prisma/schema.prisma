@@ -204,3 +204,32 @@ model GenerationHistory {
   @@index([category, createdAt])
   @@index([createdAt])
 }
+
+model MarketCategoryKnowledge {
+  id                    String   @id @default(cuid())
+  category              String   @unique
+  marketVersion         Int      @default(1)
+  productsAnalyzed      Int      @default(0)
+  knowledgeContext      String   @db.Text
+  marketStatistics      Json
+  marketWeaknesses      Json
+  marketOpportunities   Json
+  designRecommendations Json
+  trendHistory          Json
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([category, updatedAt])
+}
+
+model MarketKnowledgeHistory {
+  id             String   @id @default(cuid())
+  category       String
+  marketVersion  Int
+  oldStatistics  Json?
+  newStatistics  Json
+  changes        Json
+  createdAt      DateTime @default(now())
+
+  @@index([category, createdAt])
+}

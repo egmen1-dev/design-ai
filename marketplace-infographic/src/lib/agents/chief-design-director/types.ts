@@ -43,6 +43,7 @@ export type ChiefDesignDirectorInput = {
   marketplaceExpert: MarketplaceCtrReview;
   commercialPhotographer: CommercialPhotographerReview;
   productPrompt: string;
+  marketIntelligenceSnippet?: string;
 };
 
 export const CHIEF_APPROVE_SCORE = 95;

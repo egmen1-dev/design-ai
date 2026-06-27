@@ -58,6 +58,7 @@ export function buildCommercialPhotographerPrompt(input: CommercialPhotographerI
 • соответствует ли материал товара окружению
 
 ТОВАР: ${input.productPrompt.slice(0, 200)}
+${input.marketIntelligenceSnippet ? `РЫНОЧНАЯ РАЗВЕДКА: ${input.marketIntelligenceSnippet}\n` : ""}
 ФОН: ${input.backgroundSource}
 КОМПОЗИТ: ${input.hasComposite ? "photoreal merge выполнен" : "нет фотореалистичного композита — товар как PNG"}
 ТЕНИ: ${input.hasShadows ? "да" : "нет"}

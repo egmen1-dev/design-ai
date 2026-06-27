@@ -17,7 +17,18 @@ export {
   preloadKnowledgeAnalysis,
   resolveKnowledgeCategory,
 } from "./knowledge-engine";
-export type { KnowledgeCategory, KnowledgeContext } from "./knowledge-engine";
+export type {
+  KnowledgeCategory,
+  KnowledgeContext,
+} from "./knowledge-engine";
+export {
+  retrieveMarketIntelligence,
+  buildCombinedMarketPromptBlock,
+  getMarketIntelligenceLayoutBoost,
+  computeNoveltyScore,
+  refreshCategoryMarketKnowledge,
+} from "./market-intelligence";
+export type { MarketIntelligenceContext } from "./market-intelligence";
 export type {
   CompositionEngineInput,
   CompositionResult,
