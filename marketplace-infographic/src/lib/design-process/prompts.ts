@@ -11,6 +11,7 @@ export type DesignPromptInput = FoundationPromptInput & {
   marketIntelligenceBlock?: string;
   assetsIntelligenceBlock?: string;
   genomeBlock?: string;
+  trendIntelligenceBlock?: string;
 };
 
 export function buildFoundationStagePrompt(input: FoundationPromptInput): string {
@@ -130,6 +131,7 @@ ${input.knowledgeBlock ? `\n## БАЗА ЗНАНИЙ (статистика ус�
 ${input.marketIntelligenceBlock ? `\n## РЫНОЧНАЯ РАЗВЕДКА (Wildberries)\n${input.marketIntelligenceBlock}\n` : ""}
 ${input.assetsIntelligenceBlock ? `\n## DESIGN ASSETS INTELLIGENCE\n${input.assetsIntelligenceBlock}\n` : ""}
 ${input.genomeBlock ? `\n## DESIGN GENOME AI\n${input.genomeBlock}\n` : ""}
+${input.trendIntelligenceBlock ? `\n## TREND INTELLIGENCE\n${input.trendIntelligenceBlock}\n` : ""}
 ${input.referenceHint ? `РЕФЕРЕНС: ${input.referenceHint}` : ""}
 ${input.retryHint ? input.retryHint : ""}
 

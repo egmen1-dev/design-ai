@@ -50,11 +50,13 @@ import {
   saveGenerationGenome,
   extractGenomeFromGeneration,
   genomeToDnaOverride,
+  retrieveTrendIntelligence,
 } from "@/lib/design";
 import type { KnowledgeCategory } from "@/lib/design/knowledge-engine";
 import type { MarketIntelligenceContext } from "@/lib/design/market-intelligence";
 import type { AssetsIntelligenceContext } from "@/lib/design/design-assets-intelligence";
 import type { GenomeIntelligenceContext } from "@/lib/design/design-genome";
+import type { TrendIntelligenceContext } from "@/lib/design/trend-intelligence";
 import { analyzeProductPrompt } from "@/lib/product-analysis";
 import type { CompositionResult } from "@/lib/design/types";
 import {
@@ -62,7 +64,7 @@ import {
   toCompositionResult,
 } from "@/lib/layout-engine";
 import type { CardMeaning, LayoutTemplateId, ProductShapeHint } from "@/lib/layout-engine/types";
-import { runSeniorArtDirector, runMarketplaceCtrExpert, runCommercialPhotographer, runChiefDesignDirector, runDesignMemory, loadDesignMemoryStore, deriveFixApplicationHints, computeOutcomeScore, runVisualStoryDirector, runCommercialPhotoDirector, type SeniorArtDirectorReview, type MarketplaceCtrReview, type CommercialPhotographerReview, type ChiefDesignDirectorPlan, type DesignMemoryUpdateResult, type VisualStoryDirectorResult, type CommercialPhotoDirectorResult } from "@/lib/agents";
+import { runSeniorArtDirector, runMarketplaceCtrExpert, runCommercialPhotographer, runChiefDesignDirector, runDesignMemory, loadDesignMemoryStore, deriveFixApplicationHints, computeOutcomeScore, runVisualStoryDirector, runCommercialPhotoDirector, runArtDirector, type SeniorArtDirectorReview, type MarketplaceCtrReview, type CommercialPhotographerReview, type ChiefDesignDirectorPlan, type DesignMemoryUpdateResult, type VisualStoryDirectorResult, type CommercialPhotoDirectorResult, type ArtDirectorReview } from "@/lib/agents";
 import { creativeConceptToCardMeaning } from "@/lib/design-process/card-meaning";
 import type { ProductVisualProfile } from "@/lib/design/scene-planner";
 import type { CreativeDirectorResult } from "@/lib/design-process/creative-concept";
@@ -131,6 +133,7 @@ export type GenerateInfographicResult = {
   parametricBadgeStyle?: string;
   designGenomeKey?: string;
   storyHeroConcept?: string;
+  trendIntelligenceScore?: number;
 };
 
 function briefMeta(brief?: DesignBrief) {
@@ -270,12 +273,14 @@ function agentKnowledgeSnippet(
   assets?: AssetsIntelligenceContext,
   genome?: GenomeIntelligenceContext,
   story?: VisualStoryDirectorResult,
+  trend?: TrendIntelligenceContext,
 ): string | undefined {
   const parts = [
     market?.agentSnippet,
     assets?.agentSnippet,
     genome?.agentSnippet,
     story?.agentSnippet,
+    trend?.agentSnippet,
   ].filter(Boolean);
   return parts.length ? parts.join(" | ") : undefined;
 }
@@ -297,11 +302,13 @@ async function buildLayoutWithAgentReview(input: {
   storyBlueprintSnippet?: string;
   genomeTemplateId?: LayoutTemplateId;
   genomeDnaOverride?: Partial<import("@/lib/design/types").DesignDNA>;
+  trendIntelligence?: TrendIntelligenceContext;
 }): Promise<{
   compositionResult: CompositionResult;
   cardMeaning: CardMeaning;
   seniorAdReview: SeniorArtDirectorReview;
   ctrReview: MarketplaceCtrReview;
+  artDirectorReview: ArtDirectorReview;
   headlineFontPx: number;
   templateId: LayoutTemplateId;
 }> {
@@ -312,6 +319,7 @@ async function buildLayoutWithAgentReview(input: {
         cardMeaning: CardMeaning;
         seniorAdReview: SeniorArtDirectorReview;
         ctrReview: MarketplaceCtrReview;
+        artDirectorReview: ArtDirectorReview;
         headlineFontPx: number;
         templateId: LayoutTemplateId;
       }
@@ -348,14 +356,25 @@ async function buildLayoutWithAgentReview(input: {
       storyBlueprintSnippet: input.storyBlueprintSnippet,
     };
 
-    const [seniorAdReview, ctrReview] = await Promise.all([
+    const [seniorAdReview, ctrReview, artDirectorReview] = await Promise.all([
       runSeniorArtDirector({ ...agentBase, headlineFontPx: built.headlineFontPx }),
       runMarketplaceCtrExpert(agentBase),
+      runArtDirector({
+        meaning: built.cardMeaning,
+        layout: built.compositionResult.layout,
+        templateId: built.templateId,
+        creative: input.activeCreative,
+        analysis: input.analysis,
+        productPrompt: input.productPrompt,
+        storyBlueprintSnippet: input.storyBlueprintSnippet,
+        trendIntelligence: input.trendIntelligence,
+      }),
     ]);
 
-    last = { ...built, seniorAdReview, ctrReview };
+    last = { ...built, seniorAdReview, ctrReview, artDirectorReview };
 
-    const layoutApproved = seniorAdReview.approved && ctrReview.wouldClick;
+    const layoutApproved =
+      seniorAdReview.approved && ctrReview.wouldClick && artDirectorReview.approved;
     if (layoutApproved) {
       if (attempt > 0) {
         console.info(
@@ -452,6 +471,7 @@ export async function handleGenerateInfographic(
     let marketNoveltyScore: number | undefined;
     let assetsIntelligence: AssetsIntelligenceContext | undefined;
     let genomeIntelligence: GenomeIntelligenceContext | undefined;
+    let trendIntelligence: TrendIntelligenceContext | undefined;
     let storyDirection: VisualStoryDirectorResult | undefined;
     let photoDirection: CommercialPhotoDirectorResult | undefined;
 
@@ -511,18 +531,20 @@ export async function handleGenerateInfographic(
 
       const { buffer: productBuffer } = parseProductImageDataUrl(input.productImage);
       const earlyAnalysis = analyzeProductPrompt(input.prompt);
-      const [knowledge, market, assets] = await Promise.all([
+      const [knowledge, market, assets, trend] = await Promise.all([
         retrieveKnowledgeContext(input.prompt, earlyAnalysis.category),
         retrieveMarketIntelligence(input.prompt, earlyAnalysis.category),
         retrieveAssetsIntelligence(input.prompt, earlyAnalysis.category, [
           appliedStyle,
           earlyAnalysis.brandTone,
         ]),
+        retrieveTrendIntelligence(input.prompt, earlyAnalysis.category),
       ]);
       knowledgeCategory = knowledge.category;
       knowledgePatternsUsed = knowledge.patterns.length;
       marketIntelligence = market;
       assetsIntelligence = assets;
+      trendIntelligence = trend;
 
       const marketBlock = buildCombinedMarketPromptBlock(market);
       const assetsBlock = assets.promptBlock;
@@ -534,6 +556,8 @@ export async function handleGenerateInfographic(
         {
           marketSnippet: market.agentSnippet,
           assetsSnippet: assets.agentSnippet,
+          trendSnippet: trend.agentSnippet,
+          trendScore: trend.trendScore,
         },
       );
 
@@ -548,6 +572,7 @@ export async function handleGenerateInfographic(
           marketIntelligenceBlock: marketBlock || undefined,
           assetsIntelligenceBlock: assetsBlock || undefined,
           genomeBlock: genomeIntelligence.promptBlock || undefined,
+          trendIntelligenceBlock: trend.promptBlock || undefined,
         }),
         analyzeProductVisual(productBuffer),
         cutoutFromBuffer(productBuffer, input.userId),
@@ -655,10 +680,12 @@ export async function handleGenerateInfographic(
           assetsIntelligence,
           genomeIntelligence,
           storyDirection,
+          trendIntelligence,
         ),
         storyBlueprintSnippet: storySnippet,
         genomeTemplateId,
         genomeDnaOverride,
+        trendIntelligence,
       });
       compositionResult = built.compositionResult;
       cardMeaning = built.cardMeaning;
@@ -749,6 +776,7 @@ export async function handleGenerateInfographic(
           assetsIntelligence,
           genomeIntelligence,
           storyDirection,
+          trendIntelligence,
         ),
       });
     };
@@ -838,6 +866,7 @@ export async function handleGenerateInfographic(
           assetsIntelligence,
           genomeIntelligence,
           storyDirection,
+          trendIntelligence,
         ),
         storyBlueprintSnippet: storySnippet,
       });
@@ -984,6 +1013,7 @@ export async function handleGenerateInfographic(
           storyBlueprintSnippet: storySnippet,
           genomeTemplateId,
           genomeDnaOverride,
+          trendIntelligence,
         });
         compositionResult = rebuilt.compositionResult;
         compositionLayout = compositionResult.layout;
@@ -1388,6 +1418,7 @@ export async function handleGenerateInfographic(
         parametricBadgeStyle: assetsIntelligence?.parametricBadge?.style,
         designGenomeKey: genomeIntelligence?.mutatedGenome.genomeKey,
         storyHeroConcept: storyDirection?.heroConcept,
+        trendIntelligenceScore: trendIntelligence?.trendScore,
         ...briefMeta(designBrief),
       };
     }
@@ -1451,6 +1482,7 @@ export async function handleGenerateInfographic(
       parametricBadgeStyle: assetsIntelligence?.parametricBadge?.style,
       designGenomeKey: genomeIntelligence?.mutatedGenome.genomeKey,
       storyHeroConcept: storyDirection?.heroConcept,
+      trendIntelligenceScore: trendIntelligence?.trendScore,
       ...briefMeta(designBrief),
     };
   } catch (error) {

@@ -339,3 +339,29 @@ model DesignGenome {
 
   @@index([category, successWeight])
 }
+
+model TrendIntelligence {
+  id              String   @id @default(cuid())
+  category        String   @unique
+  trends          Json
+  styleSignals    Json
+  colorTrends     Json
+  fontTrends      Json
+  layoutTrends    Json
+  trendScore      Float    @default(70)
+  version         Int      @default(1)
+  updatedAt       DateTime @updatedAt
+  createdAt       DateTime @default(now())
+
+  @@index([trendScore])
+}
+
+model TrendSyncLog {
+  id             String   @id @default(cuid())
+  syncType       String
+  category       String?
+  sourcesUpdated Int      @default(0)
+  completedAt    DateTime @default(now())
+
+  @@index([completedAt])
+}

@@ -62,6 +62,12 @@ export type {
   VisualStoryDirectorResult,
 } from "./visual-story-director/types";
 export {
+  ART_DIRECTOR_AGENT,
+  runArtDirector,
+  ART_DIRECTOR_APPROVE_SCORE,
+} from "./art-director/agent";
+export type { ArtDirectorInput, ArtDirectorReview } from "./art-director/types";
+export {
   COMMERCIAL_PHOTO_DIRECTOR_AGENT,
   runCommercialPhotoDirector,
 } from "./commercial-photo-director/agent";

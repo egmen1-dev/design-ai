@@ -87,6 +87,8 @@ export async function retrieveGenomeIntelligence(
     sceneNarrative?: string;
     marketSnippet?: string;
     assetsSnippet?: string;
+    trendSnippet?: string;
+    trendScore?: number;
   },
 ): Promise<GenomeIntelligenceContext> {
   const category = resolveGenomeCategory(prompt, productCategory);
@@ -116,6 +118,9 @@ export async function retrieveGenomeIntelligence(
 
   const selected = pickBestGenome(candidates) ?? fallback;
   const mutated = mutateGenome(selected, seed);
+  if (hints?.trendScore) {
+    mutated.rankings.trendScore = Math.round((mutated.rankings.trendScore + hints.trendScore) / 2);
+  }
   const validation = validateGenome(mutated);
   if (!validation.valid) {
     console.warn("[design-genome] validation:", validation.issues);
@@ -127,6 +132,7 @@ export async function retrieveGenomeIntelligence(
     buildGenomePromptBlock(mutated),
     hints?.marketSnippet ? `\nMarket: ${hints.marketSnippet}` : "",
     hints?.assetsSnippet ? `\nAssets: ${hints.assetsSnippet}` : "",
+    hints?.trendSnippet ? `\nTrends: ${hints.trendSnippet}` : "",
   ].join("\n");
 
   return {

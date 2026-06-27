@@ -55,6 +55,7 @@ export type OllamaSdContext = {
   marketIntelligenceBlock?: string;
   assetsIntelligenceBlock?: string;
   genomeBlock?: string;
+  trendIntelligenceBlock?: string;
 };
 
 export type GenerationResult = {
@@ -233,6 +234,7 @@ export async function generateSdInfographicData(
       marketIntelligenceBlock: context.marketIntelligenceBlock,
       assetsIntelligenceBlock: context.assetsIntelligenceBlock,
       genomeBlock: context.genomeBlock,
+      trendIntelligenceBlock: context.trendIntelligenceBlock,
     });
     const { brief } = pipelineResult;
 

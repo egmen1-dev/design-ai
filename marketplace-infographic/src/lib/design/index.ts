@@ -44,8 +44,14 @@ export {
   evolveGenomeWeight,
   genomeToDnaOverride,
 } from "./design-genome";
+export {
+  retrieveTrendIntelligence,
+  runMonthlyTrendSync,
+  getTrendIntelligenceLayoutBoost,
+} from "./trend-intelligence";
 export type { AssetsIntelligenceContext, ParametricBadgeModel } from "./design-assets-intelligence";
 export type { GenomeIntelligenceContext, DesignGenomeRecord, StoryBlueprint } from "./design-genome";
+export type { TrendIntelligenceContext } from "./trend-intelligence";
 export type {
   CompositionEngineInput,
   CompositionResult,
