@@ -54,6 +54,22 @@ export type {
   FixApplicationHints,
 } from "./chief-design-director/agent";
 export {
+  VISUAL_STORY_DIRECTOR_AGENT,
+  runVisualStoryDirector,
+} from "./visual-story-director/agent";
+export type {
+  VisualStoryDirectorInput,
+  VisualStoryDirectorResult,
+} from "./visual-story-director/types";
+export {
+  COMMERCIAL_PHOTO_DIRECTOR_AGENT,
+  runCommercialPhotoDirector,
+} from "./commercial-photo-director/agent";
+export type {
+  CommercialPhotoDirectorInput,
+  CommercialPhotoDirectorResult,
+} from "./commercial-photo-director/types";
+export {
   DESIGN_MEMORY_AGENT,
   runDesignMemory,
   loadDesignMemoryStore,

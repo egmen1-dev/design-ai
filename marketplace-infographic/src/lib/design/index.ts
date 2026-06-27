@@ -36,7 +36,16 @@ export {
   paletteColorsForSd,
   getAssetsIntelligenceLayoutBoost,
 } from "./design-assets-intelligence";
+export {
+  retrieveGenomeIntelligence,
+  saveGenerationGenome,
+  buildDesignGenome,
+  extractGenomeFromGeneration,
+  evolveGenomeWeight,
+  genomeToDnaOverride,
+} from "./design-genome";
 export type { AssetsIntelligenceContext, ParametricBadgeModel } from "./design-assets-intelligence";
+export type { GenomeIntelligenceContext, DesignGenomeRecord, StoryBlueprint } from "./design-genome";
 export type {
   CompositionEngineInput,
   CompositionResult,

@@ -31,6 +31,7 @@ export type MarketplaceCtrExpertInput = {
   productPrompt: string;
   elementCount?: number;
   marketIntelligenceSnippet?: string;
+  storyBlueprintSnippet?: string;
 };
 
 /** Средняя карточка не должна быть выше ~70; клик среди 100 конкурентов — строго */

@@ -31,6 +31,10 @@ export function evaluateMarketplaceCtrHeuristic(
     mainProblems.push("Нет явного преимущества / цифры — непонятна выгода");
     recommendations.push("Добавить одну главную характеристику (кВт, литры, гарантия)");
   }
+  if (!input.storyBlueprintSnippet || input.storyBlueprintSnippet.length < 12) {
+    mainProblems.push("История карточки не читается за 0.5 секунды");
+    recommendations.push("Усилить hero concept и одну эмоцию в заголовке");
+  }
   if (meaning.title.length > 55) {
     mainProblems.push("Слишком много текста в заголовке");
   }

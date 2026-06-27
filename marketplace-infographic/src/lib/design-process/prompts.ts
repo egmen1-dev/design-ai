@@ -10,6 +10,7 @@ export type DesignPromptInput = FoundationPromptInput & {
   knowledgeBlock?: string;
   marketIntelligenceBlock?: string;
   assetsIntelligenceBlock?: string;
+  genomeBlock?: string;
 };
 
 export function buildFoundationStagePrompt(input: FoundationPromptInput): string {
@@ -128,6 +129,7 @@ ${cd.sceneNarrative}
 ${input.knowledgeBlock ? `\n## БАЗА ЗНАНИЙ (статистика успешных карточек)\n${input.knowledgeBlock}\n` : ""}
 ${input.marketIntelligenceBlock ? `\n## РЫНОЧНАЯ РАЗВЕДКА (Wildberries)\n${input.marketIntelligenceBlock}\n` : ""}
 ${input.assetsIntelligenceBlock ? `\n## DESIGN ASSETS INTELLIGENCE\n${input.assetsIntelligenceBlock}\n` : ""}
+${input.genomeBlock ? `\n## DESIGN GENOME AI\n${input.genomeBlock}\n` : ""}
 ${input.referenceHint ? `РЕФЕРЕНС: ${input.referenceHint}` : ""}
 ${input.retryHint ? input.retryHint : ""}
 

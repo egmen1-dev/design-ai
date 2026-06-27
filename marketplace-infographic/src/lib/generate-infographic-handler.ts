@@ -46,10 +46,15 @@ import {
   renderIntelligentBadge,
   recordAssetSuccess,
   paletteColorsForSd,
+  retrieveGenomeIntelligence,
+  saveGenerationGenome,
+  extractGenomeFromGeneration,
+  genomeToDnaOverride,
 } from "@/lib/design";
 import type { KnowledgeCategory } from "@/lib/design/knowledge-engine";
 import type { MarketIntelligenceContext } from "@/lib/design/market-intelligence";
 import type { AssetsIntelligenceContext } from "@/lib/design/design-assets-intelligence";
+import type { GenomeIntelligenceContext } from "@/lib/design/design-genome";
 import { analyzeProductPrompt } from "@/lib/product-analysis";
 import type { CompositionResult } from "@/lib/design/types";
 import {
@@ -57,7 +62,7 @@ import {
   toCompositionResult,
 } from "@/lib/layout-engine";
 import type { CardMeaning, LayoutTemplateId, ProductShapeHint } from "@/lib/layout-engine/types";
-import { runSeniorArtDirector, runMarketplaceCtrExpert, runCommercialPhotographer, runChiefDesignDirector, runDesignMemory, loadDesignMemoryStore, deriveFixApplicationHints, computeOutcomeScore, type SeniorArtDirectorReview, type MarketplaceCtrReview, type CommercialPhotographerReview, type ChiefDesignDirectorPlan, type DesignMemoryUpdateResult } from "@/lib/agents";
+import { runSeniorArtDirector, runMarketplaceCtrExpert, runCommercialPhotographer, runChiefDesignDirector, runDesignMemory, loadDesignMemoryStore, deriveFixApplicationHints, computeOutcomeScore, runVisualStoryDirector, runCommercialPhotoDirector, type SeniorArtDirectorReview, type MarketplaceCtrReview, type CommercialPhotographerReview, type ChiefDesignDirectorPlan, type DesignMemoryUpdateResult, type VisualStoryDirectorResult, type CommercialPhotoDirectorResult } from "@/lib/agents";
 import { creativeConceptToCardMeaning } from "@/lib/design-process/card-meaning";
 import type { ProductVisualProfile } from "@/lib/design/scene-planner";
 import type { CreativeDirectorResult } from "@/lib/design-process/creative-concept";
@@ -124,6 +129,8 @@ export type GenerateInfographicResult = {
   marketNoveltyScore?: number;
   assetsIntelligenceActive?: boolean;
   parametricBadgeStyle?: string;
+  designGenomeKey?: string;
+  storyHeroConcept?: string;
 };
 
 function briefMeta(brief?: DesignBrief) {
@@ -215,6 +222,8 @@ function buildProfessionalComposition(input: {
   excludeTemplateIds?: LayoutTemplateId[];
   templateId?: LayoutTemplateId;
   knowledgeCategory?: KnowledgeCategory;
+  genomeTemplateId?: LayoutTemplateId;
+  genomeDnaOverride?: Partial<import("@/lib/design/types").DesignDNA>;
 }): {
   compositionResult: CompositionResult;
   cardMeaning: CardMeaning;
@@ -243,12 +252,13 @@ function buildProfessionalComposition(input: {
     seed: input.seed,
     backgroundHint: input.designBrief?.backgroundPrompt,
     excludeTemplateIds: input.excludeTemplateIds,
-    templateId: input.templateId,
+    templateId: input.genomeTemplateId ?? input.templateId,
     knowledgeCategory: input.knowledgeCategory,
   });
 
+  const dnaOverride = input.genomeDnaOverride ?? input.designBrief?.designDnaOverride;
   return {
-    compositionResult: toCompositionResult(pro, input.category),
+    compositionResult: toCompositionResult(pro, input.category, dnaOverride as Partial<import("@/lib/design/types").DesignDNA> | undefined),
     cardMeaning,
     headlineFontPx: pro.headlineFontPx,
     templateId: pro.templateId,
@@ -258,9 +268,21 @@ function buildProfessionalComposition(input: {
 function agentKnowledgeSnippet(
   market?: MarketIntelligenceContext,
   assets?: AssetsIntelligenceContext,
+  genome?: GenomeIntelligenceContext,
+  story?: VisualStoryDirectorResult,
 ): string | undefined {
-  const parts = [market?.agentSnippet, assets?.agentSnippet].filter(Boolean);
+  const parts = [
+    market?.agentSnippet,
+    assets?.agentSnippet,
+    genome?.agentSnippet,
+    story?.agentSnippet,
+  ].filter(Boolean);
   return parts.length ? parts.join(" | ") : undefined;
+}
+
+function storyBlueprintSnippet(story?: VisualStoryDirectorResult): string | undefined {
+  if (!story) return undefined;
+  return `Story: ${story.heroConcept}`;
 }
 
 async function buildLayoutWithAgentReview(input: {
@@ -272,6 +294,9 @@ async function buildLayoutWithAgentReview(input: {
   seed: string;
   knowledgeCategory?: KnowledgeCategory;
   marketIntelligenceSnippet?: string;
+  storyBlueprintSnippet?: string;
+  genomeTemplateId?: LayoutTemplateId;
+  genomeDnaOverride?: Partial<import("@/lib/design/types").DesignDNA>;
 }): Promise<{
   compositionResult: CompositionResult;
   cardMeaning: CardMeaning;
@@ -301,6 +326,8 @@ async function buildLayoutWithAgentReview(input: {
       seed: attempt === 0 ? input.seed : `${input.seed}:agent-${attempt}`,
       excludeTemplateIds: excluded,
       knowledgeCategory: input.knowledgeCategory,
+      genomeTemplateId: input.genomeTemplateId,
+      genomeDnaOverride: input.genomeDnaOverride,
     });
 
     const elementCount =
@@ -318,6 +345,7 @@ async function buildLayoutWithAgentReview(input: {
       productPrompt: input.productPrompt,
       elementCount,
       marketIntelligenceSnippet: input.marketIntelligenceSnippet,
+      storyBlueprintSnippet: input.storyBlueprintSnippet,
     };
 
     const [seniorAdReview, ctrReview] = await Promise.all([
@@ -423,6 +451,9 @@ export async function handleGenerateInfographic(
     let marketIntelligence: MarketIntelligenceContext | undefined;
     let marketNoveltyScore: number | undefined;
     let assetsIntelligence: AssetsIntelligenceContext | undefined;
+    let genomeIntelligence: GenomeIntelligenceContext | undefined;
+    let storyDirection: VisualStoryDirectorResult | undefined;
+    let photoDirection: CommercialPhotoDirectorResult | undefined;
 
     const variationSeed =
       input.backgroundSeed ??
@@ -496,6 +527,16 @@ export async function handleGenerateInfographic(
       const marketBlock = buildCombinedMarketPromptBlock(market);
       const assetsBlock = assets.promptBlock;
 
+      genomeIntelligence = await retrieveGenomeIntelligence(
+        input.prompt,
+        earlyAnalysis.category,
+        variationSeed,
+        {
+          marketSnippet: market.agentSnippet,
+          assetsSnippet: assets.agentSnippet,
+        },
+      );
+
       // Ollama + анализ фото + вырезка товара — параллельно (~2–3 мин экономии)
       const [ollama, productVisual, earlyCutout] = await Promise.all([
         generateSdInfographicData(input.prompt, styleHint, {
@@ -506,6 +547,7 @@ export async function handleGenerateInfographic(
           knowledgeBlock: knowledge.promptBlock || undefined,
           marketIntelligenceBlock: marketBlock || undefined,
           assetsIntelligenceBlock: assetsBlock || undefined,
+          genomeBlock: genomeIntelligence.promptBlock || undefined,
         }),
         analyzeProductVisual(productBuffer),
         cutoutFromBuffer(productBuffer, input.userId),
@@ -526,18 +568,36 @@ export async function handleGenerateInfographic(
       preloadedCutout = earlyCutout;
     }
 
-    // ── 1. Анализ товара + Scene Planner ──────────────────────────────
+    // ── 0. Visual Story Director → Story Blueprint ───────────────────
     let productVisual = preloadedProductVisual;
     if (!productVisual && input.productImage) {
       const { buffer } = parseProductImageDataUrl(input.productImage);
       productVisual = await analyzeProductVisual(buffer);
     }
 
-    const visualHook = designBrief?.designProcess?.visualHook ?? designBrief?.visualHook;
-
     let activeCreative = creativeFromBrief(designBrief);
-    const sceneNarrative = activeCreative?.sceneNarrative;
+    const productAnalysis = analyzeProductPrompt(input.prompt);
 
+    if (sdData.layout === "marketplace" && genomeIntelligence) {
+      storyDirection = await runVisualStoryDirector({
+        prompt: input.prompt,
+        analysis: productAnalysis,
+        designBrief,
+        activeCreative,
+        productVisual,
+        genomeContext: genomeIntelligence,
+        marketIntelligenceSnippet: marketIntelligence?.agentSnippet,
+      });
+    }
+
+    const visualHook =
+      storyDirection?.visualHook ??
+      designBrief?.designProcess?.visualHook ??
+      designBrief?.visualHook;
+    const sceneNarrative =
+      storyDirection?.sceneNarrative ?? activeCreative?.sceneNarrative;
+
+    // ── 1. Scene Planner (адаптирует Genome, не проектирует с нуля) ─
     const { analysis, scene: plannedScene } = planScene({
       prompt: input.prompt,
       coverConceptId: input.coverConcept ?? storedScenePlan?.coverConceptId,
@@ -546,12 +606,33 @@ export async function handleGenerateInfographic(
       seed: variationSeed,
       productVisual,
       sceneNarrative,
-      compositionScenarioId: designBrief?.compositionScenarioId as
-        | import("@/lib/design/types").CompositionScenarioId
-        | undefined,
+      compositionScenarioId:
+        storyDirection?.compositionScenarioId ??
+        (designBrief?.compositionScenarioId as
+          | import("@/lib/design/types").CompositionScenarioId
+          | undefined),
     });
 
-    const scenePlan = storedScenePlan ?? plannedScene;
+    let scenePlan = storedScenePlan ?? plannedScene;
+
+    if (sdData.layout === "marketplace" && genomeIntelligence && storyDirection) {
+      photoDirection = await runCommercialPhotoDirector({
+        genomeContext: genomeIntelligence,
+        storyDirection,
+        scene: scenePlan,
+        analysis,
+        productVisual,
+        activeCreative,
+      });
+      scenePlan = { ...scenePlan, ...photoDirection.scenePatch };
+    }
+
+    const genomeDnaOverride = genomeIntelligence
+      ? genomeToDnaOverride(genomeIntelligence.mutatedGenome)
+      : undefined;
+    const genomeTemplateId = genomeIntelligence?.mutatedGenome.composition
+      .layoutTemplate as LayoutTemplateId | undefined;
+    const storySnippet = storyBlueprintSnippet(storyDirection);
 
     // ── 2. Layout Engine + Senior Art Director ───────────────────────
     let compositionResult: CompositionResult | null = null;
@@ -569,7 +650,15 @@ export async function handleGenerateInfographic(
         productPrompt: input.prompt,
         seed: variationSeed,
         knowledgeCategory,
-        marketIntelligenceSnippet: agentKnowledgeSnippet(marketIntelligence, assetsIntelligence),
+        marketIntelligenceSnippet: agentKnowledgeSnippet(
+          marketIntelligence,
+          assetsIntelligence,
+          genomeIntelligence,
+          storyDirection,
+        ),
+        storyBlueprintSnippet: storySnippet,
+        genomeTemplateId,
+        genomeDnaOverride,
       });
       compositionResult = built.compositionResult;
       cardMeaning = built.cardMeaning;
@@ -589,8 +678,9 @@ export async function handleGenerateInfographic(
     const scenePrompt = buildSceneBackgroundPrompt(scenePlan, analysis, {
       dominantColors: productVisual?.dominantColors,
       shape: productVisual?.shape,
-      sceneNarrative: activeCreative?.sceneNarrative,
-      visualHookStory: activeCreative?.creativeConcept.visualHook,
+      sceneNarrative: photoDirection?.backgroundNarrative ?? sceneNarrative,
+      visualHookStory:
+        storyDirection?.heroConcept ?? activeCreative?.creativeConcept.visualHook,
     });
     sdData.backgroundPrompt = scenePrompt;
 
@@ -654,7 +744,12 @@ export async function handleGenerateInfographic(
         hasShadows: !!compositeResult,
         backgroundSource,
         productPrompt: input.prompt,
-        marketIntelligenceSnippet: agentKnowledgeSnippet(marketIntelligence, assetsIntelligence),
+        marketIntelligenceSnippet: agentKnowledgeSnippet(
+          marketIntelligence,
+          assetsIntelligence,
+          genomeIntelligence,
+          storyDirection,
+        ),
       });
     };
 
@@ -738,7 +833,13 @@ export async function handleGenerateInfographic(
         marketplaceExpert: ctrReview,
         commercialPhotographer: photoReview,
         productPrompt: input.prompt,
-        marketIntelligenceSnippet: agentKnowledgeSnippet(marketIntelligence, assetsIntelligence),
+        marketIntelligenceSnippet: agentKnowledgeSnippet(
+          marketIntelligence,
+          assetsIntelligence,
+          genomeIntelligence,
+          storyDirection,
+        ),
+        storyBlueprintSnippet: storySnippet,
       });
 
       if (!chiefPlan.approved && MAX_CHIEF_FIX_RETRIES > 0) {
@@ -821,7 +922,13 @@ export async function handleGenerateInfographic(
               marketplaceExpert: ctrReview!,
               commercialPhotographer: photoReview!,
               productPrompt: input.prompt,
-              marketIntelligenceSnippet: agentKnowledgeSnippet(marketIntelligence, assetsIntelligence),
+              marketIntelligenceSnippet: agentKnowledgeSnippet(
+                marketIntelligence,
+                assetsIntelligence,
+                genomeIntelligence,
+                storyDirection,
+              ),
+              storyBlueprintSnippet: storySnippet,
             });
             console.info(`[chief-design-director] fix retry → approved=${chiefPlan.approved} est=${chiefPlan.estimatedScoreAfterFix}`);
           } catch (error) {
@@ -868,7 +975,15 @@ export async function handleGenerateInfographic(
           productPrompt: input.prompt,
           seed: `${variationSeed}:concept-${conceptRetryIndex}`,
           knowledgeCategory,
-          marketIntelligenceSnippet: agentKnowledgeSnippet(marketIntelligence, assetsIntelligence),
+          marketIntelligenceSnippet: agentKnowledgeSnippet(
+            marketIntelligence,
+            assetsIntelligence,
+            genomeIntelligence,
+            storyDirection,
+          ),
+          storyBlueprintSnippet: storySnippet,
+          genomeTemplateId,
+          genomeDnaOverride,
         });
         compositionResult = rebuilt.compositionResult;
         compositionLayout = compositionResult.layout;
@@ -1191,8 +1306,40 @@ export async function handleGenerateInfographic(
         recommendedFontFamily: assetsIntelligence?.recommendedFontFamily,
         recommendedPaletteKey: assetsIntelligence?.recommendedPaletteKey,
         generationHistoryId: collectedHistoryId,
+        designGenomeKey: genomeIntelligence?.mutatedGenome.genomeKey,
       };
       payloadExtras.feedbackLearning = feedbackLearning;
+
+      if (genomeIntelligence) {
+        const finalGenome = extractGenomeFromGeneration({
+          prompt: input.prompt,
+          productCategory: analysis.category,
+          knowledgeCategory: genomeIntelligence.category,
+          customerIntent: storyDirection?.customerIntent,
+          heroConcept: storyDirection?.heroConcept,
+          sceneNarrative: storyDirection?.sceneNarrative,
+          scenePlan,
+          compositionTemplate: compositionResult?.layout?.scenarioId as LayoutTemplateId | undefined,
+          productScalePct: compositionResult?.layout?.metrics?.productAreaPct,
+          negativeSpacePct: compositionResult?.layout?.metrics?.whitespacePct,
+          fontFamily: assetsIntelligence?.recommendedFontFamily,
+          designScore: compositionResult?.score?.total,
+          seniorAdScore: seniorAdReview?.score,
+          ctrScore: ctrReview?.score,
+          photoScore: photoReview?.score,
+          ctrPrediction: ctrReview?.ctrPrediction,
+          productVisual,
+          badge: genomeIntelligence.mutatedGenome.badge,
+          palette: genomeIntelligence.mutatedGenome.palette,
+          dna: compositionResult?.dna,
+        });
+        finalGenome.genomeKey = genomeIntelligence.mutatedGenome.genomeKey;
+        finalGenome.rankings = genomeIntelligence.mutatedGenome.rankings;
+        await saveGenerationGenome(
+          finalGenome,
+          !!(chiefPlan?.approved && seniorAdReview?.approved && ctrReview?.wouldClick),
+        ).catch((e) => console.warn("[design-genome] save failed:", e));
+      }
     }
 
     if (input.regenerateBackgroundOnly && input.existingImageId) {
@@ -1239,6 +1386,8 @@ export async function handleGenerateInfographic(
         marketNoveltyScore,
         assetsIntelligenceActive: !!assetsIntelligence?.parametricBadge,
         parametricBadgeStyle: assetsIntelligence?.parametricBadge?.style,
+        designGenomeKey: genomeIntelligence?.mutatedGenome.genomeKey,
+        storyHeroConcept: storyDirection?.heroConcept,
         ...briefMeta(designBrief),
       };
     }
@@ -1300,6 +1449,8 @@ export async function handleGenerateInfographic(
       marketNoveltyScore,
       assetsIntelligenceActive: !!assetsIntelligence?.parametricBadge,
       parametricBadgeStyle: assetsIntelligence?.parametricBadge?.style,
+      designGenomeKey: genomeIntelligence?.mutatedGenome.genomeKey,
+      storyHeroConcept: storyDirection?.heroConcept,
       ...briefMeta(designBrief),
     };
   } catch (error) {

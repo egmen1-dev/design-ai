@@ -58,10 +58,14 @@ export function buildChiefDesignDirectorHeuristic(
   const badgeChanges: FixAction[] = [];
   const compositionChanges: FixAction[] = [];
 
+  const storyWeak =
+    !input.storyBlueprintSnippet || input.storyBlueprintSnippet.replace(/Story:|история:/i, "").trim().length < 12;
+
   const allApproved =
     input.seniorArtDirector.approved &&
     input.marketplaceExpert.wouldClick &&
-    input.commercialPhotographer.looksLikePhoto;
+    input.commercialPhotographer.looksLikePhoto &&
+    !storyWeak;
 
   const avgScore = clamp(
     (input.seniorArtDirector.score +
@@ -69,6 +73,18 @@ export function buildChiefDesignDirectorHeuristic(
       input.commercialPhotographer.score) /
       3,
   );
+
+  if (storyWeak) {
+    topProblems.push({
+      problem: "Коммерческая история не читается с первого взгляда",
+      reason: "Visual Story Blueprint не прошёл проверку Chief Director",
+    });
+    pushFix(compositionChanges, {
+      priority: "critical",
+      action: "Усилить hero concept и сократить текст до одной мысли",
+      expectedImprovement: "+12 к story clarity",
+    });
+  }
 
   if (allApproved && avgScore >= CHIEF_APPROVE_SCORE) {
     return {

@@ -7,6 +7,7 @@ import {
   resolveKnowledgeCategory,
 } from "@/lib/design/knowledge-engine";
 import { recordAssetSuccess } from "@/lib/design/design-assets-intelligence";
+import { evolveGenomeWeight, outcomeFromFeedback } from "@/lib/design/design-genome";
 import { unpackSdPayload } from "@/lib/sd-stored-payload";
 import { analyzeProductPrompt } from "@/lib/product-analysis";
 import type { ScenePlan } from "@/lib/design/scene-planner";
@@ -195,6 +196,14 @@ export async function applyUserFeedback(
     if (patternKey) {
       knowledgePatternUpdated = await evolveUserFeedback(patternKey, userLiked);
     }
+  }
+
+  if (snapshot?.designGenomeKey) {
+    await evolveGenomeWeight(
+      snapshot.designGenomeKey,
+      outcomeFromFeedback(userLiked),
+      userLiked,
+    ).catch((e) => console.warn("[user-feedback] genome evolve failed:", e));
   }
 
   return {

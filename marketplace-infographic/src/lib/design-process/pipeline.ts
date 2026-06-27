@@ -42,6 +42,7 @@ export type DesignProcessContext = {
   knowledgeBlock?: string;
   marketIntelligenceBlock?: string;
   assetsIntelligenceBlock?: string;
+  genomeBlock?: string;
 };
 
 export type DesignProcessResult = {
@@ -204,6 +205,7 @@ async function runDesignStage(
     knowledgeBlock: ctx.knowledgeBlock,
     marketIntelligenceBlock: ctx.marketIntelligenceBlock,
     assetsIntelligenceBlock: ctx.assetsIntelligenceBlock,
+    genomeBlock: ctx.genomeBlock,
   });
 
   const raw = await callOllamaJson<unknown>(prompt, 0.28);

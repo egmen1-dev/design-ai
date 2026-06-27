@@ -28,6 +28,7 @@ export type FeedbackLearningSnapshot = {
   recommendedFontFamily?: string;
   recommendedPaletteKey?: string;
   generationHistoryId?: string;
+  designGenomeKey?: string;
 };
 
 export type ApplyUserFeedbackResult = {

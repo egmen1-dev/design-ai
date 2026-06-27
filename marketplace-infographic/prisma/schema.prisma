@@ -319,3 +319,23 @@ model AssetSyncLog {
 
   @@index([completedAt])
 }
+
+model DesignGenome {
+  id             String    @id @default(cuid())
+  genomeKey      String    @unique
+  category       String
+  customerIntent String?
+  heroConcept    String?
+  genome         Json
+  rankings       Json?
+  source         String    @default("generated")
+  successWeight  Float     @default(0.55)
+  usageCount     Int       @default(0)
+  likes          Int       @default(0)
+  dislikes       Int       @default(0)
+  lastUsedAt     DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([category, successWeight])
+}

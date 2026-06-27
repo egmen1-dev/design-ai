@@ -44,6 +44,7 @@ export type ChiefDesignDirectorInput = {
   commercialPhotographer: CommercialPhotographerReview;
   productPrompt: string;
   marketIntelligenceSnippet?: string;
+  storyBlueprintSnippet?: string;
 };
 
 export const CHIEF_APPROVE_SCORE = 95;

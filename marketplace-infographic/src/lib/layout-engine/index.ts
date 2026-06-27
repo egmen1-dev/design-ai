@@ -66,8 +66,9 @@ export function computeProfessionalLayout(
 export function toCompositionResult(
   pro: ProfessionalLayoutResult,
   category: ProductCategory,
+  dnaOverride?: Partial<import("@/lib/design/types").DesignDNA>,
 ): CompositionResult {
-  const dna = generateDesignDNA(category, pro.seed);
+  const dna = { ...generateDesignDNA(category, pro.seed), ...dnaOverride };
   return {
     layout: pro.layout,
     dna,
