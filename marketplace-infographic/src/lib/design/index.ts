@@ -49,6 +49,14 @@ export {
   runMonthlyTrendSync,
   getTrendIntelligenceLayoutBoost,
 } from "./trend-intelligence";
+export {
+  runSceneDirector,
+  compileScenePromptFromBlueprint,
+  scoreSceneBlueprint,
+  type SceneBlueprint,
+  type SceneDirectorResult,
+  type SceneTypeId,
+} from "./scene-blueprint";
 export type { AssetsIntelligenceContext, ParametricBadgeModel } from "./design-assets-intelligence";
 export type { GenomeIntelligenceContext, DesignGenomeRecord, StoryBlueprint } from "./design-genome";
 export type { TrendIntelligenceContext } from "./trend-intelligence";

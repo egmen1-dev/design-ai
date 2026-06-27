@@ -76,6 +76,14 @@ export type {
   CommercialPhotoDirectorResult,
 } from "./commercial-photo-director/types";
 export {
+  SCENE_DIRECTOR_AGENT,
+  runSceneDirector,
+} from "./scene-director/agent";
+export type {
+  SceneDirectorInput,
+  SceneDirectorResult,
+} from "./scene-director/agent";
+export {
   DESIGN_MEMORY_AGENT,
   runDesignMemory,
   loadDesignMemoryStore,

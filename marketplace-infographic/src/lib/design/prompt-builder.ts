@@ -1,6 +1,10 @@
 import type { ProductAnalysis } from "@/lib/product-analysis";
 import type { ScenePlan, SafeZone } from "./scene-planner";
 import { compileSceneConstraintsFromLayoutSpec } from "@/lib/design/layout-spec";
+import {
+  compileScenePromptFromBlueprint,
+  type SceneBlueprint,
+} from "@/lib/design/scene-blueprint";
 
 function formatSafeZones(zones: SafeZone[]): string {
   return zones
@@ -19,7 +23,7 @@ function productZonePrompt(zone: ScenePlan["productSafeZone"]): string {
   return `clear empty product placement area around ${cx}% horizontal ${cy}% vertical, approximately ${w}% width ${h}% height, no objects`;
 }
 
-/** Детальный промпт сцены для Stable Diffusion — compiled from LayoutSpec when provided */
+/** SD background prompt — compiles FROM SceneBlueprint when provided (v16.6) */
 export function buildSceneBackgroundPrompt(
   scene: ScenePlan,
   analysis: ProductAnalysis,
@@ -29,8 +33,21 @@ export function buildSceneBackgroundPrompt(
     sceneNarrative?: string;
     visualHookStory?: string;
     layoutSpec?: import("@/lib/design/layout-spec").LayoutSpec;
+    sceneBlueprint?: SceneBlueprint;
   },
 ): string {
+  if (productContext?.sceneBlueprint) {
+    const base = compileScenePromptFromBlueprint(productContext.sceneBlueprint);
+    const zones = formatSafeZones(scene.textSafeZones);
+    const productZone = productZonePrompt(scene.productSafeZone);
+    const layoutBlock = productContext.layoutSpec
+      ? compileSceneConstraintsFromLayoutSpec(productContext.layoutSpec)
+      : "";
+    return [base, productZone, `reserved text areas: ${zones}`, layoutBlock]
+      .filter(Boolean)
+      .join(", ");
+  }
+
   const categoryLabel = analysis.category.replace(/_/g, " ");
   const safeZones = formatSafeZones(scene.textSafeZones);
   const productZone = productZonePrompt(scene.productSafeZone);

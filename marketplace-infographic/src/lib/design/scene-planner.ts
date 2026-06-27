@@ -8,6 +8,7 @@ import {
   type ProductCategory,
 } from "@/lib/product-analysis";
 import type { CompositionScenarioId } from "./types";
+import { applyBlueprintToScenePlan, blueprintToCoverConcept } from "@/lib/design/scene-blueprint";
 import { createSeededRng, pickRange } from "./variability";
 
 export type ProductOrientation = "portrait" | "landscape" | "square";
@@ -78,6 +79,8 @@ export type ScenePlannerInput = {
   productVisual?: ProductVisualProfile;
   sceneNarrative?: string;
   compositionScenarioId?: CompositionScenarioId;
+  /** v16.6 — structured scene from Scene Director */
+  sceneBlueprint?: import("@/lib/design/scene-blueprint").SceneBlueprint;
 };
 
 const CONCEPT_TO_SCENARIO: Record<CoverConceptId, CompositionScenarioId> = {
@@ -286,7 +289,10 @@ export function planScene(input: ScenePlannerInput): {
   productVisual: ProductVisualProfile;
 } {
   const analysis = analyzeProductPrompt(input.prompt);
-  const concept = resolveCoverConcept(input.coverConceptId, analysis.category);
+  const coverId = input.sceneBlueprint
+    ? blueprintToCoverConcept(input.sceneBlueprint)
+    : input.coverConceptId;
+  const concept = resolveCoverConcept(coverId, analysis.category);
   const rng = createSeededRng(`scene:${input.seed}`);
 
   let productVisual: ProductVisualProfile;
@@ -327,7 +333,7 @@ export function planScene(input: ScenePlannerInput): {
         ? "moderate, environmental blur"
         : "shallow studio bokeh";
 
-  const scene: ScenePlan = {
+  let scene: ScenePlan = {
     cameraAngle: camera.cameraAngle,
     cameraHeight: camera.cameraHeight,
     cameraDistance: camera.cameraDistance,
@@ -358,6 +364,10 @@ export function planScene(input: ScenePlannerInput): {
     coverConceptId: concept.id,
     seed: input.seed,
   };
+
+  if (input.sceneBlueprint) {
+    scene = applyBlueprintToScenePlan(scene, input.sceneBlueprint);
+  }
 
   return { analysis, scene, productVisual };
 }

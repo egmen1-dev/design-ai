@@ -48,7 +48,11 @@ export function validateEyeFlow(input: {
   };
 
   let validOrder = true;
+  const splitLayout =
+    layout.textSide === "left" && layout.product.centerX > 52 && layout.headline.left < 40;
+
   for (let i = 1; i < order.length; i++) {
+    if (splitLayout && order[i - 1] === "hero" && order[i] === "headline") continue;
     const prev = yPositions[order[i - 1]];
     const curr = yPositions[order[i]];
     const sameRow = Math.abs(prev - curr) < 8;

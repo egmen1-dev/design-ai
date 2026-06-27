@@ -51,7 +51,9 @@ import {
   extractGenomeFromGeneration,
   genomeToDnaOverride,
   retrieveTrendIntelligence,
+  runSceneDirector,
 } from "@/lib/design";
+import type { SceneDirectorResult } from "@/lib/design/scene-blueprint";
 import type { KnowledgeCategory } from "@/lib/design/knowledge-engine";
 import type { MarketIntelligenceContext } from "@/lib/design/market-intelligence";
 import type { AssetsIntelligenceContext } from "@/lib/design/design-assets-intelligence";
@@ -143,6 +145,8 @@ export type GenerateInfographicResult = {
   trendIntelligenceScore?: number;
   luxuryScore?: number;
   qualityRefinementPasses?: number;
+  sceneQualityScore?: number;
+  sceneType?: string;
 };
 
 function briefMeta(brief?: DesignBrief) {
@@ -523,6 +527,7 @@ export async function handleGenerateInfographic(
     let trendIntelligence: TrendIntelligenceContext | undefined;
     let storyDirection: VisualStoryDirectorResult | undefined;
     let photoDirection: CommercialPhotoDirectorResult | undefined;
+    let sceneDirection: SceneDirectorResult | undefined;
 
     const variationSeed =
       input.backgroundSeed ??
@@ -671,7 +676,23 @@ export async function handleGenerateInfographic(
     const sceneNarrative =
       storyDirection?.sceneNarrative ?? activeCreative?.sceneNarrative;
 
-    // ── 1. Scene Planner (адаптирует Genome, не проектирует с нуля) ─
+    // ── 0b. Scene Director → Scene Blueprint (v16.6) ─────────────────
+    if (sdData.layout === "marketplace") {
+      sceneDirection = await runSceneDirector({
+        prompt: input.prompt,
+        analysis: productAnalysis,
+        storyDirection,
+        genomeContext: genomeIntelligence,
+        marketSnippet: marketIntelligence?.agentSnippet,
+        knowledgeCategory,
+        knowledgeSnippet: knowledgeCategory,
+        trendSnippet: trendIntelligence?.agentSnippet,
+        productVisual,
+        seed: variationSeed,
+      });
+    }
+
+    // ── 1. Scene Planner (адаптирует Blueprint + Genome) ─────────────
     const { analysis, scene: plannedScene } = planScene({
       prompt: input.prompt,
       coverConceptId: input.coverConcept ?? storedScenePlan?.coverConceptId,
@@ -680,6 +701,7 @@ export async function handleGenerateInfographic(
       seed: variationSeed,
       productVisual,
       sceneNarrative,
+      sceneBlueprint: sceneDirection?.blueprint,
       compositionScenarioId:
         storyDirection?.compositionScenarioId ??
         (designBrief?.compositionScenarioId as
@@ -775,6 +797,7 @@ export async function handleGenerateInfographic(
       visualHookStory:
         storyDirection?.heroConcept ?? activeCreative?.creativeConcept.visualHook,
       layoutSpec,
+      sceneBlueprint: sceneDirection?.blueprint,
     });
     sdData.backgroundPrompt = scenePrompt;
 
@@ -1112,6 +1135,7 @@ export async function handleGenerateInfographic(
         sceneNarrative: nextConcept.sceneNarrative,
         visualHookStory: nextConcept.creativeConcept.visualHook,
         layoutSpec,
+        sceneBlueprint: sceneDirection?.blueprint,
       });
       sdData.backgroundPrompt = retryPrompt;
 
@@ -1495,6 +1519,8 @@ export async function handleGenerateInfographic(
         trendIntelligenceScore: trendIntelligence?.trendScore,
         luxuryScore: luxuryScoreValue,
         qualityRefinementPasses,
+        sceneQualityScore: sceneDirection?.quality.total,
+        sceneType: sceneDirection?.sceneType,
         ...briefMeta(designBrief),
       };
     }
@@ -1561,6 +1587,8 @@ export async function handleGenerateInfographic(
       trendIntelligenceScore: trendIntelligence?.trendScore,
       luxuryScore: luxuryScoreValue,
       qualityRefinementPasses,
+      sceneQualityScore: sceneDirection?.quality.total,
+      sceneType: sceneDirection?.sceneType,
       ...briefMeta(designBrief),
     };
   } catch (error) {
