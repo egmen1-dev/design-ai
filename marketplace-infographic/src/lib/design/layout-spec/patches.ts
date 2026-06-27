@@ -1,5 +1,6 @@
 import type { CardMeaning } from "@/lib/layout-engine/types";
 import type { LayoutTemplateId } from "@/lib/layout-engine/types";
+import { COMPOSITION_TEMPLATES } from "@/lib/design/composition-director";
 import {
   LAYOUT_SPEC_DEFAULTS,
   type LayoutSpec,
@@ -85,6 +86,9 @@ export function mergeLayoutSpecPatches(...patches: LayoutSpecPatch[]): LayoutSpe
 }
 
 export function layoutSpecToTemplatePreference(spec: LayoutSpec): LayoutTemplateId | undefined {
+  if (spec.compositionTemplateId) {
+    return COMPOSITION_TEMPLATES[spec.compositionTemplateId].layoutEngineTemplate;
+  }
   if (spec.heroPosition === "left") return "hero_left";
   if (spec.heroPosition === "center") return "minimal";
   if (spec.backgroundStyle === "dark_premium") return "luxury";

@@ -1,4 +1,18 @@
 /** Structured layout contract — compiled into prompts, not free-form prose */
+import type {
+  CompositionTemplateId,
+  HierarchyLevel,
+  LayoutGeometry,
+  NormalizedVisualWeight,
+} from "@/lib/design/composition-director/types";
+
+export type { LayoutGeometry, NormalizedVisualWeight, CompositionTemplateId };
+
+export type HierarchyMap = Record<
+  "headline" | "hero" | "benefits" | "cta" | "decorative",
+  HierarchyLevel
+>;
+
 export type HeroPosition = "left" | "right" | "center";
 export type TextAreaSide = "left" | "right" | "top";
 export type BenefitsArea = "left_panel" | "below_headline" | "none";
@@ -19,6 +33,14 @@ export type VisualWeightMap = {
 };
 
 export type LayoutSpec = {
+  /** v16.7 — Composition Director template */
+  compositionTemplateId?: CompositionTemplateId;
+  /** v16.7 — deterministic geometry (0–1 normalized) */
+  geometry?: LayoutGeometry;
+  /** v16.7 — normalized weight ratios */
+  visualWeight?: NormalizedVisualWeight;
+  /** v16.7 — hierarchy levels for Prompt Builder */
+  hierarchy?: HierarchyMap;
   heroPosition: HeroPosition;
   /** Target product area % (55–75) */
   heroScale: number;
@@ -30,6 +52,7 @@ export type LayoutSpec = {
   maxIcons: number;
   /** Max secondary objects (decorations, extra plaques) */
   maxSecondaryObjects: number;
+  maxDecorativeObjects?: number;
   maxColors: number;
   palette: string[];
   backgroundStyle: BackgroundStyle;

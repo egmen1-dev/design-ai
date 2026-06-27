@@ -84,6 +84,14 @@ export type {
   SceneDirectorResult,
 } from "./scene-director/agent";
 export {
+  COMPOSITION_DIRECTOR_AGENT,
+  runCompositionDirector,
+} from "./composition-director/agent";
+export type {
+  CompositionDirectorInput,
+  CompositionDirectorResult,
+} from "./composition-director/agent";
+export {
   DESIGN_MEMORY_AGENT,
   runDesignMemory,
   loadDesignMemoryStore,

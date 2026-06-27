@@ -52,8 +52,10 @@ import {
   genomeToDnaOverride,
   retrieveTrendIntelligence,
   runSceneDirector,
+  runCompositionDirector,
 } from "@/lib/design";
 import type { SceneDirectorResult } from "@/lib/design/scene-blueprint";
+import type { CompositionDirectorResult } from "@/lib/design/composition-director";
 import type { KnowledgeCategory } from "@/lib/design/knowledge-engine";
 import type { MarketIntelligenceContext } from "@/lib/design/market-intelligence";
 import type { AssetsIntelligenceContext } from "@/lib/design/design-assets-intelligence";
@@ -147,6 +149,8 @@ export type GenerateInfographicResult = {
   qualityRefinementPasses?: number;
   sceneQualityScore?: number;
   sceneType?: string;
+  compositionQualityScore?: number;
+  compositionTemplate?: string;
 };
 
 function briefMeta(brief?: DesignBrief) {
@@ -528,6 +532,7 @@ export async function handleGenerateInfographic(
     let storyDirection: VisualStoryDirectorResult | undefined;
     let photoDirection: CommercialPhotoDirectorResult | undefined;
     let sceneDirection: SceneDirectorResult | undefined;
+    let compositionDirection: CompositionDirectorResult | undefined;
 
     const variationSeed =
       input.backgroundSeed ??
@@ -692,6 +697,23 @@ export async function handleGenerateInfographic(
       });
     }
 
+    // ── 0c. Composition Director → LayoutSpec geometry (v16.7) ─────
+    const earlyGenomeTemplateId = genomeIntelligence?.mutatedGenome.composition
+      .layoutTemplate as LayoutTemplateId | undefined;
+
+    if (sdData.layout === "marketplace") {
+      compositionDirection = await runCompositionDirector({
+        prompt: input.prompt,
+        analysis: productAnalysis,
+        storyDirection,
+        sceneBlueprint: sceneDirection?.blueprint,
+        genomeTemplateId: earlyGenomeTemplateId,
+        palette: paletteColorsForSd(assetsIntelligence?.palette),
+        seed: variationSeed,
+        knowledgeCategory,
+      });
+    }
+
     // ── 1. Scene Planner (адаптирует Blueprint + Genome) ─────────────
     const { analysis, scene: plannedScene } = planScene({
       prompt: input.prompt,
@@ -763,13 +785,15 @@ export async function handleGenerateInfographic(
         genomeDnaOverride,
         trendIntelligence,
         palette,
-        initialLayoutSpec: buildInitialLayoutSpec({
-          creative: activeCreative,
-          analysis,
-          genomeTemplateId,
-          palette,
-          storyDirection,
-        }),
+        initialLayoutSpec:
+          compositionDirection?.layoutSpec ??
+          buildInitialLayoutSpec({
+            creative: activeCreative,
+            analysis,
+            genomeTemplateId,
+            palette,
+            storyDirection,
+          }),
       });
       compositionResult = built.compositionResult;
       cardMeaning = built.cardMeaning;
@@ -1521,6 +1545,8 @@ export async function handleGenerateInfographic(
         qualityRefinementPasses,
         sceneQualityScore: sceneDirection?.quality.total,
         sceneType: sceneDirection?.sceneType,
+        compositionQualityScore: compositionDirection?.quality.total,
+        compositionTemplate: compositionDirection?.templateId,
         ...briefMeta(designBrief),
       };
     }
@@ -1589,6 +1615,8 @@ export async function handleGenerateInfographic(
       qualityRefinementPasses,
       sceneQualityScore: sceneDirection?.quality.total,
       sceneType: sceneDirection?.sceneType,
+      compositionQualityScore: compositionDirection?.quality.total,
+      compositionTemplate: compositionDirection?.templateId,
       ...briefMeta(designBrief),
     };
   } catch (error) {

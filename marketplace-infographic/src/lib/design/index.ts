@@ -57,6 +57,16 @@ export {
   type SceneDirectorResult,
   type SceneTypeId,
 } from "./scene-blueprint";
+export {
+  runCompositionDirector,
+  COMPOSITION_TEMPLATES,
+  scoreEyeFlow,
+  scoreVisualBalance,
+  scoreWhitespace,
+  type CompositionDirectorResult,
+  type CompositionTemplateId,
+  type LayoutGeometry,
+} from "./composition-director";
 export type { AssetsIntelligenceContext, ParametricBadgeModel } from "./design-assets-intelligence";
 export type { GenomeIntelligenceContext, DesignGenomeRecord, StoryBlueprint } from "./design-genome";
 export type { TrendIntelligenceContext } from "./trend-intelligence";
