@@ -42,9 +42,14 @@ import {
   retrieveMarketIntelligence,
   buildCombinedMarketPromptBlock,
   computeNoveltyScore,
+  retrieveAssetsIntelligence,
+  renderIntelligentBadge,
+  recordAssetSuccess,
+  paletteColorsForSd,
 } from "@/lib/design";
 import type { KnowledgeCategory } from "@/lib/design/knowledge-engine";
 import type { MarketIntelligenceContext } from "@/lib/design/market-intelligence";
+import type { AssetsIntelligenceContext } from "@/lib/design/design-assets-intelligence";
 import { analyzeProductPrompt } from "@/lib/product-analysis";
 import type { CompositionResult } from "@/lib/design/types";
 import {
@@ -52,7 +57,7 @@ import {
   toCompositionResult,
 } from "@/lib/layout-engine";
 import type { CardMeaning, LayoutTemplateId, ProductShapeHint } from "@/lib/layout-engine/types";
-import { runSeniorArtDirector, runMarketplaceCtrExpert, runCommercialPhotographer, runChiefDesignDirector, runDesignMemory, loadDesignMemoryStore, deriveFixApplicationHints, type SeniorArtDirectorReview, type MarketplaceCtrReview, type CommercialPhotographerReview, type ChiefDesignDirectorPlan, type DesignMemoryUpdateResult } from "@/lib/agents";
+import { runSeniorArtDirector, runMarketplaceCtrExpert, runCommercialPhotographer, runChiefDesignDirector, runDesignMemory, loadDesignMemoryStore, deriveFixApplicationHints, computeOutcomeScore, type SeniorArtDirectorReview, type MarketplaceCtrReview, type CommercialPhotographerReview, type ChiefDesignDirectorPlan, type DesignMemoryUpdateResult } from "@/lib/agents";
 import { creativeConceptToCardMeaning } from "@/lib/design-process/card-meaning";
 import type { ProductVisualProfile } from "@/lib/design/scene-planner";
 import type { CreativeDirectorResult } from "@/lib/design-process/creative-concept";
@@ -116,6 +121,8 @@ export type GenerateInfographicResult = {
   marketIntelligenceVersion?: number;
   marketProductsAnalyzed?: number;
   marketNoveltyScore?: number;
+  assetsIntelligenceActive?: boolean;
+  parametricBadgeStyle?: string;
 };
 
 function briefMeta(brief?: DesignBrief) {
@@ -245,6 +252,14 @@ function buildProfessionalComposition(input: {
     headlineFontPx: pro.headlineFontPx,
     templateId: pro.templateId,
   };
+}
+
+function agentKnowledgeSnippet(
+  market?: MarketIntelligenceContext,
+  assets?: AssetsIntelligenceContext,
+): string | undefined {
+  const parts = [market?.agentSnippet, assets?.agentSnippet].filter(Boolean);
+  return parts.length ? parts.join(" | ") : undefined;
 }
 
 async function buildLayoutWithAgentReview(input: {
@@ -406,6 +421,7 @@ export async function handleGenerateInfographic(
     let knowledgePatternsUsed = 0;
     let marketIntelligence: MarketIntelligenceContext | undefined;
     let marketNoveltyScore: number | undefined;
+    let assetsIntelligence: AssetsIntelligenceContext | undefined;
 
     const variationSeed =
       input.backgroundSeed ??
@@ -463,15 +479,21 @@ export async function handleGenerateInfographic(
 
       const { buffer: productBuffer } = parseProductImageDataUrl(input.productImage);
       const earlyAnalysis = analyzeProductPrompt(input.prompt);
-      const [knowledge, market] = await Promise.all([
+      const [knowledge, market, assets] = await Promise.all([
         retrieveKnowledgeContext(input.prompt, earlyAnalysis.category),
         retrieveMarketIntelligence(input.prompt, earlyAnalysis.category),
+        retrieveAssetsIntelligence(input.prompt, earlyAnalysis.category, [
+          appliedStyle,
+          earlyAnalysis.brandTone,
+        ]),
       ]);
       knowledgeCategory = knowledge.category;
       knowledgePatternsUsed = knowledge.patterns.length;
       marketIntelligence = market;
+      assetsIntelligence = assets;
 
       const marketBlock = buildCombinedMarketPromptBlock(market);
+      const assetsBlock = assets.promptBlock;
 
       // Ollama + анализ фото + вырезка товара — параллельно (~2–3 мин экономии)
       const [ollama, productVisual, earlyCutout] = await Promise.all([
@@ -482,12 +504,17 @@ export async function handleGenerateInfographic(
           artDirectorMode: input.artDirectorMode,
           knowledgeBlock: knowledge.promptBlock || undefined,
           marketIntelligenceBlock: marketBlock || undefined,
+          assetsIntelligenceBlock: assetsBlock || undefined,
         }),
         analyzeProductVisual(productBuffer),
         cutoutFromBuffer(productBuffer, input.userId),
       ]);
 
       sdData = ollama.data;
+      const paletteColors = paletteColorsForSd(assets.palette);
+      if (paletteColors?.length) {
+        sdData = { ...sdData, colors: paletteColors };
+      }
       compositingHints = ollama.compositingHints;
       qualityScore = ollama.qualityScore;
       designBrief = ollama.brief;
@@ -530,6 +557,7 @@ export async function handleGenerateInfographic(
     let cardMeaning: CardMeaning | undefined;
     let seniorAdReview: SeniorArtDirectorReview | undefined;
     let ctrReview: MarketplaceCtrReview | undefined;
+    let headlineFontPx = 18;
 
     if (sdData.layout === "marketplace") {
       const built = await buildLayoutWithAgentReview({
@@ -540,12 +568,13 @@ export async function handleGenerateInfographic(
         productPrompt: input.prompt,
         seed: variationSeed,
         knowledgeCategory,
-        marketIntelligenceSnippet: marketIntelligence?.agentSnippet,
+        marketIntelligenceSnippet: agentKnowledgeSnippet(marketIntelligence, assetsIntelligence),
       });
       compositionResult = built.compositionResult;
       cardMeaning = built.cardMeaning;
       seniorAdReview = built.seniorAdReview;
       ctrReview = built.ctrReview;
+      headlineFontPx = built.headlineFontPx;
       if (designBrief && !designBrief.cardMeaning) {
         designBrief = { ...designBrief, cardMeaning };
       }
@@ -624,7 +653,7 @@ export async function handleGenerateInfographic(
         hasShadows: !!compositeResult,
         backgroundSource,
         productPrompt: input.prompt,
-        marketIntelligenceSnippet: marketIntelligence?.agentSnippet,
+        marketIntelligenceSnippet: agentKnowledgeSnippet(marketIntelligence, assetsIntelligence),
       });
     };
 
@@ -708,7 +737,7 @@ export async function handleGenerateInfographic(
         marketplaceExpert: ctrReview,
         commercialPhotographer: photoReview,
         productPrompt: input.prompt,
-        marketIntelligenceSnippet: marketIntelligence?.agentSnippet,
+        marketIntelligenceSnippet: agentKnowledgeSnippet(marketIntelligence, assetsIntelligence),
       });
 
       if (!chiefPlan.approved && MAX_CHIEF_FIX_RETRIES > 0) {
@@ -791,7 +820,7 @@ export async function handleGenerateInfographic(
               marketplaceExpert: ctrReview!,
               commercialPhotographer: photoReview!,
               productPrompt: input.prompt,
-              marketIntelligenceSnippet: marketIntelligence?.agentSnippet,
+              marketIntelligenceSnippet: agentKnowledgeSnippet(marketIntelligence, assetsIntelligence),
             });
             console.info(`[chief-design-director] fix retry → approved=${chiefPlan.approved} est=${chiefPlan.estimatedScoreAfterFix}`);
           } catch (error) {
@@ -838,7 +867,7 @@ export async function handleGenerateInfographic(
           productPrompt: input.prompt,
           seed: `${variationSeed}:concept-${conceptRetryIndex}`,
           knowledgeCategory,
-          marketIntelligenceSnippet: marketIntelligence?.agentSnippet,
+          marketIntelligenceSnippet: agentKnowledgeSnippet(marketIntelligence, assetsIntelligence),
         });
         compositionResult = rebuilt.compositionResult;
         compositionLayout = compositionResult.layout;
@@ -960,6 +989,23 @@ export async function handleGenerateInfographic(
 
     const accentHex = resolveMarketplaceAccent(sdData.colors, analysis.category);
 
+    const badgeText =
+      infographicData.mainBanner?.title ??
+      infographicData.headline ??
+      cardMeaning?.badge ??
+      cardMeaning?.title ??
+      "Новинка";
+
+    const parametricBadgeHtml =
+      assetsIntelligence?.parametricBadge && sdData.layout === "marketplace"
+        ? renderIntelligentBadge(
+            assetsIntelligence.parametricBadge,
+            badgeText,
+            accentHex,
+            Math.max(14, Math.round(headlineFontPx * 0.55)),
+          )
+        : undefined;
+
     const compositionMeta = compositionResult
       ? {
           dna: compositionResult.dna,
@@ -981,6 +1027,7 @@ export async function handleGenerateInfographic(
       productImageCutout: productRender?.cutout ?? false,
       libraryFont,
       libraryBadge,
+      parametricBadgeHtml,
       accentHex,
       compositionLayout,
     });
@@ -1040,8 +1087,54 @@ export async function handleGenerateInfographic(
           ctrReview,
           photoReview,
           chiefPlan,
+          parametricBadgeKey: assetsIntelligence?.recommendedBadgeKey,
+          parametricBadgeModel: assetsIntelligence?.parametricBadge
+            ? {
+                style: assetsIntelligence.parametricBadge.style,
+                radius: assetsIntelligence.parametricBadge.radius,
+                paddingX: assetsIntelligence.parametricBadge.paddingX,
+                paddingY: assetsIntelligence.parametricBadge.paddingY,
+                gradient: assetsIntelligence.parametricBadge.gradient,
+                shadow: assetsIntelligence.parametricBadge.shadow,
+                marketplaceScore: ctrReview?.score,
+              }
+            : undefined,
         });
         payloadExtras.designMemory = designMemory;
+
+        if (assetsIntelligence) {
+          const assetOutcome = computeOutcomeScore({
+            productPrompt: input.prompt,
+            category: analysis.category,
+            templateId: compositionResult?.layout?.scenarioId as LayoutTemplateId | undefined,
+            fontId: sdData.fontId,
+            badgeId: sdData.badgeId,
+            scenePlan,
+            designScore: compositionResult?.score?.total,
+            cardMeaning,
+            seniorAdReview,
+            ctrReview,
+            photoReview,
+            chiefPlan,
+          });
+          const tasks: Promise<void>[] = [];
+          if (assetsIntelligence.recommendedBadgeKey) {
+            tasks.push(
+              recordAssetSuccess(assetsIntelligence.recommendedBadgeKey, "badge", assetOutcome),
+            );
+          }
+          if (assetsIntelligence.recommendedFontFamily) {
+            const fontKey = `font_${assetsIntelligence.recommendedFontFamily.toLowerCase().replace(/\s+/g, "_")}`;
+            tasks.push(recordAssetSuccess(fontKey, "font", assetOutcome));
+          }
+          if (assetsIntelligence.recommendedPaletteKey) {
+            const paletteKey = `palette_${assetsIntelligence.recommendedPaletteKey.toLowerCase().replace(/\s+/g, "_")}`;
+            tasks.push(recordAssetSuccess(paletteKey, "palette", assetOutcome));
+          }
+          await Promise.all(tasks).catch((e) =>
+            console.warn("[assets-intelligence] record success failed:", e),
+          );
+        }
       } catch (error) {
         console.warn("[design-memory] learn failed:", error);
       }
@@ -1109,6 +1202,8 @@ export async function handleGenerateInfographic(
         marketIntelligenceVersion: marketIntelligence?.marketVersion,
         marketProductsAnalyzed: marketIntelligence?.productsAnalyzed,
         marketNoveltyScore,
+        assetsIntelligenceActive: !!assetsIntelligence?.parametricBadge,
+        parametricBadgeStyle: assetsIntelligence?.parametricBadge?.style,
         ...briefMeta(designBrief),
       };
     }
@@ -1168,6 +1263,8 @@ export async function handleGenerateInfographic(
       marketIntelligenceVersion: marketIntelligence?.marketVersion,
       marketProductsAnalyzed: marketIntelligence?.productsAnalyzed,
       marketNoveltyScore,
+      assetsIntelligenceActive: !!assetsIntelligence?.parametricBadge,
+      parametricBadgeStyle: assetsIntelligence?.parametricBadge?.style,
       ...briefMeta(designBrief),
     };
   } catch (error) {

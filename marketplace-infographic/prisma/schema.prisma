@@ -233,3 +233,87 @@ model MarketKnowledgeHistory {
 
   @@index([category, createdAt])
 }
+
+model ParametricBadge {
+  id                 String    @id @default(cuid())
+  assetKey           String    @unique
+  name               String
+  style              String
+  model              Json
+  styleTags          String[]
+  categories         String[]
+  compatibleFonts    String[]  @default([])
+  compatiblePalettes String[]  @default([])
+  successScore       Float     @default(0.5)
+  usageCount         Int       @default(0)
+  lastUsedAt         DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@index([successScore])
+  @@index([categories])
+}
+
+model AssetFontProfile {
+  id                     String    @id @default(cuid())
+  assetKey               String    @unique
+  family                 String
+  fontId                 String?
+  tags                   String[]
+  marketplaceReadability Float     @default(70)
+  visualImpact           Float     @default(65)
+  successScore           Float     @default(0.5)
+  usageCount             Int       @default(0)
+  categories             String[]
+  lastUsedAt             DateTime?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+
+  @@index([successScore])
+}
+
+model AssetPalette {
+  id               String    @id @default(cuid())
+  assetKey         String    @unique
+  name             String
+  primary          String
+  secondary        String
+  accent           String
+  background       String
+  contrast         Float
+  premiumScore     Float
+  marketplaceScore Float
+  emotion          String?
+  categories       String[]
+  successScore     Float     @default(0.5)
+  usageCount       Int       @default(0)
+  lastUsedAt       DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([marketplaceScore])
+}
+
+model AssetShapeStyle {
+  id           String   @id @default(cuid())
+  assetKey     String   @unique
+  name         String
+  model        Json
+  styleFamily  String
+  categories   String[]
+  successScore Float    @default(0.5)
+  usageCount   Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model AssetSyncLog {
+  id           String   @id @default(cuid())
+  syncType     String
+  category     String?
+  itemsAdded   Int      @default(0)
+  itemsUpdated Int      @default(0)
+  completedAt  DateTime @default(now())
+
+  @@index([completedAt])
+}

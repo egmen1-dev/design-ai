@@ -111,6 +111,8 @@ export type RenderInfographicOptions = {
   libraryBadge?: {
     htmlTemplate: string;
   } | null;
+  /** Параметрическая SVG-плашка из Design Assets Intelligence */
+  parametricBadgeHtml?: string | null;
   /** Точный hex акцента (из референса / Ollama colors[0]) */
   accentHex?: string;
   /** Design Composition Engine — размеры в % от холста WB */

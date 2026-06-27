@@ -8,6 +8,7 @@ import type { ChiefDesignDirectorPlan } from "../chief-design-director/types";
 import type {
   CategoryMemory,
   DesignMemoryStore,
+  ParametricBadgeSnapshot,
   PatternCombo,
   WeightChange,
   WeightEntry,
@@ -31,6 +32,8 @@ export type DesignMemoryLearnInput = {
   ctrReview?: MarketplaceCtrReview;
   photoReview?: CommercialPhotographerReview;
   chiefPlan?: ChiefDesignDirectorPlan;
+  parametricBadgeKey?: string;
+  parametricBadgeModel?: ParametricBadgeSnapshot;
   userFeedback?: "like" | "dislike";
   ctr?: number;
   viewTimeMs?: number;
@@ -208,6 +211,18 @@ export function learnFromGeneration(
 
   const badgeKey = input.badgeId ?? "no_badge";
   upsertWeight(store.badgeWeights, badgeKey, outcome, changes, "badge signal");
+
+  if (input.parametricBadgeKey && input.parametricBadgeModel) {
+    upsertWeight(
+      store.badgeWeights,
+      input.parametricBadgeKey,
+      outcome,
+      changes,
+      "parametric badge signal",
+    );
+    store.parametricBadgeLibrary = store.parametricBadgeLibrary ?? {};
+    store.parametricBadgeLibrary[input.parametricBadgeKey] = input.parametricBadgeModel;
+  }
 
   const lightKey = lightingKey(input.scenePlan);
   upsertWeight(store.lightingWeights, lightKey, outcome, changes, "lighting signal");

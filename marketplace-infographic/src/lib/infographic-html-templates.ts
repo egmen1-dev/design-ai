@@ -300,9 +300,11 @@ export function renderLayoutHtml(
   const badgeText = data.mainBanner?.title ?? data.headline;
   const badgeColor = accent.primary;
 
-  const libraryBadgeHtml = libraryBadge
-    ? renderLibraryBadgeHtml(libraryBadge.htmlTemplate, badgeText, badgeColor)
-    : "";
+  const libraryBadgeHtml = options?.parametricBadgeHtml
+    ? options.parametricBadgeHtml
+    : libraryBadge
+      ? renderLibraryBadgeHtml(libraryBadge.htmlTemplate, badgeText, badgeColor)
+      : "";
 
   const useLibraryBadge = Boolean(libraryBadgeHtml);
   const isHeroLike = layout === "hero" || layout === "minimal";

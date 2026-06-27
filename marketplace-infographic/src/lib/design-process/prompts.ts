@@ -9,6 +9,7 @@ export type DesignPromptInput = FoundationPromptInput & {
   retryHint?: string;
   knowledgeBlock?: string;
   marketIntelligenceBlock?: string;
+  assetsIntelligenceBlock?: string;
 };
 
 export function buildFoundationStagePrompt(input: FoundationPromptInput): string {
@@ -126,6 +127,7 @@ ${cd.sceneNarrative}
 Холст 900×1200. Wildberries.
 ${input.knowledgeBlock ? `\n## БАЗА ЗНАНИЙ (статистика успешных карточек)\n${input.knowledgeBlock}\n` : ""}
 ${input.marketIntelligenceBlock ? `\n## РЫНОЧНАЯ РАЗВЕДКА (Wildberries)\n${input.marketIntelligenceBlock}\n` : ""}
+${input.assetsIntelligenceBlock ? `\n## DESIGN ASSETS INTELLIGENCE\n${input.assetsIntelligenceBlock}\n` : ""}
 ${input.referenceHint ? `РЕФЕРЕНС: ${input.referenceHint}` : ""}
 ${input.retryHint ? input.retryHint : ""}
 

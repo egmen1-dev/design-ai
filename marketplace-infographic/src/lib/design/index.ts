@@ -29,6 +29,14 @@ export {
   refreshCategoryMarketKnowledge,
 } from "./market-intelligence";
 export type { MarketIntelligenceContext } from "./market-intelligence";
+export {
+  retrieveAssetsIntelligence,
+  renderIntelligentBadge,
+  recordAssetSuccess,
+  paletteColorsForSd,
+  getAssetsIntelligenceLayoutBoost,
+} from "./design-assets-intelligence";
+export type { AssetsIntelligenceContext, ParametricBadgeModel } from "./design-assets-intelligence";
 export type {
   CompositionEngineInput,
   CompositionResult,

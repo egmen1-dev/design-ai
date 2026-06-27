@@ -16,6 +16,7 @@ export function createEmptyStore(): DesignMemoryStore {
     layoutWeights: {},
     fontWeights: {},
     badgeWeights: {},
+    parametricBadgeLibrary: {},
     lightingWeights: {},
     backgroundWeights: {},
     compositionWeights: {},

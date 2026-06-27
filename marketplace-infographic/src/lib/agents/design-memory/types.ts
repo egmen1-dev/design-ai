@@ -24,6 +24,16 @@ export type WeightChange = {
   reason: string;
 };
 
+export type ParametricBadgeSnapshot = {
+  style: string;
+  radius: number;
+  paddingX: number;
+  paddingY: number;
+  gradient: string;
+  shadow: string;
+  marketplaceScore?: number;
+};
+
 export type DesignMemoryStore = {
   learningVersion: string;
   updatedAt: string;
@@ -32,6 +42,7 @@ export type DesignMemoryStore = {
   layoutWeights: Record<string, WeightEntry>;
   fontWeights: Record<string, WeightEntry>;
   badgeWeights: Record<string, WeightEntry>;
+  parametricBadgeLibrary: Record<string, ParametricBadgeSnapshot>;
   lightingWeights: Record<string, WeightEntry>;
   backgroundWeights: Record<string, WeightEntry>;
   compositionWeights: Record<string, WeightEntry>;
