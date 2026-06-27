@@ -1,6 +1,8 @@
 import { hasWordBreakInsideWord } from "@/lib/layout-engine/headline";
 import { getTemplate } from "@/lib/layout-engine/templates";
 import { isEnvironmentAllowed } from "@/lib/layout-engine/background-categories";
+import { buildCorrection } from "@/lib/design/quality-v165/critic-corrections";
+import type { LayoutSpecPatch } from "@/lib/design/layout-spec/types";
 import type { SeniorArtDirectorInput, SeniorArtDirectorReview } from "./types";
 import { SENIOR_AD_APPROVE_SCORE } from "./types";
 
@@ -17,6 +19,8 @@ export function evaluateSeniorArtDirectorHeuristic(
   const template = getTemplate(templateId);
   const criticalProblems: string[] = [];
   const recommendations: string[] = [];
+  const corrections = [];
+  const layoutSpecPatch: LayoutSpecPatch = {};
 
   if (hasWordBreakInsideWord(meaning.title)) {
     criticalProblems.push("Перенос слова в заголовке");
@@ -25,6 +29,13 @@ export function evaluateSeniorArtDirectorHeuristic(
   if (m.whitespacePct < 20) {
     criticalProblems.push("Недостаточно воздуха (<20%)");
     recommendations.push("Уменьшить количество элементов или увеличить отступы");
+    corrections.push(
+      buildCorrection("whitespace", "Увеличить whitespace до 28%", {
+        whitespaceTarget: 28,
+        reduceObjectCount: 1,
+      }),
+    );
+    layoutSpecPatch.whitespaceTarget = 28;
   }
 
   if (m.overlapPct > 2) {
@@ -33,6 +44,12 @@ export function evaluateSeniorArtDirectorHeuristic(
 
   if (m.productAreaPct < 55 || m.productAreaPct > 75) {
     criticalProblems.push(`Товар вне диапазона 55–75% (сейчас ${Math.round(m.productAreaPct)}%)`);
+    if (m.productAreaPct < 55) {
+      corrections.push(
+        buildCorrection("hero-up", "Увеличить hero на 15%", { heroScaleDelta: 0.15 }),
+      );
+      layoutSpecPatch.heroScaleDelta = 0.15;
+    }
   }
 
   if (m.plaqueAreaPct > 10) {
@@ -67,6 +84,14 @@ export function evaluateSeniorArtDirectorHeuristic(
 
   if (elementCount > 4) {
     criticalProblems.push("Перегруженная композиция — слишком много элементов");
+    corrections.push(
+      buildCorrection("reduce-objects", "Убрать лишние объекты", {
+        reduceObjectCount: elementCount - 3,
+        removeDecorations: true,
+        maxSecondaryObjects: 1,
+      }),
+    );
+    layoutSpecPatch.reduceObjectCount = elementCount - 3;
   }
 
   const env = input.creative?.sceneNarrative ?? "";
@@ -123,8 +148,12 @@ export function evaluateSeniorArtDirectorHeuristic(
   return {
     score,
     approved: score >= SENIOR_AD_APPROVE_SCORE && criticalProblems.length === 0,
+    confidence: clamp(90 - criticalProblems.length * 7),
     criticalProblems,
+    issues: criticalProblems,
     recommendations,
+    corrections,
+    layoutSpecPatch,
     scores,
     source: "heuristic",
     templateId,

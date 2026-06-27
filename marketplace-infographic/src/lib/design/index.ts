@@ -52,6 +52,23 @@ export {
 export type { AssetsIntelligenceContext, ParametricBadgeModel } from "./design-assets-intelligence";
 export type { GenomeIntelligenceContext, DesignGenomeRecord, StoryBlueprint } from "./design-genome";
 export type { TrendIntelligenceContext } from "./trend-intelligence";
+export {
+  buildInitialLayoutSpec,
+  layoutSpecFromComposition,
+  applyLayoutSpecPatch,
+  compileDesignInstructionsFromLayoutSpec,
+  type LayoutSpec,
+  type LayoutSpecPatch,
+} from "./layout-spec";
+export {
+  computeLuxuryScore,
+  validateEyeFlow,
+  analyzeVisualNoise,
+  runQualityGate,
+  LUXURY_PASS_THRESHOLD,
+  type LuxuryScoreResult,
+  type QualityGateResult,
+} from "./quality-v165";
 export type {
   CompositionEngineInput,
   CompositionResult,

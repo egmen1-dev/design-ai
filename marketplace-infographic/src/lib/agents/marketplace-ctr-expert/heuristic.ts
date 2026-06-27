@@ -1,4 +1,6 @@
 import { isEnvironmentAllowed } from "@/lib/layout-engine/background-categories";
+import { buildCorrection } from "@/lib/design/quality-v165/critic-corrections";
+import type { LayoutSpecPatch } from "@/lib/design/layout-spec/types";
 import type {
   MarketplaceCtrDimensionScores,
   MarketplaceCtrReview,
@@ -22,6 +24,8 @@ export function evaluateMarketplaceCtrHeuristic(
   const m = layout.metrics;
   const mainProblems: string[] = [];
   const recommendations: string[] = [];
+  const corrections = [];
+  const layoutSpecPatch: LayoutSpecPatch = {};
 
   const titleWords = wordCount(meaning.title);
   if (titleWords > 7) {
@@ -49,6 +53,13 @@ export function evaluateMarketplaceCtrHeuristic(
   if (elements > 3) {
     mainProblems.push("Перегружена информацией — больше одной мысли на обложке");
     recommendations.push("Оставить заголовок + одну цифру, остальное на следующие слайды");
+    corrections.push(
+      buildCorrection("ctr-simplify", "Сократить объекты до 3", {
+        reduceObjectCount: elements - 3,
+        maxSecondaryObjects: 1,
+      }),
+    );
+    layoutSpecPatch.reduceObjectCount = elements - 3;
   }
 
   if (m.textAreaPct > 16) {
@@ -57,6 +68,10 @@ export function evaluateMarketplaceCtrHeuristic(
 
   if (m.productAreaPct < 58) {
     mainProblems.push("Товар теряется среди конкурентов — слишком маленький");
+    corrections.push(
+      buildCorrection("ctr-hero", "Увеличить товар", { heroScaleDelta: 0.12 }),
+    );
+    layoutSpecPatch.heroScaleDelta = 0.12;
   }
 
   const env = creative?.sceneNarrative ?? "";
@@ -139,8 +154,12 @@ export function evaluateMarketplaceCtrHeuristic(
     score,
     ctrPrediction,
     wouldClick,
+    confidence: clamp(85 - mainProblems.length * 6),
     mainProblems,
+    issues: mainProblems,
     recommendations,
+    corrections,
+    layoutSpecPatch,
     scores,
     source: "heuristic",
     templateId: input.templateId,

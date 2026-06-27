@@ -1,6 +1,11 @@
 import type { FoundationPromptInput } from "./types";
 import type { CreativeDirectorResult } from "./creative-concept";
 import { buildSystemPrompt } from "@/lib/prompt/system";
+import {
+  compileDesignInstructionsFromLayoutSpec,
+  compileLayoutSpecJson,
+  type LayoutSpec,
+} from "@/lib/design/layout-spec";
 
 export type DesignPromptInput = FoundationPromptInput & {
   foundation: import("./types").DesignProcessFoundation;
@@ -12,6 +17,7 @@ export type DesignPromptInput = FoundationPromptInput & {
   assetsIntelligenceBlock?: string;
   genomeBlock?: string;
   trendIntelligenceBlock?: string;
+  layoutSpec?: LayoutSpec;
 };
 
 export function buildFoundationStagePrompt(input: FoundationPromptInput): string {
@@ -76,36 +82,42 @@ contrast_pop | editorial_typography | power_number
 export function buildDesignStagePrompt(input: DesignPromptInput): string {
   const f = input.foundation;
   const cd = input.creativeDirector;
+  const layoutBlock = input.layoutSpec
+    ? compileDesignInstructionsFromLayoutSpec(input.layoutSpec, cd)
+    : null;
 
   return `${buildSystemPrompt()}
 
-# DESIGN EXECUTOR — Фаза 2 (минимальный постер)
+# DESIGN EXECUTOR — structured layout compiler (v16.5)
 
-Ты НЕ креативный директор. Идея УЖЕ принята. Твоя задача — технически оформить постер.
+You compile a Design Brief from LayoutSpec constraints. Do NOT write prose. Do NOT invent layout geometry.
 
-## Creative Concept (НЕ МЕНЯТЬ)
+## Creative Concept (ANCHOR — do not change idea)
 ${JSON.stringify(cd.creativeConcept, null, 2)}
 
-## Целевая аудитория: ${cd.creativeConcept.targetAudience}
-## Тон: ${cd.creativeConcept.toneOfVoice}
-## За 1 секунду: ${cd.creativeConcept.whatToSayInOneSecond}
+## One thought
+Headline anchor: "${cd.oneThought.headline}"
+Hero number: ${cd.oneThought.answer} ${cd.oneThought.answerLabel}
 
-## Одна мысль обложки (НЕ МЕНЯТЬ — только цвета и сцена)
-Заголовок: "${cd.oneThought.headline}"
-Герой-цифра: ${cd.oneThought.answer} ${cd.oneThought.answerLabel}
-Бейдж: ${cd.oneThought.badge ?? "нет"}
+${layoutBlock ?? `## DEFAULT CONSTRAINTS
+- 1 primary product object
+- max 3 secondary objects
+- max 4 colors
+- clean background
+- large hero
+- 20–35% whitespace
+- hierarchy: Hero → Headline → Benefits → CTA`}
 
-## Сцена (только описание фона, без координат)
-${cd.sceneNarrative}
+## LayoutSpec JSON
+${input.layoutSpec ? compileLayoutSpecJson(input.layoutSpec) : "{}"}
 
-## СТРОГИЕ ЛИМИТЫ
-- НЕ указывай objectScale, координаты, layout, compositionScenarioId, размеры, проценты
-- Композицию и расположение элементов вычисляет Layout Engine — не ты
-- bullets: ТОЛЬКО 1 элемент для обложки
+## HARD RULES
+- bullets: ONLY 1 item for cover
 - useDecorations: false
 - glassEffects: true
+- NO coordinates, NO percentages, NO layout template ids
 
-Верни ТОЛЬКО JSON Design Brief:
+Return ONLY JSON Design Brief:
 {
   "designConcept": "${cd.creativeConcept.title}",
   "layout": "marketplace",
@@ -117,8 +129,8 @@ ${cd.sceneNarrative}
   "lightTemperature": "5500K",
   "shadowType": "contact-soft",
   "reflection": false,
-  "backgroundPrompt": "english scene description, NO product, NO text, allowed environment only",
-  "colorPalette": ["#hex", "#hex", "#hex"],
+  "backgroundPrompt": "english clean scene, NO product, NO text",
+  "colorPalette": ${JSON.stringify(input.layoutSpec?.palette?.slice(0, 4) ?? ["#1a1a2e", "#f8fafc", "#f97316"])},
   "fontId": null,
   "badgeId": null,
   "badge": "бренд",
@@ -126,15 +138,15 @@ ${cd.sceneNarrative}
   "decorations": []
 }
 
-Холст 900×1200. Wildberries.
-${input.knowledgeBlock ? `\n## БАЗА ЗНАНИЙ (статистика успешных карточек)\n${input.knowledgeBlock}\n` : ""}
-${input.marketIntelligenceBlock ? `\n## РЫНОЧНАЯ РАЗВЕДКА (Wildberries)\n${input.marketIntelligenceBlock}\n` : ""}
-${input.assetsIntelligenceBlock ? `\n## DESIGN ASSETS INTELLIGENCE\n${input.assetsIntelligenceBlock}\n` : ""}
-${input.genomeBlock ? `\n## DESIGN GENOME AI\n${input.genomeBlock}\n` : ""}
-${input.trendIntelligenceBlock ? `\n## TREND INTELLIGENCE\n${input.trendIntelligenceBlock}\n` : ""}
-${input.referenceHint ? `РЕФЕРЕНС: ${input.referenceHint}` : ""}
+Canvas 900×1200. Wildberries.
+${input.knowledgeBlock ? `\n## KNOWLEDGE\n${input.knowledgeBlock}\n` : ""}
+${input.marketIntelligenceBlock ? `\n## MARKET\n${input.marketIntelligenceBlock}\n` : ""}
+${input.assetsIntelligenceBlock ? `\n## ASSETS\n${input.assetsIntelligenceBlock}\n` : ""}
+${input.genomeBlock ? `\n## GENOME\n${input.genomeBlock}\n` : ""}
+${input.trendIntelligenceBlock ? `\n## TREND\n${input.trendIntelligenceBlock}\n` : ""}
+${input.referenceHint ? `REFERENCE: ${input.referenceHint}` : ""}
 ${input.retryHint ? input.retryHint : ""}
 
-ОПИСАНИЕ ТОВАРА:
+PRODUCT:
 "${input.productPrompt}"`;
 }

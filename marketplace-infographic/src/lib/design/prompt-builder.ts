@@ -1,5 +1,6 @@
 import type { ProductAnalysis } from "@/lib/product-analysis";
 import type { ScenePlan, SafeZone } from "./scene-planner";
+import { compileSceneConstraintsFromLayoutSpec } from "@/lib/design/layout-spec";
 
 function formatSafeZones(zones: SafeZone[]): string {
   return zones
@@ -18,7 +19,7 @@ function productZonePrompt(zone: ScenePlan["productSafeZone"]): string {
   return `clear empty product placement area around ${cx}% horizontal ${cy}% vertical, approximately ${w}% width ${h}% height, no objects`;
 }
 
-/** Детальный промпт сцены для Stable Diffusion — не короткие описания */
+/** Детальный промпт сцены для Stable Diffusion — compiled from LayoutSpec when provided */
 export function buildSceneBackgroundPrompt(
   scene: ScenePlan,
   analysis: ProductAnalysis,
@@ -27,6 +28,7 @@ export function buildSceneBackgroundPrompt(
     shape?: string;
     sceneNarrative?: string;
     visualHookStory?: string;
+    layoutSpec?: import("@/lib/design/layout-spec").LayoutSpec;
   },
 ): string {
   const categoryLabel = analysis.category.replace(/_/g, " ");
@@ -89,6 +91,9 @@ export function buildSceneBackgroundPrompt(
   const parts = [
     "ultra realistic commercial product photography background",
     `for ${categoryLabel} marketplace advertising poster`,
+    productContext?.layoutSpec
+      ? compileSceneConstraintsFromLayoutSpec(productContext.layoutSpec)
+      : null,
     productContext?.sceneNarrative
       ? `creative scene story: ${productContext.sceneNarrative}`
       : environment,

@@ -2,6 +2,8 @@ import type { CompositionLayout } from "@/lib/composition/types";
 import type { CreativeDirectorResult } from "@/lib/design-process/creative-concept";
 import type { CardMeaning, LayoutTemplateId } from "@/lib/layout-engine/types";
 import type { ProductAnalysis } from "@/lib/product-analysis";
+import type { CriticCorrection } from "@/lib/design/quality-v165/critic-corrections";
+import type { LayoutSpecPatch } from "@/lib/design/layout-spec/types";
 
 export type SeniorArtDirectorDimensionScores = {
   composition: number;
@@ -15,8 +17,12 @@ export type SeniorArtDirectorDimensionScores = {
 export type SeniorArtDirectorReview = {
   score: number;
   approved: boolean;
+  confidence: number;
   criticalProblems: string[];
+  issues: string[];
   recommendations: string[];
+  corrections: CriticCorrection[];
+  layoutSpecPatch: LayoutSpecPatch;
   scores: SeniorArtDirectorDimensionScores;
   source: "heuristic" | "ollama" | "merged";
   templateId?: LayoutTemplateId;

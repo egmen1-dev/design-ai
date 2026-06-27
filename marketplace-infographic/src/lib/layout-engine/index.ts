@@ -18,6 +18,7 @@ export type ProfessionalLayoutInput = LayoutEngineInput & {
   category: ProductCategory;
   backgroundHint?: string;
   knowledgeCategory?: import("@/lib/design/knowledge-engine").KnowledgeCategory;
+  layoutSpec?: import("@/lib/design/layout-spec").LayoutSpec;
 };
 
 /** Layout Engine — полностью детерминированный, без Ollama */
@@ -26,9 +27,20 @@ export function computeProfessionalLayout(
 ): ProfessionalLayoutResult {
   const seed = input.seed ?? `layout-${Date.now()}`;
   const shape: ProductShapeHint = input.productShape ?? "standard";
+  const specTemplate =
+    input.layoutSpec &&
+    (input.layoutSpec.heroPosition === "left"
+      ? "hero_left"
+      : input.layoutSpec.heroPosition === "center"
+        ? "minimal"
+        : input.layoutSpec.backgroundStyle === "dark_premium"
+          ? "luxury"
+          : "hero_right");
   const rankedBase = input.templateId
     ? [getTemplate(input.templateId), ...rankTemplatesForProduct(shape, input.meaning.priority, seed, input.category, input.knowledgeCategory).filter((t) => t.id !== input.templateId)]
-    : rankTemplatesForProduct(shape, input.meaning.priority, seed, input.category, input.knowledgeCategory);
+    : specTemplate
+      ? [getTemplate(specTemplate as import("./types").LayoutTemplateId), ...rankTemplatesForProduct(shape, input.meaning.priority, seed, input.category, input.knowledgeCategory).filter((t) => t.id !== specTemplate)]
+      : rankTemplatesForProduct(shape, input.meaning.priority, seed, input.category, input.knowledgeCategory);
   const exclude = new Set(input.excludeTemplateIds ?? []);
   const ranked = rankedBase.filter((t) => !exclude.has(t.id));
 

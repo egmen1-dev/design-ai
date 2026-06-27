@@ -28,6 +28,7 @@ import {
 import type { ProductCategory } from "@/lib/product-analysis";
 import type { CardMeaning } from "@/lib/layout-engine/types";
 import { pickAllowedEnvironment } from "@/lib/layout-engine/background-categories";
+import { buildInitialLayoutSpec, type LayoutSpec } from "@/lib/design/layout-spec";
 
 export type DesignProcessContext = {
   productPrompt: string;
@@ -44,6 +45,9 @@ export type DesignProcessContext = {
   assetsIntelligenceBlock?: string;
   genomeBlock?: string;
   trendIntelligenceBlock?: string;
+  layoutSpec?: LayoutSpec;
+  genomeTemplateId?: import("@/lib/layout-engine/types").LayoutTemplateId;
+  palette?: string[];
 };
 
 export type DesignProcessResult = {
@@ -192,6 +196,7 @@ async function runDesignStage(
   foundation: DesignProcessFoundation,
   creative: CreativeDirectorResult,
   cardMeaning: CardMeaning,
+  layoutSpec: LayoutSpec,
   retryHint?: string,
 ): Promise<DesignBrief> {
   const prompt = buildDesignStagePrompt({
@@ -208,6 +213,7 @@ async function runDesignStage(
     assetsIntelligenceBlock: ctx.assetsIntelligenceBlock,
     genomeBlock: ctx.genomeBlock,
     trendIntelligenceBlock: ctx.trendIntelligenceBlock,
+    layoutSpec,
   });
 
   const raw = await callOllamaJson<unknown>(prompt, 0.28);
@@ -237,6 +243,15 @@ export async function runDesignProcessPipeline(
   );
   let cardMeaning = creativeConceptToCardMeaning(creative, stubBrief);
 
+  const layoutSpec =
+    ctx.layoutSpec ??
+    buildInitialLayoutSpec({
+      creative,
+      analysis: ctx.analysis,
+      genomeTemplateId: ctx.genomeTemplateId,
+      palette: ctx.palette,
+    });
+
   let brief: DesignBrief;
   const status = await getOllamaStatus();
 
@@ -261,7 +276,7 @@ export async function runDesignProcessPipeline(
     } catch {
       cardMeaning = creativeConceptToCardMeaning(creative, stubBrief);
     }
-    brief = await runDesignStage(ctx, foundation, creative, cardMeaning);
+    brief = await runDesignStage(ctx, foundation, creative, cardMeaning, layoutSpec);
     brief = applyPosterRules(brief, creative, cardMeaning, ctx.analysis.category);
   }
 
@@ -282,7 +297,7 @@ export async function runDesignProcessPipeline(
     const issues = [...quality.issues, ...processReview.issues];
     const retryHint = buildQualityRetryHint(issues);
     try {
-      brief = await runDesignStage(ctx, foundation, creative, cardMeaning, retryHint);
+      brief = await runDesignStage(ctx, foundation, creative, cardMeaning, layoutSpec, retryHint);
     } catch {
       // keep first
     }

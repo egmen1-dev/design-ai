@@ -33,8 +33,12 @@ export async function runArtDirector(input: ArtDirectorInput): Promise<ArtDirect
       trendAlignment: raw.trendAlignment ?? heuristic.trendAlignment,
       storyAlignment: raw.storyAlignment ?? heuristic.storyAlignment,
       problems: raw.problems?.length ? raw.problems : heuristic.problems,
+      issues: raw.issues?.length ? raw.issues : heuristic.issues,
       recommendations: raw.recommendations?.length ? raw.recommendations : heuristic.recommendations,
-      approved: score >= 88,
+      corrections: heuristic.corrections,
+      layoutSpecPatch: heuristic.layoutSpecPatch,
+      confidence: raw.confidence ?? heuristic.confidence,
+      approved: score >= 88 && heuristic.problems.length <= 1,
       source: "merged",
     };
   } catch {

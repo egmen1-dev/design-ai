@@ -12,6 +12,7 @@ function avg(scores: number[]) {
 type RawReview = {
   score?: number;
   approved?: boolean;
+  confidence?: number;
   criticalProblems?: unknown;
   recommendations?: unknown;
   scores?: Partial<SeniorArtDirectorDimensionScores>;
@@ -47,8 +48,12 @@ export function sanitizeSeniorArtDirectorReview(
   return {
     score,
     approved,
+    confidence: clamp(p.confidence ?? fallbackScore - criticalProblems.length * 5),
     criticalProblems,
+    issues: criticalProblems,
     recommendations,
+    corrections: [],
+    layoutSpecPatch: {},
     scores,
     source: "ollama",
   };
@@ -74,8 +79,12 @@ export function mergeSeniorArtDirectorReviews(
   return {
     score,
     approved: score >= SENIOR_AD_APPROVE_SCORE && criticalProblems.length === 0,
+    confidence: Math.min(heuristic.confidence, llm.confidence ?? 80),
     criticalProblems,
+    issues: criticalProblems,
     recommendations,
+    corrections: [...(heuristic.corrections ?? []), ...(llm.corrections ?? [])],
+    layoutSpecPatch: { ...(heuristic.layoutSpecPatch ?? {}), ...(llm.layoutSpecPatch ?? {}) },
     scores,
     source: "merged",
     templateId: heuristic.templateId ?? llm.templateId,

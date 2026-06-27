@@ -73,7 +73,14 @@ import type { QualityValidationResult } from "@/lib/design/quality-validator";
 import type { ArtDirectorModeId } from "@/lib/design-process/art-director-modes";
 import type { FeedbackLearningSnapshot } from "@/lib/feedback/types";
 import { PIPELINE_VERSION } from "@/lib/pipeline-version";
-import { USE_FAST_CUTOUT, MAX_CONCEPT_RENDER_RETRIES, MAX_SENIOR_AD_LAYOUT_RETRIES, MAX_PHOTO_BG_RETRIES, MAX_CHIEF_FIX_RETRIES } from "@/lib/pipeline-config";
+import { USE_FAST_CUTOUT, MAX_CONCEPT_RENDER_RETRIES, MAX_QUALITY_REFINEMENT_PASSES, MAX_PHOTO_BG_RETRIES, MAX_CHIEF_FIX_RETRIES } from "@/lib/pipeline-config";
+import {
+  buildInitialLayoutSpec,
+  layoutSpecToTemplatePreference,
+  simplifyCardMeaningForSpec,
+  type LayoutSpec,
+} from "@/lib/design/layout-spec";
+import { runQualityGate, applyRefinementPatch, type QualityGateResult } from "@/lib/design/quality-v165";
 import type { CoverConceptId } from "@/lib/cover-concepts";
 import { evaluateFinalQuality } from "@/lib/design/final-quality-validator";
 import { applyPosterRules } from "@/lib/design-process/pipeline";
@@ -134,6 +141,8 @@ export type GenerateInfographicResult = {
   designGenomeKey?: string;
   storyHeroConcept?: string;
   trendIntelligenceScore?: number;
+  luxuryScore?: number;
+  qualityRefinementPasses?: number;
 };
 
 function briefMeta(brief?: DesignBrief) {
@@ -227,13 +236,14 @@ function buildProfessionalComposition(input: {
   knowledgeCategory?: KnowledgeCategory;
   genomeTemplateId?: LayoutTemplateId;
   genomeDnaOverride?: Partial<import("@/lib/design/types").DesignDNA>;
+  layoutSpec?: LayoutSpec;
 }): {
   compositionResult: CompositionResult;
   cardMeaning: CardMeaning;
   headlineFontPx: number;
   templateId: LayoutTemplateId;
 } {
-  const cardMeaning = normalizeCardMeaning(
+  const rawMeaning = normalizeCardMeaning(
     input.designBrief?.cardMeaning ??
       (input.activeCreative && input.designBrief
         ? creativeConceptToCardMeaning(input.activeCreative, input.designBrief)
@@ -247,6 +257,14 @@ function buildProfessionalComposition(input: {
             priority: "product" as const,
           }),
   );
+  const cardMeaning = input.layoutSpec
+    ? simplifyCardMeaningForSpec(rawMeaning, input.layoutSpec)
+    : rawMeaning;
+
+  const preferredTemplate =
+    input.genomeTemplateId ??
+    input.templateId ??
+    (input.layoutSpec ? layoutSpecToTemplatePreference(input.layoutSpec) : undefined);
 
   const pro = computeProfessionalLayout({
     meaning: cardMeaning,
@@ -255,8 +273,9 @@ function buildProfessionalComposition(input: {
     seed: input.seed,
     backgroundHint: input.designBrief?.backgroundPrompt,
     excludeTemplateIds: input.excludeTemplateIds,
-    templateId: input.genomeTemplateId ?? input.templateId,
+    templateId: preferredTemplate,
     knowledgeCategory: input.knowledgeCategory,
+    layoutSpec: input.layoutSpec,
   });
 
   const dnaOverride = input.genomeDnaOverride ?? input.designBrief?.designDnaOverride;
@@ -303,6 +322,8 @@ async function buildLayoutWithAgentReview(input: {
   genomeTemplateId?: LayoutTemplateId;
   genomeDnaOverride?: Partial<import("@/lib/design/types").DesignDNA>;
   trendIntelligence?: TrendIntelligenceContext;
+  initialLayoutSpec?: LayoutSpec;
+  palette?: string[];
 }): Promise<{
   compositionResult: CompositionResult;
   cardMeaning: CardMeaning;
@@ -311,8 +332,20 @@ async function buildLayoutWithAgentReview(input: {
   artDirectorReview: ArtDirectorReview;
   headlineFontPx: number;
   templateId: LayoutTemplateId;
+  layoutSpec: LayoutSpec;
+  qualityGate: QualityGateResult;
+  refinementPasses: number;
 }> {
   const excluded: LayoutTemplateId[] = [];
+  let layoutSpec =
+    input.initialLayoutSpec ??
+    buildInitialLayoutSpec({
+      creative: input.activeCreative,
+      analysis: input.analysis,
+      genomeTemplateId: input.genomeTemplateId,
+      palette: input.palette,
+    });
+
   let last:
     | {
         compositionResult: CompositionResult;
@@ -322,20 +355,24 @@ async function buildLayoutWithAgentReview(input: {
         artDirectorReview: ArtDirectorReview;
         headlineFontPx: number;
         templateId: LayoutTemplateId;
+        layoutSpec: LayoutSpec;
+        qualityGate: QualityGateResult;
+        refinementPasses: number;
       }
     | undefined;
 
-  for (let attempt = 0; attempt <= MAX_SENIOR_AD_LAYOUT_RETRIES; attempt++) {
+  for (let pass = 0; pass < MAX_QUALITY_REFINEMENT_PASSES; pass++) {
     const built = buildProfessionalComposition({
       designBrief: input.designBrief,
       activeCreative: input.activeCreative,
       category: input.analysis.category,
       productVisual: input.productVisual,
-      seed: attempt === 0 ? input.seed : `${input.seed}:agent-${attempt}`,
+      seed: pass === 0 ? input.seed : `${input.seed}:refine-${pass}`,
       excludeTemplateIds: excluded,
       knowledgeCategory: input.knowledgeCategory,
       genomeTemplateId: input.genomeTemplateId,
       genomeDnaOverride: input.genomeDnaOverride,
+      layoutSpec,
     });
 
     const elementCount =
@@ -360,35 +397,47 @@ async function buildLayoutWithAgentReview(input: {
       runSeniorArtDirector({ ...agentBase, headlineFontPx: built.headlineFontPx }),
       runMarketplaceCtrExpert(agentBase),
       runArtDirector({
-        meaning: built.cardMeaning,
-        layout: built.compositionResult.layout,
-        templateId: built.templateId,
-        creative: input.activeCreative,
-        analysis: input.analysis,
-        productPrompt: input.productPrompt,
-        storyBlueprintSnippet: input.storyBlueprintSnippet,
+        ...agentBase,
         trendIntelligence: input.trendIntelligence,
       }),
     ]);
 
-    last = { ...built, seniorAdReview, ctrReview, artDirectorReview };
+    const qualityGate = runQualityGate({
+      layout: built.compositionResult.layout,
+      meaning: built.cardMeaning,
+      layoutSpec,
+      seniorAd: seniorAdReview,
+      ctr: ctrReview,
+      artDirector: artDirectorReview,
+      decorationCount: input.designBrief?.decorations?.length ?? 0,
+    });
 
-    const layoutApproved =
-      seniorAdReview.approved && ctrReview.wouldClick && artDirectorReview.approved;
-    if (layoutApproved) {
-      if (attempt > 0) {
+    last = {
+      ...built,
+      seniorAdReview,
+      ctrReview,
+      artDirectorReview,
+      layoutSpec,
+      qualityGate,
+      refinementPasses: pass + 1,
+    };
+
+    if (qualityGate.passed) {
+      if (pass > 0) {
         console.info(
-          `[agents] approved on retry ${attempt}: ${built.templateId} (ad=${seniorAdReview.score}, ctr=${ctrReview.score})`,
+          `[quality-v16.5] approved pass ${pass + 1}: luxury=${qualityGate.luxuryScore.total} template=${built.templateId}`,
         );
       }
       return last;
     }
 
     console.warn(
-      `[agents] rejected template ${built.templateId} ad=${seniorAdReview.score} ctr=${ctrReview.score} wouldClick=${ctrReview.wouldClick}`,
-      [...seniorAdReview.criticalProblems, ...ctrReview.mainProblems],
+      `[quality-v16.5] pass ${pass + 1} rejected luxury=${qualityGate.luxuryScore.total} ad=${seniorAdReview.score} ctr=${ctrReview.score}`,
+      qualityGate.luxuryScore.issues,
     );
+
     excluded.push(built.templateId);
+    layoutSpec = applyRefinementPatch(layoutSpec, qualityGate.combinedPatch);
   }
 
   return last!;
@@ -665,8 +714,13 @@ export async function handleGenerateInfographic(
     let seniorAdReview: SeniorArtDirectorReview | undefined;
     let ctrReview: MarketplaceCtrReview | undefined;
     let headlineFontPx = 18;
+    let layoutSpec: LayoutSpec | undefined;
+    let qualityGateV165: QualityGateResult | undefined;
+    let qualityRefinementPasses = 0;
+    let luxuryScoreValue: number | undefined;
 
     if (sdData.layout === "marketplace") {
+      const palette = paletteColorsForSd(assetsIntelligence?.palette);
       const built = await buildLayoutWithAgentReview({
         designBrief,
         activeCreative,
@@ -686,12 +740,24 @@ export async function handleGenerateInfographic(
         genomeTemplateId,
         genomeDnaOverride,
         trendIntelligence,
+        palette,
+        initialLayoutSpec: buildInitialLayoutSpec({
+          creative: activeCreative,
+          analysis,
+          genomeTemplateId,
+          palette,
+          storyDirection,
+        }),
       });
       compositionResult = built.compositionResult;
       cardMeaning = built.cardMeaning;
       seniorAdReview = built.seniorAdReview;
       ctrReview = built.ctrReview;
       headlineFontPx = built.headlineFontPx;
+      layoutSpec = built.layoutSpec;
+      qualityGateV165 = built.qualityGate;
+      qualityRefinementPasses = built.refinementPasses;
+      luxuryScoreValue = built.qualityGate.luxuryScore.total;
       if (designBrief && !designBrief.cardMeaning) {
         designBrief = { ...designBrief, cardMeaning };
       }
@@ -708,6 +774,7 @@ export async function handleGenerateInfographic(
       sceneNarrative: photoDirection?.backgroundNarrative ?? sceneNarrative,
       visualHookStory:
         storyDirection?.heroConcept ?? activeCreative?.creativeConcept.visualHook,
+      layoutSpec,
     });
     sdData.backgroundPrompt = scenePrompt;
 
@@ -1009,17 +1076,23 @@ export async function handleGenerateInfographic(
             assetsIntelligence,
             genomeIntelligence,
             storyDirection,
+            trendIntelligence,
           ),
           storyBlueprintSnippet: storySnippet,
           genomeTemplateId,
           genomeDnaOverride,
           trendIntelligence,
+          palette: paletteColorsForSd(assetsIntelligence?.palette),
         });
         compositionResult = rebuilt.compositionResult;
         compositionLayout = compositionResult.layout;
         objectScale = layoutObjectScale(compositionLayout.metrics?.productAreaPct);
         seniorAdReview = rebuilt.seniorAdReview;
         ctrReview = rebuilt.ctrReview;
+        layoutSpec = rebuilt.layoutSpec;
+        qualityGateV165 = rebuilt.qualityGate;
+        luxuryScoreValue = rebuilt.qualityGate.luxuryScore.total;
+        qualityRefinementPasses = rebuilt.refinementPasses;
       }
 
       const retryScene = planScene({
@@ -1038,6 +1111,7 @@ export async function handleGenerateInfographic(
         shape: productVisual?.shape,
         sceneNarrative: nextConcept.sceneNarrative,
         visualHookStory: nextConcept.creativeConcept.visualHook,
+        layoutSpec,
       });
       sdData.backgroundPrompt = retryPrompt;
 
@@ -1419,6 +1493,8 @@ export async function handleGenerateInfographic(
         designGenomeKey: genomeIntelligence?.mutatedGenome.genomeKey,
         storyHeroConcept: storyDirection?.heroConcept,
         trendIntelligenceScore: trendIntelligence?.trendScore,
+        luxuryScore: luxuryScoreValue,
+        qualityRefinementPasses,
         ...briefMeta(designBrief),
       };
     }
@@ -1483,6 +1559,8 @@ export async function handleGenerateInfographic(
       designGenomeKey: genomeIntelligence?.mutatedGenome.genomeKey,
       storyHeroConcept: storyDirection?.heroConcept,
       trendIntelligenceScore: trendIntelligence?.trendScore,
+      luxuryScore: luxuryScoreValue,
+      qualityRefinementPasses,
       ...briefMeta(designBrief),
     };
   } catch (error) {
