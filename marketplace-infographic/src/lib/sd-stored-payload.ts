@@ -5,6 +5,7 @@ import type { ScenePlan } from "@/lib/design/scene-planner";
 import type { QualityValidationResult } from "@/lib/design/quality-validator";
 import type { InfographicSdInput } from "@/lib/validations";
 import type { FeedbackLearningSnapshot } from "@/lib/feedback/types";
+import type { PromptCompilerMetadata } from "@/lib/design/prompt-compiler";
 import { sanitizeSdInput } from "@/lib/sd-sanitize";
 
 export type StoredSdPayload = {
@@ -17,6 +18,7 @@ export type StoredSdPayload = {
   scenePlan?: ScenePlan;
   qualityValidation?: QualityValidationResult;
   feedbackLearning?: FeedbackLearningSnapshot;
+  promptCompiler?: PromptCompilerMetadata;
 };
 
 export function packSdPayload(
@@ -30,6 +32,7 @@ export function packSdPayload(
     scenePlan?: ScenePlan;
     qualityValidation?: QualityValidationResult;
     feedbackLearning?: FeedbackLearningSnapshot;
+    promptCompiler?: PromptCompilerMetadata;
   },
 ): string {
   return JSON.stringify({
@@ -42,6 +45,7 @@ export function packSdPayload(
     scenePlan: extras?.scenePlan,
     qualityValidation: extras?.qualityValidation,
     feedbackLearning: extras?.feedbackLearning,
+    promptCompiler: extras?.promptCompiler,
   } satisfies StoredSdPayload);
 }
 
@@ -67,6 +71,7 @@ export function unpackSdPayload(json: string): StoredSdPayload {
       scenePlan: record.scenePlan,
       qualityValidation: record.qualityValidation,
       feedbackLearning: record.feedbackLearning,
+      promptCompiler: record.promptCompiler,
     };
   }
   return {

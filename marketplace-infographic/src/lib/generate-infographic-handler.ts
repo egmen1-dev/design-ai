@@ -33,7 +33,7 @@ import { analyzeProductVisual } from "@/lib/compositing/product-visual-analysis"
 import { resolveMarketplaceAccent } from "@/lib/accent-color";
 import {
   planScene,
-  buildSceneBackgroundPrompt,
+  compileSceneRenderingPrompt,
   validateQuality,
   QUALITY_PASS_THRESHOLD,
   retrieveKnowledgeContext,
@@ -56,6 +56,7 @@ import {
 } from "@/lib/design";
 import type { SceneDirectorResult } from "@/lib/design/scene-blueprint";
 import type { CompositionDirectorResult } from "@/lib/design/composition-director";
+import type { ProductAnalysis } from "@/lib/product-analysis";
 import type { KnowledgeCategory } from "@/lib/design/knowledge-engine";
 import type { MarketIntelligenceContext } from "@/lib/design/market-intelligence";
 import type { AssetsIntelligenceContext } from "@/lib/design/design-assets-intelligence";
@@ -151,6 +152,12 @@ export type GenerateInfographicResult = {
   sceneType?: string;
   compositionQualityScore?: number;
   compositionTemplate?: string;
+  renderingProfile?: string;
+  negativePrompt?: string;
+  readabilityScore?: number;
+  promptComplexityScore?: number;
+  promptCompilerApproved?: boolean;
+  promptCompilerAttempts?: number;
 };
 
 function briefMeta(brief?: DesignBrief) {
@@ -310,6 +317,59 @@ function agentKnowledgeSnippet(
     trend?.agentSnippet,
   ].filter(Boolean);
   return parts.length ? parts.join(" | ") : undefined;
+}
+
+function compileBackgroundPrompt(input: {
+  prompt: string;
+  analysis: ProductAnalysis;
+  scenePlan: ScenePlan;
+  layoutSpec?: LayoutSpec;
+  sceneBlueprint?: SceneDirectorResult["blueprint"];
+  designBrief?: DesignBrief;
+  productVisual?: ProductVisualProfile;
+  storyDirection?: VisualStoryDirectorResult;
+  marketIntelligence?: MarketIntelligenceContext;
+  assetsIntelligence?: AssetsIntelligenceContext;
+  genomeIntelligence?: GenomeIntelligenceContext;
+  trendIntelligence?: TrendIntelligenceContext;
+  luxuryScore?: number;
+  compositionScore?: number;
+  sceneScore?: number;
+}) {
+  return compileSceneRenderingPrompt(input.scenePlan, input.analysis, {
+    prompt: input.prompt,
+    dominantColors: input.productVisual?.dominantColors,
+    shape: input.productVisual?.shape,
+    storyHeroConcept: input.storyDirection?.heroConcept,
+    layoutSpec: input.layoutSpec,
+    sceneBlueprint: input.sceneBlueprint,
+    designBrief: input.designBrief,
+    marketSnippet: agentKnowledgeSnippet(
+      input.marketIntelligence,
+      input.assetsIntelligence,
+      input.genomeIntelligence,
+      input.storyDirection,
+      input.trendIntelligence,
+    ),
+    genomeSnippet: input.genomeIntelligence?.agentSnippet,
+    luxuryScore: input.luxuryScore,
+    compositionScore: input.compositionScore,
+    sceneScore: input.sceneScore,
+  });
+}
+
+function promptCompilerResponseFields(
+  compiled?: ReturnType<typeof compileBackgroundPrompt>,
+) {
+  if (!compiled) return {};
+  return {
+    renderingProfile: compiled.metadata.profile,
+    negativePrompt: compiled.negativePrompt,
+    readabilityScore: compiled.metadata.readabilityScore,
+    promptComplexityScore: compiled.metadata.promptComplexityScore,
+    promptCompilerApproved: compiled.metadata.validation.passed,
+    promptCompilerAttempts: compiled.metadata.attempts,
+  };
 }
 
 function storyBlueprintSnippet(story?: VisualStoryDirectorResult): string | undefined {
@@ -762,6 +822,7 @@ export async function handleGenerateInfographic(
     let qualityGateV165: QualityGateResult | undefined;
     let qualityRefinementPasses = 0;
     let luxuryScoreValue: number | undefined;
+    let compiledBackground: ReturnType<typeof compileBackgroundPrompt> | undefined;
 
     if (sdData.layout === "marketplace") {
       const palette = paletteColorsForSd(assetsIntelligence?.palette);
@@ -813,17 +874,38 @@ export async function handleGenerateInfographic(
     let objectScale = layoutObjectScale(compositionLayout?.metrics?.productAreaPct);
     compositingHints = sceneToCompositingHints(scenePlan, objectScale);
 
-    // ── 3. Prompt Builder → SD фон ────────────────────────────────────
-    const scenePrompt = buildSceneBackgroundPrompt(scenePlan, analysis, {
-      dominantColors: productVisual?.dominantColors,
-      shape: productVisual?.shape,
-      sceneNarrative: photoDirection?.backgroundNarrative ?? sceneNarrative,
-      visualHookStory:
-        storyDirection?.heroConcept ?? activeCreative?.creativeConcept.visualHook,
+    // ── 3. Prompt Compiler → SD фон ───────────────────────────────────
+    compiledBackground = compileBackgroundPrompt({
+      prompt: input.prompt,
+      analysis,
+      scenePlan,
       layoutSpec,
       sceneBlueprint: sceneDirection?.blueprint,
+      designBrief,
+      productVisual,
+      storyDirection,
+      marketIntelligence,
+      assetsIntelligence,
+      genomeIntelligence,
+      trendIntelligence,
+      luxuryScore: luxuryScoreValue,
+      compositionScore: compositionDirection?.quality.total,
+      sceneScore: sceneDirection?.quality.total,
     });
-    sdData.backgroundPrompt = scenePrompt;
+    sdData.backgroundPrompt = compiledBackground.prompt;
+    if (designBrief) {
+      designBrief = {
+        ...designBrief,
+        backgroundPrompt: compiledBackground.prompt.slice(0, 480),
+        negativePrompt: compiledBackground.negativePrompt.slice(0, 300),
+      };
+    }
+    if (!compiledBackground.approved) {
+      console.warn(
+        "[prompt-compiler] validation issues:",
+        compiledBackground.metadata.validation.issues,
+      );
+    }
 
     let backgroundUrl: string | null = null;
     let backgroundSource: "sd" | "fallback" = "sd";
@@ -1153,15 +1235,25 @@ export async function handleGenerateInfographic(
         compositionScenarioId: nextConcept.compositionScenarioId,
       }).scene;
 
-      const retryPrompt = buildSceneBackgroundPrompt(retryScene, analysis, {
-        dominantColors: productVisual?.dominantColors,
-        shape: productVisual?.shape,
-        sceneNarrative: nextConcept.sceneNarrative,
-        visualHookStory: nextConcept.creativeConcept.visualHook,
+      const retryCompiled = compileBackgroundPrompt({
+        prompt: input.prompt,
+        analysis,
+        scenePlan: retryScene,
         layoutSpec,
         sceneBlueprint: sceneDirection?.blueprint,
+        designBrief,
+        productVisual,
+        storyDirection,
+        marketIntelligence,
+        assetsIntelligence,
+        genomeIntelligence,
+        trendIntelligence,
+        luxuryScore: luxuryScoreValue,
+        compositionScore: compositionDirection?.quality.total,
+        sceneScore: sceneDirection?.quality.total,
       });
-      sdData.backgroundPrompt = retryPrompt;
+      compiledBackground = retryCompiled;
+      sdData.backgroundPrompt = retryCompiled.prompt;
 
       try {
         if (!process.env.HF_API_KEY) throw new Error("HF_API_KEY missing");
@@ -1337,6 +1429,7 @@ export async function handleGenerateInfographic(
           }
         : undefined,
       feedbackLearning: undefined as FeedbackLearningSnapshot | undefined,
+      promptCompiler: compiledBackground?.metadata,
     };
 
     let designMemory: DesignMemoryUpdateResult | undefined;
@@ -1547,6 +1640,7 @@ export async function handleGenerateInfographic(
         sceneType: sceneDirection?.sceneType,
         compositionQualityScore: compositionDirection?.quality.total,
         compositionTemplate: compositionDirection?.templateId,
+        ...promptCompilerResponseFields(compiledBackground),
         ...briefMeta(designBrief),
       };
     }
@@ -1617,6 +1711,7 @@ export async function handleGenerateInfographic(
       sceneType: sceneDirection?.sceneType,
       compositionQualityScore: compositionDirection?.quality.total,
       compositionTemplate: compositionDirection?.templateId,
+      ...promptCompilerResponseFields(compiledBackground),
       ...briefMeta(designBrief),
     };
   } catch (error) {

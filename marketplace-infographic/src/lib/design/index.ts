@@ -6,7 +6,25 @@ export {
 } from "./composition-engine";
 export { planScene } from "./scene-planner";
 export type { ScenePlan, ScenePlannerInput, ProductSafeZone, SafeZone } from "./scene-planner";
-export { buildSceneBackgroundPrompt } from "./prompt-builder";
+export {
+  buildSceneBackgroundPrompt,
+  buildSceneNegativeHints,
+  compileSceneRenderingPrompt,
+  type ScenePromptContext,
+} from "./prompt-builder";
+export {
+  compileRenderingPrompt,
+  compileNegativePrompt,
+  validateCompiledPrompt,
+  RENDERING_PROFILES,
+  resolveRenderingProfile,
+  PROMPT_COMPILER_VERSION,
+  DESIGN_CONSTITUTION,
+  type PromptCompilerInput,
+  type PromptCompilerResult,
+  type PromptCompilerMetadata,
+  type RenderingProfileId,
+} from "./prompt-compiler";
 export { validateQuality, QUALITY_PASS_THRESHOLD } from "./quality-validator";
 export { evaluateArtistic, ARTISTIC_PASS_THRESHOLD } from "./artistic-evaluator";
 export { evaluateFinalQuality, FINAL_QUALITY_PASS } from "./final-quality-validator";

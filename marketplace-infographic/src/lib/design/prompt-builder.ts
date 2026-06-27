@@ -1,149 +1,71 @@
 import type { ProductAnalysis } from "@/lib/product-analysis";
-import type { ScenePlan, SafeZone } from "./scene-planner";
-import { compileSceneConstraintsFromLayoutSpec } from "@/lib/design/layout-spec";
+import type { ScenePlan } from "./scene-planner";
+import type { LayoutSpec } from "@/lib/design/layout-spec";
+import type { SceneBlueprint } from "@/lib/design/scene-blueprint";
+import type { DesignBrief } from "@/lib/design-brief/schema";
 import {
-  compileScenePromptFromBlueprint,
-  type SceneBlueprint,
-} from "@/lib/design/scene-blueprint";
+  compileRenderingPrompt,
+  type PromptCompilerResult,
+} from "@/lib/design/prompt-compiler";
 
-function formatSafeZones(zones: SafeZone[]): string {
-  return zones
-    .map(
-      (z) =>
-        `${z.purpose} zone at ${z.left}% left ${z.top}% top (${z.width}%×${z.height}%), keep empty`,
-    )
-    .join("; ");
+export type ScenePromptContext = {
+  prompt?: string;
+  dominantColors?: string[];
+  shape?: string;
+  layoutSpec?: LayoutSpec;
+  sceneBlueprint?: SceneBlueprint;
+  designBrief?: DesignBrief;
+  storyHeroConcept?: string;
+  marketSnippet?: string;
+  knowledgeSnippet?: string;
+  genomeSnippet?: string;
+  luxuryScore?: number;
+  compositionScore?: number;
+  sceneScore?: number;
+};
+
+/** Deterministic Prompt Compiler — compiles structured design into SD instructions */
+export function compileSceneRenderingPrompt(
+  scene: ScenePlan,
+  analysis: ProductAnalysis,
+  context?: ScenePromptContext,
+): PromptCompilerResult {
+  return compileRenderingPrompt({
+    prompt: context?.prompt ?? "",
+    analysis,
+    scenePlan: scene,
+    layoutSpec: context?.layoutSpec,
+    sceneBlueprint: context?.sceneBlueprint,
+    designBrief: context?.designBrief,
+    storyHeroConcept: context?.storyHeroConcept,
+    productColors: context?.dominantColors,
+    productShape: context?.shape,
+    marketSnippet: context?.marketSnippet,
+    knowledgeSnippet: context?.knowledgeSnippet,
+    genomeSnippet: context?.genomeSnippet,
+    luxuryScore: context?.luxuryScore,
+    compositionScore: context?.compositionScore,
+    sceneScore: context?.sceneScore,
+  });
 }
 
-function productZonePrompt(zone: ScenePlan["productSafeZone"]): string {
-  const cx = Math.round((zone.centerX[0] + zone.centerX[1]) / 2);
-  const cy = Math.round((zone.centerY[0] + zone.centerY[1]) / 2);
-  const w = Math.round((zone.widthPct[0] + zone.widthPct[1]) / 2);
-  const h = Math.round((zone.heightPct[0] + zone.heightPct[1]) / 2);
-  return `clear empty product placement area around ${cx}% horizontal ${cy}% vertical, approximately ${w}% width ${h}% height, no objects`;
-}
-
-/** SD background prompt — compiles FROM SceneBlueprint when provided (v16.6) */
+/** Backward-compatible wrapper — returns compiled positive prompt only */
 export function buildSceneBackgroundPrompt(
   scene: ScenePlan,
   analysis: ProductAnalysis,
-  productContext?: {
-    dominantColors?: string[];
-    shape?: string;
-    sceneNarrative?: string;
-    visualHookStory?: string;
-    layoutSpec?: import("@/lib/design/layout-spec").LayoutSpec;
-    sceneBlueprint?: SceneBlueprint;
-  },
+  context?: ScenePromptContext,
 ): string {
-  if (productContext?.sceneBlueprint) {
-    const base = compileScenePromptFromBlueprint(productContext.sceneBlueprint);
-    const zones = formatSafeZones(scene.textSafeZones);
-    const productZone = productZonePrompt(scene.productSafeZone);
-    const layoutBlock = productContext.layoutSpec
-      ? compileSceneConstraintsFromLayoutSpec(productContext.layoutSpec)
-      : "";
-    return [base, productZone, `reserved text areas: ${zones}`, layoutBlock]
-      .filter(Boolean)
-      .join(", ");
-  }
-
-  const categoryLabel = analysis.category.replace(/_/g, " ");
-  const safeZones = formatSafeZones(scene.textSafeZones);
-  const productZone = productZonePrompt(scene.productSafeZone);
-  const colorHint = productContext?.dominantColors?.slice(0, 2).join(" and ") ?? "neutral";
-
-  const lighting = [
-    `key light from ${scene.lightingDirection}`,
-    `color temperature ${scene.lightingTemperature}`,
-    scene.shadowProfile === "ambient"
-      ? "soft ambient fill, gentle shadow falloff"
-      : scene.shadowProfile === "contact"
-        ? "defined contact shadows on surface"
-        : "balanced key and fill with natural shadow gradient",
-  ].join(", ");
-
-  const environment = (() => {
-    switch (scene.coverConceptId) {
-      case "commercial_studio":
-        return "professional advertising photography studio, seamless gradient backdrop, polished floor with subtle reflection, commercial catalog atmosphere";
-      case "outdoor_lifestyle":
-        return "authentic outdoor lifestyle environment, natural surroundings blurred in background, realistic ground surface, environmental context for consumer product";
-      case "home_interior":
-        return "modern cozy home interior, tasteful furniture bokeh, warm domestic atmosphere, realistic floor or counter surface";
-      case "garden_scene":
-        return "sunny suburban garden, lush green lawn, soft natural path, wooden fence and foliage in deep bokeh, golden hour warmth";
-      case "tech_showcase":
-        return "premium tech product showcase, dark gradient studio, subtle rim lighting, reflective pedestal surface, futuristic commercial aesthetic";
-      case "premium_minimal":
-        return "luxury minimal catalog studio, vast negative space, soft beige and cream tones, high-end editorial photography";
-      default:
-        return "commercial product photography environment";
-    }
-  })();
-
-  const surface = (() => {
-    switch (scene.surfaceType) {
-      case "glass":
-        return "glass surface with subtle reflections";
-      case "tile":
-        return "clean ceramic tile floor";
-      case "water":
-        return "calm water surface with soft ripples";
-      case "gloss":
-        return "glossy reflective pedestal";
-      case "grass":
-        return "natural grass foreground, organic texture";
-      case "earth":
-        return "natural earth and soil texture";
-      case "fabric":
-        return "soft fabric surface, matte texture";
-      case "matte":
-        return "matte interior surface, no reflections";
-      default:
-        return "studio floor with soft contact shadow area";
-    }
-  })();
-
-  const parts = [
-    "ultra realistic commercial product photography background",
-    `for ${categoryLabel} marketplace advertising poster`,
-    productContext?.layoutSpec
-      ? compileSceneConstraintsFromLayoutSpec(productContext.layoutSpec)
-      : null,
-    productContext?.sceneNarrative
-      ? `creative scene story: ${productContext.sceneNarrative}`
-      : environment,
-    productContext?.visualHookStory
-      ? `visual storytelling: ${productContext.visualHookStory}`
-      : `visual mood: ${scene.visualMood}`,
-    surface,
-    `camera: ${scene.cameraAngle}, ${scene.cameraHeight}, ${scene.cameraDistance}`,
-    `depth of field: ${scene.depthOfField}`,
-    lighting,
-    `visual mood: ${scene.visualMood}`,
-    `color harmony: ${scene.colorHarmony}, complementing product tones ${colorHint}`,
-    `horizon: ${scene.horizon}`,
-    productZone,
-    `reserved text areas: ${safeZones}`,
-    "perspective lines leading to product zone",
-    "atmospheric depth, layered foreground midground background",
-    "materials rendered with physical accuracy",
-    "subtle environmental reflections only on appropriate surfaces",
-    "background bokeh, no busy patterns in text zones",
-    "no text, no words, no letters, no typography, no watermark, no logo",
-    "no product, no equipment, no objects in foreground placement area",
-    "empty foreground ready for product compositing",
-    "8k, photorealistic, advertising quality",
-  ];
-
-  return parts.join(", ");
+  return compileSceneRenderingPrompt(scene, analysis, context).prompt;
 }
 
-/** Negative-prompt дополнения для safe zones */
-export function buildSceneNegativeHints(scene: ScenePlan): string {
-  const zones = scene.textSafeZones
-    .map((z) => `no objects in ${z.purpose} area`)
-    .join(", ");
-  return `${zones}, no clutter in product zone, no duplicate objects`;
+/** Negative prompt from compiler (zone-aware) */
+export function buildSceneNegativeHints(
+  scene: ScenePlan,
+  analysis: ProductAnalysis,
+  context?: Omit<ScenePromptContext, "prompt">,
+): string {
+  return compileSceneRenderingPrompt(scene, analysis, {
+    ...context,
+    prompt: "",
+  }).negativePrompt;
 }
