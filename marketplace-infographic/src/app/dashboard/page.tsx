@@ -87,6 +87,11 @@ export default async function DashboardPage({
               prompt={img.prompt}
               imagePath={img.imagePath}
               showPreview
+              userFeedback={
+                img.userFeedback === "like" || img.userFeedback === "dislike"
+                  ? img.userFeedback
+                  : null
+              }
             />
           ))}
         </div>

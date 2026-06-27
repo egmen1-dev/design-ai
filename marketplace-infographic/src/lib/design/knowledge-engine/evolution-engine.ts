@@ -60,6 +60,31 @@ export async function evolvePattern(input: EvolutionInput): Promise<void> {
   });
 }
 
+export async function evolveUserFeedback(
+  patternKey: string,
+  userLiked: boolean,
+): Promise<boolean> {
+  const existing = await prisma.designPattern.findUnique({
+    where: { patternKey },
+  });
+  if (!existing) return false;
+
+  const target = userLiked
+    ? Math.min(2, existing.successWeight + 0.18)
+    : Math.max(0.2, existing.successWeight - 0.28);
+  const nextWeight = emaWeight(existing.successWeight, target, 0.25);
+
+  await prisma.designPattern.update({
+    where: { patternKey },
+    data: {
+      likes: userLiked ? { increment: 1 } : undefined,
+      dislikes: userLiked ? undefined : { increment: 1 },
+      successWeight: nextWeight,
+    },
+  });
+  return true;
+}
+
 export async function evolveFromSnapshot(
   snapshot: PatternSnapshot,
   scores: {

@@ -4,6 +4,7 @@ import type { CompositionResult } from "@/lib/design/types";
 import type { ScenePlan } from "@/lib/design/scene-planner";
 import type { QualityValidationResult } from "@/lib/design/quality-validator";
 import type { InfographicSdInput } from "@/lib/validations";
+import type { FeedbackLearningSnapshot } from "@/lib/feedback/types";
 import { sanitizeSdInput } from "@/lib/sd-sanitize";
 
 export type StoredSdPayload = {
@@ -15,6 +16,7 @@ export type StoredSdPayload = {
   composition?: Pick<CompositionResult, "dna" | "scenarioId" | "score" | "seed" | "attempts">;
   scenePlan?: ScenePlan;
   qualityValidation?: QualityValidationResult;
+  feedbackLearning?: FeedbackLearningSnapshot;
 };
 
 export function packSdPayload(
@@ -27,6 +29,7 @@ export function packSdPayload(
     composition?: StoredSdPayload["composition"];
     scenePlan?: ScenePlan;
     qualityValidation?: QualityValidationResult;
+    feedbackLearning?: FeedbackLearningSnapshot;
   },
 ): string {
   return JSON.stringify({
@@ -38,6 +41,7 @@ export function packSdPayload(
     composition: extras?.composition,
     scenePlan: extras?.scenePlan,
     qualityValidation: extras?.qualityValidation,
+    feedbackLearning: extras?.feedbackLearning,
   } satisfies StoredSdPayload);
 }
 
@@ -62,6 +66,7 @@ export function unpackSdPayload(json: string): StoredSdPayload {
       composition: record.composition,
       scenePlan: record.scenePlan,
       qualityValidation: record.qualityValidation,
+      feedbackLearning: record.feedbackLearning,
     };
   }
   return {

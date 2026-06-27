@@ -93,6 +93,8 @@ model GeneratedImage {
   backgroundUrl String?
   productCutout String?
   usedFreeQuota Boolean  @default(true)
+  userFeedback  String?
+  feedbackAt    DateTime?
   createdAt     DateTime @default(now())
 }
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { DownloadButton } from "@/components/DownloadButton";
+import { FeedbackButtons } from "@/components/FeedbackButtons";
 import { MarketplacePreview } from "@/components/MarketplacePreview";
 import { PromptHints } from "@/components/PromptHints";
 
@@ -601,7 +602,8 @@ export function GenerateForm() {
                 </p>
               )}
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <FeedbackButtons imageId={result.id} />
               <button
                 type="button"
                 onClick={handleRegenerateBackground}

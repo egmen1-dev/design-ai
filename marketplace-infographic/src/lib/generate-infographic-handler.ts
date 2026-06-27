@@ -64,6 +64,7 @@ import type { CreativeDirectorResult } from "@/lib/design-process/creative-conce
 import type { ScenePlan } from "@/lib/design/scene-planner";
 import type { QualityValidationResult } from "@/lib/design/quality-validator";
 import type { ArtDirectorModeId } from "@/lib/design-process/art-director-modes";
+import type { FeedbackLearningSnapshot } from "@/lib/feedback/types";
 import { PIPELINE_VERSION } from "@/lib/pipeline-version";
 import { USE_FAST_CUTOUT, MAX_CONCEPT_RENDER_RETRIES, MAX_SENIOR_AD_LAYOUT_RETRIES, MAX_PHOTO_BG_RETRIES, MAX_CHIEF_FIX_RETRIES } from "@/lib/pipeline-config";
 import type { CoverConceptId } from "@/lib/cover-concepts";
@@ -1068,10 +1069,12 @@ export async function handleGenerateInfographic(
             noveltyScore: marketNoveltyScore,
           }
         : undefined,
+      feedbackLearning: undefined as FeedbackLearningSnapshot | undefined,
     };
 
     let designMemory: DesignMemoryUpdateResult | undefined;
     let knowledgeAnalysisTriggered = false;
+    let collectedHistoryId: string | undefined;
     if (sdData.layout === "marketplace") {
       try {
         designMemory = await runDesignMemory({
@@ -1154,10 +1157,42 @@ export async function handleGenerateInfographic(
           photoReview,
         });
         knowledgeAnalysisTriggered = collected.analysisTriggered;
+        collectedHistoryId = collected.historyId;
         if (!knowledgeCategory) knowledgeCategory = collected.category;
       } catch (error) {
         console.warn("[knowledge-engine] collect failed:", error);
       }
+
+      const feedbackLearning: FeedbackLearningSnapshot = {
+        productCategory: analysis.category,
+        knowledgeCategory,
+        templateId: compositionResult?.layout?.scenarioId as LayoutTemplateId | undefined,
+        fontId: sdData.fontId,
+        badgeId: sdData.badgeId,
+        scenePlan,
+        designScore: compositionResult?.score?.total,
+        cardMeaning,
+        seniorAdReview,
+        ctrReview,
+        photoReview,
+        chiefPlan,
+        parametricBadgeKey: assetsIntelligence?.recommendedBadgeKey,
+        parametricBadgeModel: assetsIntelligence?.parametricBadge
+          ? {
+              style: assetsIntelligence.parametricBadge.style,
+              radius: assetsIntelligence.parametricBadge.radius,
+              paddingX: assetsIntelligence.parametricBadge.paddingX,
+              paddingY: assetsIntelligence.parametricBadge.paddingY,
+              gradient: assetsIntelligence.parametricBadge.gradient,
+              shadow: assetsIntelligence.parametricBadge.shadow,
+              marketplaceScore: ctrReview?.score,
+            }
+          : undefined,
+        recommendedFontFamily: assetsIntelligence?.recommendedFontFamily,
+        recommendedPaletteKey: assetsIntelligence?.recommendedPaletteKey,
+        generationHistoryId: collectedHistoryId,
+      };
+      payloadExtras.feedbackLearning = feedbackLearning;
     }
 
     if (input.regenerateBackgroundOnly && input.existingImageId) {

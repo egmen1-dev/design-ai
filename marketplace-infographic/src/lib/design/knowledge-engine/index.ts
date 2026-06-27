@@ -26,7 +26,7 @@ export {
   getLayoutDiversityBoost,
 } from "./diversity-manager";
 
-export { evolvePattern, evolveFromSnapshot } from "./evolution-engine";
+export { evolvePattern, evolveFromSnapshot, evolveUserFeedback } from "./evolution-engine";
 
 export {
   collectGenerationPattern,
