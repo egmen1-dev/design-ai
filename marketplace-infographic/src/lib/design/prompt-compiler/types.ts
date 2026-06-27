@@ -110,14 +110,3 @@ export type PromptCompilerResult = {
 };
 
 export const PROMPT_COMPILER_VERSION = "1.0";
-export const DESIGN_CONSTITUTION = [
-  "max 4 colors",
-  "1 hero object",
-  "max 3 secondary elements",
-  "minimal decorative objects",
-  "whitespace 20-35%",
-  "no visual clutter",
-  "no floating products",
-  "no random particles",
-  "no unnecessary gradients",
-] as const;

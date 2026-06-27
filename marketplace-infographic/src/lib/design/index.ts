@@ -19,7 +19,6 @@ export {
   RENDERING_PROFILES,
   resolveRenderingProfile,
   PROMPT_COMPILER_VERSION,
-  DESIGN_CONSTITUTION,
   type PromptCompilerInput,
   type PromptCompilerResult,
   type PromptCompilerMetadata,
@@ -105,6 +104,23 @@ export {
   type LuxuryScoreResult,
   type QualityGateResult,
 } from "./quality-v165";
+export {
+  validateConstitution,
+  validateSceneBlueprint,
+  validateLayoutSpec,
+  validateCompiledPromptStage,
+  validateRenderedCritique,
+  validateWithCorrection,
+  formatConstitutionReport,
+  resolveConstitutionSet,
+  CONSTITUTION_PASS_THRESHOLD,
+  CONSTITUTION_VERSION,
+  DESIGN_CONSTITUTION_RULES,
+  type ConstitutionReport,
+  type ConstitutionScores,
+  type ConstitutionSetId,
+  applyConstitutionLayoutPatch,
+} from "./design-constitution";
 export type {
   CompositionEngineInput,
   CompositionResult,

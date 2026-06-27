@@ -3,7 +3,8 @@ import type {
   PromptCompilerMetadata,
   PromptCompilerResult,
 } from "./types";
-import { DESIGN_CONSTITUTION, PROMPT_COMPILER_VERSION } from "./types";
+import { PROMPT_COMPILER_VERSION } from "./types";
+import { DESIGN_CONSTITUTION_RULES } from "@/lib/design/design-constitution";
 import { resolveRenderingProfile } from "./profiles";
 import { compileAllSections, joinSections } from "./sections";
 import { compileNegativePrompt } from "./negative-prompt";
@@ -56,7 +57,7 @@ export function compileRenderingPrompt(input: PromptCompilerInput): PromptCompil
     version: PROMPT_COMPILER_VERSION,
     profile: strategy.profile,
     sections,
-    constitutionRules: [...DESIGN_CONSTITUTION],
+    constitutionRules: [...DESIGN_CONSTITUTION_RULES],
     luxuryScore: input.luxuryScore ?? 75,
     compositionScore: input.compositionScore ?? 78,
     sceneScore: input.sceneScore ?? 80,

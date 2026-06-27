@@ -53,6 +53,13 @@ import {
   retrieveTrendIntelligence,
   runSceneDirector,
   runCompositionDirector,
+  validateSceneBlueprint,
+  validateLayoutSpec,
+  validateCompiledPromptStage,
+  validateRenderedCritique,
+  applyConstitutionLayoutPatch,
+  formatConstitutionReport,
+  type ConstitutionReport,
 } from "@/lib/design";
 import type { SceneDirectorResult } from "@/lib/design/scene-blueprint";
 import type { CompositionDirectorResult } from "@/lib/design/composition-director";
@@ -158,6 +165,9 @@ export type GenerateInfographicResult = {
   promptComplexityScore?: number;
   promptCompilerApproved?: boolean;
   promptCompilerAttempts?: number;
+  overallDesignScore?: number;
+  constitutionPassed?: boolean;
+  constitutionVersion?: string;
 };
 
 function briefMeta(brief?: DesignBrief) {
@@ -358,6 +368,16 @@ function compileBackgroundPrompt(input: {
   });
 }
 
+function constitutionResponseFields(reports?: ConstitutionReport[]) {
+  if (!reports?.length) return {};
+  const latest = reports[reports.length - 1];
+  return {
+    overallDesignScore: latest.overallDesignScore,
+    constitutionPassed: reports.every((r) => r.passed),
+    constitutionVersion: latest.constitutionVersion,
+  };
+}
+
 function promptCompilerResponseFields(
   compiled?: ReturnType<typeof compileBackgroundPrompt>,
 ) {
@@ -392,6 +412,9 @@ async function buildLayoutWithAgentReview(input: {
   trendIntelligence?: TrendIntelligenceContext;
   initialLayoutSpec?: LayoutSpec;
   palette?: string[];
+  sceneBlueprint?: SceneDirectorResult["blueprint"];
+  compositionScore?: number;
+  constitutionReports?: ConstitutionReport[];
 }): Promise<{
   compositionResult: CompositionResult;
   cardMeaning: CardMeaning;
@@ -480,17 +503,42 @@ async function buildLayoutWithAgentReview(input: {
       decorationCount: input.designBrief?.decorations?.length ?? 0,
     });
 
+    const constitutionCritique = validateRenderedCritique({
+      analysis: input.analysis,
+      layoutSpec,
+      layout: built.compositionResult.layout,
+      meaning: built.cardMeaning,
+      sceneBlueprint: input.sceneBlueprint,
+      luxuryScore: qualityGate.luxuryScore.total,
+      compositionScore: input.compositionScore,
+    });
+    input.constitutionReports?.push(constitutionCritique.report);
+
+    const constitutionOk = constitutionCritique.validation.passed;
+    if (!constitutionOk) {
+      console.warn(
+        `[design-constitution] rendered_critique score=${constitutionCritique.report.overallDesignScore}`,
+        formatConstitutionReport(constitutionCritique.report),
+      );
+    }
+
+    const gatePassed = qualityGate.passed && constitutionOk;
+    const combinedPatch = {
+      ...qualityGate.combinedPatch,
+      ...(constitutionCritique.validation.combinedPatch.layoutSpecPatch ?? {}),
+    };
+
     last = {
       ...built,
       seniorAdReview,
       ctrReview,
       artDirectorReview,
       layoutSpec,
-      qualityGate,
+      qualityGate: { ...qualityGate, passed: gatePassed, combinedPatch },
       refinementPasses: pass + 1,
     };
 
-    if (qualityGate.passed) {
+    if (gatePassed) {
       if (pass > 0) {
         console.info(
           `[quality-v16.5] approved pass ${pass + 1}: luxury=${qualityGate.luxuryScore.total} template=${built.templateId}`,
@@ -505,7 +553,13 @@ async function buildLayoutWithAgentReview(input: {
     );
 
     excluded.push(built.templateId);
-    layoutSpec = applyRefinementPatch(layoutSpec, qualityGate.combinedPatch);
+    layoutSpec = applyRefinementPatch(
+      applyConstitutionLayoutPatch(
+        layoutSpec,
+        constitutionCritique.validation.combinedPatch.layoutSpecPatch,
+      ),
+      combinedPatch,
+    );
   }
 
   return last!;
@@ -742,6 +796,9 @@ export async function handleGenerateInfographic(
       storyDirection?.sceneNarrative ?? activeCreative?.sceneNarrative;
 
     // ── 0b. Scene Director → Scene Blueprint (v16.6) ─────────────────
+    const constitutionReports: ConstitutionReport[] = [];
+    let activeSceneBlueprint: SceneDirectorResult["blueprint"] | undefined;
+
     if (sdData.layout === "marketplace") {
       sceneDirection = await runSceneDirector({
         prompt: input.prompt,
@@ -755,23 +812,64 @@ export async function handleGenerateInfographic(
         productVisual,
         seed: variationSeed,
       });
+
+      if (sceneDirection?.blueprint) {
+        const sceneConstitution = validateSceneBlueprint(sceneDirection.blueprint, {
+          analysis: productAnalysis,
+          sceneScore: sceneDirection.quality.total,
+        });
+        constitutionReports.push(sceneConstitution.report);
+        activeSceneBlueprint = sceneConstitution.sceneBlueprint ?? sceneDirection.blueprint;
+        if (!sceneConstitution.validation.passed) {
+          console.warn(
+            "[design-constitution] scene_blueprint",
+            formatConstitutionReport(sceneConstitution.report),
+          );
+        }
+      }
     }
 
     // ── 0c. Composition Director → LayoutSpec geometry (v16.7) ─────
     const earlyGenomeTemplateId = genomeIntelligence?.mutatedGenome.composition
       .layoutTemplate as LayoutTemplateId | undefined;
 
+    let activeLayoutSpec: LayoutSpec | undefined;
+
     if (sdData.layout === "marketplace") {
       compositionDirection = await runCompositionDirector({
         prompt: input.prompt,
         analysis: productAnalysis,
         storyDirection,
-        sceneBlueprint: sceneDirection?.blueprint,
+        sceneBlueprint: activeSceneBlueprint ?? sceneDirection?.blueprint,
         genomeTemplateId: earlyGenomeTemplateId,
         palette: paletteColorsForSd(assetsIntelligence?.palette),
         seed: variationSeed,
         knowledgeCategory,
       });
+
+      const specCandidate =
+        compositionDirection?.layoutSpec ??
+        buildInitialLayoutSpec({
+          creative: activeCreative,
+          analysis: productAnalysis,
+          genomeTemplateId: earlyGenomeTemplateId,
+          palette: paletteColorsForSd(assetsIntelligence?.palette),
+          storyDirection,
+        });
+
+      const layoutConstitution = validateLayoutSpec(specCandidate, {
+        analysis: productAnalysis,
+        sceneBlueprint: activeSceneBlueprint ?? sceneDirection?.blueprint,
+        compositionScore: compositionDirection?.quality.total,
+      });
+      constitutionReports.push(layoutConstitution.report);
+      activeLayoutSpec = layoutConstitution.layoutSpec ?? specCandidate;
+      if (!layoutConstitution.validation.passed) {
+        console.warn(
+          "[design-constitution] layout_spec",
+          formatConstitutionReport(layoutConstitution.report),
+        );
+      }
     }
 
     // ── 1. Scene Planner (адаптирует Blueprint + Genome) ─────────────
@@ -783,7 +881,7 @@ export async function handleGenerateInfographic(
       seed: variationSeed,
       productVisual,
       sceneNarrative,
-      sceneBlueprint: sceneDirection?.blueprint,
+      sceneBlueprint: activeSceneBlueprint ?? sceneDirection?.blueprint,
       compositionScenarioId:
         storyDirection?.compositionScenarioId ??
         (designBrief?.compositionScenarioId as
@@ -847,6 +945,7 @@ export async function handleGenerateInfographic(
         trendIntelligence,
         palette,
         initialLayoutSpec:
+          activeLayoutSpec ??
           compositionDirection?.layoutSpec ??
           buildInitialLayoutSpec({
             creative: activeCreative,
@@ -855,6 +954,9 @@ export async function handleGenerateInfographic(
             palette,
             storyDirection,
           }),
+        sceneBlueprint: activeSceneBlueprint ?? sceneDirection?.blueprint,
+        compositionScore: compositionDirection?.quality.total,
+        constitutionReports,
       });
       compositionResult = built.compositionResult;
       cardMeaning = built.cardMeaning;
@@ -880,7 +982,7 @@ export async function handleGenerateInfographic(
       analysis,
       scenePlan,
       layoutSpec,
-      sceneBlueprint: sceneDirection?.blueprint,
+      sceneBlueprint: activeSceneBlueprint ?? sceneDirection?.blueprint,
       designBrief,
       productVisual,
       storyDirection,
@@ -905,6 +1007,22 @@ export async function handleGenerateInfographic(
         "[prompt-compiler] validation issues:",
         compiledBackground.metadata.validation.issues,
       );
+    }
+
+    if (layoutSpec && sdData.layout === "marketplace") {
+      const promptConstitution = validateCompiledPromptStage(compiledBackground, {
+        analysis,
+        layoutSpec,
+        luxuryScore: luxuryScoreValue,
+        compositionScore: compositionDirection?.quality.total,
+      });
+      constitutionReports.push(promptConstitution.report);
+      if (!promptConstitution.validation.passed) {
+        console.warn(
+          "[design-constitution] prompt",
+          formatConstitutionReport(promptConstitution.report),
+        );
+      }
     }
 
     let backgroundUrl: string | null = null;
@@ -1212,6 +1330,10 @@ export async function handleGenerateInfographic(
           genomeDnaOverride,
           trendIntelligence,
           palette: paletteColorsForSd(assetsIntelligence?.palette),
+          initialLayoutSpec: layoutSpec,
+          sceneBlueprint: activeSceneBlueprint ?? sceneDirection?.blueprint,
+          compositionScore: compositionDirection?.quality.total,
+          constitutionReports,
         });
         compositionResult = rebuilt.compositionResult;
         compositionLayout = compositionResult.layout;
@@ -1240,7 +1362,7 @@ export async function handleGenerateInfographic(
         analysis,
         scenePlan: retryScene,
         layoutSpec,
-        sceneBlueprint: sceneDirection?.blueprint,
+        sceneBlueprint: activeSceneBlueprint ?? sceneDirection?.blueprint,
         designBrief,
         productVisual,
         storyDirection,
@@ -1430,6 +1552,7 @@ export async function handleGenerateInfographic(
         : undefined,
       feedbackLearning: undefined as FeedbackLearningSnapshot | undefined,
       promptCompiler: compiledBackground?.metadata,
+      designConstitution: constitutionReports.length ? constitutionReports : undefined,
     };
 
     let designMemory: DesignMemoryUpdateResult | undefined;
@@ -1641,6 +1764,7 @@ export async function handleGenerateInfographic(
         compositionQualityScore: compositionDirection?.quality.total,
         compositionTemplate: compositionDirection?.templateId,
         ...promptCompilerResponseFields(compiledBackground),
+        ...constitutionResponseFields(constitutionReports),
         ...briefMeta(designBrief),
       };
     }
@@ -1712,6 +1836,7 @@ export async function handleGenerateInfographic(
       compositionQualityScore: compositionDirection?.quality.total,
       compositionTemplate: compositionDirection?.templateId,
       ...promptCompilerResponseFields(compiledBackground),
+      ...constitutionResponseFields(constitutionReports),
       ...briefMeta(designBrief),
     };
   } catch (error) {

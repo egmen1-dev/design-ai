@@ -6,6 +6,7 @@ import type { QualityValidationResult } from "@/lib/design/quality-validator";
 import type { InfographicSdInput } from "@/lib/validations";
 import type { FeedbackLearningSnapshot } from "@/lib/feedback/types";
 import type { PromptCompilerMetadata } from "@/lib/design/prompt-compiler";
+import type { ConstitutionReport } from "@/lib/design/design-constitution";
 import { sanitizeSdInput } from "@/lib/sd-sanitize";
 
 export type StoredSdPayload = {
@@ -19,6 +20,7 @@ export type StoredSdPayload = {
   qualityValidation?: QualityValidationResult;
   feedbackLearning?: FeedbackLearningSnapshot;
   promptCompiler?: PromptCompilerMetadata;
+  designConstitution?: ConstitutionReport[];
 };
 
 export function packSdPayload(
@@ -33,6 +35,7 @@ export function packSdPayload(
     qualityValidation?: QualityValidationResult;
     feedbackLearning?: FeedbackLearningSnapshot;
     promptCompiler?: PromptCompilerMetadata;
+    designConstitution?: ConstitutionReport[];
   },
 ): string {
   return JSON.stringify({
@@ -46,6 +49,7 @@ export function packSdPayload(
     qualityValidation: extras?.qualityValidation,
     feedbackLearning: extras?.feedbackLearning,
     promptCompiler: extras?.promptCompiler,
+    designConstitution: extras?.designConstitution,
   } satisfies StoredSdPayload);
 }
 
@@ -72,6 +76,7 @@ export function unpackSdPayload(json: string): StoredSdPayload {
       qualityValidation: record.qualityValidation,
       feedbackLearning: record.feedbackLearning,
       promptCompiler: record.promptCompiler,
+      designConstitution: record.designConstitution,
     };
   }
   return {

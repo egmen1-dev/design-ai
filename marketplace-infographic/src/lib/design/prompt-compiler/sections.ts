@@ -1,5 +1,5 @@
 import type { CompiledSection, PromptCompilerInput, PromptSectionId } from "./types";
-import { DESIGN_CONSTITUTION } from "./types";
+import { DESIGN_CONSTITUTION_RULES } from "@/lib/design/design-constitution";
 import { getProfile } from "./profiles";
 import type { RenderingProfileId } from "./types";
 import { MATERIAL_PROFILES } from "@/lib/design/scene-blueprint/materials";
@@ -151,7 +151,7 @@ export function compileVisualHierarchySection(input: PromptCompilerInput): Compi
     "composition-director",
     content,
     "Preserves designed reading and attention order",
-    DESIGN_CONSTITUTION.slice(0, 4),
+    DESIGN_CONSTITUTION_RULES.slice(0, 4),
   );
 }
 
