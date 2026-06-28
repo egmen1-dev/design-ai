@@ -20,6 +20,10 @@ import { generateReflection } from "./reflection-generator";
 import { applyFilmGrain } from "./grain-matcher";
 import { applySceneHarmony, softenProductEdges } from "./scene-harmony";
 import { detectFloorY, getAlphaFootBottom, sampleFloorColor } from "./ground-detector";
+import {
+  renderFloorContactShadow,
+  renderFloorReflection,
+} from "./floor-contact";
 
 const CANVAS_W = WB_COVER.width;
 const CANVAS_H = WB_COVER.height;
@@ -108,24 +112,62 @@ function computeMaxProductSize(
   compositionLayout: CompositionLayout | undefined,
   objectScale: number,
 ): { maxW: number; maxH: number } {
-  const canvasMaxW = CANVAS_W - SIDE_MARGIN * 2;
-  const canvasMaxH = CANVAS_H - HEADER_RESERVE_PX - BOTTOM_PAD;
+  const canvasMaxW = Math.min(PRODUCT_MAX_WIDTH_PX, CANVAS_W - SIDE_MARGIN * 2);
+  const canvasMaxH = Math.min(PRODUCT_MAX_H, CANVAS_H - HEADER_RESERVE_PX - BOTTOM_PAD);
 
   const comp = compositionLayout?.product;
   if (comp) {
     const zoneW = Math.round(xPct(comp.maxWidthPct));
     const zoneH = Math.round(yPct(comp.maxHeightPct));
-    const scaleBoost = 0.82 + objectScale * 0.12;
+    const scaleBoost = 0.68 + objectScale * 0.08;
     return {
       maxW: Math.min(canvasMaxW, Math.round(zoneW * scaleBoost)),
       maxH: Math.min(canvasMaxH, Math.round(zoneH * scaleBoost)),
     };
   }
 
-  const scale = 0.62 + objectScale * 0.22;
+  const scale = 0.55 + objectScale * 0.18;
   return {
-    maxW: Math.min(PRODUCT_MAX_WIDTH_PX, Math.round(canvasMaxW * scale)),
-    maxH: Math.min(PRODUCT_MAX_H, Math.round(canvasMaxH * scale)),
+    maxW: Math.min(canvasMaxW, Math.round(canvasMaxW * scale)),
+    maxH: Math.min(canvasMaxH, Math.round(canvasMaxH * scale)),
+  };
+}
+
+async function fitProductInFrame(
+  productBuffer: Buffer,
+  maxW: number,
+  maxH: number,
+): Promise<{ buffer: Buffer; width: number; height: number }> {
+  let current = await sharp(productBuffer).png().toBuffer({ resolveWithObject: true });
+  const margin = SIDE_MARGIN;
+
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const w = current.info.width;
+    const h = current.info.height;
+    const fitsW = w <= maxW && w <= CANVAS_W - margin * 2;
+    const fitsH = h <= maxH && h <= CANVAS_H - HEADER_RESERVE_PX - BOTTOM_PAD;
+    if (fitsW && fitsH) break;
+
+    const scale = Math.min(
+      maxW / w,
+      maxH / h,
+      (CANVAS_W - margin * 2) / w,
+      (CANVAS_H - HEADER_RESERVE_PX - BOTTOM_PAD) / h,
+    ) * 0.96;
+
+    current = await sharp(current.data)
+      .resize(Math.max(80, Math.round(w * scale)), Math.max(80, Math.round(h * scale)), {
+        fit: "inside",
+        withoutEnlargement: true,
+      })
+      .png()
+      .toBuffer({ resolveWithObject: true });
+  }
+
+  return {
+    buffer: current.data,
+    width: current.info.width,
+    height: current.info.height,
   };
 }
 
@@ -251,13 +293,14 @@ export async function compositeProductIntoScene(
   const softenedProduct = await softenProductEdges(matched);
 
   const rotationDeg = comp?.rotationDeg ?? 0;
-  const product = await prepareProductLayer(
+  let product = await prepareProductLayer(
     softenedProduct,
     layout,
     rotationDeg,
     maxW,
     maxH,
   );
+  product = await fitProductInFrame(product.buffer, maxW, maxH);
 
   const alphaFootBottom = (await getAlphaFootBottom(product.buffer)) ?? product.height;
   const productLeft = resolveHorizontalLeft(product.width, options.compositionLayout);
@@ -276,6 +319,20 @@ export async function compositeProductIntoScene(
 
   const bgPrepared = await softenBackgroundCenter(bgRaw, layout);
   const footCanvasY = productTop + alphaFootBottom;
+
+  const floorContact = await renderFloorContactShadow(
+    product.buffer,
+    productLeft,
+    footCanvasY,
+    floorColor,
+  );
+  const floorReflection = await renderFloorReflection(
+    product.buffer,
+    productLeft,
+    productTop,
+    footCanvasY,
+    floorColor,
+  );
 
   const shadows = await generateShadows({
     productWidth: product.width,
@@ -297,6 +354,23 @@ export async function compositeProductIntoScene(
     top: s.top,
     blend: "over" as const,
   }));
+
+  if (floorContact) {
+    composites.push({
+      input: floorContact.buffer,
+      left: floorContact.left,
+      top: floorContact.top,
+      blend: floorContact.blend,
+    });
+  }
+  if (floorReflection) {
+    composites.push({
+      input: floorReflection.buffer,
+      left: floorReflection.left,
+      top: floorReflection.top,
+      blend: floorReflection.blend,
+    });
+  }
 
   if (scene.reflectionEnabled) {
     const reflection = await generateReflection({
@@ -344,7 +418,7 @@ export async function compositeProductIntoScene(
     .update(backgroundUrl)
     .update(productUrl)
     .update(scene.seed)
-    .update("ground-v3")
+    .update("ground-v4")
     .digest("hex")
     .slice(0, 16);
 

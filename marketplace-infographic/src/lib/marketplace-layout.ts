@@ -24,6 +24,40 @@ export function formatMarketplaceHeadline(headline: string): string {
   return headline;
 }
 
+function parseSpecValue(value: string, label: string): { main: string; unit: string; icon: string } {
+  const parts = value.trim().split(/\s+/);
+  const main = parts[0] ?? value;
+  const unit = parts.slice(1).join(" ") || label;
+  const icon = /квт|вт|мощ/i.test(`${value} ${label}`) ? "bolt" : "star";
+  return { main, unit, icon };
+}
+
+/** WB-стиль: карточка заголовка + мощный бейдж характеристики */
+export function buildWbCoverHeadHtml(data: InfographicData, accent: string): string {
+  const hero = data.specBlocks[0];
+  const spec = hero?.value
+    ? parseSpecValue(hero.value, hero.label ?? "")
+    : null;
+
+  const specHtml = spec
+    ? `
+    <div class="wb-head__power" style="--wb-accent:${accent};">
+      <span class="material-symbols-outlined wb-head__power-icon" aria-hidden="true">${spec.icon}</span>
+      <div class="wb-head__power-text">
+        <span class="wb-head__power-val">${escapeHtml(spec.main)}</span>
+        <span class="wb-head__power-unit">${escapeHtml(spec.unit)}</span>
+      </div>
+    </div>`
+    : "";
+
+  return `
+    <div class="wb-head__card">
+      <div class="wb-head__stripe" style="background:linear-gradient(180deg, ${accent} 0%, color-mix(in srgb, ${accent} 72%, #0f172a) 100%);"></div>
+      <h1 class="wb-head__title">{{HEADLINE_PLACEHOLDER}}</h1>
+      ${specHtml}
+    </div>`;
+}
+
 export function buildMarketplacePillHtml(subtitle: string, accent: string): string {
   if (!subtitle?.trim()) return "";
   const normalized = subtitle.trim().toLowerCase();
@@ -31,45 +65,44 @@ export function buildMarketplacePillHtml(subtitle: string, accent: string): stri
     return "";
   }
   return `
-    <div class="mp-pill" style="--pill-accent:${accent};">
-      <span class="mp-pill__text">${escapeHtml(subtitle)}</span>
+    <div class="wb-head__tag" style="--wb-accent:${accent};">
+      <span class="wb-head__tag-text">${escapeHtml(subtitle)}</span>
     </div>`;
 }
 
-/** Бейдж характеристики внутри шапки */
 export function buildMarketplaceHeaderSpecHtml(
-  data: InfographicData,
-  accent: string,
+  _data: InfographicData,
+  _accent: string,
 ): string {
-  const hero = data.specBlocks[0];
-  if (!hero?.value) return "";
-
-  const heroLabel = hero.label ?? "";
-  const heroValue = hero.value ?? "—";
-  const parts = heroValue.trim().split(/\s+/);
-  const main = parts[0] ?? heroValue;
-  const unit = parts.slice(1).join(" ") || heroLabel;
-
-  return `
-    <div class="mp-header__spec" style="--spec-accent:${accent};">
-      <span class="mp-header__spec-value">${escapeHtml(main)}</span>
-      ${unit ? `<span class="mp-header__spec-unit">${escapeHtml(unit)}</span>` : ""}
-    </div>`;
+  return "";
 }
 
-/** @deprecated используйте buildMarketplaceHeaderSpecHtml */
 export function buildMarketplaceLeftSpecsHtml(
   data: InfographicData,
   accent: string,
 ): string {
-  return buildMarketplaceHeaderSpecHtml(data, accent);
+  return buildWbCoverHeadHtml(data, accent).replace("{{HEADLINE_PLACEHOLDER}}", "");
 }
 
-/** Постерный режим — без боковых панелей */
 export function buildMarketplaceSidebarHtml(): string {
   return "";
 }
 
 export function buildMarketplaceBottomRibbonHtml(): string {
   return "";
+}
+
+/** Полная шапка WB для marketplace */
+export function buildMarketplaceCoverHeadHtml(
+  headline: string,
+  data: InfographicData,
+  accent: string,
+  subtitle: string,
+): string {
+  const inner = buildWbCoverHeadHtml(data, accent).replace(
+    "{{HEADLINE_PLACEHOLDER}}",
+    escapeHtml(headline),
+  );
+  const pill = buildMarketplacePillHtml(subtitle, accent);
+  return `<header class="wb-head">${inner}${pill}</header>`;
 }

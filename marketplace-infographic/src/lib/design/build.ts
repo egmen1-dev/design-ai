@@ -133,8 +133,8 @@ export function buildLayoutFromDNA(
     JITTER.product,
   );
 
-  const clampedW = clampPct(widthPct, Math.max(catRules.widthPct[0], 52), Math.min(catRules.widthPct[1], 68));
-  const clampedH = clampPct(heightPct, Math.max(catRules.heightPct[0], 55), Math.min(catRules.heightPct[1], 78));
+  const clampedW = clampPct(widthPct, Math.max(catRules.widthPct[0], 48), Math.min(catRules.widthPct[1], 62));
+  const clampedH = clampPct(heightPct, Math.max(catRules.heightPct[0], 50), Math.min(catRules.heightPct[1], 72));
 
   let productWidth = clampedW;
   let productHeight = clampedH;

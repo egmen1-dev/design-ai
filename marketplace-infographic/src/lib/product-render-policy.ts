@@ -5,11 +5,11 @@
 
 import { WB_COVER } from "@/lib/composition/canvas";
 
-export const PRODUCT_TARGET_HEIGHT_RATIO = 0.68;
-export const PRODUCT_TARGET_MAX_HEIGHT_PX = Math.round(WB_COVER.height * 0.72);
-export const PRODUCT_MAX_WIDTH_PX = Math.round(WB_COVER.width * 0.84);
-export const PRODUCT_BOTTOM_PAD_PX = Math.round(WB_COVER.height * 0.04);
-export const PRODUCT_SIDE_MARGIN_PX = Math.round(WB_COVER.width * 0.07);
+export const PRODUCT_TARGET_HEIGHT_RATIO = 0.6;
+export const PRODUCT_TARGET_MAX_HEIGHT_PX = Math.round(WB_COVER.height * 0.62);
+export const PRODUCT_MAX_WIDTH_PX = Math.round(WB_COVER.width * 0.78);
+export const PRODUCT_BOTTOM_PAD_PX = Math.round(WB_COVER.height * 0.045);
+export const PRODUCT_SIDE_MARGIN_PX = Math.round(WB_COVER.width * 0.09);
 
 export const PRODUCT_BG_NEGATIVE =
   "no product, no equipment, no generator, no appliance, no trimmer, no garden tool, no power tool, no machinery, no object in foreground, no objects on grass, empty center foreground, clear foreground, backdrop only, environment only, scenery only";

@@ -16,7 +16,7 @@ import type { InfographicData, RenderInfographicOptions } from "@/lib/infographi
 import type { InfographicSdInput } from "@/lib/validations";
 import {
   buildMarketplaceBottomRibbonHtml,
-  buildMarketplaceHeaderSpecHtml,
+  buildMarketplaceCoverHeadHtml,
   buildMarketplacePillHtml,
   buildMarketplaceSidebarHtml,
   formatMarketplaceHeadline,
@@ -269,12 +269,15 @@ export function renderLayoutHtml(
       ? compositionToCssBlock(options.compositionLayout)
       : "";
 
+    const coverHeadHtml = buildMarketplaceCoverHeadHtml(headline, data, accentHex, subtitle);
+
     const vars: Record<string, string> = {
       PRODUCT_NAME: escapeHtml(data.productName),
       STYLE: style,
+      WB_COVER_HEAD_HTML: coverHeadHtml,
       HEADLINE: escapeHtml(headline),
-      HEADER_SPEC_HTML: buildMarketplaceHeaderSpecHtml(data, accentHex),
-      PILL_HTML: buildMarketplacePillHtml(subtitle, accentHex),
+      HEADER_SPEC_HTML: "",
+      PILL_HTML: "",
       LEFT_SPECS_HTML: "",
       BODY_CLASS: bodyClass,
       MERGED_PRODUCT_CLASS: options?.mergedImageDataUrl ? " mp-product--merged" : "",
@@ -286,9 +289,7 @@ export function renderLayoutHtml(
       DESIGN_SYSTEM_CSS: designCss,
       COMPOSITION_CSS: compositionCss,
       SKIN_CSS: `${buildSkinCss(style, accent, libraryFont)}
-    :root { --accent: ${accentHex}; --accent-readable: ${accentHex}; --accent-dark: ${accentHex}; }
-    .mp-title { color: #0f172a !important; }
-    .mp-spec-chip__value { color: ${accentHex} !important; }`,
+    :root { --accent: ${accentHex}; --accent-readable: ${accentHex}; --accent-dark: ${accentHex}; --wb-accent: ${accentHex}; }`,
       EXTRA_HEAD_HTML: libraryFont?.cssImport ?? "",
     };
 

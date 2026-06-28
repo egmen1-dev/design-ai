@@ -25,67 +25,111 @@
       box-sizing: border-box;
     }
 
-    .mp-header {
+    .wb-head {
       position: relative;
-      z-index: 6;
-      max-width: calc(var(--comp-headline-width, 52%) + var(--canvas-w-num) * 0.04px);
-      padding: calc(var(--canvas-h-num) * 0.016px) calc(var(--canvas-w-num) * 0.024px);
-      border-radius: calc(var(--canvas-w-num) * 0.014px);
-      background: rgba(255, 255, 255, 0.94);
-      border: 1px solid rgba(15, 23, 42, 0.07);
-      box-shadow: 0 calc(var(--canvas-h-num) * 0.005px) calc(var(--canvas-h-num) * 0.016px) rgba(15, 23, 42, 0.08);
+      z-index: 8;
+      max-width: 56%;
     }
 
-    .mp-header__top {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: calc(var(--canvas-w-num) * 0.018px);
-      flex-wrap: wrap;
+    .wb-head__card {
+      position: relative;
+      background: rgba(255, 255, 255, 0.97);
+      border-radius: calc(var(--canvas-w-num) * 0.02px);
+      padding: calc(var(--canvas-h-num) * 0.018px) calc(var(--canvas-w-num) * 0.028px)
+        calc(var(--canvas-h-num) * 0.022px) calc(var(--canvas-w-num) * 0.034px);
+      box-shadow:
+        0 calc(var(--canvas-h-num) * 0.004px) calc(var(--canvas-h-num) * 0.012px) rgba(15, 23, 42, 0.06),
+        0 calc(var(--canvas-h-num) * 0.012px) calc(var(--canvas-h-num) * 0.028px) rgba(15, 23, 42, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      overflow: visible;
     }
 
-    .mp-header__spec {
-      display: inline-flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-width: calc(var(--canvas-w-num) * 0.1px);
-      padding: calc(var(--canvas-h-num) * 0.008px) calc(var(--canvas-w-num) * 0.018px);
-      border-radius: calc(var(--canvas-w-num) * 0.01px);
-      background: var(--spec-accent, var(--accent));
-      color: #fff;
-      flex-shrink: 0;
+    .wb-head__stripe {
+      position: absolute;
+      left: 0;
+      top: calc(var(--canvas-h-num) * 0.012px);
+      bottom: calc(var(--canvas-h-num) * 0.012px);
+      width: calc(var(--canvas-w-num) * 0.008px);
+      border-radius: calc(var(--canvas-w-num) * 0.004px);
     }
 
-    .mp-header__spec-value {
+    .wb-head__title {
       font-family: var(--font-display);
       font-weight: 800;
-      font-size: calc(var(--comp-headline-size-pct) * var(--canvas-h-num) / 100 * 0.72px);
-      line-height: 0.95;
-      letter-spacing: -0.03em;
+      font-size: calc(var(--comp-headline-size-pct, 4.2) * var(--canvas-h-num) / 100 * 0.88px);
+      line-height: 1.07;
+      letter-spacing: -0.028em;
+      color: #111827;
+      margin: 0;
+      max-width: 92%;
     }
 
-    .mp-header__spec-unit {
+    .wb-head__power {
+      position: absolute;
+      right: calc(var(--canvas-w-num) * -0.018px);
+      bottom: calc(var(--canvas-h-num) * -0.014px);
+      display: inline-flex;
+      align-items: center;
+      gap: calc(var(--canvas-w-num) * 0.012px);
+      padding: calc(var(--canvas-h-num) * 0.01px) calc(var(--canvas-w-num) * 0.022px);
+      border-radius: calc(var(--canvas-w-num) * 0.014px);
+      background: linear-gradient(
+        135deg,
+        var(--wb-accent, var(--accent)) 0%,
+        color-mix(in srgb, var(--wb-accent, var(--accent)) 68%, #0f172a) 100%
+      );
+      color: #fff;
+      box-shadow:
+        0 calc(var(--canvas-h-num) * 0.006px) calc(var(--canvas-h-num) * 0.016px) rgba(0, 0, 0, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      min-width: calc(var(--canvas-w-num) * 0.12px);
+    }
+
+    .wb-head__power-icon {
+      font-size: calc(var(--canvas-h-num) * 0.028px);
+      opacity: 0.95;
+    }
+
+    .wb-head__power-text {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      line-height: 1;
+    }
+
+    .wb-head__power-val {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: calc(var(--canvas-h-num) * 0.038px);
+      letter-spacing: -0.04em;
+    }
+
+    .wb-head__power-unit {
       font-family: var(--font-body);
       font-weight: 700;
-      font-size: calc(var(--comp-headline-size-pct) * var(--canvas-h-num) / 100 * 0.28px);
-      line-height: 1;
+      font-size: calc(var(--canvas-h-num) * 0.016px);
       opacity: 0.92;
       text-transform: lowercase;
+      margin-top: calc(var(--canvas-h-num) * 0.002px);
     }
 
-    .mp-title {
-      font-family: var(--font-display);
-      font-weight: 700;
-      font-size: calc(var(--comp-headline-size-pct) * var(--canvas-h-num) / 100 * 0.92px);
-      line-height: 1.08;
-      letter-spacing: -0.025em;
-      text-shadow: none !important;
-      margin: 0;
-      color: #0f172a !important;
-      flex: 1 1 auto;
-      min-width: 0;
+    .wb-head__tag {
+      display: inline-flex;
+      margin-top: calc(var(--canvas-h-num) * 0.01px);
+      padding: calc(var(--canvas-h-num) * 0.007px) calc(var(--canvas-w-num) * 0.02px);
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--wb-accent, var(--accent)) 14%, #fff);
+      border: 1px solid color-mix(in srgb, var(--wb-accent, var(--accent)) 28%, transparent);
     }
+
+    .wb-head__tag-text {
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: calc(var(--canvas-h-num) * 0.016px);
+      color: #334155;
+    }
+
+    .mp-header { display: none !important; }
 
     .mp-pill {
       display: inline-flex;
@@ -320,13 +364,7 @@
     {{OVERLAY_HTML}}
 
     <div class="canvas-grid layout-marketplace">
-      <header class="mp-header">
-        <div class="mp-header__top">
-          <h1 class="mp-title">{{HEADLINE}}</h1>
-          {{HEADER_SPEC_HTML}}
-        </div>
-        {{PILL_HTML}}
-      </header>
+      {{WB_COVER_HEAD_HTML}}
 
       <div class="mp-body{{BODY_CLASS}}">
         <section class="mp-product{{MERGED_PRODUCT_CLASS}}" aria-label="Товар">
