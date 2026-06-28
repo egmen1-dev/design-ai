@@ -105,6 +105,7 @@ import type { ScenePlan } from "@/lib/design/scene-planner";
 import type { QualityValidationResult } from "@/lib/design/quality-validator";
 import type { ArtDirectorModeId } from "@/lib/design-process/art-director-modes";
 import type { RenderModelId } from "@/lib/render-engine/types";
+import { buildRenderModelsChain } from "@/lib/render-engine/render-models";
 import type { FeedbackLearningSnapshot } from "@/lib/feedback/types";
 import { PIPELINE_VERSION } from "@/lib/pipeline-version";
 import {
@@ -1200,9 +1201,7 @@ export async function handleGenerateInfographic(
             input.regenerateBackgroundOnly ? productCutoutPath ?? undefined : undefined,
           );
 
-    const renderModelsChain = input.renderModel
-      ? [input.renderModel]
-      : (["flux", "kontext", "gptimage", "seedream"] as const);
+    const renderModelsChain = buildRenderModelsChain(input.renderModel);
 
     const bgPromise = (async () => {
       if (useRenderEngineV17) {

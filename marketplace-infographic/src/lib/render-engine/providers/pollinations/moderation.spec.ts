@@ -9,6 +9,7 @@ import {
   stripNonLatinScript,
   buildModerationPromptVariants,
 } from "./moderation";
+import { buildRenderModelsChain } from "../../render-models";
 
 function main() {
   assert.ok(
@@ -39,6 +40,10 @@ function main() {
   });
   assert.ok(variants.length >= 3);
   assert.notEqual(variants[0], variants[variants.length - 1]);
+
+  assert.deepEqual(buildRenderModelsChain(), ["flux", "kontext", "seedream"]);
+  assert.deepEqual(buildRenderModelsChain("gptimage")[0], "gptimage");
+  assert.ok(buildRenderModelsChain("gptimage").includes("flux"));
 
   assert.equal(stripNonLatinScript("hello мир world"), "hello world");
 

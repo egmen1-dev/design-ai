@@ -16,7 +16,9 @@ import { RENDER_ENGINE_CONFIG } from "../../config";
 import { WB_COVER } from "@/lib/composition/canvas";
 import {
   buildModerationPromptVariants,
+  BARE_MINIMAL_PROMPT,
   isPollinationsModerationError,
+  PollinationsModelBlockedError,
 } from "./moderation";
 
 /** Pollinations API max seed (INT32_MAX) */
@@ -167,7 +169,10 @@ export class PollinationsProvider implements RenderingProvider {
           .readUInt32BE(0),
     );
 
-    const promptVariants = buildModerationPromptVariants(payload.prompt, options?.moderationHints);
+    const promptVariants = [
+      ...buildModerationPromptVariants(payload.prompt, options?.moderationHints),
+      BARE_MINIMAL_PROMPT,
+    ].filter((p, i, arr) => arr.indexOf(p) === i);
     let promptIndex = 0;
 
     const headers: Record<string, string> = {};
@@ -197,13 +202,16 @@ export class PollinationsProvider implements RenderingProvider {
           const body = await res.text();
           lastError = body;
 
-          if (isPollinationsModerationError(body) && promptIndex < promptVariants.length - 1) {
-            promptIndex++;
-            console.warn(
-              `[pollinations] moderation reject — retry prompt variant ${promptIndex}/${promptVariants.length - 1}`,
-            );
-            attempt--;
-            continue;
+          if (isPollinationsModerationError(body)) {
+            if (promptIndex < promptVariants.length - 1) {
+              promptIndex++;
+              console.warn(
+                `[pollinations] moderation reject — retry prompt variant ${promptIndex}/${promptVariants.length - 1}`,
+              );
+              attempt--;
+              continue;
+            }
+            throw new PollinationsModelBlockedError(payload.model, body);
           }
 
           if (res.status === 400 && /seed/i.test(body)) {
@@ -245,11 +253,15 @@ export class PollinationsProvider implements RenderingProvider {
           compiled,
         };
       } catch (e) {
+        if (e instanceof PollinationsModelBlockedError) throw e;
         lastError = e instanceof Error ? e.message : String(e);
         if (isPollinationsModerationError(lastError) && promptIndex < promptVariants.length - 1) {
           promptIndex++;
           attempt--;
           continue;
+        }
+        if (isPollinationsModerationError(lastError) && promptIndex >= promptVariants.length - 1) {
+          throw new PollinationsModelBlockedError(payload.model, lastError);
         }
         await sleep(2000 * (attempt + 1));
       }

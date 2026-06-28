@@ -15,6 +15,11 @@ export const RENDER_ENGINE_CONFIG = {
     defaultModel: (process.env.POLLINATIONS_MODEL ?? "flux") as string,
     timeoutMs: Number(process.env.POLLINATIONS_TIMEOUT_MS ?? 90_000),
     maxAttempts: Number(process.env.POLLINATIONS_MAX_ATTEMPTS ?? 4),
+    /** Models known broken on some API keys (gptimage → 422 moderation on any prompt) */
+    skipInAutoChain: (process.env.POLLINATIONS_SKIP_MODELS ?? "gptimage")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean) as import("./types").RenderModelId[],
   },
   huggingface: {
     enabled: !!process.env.HF_API_KEY,
@@ -42,8 +47,8 @@ export type ModelSelectionRule = {
 export const MODEL_SELECTION_RULES: ModelSelectionRule[] = [
   { profileId: "industrial", modelId: "kontext", priority: 100 },
   { profileId: "construction", modelId: "kontext", priority: 100 },
-  { profileId: "luxury", modelId: "gptimage", priority: 100 },
-  { profileId: "beauty", modelId: "gptimage", priority: 90 },
+  { profileId: "luxury", modelId: "flux", priority: 100 },
+  { profileId: "beauty", modelId: "flux", priority: 90 },
   { profileId: "minimal", modelId: "flux", priority: 100 },
   { profileId: "premium_product", modelId: "flux", priority: 80 },
   { profileId: "lifestyle", modelId: "seedream", priority: 100 },
@@ -54,10 +59,9 @@ export const MODEL_SELECTION_RULES: ModelSelectionRule[] = [
   { profileId: "furniture", modelId: "seedream", priority: 85 },
 ];
 
-/** Retry fallback chain — flux first (lowest cost / widest compatibility) */
+/** Retry fallback chain — flux first; gptimage omitted (often 422 on paid keys) */
 export const RETRY_MODEL_CHAIN: import("./types").RenderModelId[] = [
   "flux",
   "kontext",
-  "gptimage",
   "seedream",
 ];

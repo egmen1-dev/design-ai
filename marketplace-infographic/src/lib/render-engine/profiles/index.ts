@@ -46,7 +46,7 @@ export const RENDER_PROFILES: Record<RenderProfileId, RenderProfile> = {
   beauty: {
     id: "beauty",
     label: "Beauty",
-    preferredModel: "gptimage",
+    preferredModel: "flux",
     environmentHint: "editorial beauty studio, soft gradient void",
     lighting: { key: "soft beauty key", fill: "feathered fill", temperatureK: 5000 },
     materials: { surface: "frosted acrylic", floor: "matte white", reflection: "controlled gloss", atmosphere: "editorial" },
@@ -79,7 +79,7 @@ export const RENDER_PROFILES: Record<RenderProfileId, RenderProfile> = {
   luxury: {
     id: "luxury",
     label: "Luxury",
-    preferredModel: "gptimage",
+    preferredModel: "flux",
     environmentHint: "beige cream editorial void, vast negative space",
     lighting: { key: "luxury softbox", fill: "feathered falloff", rim: "gold accent", temperatureK: 4500 },
     materials: { surface: "frosted acrylic", floor: "matte graphite", reflection: "controlled", atmosphere: "editorial luxury" },

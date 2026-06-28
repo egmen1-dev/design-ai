@@ -3,6 +3,22 @@
  * Product/industrial prompts (generators, workshops, Cyrillic) often trip the filter.
  */
 
+export const BARE_MINIMAL_PROMPT =
+  "soft grey studio cyclorama backdrop, empty center, commercial product photography, no text";
+
+export class PollinationsModelBlockedError extends Error {
+  readonly modelId: string;
+  constructor(modelId: string, detail: string) {
+    super(`Pollinations model blocked: ${modelId} — ${detail.slice(0, 120)}`);
+    this.name = "PollinationsModelBlockedError";
+    this.modelId = modelId;
+  }
+}
+
+export function isPollinationsModelBlockedError(err: unknown): boolean {
+  return err instanceof PollinationsModelBlockedError;
+}
+
 const MODERATION_ERROR_RE =
   /content moderation|moderation|safety filter|policy violation|inappropriate content|request was rejected/i;
 
