@@ -1,5 +1,6 @@
 import type { RenderAdapter, RenderRequest, CompiledRenderPayload } from "../types";
 import { joinNegativeTerms } from "./negative";
+import { sanitizePromptForModeration } from "../providers/pollinations/moderation";
 
 const BACKDROP_ONLY =
   "empty foreground for product compositing, backdrop only, no objects in product zone, no text, no letters, no watermark";
@@ -44,16 +45,19 @@ export class PollinationsFluxAdapter implements RenderAdapter {
     const modulesUsed = ["scene", "lighting", "environment", "camera", "materials", "quality"];
     const modulesIgnored = ["layout_coordinates", "hierarchy", "typography_zones"];
 
-    const prompt = [
-      "ultra realistic commercial product photography background",
-      sceneModule(request),
-      lightingModule(request),
-      environmentModule(request),
-      cameraModule(request),
-      materialsModule(request),
-      qualityModule(request),
-      BACKDROP_ONLY,
-    ].join(", ");
+    const prompt = sanitizePromptForModeration(
+      [
+        "ultra realistic commercial product photography background",
+        sceneModule(request),
+        lightingModule(request),
+        environmentModule(request),
+        cameraModule(request),
+        materialsModule(request),
+        qualityModule(request),
+        BACKDROP_ONLY,
+      ].join(", "),
+      0,
+    );
 
     return {
       model: "flux",
@@ -80,15 +84,18 @@ export class PollinationsFluxKontextAdapter implements RenderAdapter {
     const modulesUsed = ["scene", "environment", "lighting", "materials"];
     const modulesIgnored = ["camera_precision", "layout_coordinates"];
 
-    const prompt = [
-      "transform background for commercial product card",
-      sceneModule(request),
-      environmentModule(request),
-      lightingModule(request),
-      materialsModule(request),
-      "preserve composition, reduce clutter, empty product zone",
-      BACKDROP_ONLY,
-    ].join(", ");
+    const prompt = sanitizePromptForModeration(
+      [
+        "transform background for commercial product card",
+        sceneModule(request),
+        environmentModule(request),
+        lightingModule(request),
+        materialsModule(request),
+        "preserve composition, reduce clutter, empty product zone",
+        BACKDROP_ONLY,
+      ].join(", "),
+      0,
+    );
 
     return {
       model: "kontext",
@@ -113,13 +120,16 @@ export class PollinationsGPTImageAdapter implements RenderAdapter {
     const modulesUsed = ["scene", "lighting", "quality"];
     const modulesIgnored = ["technical_camera", "layout_coordinates", "negative_prompt"];
 
-    const prompt = [
-      `Premium ${request.profileId} marketplace card background.`,
-      sceneModule(request),
-      lightingModule(request),
-      qualityModule(request),
-      "Editorial luxury advertising. Empty center for product. No text. No logos.",
-    ].join(" ");
+    const prompt = sanitizePromptForModeration(
+      [
+        `Premium ${request.profileId} marketplace card background.`,
+        sceneModule(request),
+        lightingModule(request),
+        qualityModule(request),
+        "Editorial luxury advertising. Empty center for product. No text. No logos.",
+      ].join(" "),
+      0,
+    );
 
     return {
       model: "gptimage",
@@ -142,13 +152,16 @@ export class PollinationsSeedreamAdapter implements RenderAdapter {
     const modulesUsed = ["scene", "environment", "lighting"];
     const modulesIgnored = ["layout_coordinates", "hierarchy"];
 
-    const prompt = [
-      "lifestyle commercial photography background",
-      sceneModule(request),
-      environmentModule(request),
-      lightingModule(request),
-      "natural authentic atmosphere, empty foreground, no product, no text",
-    ].join(", ");
+    const prompt = sanitizePromptForModeration(
+      [
+        "lifestyle commercial photography background",
+        sceneModule(request),
+        environmentModule(request),
+        lightingModule(request),
+        "natural authentic atmosphere, empty foreground, no product, no text",
+      ].join(", "),
+      0,
+    );
 
     return {
       model: "seedream",

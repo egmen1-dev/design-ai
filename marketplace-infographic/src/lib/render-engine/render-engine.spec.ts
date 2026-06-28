@@ -15,6 +15,7 @@ import { evaluateRenderQuality } from "./quality/render-quality";
 import { RENDER_ENGINE_VERSION } from "./types";
 import { resolveRenderProfileId } from "./profiles";
 import { buildPollinationsImageUrl, sanitizePollinationsSeed, POLLINATIONS_MAX_SEED } from "./providers/pollinations/provider";
+import { sanitizePromptForModeration } from "./providers/pollinations/moderation";
 
 async function main() {
   const analysis = analyzeProductPrompt("Генератор 3 кВт для дачи");
@@ -91,6 +92,19 @@ async function main() {
 
   const quality = evaluateRenderQuality({ request, layoutSpec });
   assert.ok(quality.overallDesignScore >= 0);
+
+  const riskyPrompt = adapter
+    .compile({
+      ...request,
+      scene: {
+        ...request.scene,
+        environment: "industrial workshop studio with gasoline generator",
+        atmosphere: "rugged professional",
+      },
+    }).prompt;
+  assert.ok(!/\bgenerator\b/i.test(riskyPrompt), "compiled prompts should not contain generator");
+  assert.ok(!/\bindustrial\b/i.test(riskyPrompt), "industrial softened in adapter output");
+  assert.ok(sanitizePromptForModeration(riskyPrompt, 1).includes("cyclorama"));
 
   console.log("render-engine specs OK", profileId, request.modelId, compiled.prompt.length);
 }

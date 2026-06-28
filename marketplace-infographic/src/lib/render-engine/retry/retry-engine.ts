@@ -56,6 +56,10 @@ export async function renderWithRetry(input: RenderWithRetryInput): Promise<Rend
     try {
       const result = await provider.render(compiled, {
         seedSuffix: input.seedSuffix ? `${input.seedSuffix}:a${i}` : `a${i}`,
+        moderationHints: {
+          atmosphere: request.scene.atmosphere,
+          environment: request.scene.environment,
+        },
       });
       attempt.result = result;
 

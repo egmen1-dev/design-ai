@@ -14,6 +14,10 @@ import type {
 } from "../../types";
 import { RENDER_ENGINE_CONFIG } from "../../config";
 import { WB_COVER } from "@/lib/composition/canvas";
+import {
+  buildModerationPromptVariants,
+  isPollinationsModerationError,
+} from "./moderation";
 
 /** Pollinations API max seed (INT32_MAX) */
 export const POLLINATIONS_MAX_SEED = 2_147_483_647;
@@ -163,8 +167,9 @@ export class PollinationsProvider implements RenderingProvider {
           .readUInt32BE(0),
     );
 
-    const compiled: CompiledRenderPayload = { ...payload, seed };
-    const url = buildPollinationsImageUrl(compiled);
+    const promptVariants = buildModerationPromptVariants(payload.prompt, options?.moderationHints);
+    let promptIndex = 0;
+
     const headers: Record<string, string> = {};
     const key = RENDER_ENGINE_CONFIG.pollinations.apiKey;
     if (key) headers.Authorization = `Bearer ${key}`;
@@ -174,6 +179,11 @@ export class PollinationsProvider implements RenderingProvider {
 
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
       if (Date.now() - start > timeoutMs) break;
+
+      const activePrompt = promptVariants[Math.min(promptIndex, promptVariants.length - 1)];
+      const compiled: CompiledRenderPayload = { ...payload, seed, prompt: activePrompt };
+      const url = buildPollinationsImageUrl(compiled);
+
       try {
         const res = await fetch(url, {
           headers,
@@ -186,6 +196,16 @@ export class PollinationsProvider implements RenderingProvider {
         if (!res.ok) {
           const body = await res.text();
           lastError = body;
+
+          if (isPollinationsModerationError(body) && promptIndex < promptVariants.length - 1) {
+            promptIndex++;
+            console.warn(
+              `[pollinations] moderation reject — retry prompt variant ${promptIndex}/${promptVariants.length - 1}`,
+            );
+            attempt--;
+            continue;
+          }
+
           if (res.status === 400 && /seed/i.test(body)) {
             const retryUrl = buildPollinationsImageUrl({ ...compiled, seed: 0 });
             const retryRes = await fetch(retryUrl, {
@@ -226,6 +246,11 @@ export class PollinationsProvider implements RenderingProvider {
         };
       } catch (e) {
         lastError = e instanceof Error ? e.message : String(e);
+        if (isPollinationsModerationError(lastError) && promptIndex < promptVariants.length - 1) {
+          promptIndex++;
+          attempt--;
+          continue;
+        }
         await sleep(2000 * (attempt + 1));
       }
     }

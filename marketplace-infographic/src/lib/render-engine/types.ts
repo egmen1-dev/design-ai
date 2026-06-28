@@ -198,6 +198,8 @@ export type RenderProviderOptions = {
   seedSuffix?: string;
   timeoutMs?: number;
   maxAttempts?: number;
+  /** Scene hints for moderation fallback prompts */
+  moderationHints?: { atmosphere?: string; environment?: string };
 };
 
 export type RenderAttempt = {
