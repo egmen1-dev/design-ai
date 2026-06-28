@@ -16,6 +16,30 @@ export function sanitizeBlueprintForConstitution(input: {
     capLightSources: 2,
   });
 
+  const hardenedScene: SceneBlueprint = {
+    ...sceneBlueprint,
+    productInteraction: {
+      ...sceneBlueprint.productInteraction,
+      groundPlane: true,
+      softShadow: true,
+      ambientOcclusion: true,
+      depthSeparation:
+        sceneBlueprint.productInteraction.depthSeparation === "low"
+          ? "high"
+          : sceneBlueprint.productInteraction.depthSeparation,
+    },
+    accent: {
+      ...sceneBlueprint.accent,
+      particles: false,
+    },
+    decorative: {
+      ...sceneBlueprint.decorative,
+      maxParticles: 0,
+      backgroundComplexity: "minimal",
+      maxDensity: Math.min(sceneBlueprint.decorative.maxDensity, 0.12),
+    },
+  };
+
   const layoutSpec = applyConstitutionLayoutPatch(input.layoutSpec, {
     whitespaceTarget: Math.max(input.layoutSpec.whitespaceTarget, 26),
     removeDecorations: true,
@@ -23,5 +47,5 @@ export function sanitizeBlueprintForConstitution(input: {
     heroScaleDelta: input.layoutSpec.heroScale < 0.55 ? 0.05 : undefined,
   });
 
-  return { sceneBlueprint, layoutSpec };
+  return { sceneBlueprint: hardenedScene, layoutSpec };
 }
