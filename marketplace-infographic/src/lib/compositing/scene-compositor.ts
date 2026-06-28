@@ -16,6 +16,7 @@ import { matchColorToScene } from "./color-matcher";
 import { generateShadows } from "./shadow-generator";
 import { generateReflection } from "./reflection-generator";
 import { applyFilmGrain } from "./grain-matcher";
+import { applySceneHarmony, softenProductEdges } from "./scene-harmony";
 import { detectFloorY, sampleFloorColor } from "./ground-detector";
 
 const CANVAS_W = WB_COVER.width;
@@ -57,9 +58,15 @@ async function resizeBackground(bgBuffer: Buffer): Promise<Buffer> {
     .toBuffer();
 }
 
-/** Размывает верхнюю часть зоны товара — пол остаётся читаемым для теней */
-export async function softenBackgroundCenter(bgBuffer: Buffer): Promise<Buffer> {
+/** Лёгкое размытие верхней зоны — для marketplace не применяем (фон должен остаться читаемым) */
+export async function softenBackgroundCenter(
+  bgBuffer: Buffer,
+  layout: SceneCompositeOptions["layout"] = "marketplace",
+): Promise<Buffer> {
   const resized = await resizeBackground(bgBuffer);
+  if (layout === "marketplace") {
+    return resized;
+  }
 
   const pw = Math.round(CANVAS_W * 0.48);
   const ph = Math.round(CANVAS_H * 0.32);
@@ -225,8 +232,10 @@ export async function compositeProductIntoScene(
   });
   matched = await matchColorToScene(matched, bgResized, lighting);
 
+  const softenedProduct = await softenProductEdges(matched);
+
   const product = await prepareProductLayer(
-    matched,
+    softenedProduct,
     layout,
     scaleFactor,
     rotationDeg,
@@ -254,7 +263,7 @@ export async function compositeProductIntoScene(
     floorY,
   );
 
-  const bgPrepared = await softenBackgroundCenter(bgRaw);
+  const bgPrepared = await softenBackgroundCenter(bgRaw, layout);
 
   const shadows = await generateShadows({
     productWidth: product.width,
@@ -301,8 +310,13 @@ export async function compositeProductIntoScene(
     blend: "over",
   });
 
-  const mergedBuffer = await applyFilmGrain(
-    await sharp(bgPrepared).composite(composites).png().toBuffer(),
+  const mergedBuffer = await applySceneHarmony(
+    await applyFilmGrain(
+      await sharp(bgPrepared).composite(composites).png().toBuffer(),
+      0.022,
+    ),
+    floorColor,
+    lighting.warmth,
   );
 
   const finalPlacement = {

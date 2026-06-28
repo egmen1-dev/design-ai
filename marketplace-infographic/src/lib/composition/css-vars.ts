@@ -174,33 +174,44 @@ export function compositionToCssBlock(layout: CompositionLayout): string {
     }
 
     .mp-glass-badge {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: calc(var(--comp-plaque-height) * var(--canvas-h-num) / 100 * 0.35px) calc(var(--comp-safe) * var(--canvas-w-num) / 100 * 0.35px);
-      border-radius: calc(var(--canvas-w-num) * 0.018px);
-      background: rgba(255,255,255,0.22);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.35);
-      box-shadow: 0 calc(var(--canvas-h-num) * 0.008px) calc(var(--canvas-h-num) * 0.02px) rgba(15,23,42,0.12);
-      width: 100%;
+      display: none !important;
     }
 
-    .mp-glass-badge__value {
+    .mp-spec-chip {
+      display: inline-flex;
+      flex-direction: row;
+      align-items: baseline;
+      gap: calc(var(--comp-safe) * var(--canvas-w-num) / 100 * 0.18px);
+      padding: calc(var(--comp-plaque-height) * var(--canvas-h-num) / 100 * 0.22px) calc(var(--comp-safe) * var(--canvas-w-num) / 100 * 0.32px);
+      border-radius: calc(var(--canvas-w-num) * 0.01px);
+      background: rgba(15, 23, 42, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 calc(var(--canvas-h-num) * 0.005px) calc(var(--canvas-h-num) * 0.014px) rgba(0, 0, 0, 0.18);
+      width: auto;
+      max-width: calc(var(--comp-plaque-lg) * var(--canvas-w-num) / 100 * 1.1px);
+    }
+
+    .mp-spec-chip__value {
       font-family: var(--font-display);
-      font-weight: 900;
-      line-height: 0.95;
-      color: var(--badge-accent, var(--accent));
-      font-size: calc(var(--comp-hero-value-size-pct) * var(--canvas-h-num) / 100 * 1px) !important;
+      font-weight: 800;
+      line-height: 1;
+      color: #fff;
+      font-size: calc(var(--comp-hero-value-size-pct) * var(--canvas-h-num) / 100 * 0.55px) !important;
+      letter-spacing: -0.02em;
     }
 
-    .mp-glass-badge__label {
-      font-size: calc(var(--comp-sidebar-label-size-pct) * var(--canvas-h-num) / 100 * 1px);
-      font-weight: 700;
-      color: #334155;
+    .mp-spec-chip__label {
+      font-family: var(--font-body);
+      font-size: calc(var(--comp-sidebar-label-size-pct) * var(--canvas-h-num) / 100 * 0.85px);
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.78);
       text-transform: lowercase;
+    }
+
+    .mp-left {
+      top: calc((var(--comp-headline-top) + var(--comp-headline-height) + 1.8) * var(--canvas-h-num) / 100 * 1px) !important;
+      left: calc(var(--comp-headline-left) * var(--canvas-w-num) / 100 * 1px) !important;
+      width: auto !important;
     }
 
     .mp-pill--glass {

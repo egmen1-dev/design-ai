@@ -190,7 +190,7 @@ function buildBackgroundLayers(
   if (useMerged) {
     return {
       backgroundStyle: `background-image: url('${options!.mergedImageDataUrl}'); background-size: cover; background-position: center bottom;`,
-      overlayHtml: `<div class="canvas-overlay" style="background:${skin.mergedOverlay};"></div>`,
+      overlayHtml: `<div class="canvas-overlay" style="background:linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 18%, transparent 85%, rgba(15,23,42,0.06) 100%);"></div>`,
     };
   }
 
@@ -286,7 +286,8 @@ export function renderLayoutHtml(
       COMPOSITION_CSS: compositionCss,
       SKIN_CSS: `${buildSkinCss(style, accent, libraryFont)}
     :root { --accent: ${accentHex}; --accent-readable: ${accentHex}; --accent-dark: ${accentHex}; }
-    .mp-title { text-shadow: none !important; color: ${accentHex} !important; }`,
+    .mp-title { color: #0f172a !important; }
+    .mp-spec-chip__value { color: ${accentHex} !important; }`,
       EXTRA_HEAD_HTML: libraryFont?.cssImport ?? "",
     };
 

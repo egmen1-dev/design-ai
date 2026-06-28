@@ -30,6 +30,8 @@ const BASE_NEGATIVE: VisualNegativeBlock["terms"] = [
   "low quality",
   "product",
   "equipment",
+  "fully blurred background",
+  "gaussian blur everywhere",
 ];
 
 function cameraAngleToLegacy(angle: CameraDecision["angle"]): string {
@@ -87,7 +89,7 @@ export function visualBlueprintToSceneBlueprint(v: VisualSceneBlueprint): SceneB
       type: v.scene.sceneType,
       environment: envPhrase,
       floor: floorProfile.floor,
-      background: `${ARCHITECTURE_VISUAL[v.scene.architecture]} bokeh`,
+      background: ARCHITECTURE_VISUAL[v.scene.architecture],
       depth: v.scene.depth,
       atmosphere: `${WEATHER_VISUAL[v.scene.weather]}, ${TIME_VISUAL[v.scene.time]}`,
       material: v.materials.surface,

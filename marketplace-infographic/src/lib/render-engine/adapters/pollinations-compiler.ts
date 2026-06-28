@@ -123,6 +123,7 @@ export function compilePollinationsPrompt(
     `${blueprint.camera.distance} distance`,
     floor.atmosphere,
     `${floor.reflection} reflections`,
+    "sharp detailed floor plane in foreground",
     NEGATIVE_SPACE[blueprint.composition.negativeSpace],
     "single dominant foreground object zone empty",
     BACKDROP,

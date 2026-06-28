@@ -8,13 +8,13 @@ import type { DepthLevel } from "@/lib/design/scene-blueprint/types";
 /** Visual phrases — ONLY used by PollinationsCompiler, never by agents */
 export const ARCHITECTURE_VISUAL: Record<EnvironmentArchitectureId, string> = {
   studio: "professional photography studio cyclorama",
-  workshop: "clean commercial studio with subtle texture",
-  kitchen: "modern home kitchen interior bokeh",
-  outdoor: "outdoor terrace with soft natural backdrop",
-  corporate: "corporate office environment blur",
-  home_interior: "warm domestic interior bokeh",
-  tech_stage: "tech product showcase stage",
-  nature: "soft natural outdoor greenery blur",
+  workshop: "clean commercial workshop with visible floor plane",
+  kitchen: "modern home kitchen, sharp floor tiles in foreground",
+  outdoor: "outdoor terrace with natural ground plane",
+  corporate: "corporate interior with readable floor and walls",
+  home_interior: "warm domestic interior, sharp foreground floor",
+  tech_stage: "tech product showcase stage with floor reflection",
+  nature: "outdoor lawn with sharp grass foreground",
 };
 
 export const WEATHER_VISUAL: Record<WeatherId, string> = {
@@ -31,9 +31,9 @@ export const TIME_VISUAL: Record<TimeOfDayId, string> = {
 };
 
 export const DEPTH_VISUAL: Record<DepthLevel, string> = {
-  shallow: "shallow depth of field",
-  medium: "moderate environmental depth",
-  deep: "deep layered background",
+  shallow: "sharp foreground floor, gentle background falloff only",
+  medium: "sharp product zone, soft distant background",
+  deep: "layered interior depth, crisp floor in foreground",
 };
 
 export const MOOD_VISUAL: Record<string, string> = {

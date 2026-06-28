@@ -21,7 +21,7 @@ function computeColorProfile(
   lighting: SceneLightingProfile,
 ): ColorMatchProfile {
   const dist = rgbDistance(sceneAvg, productAvg);
-  const blend = Math.min(0.45, dist / 440);
+  const blend = Math.min(0.62, dist / 340);
 
   return {
     whiteBalanceShift: {

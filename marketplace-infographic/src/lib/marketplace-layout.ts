@@ -26,13 +26,17 @@ export function formatMarketplaceHeadline(headline: string): string {
 
 export function buildMarketplacePillHtml(subtitle: string, accent: string): string {
   if (!subtitle?.trim()) return "";
+  const normalized = subtitle.trim().toLowerCase();
+  if (/^\d/.test(normalized) || normalized.includes("квт") || normalized.includes("вт")) {
+    return "";
+  }
   return `
-    <div class="mp-pill mp-pill--glass" style="--pill-accent:${accent};">
-      <span class="mp-pill__text">${escapeHtml(subtitle.toUpperCase())}</span>
+    <div class="mp-pill" style="--pill-accent:${accent};">
+      <span class="mp-pill__text">${escapeHtml(subtitle)}</span>
     </div>`;
 }
 
-/** Компактный стеклянный бейдж — одна ключевая цифра */
+/** Компактный бейдж характеристики — под заголовком слева */
 export function buildMarketplaceLeftSpecsHtml(
   data: InfographicData,
   accent: string,
@@ -40,13 +44,13 @@ export function buildMarketplaceLeftSpecsHtml(
   const hero = data.specBlocks[0];
   if (!hero) return "";
 
-  const heroLabel = hero.label ?? "параметр";
+  const heroLabel = hero.label ?? "";
   const heroValue = hero.value ?? "—";
 
   return `
-    <div class="mp-glass-badge" style="--badge-accent:${accent};">
-      <span class="mp-glass-badge__value">${escapeHtml(heroValue)}</span>
-      <span class="mp-glass-badge__label">${escapeHtml(heroLabel)}</span>
+    <div class="mp-spec-chip" style="--chip-accent:${accent};">
+      <span class="mp-spec-chip__value">${escapeHtml(heroValue)}</span>
+      ${heroLabel ? `<span class="mp-spec-chip__label">${escapeHtml(heroLabel)}</span>` : ""}
     </div>`;
 }
 
