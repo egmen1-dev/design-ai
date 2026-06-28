@@ -270,7 +270,7 @@ function toProductShapeHint(visual?: ProductVisualProfile): ProductShapeHint {
 
 function layoutObjectScale(areaPct?: number): number {
   const pct = areaPct ?? 65;
-  return Math.min(0.75, Math.max(0.55, pct / 100));
+  return Math.min(0.62, Math.max(0.5, pct / 100));
 }
 
 function normalizeCardMeaning(

@@ -7,8 +7,8 @@ import type { DepthLevel } from "@/lib/design/scene-blueprint/types";
 
 /** Visual phrases — ONLY used by PollinationsCompiler, never by agents */
 export const ARCHITECTURE_VISUAL: Record<EnvironmentArchitectureId, string> = {
-  studio: "professional photography studio cyclorama",
-  workshop: "clean commercial workshop with visible floor plane",
+  studio: "clean seamless grey studio cyclorama, soft floor gradient",
+  workshop: "garage workshop corner, concrete floor, neutral walls",
   kitchen: "modern home kitchen, sharp floor tiles in foreground",
   outdoor: "outdoor terrace with natural ground plane",
   corporate: "corporate interior with readable floor and walls",

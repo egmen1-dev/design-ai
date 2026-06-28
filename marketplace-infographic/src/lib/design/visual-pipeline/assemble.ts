@@ -32,6 +32,10 @@ const BASE_NEGATIVE: VisualNegativeBlock["terms"] = [
   "equipment",
   "fully blurred background",
   "gaussian blur everywhere",
+  "ceiling track",
+  "studio spotlights",
+  "visible lighting equipment",
+  "light beams",
 ];
 
 function cameraAngleToLegacy(angle: CameraDecision["angle"]): string {

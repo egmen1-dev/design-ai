@@ -16,59 +16,42 @@ export function formatMarketplaceHeadline(headline: string): string {
   return headline;
 }
 
-function buildSpecRibbons(
+function buildSideSpecStack(
   data: InfographicData,
   style: InfographicStyle,
   accent: string,
 ): string {
   const skin = buildStyleSlideSkin(style);
-  const ribbons: string[] = [];
+  const items: string[] = [];
 
-  for (const spec of data.specBlocks.slice(0, 2)) {
+  for (const spec of data.specBlocks.slice(0, 3)) {
     if (!spec?.value) continue;
-    const text = `${spec.value} ${spec.label ?? ""}`.trim();
-    ribbons.push(
-      buildPlaqueHtml(
-        "ribbon",
-        { type: "ribbon", text },
-        skin,
-        accent,
-      ),
+    const label = (spec.label ?? "").trim();
+    const text = label ? `${spec.value} ${label}`.trim() : spec.value;
+    items.push(
+      buildPlaqueHtml("ribbon", { type: "ribbon", text: text.slice(0, 22) }, skin, accent),
     );
   }
 
-  const bullet = data.callouts?.[0]?.text;
-  if (bullet && ribbons.length < 3) {
-    ribbons.push(
-      buildPlaqueHtml(
-        "ribbon",
-        { type: "ribbon", text: bullet.slice(0, 28) },
-        skin,
-        accent,
-      ),
-    );
-  }
-
-  if (ribbons.length === 0) return "";
-  return `<div class="wb-cover__ribbons">${ribbons.join("")}</div>`;
+  if (items.length === 0) return "";
+  return `<div class="wb-side">${items.join("")}</div>`;
 }
 
-/** Премиальная шапка WB: тёмная полоса + ленты характеристик */
+/** WB-паттерн: тонкая полоса заголовка + вертикальные ленты слева */
 export function buildMarketplaceCoverHeadHtml(
   headline: string,
   data: InfographicData,
   accent: string,
   style: InfographicStyle = "modern",
 ): string {
-  const ribbons = buildSpecRibbons(data, style, accent);
-
+  const side = buildSideSpecStack(data, style, accent);
   return `
-    <header class="wb-cover">
-      <div class="wb-cover__bar" style="--wb-accent:${accent};">
-        <h1 class="wb-cover__title">${escapeHtml(headline)}</h1>
+    <header class="wb-top">
+      <div class="wb-top__bar" style="--wb-accent:${accent};">
+        <h1 class="wb-top__title">${escapeHtml(headline)}</h1>
       </div>
-      ${ribbons}
-    </header>`;
+    </header>
+    ${side}`;
 }
 
 export function buildMarketplacePillHtml(): string {

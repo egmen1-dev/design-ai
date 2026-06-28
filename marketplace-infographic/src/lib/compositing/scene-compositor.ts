@@ -4,6 +4,8 @@ import path from "path";
 import sharp from "sharp";
 
 import {
+  PRODUCT_ALPHA_MAX_HEIGHT_PX,
+  PRODUCT_ALPHA_MAX_WIDTH_PX,
   PRODUCT_BOTTOM_PAD_PX,
   PRODUCT_MAX_WIDTH_PX,
   PRODUCT_SIDE_MARGIN_PX,
@@ -24,6 +26,11 @@ import {
   renderFloorContactShadow,
   renderFloorReflection,
 } from "./floor-contact";
+import {
+  applyFloorColorSpill,
+  fitProductByAlphaBounds,
+  resolveAlphaCenteredLeft,
+} from "./alpha-fit";
 
 const CANVAS_W = WB_COVER.width;
 const CANVAS_H = WB_COVER.height;
@@ -119,10 +126,10 @@ function computeMaxProductSize(
   if (comp) {
     const zoneW = Math.round(xPct(comp.maxWidthPct));
     const zoneH = Math.round(yPct(comp.maxHeightPct));
-    const scaleBoost = 0.68 + objectScale * 0.08;
+    const scaleBoost = 0.58 + objectScale * 0.05;
     return {
-      maxW: Math.min(canvasMaxW, Math.round(zoneW * scaleBoost)),
-      maxH: Math.min(canvasMaxH, Math.round(zoneH * scaleBoost)),
+      maxW: Math.min(canvasMaxW, PRODUCT_MAX_WIDTH_PX, Math.round(zoneW * scaleBoost)),
+      maxH: Math.min(canvasMaxH, PRODUCT_MAX_H, Math.round(zoneH * scaleBoost)),
     };
   }
 
@@ -300,21 +307,34 @@ export async function compositeProductIntoScene(
     maxW,
     maxH,
   );
-  product = await fitProductInFrame(product.buffer, maxW, maxH);
+  product = await fitProductByAlphaBounds(
+    product.buffer,
+    PRODUCT_ALPHA_MAX_WIDTH_PX,
+    PRODUCT_ALPHA_MAX_HEIGHT_PX,
+  );
+
+  const floorColor = await sampleFloorColor(
+    bgResized,
+    Math.round(CANVAS_W / 2),
+    floorY,
+  );
+
+  const productBuffer = await applyFloorColorSpill(product.buffer, floorColor, 0.14);
+  product = { ...product, buffer: productBuffer };
 
   const alphaFootBottom = (await getAlphaFootBottom(product.buffer)) ?? product.height;
-  const productLeft = resolveHorizontalLeft(product.width, options.compositionLayout);
+  const productLeft = await resolveAlphaCenteredLeft(
+    product.buffer,
+    product.width,
+    SIDE_MARGIN,
+    CANVAS_W,
+    options.compositionLayout,
+  );
   const productTop = resolveVerticalTop(
     product.height,
     alphaFootBottom,
     floorY,
     options.compositionLayout,
-  );
-
-  const floorColor = await sampleFloorColor(
-    bgResized,
-    productLeft + Math.round(product.width / 2),
-    floorY,
   );
 
   const bgPrepared = await softenBackgroundCenter(bgRaw, layout);
@@ -418,7 +438,7 @@ export async function compositeProductIntoScene(
     .update(backgroundUrl)
     .update(productUrl)
     .update(scene.seed)
-    .update("ground-v4")
+    .update("ground-v5")
     .digest("hex")
     .slice(0, 16);
 
