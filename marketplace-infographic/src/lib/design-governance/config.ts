@@ -9,11 +9,11 @@ export const USE_DESIGN_GOVERNANCE =
 export const ALLOW_GRADIENT_FALLBACK =
   process.env.GOVERNANCE_ALLOW_GRADIENT_FALLBACK === "1";
 
-/** Governance constitution pass threshold (no critical violations required) */
+/** Governance constitution pass threshold — auto-fix loops until this score */
 export const GOVERNANCE_CONSTITUTION_THRESHOLD = Number(
-  process.env.GOVERNANCE_CONSTITUTION_THRESHOLD ?? 75,
+  process.env.GOVERNANCE_CONSTITUTION_THRESHOLD ?? 80,
 );
 
 export const GOVERNANCE_CONSTITUTION_MAX_ATTEMPTS = Number(
-  process.env.GOVERNANCE_CONSTITUTION_MAX_ATTEMPTS ?? 5,
+  process.env.GOVERNANCE_CONSTITUTION_MAX_ATTEMPTS ?? 12,
 );

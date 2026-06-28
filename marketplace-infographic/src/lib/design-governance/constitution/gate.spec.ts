@@ -35,7 +35,7 @@ function blueprintWithFloatingProduct(): FinalDesignBlueprint {
 }
 
 function main() {
-  assert.equal(GOVERNANCE_CONSTITUTION_THRESHOLD, 75, "governance threshold default");
+  assert.equal(GOVERNANCE_CONSTITUTION_THRESHOLD, 80, "governance threshold default");
 
   const blueprint = blueprintWithFloatingProduct();
   const analysis = analyzeProductPrompt("Генератор 3 кВт для дачи");
@@ -49,11 +49,16 @@ function main() {
 
   assert.equal(result.passed, true);
   const sceneReport = result.reports.find((r) => r.stage === "scene_blueprint");
+  const layoutReport = result.reports.find((r) => r.stage === "layout_spec");
   assert.ok(sceneReport, "scene report exists");
+  assert.ok(layoutReport, "layout report exists");
   assert.ok(
-    sceneReport.overallDesignScore >= GOVERNANCE_CONSTITUTION_THRESHOLD ||
-      sceneReport.violations.every((v) => v.severity !== "critical"),
-    `scene score ${sceneReport.overallDesignScore} should pass governance`,
+    sceneReport.overallDesignScore >= GOVERNANCE_CONSTITUTION_THRESHOLD,
+    `scene score ${sceneReport.overallDesignScore} must reach threshold ${GOVERNANCE_CONSTITUTION_THRESHOLD}`,
+  );
+  assert.ok(
+    layoutReport.overallDesignScore >= GOVERNANCE_CONSTITUTION_THRESHOLD,
+    `layout score ${layoutReport.overallDesignScore} must reach threshold ${GOVERNANCE_CONSTITUTION_THRESHOLD}`,
   );
   assert.equal(result.blueprint.sceneBlueprint.productInteraction.groundPlane, true);
   assert.equal(result.blueprint.sceneBlueprint.accent.particles, false);
@@ -78,21 +83,13 @@ function main() {
     sceneScore: 67,
     compositionScore: 72,
   });
-  const layoutReport = layoutFixed.reports.find((r) => r.stage === "layout_spec");
-  assert.ok(layoutReport, "layout report exists");
+  const fixedLayoutReport = layoutFixed.reports.find((r) => r.stage === "layout_spec");
+  assert.ok(fixedLayoutReport, "layout report exists");
   assert.ok(
-    governanceLayoutPasses(layoutReport, layoutFixed.blueprint.layoutSpec),
-    `layout score ${layoutReport.overallDesignScore} should pass governance`,
+    fixedLayoutReport.overallDesignScore >= GOVERNANCE_CONSTITUTION_THRESHOLD,
+    `degraded layout must auto-fix to ${GOVERNANCE_CONSTITUTION_THRESHOLD}+, got ${fixedLayoutReport.overallDesignScore}`,
   );
-}
-
-function governanceLayoutPasses(
-  report: { overallDesignScore: number; violations: Array<{ severity: string }> },
-  layoutSpec: import("@/lib/design/layout-spec").LayoutSpec,
-): boolean {
-  const critical = report.violations.filter((v) => v.severity === "critical");
-  if (critical.length > 0 && !layoutPassesHardLaws(layoutSpec)) return false;
-  return report.overallDesignScore >= GOVERNANCE_CONSTITUTION_THRESHOLD;
+  assert.ok(layoutPassesHardLaws(layoutFixed.blueprint.layoutSpec));
 }
 
 main();
