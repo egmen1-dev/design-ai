@@ -58,18 +58,20 @@ export function compositionToCssBlock(layout: CompositionLayout): string {
       gap: 0 !important;
     }
 
-    .wb-head {
+    .wb-cover {
       position: absolute;
       z-index: 9;
-      left: calc(var(--comp-headline-left) * var(--canvas-w-num) / 100 * 1px);
+      left: calc(var(--comp-safe) * var(--canvas-w-num) / 100 * 1px);
       top: calc(var(--comp-headline-top) * var(--canvas-h-num) / 100 * 1px);
-      max-width: calc(var(--comp-headline-width) * var(--canvas-w-num) / 100 * 1px + var(--canvas-w-num) * 0.08px);
+      right: calc(var(--comp-safe) * var(--canvas-w-num) / 100 * 1px);
+      width: auto;
     }
 
-    .wb-head__title {
-      font-size: calc(var(--comp-headline-size-pct) * var(--canvas-h-num) / 100 * 0.88px) !important;
+    .wb-cover__title {
+      font-size: calc(var(--comp-headline-size-pct) * var(--canvas-h-num) / 100 * 0.95px) !important;
     }
 
+    .wb-head,
     .mp-header {
       display: none !important;
     }

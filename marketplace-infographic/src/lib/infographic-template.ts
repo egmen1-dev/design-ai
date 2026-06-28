@@ -117,6 +117,8 @@ export type RenderInfographicOptions = {
   accentHex?: string;
   /** Design Composition Engine — размеры в % от холста WB */
   compositionLayout?: CompositionLayout;
+  /** Исходный промпт товара — для фактологичного заголовка marketplace */
+  productPrompt?: string;
 };
 
 function escapeHtml(text: string): string {

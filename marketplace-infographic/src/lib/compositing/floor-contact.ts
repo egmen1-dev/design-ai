@@ -56,7 +56,7 @@ export async function renderFloorContactShadow(
             width: Math.round(sw * 1.08),
             height: Math.max(14, Math.round(sh * 1.6)),
             channels: 4,
-            background: { r: dark.r, g: dark.g, b: dark.b, alpha: 200 },
+            background: { r: dark.r, g: dark.g, b: dark.b, alpha: 110 },
           },
         },
         blend: "dest-in",
@@ -116,7 +116,7 @@ export async function renderFloorReflection(
     <svg width="${rw}" height="${rh}" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="f" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="rgb(${floorColor.r},${floorColor.g},${floorColor.b})" stop-opacity="0.22"/>
+          <stop offset="0%" stop-color="rgb(${floorColor.r},${floorColor.g},${floorColor.b})" stop-opacity="0.08"/>
           <stop offset="100%" stop-color="white" stop-opacity="0"/>
         </linearGradient>
       </defs>

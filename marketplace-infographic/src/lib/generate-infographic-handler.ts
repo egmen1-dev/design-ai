@@ -33,6 +33,7 @@ import {
 } from "@/lib/design-governance";
 import { DEFAULT_STYLE, TRENDS, type InfographicStyle } from "@/lib/design-trends";
 import { renderHtmlToImage } from "@/lib/puppeteer";
+import { polishCoverImage } from "@/lib/cover-polish";
 import { bufferToDataUrl } from "@/lib/background-removal";
 import {
   parseProductImageDataUrl,
@@ -1780,10 +1781,14 @@ export async function handleGenerateInfographic(
       parametricBadgeHtml,
       accentHex,
       compositionLayout,
+      productPrompt: input.prompt,
     });
 
     const filename = `${input.userId}-${Date.now()}.png`;
-    const imagePath = await renderHtmlToImage(html, filename);
+    let imagePath = await renderHtmlToImage(html, filename);
+    if (sdData.layout === "marketplace") {
+      imagePath = await polishCoverImage(imagePath);
+    }
 
     const balance = slot.usedFreeQuota
       ? { ...slot.balance, freeRemaining: slot.balance.freeRemaining - 1 }

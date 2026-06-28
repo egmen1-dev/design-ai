@@ -16,10 +16,8 @@ import type { InfographicData, RenderInfographicOptions } from "@/lib/infographi
 import type { InfographicSdInput } from "@/lib/validations";
 import {
   buildMarketplaceBottomRibbonHtml,
-  buildMarketplaceCoverHeadHtml,
-  buildMarketplacePillHtml,
+  buildMarketplaceCover,
   buildMarketplaceSidebarHtml,
-  formatMarketplaceHeadline,
 } from "@/lib/marketplace-layout";
 
 export type LayoutType = InfographicSdInput["layout"];
@@ -252,9 +250,6 @@ export function renderLayoutHtml(
 
   if (layout === "marketplace") {
     const accentHex = options?.accentHex ?? accent.primary;
-    const headline = formatMarketplaceHeadline(data.headline);
-    const subtitle = data.categoryPill ?? data.productName;
-
     const template = loadTemplate("marketplace");
     const designCss = loadDesignSystemCss();
     const libraryFont = options?.libraryFont;
@@ -269,13 +264,18 @@ export function renderLayoutHtml(
       ? compositionToCssBlock(options.compositionLayout)
       : "";
 
-    const coverHeadHtml = buildMarketplaceCoverHeadHtml(headline, data, accentHex, subtitle);
+    const coverHeadHtml = buildMarketplaceCover(
+      data,
+      accentHex,
+      style,
+      options?.productPrompt,
+    );
 
     const vars: Record<string, string> = {
       PRODUCT_NAME: escapeHtml(data.productName),
       STYLE: style,
       WB_COVER_HEAD_HTML: coverHeadHtml,
-      HEADLINE: escapeHtml(headline),
+      HEADLINE: escapeHtml(data.headline),
       HEADER_SPEC_HTML: "",
       PILL_HTML: "",
       LEFT_SPECS_HTML: "",
