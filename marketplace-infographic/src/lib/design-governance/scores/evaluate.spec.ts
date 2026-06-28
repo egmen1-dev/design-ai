@@ -26,15 +26,30 @@ function main() {
     compositionScore: 72,
     sceneScore: 70,
     luxuryScore: 72,
-    photoScore: 82,
+    photoScore: 68,
     seniorAdScore: 85,
     ctrScore: 78,
     backgroundSource: "provider",
     renderDesignScore: 82,
+    hasComposite: true,
   });
   assert.ok(
     withComposite.professional >= PROFESSIONAL_SCORE_THRESHOLD,
-    `composite-quality inputs should pass (got ${withComposite.professional})`,
+    `composite+provider should pass (got ${withComposite.professional})`,
+  );
+
+  const borderline = buildGovernanceScorecard({
+    compositionScore: 70,
+    sceneScore: 70,
+    luxuryScore: 68,
+    photoScore: 62,
+    ctrScore: 65,
+    backgroundSource: "provider",
+    hasComposite: true,
+  });
+  assert.ok(
+    borderline.professional >= 73,
+    `composite floor should lift borderline (got ${borderline.professional})`,
   );
 
   console.log("governance scorecard specs OK", withComposite.professional);

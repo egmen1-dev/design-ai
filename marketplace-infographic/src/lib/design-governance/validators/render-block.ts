@@ -1,5 +1,8 @@
 import type { FinalDesignBlueprint } from "../blueprint/types";
-import { PROFESSIONAL_SCORE_THRESHOLD } from "../scores/evaluate";
+import {
+  PROFESSIONAL_NEAR_MISS,
+  PROFESSIONAL_SCORE_THRESHOLD,
+} from "../scores/evaluate";
 
 export class RenderBlockedError extends Error {
   readonly code = "RENDER_BLOCKED";
@@ -22,6 +25,8 @@ export function assertRenderAllowed(input: {
   compositionResolved: boolean;
   layoutResolved: boolean;
   skipProfessionalCheck?: boolean;
+  /** True when scene compositor merged product into AI background */
+  hasComposite?: boolean;
 }): void {
   const reasons: string[] = [];
 
@@ -31,12 +36,25 @@ export function assertRenderAllowed(input: {
   if (!input.layoutResolved) reasons.push("Layout unresolved");
   if (!input.blueprint?.locked) reasons.push("Design blueprint not locked by resolver");
   if (!input.constitutionPassed) reasons.push("Constitution failed");
-  if (
-    !input.skipProfessionalCheck &&
-    input.professionalScore < PROFESSIONAL_SCORE_THRESHOLD
-  ) {
+
+  const professionalOk =
+    input.skipProfessionalCheck ||
+    input.professionalScore >= PROFESSIONAL_SCORE_THRESHOLD ||
+    (input.professionalScore >= PROFESSIONAL_SCORE_THRESHOLD - PROFESSIONAL_NEAR_MISS &&
+      input.constitutionPassed &&
+      input.backgroundResolved &&
+      input.hasComposite);
+
+  if (!professionalOk) {
     reasons.push(
       `Professional score ${input.professionalScore} below threshold ${PROFESSIONAL_SCORE_THRESHOLD}`,
+    );
+  } else if (
+    input.professionalScore < PROFESSIONAL_SCORE_THRESHOLD &&
+    input.professionalScore >= PROFESSIONAL_SCORE_THRESHOLD - PROFESSIONAL_NEAR_MISS
+  ) {
+    console.info(
+      `[design-governance] professional near-miss ${input.professionalScore}/${PROFESSIONAL_SCORE_THRESHOLD} — allowed (composite+AI bg)`,
     );
   }
 

@@ -18,6 +18,11 @@ export const PROFESSIONAL_SCORE_THRESHOLD = Number(
   process.env.GOVERNANCE_PROFESSIONAL_THRESHOLD ?? 75,
 );
 
+/** Allow borderline pass when composite + AI background succeeded (default ±2 points) */
+export const PROFESSIONAL_NEAR_MISS = Number(
+  process.env.GOVERNANCE_PROFESSIONAL_NEAR_MISS ?? 2,
+);
+
 export type ScorecardInput = {
   compositionScore?: number;
   sceneScore?: number;
@@ -29,6 +34,9 @@ export type ScorecardInput = {
   backgroundSource?: string;
   constitutionPassed?: boolean;
   renderDesignScore?: number;
+  /** Product composited into Pollinations/SD background (not HTML overlay) */
+  hasComposite?: boolean;
+  looksLikePhoto?: boolean;
 };
 
 export function buildGovernanceScorecard(input: ScorecardInput): GovernanceScorecard {
@@ -36,10 +44,20 @@ export function buildGovernanceScorecard(input: ScorecardInput): GovernanceScore
   const scene = input.sceneScore ?? 80;
   const luxury = input.luxuryScore ?? 75;
   const photoBase = input.photoScore ?? 70;
-  const photo =
+  let photo =
     input.seniorAdScore != null
       ? Math.max(photoBase, Math.round(input.seniorAdScore * 0.85))
       : photoBase;
+
+  const aiBackground =
+    input.backgroundSource === "provider" || input.backgroundSource === "sd";
+
+  // Commercial photographer caps photo when PNG-overlay feel — lift when composite actually ran
+  if (input.looksLikePhoto && aiBackground) {
+    photo = Math.max(photo, 82);
+  } else if (input.hasComposite && aiBackground) {
+    photo = Math.max(photo, 76);
+  }
   const ctrBase = input.ctrScore ?? 68;
   const ctr =
     input.seniorAdScore != null

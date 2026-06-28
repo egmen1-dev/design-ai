@@ -1756,6 +1756,8 @@ export async function handleGenerateInfographic(
         useDesignGovernance,
       ),
       renderDesignScore: renderEngineResult?.overallScore,
+      hasComposite: !!compositeResult,
+      looksLikePhoto: photoReview?.looksLikePhoto,
     });
 
     if (useDesignGovernance && governanceBlueprint) {
@@ -1768,6 +1770,7 @@ export async function handleGenerateInfographic(
         lightingResolved: !!governanceBlueprint.lighting,
         compositionResolved: !!governanceBlueprint.composition,
         layoutResolved: !!governanceBlueprint.layout,
+        hasComposite: !!compositeResult,
       });
       renderReportJson = buildRenderReportJson({
         blueprint: governanceBlueprint,
