@@ -299,17 +299,17 @@ export async function compositeProductIntoScene(
   const softenedProduct = await softenProductEdges(matched);
 
   const rotationDeg = comp?.rotationDeg ?? 0;
-  let product = await prepareProductLayer(
+  const prepared = await prepareProductLayer(
     softenedProduct,
     layout,
     rotationDeg,
     maxW,
     maxH,
   );
-  product = await fitProductWithSafePlacement(
-    product.buffer,
-    product.width,
-    product.height,
+  const placement = await fitProductWithSafePlacement(
+    prepared.buffer,
+    prepared.width,
+    prepared.height,
     CANVAS_W,
     SIDE_MARGIN,
     PRODUCT_ALPHA_MAX_WIDTH_PX,
@@ -323,11 +323,11 @@ export async function compositeProductIntoScene(
     floorY,
   );
 
-  const productBuffer = await applyFloorColorSpill(product.buffer, floorColor, 0.14);
-  product = { ...product, buffer: productBuffer };
+  const productBuffer = await applyFloorColorSpill(placement.buffer, floorColor, 0.14);
+  const product = { ...placement, buffer: productBuffer };
 
   const alphaFootBottom = (await getAlphaFootBottom(product.buffer)) ?? product.height;
-  const productLeft = product.left;
+  const productLeft = placement.left;
   const productTop = resolveVerticalTop(
     product.height,
     alphaFootBottom,
