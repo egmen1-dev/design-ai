@@ -8,6 +8,10 @@ import { PromptHints } from "@/components/PromptHints";
 
 import { COVER_CONCEPTS, type CoverConceptId } from "@/lib/cover-concepts";
 import { ART_DIRECTOR_MODES, type ArtDirectorModeId } from "@/lib/design-process/art-director-modes";
+import {
+  RENDER_MODEL_OPTIONS,
+  type RenderModelChoice,
+} from "@/lib/render-engine/render-models";
 
 const MAX_IMAGE_BYTES = 4 * 1024 * 1024;
 
@@ -44,7 +48,7 @@ const GENERATION_STEPS = [
   "Генерация 8 концепций",
   "Оценка и выбор лучшей",
   "Scene Planner + композиция",
-  "Stable Diffusion + композитинг",
+  "Render Engine (AI фон)",
   "Финальная проверка и рендер",
 ];
 
@@ -74,6 +78,7 @@ export function GenerateForm() {
   const [productFileName, setProductFileName] = useState<string | null>(null);
   const [coverConcept, setCoverConcept] = useState<CoverConceptId | "auto">("auto");
   const [artDirectorMode, setArtDirectorMode] = useState<ArtDirectorModeId>("marketplace_ctr");
+  const [renderModel, setRenderModel] = useState<RenderModelChoice>("auto");
   const [loading, setLoading] = useState(false);
   const [regenLoading, setRegenLoading] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
@@ -90,7 +95,8 @@ export function GenerateForm() {
     creativeMainIdea?: string;
     oneThoughtHeadline?: string;
     visualHook?: { type: string; reason: string; confidence?: number };
-    backgroundSource?: "sd" | "fallback";
+    backgroundSource?: "sd" | "fallback" | "provider";
+    renderModel?: string;
     selectedArchetypeId?: string;
     conceptCandidates?: number;
     pipelineVersion?: string;
@@ -178,6 +184,7 @@ export function GenerateForm() {
           productImage,
           ...(coverConcept !== "auto" ? { coverConcept } : {}),
           artDirectorMode,
+          ...(renderModel !== "auto" ? { renderModel } : {}),
         }),
         signal: controller.signal,
       });
@@ -198,7 +205,8 @@ export function GenerateForm() {
         selectedArchetypeId?: string;
         conceptCandidates?: number;
         visualHook?: { type: string; reason: string; confidence?: number };
-        backgroundSource?: "sd" | "fallback";
+        backgroundSource?: "sd" | "fallback" | "provider";
+        renderModel?: string;
         pipelineVersion?: string;
       }>(res);
 
@@ -234,6 +242,7 @@ export function GenerateForm() {
         oneThoughtHeadline: data.oneThoughtHeadline,
         visualHook: data.visualHook,
         backgroundSource: data.backgroundSource,
+        renderModel: data.renderModel,
         pipelineVersion: data.pipelineVersion,
         selectedArchetypeId: data.selectedArchetypeId,
         conceptCandidates: data.conceptCandidates,
@@ -268,6 +277,7 @@ export function GenerateForm() {
         body: JSON.stringify({
           imageId: result.id,
           productImage,
+          ...(renderModel !== "auto" ? { renderModel } : {}),
         }),
         signal: controller.signal,
       });
@@ -281,7 +291,8 @@ export function GenerateForm() {
         credits: number;
         designConcept?: string;
         visualHook?: { type: string; reason: string };
-        backgroundSource?: "sd" | "fallback";
+        backgroundSource?: "sd" | "fallback" | "provider";
+        renderModel?: string;
         pipelineVersion?: string;
       }>(res);
 
@@ -307,6 +318,7 @@ export function GenerateForm() {
               freeRemaining: data.freeRemaining ?? prev.freeRemaining,
               credits: data.credits ?? prev.credits,
               backgroundSource: data.backgroundSource ?? prev.backgroundSource,
+              renderModel: data.renderModel ?? prev.renderModel,
               designConcept: data.designConcept ?? prev.designConcept,
               visualHook: data.visualHook ?? prev.visualHook,
               pipelineVersion: data.pipelineVersion ?? prev.pipelineVersion,
@@ -466,6 +478,27 @@ export function GenerateForm() {
         </div>
       </div>
 
+      <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950/50 px-4 py-3">
+        <label htmlFor="renderModel" className="text-sm font-medium text-slate-300">
+          Модель генерации фона
+        </label>
+        <p className="mt-1 text-xs leading-relaxed text-slate-500">
+          Render Engine v17 через Pollinations. «Авто» подбирает модель по категории товара.
+        </p>
+        <select
+          id="renderModel"
+          value={renderModel}
+          onChange={(e) => setRenderModel(e.target.value as RenderModelChoice)}
+          className="mt-3 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white focus:border-brand-500 focus:outline-none"
+        >
+          {RENDER_MODEL_OPTIONS.map((option) => (
+            <option key={option.id} value={option.id}>
+              {option.label} — {option.description}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div className="mt-4 rounded-lg border border-dashed border-slate-700 bg-slate-950/60 p-4">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
@@ -474,7 +507,7 @@ export function GenerateForm() {
             </p>
             <p className="mt-1 text-xs text-slate-500">
               Обязательно. Фон автоматически вырежется (imgly), товар встанет на
-              сгенерированный Stable Diffusion фон. Лучше JPG/PNG на белом или однотонном фоне.
+              сгенерированный AI-фон. Лучше JPG/PNG на белом или однотонном фоне.
             </p>
           </div>
           <div className="flex gap-2">
@@ -566,7 +599,10 @@ export function GenerateForm() {
                   <span className="ml-2 text-amber-400">· демо-режим</span>
                 )}
                 {result.backgroundSource === "fallback" && (
-                  <span className="ml-2 text-amber-400">· градиент вместо SD</span>
+                  <span className="ml-2 text-amber-400">· градиент вместо AI-фона</span>
+                )}
+                {result.renderModel && (
+                  <span className="ml-2 text-sky-400">· модель: {result.renderModel}</span>
                 )}
                 {result.pipelineVersion && (
                   <span className="ml-2 text-emerald-500">· {result.pipelineVersion}</span>

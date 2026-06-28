@@ -41,6 +41,7 @@ export async function POST(request: NextRequest) {
       style: parsed.data.style,
       coverConcept: parsed.data.coverConcept,
       artDirectorMode: parsed.data.artDirectorMode,
+      renderModel: parsed.data.renderModel,
       ollamaContext: { library, examples },
     });
 

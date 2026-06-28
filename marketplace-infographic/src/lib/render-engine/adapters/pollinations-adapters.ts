@@ -66,7 +66,7 @@ export class PollinationsFluxAdapter implements RenderAdapter {
       height: request.canvas.height,
       modulesUsed,
       modulesIgnored,
-      extraParams: { nologo: true, safe: true },
+      extraParams: { safe: true },
     };
   }
 }
@@ -99,7 +99,7 @@ export class PollinationsFluxKontextAdapter implements RenderAdapter {
       referenceImageUrl: request.providerHints.referenceImageUrl,
       modulesUsed,
       modulesIgnored,
-      extraParams: { nologo: true, safe: true },
+      extraParams: { safe: true },
     };
   }
 }
@@ -128,7 +128,7 @@ export class PollinationsGPTImageAdapter implements RenderAdapter {
       height: request.canvas.height,
       modulesUsed,
       modulesIgnored: [...modulesIgnored, "negative_prompt"],
-      extraParams: { quality: "high", nologo: true },
+      extraParams: { quality: "high" },
     };
   }
 }
@@ -158,7 +158,7 @@ export class PollinationsSeedreamAdapter implements RenderAdapter {
       height: Math.max(960, request.canvas.height),
       modulesUsed,
       modulesIgnored,
-      extraParams: { nologo: true, safe: true },
+      extraParams: { safe: true },
     };
   }
 }

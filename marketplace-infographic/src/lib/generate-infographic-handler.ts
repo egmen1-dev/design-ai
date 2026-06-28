@@ -83,6 +83,7 @@ import type { CreativeDirectorResult } from "@/lib/design-process/creative-conce
 import type { ScenePlan } from "@/lib/design/scene-planner";
 import type { QualityValidationResult } from "@/lib/design/quality-validator";
 import type { ArtDirectorModeId } from "@/lib/design-process/art-director-modes";
+import type { RenderModelId } from "@/lib/render-engine/types";
 import type { FeedbackLearningSnapshot } from "@/lib/feedback/types";
 import { PIPELINE_VERSION } from "@/lib/pipeline-version";
 import {
@@ -113,6 +114,7 @@ export type GenerateInfographicInput = {
   ollamaContext?: OllamaSdContext;
   coverConcept?: CoverConceptId;
   artDirectorMode?: ArtDirectorModeId;
+  renderModel?: RenderModelId;
 };
 
 export type GenerateInfographicResult = {
@@ -1089,6 +1091,8 @@ export async function handleGenerateInfographic(
           constitutionPassed: constitutionReports.every((r) => r.passed),
           seedSuffix: variationSeed,
           skipCompose: true,
+          modelOverride: input.renderModel,
+          lockModel: !!input.renderModel,
           qualityInput: {
             layoutSpec,
             layout: compositionLayout,

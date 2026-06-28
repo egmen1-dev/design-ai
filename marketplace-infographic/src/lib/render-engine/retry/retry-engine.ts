@@ -13,22 +13,26 @@ import { selectModelForRetry } from "../planner/model-selection";
 export type RenderWithRetryInput = RenderPlannerInput & {
   seedSuffix?: string;
   qualityInput?: Omit<RenderQualityInput, "request">;
+  /** When user picks a model in the form — no fallback chain */
+  lockModel?: boolean;
 };
 
 /**
  * Retry Engine — attempts models in chain, selects highest design score.
  */
 export async function renderWithRetry(input: RenderWithRetryInput): Promise<RenderEngineResult> {
-  const maxAttempts = RENDER_ENGINE_CONFIG.retry.maxAttempts;
+  const maxAttempts = input.lockModel && input.modelOverride ? 1 : RENDER_ENGINE_CONFIG.retry.maxAttempts;
   const attempts: RenderAttempt[] = [];
   let lastRequest: RenderRequest | undefined;
   let best: { attempt: RenderAttempt; score: number } | undefined;
 
   for (let i = 0; i < maxAttempts; i++) {
     const modelId =
-      i === 0
-        ? undefined
-        : selectModelForRetry(attempts[i - 1]?.modelId ?? "flux", i);
+      input.lockModel && input.modelOverride
+        ? input.modelOverride
+        : i === 0
+          ? input.modelOverride
+          : selectModelForRetry(attempts[i - 1]?.modelId ?? "flux", i);
 
     const request = planRenderRequest({
       ...input,

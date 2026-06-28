@@ -2,6 +2,7 @@ import { z } from "zod";
 import { DEFAULT_STYLE, STYLE_KEYS } from "./design-trends";
 import { COVER_CONCEPTS, type CoverConceptId } from "./cover-concepts";
 import { ART_DIRECTOR_MODES } from "./design-process/art-director-modes";
+import { RENDER_MODEL_IDS } from "./render-engine/render-models";
 
 const COVER_CONCEPT_IDS = COVER_CONCEPTS.map((c) => c.id) as [CoverConceptId, ...CoverConceptId[]];
 const ART_DIRECTOR_MODE_IDS = ART_DIRECTOR_MODES.map((m) => m.id) as [
@@ -49,12 +50,14 @@ export const generateInfographicSchema = z.object({
   style: z.enum(STYLE_KEYS).optional(),
   coverConcept: z.enum(COVER_CONCEPT_IDS).optional(),
   artDirectorMode: z.enum(ART_DIRECTOR_MODE_IDS).optional(),
+  renderModel: z.enum(RENDER_MODEL_IDS).optional(),
 });
 
 export const regenerateBackgroundSchema = z.object({
   imageId: z.string().min(1),
   backgroundSeed: z.string().max(64).optional(),
   style: z.enum(STYLE_KEYS).optional(),
+  renderModel: z.enum(RENDER_MODEL_IDS).optional(),
   productImage: z
     .string()
     .trim()

@@ -46,6 +46,7 @@ export async function POST(request: NextRequest) {
       backgroundSeed: seed,
       style: parsed.data.style,
       productImage: parsed.data.productImage,
+      renderModel: parsed.data.renderModel,
     });
 
     return NextResponse.json(result);

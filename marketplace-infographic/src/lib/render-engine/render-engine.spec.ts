@@ -14,6 +14,7 @@ import { selectRenderModel } from "./planner/model-selection";
 import { evaluateRenderQuality } from "./quality/render-quality";
 import { RENDER_ENGINE_VERSION } from "./types";
 import { resolveRenderProfileId } from "./profiles";
+import { buildPollinationsImageUrl } from "./providers/pollinations/provider";
 
 async function main() {
   const analysis = analyzeProductPrompt("Генератор 3 кВт для дачи");
@@ -71,6 +72,15 @@ async function main() {
   assert.ok(compiled.modulesUsed.length >= 3);
   assert.ok(compiled.modulesIgnored.includes("layout_coordinates"));
   assert.ok(!compiled.prompt.includes("x=0.50"), "coordinates must not leak to flux prompt");
+  assert.ok(
+    !("nologo" in (compiled.extraParams ?? {})),
+    "nologo is not a valid Pollinations query param",
+  );
+
+  const url = buildPollinationsImageUrl(compiled);
+  assert.ok(url.includes("negative_prompt=") || !compiled.negativePrompt);
+  assert.ok(!url.includes("nologo="), "URL must not include nologo param");
+  assert.ok(!url.includes("negative="), "URL must use negative_prompt not negative");
 
   const quality = evaluateRenderQuality({ request, layoutSpec });
   assert.ok(quality.overallDesignScore >= 0);

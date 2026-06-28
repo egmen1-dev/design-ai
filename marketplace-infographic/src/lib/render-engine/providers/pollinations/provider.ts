@@ -19,7 +19,16 @@ function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
-function buildImageUrl(payload: CompiledRenderPayload): string {
+/** Params accepted by gen.pollinations.ai image schema (unknown keys → BAD_REQUEST). */
+const POLLINATIONS_QUERY_KEYS = new Set([
+  "enhance",
+  "safe",
+  "quality",
+  "transparent",
+  "image",
+]);
+
+export function buildPollinationsImageUrl(payload: CompiledRenderPayload): string {
   const base = RENDER_ENGINE_CONFIG.pollinations.baseUrl;
   const encoded = encodeURIComponent(payload.prompt.slice(0, 2000));
   const params = new URLSearchParams();
@@ -27,12 +36,20 @@ function buildImageUrl(payload: CompiledRenderPayload): string {
   params.set("width", String(payload.width));
   params.set("height", String(payload.height));
   if (payload.seed != null) params.set("seed", String(payload.seed));
-  if (payload.negativePrompt) params.set("negative", payload.negativePrompt.slice(0, 500));
-  if (payload.referenceImageUrl) params.set("image", payload.referenceImageUrl);
+  if (payload.negativePrompt) {
+    params.set("negative_prompt", payload.negativePrompt.slice(0, 500));
+  }
+  if (
+    payload.referenceImageUrl &&
+    /^https?:\/\//i.test(payload.referenceImageUrl)
+  ) {
+    params.set("image", payload.referenceImageUrl);
+  }
   const key = RENDER_ENGINE_CONFIG.pollinations.apiKey;
   if (key) params.set("key", key);
   for (const [k, v] of Object.entries(payload.extraParams ?? {})) {
-    if (v !== undefined && v !== null) params.set(k, String(v));
+    if (v === undefined || v === null || !POLLINATIONS_QUERY_KEYS.has(k)) continue;
+    params.set(k, String(v));
   }
   return `${base}/image/${encoded}?${params.toString()}`;
 }
@@ -119,7 +136,7 @@ export class PollinationsProvider implements RenderingProvider {
         .readUInt32BE(0);
 
     const compiled: CompiledRenderPayload = { ...payload, seed };
-    const url = buildImageUrl(compiled);
+    const url = buildPollinationsImageUrl(compiled);
     const headers: Record<string, string> = {};
     const key = RENDER_ENGINE_CONFIG.pollinations.apiKey;
     if (key) headers.Authorization = `Bearer ${key}`;
