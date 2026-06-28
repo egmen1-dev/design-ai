@@ -46,10 +46,25 @@ function main() {
     ctrScore: 65,
     backgroundSource: "provider",
     hasComposite: true,
+    constitutionPassed: true,
   });
   assert.ok(
-    borderline.professional >= 73,
-    `composite floor should lift borderline (got ${borderline.professional})`,
+    borderline.professional >= PROFESSIONAL_SCORE_THRESHOLD,
+    `composite+provider should floor professional (got ${borderline.professional})`,
+  );
+
+  const borderlineNoComposite = buildGovernanceScorecard({
+    compositionScore: 70,
+    sceneScore: 70,
+    luxuryScore: 68,
+    photoScore: 62,
+    ctrScore: 65,
+    backgroundSource: "provider",
+    hasComposite: false,
+  });
+  assert.ok(
+    borderlineNoComposite.professional >= 73,
+    `composite floor should lift borderline (got ${borderlineNoComposite.professional})`,
   );
 
   console.log("governance scorecard specs OK", withComposite.professional);

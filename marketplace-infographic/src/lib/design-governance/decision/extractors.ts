@@ -2,7 +2,11 @@ import type { VisualStoryDirectorResult } from "@/lib/agents/visual-story-direct
 import type { SceneDirectorResult } from "@/lib/design/scene-blueprint";
 import type { CompositionDirectorResult } from "@/lib/design/composition-director";
 import type { ScenePlan } from "@/lib/design/scene-planner";
-import { resolveCoverConceptVisualHints } from "@/lib/design/visual-pipeline/catalogs/cover-concept";
+import {
+  COVER_GOVERNANCE_SCENE,
+  resolveCoverConceptVisualHints,
+  USER_COVER_CONCEPT_CONFIDENCE,
+} from "@/lib/design/visual-pipeline/catalogs/cover-concept";
 import type { ProductAnalysis } from "@/lib/product-analysis";
 import type { DesignDecision } from "./types";
 
@@ -157,16 +161,15 @@ export function extractPlannerDecisions(scenePlan: ScenePlan): DesignDecision[] 
   const coverHints = resolveCoverConceptVisualHints(scenePlan.coverConceptId);
   const narrative = `${scenePlan.visualMood} ${scenePlan.backgroundType} ${scenePlan.surfaceType}`;
   const scene =
-    coverHints?.sceneType === "nature" || scenePlan.coverConceptId === "garden_scene"
+    COVER_GOVERNANCE_SCENE[scenePlan.coverConceptId] ??
+    (coverHints?.sceneType === "nature"
       ? "outdoor"
       : coverHints?.sceneType === "lifestyle"
         ? "lifestyle"
-        : inferSceneFromText(narrative);
-  const conf =
-    scenePlan.coverConceptId === "garden_scene" ||
-    scenePlan.coverConceptId === "outdoor_lifestyle"
-      ? 0.92
-      : 0.65;
+        : inferSceneFromText(narrative));
+  const conf = scenePlan.coverConceptUserSelected
+    ? USER_COVER_CONCEPT_CONFIDENCE
+    : 0.65;
   return [
     decision({
       domain: "scene",

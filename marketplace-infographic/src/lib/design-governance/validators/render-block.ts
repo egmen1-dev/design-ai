@@ -37,10 +37,12 @@ export function assertRenderAllowed(input: {
   if (!input.blueprint?.locked) reasons.push("Design blueprint not locked by resolver");
   if (!input.constitutionPassed) reasons.push("Constitution failed");
 
+  const nearMissBand =
+    input.professionalScore >= PROFESSIONAL_SCORE_THRESHOLD - PROFESSIONAL_NEAR_MISS;
   const professionalOk =
     input.skipProfessionalCheck ||
     input.professionalScore >= PROFESSIONAL_SCORE_THRESHOLD ||
-    (input.professionalScore >= PROFESSIONAL_SCORE_THRESHOLD - PROFESSIONAL_NEAR_MISS &&
+    (nearMissBand &&
       input.constitutionPassed &&
       input.backgroundResolved &&
       input.hasComposite);

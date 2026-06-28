@@ -29,15 +29,35 @@ function main() {
   const bad = validatePollinationsPrompt("CTR optimized layout 45%", "text");
   assert.ok(!bad.ok);
 
+  const concepts = [
+    ["garden_scene", /lawn|grass|garden|suburban/i],
+    ["outdoor_lifestyle", /lifestyle|outdoor|daylight/i],
+    ["home_interior", /home|interior|wooden|domestic/i],
+    ["commercial_studio", /studio|gradient|photography/i],
+    ["tech_showcase", /tech|showcase|electronics|gradient/i],
+    ["premium_minimal", /luxury|minimal|beige|catalog/i],
+  ] as const;
+
+  for (const [conceptId, pattern] of concepts) {
+    const pipeline = runVisualPipeline({
+      prompt: "товар для маркетплейса",
+      analysis,
+      coverConceptId: conceptId,
+    });
+    const gardenPrompt = compilePollinationsPrompt(pipeline.visualBlueprint, "outdoor", {
+      coverConceptId: conceptId,
+    });
+    assert.ok(
+      pattern.test(gardenPrompt.prompt),
+      `${conceptId} prompt missing environment: ${gardenPrompt.prompt.slice(0, 120)}`,
+    );
+  }
+
   const garden = runVisualPipeline({
     prompt: "генератор 3 кВт",
     analysis,
     coverConceptId: "garden_scene",
   });
-  const gardenPrompt = compilePollinationsPrompt(garden.visualBlueprint, "outdoor", {
-    coverConceptId: "garden_scene",
-  });
-  assert.ok(/lawn|grass|garden|suburban/i.test(gardenPrompt.prompt), gardenPrompt.prompt);
   assert.equal(garden.visualBlueprint.scene.architecture, "nature");
 
   console.log("pollinations-compiler OK", compiled.tokenEstimate, "tokens");

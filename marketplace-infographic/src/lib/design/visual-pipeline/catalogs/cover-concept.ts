@@ -62,6 +62,18 @@ const COVER_VISUAL: Record<CoverConceptId, Omit<CoverConceptVisualHints, "enviro
   },
 };
 
+/** Governance scene value when пользователь явно выбрал концепт */
+export const COVER_GOVERNANCE_SCENE: Record<CoverConceptId, string> = {
+  garden_scene: "outdoor",
+  outdoor_lifestyle: "outdoor",
+  home_interior: "interior",
+  commercial_studio: "studio",
+  tech_showcase: "commercial",
+  premium_minimal: "commercial",
+};
+
+export const USER_COVER_CONCEPT_CONFIDENCE = 0.92;
+
 /** Короткая фраза среды для Pollinations — приоритет над generic studio */
 export function resolveCoverConceptVisualHints(
   coverConceptId?: CoverConceptId,

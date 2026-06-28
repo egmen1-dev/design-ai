@@ -965,6 +965,7 @@ export async function handleGenerateInfographic(
     const { analysis, scene: plannedScene } = planScene({
       prompt: input.prompt,
       coverConceptId: input.coverConcept ?? storedScenePlan?.coverConceptId,
+      coverConceptUserSelected: !!input.coverConcept,
       visualHook,
       styleHint: input.style ?? (referenceContext?.hasStrongReference ? referenceContext.style : undefined),
       seed: variationSeed,

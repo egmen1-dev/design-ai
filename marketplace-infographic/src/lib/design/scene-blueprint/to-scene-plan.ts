@@ -50,6 +50,7 @@ export function applyBlueprintToScenePlan(
   return {
     ...scene,
     coverConceptId: scene.coverConceptId ?? blueprintToCoverConcept(blueprint),
+    coverConceptUserSelected: scene.coverConceptUserSelected,
     cameraAngle: blueprint.camera.angle,
     cameraHeight,
     cameraDistance,

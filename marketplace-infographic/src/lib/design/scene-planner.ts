@@ -60,6 +60,8 @@ export type ScenePlan = {
   shadowProfile: "contact" | "ambient" | "directional" | "mixed";
   cardStyle: string;
   coverConceptId: CoverConceptId;
+  /** Пользователь выбрал концепт в форме (не auto) */
+  coverConceptUserSelected?: boolean;
   seed: string;
 };
 
@@ -73,6 +75,7 @@ export type ProductVisualProfile = {
 export type ScenePlannerInput = {
   prompt: string;
   coverConceptId?: CoverConceptId;
+  coverConceptUserSelected?: boolean;
   visualHook?: VisualHook;
   styleHint?: InfographicStyle;
   seed: string;
@@ -362,6 +365,7 @@ export function planScene(input: ScenePlannerInput): {
           : "mixed",
     cardStyle: input.styleHint ?? analysis.priceSegment,
     coverConceptId: concept.id,
+    coverConceptUserSelected: input.coverConceptUserSelected ?? false,
     seed: input.seed,
   };
 

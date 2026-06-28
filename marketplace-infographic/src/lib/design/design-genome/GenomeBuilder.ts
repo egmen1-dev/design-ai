@@ -117,7 +117,13 @@ export function buildDesignGenome(input: GenomeBuildInput): DesignGenomeRecord {
       timeOfDay: /evening|закат/i.test(input.sceneNarrative ?? "") ? "evening" : "day",
       weather: "clear",
       season: "all",
-      indoorOutdoor: scene?.coverConceptId === "outdoor_lifestyle" ? "outdoor" : "studio",
+      indoorOutdoor:
+        scene?.coverConceptId === "garden_scene" ||
+        scene?.coverConceptId === "outdoor_lifestyle"
+          ? "outdoor"
+          : scene?.coverConceptId === "home_interior"
+            ? "indoor"
+            : "studio",
       premiumScore: dna.luxury,
       narrative: input.sceneNarrative ?? heroConcept,
     },
