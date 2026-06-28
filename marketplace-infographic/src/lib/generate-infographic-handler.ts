@@ -15,6 +15,21 @@ import {
   buildGenerationDiagnostic,
   buildStoredRenderReport,
 } from "@/lib/generation/diagnostic-report";
+import {
+  USE_DESIGN_GOVERNANCE,
+  ALLOW_GRADIENT_FALLBACK,
+  resolveDesignDecisions,
+  runMandatoryConstitution,
+  buildDecisionTrace,
+  buildRenderReportJson,
+  buildGovernanceScorecard,
+  assertRenderAllowed,
+  logGovernancePipeline,
+  RenderBlockedError,
+  type FinalDesignBlueprint,
+  type GovernanceScorecard,
+  type RenderReportJson,
+} from "@/lib/design-governance";
 import { DEFAULT_STYLE, TRENDS, type InfographicStyle } from "@/lib/design-trends";
 import { renderHtmlToImage } from "@/lib/puppeteer";
 import { bufferToDataUrl } from "@/lib/background-removal";
@@ -836,9 +851,16 @@ export async function handleGenerateInfographic(
     const sceneNarrative =
       storyDirection?.sceneNarrative ?? activeCreative?.sceneNarrative;
 
+    const useDesignGovernance =
+      USE_DESIGN_GOVERNANCE && sdData.layout === "marketplace";
+
     // ── 0b. Scene Director → Scene Blueprint (v16.6) ─────────────────
     const constitutionReports: ConstitutionReport[] = [];
     let activeSceneBlueprint: SceneDirectorResult["blueprint"] | undefined;
+    let governanceBlueprint: FinalDesignBlueprint | undefined;
+    let governanceScorecard: GovernanceScorecard | undefined;
+    let renderReportJson: RenderReportJson | undefined;
+    const governanceDecisionLog: string[] = [];
 
     if (sdData.layout === "marketplace") {
       sceneDirection = await runSceneDirector({
@@ -854,7 +876,7 @@ export async function handleGenerateInfographic(
         seed: variationSeed,
       });
 
-      if (sceneDirection?.blueprint) {
+      if (sceneDirection?.blueprint && !useDesignGovernance) {
         const sceneConstitution = validateSceneBlueprint(sceneDirection.blueprint, {
           analysis: productAnalysis,
           sceneScore: sceneDirection.quality.total,
@@ -903,13 +925,17 @@ export async function handleGenerateInfographic(
         sceneBlueprint: activeSceneBlueprint ?? sceneDirection?.blueprint,
         compositionScore: compositionDirection?.quality.total,
       });
-      constitutionReports.push(layoutConstitution.report);
-      activeLayoutSpec = layoutConstitution.layoutSpec ?? specCandidate;
-      if (!layoutConstitution.validation.passed) {
-        console.warn(
-          "[design-constitution] layout_spec",
-          formatConstitutionReport(layoutConstitution.report),
-        );
+      if (!useDesignGovernance) {
+        constitutionReports.push(layoutConstitution.report);
+        activeLayoutSpec = layoutConstitution.layoutSpec ?? specCandidate;
+        if (!layoutConstitution.validation.passed) {
+          console.warn(
+            "[design-constitution] layout_spec",
+            formatConstitutionReport(layoutConstitution.report),
+          );
+        }
+      } else {
+        activeLayoutSpec = specCandidate;
       }
     }
 
@@ -931,6 +957,44 @@ export async function handleGenerateInfographic(
     });
 
     let scenePlan = storedScenePlan ?? plannedScene;
+
+    if (useDesignGovernance) {
+      governanceBlueprint = resolveDesignDecisions({
+        analysis,
+        storyDirection,
+        sceneDirection,
+        compositionDirection,
+        scenePlan,
+        sceneBlueprint: activeSceneBlueprint ?? sceneDirection?.blueprint,
+        layoutSpec: activeLayoutSpec,
+      });
+      governanceDecisionLog.push(
+        `Resolver chose scene=${governanceBlueprint.scene} lighting=${governanceBlueprint.lighting}`,
+      );
+      for (const d of governanceBlueprint.discarded) {
+        governanceDecisionLog.push(`Discarded ${d.source}: ${d.value} — ${d.reason}`);
+      }
+
+      const mandatory = runMandatoryConstitution({
+        blueprint: governanceBlueprint,
+        analysis,
+        compositionScore: compositionDirection?.quality.total,
+        sceneScore: sceneDirection?.quality.total,
+      });
+      constitutionReports.push(...mandatory.reports);
+      governanceBlueprint = mandatory.blueprint;
+      activeSceneBlueprint = governanceBlueprint.sceneBlueprint;
+      activeLayoutSpec = governanceBlueprint.layoutSpec;
+      scenePlan = governanceBlueprint.scenePlan;
+
+      logGovernancePipeline([
+        { label: "Story", ok: !!storyDirection, detail: storyDirection?.heroConcept },
+        { label: "Scene", ok: !!sceneDirection, detail: sceneDirection?.sceneType },
+        { label: "Composition", ok: !!compositionDirection, detail: compositionDirection?.templateId },
+        { label: "Resolver", ok: true, detail: governanceBlueprint.scene },
+        { label: "Constitution", ok: mandatory.passed, detail: `score ${mandatory.reports.at(-1)?.overallDesignScore}` },
+      ]);
+    }
 
     if (sdData.layout === "marketplace" && genomeIntelligence && storyDirection) {
       photoDirection = await runCommercialPhotoDirector({
@@ -1010,6 +1074,11 @@ export async function handleGenerateInfographic(
       qualityGateV165 = built.qualityGate;
       qualityRefinementPasses = built.refinementPasses;
       luxuryScoreValue = built.qualityGate.luxuryScore.total;
+      if (governanceBlueprint?.locked) {
+        layoutSpec = governanceBlueprint.layoutSpec;
+        activeSceneBlueprint = governanceBlueprint.sceneBlueprint;
+        scenePlan = governanceBlueprint.scenePlan;
+      }
       if (designBrief && !designBrief.cardMeaning) {
         designBrief = { ...designBrief, cardMeaning };
       }
@@ -1018,6 +1087,20 @@ export async function handleGenerateInfographic(
     let compositionLayout = compositionResult?.layout;
     let objectScale = layoutObjectScale(compositionLayout?.metrics?.productAreaPct);
     compositingHints = sceneToCompositingHints(scenePlan, objectScale);
+
+    if (useDesignGovernance && governanceBlueprint) {
+      assertRenderAllowed({
+        blueprint: governanceBlueprint,
+        constitutionPassed: constitutionReports.every((r) => r.passed),
+        professionalScore: 0,
+        skipProfessionalCheck: true,
+        backgroundResolved: false,
+        sceneResolved: !!governanceBlueprint.scene,
+        lightingResolved: !!governanceBlueprint.lighting,
+        compositionResolved: !!governanceBlueprint.composition,
+        layoutResolved: !!governanceBlueprint.layout,
+      });
+    }
 
     // ── 3. Render Engine v17 OR Prompt Compiler → background ─────────
     if (!useRenderEngineV17) {
@@ -1096,46 +1179,64 @@ export async function handleGenerateInfographic(
             input.regenerateBackgroundOnly ? productCutoutPath ?? undefined : undefined,
           );
 
+    const renderModelsChain = input.renderModel
+      ? [input.renderModel]
+      : (["kontext", "gptimage", "flux", "seedream"] as const);
+
     const bgPromise = (async () => {
       if (useRenderEngineV17) {
-        const engine = await runRenderEngine({
-          analysis,
-          scenePlan,
-          layoutSpec,
-          sceneBlueprint: activeSceneBlueprint ?? sceneDirection?.blueprint,
-          luxuryScore: luxuryScoreValue,
-          compositionScore: compositionDirection?.quality.total,
-          sceneScore: sceneDirection?.quality.total,
-          constitutionPassed: constitutionReports.every((r) => r.passed),
-          seedSuffix: variationSeed,
-          skipCompose: true,
-          modelOverride: input.renderModel,
-          lockModel: !!input.renderModel,
-          qualityInput: {
-            layoutSpec,
-            layout: compositionLayout,
-            meaning: cardMeaning,
-            luxuryScore: luxuryScoreValue,
-            compositionScore: compositionDirection?.quality.total,
-            sceneScore: sceneDirection?.quality.total,
-          },
-        });
-        renderEngineResult = engine;
-        const adapterPrompt =
-          engine.selectedAttempt.result?.compiled.prompt ?? "v17 background";
-        sdData.backgroundPrompt = adapterPrompt.slice(0, 480);
-        if (designBrief) {
-          designBrief = {
-            ...designBrief,
-            backgroundPrompt: adapterPrompt.slice(0, 480),
-            negativePrompt:
-              engine.selectedAttempt.result?.compiled.negativePrompt?.slice(0, 300),
-          };
+        let lastError = "render engine failed";
+        for (let i = 0; i < renderModelsChain.length; i++) {
+          const modelId = renderModelsChain[i];
+          try {
+            const engine = await runRenderEngine({
+              analysis,
+              scenePlan,
+              layoutSpec,
+              sceneBlueprint: activeSceneBlueprint ?? sceneDirection?.blueprint,
+              luxuryScore: luxuryScoreValue,
+              compositionScore: compositionDirection?.quality.total,
+              sceneScore: sceneDirection?.quality.total,
+              constitutionPassed: constitutionReports.every((r) => r.passed),
+              seedSuffix: `${variationSeed}:m${i}`,
+              skipCompose: true,
+              modelOverride: modelId,
+              lockModel: true,
+              qualityInput: {
+                layoutSpec,
+                layout: compositionLayout,
+                meaning: cardMeaning,
+                luxuryScore: luxuryScoreValue,
+                compositionScore: compositionDirection?.quality.total,
+                sceneScore: sceneDirection?.quality.total,
+              },
+            });
+            renderEngineResult = engine;
+            governanceDecisionLog.push(
+              `Render OK model=${modelId} attempts=${engine.attempts.length}`,
+            );
+            const adapterPrompt =
+              engine.selectedAttempt.result?.compiled.prompt ?? "v17 background";
+            sdData.backgroundPrompt = adapterPrompt.slice(0, 480);
+            if (designBrief) {
+              designBrief = {
+                ...designBrief,
+                backgroundPrompt: adapterPrompt.slice(0, 480),
+                negativePrompt:
+                  engine.selectedAttempt.result?.compiled.negativePrompt?.slice(0, 300),
+              };
+            }
+            return {
+              url: engine.backgroundUrl,
+              dataUrl: `data:image/png;base64,${engine.backgroundBuffer.toString("base64")}`,
+            };
+          } catch (e) {
+            lastError = e instanceof Error ? e.message : String(e);
+            governanceDecisionLog.push(`Render retry ${modelId}: ${lastError.slice(0, 120)}`);
+            console.warn(`[render-engine-v17] model ${modelId} failed:`, lastError);
+          }
         }
-        return {
-          url: engine.backgroundUrl,
-          dataUrl: `data:image/png;base64,${engine.backgroundBuffer.toString("base64")}`,
-        };
+        throw new Error(lastError);
       }
       if (!process.env.HF_API_KEY) throw new Error("HF_API_KEY missing");
       const url = await generateBackground(sdData.backgroundPrompt, {
@@ -1153,7 +1254,18 @@ export async function handleGenerateInfographic(
       productRender = cutout;
       productCutoutPath = cutout.webPath;
     } catch (error) {
-      console.warn("SD background failed, gradient fallback:", error);
+      const errMsg = error instanceof Error ? error.message : String(error);
+      console.warn("Background generation failed:", errMsg);
+      governanceDecisionLog.push(`Background failed: ${errMsg.slice(0, 200)}`);
+
+      if (useDesignGovernance && !ALLOW_GRADIENT_FALLBACK) {
+        throw new RenderBlockedError([
+          "Background provider failed after model retries",
+          errMsg.slice(0, 160),
+        ]);
+      }
+
+      console.warn("Using gradient fallback (last resort)");
       backgroundSource = "fallback";
       try {
         productRender = await cutoutPromise;
@@ -1587,6 +1699,50 @@ export async function handleGenerateInfographic(
       : undefined;
 
     // ── 10. Layout Renderer ───────────────────────────────────────────
+    governanceScorecard = buildGovernanceScorecard({
+      compositionScore: compositionDirection?.quality.total,
+      sceneScore: sceneDirection?.quality.total,
+      luxuryScore: luxuryScoreValue,
+      photoScore: photoReview?.score,
+      ctrScore: ctrReview?.score,
+      readabilityScore: compiledBackground?.metadata.readabilityScore,
+      backgroundSource,
+      constitutionPassed: constitutionReports.every((r) => r.passed),
+      renderDesignScore: renderEngineResult?.overallScore,
+    });
+
+    if (useDesignGovernance && governanceBlueprint) {
+      assertRenderAllowed({
+        blueprint: governanceBlueprint,
+        constitutionPassed: constitutionReports.every((r) => r.passed),
+        professionalScore: governanceScorecard.professional,
+        backgroundResolved: backgroundSource !== "fallback",
+        sceneResolved: !!governanceBlueprint.scene,
+        lightingResolved: !!governanceBlueprint.lighting,
+        compositionResolved: !!governanceBlueprint.composition,
+        layoutResolved: !!governanceBlueprint.layout,
+      });
+      renderReportJson = buildRenderReportJson({
+        blueprint: governanceBlueprint,
+        constitutionReports,
+        constitutionPassed: constitutionReports.every((r) => r.passed),
+        scorecard: governanceScorecard,
+        renderReport: renderEngineResult
+          ? buildStoredRenderReport({
+              result: renderEngineResult,
+              variationSeed,
+              userModelOverride: input.renderModel,
+              lockModel: !!input.renderModel,
+            })
+          : undefined,
+        decisionLog: governanceDecisionLog,
+      });
+      logGovernancePipeline([
+        { label: "Render", ok: backgroundSource === "provider", detail: backgroundSource },
+        { label: "Critics", ok: !!(seniorAdReview && ctrReview), detail: `pro ${governanceScorecard.professional}` },
+      ]);
+    }
+
     const html = renderInfographicHtml(infographicData, {
       style: appliedStyle,
       layout: sdData.layout,
@@ -1850,6 +2006,12 @@ export async function handleGenerateInfographic(
           generatedJson: packSdPayload(sdData, appliedStyle, {
             ...payloadExtras,
             generationDiagnostic,
+            governanceBlueprint,
+            decisionTrace: governanceBlueprint
+              ? buildDecisionTrace(governanceBlueprint)
+              : undefined,
+            renderReportJson,
+            governanceScorecard,
           }),
         },
       });
@@ -1924,6 +2086,12 @@ export async function handleGenerateInfographic(
         generatedJson: packSdPayload(sdData, appliedStyle, {
           ...payloadExtras,
           generationDiagnostic,
+          governanceBlueprint,
+          decisionTrace: governanceBlueprint
+            ? buildDecisionTrace(governanceBlueprint)
+            : undefined,
+          renderReportJson,
+          governanceScorecard,
         }),
       },
     });

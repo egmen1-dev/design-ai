@@ -8,6 +8,9 @@ import type { FeedbackLearningSnapshot } from "@/lib/feedback/types";
 import type { PromptCompilerMetadata } from "@/lib/design/prompt-compiler";
 import type { ConstitutionReport } from "@/lib/design/design-constitution";
 import type { StoredRenderReport, GenerationDiagnosticReport } from "@/lib/generation/diagnostic-report";
+import type { FinalDesignBlueprint } from "@/lib/design-governance/blueprint/types";
+import type { DecisionTrace, RenderReportJson } from "@/lib/design-governance/trace/trace";
+import type { GovernanceScorecard } from "@/lib/design-governance/scores/evaluate";
 import { sanitizeSdInput } from "@/lib/sd-sanitize";
 
 export type StoredSdPayload = {
@@ -24,6 +27,10 @@ export type StoredSdPayload = {
   designConstitution?: ConstitutionReport[];
   renderEngine?: StoredRenderReport;
   generationDiagnostic?: GenerationDiagnosticReport;
+  governanceBlueprint?: FinalDesignBlueprint;
+  decisionTrace?: DecisionTrace;
+  renderReportJson?: RenderReportJson;
+  governanceScorecard?: GovernanceScorecard;
 };
 
 export function packSdPayload(
@@ -41,6 +48,10 @@ export function packSdPayload(
     designConstitution?: ConstitutionReport[];
     renderEngine?: StoredRenderReport;
     generationDiagnostic?: GenerationDiagnosticReport;
+    governanceBlueprint?: FinalDesignBlueprint;
+    decisionTrace?: DecisionTrace;
+    renderReportJson?: RenderReportJson;
+    governanceScorecard?: GovernanceScorecard;
   },
 ): string {
   return JSON.stringify({
@@ -57,6 +68,10 @@ export function packSdPayload(
     designConstitution: extras?.designConstitution,
     renderEngine: extras?.renderEngine,
     generationDiagnostic: extras?.generationDiagnostic,
+    governanceBlueprint: extras?.governanceBlueprint,
+    decisionTrace: extras?.decisionTrace,
+    renderReportJson: extras?.renderReportJson,
+    governanceScorecard: extras?.governanceScorecard,
   } satisfies StoredSdPayload);
 }
 
@@ -86,6 +101,10 @@ export function unpackSdPayload(json: string): StoredSdPayload {
       designConstitution: record.designConstitution,
       renderEngine: record.renderEngine,
       generationDiagnostic: record.generationDiagnostic,
+      governanceBlueprint: record.governanceBlueprint,
+      decisionTrace: record.decisionTrace,
+      renderReportJson: record.renderReportJson,
+      governanceScorecard: record.governanceScorecard,
     };
   }
   return {

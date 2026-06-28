@@ -61,6 +61,18 @@ export async function POST(request: NextRequest) {
     if (code === "PRODUCT_IMAGE_REQUIRED") {
       return NextResponse.json({ error: "Загрузите фото товара" }, { status: 400 });
     }
+    if (code === "GOVERNANCE_BLOCKED" || error instanceof Error && error.name === "GovernanceBlockedError") {
+      return NextResponse.json(
+        { error: error instanceof Error ? error.message : "Design governance blocked render", code: "GOVERNANCE_BLOCKED" },
+        { status: 422 },
+      );
+    }
+    if (code === "RENDER_BLOCKED" || error instanceof Error && error.name === "RenderBlockedError") {
+      return NextResponse.json(
+        { error: error instanceof Error ? error.message : "Render blocked", code: "RENDER_BLOCKED" },
+        { status: 422 },
+      );
+    }
     console.error("generate-infographic error:", error);
     const message =
       error instanceof Error && error.message.includes("timeout")
