@@ -341,3 +341,29 @@ export function runMandatoryConstitution(input: {
     validation: layoutResult.validation,
   };
 }
+
+export const GOVERNANCE_MANDATORY_STAGES = ["scene_blueprint", "layout_spec"] as const;
+
+/** Governance pass for a single constitution report (threshold 80 + hard-law checks) */
+export function evaluateGovernanceConstitutionReport(
+  validation: ConstitutionValidationResult,
+  options?: { sceneBlueprint?: SceneBlueprint; layoutSpec?: LayoutSpec },
+): boolean {
+  return governanceStagePassed(validation, options);
+}
+
+/**
+ * Render gate: only mandatory pre-render stages block generation.
+ * rendered_critique / prompt are advisory under governance v17.1.
+ */
+export function constitutionPassedForGovernanceRender(
+  reports: ConstitutionReport[],
+): boolean {
+  const mandatory = reports.filter((r) =>
+    (GOVERNANCE_MANDATORY_STAGES as readonly string[]).includes(r.stage),
+  );
+  if (mandatory.length > 0) {
+    return mandatory.every((r) => r.passed);
+  }
+  return reports.length === 0 || reports.every((r) => r.passed);
+}

@@ -26,6 +26,8 @@ import {
   assertRenderAllowed,
   logGovernancePipeline,
   RenderBlockedError,
+  evaluateGovernanceConstitutionReport,
+  constitutionPassedForGovernanceRender,
   type FinalDesignBlueprint,
   type GovernanceScorecard,
   type RenderReportJson,
@@ -401,12 +403,24 @@ function compileBackgroundPrompt(input: {
   });
 }
 
-function constitutionResponseFields(reports?: ConstitutionReport[]) {
+function constitutionPassedForPipeline(
+  reports: ConstitutionReport[],
+  useDesignGovernance: boolean,
+): boolean {
+  return useDesignGovernance
+    ? constitutionPassedForGovernanceRender(reports)
+    : reports.every((r) => r.passed);
+}
+
+function constitutionResponseFields(
+  reports?: ConstitutionReport[],
+  useDesignGovernance = false,
+) {
   if (!reports?.length) return {};
   const latest = reports[reports.length - 1];
   return {
     overallDesignScore: latest.overallDesignScore,
-    constitutionPassed: reports.every((r) => r.passed),
+    constitutionPassed: constitutionPassedForPipeline(reports, useDesignGovernance),
     constitutionVersion: latest.constitutionVersion,
   };
 }
@@ -470,6 +484,7 @@ async function buildLayoutWithAgentReview(input: {
   sceneBlueprint?: SceneDirectorResult["blueprint"];
   compositionScore?: number;
   constitutionReports?: ConstitutionReport[];
+  useGovernanceConstitution?: boolean;
 }): Promise<{
   compositionResult: CompositionResult;
   cardMeaning: CardMeaning;
@@ -567,9 +582,14 @@ async function buildLayoutWithAgentReview(input: {
       luxuryScore: qualityGate.luxuryScore.total,
       compositionScore: input.compositionScore,
     });
-    input.constitutionReports?.push(constitutionCritique.report);
+    const constitutionOk = input.useGovernanceConstitution
+      ? evaluateGovernanceConstitutionReport(constitutionCritique.validation, { layoutSpec })
+      : constitutionCritique.validation.passed;
+    input.constitutionReports?.push({
+      ...constitutionCritique.report,
+      passed: constitutionOk,
+    });
 
-    const constitutionOk = constitutionCritique.validation.passed;
     if (!constitutionOk) {
       console.warn(
         `[design-constitution] rendered_critique score=${constitutionCritique.report.overallDesignScore}`,
@@ -1064,6 +1084,7 @@ export async function handleGenerateInfographic(
         sceneBlueprint: activeSceneBlueprint ?? sceneDirection?.blueprint,
         compositionScore: compositionDirection?.quality.total,
         constitutionReports,
+        useGovernanceConstitution: useDesignGovernance,
       });
       compositionResult = built.compositionResult;
       cardMeaning = built.cardMeaning;
@@ -1091,7 +1112,7 @@ export async function handleGenerateInfographic(
     if (useDesignGovernance && governanceBlueprint) {
       assertRenderAllowed({
         blueprint: governanceBlueprint,
-        constitutionPassed: constitutionReports.every((r) => r.passed),
+        constitutionPassed: constitutionPassedForPipeline(constitutionReports, true),
         professionalScore: 0,
         skipProfessionalCheck: true,
         backgroundResolved: false,
@@ -1197,7 +1218,10 @@ export async function handleGenerateInfographic(
               luxuryScore: luxuryScoreValue,
               compositionScore: compositionDirection?.quality.total,
               sceneScore: sceneDirection?.quality.total,
-              constitutionPassed: constitutionReports.every((r) => r.passed),
+              constitutionPassed: constitutionPassedForPipeline(
+                constitutionReports,
+                useDesignGovernance,
+              ),
               seedSuffix: `${variationSeed}:m${i}`,
               skipCompose: true,
               modelOverride: modelId,
@@ -1707,14 +1731,17 @@ export async function handleGenerateInfographic(
       ctrScore: ctrReview?.score,
       readabilityScore: compiledBackground?.metadata.readabilityScore,
       backgroundSource,
-      constitutionPassed: constitutionReports.every((r) => r.passed),
+      constitutionPassed: constitutionPassedForPipeline(
+        constitutionReports,
+        useDesignGovernance,
+      ),
       renderDesignScore: renderEngineResult?.overallScore,
     });
 
     if (useDesignGovernance && governanceBlueprint) {
       assertRenderAllowed({
         blueprint: governanceBlueprint,
-        constitutionPassed: constitutionReports.every((r) => r.passed),
+        constitutionPassed: constitutionPassedForPipeline(constitutionReports, true),
         professionalScore: governanceScorecard.professional,
         backgroundResolved: backgroundSource !== "fallback",
         sceneResolved: !!governanceBlueprint.scene,
@@ -1725,7 +1752,7 @@ export async function handleGenerateInfographic(
       renderReportJson = buildRenderReportJson({
         blueprint: governanceBlueprint,
         constitutionReports,
-        constitutionPassed: constitutionReports.every((r) => r.passed),
+        constitutionPassed: constitutionPassedForPipeline(constitutionReports, true),
         scorecard: governanceScorecard,
         renderReport: renderEngineResult
           ? buildStoredRenderReport({
@@ -2060,7 +2087,7 @@ export async function handleGenerateInfographic(
         compositionTemplate: compositionDirection?.templateId,
         ...promptCompilerResponseFields(compiledBackground),
         ...renderEngineResponseFields(renderEngineResult),
-        ...constitutionResponseFields(constitutionReports),
+        ...constitutionResponseFields(constitutionReports, useDesignGovernance),
         ...briefMeta(designBrief),
         ...diagnosticResponseFields(input.existingImageId, generationDiagnostic),
       };
@@ -2151,7 +2178,7 @@ export async function handleGenerateInfographic(
       compositionTemplate: compositionDirection?.templateId,
       ...promptCompilerResponseFields(compiledBackground),
       ...renderEngineResponseFields(renderEngineResult),
-      ...constitutionResponseFields(constitutionReports),
+      ...constitutionResponseFields(constitutionReports, useDesignGovernance),
       ...briefMeta(designBrief),
       ...diagnosticResponseFields(image.id, generationDiagnostic),
     };

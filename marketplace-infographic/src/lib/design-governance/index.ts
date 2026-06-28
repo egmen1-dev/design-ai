@@ -16,6 +16,9 @@ export type { ResolverInput } from "./resolver/resolver";
 export {
   runMandatoryConstitution,
   GovernanceBlockedError,
+  evaluateGovernanceConstitutionReport,
+  constitutionPassedForGovernanceRender,
+  GOVERNANCE_MANDATORY_STAGES,
 } from "./constitution/gate";
 export type { MandatoryConstitutionResult } from "./constitution/gate";
 export {
