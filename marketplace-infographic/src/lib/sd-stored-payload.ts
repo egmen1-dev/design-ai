@@ -7,7 +7,7 @@ import type { InfographicSdInput } from "@/lib/validations";
 import type { FeedbackLearningSnapshot } from "@/lib/feedback/types";
 import type { PromptCompilerMetadata } from "@/lib/design/prompt-compiler";
 import type { ConstitutionReport } from "@/lib/design/design-constitution";
-import type { RenderRequest, RenderAttempt } from "@/lib/render-engine/types";
+import type { StoredRenderReport, GenerationDiagnosticReport } from "@/lib/generation/diagnostic-report";
 import { sanitizeSdInput } from "@/lib/sd-sanitize";
 
 export type StoredSdPayload = {
@@ -22,12 +22,8 @@ export type StoredSdPayload = {
   feedbackLearning?: FeedbackLearningSnapshot;
   promptCompiler?: PromptCompilerMetadata;
   designConstitution?: ConstitutionReport[];
-  renderEngine?: {
-    request: RenderRequest;
-    attempts: Pick<RenderAttempt, "attemptIndex" | "modelId" | "providerId" | "qualityScore" | "passed">[];
-    selectedModel: string;
-    overallScore: number;
-  };
+  renderEngine?: StoredRenderReport;
+  generationDiagnostic?: GenerationDiagnosticReport;
 };
 
 export function packSdPayload(
@@ -43,7 +39,8 @@ export function packSdPayload(
     feedbackLearning?: FeedbackLearningSnapshot;
     promptCompiler?: PromptCompilerMetadata;
     designConstitution?: ConstitutionReport[];
-    renderEngine?: StoredSdPayload["renderEngine"];
+    renderEngine?: StoredRenderReport;
+    generationDiagnostic?: GenerationDiagnosticReport;
   },
 ): string {
   return JSON.stringify({
@@ -59,6 +56,7 @@ export function packSdPayload(
     promptCompiler: extras?.promptCompiler,
     designConstitution: extras?.designConstitution,
     renderEngine: extras?.renderEngine,
+    generationDiagnostic: extras?.generationDiagnostic,
   } satisfies StoredSdPayload);
 }
 
@@ -87,6 +85,7 @@ export function unpackSdPayload(json: string): StoredSdPayload {
       promptCompiler: record.promptCompiler,
       designConstitution: record.designConstitution,
       renderEngine: record.renderEngine,
+      generationDiagnostic: record.generationDiagnostic,
     };
   }
   return {

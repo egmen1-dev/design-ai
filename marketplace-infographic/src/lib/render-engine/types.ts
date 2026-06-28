@@ -207,6 +207,7 @@ export type RenderAttempt = {
   profileId: RenderProfileId;
   result?: RenderResult;
   qualityScore?: number;
+  qualityBreakdown?: import("./quality/render-quality").RenderQualityScores;
   passed: boolean;
   error?: string;
 };

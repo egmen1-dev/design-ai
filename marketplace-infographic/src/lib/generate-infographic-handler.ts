@@ -11,6 +11,10 @@ import {
 import { renderInfographicHtml } from "@/lib/infographic-template";
 import { sdDataToInfographic } from "@/lib/sd-to-infographic";
 import { packSdPayload, unpackSdPayload } from "@/lib/sd-stored-payload";
+import {
+  buildGenerationDiagnostic,
+  buildStoredRenderReport,
+} from "@/lib/generation/diagnostic-report";
 import { DEFAULT_STYLE, TRENDS, type InfographicStyle } from "@/lib/design-trends";
 import { renderHtmlToImage } from "@/lib/puppeteer";
 import { bufferToDataUrl } from "@/lib/background-removal";
@@ -180,6 +184,8 @@ export type GenerateInfographicResult = {
   renderModel?: string;
   renderAttempts?: number;
   renderDesignScore?: number;
+  diagnosticsUrl?: string;
+  diagnosticSteps?: number;
 };
 
 function briefMeta(brief?: DesignBrief) {
@@ -401,6 +407,17 @@ function promptCompilerResponseFields(
     promptComplexityScore: compiled.metadata.promptComplexityScore,
     promptCompilerApproved: compiled.metadata.validation.passed,
     promptCompilerAttempts: compiled.metadata.attempts,
+  };
+}
+
+function diagnosticResponseFields(
+  generationId: string,
+  diagnostic?: ReturnType<typeof buildGenerationDiagnostic>,
+) {
+  if (!diagnostic) return {};
+  return {
+    diagnosticsUrl: `/api/images/${generationId}/diagnostics`,
+    diagnosticSteps: diagnostic.steps.length,
   };
 }
 
@@ -638,6 +655,7 @@ export async function handleGenerateInfographic(
   input: GenerateInfographicInput,
 ): Promise<GenerateInfographicResult> {
   const slot = await consumeGenerationSlot(input.userId);
+  const pipelineStartedAt = Date.now();
 
   try {
     await loadDesignMemoryStore().catch((error) => {
@@ -1351,6 +1369,7 @@ export async function handleGenerateInfographic(
       }
     }
 
+    let conceptRetryIndex = 0;
     let finalQuality = activeCreative
       ? evaluateFinalQuality({
           creative: activeCreative,
@@ -1362,7 +1381,6 @@ export async function handleGenerateInfographic(
         })
       : undefined;
 
-    let conceptRetryIndex = 0;
     while (
       finalQuality &&
       !finalQuality.passed &&
@@ -1624,18 +1642,12 @@ export async function handleGenerateInfographic(
       promptCompiler: compiledBackground?.metadata,
       designConstitution: constitutionReports.length ? constitutionReports : undefined,
       renderEngine: renderEngineResult
-        ? {
-            request: renderEngineResult.request,
-            attempts: renderEngineResult.attempts.map((a) => ({
-              attemptIndex: a.attemptIndex,
-              modelId: a.modelId,
-              providerId: a.providerId,
-              qualityScore: a.qualityScore,
-              passed: a.passed,
-            })),
-            selectedModel: renderEngineResult.selectedAttempt.modelId,
-            overallScore: renderEngineResult.overallScore,
-          }
+        ? buildStoredRenderReport({
+            result: renderEngineResult,
+            variationSeed,
+            userModelOverride: input.renderModel,
+            lockModel: !!input.renderModel,
+          })
         : undefined,
     };
 
@@ -1794,14 +1806,51 @@ export async function handleGenerateInfographic(
       }
     }
 
+    const assembleGenerationDiagnostic = (generationId: string) =>
+      buildGenerationDiagnostic({
+        generationId,
+        imagePath,
+        backgroundUrl,
+        productCutout: productCutoutPath,
+        variationSeed,
+        aiSource,
+        backgroundSource,
+        durationMs: Date.now() - pipelineStartedAt,
+        userModelOverride: input.renderModel,
+        lockModel: !!input.renderModel,
+        analysis,
+        knowledgePatternsUsed,
+        storyDirection,
+        sceneDirection,
+        compositionDirection,
+        scenePlan,
+        constitutionReports,
+        compiledBackground,
+        renderEngineResult,
+        qualityGate: qualityGateV165,
+        qualityRefinementPasses,
+        qualityValidation,
+        seniorAdReview,
+        ctrReview,
+        photoReview,
+        chiefPlan,
+        finalQuality,
+        conceptRetries: conceptRetryIndex,
+        feedbackLearning: payloadExtras.feedbackLearning,
+      });
+
     if (input.regenerateBackgroundOnly && input.existingImageId) {
+      const generationDiagnostic = assembleGenerationDiagnostic(input.existingImageId);
       await prisma.generatedImage.update({
         where: { id: input.existingImageId },
         data: {
           imagePath,
           backgroundUrl,
           productCutout: productCutoutPath,
-          generatedJson: packSdPayload(sdData, appliedStyle, payloadExtras),
+          generatedJson: packSdPayload(sdData, appliedStyle, {
+            ...payloadExtras,
+            generationDiagnostic,
+          }),
         },
       });
 
@@ -1851,6 +1900,7 @@ export async function handleGenerateInfographic(
         ...renderEngineResponseFields(renderEngineResult),
         ...constitutionResponseFields(constitutionReports),
         ...briefMeta(designBrief),
+        ...diagnosticResponseFields(input.existingImageId, generationDiagnostic),
       };
     }
 
@@ -1864,6 +1914,17 @@ export async function handleGenerateInfographic(
         backgroundUrl,
         productCutout: productCutoutPath,
         usedFreeQuota: slot.usedFreeQuota,
+      },
+    });
+
+    const generationDiagnostic = assembleGenerationDiagnostic(image.id);
+    await prisma.generatedImage.update({
+      where: { id: image.id },
+      data: {
+        generatedJson: packSdPayload(sdData, appliedStyle, {
+          ...payloadExtras,
+          generationDiagnostic,
+        }),
       },
     });
 
@@ -1924,6 +1985,7 @@ export async function handleGenerateInfographic(
       ...renderEngineResponseFields(renderEngineResult),
       ...constitutionResponseFields(constitutionReports),
       ...briefMeta(designBrief),
+      ...diagnosticResponseFields(image.id, generationDiagnostic),
     };
   } catch (error) {
     if (!slot.usedFreeQuota && !slot.balance.unlimited) {

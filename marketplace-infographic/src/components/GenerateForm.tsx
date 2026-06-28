@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { DownloadButton } from "@/components/DownloadButton";
 import { FeedbackButtons } from "@/components/FeedbackButtons";
+import { GenerationDiagnosticsPanel } from "@/components/GenerationDiagnosticsPanel";
 import { MarketplacePreview } from "@/components/MarketplacePreview";
 import { PromptHints } from "@/components/PromptHints";
 
@@ -97,6 +98,8 @@ export function GenerateForm() {
     visualHook?: { type: string; reason: string; confidence?: number };
     backgroundSource?: "sd" | "fallback" | "provider";
     renderModel?: string;
+    diagnosticsUrl?: string;
+    diagnosticSteps?: number;
     selectedArchetypeId?: string;
     conceptCandidates?: number;
     pipelineVersion?: string;
@@ -207,6 +210,8 @@ export function GenerateForm() {
         visualHook?: { type: string; reason: string; confidence?: number };
         backgroundSource?: "sd" | "fallback" | "provider";
         renderModel?: string;
+        diagnosticsUrl?: string;
+        diagnosticSteps?: number;
         pipelineVersion?: string;
       }>(res);
 
@@ -243,6 +248,8 @@ export function GenerateForm() {
         visualHook: data.visualHook,
         backgroundSource: data.backgroundSource,
         renderModel: data.renderModel,
+        diagnosticsUrl: data.diagnosticsUrl,
+        diagnosticSteps: data.diagnosticSteps,
         pipelineVersion: data.pipelineVersion,
         selectedArchetypeId: data.selectedArchetypeId,
         conceptCandidates: data.conceptCandidates,
@@ -652,6 +659,10 @@ export function GenerateForm() {
             </div>
           </div>
           <MarketplacePreview imagePath={result.imagePath} />
+          <GenerationDiagnosticsPanel
+            imageId={result.id}
+            diagnosticsUrl={result.diagnosticsUrl}
+          />
         </div>
       )}
     </form>

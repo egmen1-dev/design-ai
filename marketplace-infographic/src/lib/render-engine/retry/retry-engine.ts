@@ -64,6 +64,7 @@ export async function renderWithRetry(input: RenderWithRetryInput): Promise<Rend
         ...input.qualityInput,
       });
       attempt.qualityScore = quality.overallDesignScore;
+      attempt.qualityBreakdown = quality;
       attempt.passed = quality.passed;
 
       if (!best || quality.overallDesignScore > best.score) {
