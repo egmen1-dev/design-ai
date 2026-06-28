@@ -1105,6 +1105,7 @@ export async function handleGenerateInfographic(
           layoutSpec,
           palette,
           sceneTypeHint: sceneDirection?.sceneType,
+          coverConceptId: scenePlan.coverConceptId,
         });
         visualBlueprint = pipeline.visualBlueprint;
         activeSceneBlueprint = pipeline.sceneBlueprint;

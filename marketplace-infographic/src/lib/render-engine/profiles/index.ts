@@ -7,6 +7,9 @@ import type {
   RenderProfileId,
   RenderQualityBlock,
 } from "../types";
+import type { CoverConceptId } from "@/lib/cover-concepts";
+import { resolveCoverConcept } from "@/lib/cover-concepts";
+import { resolveCoverConceptVisualHints } from "@/lib/design/visual-pipeline/catalogs/cover-concept";
 
 export type RenderProfile = {
   id: RenderProfileId;
@@ -164,7 +167,11 @@ export function resolveRenderProfileId(input: {
   priceSegment?: string;
   sceneType?: string;
   compositionTemplate?: string;
+  coverConceptId?: CoverConceptId;
 }): RenderProfileId {
+  const coverProfile = resolveCoverConceptVisualHints(input.coverConceptId)?.profileId;
+  if (coverProfile) return coverProfile;
+
   const cat = input.category;
   if (input.priceSegment === "premium") return "luxury";
   if (input.compositionTemplate === "premium_minimal") return "minimal";
@@ -174,6 +181,14 @@ export function resolveRenderProfileId(input: {
   if (cat === "garden_tools" || cat === "sport" || cat === "auto") return "industrial";
   if (cat === "food") return "kitchen";
   if (input.sceneType?.includes("lifestyle") || input.sceneType?.includes("outdoor")) return "lifestyle";
-  if (input.sceneType?.includes("garden")) return "outdoor";
+  if (input.sceneType?.includes("garden") || input.sceneType?.includes("nature")) return "outdoor";
   return "premium_product";
+}
+
+/** Environment phrase for render request when user picked a cover concept */
+export function resolveCoverEnvironmentHint(coverConceptId?: CoverConceptId): string | undefined {
+  const hints = resolveCoverConceptVisualHints(coverConceptId);
+  if (hints) return hints.environmentPhrase;
+  if (!coverConceptId) return undefined;
+  return resolveCoverConcept(coverConceptId).backgroundPromptSuffix;
 }

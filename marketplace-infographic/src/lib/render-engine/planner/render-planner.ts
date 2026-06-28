@@ -13,7 +13,7 @@ import {
   RENDER_ENGINE_VERSION,
 } from "../types";
 import { RENDER_ENGINE_CONFIG } from "../config";
-import { resolveRenderProfileId, getRenderProfile } from "../profiles";
+import { resolveRenderProfileId, getRenderProfile, resolveCoverEnvironmentHint } from "../profiles";
 import { selectRenderModel } from "./model-selection";
 import { compileNegativeTerms } from "../adapters/negative";
 
@@ -60,8 +60,10 @@ export function planRenderRequest(input: RenderPlannerInput): RenderRequest {
     priceSegment: input.analysis.priceSegment,
     sceneType: bp?.scene.type,
     compositionTemplate: spec?.compositionTemplateId,
+    coverConceptId: input.scenePlan.coverConceptId,
   });
   const profile = getRenderProfile(profileId);
+  const coverEnvironment = resolveCoverEnvironmentHint(input.scenePlan.coverConceptId);
   const modelId = selectRenderModel({
     profileId,
     attemptIndex: input.attemptIndex,
@@ -90,9 +92,9 @@ export function planRenderRequest(input: RenderPlannerInput): RenderRequest {
       type: bp?.scene.type ?? input.scenePlan.coverConceptId,
       atmosphere: bp?.scene.atmosphere ?? input.scenePlan.visualMood,
       depth: bp?.scene.depth ?? "medium",
-      environment: bp?.scene.environment ?? profile.environmentHint,
+      environment: coverEnvironment ?? bp?.scene.environment ?? profile.environmentHint,
       floor: bp?.scene.floor ?? input.scenePlan.surfaceType,
-      background: bp?.scene.background ?? input.scenePlan.backgroundType,
+      background: coverEnvironment ?? bp?.scene.background ?? input.scenePlan.backgroundType,
       visualDensity: bp?.scene.visualDensity ?? 0.1,
     },
     layout: {
@@ -166,6 +168,7 @@ export function planRenderRequest(input: RenderPlannerInput): RenderRequest {
       sceneScore: input.sceneScore,
       luxuryScore: input.luxuryScore,
       visualBlueprint: input.visualBlueprint,
+      coverConceptId: input.scenePlan.coverConceptId,
     },
   };
 }

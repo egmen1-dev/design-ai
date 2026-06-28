@@ -128,6 +128,7 @@ export type RenderRequest = {
     sceneScore?: number;
     luxuryScore?: number;
     visualBlueprint?: import("@/lib/design/visual-pipeline/types").VisualSceneBlueprint;
+    coverConceptId?: import("@/lib/cover-concepts").CoverConceptId;
   };
 };
 

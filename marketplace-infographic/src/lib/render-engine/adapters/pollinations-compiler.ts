@@ -12,6 +12,8 @@ import {
   TIME_VISUAL,
   WEATHER_VISUAL,
 } from "@/lib/design/visual-pipeline/catalogs/environment";
+import type { CoverConceptId } from "@/lib/cover-concepts";
+import { resolveCoverConceptVisualHints } from "@/lib/design/visual-pipeline/catalogs/cover-concept";
 import { sanitizePromptForModeration } from "../providers/pollinations/moderation";
 
 const BACKDROP =
@@ -99,17 +101,54 @@ function compressSegments(segments: string[], maxTokens = 110): string {
   return kept.join(", ");
 }
 
+/** Priority segments always included; optional segments fill remaining token budget */
+function compilePromptSegments(
+  priority: string[],
+  optional: string[],
+  maxTokens = 110,
+): string {
+  const kept: string[] = [];
+  let tokens = 0;
+  for (const seg of [...priority, ...optional].filter(Boolean)) {
+    const t = estimateTokens(seg);
+    if (tokens + t > maxTokens) {
+      if (kept.length === 0) kept.push(seg.split(/\s+/).slice(0, maxTokens).join(" "));
+      break;
+    }
+    kept.push(seg);
+    tokens += t;
+  }
+  return kept.join(", ");
+}
+
+export type PollinationsCompileOptions = {
+  coverConceptId?: CoverConceptId;
+  profileLabel?: string;
+};
+
 /** Compile VisualSceneBlueprint → Pollinations-optimized prompt (80–120 tokens) */
 export function compilePollinationsPrompt(
   blueprint: VisualSceneBlueprint,
   profileLabel = "commercial",
+  options?: PollinationsCompileOptions,
 ): PollinationsCompiledPrompt {
+  const coverConceptId = options?.coverConceptId;
+  const coverHints = resolveCoverConceptVisualHints(coverConceptId);
   const lighting = resolveLighting(blueprint.lighting.preset);
   const floor = MATERIAL_PROFILES[blueprint.materials.floor];
 
-  const segments = [
-    "Premium commercial advertising background",
-    ARCHITECTURE_VISUAL[blueprint.scene.architecture],
+  const environmentPhrase =
+    coverHints?.environmentPhrase ??
+    ARCHITECTURE_VISUAL[blueprint.scene.architecture];
+
+  const priority = [
+    environmentPhrase,
+    BACKDROP,
+    "sharp detailed floor plane in foreground",
+  ];
+
+  const optional = [
+    coverHints ? null : "Premium commercial advertising background",
     WEATHER_VISUAL[blueprint.scene.weather],
     TIME_VISUAL[blueprint.scene.time],
     DEPTH_VISUAL[blueprint.scene.depth],
@@ -120,16 +159,11 @@ export function compilePollinationsPrompt(
     `${blueprint.lighting.temperatureK}K color temperature`,
     `${blueprint.camera.lensMm}mm lens`,
     CAMERA_ANGLE[blueprint.camera.angle] ?? "eye level",
-    `${blueprint.camera.distance} distance`,
     floor.atmosphere,
-    `${floor.reflection} reflections`,
-    "sharp detailed floor plane in foreground",
     NEGATIVE_SPACE[blueprint.composition.negativeSpace],
-    "single dominant foreground object zone empty",
-    BACKDROP,
-  ].filter(Boolean);
+  ].filter(Boolean) as string[];
 
-  let prompt = compressSegments(segments, 110);
+  let prompt = compilePromptSegments(priority, optional, 110);
   prompt = sanitizePromptForModeration(prompt.replace(BANNED_PHRASES, " "), 0);
 
   const negativePrompt = blueprint.negative.terms.slice(0, 12).join(", ");

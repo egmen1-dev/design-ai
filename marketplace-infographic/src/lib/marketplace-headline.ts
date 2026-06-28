@@ -35,20 +35,21 @@ export function resolveMarketplaceHeadline(
     return raw;
   }
 
+  if (data.productName?.trim()) {
+    const name = data.productName.trim();
+    if (name.length <= 28) return name;
+    return name.slice(0, 28).trim();
+  }
+
+  const fromPrompt = extractProductTitle(productPrompt ?? "", data.productName ?? "");
+  if (fromPrompt && !isClicheHeadline(fromPrompt)) return fromPrompt.slice(0, 28);
+
   const spec = data.specBlocks[0];
   if (spec?.value && spec?.label) {
     const combined = `${spec.value} ${spec.label}`.trim();
     if (combined.length <= 28) return combined;
     return spec.value;
   }
-
-  if (data.productName?.trim()) {
-    const name = data.productName.trim();
-    if (name.length <= 28) return name;
-  }
-
-  const fromPrompt = extractProductTitle(productPrompt ?? "", data.productName ?? "");
-  if (fromPrompt && !isClicheHeadline(fromPrompt)) return fromPrompt;
 
   return spec?.value ?? "Новинка";
 }

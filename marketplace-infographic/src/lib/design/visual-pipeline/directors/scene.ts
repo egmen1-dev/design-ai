@@ -1,3 +1,4 @@
+import type { CoverConceptId } from "@/lib/cover-concepts";
 import type { SceneTypeId } from "@/lib/design/scene-blueprint/types";
 import { resolveSceneType } from "@/lib/design/scene-blueprint/templates";
 import type {
@@ -9,6 +10,7 @@ import type {
   WeatherId,
 } from "../types";
 import { storyTypeToSceneType } from "../catalogs/story";
+import { resolveCoverConceptVisualHints } from "../catalogs/cover-concept";
 import type { ProductAnalysis } from "@/lib/product-analysis";
 
 const SCENE_ARCHITECTURE: Record<SceneTypeId, EnvironmentArchitectureId> = {
@@ -33,25 +35,32 @@ export type SceneEnvironmentDirectorInput = {
   analysis: ProductAnalysis;
   story: StoryDecision;
   sceneTypeHint?: SceneTypeId;
+  coverConceptId?: CoverConceptId;
 };
 
 /** Scene Director — environment, depth, weather, time, architecture only */
 export function runSceneEnvironmentDirector(
   input: SceneEnvironmentDirectorInput,
 ): DirectorResult<SceneEnvironmentDecision> {
+  const coverHints = resolveCoverConceptVisualHints(input.coverConceptId);
+
   const sceneType =
+    coverHints?.sceneType ??
     input.sceneTypeHint ??
     storyTypeToSceneType(input.story.storyType) ??
     resolveSceneType(input.analysis.category, input.analysis.priceSegment);
 
-  const architecture =
+  const architecture: EnvironmentArchitectureId =
+    coverHints?.architecture ??
     SCENE_ARCHITECTURE[sceneType] ??
     (input.story.usageContext === "outdoor" ? "outdoor" : "studio");
 
   const weather: WeatherId =
-    input.story.usageContext === "outdoor" ? "clear" : "indoor_controlled";
+    coverHints?.weather ??
+    (input.story.usageContext === "outdoor" ? "clear" : "indoor_controlled");
   const time: TimeOfDayId =
-    input.story.storyType === "lifestyle" ? "golden_hour" : "studio_neutral";
+    coverHints?.time ??
+    (input.story.storyType === "lifestyle" ? "golden_hour" : "studio_neutral");
 
   const decision: SceneEnvironmentDecision = {
     sceneType,

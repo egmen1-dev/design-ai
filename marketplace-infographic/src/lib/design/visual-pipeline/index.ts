@@ -1,4 +1,5 @@
 import type { ProductAnalysis } from "@/lib/product-analysis";
+import type { CoverConceptId } from "@/lib/cover-concepts";
 import type { LayoutSpec } from "@/lib/design/layout-spec/types";
 import type { SceneTypeId } from "@/lib/design/scene-blueprint/types";
 import {
@@ -26,6 +27,7 @@ export type RunVisualPipelineInput = {
   layoutSpec?: LayoutSpec;
   palette?: string[];
   sceneTypeHint?: SceneTypeId;
+  coverConceptId?: CoverConceptId;
 };
 
 /**
@@ -38,6 +40,7 @@ export function runVisualPipeline(input: RunVisualPipelineInput): VisualPipeline
     analysis: input.analysis,
     story: story.decision,
     sceneTypeHint: input.sceneTypeHint,
+    coverConceptId: input.coverConceptId,
   });
   const lighting = runLightingDirector({
     analysis: input.analysis,

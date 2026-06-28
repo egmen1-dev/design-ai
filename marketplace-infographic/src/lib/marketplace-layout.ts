@@ -16,21 +16,28 @@ export function formatMarketplaceHeadline(headline: string): string {
   return headline;
 }
 
+function specRibbonText(spec: { value: string; label?: string }): string {
+  const label = (spec.label ?? "").trim();
+  return label ? `${spec.value} ${label}`.trim() : spec.value;
+}
+
 function buildSideSpecStack(
   data: InfographicData,
   style: InfographicStyle,
   accent: string,
+  headline: string,
 ): string {
   const skin = buildStyleSlideSkin(style);
   const items: string[] = [];
+  const headlineKey = headline.toLowerCase().replace(/\s+/g, " ");
 
   for (const spec of data.specBlocks.slice(0, 3)) {
     if (!spec?.value) continue;
-    const label = (spec.label ?? "").trim();
-    const text = label ? `${spec.value} ${label}`.trim() : spec.value;
-    items.push(
-      buildPlaqueHtml("ribbon", { type: "ribbon", text: text.slice(0, 22) }, skin, accent),
-    );
+    const text = specRibbonText(spec).slice(0, 22);
+    if (headlineKey.includes(text.toLowerCase()) || headlineKey === spec.value.toLowerCase()) {
+      continue;
+    }
+    items.push(buildPlaqueHtml("ribbon", { type: "ribbon", text }, skin, accent));
   }
 
   if (items.length === 0) return "";
@@ -44,7 +51,7 @@ export function buildMarketplaceCoverHeadHtml(
   accent: string,
   style: InfographicStyle = "modern",
 ): string {
-  const side = buildSideSpecStack(data, style, accent);
+  const side = buildSideSpecStack(data, style, accent, headline);
   return `
     <header class="wb-top">
       <div class="wb-top__bar" style="--wb-accent:${accent};">

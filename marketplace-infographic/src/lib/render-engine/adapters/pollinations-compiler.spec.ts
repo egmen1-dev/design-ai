@@ -29,6 +29,17 @@ function main() {
   const bad = validatePollinationsPrompt("CTR optimized layout 45%", "text");
   assert.ok(!bad.ok);
 
+  const garden = runVisualPipeline({
+    prompt: "генератор 3 кВт",
+    analysis,
+    coverConceptId: "garden_scene",
+  });
+  const gardenPrompt = compilePollinationsPrompt(garden.visualBlueprint, "outdoor", {
+    coverConceptId: "garden_scene",
+  });
+  assert.ok(/lawn|grass|garden|suburban/i.test(gardenPrompt.prompt), gardenPrompt.prompt);
+  assert.equal(garden.visualBlueprint.scene.architecture, "nature");
+
   console.log("pollinations-compiler OK", compiled.tokenEstimate, "tokens");
 }
 

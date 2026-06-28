@@ -81,6 +81,70 @@ export async function resolveAlphaCenteredLeft(
   return Math.round(left);
 }
 
+/** Уменьшает cutout пока силуэт не влезает в кадр с отступами */
+export async function fitProductWithSafePlacement(
+  productBuffer: Buffer,
+  productWidth: number,
+  productHeight: number,
+  canvasW: number,
+  sideMargin: number,
+  maxAlphaW: number,
+  maxAlphaH: number,
+  compositionLayout?: { product: { left: number; width: number } },
+): Promise<{ buffer: Buffer; width: number; height: number; left: number }> {
+  let buffer = productBuffer;
+  let width = productWidth;
+  let height = productHeight;
+
+  for (let attempt = 0; attempt < 8; attempt++) {
+    const fitted = await fitProductByAlphaBounds(buffer, maxAlphaW, maxAlphaH);
+    buffer = fitted.buffer;
+    width = fitted.width;
+    height = fitted.height;
+
+    const bounds = await getAlphaBounds(buffer);
+    let left = await resolveAlphaCenteredLeft(
+      buffer,
+      width,
+      sideMargin,
+      canvasW,
+      compositionLayout,
+    );
+
+    if (bounds) {
+      const rightEdge = left + bounds.right;
+      const leftEdge = left + bounds.left;
+      if (rightEdge <= canvasW - sideMargin && leftEdge >= sideMargin) {
+        return { buffer, width, height, left };
+      }
+    } else if (left >= sideMargin && left + width <= canvasW - sideMargin) {
+      return { buffer, width, height, left };
+    }
+
+    const scale = 0.88;
+    const nextW = Math.max(64, Math.round(width * scale));
+    const nextH = Math.max(64, Math.round(height * scale));
+    const resized = await sharp(buffer)
+      .resize(nextW, nextH, { fit: "inside", withoutEnlargement: true })
+      .png()
+      .toBuffer({ resolveWithObject: true });
+    buffer = resized.data;
+    width = resized.info.width;
+    height = resized.info.height;
+    maxAlphaW = Math.round(maxAlphaW * scale);
+    maxAlphaH = Math.round(maxAlphaH * scale);
+  }
+
+  const left = await resolveAlphaCenteredLeft(
+    buffer,
+    width,
+    sideMargin,
+    canvasW,
+    compositionLayout,
+  );
+  return { buffer, width, height, left };
+}
+
 /** Подтягивает нижнюю часть cutout к цвету пола */
 export async function applyFloorColorSpill(
   productBuffer: Buffer,

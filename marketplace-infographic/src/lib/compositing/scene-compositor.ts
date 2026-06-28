@@ -28,8 +28,7 @@ import {
 } from "./floor-contact";
 import {
   applyFloorColorSpill,
-  fitProductByAlphaBounds,
-  resolveAlphaCenteredLeft,
+  fitProductWithSafePlacement,
 } from "./alpha-fit";
 
 const CANVAS_W = WB_COVER.width;
@@ -307,10 +306,15 @@ export async function compositeProductIntoScene(
     maxW,
     maxH,
   );
-  product = await fitProductByAlphaBounds(
+  product = await fitProductWithSafePlacement(
     product.buffer,
+    product.width,
+    product.height,
+    CANVAS_W,
+    SIDE_MARGIN,
     PRODUCT_ALPHA_MAX_WIDTH_PX,
     PRODUCT_ALPHA_MAX_HEIGHT_PX,
+    options.compositionLayout,
   );
 
   const floorColor = await sampleFloorColor(
@@ -323,13 +327,7 @@ export async function compositeProductIntoScene(
   product = { ...product, buffer: productBuffer };
 
   const alphaFootBottom = (await getAlphaFootBottom(product.buffer)) ?? product.height;
-  const productLeft = await resolveAlphaCenteredLeft(
-    product.buffer,
-    product.width,
-    SIDE_MARGIN,
-    CANVAS_W,
-    options.compositionLayout,
-  );
+  const productLeft = product.left;
   const productTop = resolveVerticalTop(
     product.height,
     alphaFootBottom,

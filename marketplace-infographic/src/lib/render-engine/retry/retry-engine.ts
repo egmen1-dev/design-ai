@@ -95,7 +95,9 @@ export async function renderWithRetry(input: RenderWithRetryInput): Promise<Rend
 
   if (best?.attempt.result) {
     if (input.visualBlueprint && input.debugRequestId) {
-      const compiled = compilePollinationsPrompt(input.visualBlueprint);
+      const compiled = compilePollinationsPrompt(input.visualBlueprint, undefined, {
+        coverConceptId: input.scenePlan.coverConceptId,
+      });
       void saveRenderDebugArtifacts({
         requestId: input.debugRequestId,
         sceneBlueprint: input.visualBlueprint,

@@ -39,7 +39,9 @@ function qualityModule(req: RenderRequest): string {
 function compileFromBlueprint(request: RenderRequest, model: string): CompiledRenderPayload | null {
   const bp = request.metadata?.visualBlueprint;
   if (!bp) return null;
-  const compiled = compilePollinationsPrompt(bp, request.profileId);
+  const compiled = compilePollinationsPrompt(bp, request.profileId, {
+    coverConceptId: request.metadata?.coverConceptId,
+  });
   return {
     model,
     prompt: compiled.prompt,

@@ -1,6 +1,8 @@
 import type { InfographicSdInput } from "@/lib/validations";
 import type { InfographicData } from "@/lib/infographic-template";
 import { extractProductSubtitle, extractProductTitle } from "@/lib/title-extract";
+import { analyzeProductPrompt } from "@/lib/product-analysis";
+import { extractMarketplaceSpecBlocks } from "@/lib/marketplace-spec-blocks";
 
 function sanitizeBulletText(text: string): string {
   return text.replace(/\s+/g, " ").trim();
@@ -50,6 +52,19 @@ export function sdDataToInfographic(
     data.bullets[0]?.replace(/^[\d\s.,]+/, "").trim() ??
     "параметр";
 
+  const allBullets = [
+    ...data.bullets,
+    ...(data.deferredBullets ?? []),
+    data.heroMetric ? `${data.heroMetric.value} ${data.heroMetric.label}` : "",
+  ].filter(Boolean);
+
+  const analysis = analyzeProductPrompt(prompt ?? data.title);
+  const specBlocks = extractMarketplaceSpecBlocks(
+    `${prompt ?? ""} ${data.title} ${allBullets.join(" ")}`,
+    analysis.category,
+    allBullets,
+  );
+
   if (isMarketplace) {
     return {
       headline,
@@ -58,7 +73,7 @@ export function sdDataToInfographic(
       brandName: undefined,
       productVisual: inferProductVisual(data),
       backgroundScene: inferScene(data.backgroundPrompt, prompt),
-      specBlocks: [{ value: heroValue, label: heroLabel }],
+      specBlocks,
       mainBanner: undefined,
       callouts: [],
       marketplaceGift: undefined,
