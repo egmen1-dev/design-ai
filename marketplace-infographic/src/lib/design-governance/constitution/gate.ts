@@ -14,6 +14,7 @@ import {
   GOVERNANCE_CONSTITUTION_MAX_ATTEMPTS,
 } from "../config";
 import { sanitizeBlueprintForConstitution } from "./sanitize";
+import { LAYOUT_HARD_LAW_IDS, layoutPassesHardLaws } from "./layout-harden";
 
 /** Scene-stage laws that must be physically enforced on the blueprint, not only scored */
 const SCENE_HARD_LAW_IDS = new Set(["LAW_010", "LAW_012"]);
@@ -60,30 +61,58 @@ function hasUnfixedSceneCriticalViolations(
   return true;
 }
 
+function hasUnfixedLayoutCriticalViolations(
+  report: ConstitutionReport,
+  layoutSpec?: LayoutSpec,
+): boolean {
+  const critical = report.violations.filter((v) => v.severity === "critical");
+  if (critical.length === 0) return false;
+
+  if (layoutSpec) {
+    const layoutOnly = critical.every((v) => LAYOUT_HARD_LAW_IDS.has(v.lawId));
+    if (layoutOnly && layoutPassesHardLaws(layoutSpec)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 function governanceStagePassed(
   validation: ConstitutionValidationResult,
-  sceneBlueprint?: SceneBlueprint,
+  options?: { sceneBlueprint?: SceneBlueprint; layoutSpec?: LayoutSpec },
 ): boolean {
   const critical = validation.report.violations.filter((v) => v.severity === "critical");
   if (critical.length > 0) {
-    if (sceneBlueprint && hasUnfixedSceneCriticalViolations(validation.report, sceneBlueprint)) {
+    if (
+      options?.sceneBlueprint &&
+      hasUnfixedSceneCriticalViolations(validation.report, options.sceneBlueprint)
+    ) {
       return false;
     }
-    if (!sceneBlueprint) return false;
+    if (
+      options?.layoutSpec &&
+      hasUnfixedLayoutCriticalViolations(validation.report, options.layoutSpec)
+    ) {
+      return false;
+    }
+    if (!options?.sceneBlueprint && !options?.layoutSpec) return false;
   }
   if (validation.passed) return true;
   return validation.report.overallDesignScore >= GOVERNANCE_CONSTITUTION_THRESHOLD;
 }
 
-function applyCriticalViolationPatches(input: {
+function applyViolationPatches(input: {
   report: ConstitutionReport;
   sceneBlueprint?: SceneBlueprint;
   layoutSpec?: LayoutSpec;
+  severities?: Array<"critical" | "major" | "minor">;
 }): { sceneBlueprint?: SceneBlueprint; layoutSpec?: LayoutSpec } {
   let sceneBlueprint = input.sceneBlueprint;
   let layoutSpec = input.layoutSpec;
+  const allowed = input.severities ?? ["critical", "major", "minor"];
 
-  for (const violation of input.report.violations.filter((v) => v.severity === "critical")) {
+  for (const violation of input.report.violations.filter((v) => allowed.includes(v.severity))) {
     const patch = violation.recommendedPatch;
     if (patch.sceneBlueprintPatch && sceneBlueprint) {
       sceneBlueprint = applySceneBlueprintPatch(sceneBlueprint, patch.sceneBlueprintPatch);
@@ -106,13 +135,22 @@ function runGovernanceStageCorrection(input: {
   let result = validateWithCorrection({ ctx: input.ctx, sceneBlueprint, layoutSpec });
 
   for (let attempt = 1; attempt < GOVERNANCE_CONSTITUTION_MAX_ATTEMPTS; attempt++) {
-    if (governanceStagePassed(result.validation, sceneBlueprint)) break;
+    const stageOptions =
+      input.ctx.stage === "layout_spec"
+        ? { layoutSpec }
+        : { sceneBlueprint };
+    if (governanceStagePassed(result.validation, stageOptions)) break;
+
     const patch = result.validation.combinedPatch;
     if (!patch.sceneBlueprintPatch && !patch.layoutSpecPatch) {
-      const forced = applyCriticalViolationPatches({
+      const forced = applyViolationPatches({
         report: result.report,
         sceneBlueprint,
         layoutSpec,
+        severities:
+          result.report.overallDesignScore < GOVERNANCE_CONSTITUTION_THRESHOLD
+            ? ["critical", "major", "minor"]
+            : ["critical"],
       });
       if (
         forced.sceneBlueprint === sceneBlueprint &&
@@ -134,11 +172,16 @@ function runGovernanceStageCorrection(input: {
     result.report.attempts = attempt + 1;
   }
 
-  if (!governanceStagePassed(result.validation, sceneBlueprint)) {
-    const forced = applyCriticalViolationPatches({
+  const finalStageOptions =
+    input.ctx.stage === "layout_spec"
+      ? { layoutSpec }
+      : { sceneBlueprint };
+  if (!governanceStagePassed(result.validation, finalStageOptions)) {
+    const forced = applyViolationPatches({
       report: result.report,
       sceneBlueprint,
       layoutSpec,
+      severities: ["critical", "major", "minor"],
     });
     if (
       forced.sceneBlueprint !== sceneBlueprint ||
@@ -185,10 +228,16 @@ export function runMandatoryConstitution(input: {
   });
   reports.push({
     ...sceneResult.report,
-    passed: governanceStagePassed(sceneResult.validation, sceneResult.sceneBlueprint),
+    passed: governanceStagePassed(sceneResult.validation, {
+      sceneBlueprint: sceneResult.sceneBlueprint,
+    }),
   });
 
-  if (!governanceStagePassed(sceneResult.validation, sceneResult.sceneBlueprint)) {
+  if (
+    !governanceStagePassed(sceneResult.validation, {
+      sceneBlueprint: sceneResult.sceneBlueprint,
+    })
+  ) {
     const criticalIds = sceneResult.report.violations
       .filter((v) => v.severity === "critical")
       .map((v) => v.lawId)
@@ -218,10 +267,16 @@ export function runMandatoryConstitution(input: {
   });
   reports.push({
     ...layoutResult.report,
-    passed: governanceStagePassed(layoutResult.validation),
+    passed: governanceStagePassed(layoutResult.validation, {
+      layoutSpec: layoutResult.layoutSpec,
+    }),
   });
 
-  if (!governanceStagePassed(layoutResult.validation)) {
+  if (
+    !governanceStagePassed(layoutResult.validation, {
+      layoutSpec: layoutResult.layoutSpec,
+    })
+  ) {
     const criticalIds = layoutResult.report.violations
       .filter((v) => v.severity === "critical")
       .map((v) => v.lawId)

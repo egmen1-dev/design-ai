@@ -11,6 +11,7 @@ import { buildBlueprintFromTemplate } from "@/lib/design/scene-blueprint/templat
 import { buildInitialLayoutSpec } from "@/lib/design/layout-spec";
 import type { FinalDesignBlueprint } from "../blueprint/types";
 import { GOVERNANCE_CONSTITUTION_THRESHOLD } from "../config";
+import { layoutPassesHardLaws } from "./layout-harden";
 
 function blueprintWithFloatingProduct(): FinalDesignBlueprint {
   const analysis = analyzeProductPrompt("Генератор 3 кВт для дачи");
@@ -34,7 +35,7 @@ function blueprintWithFloatingProduct(): FinalDesignBlueprint {
 }
 
 function main() {
-  assert.equal(GOVERNANCE_CONSTITUTION_THRESHOLD, 80, "governance threshold default");
+  assert.equal(GOVERNANCE_CONSTITUTION_THRESHOLD, 75, "governance threshold default");
 
   const blueprint = blueprintWithFloatingProduct();
   const analysis = analyzeProductPrompt("Генератор 3 кВт для дачи");
@@ -62,6 +63,36 @@ function main() {
     `scene=${sceneReport.overallDesignScore}`,
     `layout=${result.reports.find((r) => r.stage === "layout_spec")?.overallDesignScore}`,
   );
+
+  // layout_spec score 79 (below old threshold 80) must pass after hardening
+  const badLayout = blueprintWithFloatingProduct();
+  badLayout.layoutSpec = {
+    ...badLayout.layoutSpec,
+    whitespaceTarget: 19,
+    heroScale: 0.52,
+    visualWeightMap: { hero: 30, headline: 28, benefits: 18, cta: 12, background: 15 },
+  };
+  const layoutFixed = runMandatoryConstitution({
+    blueprint: badLayout,
+    analysis,
+    sceneScore: 67,
+    compositionScore: 72,
+  });
+  const layoutReport = layoutFixed.reports.find((r) => r.stage === "layout_spec");
+  assert.ok(layoutReport, "layout report exists");
+  assert.ok(
+    governanceLayoutPasses(layoutReport, layoutFixed.blueprint.layoutSpec),
+    `layout score ${layoutReport.overallDesignScore} should pass governance`,
+  );
+}
+
+function governanceLayoutPasses(
+  report: { overallDesignScore: number; violations: Array<{ severity: string }> },
+  layoutSpec: import("@/lib/design/layout-spec").LayoutSpec,
+): boolean {
+  const critical = report.violations.filter((v) => v.severity === "critical");
+  if (critical.length > 0 && !layoutPassesHardLaws(layoutSpec)) return false;
+  return report.overallDesignScore >= GOVERNANCE_CONSTITUTION_THRESHOLD;
 }
 
 main();

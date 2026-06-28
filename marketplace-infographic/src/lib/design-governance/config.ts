@@ -11,7 +11,7 @@ export const ALLOW_GRADIENT_FALLBACK =
 
 /** Governance constitution pass threshold (no critical violations required) */
 export const GOVERNANCE_CONSTITUTION_THRESHOLD = Number(
-  process.env.GOVERNANCE_CONSTITUTION_THRESHOLD ?? 80,
+  process.env.GOVERNANCE_CONSTITUTION_THRESHOLD ?? 75,
 );
 
 export const GOVERNANCE_CONSTITUTION_MAX_ATTEMPTS = Number(

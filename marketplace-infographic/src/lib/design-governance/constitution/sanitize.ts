@@ -2,6 +2,7 @@ import type { SceneBlueprint } from "@/lib/design/scene-blueprint";
 import type { LayoutSpec } from "@/lib/design/layout-spec";
 import { applySceneBlueprintPatch } from "@/lib/design/design-constitution/patches/engine";
 import { applyConstitutionLayoutPatch } from "@/lib/design/design-constitution/patches/engine";
+import { hardenLayoutSpecForConstitution } from "./layout-harden";
 
 /** Pre-sync blueprint to conservative marketplace-safe defaults before constitution */
 export function sanitizeBlueprintForConstitution(input: {
@@ -40,12 +41,15 @@ export function sanitizeBlueprintForConstitution(input: {
     },
   };
 
-  const layoutSpec = applyConstitutionLayoutPatch(input.layoutSpec, {
-    whitespaceTarget: Math.max(input.layoutSpec.whitespaceTarget, 26),
-    removeDecorations: true,
-    reduceObjectCount: 1,
-    heroScaleDelta: input.layoutSpec.heroScale < 0.55 ? 0.05 : undefined,
-  });
+  const layoutSpec = hardenLayoutSpecForConstitution(
+    applyConstitutionLayoutPatch(input.layoutSpec, {
+      whitespaceTarget: Math.max(input.layoutSpec.whitespaceTarget, 26),
+      removeDecorations: true,
+      reduceObjectCount: 1,
+      maxSecondaryObjects: 2,
+      heroScaleDelta: input.layoutSpec.heroScale < 0.55 ? 0.05 : undefined,
+    }),
+  );
 
   return { sceneBlueprint: hardenedScene, layoutSpec };
 }
