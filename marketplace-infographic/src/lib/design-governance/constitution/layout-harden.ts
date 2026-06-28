@@ -26,10 +26,10 @@ export function hardenLayoutSpecForConstitution(spec: LayoutSpec): LayoutSpec {
     },
     hierarchy: spec.hierarchy ?? {
       headline: "H1",
-      hero: "H2",
-      benefits: "H3",
-      cta: "H3",
-      decorative: "H3",
+      hero: "hero",
+      benefits: "supporting",
+      cta: "cta",
+      decorative: "decorative",
     },
   };
 }
