@@ -54,9 +54,10 @@ export const MODEL_SELECTION_RULES: ModelSelectionRule[] = [
   { profileId: "furniture", modelId: "seedream", priority: 85 },
 ];
 
-/** Retry fallback chain per attempt index */
+/** Retry fallback chain — flux first (lowest cost / widest compatibility) */
 export const RETRY_MODEL_CHAIN: import("./types").RenderModelId[] = [
+  "flux",
   "kontext",
   "gptimage",
-  "flux",
+  "seedream",
 ];

@@ -15,8 +15,29 @@ import type {
 import { RENDER_ENGINE_CONFIG } from "../../config";
 import { WB_COVER } from "@/lib/composition/canvas";
 
+/** Pollinations API max seed (INT32_MAX) */
+export const POLLINATIONS_MAX_SEED = 2_147_483_647;
+
+const MODELS_WITH_NEGATIVE_PROMPT = new Set(["flux", "zimage", "z-image", "z-image-turbo"]);
+const MODELS_WITH_QUALITY = new Set([
+  "gptimage",
+  "gptimage-large",
+  "gpt-image",
+  "gpt-image-2",
+  "gpt-image-1-mini",
+  "gpt-image-1.5",
+  "gpt-image-large",
+]);
+
 function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
+}
+
+/** Map any numeric seed into Pollinations-valid int32 range */
+export function sanitizePollinationsSeed(seed: number): number {
+  if (!Number.isFinite(seed)) return 0;
+  const normalized = Math.trunc(Math.abs(seed)) % (POLLINATIONS_MAX_SEED + 1);
+  return normalized;
 }
 
 /** Params accepted by gen.pollinations.ai image schema (unknown keys → BAD_REQUEST). */
@@ -35,8 +56,13 @@ export function buildPollinationsImageUrl(payload: CompiledRenderPayload): strin
   params.set("model", payload.model);
   params.set("width", String(payload.width));
   params.set("height", String(payload.height));
-  if (payload.seed != null) params.set("seed", String(payload.seed));
-  if (payload.negativePrompt) {
+  if (payload.seed != null) {
+    params.set("seed", String(sanitizePollinationsSeed(payload.seed)));
+  }
+  if (
+    payload.negativePrompt &&
+    MODELS_WITH_NEGATIVE_PROMPT.has(payload.model)
+  ) {
     params.set("negative_prompt", payload.negativePrompt.slice(0, 500));
   }
   if (
@@ -49,6 +75,7 @@ export function buildPollinationsImageUrl(payload: CompiledRenderPayload): strin
   if (key) params.set("key", key);
   for (const [k, v] of Object.entries(payload.extraParams ?? {})) {
     if (v === undefined || v === null || !POLLINATIONS_QUERY_KEYS.has(k)) continue;
+    if (k === "quality" && !MODELS_WITH_QUALITY.has(payload.model)) continue;
     params.set(k, String(v));
   }
   return `${base}/image/${encoded}?${params.toString()}`;
@@ -128,12 +155,13 @@ export class PollinationsProvider implements RenderingProvider {
   ): Promise<RenderResult> {
     const maxAttempts = options?.maxAttempts ?? RENDER_ENGINE_CONFIG.pollinations.maxAttempts;
     const timeoutMs = options?.timeoutMs ?? RENDER_ENGINE_CONFIG.pollinations.timeoutMs;
-    const seed =
+    const seed = sanitizePollinationsSeed(
       payload.seed ??
-      createHash("sha256")
-        .update(options?.seedSuffix ?? `${Date.now()}`)
-        .digest()
-        .readUInt32BE(0);
+        createHash("sha256")
+          .update(options?.seedSuffix ?? `${Date.now()}`)
+          .digest()
+          .readUInt32BE(0),
+    );
 
     const compiled: CompiledRenderPayload = { ...payload, seed };
     const url = buildPollinationsImageUrl(compiled);
@@ -156,7 +184,31 @@ export class PollinationsProvider implements RenderingProvider {
           continue;
         }
         if (!res.ok) {
-          lastError = await res.text();
+          const body = await res.text();
+          lastError = body;
+          if (res.status === 400 && /seed/i.test(body)) {
+            const retryUrl = buildPollinationsImageUrl({ ...compiled, seed: 0 });
+            const retryRes = await fetch(retryUrl, {
+              headers,
+              signal: AbortSignal.timeout(60_000),
+            });
+            if (retryRes.ok) {
+              const buffer = Buffer.from(await retryRes.arrayBuffer());
+              if (buffer.length >= 100) {
+                const promptHash = createHash("sha256").update(compiled.prompt).digest("hex");
+                const imageUrl = await saveBackground(buffer, promptHash);
+                return {
+                  imageBuffer: buffer,
+                  imageUrl,
+                  providerId: "pollinations",
+                  modelId: payload.model as RenderModelId,
+                  seed: 0,
+                  latencyMs: Date.now() - start,
+                  compiled: { ...compiled, seed: 0 },
+                };
+              }
+            }
+          }
           continue;
         }
         const buffer = Buffer.from(await res.arrayBuffer());

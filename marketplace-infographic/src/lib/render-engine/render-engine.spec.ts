@@ -14,7 +14,7 @@ import { selectRenderModel } from "./planner/model-selection";
 import { evaluateRenderQuality } from "./quality/render-quality";
 import { RENDER_ENGINE_VERSION } from "./types";
 import { resolveRenderProfileId } from "./profiles";
-import { buildPollinationsImageUrl } from "./providers/pollinations/provider";
+import { buildPollinationsImageUrl, sanitizePollinationsSeed, POLLINATIONS_MAX_SEED } from "./providers/pollinations/provider";
 
 async function main() {
   const analysis = analyzeProductPrompt("Генератор 3 кВт для дачи");
@@ -81,6 +81,13 @@ async function main() {
   assert.ok(url.includes("negative_prompt=") || !compiled.negativePrompt);
   assert.ok(!url.includes("nologo="), "URL must not include nologo param");
   assert.ok(!url.includes("negative="), "URL must use negative_prompt not negative");
+
+  const overflowSeed = sanitizePollinationsSeed(3_333_526_215);
+  assert.ok(overflowSeed <= POLLINATIONS_MAX_SEED, "seed must fit Pollinations int32");
+  const overflowUrl = buildPollinationsImageUrl({ ...compiled, seed: 3_333_526_215 });
+  const seedMatch = overflowUrl.match(/seed=(\d+)/);
+  assert.ok(seedMatch, "seed param present");
+  assert.ok(Number(seedMatch[1]) <= POLLINATIONS_MAX_SEED, "URL seed must be sanitized");
 
   const quality = evaluateRenderQuality({ request, layoutSpec });
   assert.ok(quality.overallDesignScore >= 0);

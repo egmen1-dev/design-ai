@@ -1202,7 +1202,7 @@ export async function handleGenerateInfographic(
 
     const renderModelsChain = input.renderModel
       ? [input.renderModel]
-      : (["kontext", "gptimage", "flux", "seedream"] as const);
+      : (["flux", "kontext", "gptimage", "seedream"] as const);
 
     const bgPromise = (async () => {
       if (useRenderEngineV17) {
