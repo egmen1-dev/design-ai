@@ -7,6 +7,7 @@ import type { InfographicSdInput } from "@/lib/validations";
 import type { FeedbackLearningSnapshot } from "@/lib/feedback/types";
 import type { PromptCompilerMetadata } from "@/lib/design/prompt-compiler";
 import type { ConstitutionReport } from "@/lib/design/design-constitution";
+import type { RenderRequest, RenderAttempt } from "@/lib/render-engine/types";
 import { sanitizeSdInput } from "@/lib/sd-sanitize";
 
 export type StoredSdPayload = {
@@ -21,6 +22,12 @@ export type StoredSdPayload = {
   feedbackLearning?: FeedbackLearningSnapshot;
   promptCompiler?: PromptCompilerMetadata;
   designConstitution?: ConstitutionReport[];
+  renderEngine?: {
+    request: RenderRequest;
+    attempts: Pick<RenderAttempt, "attemptIndex" | "modelId" | "providerId" | "qualityScore" | "passed">[];
+    selectedModel: string;
+    overallScore: number;
+  };
 };
 
 export function packSdPayload(
@@ -36,6 +43,7 @@ export function packSdPayload(
     feedbackLearning?: FeedbackLearningSnapshot;
     promptCompiler?: PromptCompilerMetadata;
     designConstitution?: ConstitutionReport[];
+    renderEngine?: StoredSdPayload["renderEngine"];
   },
 ): string {
   return JSON.stringify({
@@ -50,6 +58,7 @@ export function packSdPayload(
     feedbackLearning: extras?.feedbackLearning,
     promptCompiler: extras?.promptCompiler,
     designConstitution: extras?.designConstitution,
+    renderEngine: extras?.renderEngine,
   } satisfies StoredSdPayload);
 }
 
@@ -77,6 +86,7 @@ export function unpackSdPayload(json: string): StoredSdPayload {
       feedbackLearning: record.feedbackLearning,
       promptCompiler: record.promptCompiler,
       designConstitution: record.designConstitution,
+      renderEngine: record.renderEngine,
     };
   }
   return {

@@ -28,7 +28,7 @@ export type CommercialPhotographerInput = {
   hasComposite: boolean;
   hasReflection?: boolean;
   hasShadows?: boolean;
-  backgroundSource: "sd" | "fallback";
+  backgroundSource: "sd" | "fallback" | "provider";
   productPrompt: string;
   marketIntelligenceSnippet?: string;
 };

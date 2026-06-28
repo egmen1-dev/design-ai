@@ -85,6 +85,11 @@ import type { QualityValidationResult } from "@/lib/design/quality-validator";
 import type { ArtDirectorModeId } from "@/lib/design-process/art-director-modes";
 import type { FeedbackLearningSnapshot } from "@/lib/feedback/types";
 import { PIPELINE_VERSION } from "@/lib/pipeline-version";
+import {
+  USE_RENDER_ENGINE_V17,
+  runRenderEngine,
+  type RenderEngineOrchestratorResult,
+} from "@/lib/render-engine";
 import { USE_FAST_CUTOUT, MAX_CONCEPT_RENDER_RETRIES, MAX_QUALITY_REFINEMENT_PASSES, MAX_PHOTO_BG_RETRIES, MAX_CHIEF_FIX_RETRIES } from "@/lib/pipeline-config";
 import {
   buildInitialLayoutSpec,
@@ -118,7 +123,7 @@ export type GenerateInfographicResult = {
   credits: number;
   unlimited: boolean;
   aiSource: string;
-  backgroundSource: "sd" | "fallback";
+  backgroundSource: "sd" | "fallback" | "provider";
   appliedStyle?: InfographicStyle;
   designConcept?: string;
   creativeMainIdea?: string;
@@ -168,6 +173,11 @@ export type GenerateInfographicResult = {
   overallDesignScore?: number;
   constitutionPassed?: boolean;
   constitutionVersion?: string;
+  renderEngineVersion?: string;
+  renderProvider?: string;
+  renderModel?: string;
+  renderAttempts?: number;
+  renderDesignScore?: number;
 };
 
 function briefMeta(brief?: DesignBrief) {
@@ -389,6 +399,17 @@ function promptCompilerResponseFields(
     promptComplexityScore: compiled.metadata.promptComplexityScore,
     promptCompilerApproved: compiled.metadata.validation.passed,
     promptCompilerAttempts: compiled.metadata.attempts,
+  };
+}
+
+function renderEngineResponseFields(result?: RenderEngineOrchestratorResult) {
+  if (!result) return {};
+  return {
+    renderEngineVersion: result.request.version,
+    renderProvider: result.selectedAttempt.providerId,
+    renderModel: result.selectedAttempt.modelId,
+    renderAttempts: result.attempts.length,
+    renderDesignScore: result.overallScore,
   };
 }
 
@@ -921,6 +942,8 @@ export async function handleGenerateInfographic(
     let qualityRefinementPasses = 0;
     let luxuryScoreValue: number | undefined;
     let compiledBackground: ReturnType<typeof compileBackgroundPrompt> | undefined;
+    let renderEngineResult: RenderEngineOrchestratorResult | undefined;
+    const useRenderEngineV17 = USE_RENDER_ENGINE_V17 && sdData.layout === "marketplace";
 
     if (sdData.layout === "marketplace") {
       const palette = paletteColorsForSd(assetsIntelligence?.palette);
@@ -976,57 +999,62 @@ export async function handleGenerateInfographic(
     let objectScale = layoutObjectScale(compositionLayout?.metrics?.productAreaPct);
     compositingHints = sceneToCompositingHints(scenePlan, objectScale);
 
-    // ── 3. Prompt Compiler → SD фон ───────────────────────────────────
-    compiledBackground = compileBackgroundPrompt({
-      prompt: input.prompt,
-      analysis,
-      scenePlan,
-      layoutSpec,
-      sceneBlueprint: activeSceneBlueprint ?? sceneDirection?.blueprint,
-      designBrief,
-      productVisual,
-      storyDirection,
-      marketIntelligence,
-      assetsIntelligence,
-      genomeIntelligence,
-      trendIntelligence,
-      luxuryScore: luxuryScoreValue,
-      compositionScore: compositionDirection?.quality.total,
-      sceneScore: sceneDirection?.quality.total,
-    });
-    sdData.backgroundPrompt = compiledBackground.prompt;
-    if (designBrief) {
-      designBrief = {
-        ...designBrief,
-        backgroundPrompt: compiledBackground.prompt.slice(0, 480),
-        negativePrompt: compiledBackground.negativePrompt.slice(0, 300),
-      };
-    }
-    if (!compiledBackground.approved) {
-      console.warn(
-        "[prompt-compiler] validation issues:",
-        compiledBackground.metadata.validation.issues,
-      );
-    }
-
-    if (layoutSpec && sdData.layout === "marketplace") {
-      const promptConstitution = validateCompiledPromptStage(compiledBackground, {
+    // ── 3. Render Engine v17 OR Prompt Compiler → background ─────────
+    if (!useRenderEngineV17) {
+      compiledBackground = compileBackgroundPrompt({
+        prompt: input.prompt,
         analysis,
+        scenePlan,
         layoutSpec,
+        sceneBlueprint: activeSceneBlueprint ?? sceneDirection?.blueprint,
+        designBrief,
+        productVisual,
+        storyDirection,
+        marketIntelligence,
+        assetsIntelligence,
+        genomeIntelligence,
+        trendIntelligence,
         luxuryScore: luxuryScoreValue,
         compositionScore: compositionDirection?.quality.total,
+        sceneScore: sceneDirection?.quality.total,
       });
-      constitutionReports.push(promptConstitution.report);
-      if (!promptConstitution.validation.passed) {
+      sdData.backgroundPrompt = compiledBackground.prompt;
+      if (designBrief) {
+        designBrief = {
+          ...designBrief,
+          backgroundPrompt: compiledBackground.prompt.slice(0, 480),
+          negativePrompt: compiledBackground.negativePrompt.slice(0, 300),
+        };
+      }
+      if (!compiledBackground.approved) {
         console.warn(
-          "[design-constitution] prompt",
-          formatConstitutionReport(promptConstitution.report),
+          "[prompt-compiler] validation issues:",
+          compiledBackground.metadata.validation.issues,
         );
       }
+
+      if (layoutSpec) {
+        const promptConstitution = validateCompiledPromptStage(compiledBackground, {
+          analysis,
+          layoutSpec,
+          luxuryScore: luxuryScoreValue,
+          compositionScore: compositionDirection?.quality.total,
+        });
+        constitutionReports.push(promptConstitution.report);
+        if (!promptConstitution.validation.passed) {
+          console.warn(
+            "[design-constitution] prompt",
+            formatConstitutionReport(promptConstitution.report),
+          );
+        }
+      }
+    } else {
+      sdData.backgroundPrompt = "[RENDER_ENGINE_V17]";
+      console.info("[render-engine-v17] using provider-independent render pipeline");
     }
 
     let backgroundUrl: string | null = null;
-    let backgroundSource: "sd" | "fallback" = "sd";
+    let backgroundSource: "sd" | "fallback" | "provider" = "sd";
     let backgroundDataUrl: string | undefined;
     let compositeResult: Awaited<ReturnType<typeof compositeProductIntoScene>> | undefined;
     let qualityValidation: QualityValidationResult | undefined;
@@ -1049,6 +1077,44 @@ export async function handleGenerateInfographic(
           );
 
     const bgPromise = (async () => {
+      if (useRenderEngineV17) {
+        const engine = await runRenderEngine({
+          analysis,
+          scenePlan,
+          layoutSpec,
+          sceneBlueprint: activeSceneBlueprint ?? sceneDirection?.blueprint,
+          luxuryScore: luxuryScoreValue,
+          compositionScore: compositionDirection?.quality.total,
+          sceneScore: sceneDirection?.quality.total,
+          constitutionPassed: constitutionReports.every((r) => r.passed),
+          seedSuffix: variationSeed,
+          skipCompose: true,
+          qualityInput: {
+            layoutSpec,
+            layout: compositionLayout,
+            meaning: cardMeaning,
+            luxuryScore: luxuryScoreValue,
+            compositionScore: compositionDirection?.quality.total,
+            sceneScore: sceneDirection?.quality.total,
+          },
+        });
+        renderEngineResult = engine;
+        const adapterPrompt =
+          engine.selectedAttempt.result?.compiled.prompt ?? "v17 background";
+        sdData.backgroundPrompt = adapterPrompt.slice(0, 480);
+        if (designBrief) {
+          designBrief = {
+            ...designBrief,
+            backgroundPrompt: adapterPrompt.slice(0, 480),
+            negativePrompt:
+              engine.selectedAttempt.result?.compiled.negativePrompt?.slice(0, 300),
+          };
+        }
+        return {
+          url: engine.backgroundUrl,
+          dataUrl: `data:image/png;base64,${engine.backgroundBuffer.toString("base64")}`,
+        };
+      }
       if (!process.env.HF_API_KEY) throw new Error("HF_API_KEY missing");
       const url = await generateBackground(sdData.backgroundPrompt, {
         seedSuffix: variationSeed,
@@ -1061,7 +1127,7 @@ export async function handleGenerateInfographic(
       const [bg, cutout] = await Promise.all([bgPromise, cutoutPromise]);
       backgroundUrl = bg.url;
       backgroundDataUrl = bg.dataUrl;
-      backgroundSource = "sd";
+      backgroundSource = useRenderEngineV17 ? "provider" : "sd";
       productRender = cutout;
       productCutoutPath = cutout.webPath;
     } catch (error) {
@@ -1553,6 +1619,20 @@ export async function handleGenerateInfographic(
       feedbackLearning: undefined as FeedbackLearningSnapshot | undefined,
       promptCompiler: compiledBackground?.metadata,
       designConstitution: constitutionReports.length ? constitutionReports : undefined,
+      renderEngine: renderEngineResult
+        ? {
+            request: renderEngineResult.request,
+            attempts: renderEngineResult.attempts.map((a) => ({
+              attemptIndex: a.attemptIndex,
+              modelId: a.modelId,
+              providerId: a.providerId,
+              qualityScore: a.qualityScore,
+              passed: a.passed,
+            })),
+            selectedModel: renderEngineResult.selectedAttempt.modelId,
+            overallScore: renderEngineResult.overallScore,
+          }
+        : undefined,
     };
 
     let designMemory: DesignMemoryUpdateResult | undefined;
@@ -1764,6 +1844,7 @@ export async function handleGenerateInfographic(
         compositionQualityScore: compositionDirection?.quality.total,
         compositionTemplate: compositionDirection?.templateId,
         ...promptCompilerResponseFields(compiledBackground),
+        ...renderEngineResponseFields(renderEngineResult),
         ...constitutionResponseFields(constitutionReports),
         ...briefMeta(designBrief),
       };
@@ -1836,6 +1917,7 @@ export async function handleGenerateInfographic(
       compositionQualityScore: compositionDirection?.quality.total,
       compositionTemplate: compositionDirection?.templateId,
       ...promptCompilerResponseFields(compiledBackground),
+      ...renderEngineResponseFields(renderEngineResult),
       ...constitutionResponseFields(constitutionReports),
       ...briefMeta(designBrief),
     };
