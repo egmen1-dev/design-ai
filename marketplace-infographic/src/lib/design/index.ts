@@ -68,7 +68,6 @@ export {
 } from "./trend-intelligence";
 export {
   runSceneDirector,
-  compileScenePromptFromBlueprint,
   scoreSceneBlueprint,
   type SceneBlueprint,
   type SceneDirectorResult,

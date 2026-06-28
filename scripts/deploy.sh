@@ -72,10 +72,15 @@ sleep 3
 curl -fsS http://127.0.0.1:3000/register | grep -q "Регистрация"
 
 echo "==> Pipeline version"
-if curl -fsS http://127.0.0.1:3000/api/health | grep -q '"pipelineVersion":"v3-styles"'; then
-  echo "==> OK: v3-styles active"
+HEALTH=$(curl -fsS http://127.0.0.1:3000/api/health || echo "{}")
+echo "$HEALTH"
+if echo "$HEALTH" | grep -qE '"pipelineVersion":"v17'; then
+  echo "==> OK: Render Engine v17 active"
+elif echo "$HEALTH" | grep -q '"status":"ok"'; then
+  echo "==> WARN: app ok but pipeline is not v17 — set RENDER_ENGINE_V17=1 in .env"
 else
-  echo "==> WARN: старый код — проверьте git pull и ветку main"
+  echo "==> ERROR: health check failed"
+  exit 1
 fi
 
 echo "==> Deploy complete"

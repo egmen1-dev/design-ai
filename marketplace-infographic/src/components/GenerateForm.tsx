@@ -10,7 +10,7 @@ import { PromptHints } from "@/components/PromptHints";
 import { COVER_CONCEPTS, type CoverConceptId } from "@/lib/cover-concepts";
 import { ART_DIRECTOR_MODES, type ArtDirectorModeId } from "@/lib/design-process/art-director-modes";
 import {
-  RENDER_MODEL_OPTIONS,
+  getActiveRenderModelOptions,
   type RenderModelChoice,
 } from "@/lib/render-engine/render-models";
 
@@ -498,7 +498,7 @@ export function GenerateForm() {
           onChange={(e) => setRenderModel(e.target.value as RenderModelChoice)}
           className="mt-3 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white focus:border-brand-500 focus:outline-none"
         >
-          {RENDER_MODEL_OPTIONS.map((option) => (
+          {getActiveRenderModelOptions().map((option) => (
             <option key={option.id} value={option.id}>
               {option.label} — {option.description}
             </option>

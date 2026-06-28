@@ -65,6 +65,25 @@ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_live_..."
 WATERMARK_TEXT="design-ai"
 ```
 
+### Render Engine v17 (Pollinations) — обязательно для продакшена
+
+```env
+RENDER_ENGINE_V17=1
+PIPELINE_V17=1
+POLLINATIONS_API_KEY="ваш_ключ_с_gen.pollinations.ai"
+POLLINATIONS_SKIP_MODELS=gptimage
+RENDER_PROVIDER=pollinations
+DESIGN_GOVERNANCE_V171=1
+GOVERNANCE_CONSTITUTION_THRESHOLD=80
+GOVERNANCE_PROFESSIONAL_THRESHOLD=75
+GOVERNANCE_PROFESSIONAL_NEAR_MISS=2
+GOVERNANCE_ALLOW_GRADIENT_FALLBACK=0
+```
+
+После деплоя проверьте: `curl -s https://your-domain.com/api/health` → `"pipelineVersion":"v17.1-design-governance"`.
+
+`HF_API_KEY` нужен только если `RENDER_ENGINE_V17=0` (legacy v16).
+
 ## 3. First deploy
 
 ```bash

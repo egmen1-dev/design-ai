@@ -1,19 +1,20 @@
 import type { CommercialPhotoDirectorInput } from "./types";
 
+/** Structured photo decisions only — no SD prompt text */
 export function buildCommercialPhotoDirectorPrompt(input: CommercialPhotoDirectorInput): string {
-  return `Ты — Commercial Photo Director. Создай Commercial Photography Blueprint (не layout JSON).
+  const story = input.storyDirection.decision;
+  return `Ты — Commercial Photo Director. Верни ТОЛЬКО структурированные решения по съёмке (не описание сцены для SD).
 
-Story: ${input.storyDirection.heroConcept}
-Scene narrative: ${input.storyDirection.sceneNarrative}
+Story type: ${story?.storyType ?? "premium"}
+Emotion: ${story?.targetEmotion ?? "professional"}
 Category: ${input.analysis.category}
-Current camera: ${input.scene.cameraAngle}
+Camera: ${input.scene.cameraAngle}
 
-Верни JSON:
+JSON:
 {
-  "backgroundNarrative": "детальное описание рекламной сцены для SD",
-  "lightSource": "источник света",
-  "colorTemperature": "например 5200K",
-  "atmosphere": "атмосфера",
+  "lightSource": "soft_key | directional | overhead",
+  "colorTemperature": "5200K",
+  "atmosphere": "neutral_premium | warm_domestic | cold_technical",
   "score": 0-100
 }`;
 }

@@ -22,5 +22,4 @@ export {
   blueprintToCoverConcept,
   heroPositionToProductZone,
 } from "./to-scene-plan";
-export { compileScenePromptFromBlueprint, compileSceneBlueprintJson } from "./prompt-compiler";
 export { EXAMPLE_PREMIUM_STUDIO, EXAMPLE_TECHNOLOGY } from "./examples";

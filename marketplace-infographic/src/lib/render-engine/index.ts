@@ -70,3 +70,8 @@ export { RENDER_ENGINE_VERSION, RENDER_QUALITY_PASS_THRESHOLD } from "./types";
 export { RENDER_PROFILES, resolveRenderProfileId } from "./profiles";
 export { evaluateRenderQuality } from "./quality/render-quality";
 export { checkRenderProvidersHealth } from "./providers/registry";
+export {
+  regenerateMarketplaceBackground,
+  type RegenerateBackgroundInput,
+  type RegenerateBackgroundResult,
+} from "./regenerate-background";

@@ -27,7 +27,6 @@ export async function runCommercialPhotoDirector(
 
   try {
     const raw = await callOllamaJson<{
-      backgroundNarrative?: string;
       lightSource?: string;
       colorTemperature?: string;
       atmosphere?: string;
@@ -36,19 +35,20 @@ export async function runCommercialPhotoDirector(
 
     return {
       ...heuristic,
-      backgroundNarrative: raw.backgroundNarrative ?? heuristic.backgroundNarrative,
       photoBlueprint: {
         ...heuristic.photoBlueprint,
-        backgroundNarrative: raw.backgroundNarrative ?? heuristic.backgroundNarrative,
+        backgroundNarrative: "",
         lightSource: raw.lightSource ?? heuristic.photoBlueprint.lightSource,
         colorTemperature: raw.colorTemperature ?? heuristic.photoBlueprint.colorTemperature,
         atmosphere: raw.atmosphere ?? heuristic.photoBlueprint.atmosphere,
+        scenePatch: heuristic.scenePatch,
       },
       scenePatch: {
         ...heuristic.scenePatch,
         lightingTemperature: raw.colorTemperature ?? heuristic.scenePatch.lightingTemperature,
         visualMood: raw.atmosphere ?? heuristic.scenePatch.visualMood,
       },
+      backgroundNarrative: "",
       score: typeof raw.score === "number" ? raw.score : heuristic.score,
       approved: (raw.score ?? heuristic.score) >= 76,
     };

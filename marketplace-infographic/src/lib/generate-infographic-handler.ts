@@ -6,7 +6,6 @@ import { generateSdInfographicData, type OllamaSdContext } from "@/lib/ollama-sd
 import {
   backgroundToDataUrl,
   buildFallbackGradient,
-  generateBackground,
 } from "@/lib/stable-diffusion";
 import { renderInfographicHtml } from "@/lib/infographic-template";
 import { sdDataToInfographic } from "@/lib/sd-to-infographic";
@@ -105,14 +104,13 @@ import type { ScenePlan } from "@/lib/design/scene-planner";
 import type { QualityValidationResult } from "@/lib/design/quality-validator";
 import type { ArtDirectorModeId } from "@/lib/design-process/art-director-modes";
 import type { RenderModelId } from "@/lib/render-engine/types";
-import { buildRenderModelsChain } from "@/lib/render-engine/render-models";
 import { runVisualPipeline } from "@/lib/design/visual-pipeline";
 import type { VisualSceneBlueprint } from "@/lib/design/visual-pipeline";
 import type { FeedbackLearningSnapshot } from "@/lib/feedback/types";
 import { PIPELINE_VERSION } from "@/lib/pipeline-version";
 import {
   USE_RENDER_ENGINE_V17,
-  runRenderEngine,
+  regenerateMarketplaceBackground,
   type RenderEngineOrchestratorResult,
 } from "@/lib/render-engine";
 import { USE_FAST_CUTOUT, MAX_CONCEPT_RENDER_RETRIES, MAX_QUALITY_REFINEMENT_PASSES, MAX_PHOTO_BG_RETRIES, MAX_CHIEF_FIX_RETRIES, isAiBackgroundSource } from "@/lib/pipeline-config";
@@ -1219,81 +1217,61 @@ export async function handleGenerateInfographic(
             input.regenerateBackgroundOnly ? productCutoutPath ?? undefined : undefined,
           );
 
-    const renderModelsChain = buildRenderModelsChain(input.renderModel);
+    const regenBackground = (seedSuffix: string, scene: ScenePlan = scenePlan) =>
+      regenerateMarketplaceBackground({
+        analysis,
+        scenePlan: scene,
+        layoutSpec,
+        sceneBlueprint: activeSceneBlueprint ?? sceneDirection?.blueprint,
+        visualBlueprint,
+        variationSeed,
+        seedSuffix,
+        renderModel: input.renderModel,
+        luxuryScore: luxuryScoreValue,
+        compositionScore: compositionDirection?.quality.total,
+        sceneScore: sceneDirection?.quality.total,
+        constitutionPassed: constitutionPassedForPipeline(
+          constitutionReports,
+          useDesignGovernance,
+        ),
+        qualityInput: {
+          layoutSpec,
+          layout: compositionLayout,
+          meaning: cardMeaning,
+          luxuryScore: luxuryScoreValue,
+          compositionScore: compositionDirection?.quality.total,
+          sceneScore: sceneDirection?.quality.total,
+        },
+        legacyPrompt: sdData.backgroundPrompt,
+        legacyStyle: appliedStyle,
+        decisionLog: governanceDecisionLog,
+      });
 
     const bgPromise = (async () => {
-      if (useRenderEngineV17) {
-        let lastError = "render engine failed";
-        for (let i = 0; i < renderModelsChain.length; i++) {
-          const modelId = renderModelsChain[i];
-          try {
-            const engine = await runRenderEngine({
-              analysis,
-              scenePlan,
-              layoutSpec,
-              sceneBlueprint: activeSceneBlueprint ?? sceneDirection?.blueprint,
-              visualBlueprint,
-              debugRequestId: variationSeed,
-              luxuryScore: luxuryScoreValue,
-              compositionScore: compositionDirection?.quality.total,
-              sceneScore: sceneDirection?.quality.total,
-              constitutionPassed: constitutionPassedForPipeline(
-                constitutionReports,
-                useDesignGovernance,
-              ),
-              seedSuffix: `${variationSeed}:m${i}`,
-              skipCompose: true,
-              modelOverride: modelId,
-              lockModel: true,
-              qualityInput: {
-                layoutSpec,
-                layout: compositionLayout,
-                meaning: cardMeaning,
-                luxuryScore: luxuryScoreValue,
-                compositionScore: compositionDirection?.quality.total,
-                sceneScore: sceneDirection?.quality.total,
-              },
-            });
-            renderEngineResult = engine;
-            governanceDecisionLog.push(
-              `Render OK model=${modelId} attempts=${engine.attempts.length}`,
-            );
-            const adapterPrompt =
-              engine.selectedAttempt.result?.compiled.prompt ?? "v17 background";
-            sdData.backgroundPrompt = adapterPrompt.slice(0, 480);
-            if (designBrief) {
-              designBrief = {
-                ...designBrief,
-                backgroundPrompt: adapterPrompt.slice(0, 480),
-                negativePrompt:
-                  engine.selectedAttempt.result?.compiled.negativePrompt?.slice(0, 300),
-              };
-            }
-            return {
-              url: engine.backgroundUrl,
-              dataUrl: `data:image/png;base64,${engine.backgroundBuffer.toString("base64")}`,
-            };
-          } catch (e) {
-            lastError = e instanceof Error ? e.message : String(e);
-            governanceDecisionLog.push(`Render retry ${modelId}: ${lastError.slice(0, 120)}`);
-            console.warn(`[render-engine-v17] model ${modelId} failed:`, lastError);
-          }
-        }
-        throw new Error(lastError);
+      const bg = await regenBackground("primary");
+      if (bg.engine) {
+        renderEngineResult = bg.engine as RenderEngineOrchestratorResult;
       }
-      if (!process.env.HF_API_KEY) throw new Error("HF_API_KEY missing");
-      const url = await generateBackground(sdData.backgroundPrompt, {
-        seedSuffix: variationSeed,
-        style: appliedStyle,
-      });
-      return { url, dataUrl: await backgroundToDataUrl(url) };
+      const adapterPrompt = bg.adapterPrompt ?? sdData.backgroundPrompt;
+      sdData.backgroundPrompt = adapterPrompt.slice(0, 480);
+      if (designBrief && bg.adapterPrompt) {
+        designBrief = {
+          ...designBrief,
+          backgroundPrompt: adapterPrompt.slice(0, 480),
+          negativePrompt: bg.engine?.selectedAttempt.result?.compiled.negativePrompt?.slice(
+            0,
+            300,
+          ),
+        };
+      }
+      return { url: bg.url, dataUrl: bg.dataUrl, source: bg.source };
     })();
 
     try {
       const [bg, cutout] = await Promise.all([bgPromise, cutoutPromise]);
       backgroundUrl = bg.url;
       backgroundDataUrl = bg.dataUrl;
-      backgroundSource = useRenderEngineV17 ? "provider" : "sd";
+      backgroundSource = bg.source;
       productRender = cutout;
       productCutoutPath = cutout.webPath;
     } catch (error) {
@@ -1349,13 +1327,11 @@ export async function handleGenerateInfographic(
       while (photoBgRetry <= MAX_PHOTO_BG_RETRIES) {
         try {
           if (photoBgRetry > 0) {
-            if (!process.env.HF_API_KEY) break;
-            const url = await generateBackground(sdData.backgroundPrompt, {
-              seedSuffix: `${variationSeed}:photo-${photoBgRetry}`,
-              style: appliedStyle,
-            });
-            backgroundUrl = url;
-            backgroundDataUrl = await backgroundToDataUrl(url);
+            const bg = await regenBackground(`photo-${photoBgRetry}`);
+            backgroundUrl = bg.url;
+            backgroundDataUrl = bg.dataUrl;
+            backgroundSource = bg.source;
+            if (bg.engine) renderEngineResult = bg.engine as RenderEngineOrchestratorResult;
           }
 
           compositeResult = await compositeProductIntoScene(backgroundUrl, productCutoutPath, {
@@ -1474,14 +1450,12 @@ export async function handleGenerateInfographic(
           }
           sdData.backgroundPrompt = bgPrompt;
           try {
-            if (!process.env.HF_API_KEY) throw new Error("HF_API_KEY missing");
-            const url = await generateBackground(bgPrompt, {
-              seedSuffix: `${variationSeed}:chief-bg`,
-              style: appliedStyle,
-            });
-            backgroundUrl = url;
-            backgroundDataUrl = await backgroundToDataUrl(url);
-            compositeResult = await compositeProductIntoScene(url, productCutoutPath, {
+            const bg = await regenBackground("chief-bg");
+            backgroundUrl = bg.url;
+            backgroundDataUrl = bg.dataUrl;
+            backgroundSource = bg.source;
+            if (bg.engine) renderEngineResult = bg.engine as RenderEngineOrchestratorResult;
+            compositeResult = await compositeProductIntoScene(bg.url, productCutoutPath, {
               layout: "marketplace",
               scene: scenePlan,
               compositionLayout,
@@ -1621,17 +1595,17 @@ export async function handleGenerateInfographic(
       sdData.backgroundPrompt = retryCompiled.prompt;
 
       try {
-        if (!process.env.HF_API_KEY) throw new Error("HF_API_KEY missing");
-        const url = await generateBackground(sdData.backgroundPrompt, {
-          seedSuffix: `${variationSeed}:c${conceptRetryIndex}`,
-          style: appliedStyle,
-        });
-        backgroundUrl = url;
-        backgroundDataUrl = await backgroundToDataUrl(url);
-        backgroundSource = "sd";
+        const bg = await regenBackground(`c${conceptRetryIndex}`, retryScene);
+        backgroundUrl = bg.url;
+        backgroundDataUrl = bg.dataUrl;
+        backgroundSource = bg.source;
+        if (bg.engine) renderEngineResult = bg.engine as RenderEngineOrchestratorResult;
+        if (bg.adapterPrompt) {
+          sdData.backgroundPrompt = bg.adapterPrompt.slice(0, 480);
+        }
 
         if (productCutoutPath && usePhotorealMerge) {
-          compositeResult = await compositeProductIntoScene(url, productCutoutPath, {
+          compositeResult = await compositeProductIntoScene(bg.url, productCutoutPath, {
             layout: "marketplace",
             scene: retryScene,
             compositionLayout,

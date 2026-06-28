@@ -8,6 +8,7 @@
     "prepare-standalone": "bash scripts/prepare-standalone.sh",
     "start": "next start",
     "lint": "next lint",
+    "test:specs": "bash scripts/run-specs.sh",
     "postinstall": "npx prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate deploy"
