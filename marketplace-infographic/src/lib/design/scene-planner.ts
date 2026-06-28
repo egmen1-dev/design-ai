@@ -255,7 +255,7 @@ function buildProductSafeZone(
 
   const centerX: [number, number] =
     textSide === "left" ? [52, 62] : [38, 52];
-  const centerY: [number, number] = [48, 58];
+  const centerY: [number, number] = [62, 72];
 
   return {
     centerX: [

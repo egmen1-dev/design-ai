@@ -5,9 +5,11 @@ export const MAX_SCENE_ATTEMPTS = FAST_GENERATION
   ? 1
   : Number(process.env.MAX_SCENE_ATTEMPTS ?? 3);
 
-/** Sharp-only вырезка вместо imgly (экономит 30–90 с) */
+/** Sharp-only вырезка — при v17 используем imgly для чистого cutout (меньше «стикера») */
 export const USE_FAST_CUTOUT =
-  FAST_GENERATION || process.env.DISABLE_IMGLY === "1";
+  process.env.USE_FAST_CUTOUT === "1" ||
+  (FAST_GENERATION && process.env.RENDER_ENGINE_V17 !== "1") ||
+  process.env.DISABLE_IMGLY === "1";
 
 export const COMPOSITION_MAX_ATTEMPTS = FAST_GENERATION ? 4 : 10;
 export const COMPOSITION_MIN_SCORE = FAST_GENERATION ? 85 : 90;

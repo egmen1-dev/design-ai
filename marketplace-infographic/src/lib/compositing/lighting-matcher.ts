@@ -7,6 +7,19 @@ export type LightingMatchOptions = {
   contrastBoost?: number;
 };
 
+export function normalizeLightingDirection(
+  raw?: string,
+  fallback: SceneLightingProfile["direction"] = "ambient",
+): SceneLightingProfile["direction"] {
+  const s = (raw ?? "").toLowerCase();
+  if (s.includes("left") && (s.includes("top") || s.includes("45"))) return "top-left";
+  if (s.includes("right") && (s.includes("top") || s.includes("45"))) return "top-right";
+  if (s.includes("left") || s.includes("слева")) return "left";
+  if (s.includes("right") || s.includes("справа")) return "right";
+  if (s.includes("top") || s.includes("верх") || s.includes("overhead")) return "top";
+  return fallback;
+}
+
 function directionToGradient(
   direction: SceneLightingProfile["direction"],
   width: number,
@@ -76,7 +89,10 @@ export async function matchLightingToScene(
 
   const tinted = await pipeline.png().toBuffer();
 
-  const gradientSvg = directionToGradient(lighting.direction, w, h);
+  const litDirection = options?.expectedDirection
+    ? normalizeLightingDirection(options.expectedDirection, lighting.direction)
+    : lighting.direction;
+  const gradientSvg = directionToGradient(litDirection, w, h);
   const lit = await sharp(tinted)
     .composite([
       {
