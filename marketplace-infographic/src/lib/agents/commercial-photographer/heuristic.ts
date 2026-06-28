@@ -117,7 +117,7 @@ export function evaluateCommercialPhotographerHeuristic(
     integration >= 72 &&
     problems.length === 0 &&
     input.hasComposite &&
-    input.backgroundSource === "sd" &&
+    (input.backgroundSource === "sd" || input.backgroundSource === "provider") &&
     !pngOverlayFeel;
 
   if (!looksLikePhoto && recommendations.length < 2) {

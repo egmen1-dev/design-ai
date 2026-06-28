@@ -112,7 +112,7 @@ import {
   runRenderEngine,
   type RenderEngineOrchestratorResult,
 } from "@/lib/render-engine";
-import { USE_FAST_CUTOUT, MAX_CONCEPT_RENDER_RETRIES, MAX_QUALITY_REFINEMENT_PASSES, MAX_PHOTO_BG_RETRIES, MAX_CHIEF_FIX_RETRIES } from "@/lib/pipeline-config";
+import { USE_FAST_CUTOUT, MAX_CONCEPT_RENDER_RETRIES, MAX_QUALITY_REFINEMENT_PASSES, MAX_PHOTO_BG_RETRIES, MAX_CHIEF_FIX_RETRIES, isAiBackgroundSource } from "@/lib/pipeline-config";
 import {
   buildInitialLayoutSpec,
   layoutSpecToTemplatePreference,
@@ -1324,7 +1324,7 @@ export async function handleGenerateInfographic(
       productRender?.cutout &&
       productCutoutPath &&
       backgroundUrl &&
-      backgroundSource === "sd"
+      isAiBackgroundSource(backgroundSource)
     ) {
       let photoBgRetry = 0;
       while (photoBgRetry <= MAX_PHOTO_BG_RETRIES) {
@@ -1677,7 +1677,7 @@ export async function handleGenerateInfographic(
     } else if (
       sdData.layout !== "marketplace" &&
       backgroundUrl &&
-      backgroundSource === "sd" &&
+      isAiBackgroundSource(backgroundSource) &&
       productRender?.cutout &&
       productCutoutPath
     ) {
@@ -1728,6 +1728,7 @@ export async function handleGenerateInfographic(
       sceneScore: sceneDirection?.quality.total,
       luxuryScore: luxuryScoreValue,
       photoScore: photoReview?.score,
+      seniorAdScore: seniorAdReview?.score,
       ctrScore: ctrReview?.score,
       readabilityScore: compiledBackground?.metadata.readabilityScore,
       backgroundSource,

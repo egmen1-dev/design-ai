@@ -27,3 +27,10 @@ export const OLLAMA_TIMEOUT_MS = Number(
 
 export const HF_MAX_ATTEMPTS = FAST_GENERATION ? 4 : 6;
 export const HF_TOTAL_TIMEOUT_MS = FAST_GENERATION ? 120_000 : 180_000;
+
+/** SD (v16) or Render Engine provider (v17) — real AI background, not gradient */
+export function isAiBackgroundSource(
+  source: "sd" | "fallback" | "provider" | string | undefined,
+): source is "sd" | "provider" {
+  return source === "sd" || source === "provider";
+}

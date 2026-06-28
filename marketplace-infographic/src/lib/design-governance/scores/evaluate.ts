@@ -23,6 +23,7 @@ export type ScorecardInput = {
   sceneScore?: number;
   luxuryScore?: number;
   photoScore?: number;
+  seniorAdScore?: number;
   ctrScore?: number;
   readabilityScore?: number;
   backgroundSource?: string;
@@ -34,8 +35,16 @@ export function buildGovernanceScorecard(input: ScorecardInput): GovernanceScore
   const composition = input.compositionScore ?? 78;
   const scene = input.sceneScore ?? 80;
   const luxury = input.luxuryScore ?? 75;
-  const photo = input.photoScore ?? 70;
-  const ctr = input.ctrScore ?? 68;
+  const photoBase = input.photoScore ?? 70;
+  const photo =
+    input.seniorAdScore != null
+      ? Math.max(photoBase, Math.round(input.seniorAdScore * 0.85))
+      : photoBase;
+  const ctrBase = input.ctrScore ?? 68;
+  const ctr =
+    input.seniorAdScore != null
+      ? Math.max(ctrBase, Math.round(input.seniorAdScore * 0.9))
+      : ctrBase;
   const readability = input.readabilityScore ?? 82;
   const render = input.renderDesignScore ?? 80;
 
