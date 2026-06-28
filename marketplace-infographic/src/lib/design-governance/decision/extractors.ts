@@ -37,8 +37,16 @@ export function extractStoryDecisions(
   story?: VisualStoryDirectorResult,
 ): DesignDecision[] {
   if (!story) return [];
-  const narrative = `${story.heroConcept} ${story.sceneNarrative} ${story.customerIntent}`;
-  const scene = inferSceneFromText(narrative);
+  const narrative = story.decision
+    ? `${story.decision.storyType} ${story.decision.usageContext} ${story.decision.targetEmotion}`
+    : `${story.heroConcept} ${story.sceneNarrative} ${story.customerIntent}`;
+  const scene = story.decision
+    ? story.decision.usageContext === "outdoor"
+      ? "outdoor"
+      : story.decision.storyType === "domestic"
+        ? "kitchen"
+        : inferSceneFromText(narrative)
+    : inferSceneFromText(narrative);
   const lighting = inferLightingFromText(narrative);
   const conf = Math.min(0.99, (story.score ?? 70) / 100);
   return [

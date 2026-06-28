@@ -127,6 +127,7 @@ export type RenderRequest = {
     compositionScore?: number;
     sceneScore?: number;
     luxuryScore?: number;
+    visualBlueprint?: import("@/lib/design/visual-pipeline/types").VisualSceneBlueprint;
   };
 };
 

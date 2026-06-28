@@ -92,6 +92,18 @@ export type {
   CompositionDirectorResult,
 } from "./composition-director/agent";
 export {
+  LIGHTING_DIRECTOR_AGENT,
+  runLightingDirectorAgent,
+} from "./lighting-director/agent";
+export {
+  CAMERA_DIRECTOR_AGENT,
+  runCameraDirectorAgent,
+} from "./camera-director/agent";
+export {
+  MATERIAL_DIRECTOR_AGENT,
+  runMaterialDirectorAgent,
+} from "./material-director/agent";
+export {
   DESIGN_MEMORY_AGENT,
   runDesignMemory,
   loadDesignMemoryStore,

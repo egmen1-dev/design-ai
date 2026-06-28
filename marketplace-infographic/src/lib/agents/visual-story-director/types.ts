@@ -5,6 +5,7 @@ import type { ProductVisualProfile } from "@/lib/design/scene-planner";
 import type { CompositionScenarioId } from "@/lib/design/types";
 import type { CreativeDirectorResult } from "@/lib/design-process/creative-concept";
 import type { VisualHook } from "@/lib/design-process/types";
+import type { StoryDecision } from "@/lib/design/visual-pipeline/types";
 
 export type VisualStoryDirectorInput = {
   prompt: string;
@@ -16,9 +17,14 @@ export type VisualStoryDirectorInput = {
   marketIntelligenceSnippet?: string;
 };
 
+/** @deprecated narrative fields — use `decision` for render pipeline */
 export type VisualStoryDirectorResult = {
+  /** Structured commercial narrative — sole output for Pollinations pipeline */
+  decision: StoryDecision;
   storyBlueprint: GenomeIntelligenceContext["storyBlueprint"];
+  /** @deprecated not used by Pollinations adapters */
   sceneNarrative: string;
+  /** @deprecated not used by Pollinations adapters */
   heroConcept: string;
   customerIntent: string;
   visualHook?: VisualHook;
@@ -26,5 +32,5 @@ export type VisualStoryDirectorResult = {
   approved: boolean;
   score: number;
   agentSnippet: string;
-  source: "genome" | "creative" | "merged";
+  source: "genome" | "creative" | "merged" | "structured";
 };

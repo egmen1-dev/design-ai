@@ -85,9 +85,7 @@ function buildSceneDirectorBlueprint(
       floor: template.material.replace(/_/g, " "),
       background: template.background,
       depth: attempt > 0 ? "medium" : "medium",
-      atmosphere: input.storyDirection?.heroConcept
-        ? `${template.atmosphere}, story: ${input.storyDirection.heroConcept.slice(0, 80)}`
-        : template.atmosphere,
+      atmosphere: template.atmosphere,
       material: template.material,
       visualDensity: attempt > 0 ? 0.08 : template.decorative.maxDensity,
     },

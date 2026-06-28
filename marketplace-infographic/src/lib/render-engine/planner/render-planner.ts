@@ -22,6 +22,7 @@ export type RenderPlannerInput = {
   scenePlan: ScenePlan;
   layoutSpec?: LayoutSpec;
   sceneBlueprint?: SceneBlueprint;
+  visualBlueprint?: import("@/lib/design/visual-pipeline/types").VisualSceneBlueprint;
   providerId?: RenderProviderId;
   attemptIndex?: number;
   modelOverride?: import("../types").RenderModelId;
@@ -164,6 +165,7 @@ export function planRenderRequest(input: RenderPlannerInput): RenderRequest {
       compositionScore: input.compositionScore,
       sceneScore: input.sceneScore,
       luxuryScore: input.luxuryScore,
+      visualBlueprint: input.visualBlueprint,
     },
   };
 }

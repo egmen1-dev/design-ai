@@ -9,12 +9,16 @@ import { getRenderAdapter } from "../adapters/registry";
 import { getRenderingProvider } from "../providers/registry";
 import { evaluateRenderQuality, type RenderQualityInput } from "../quality/render-quality";
 import { selectModelForRetry } from "../planner/model-selection";
+import { compilePollinationsPrompt } from "../adapters/pollinations-compiler";
+import { saveRenderDebugArtifacts } from "../debug/render-debug";
+import { isPollinationsModelBlockedError } from "../providers/pollinations/moderation";
 
 export type RenderWithRetryInput = RenderPlannerInput & {
   seedSuffix?: string;
   qualityInput?: Omit<RenderQualityInput, "request">;
   /** When user picks a model in the form — no fallback chain */
   lockModel?: boolean;
+  debugRequestId?: string;
 };
 
 /**
@@ -81,12 +85,29 @@ export async function renderWithRetry(input: RenderWithRetryInput): Promise<Rend
       }
     } catch (e) {
       attempt.error = e instanceof Error ? e.message : String(e);
+      if (isPollinationsModelBlockedError(e) && input.lockModel) {
+        throw e;
+      }
     }
 
     attempts.push(attempt);
   }
 
   if (best?.attempt.result) {
+    if (input.visualBlueprint && input.debugRequestId) {
+      const compiled = compilePollinationsPrompt(input.visualBlueprint);
+      void saveRenderDebugArtifacts({
+        requestId: input.debugRequestId,
+        sceneBlueprint: input.visualBlueprint,
+        pollinationsPrompt: compiled,
+        providerResponse: {
+          ok: true,
+          modelId: best.attempt.modelId,
+          latencyMs: best.attempt.result?.latencyMs,
+        },
+        backgroundPath: best.attempt.result?.imageUrl,
+      }).catch(() => undefined);
+    }
     return buildResult(lastRequest!, attempts, best.attempt, best.score);
   }
 

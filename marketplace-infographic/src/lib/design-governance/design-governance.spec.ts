@@ -18,6 +18,11 @@ async function main() {
   assert.equal(analysis.category, "home_appliances");
 
   const story: VisualStoryDirectorResult = {
+    decision: {
+      storyType: "domestic",
+      targetEmotion: "confidence",
+      usageContext: "outdoor",
+    },
     storyBlueprint: {
       customerIntent: "backup power",
       problem: "outages",

@@ -15,7 +15,8 @@ import { evaluateRenderQuality } from "./quality/render-quality";
 import { RENDER_ENGINE_VERSION } from "./types";
 import { resolveRenderProfileId } from "./profiles";
 import { buildPollinationsImageUrl, sanitizePollinationsSeed, POLLINATIONS_MAX_SEED } from "./providers/pollinations/provider";
-import { sanitizePromptForModeration } from "./providers/pollinations/moderation";
+import { runVisualPipeline } from "@/lib/design/visual-pipeline";
+import { compilePollinationsPrompt } from "./adapters/pollinations-compiler";
 
 async function main() {
   const analysis = analyzeProductPrompt("Генератор 3 кВт для дачи");
@@ -93,18 +94,11 @@ async function main() {
   const quality = evaluateRenderQuality({ request, layoutSpec });
   assert.ok(quality.overallDesignScore >= 0);
 
-  const riskyPrompt = adapter
-    .compile({
-      ...request,
-      scene: {
-        ...request.scene,
-        environment: "industrial workshop studio with gasoline generator",
-        atmosphere: "rugged professional",
-      },
-    }).prompt;
-  assert.ok(!/\bgenerator\b/i.test(riskyPrompt), "compiled prompts should not contain generator");
-  assert.ok(!/\bindustrial\b/i.test(riskyPrompt), "industrial softened in adapter output");
-  assert.ok(sanitizePromptForModeration(riskyPrompt, 1).includes("cyclorama"));
+  const pipeline = runVisualPipeline({ prompt: "Генератор 3 кВт", analysis });
+  const pollinations = compilePollinationsPrompt(pipeline.visualBlueprint);
+  assert.ok(pollinations.validation.ok, pollinations.validation.issues.join("; "));
+  assert.ok(!/\bgenerator\b/i.test(pollinations.prompt), "Pollinations compiler must not contain generator");
+  assert.ok(pollinations.tokenEstimate <= 120, "prompt compressed under 120 tokens");
 
   console.log("render-engine specs OK", profileId, request.modelId, compiled.prompt.length);
 }

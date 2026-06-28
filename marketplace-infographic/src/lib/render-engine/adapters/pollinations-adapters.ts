@@ -1,5 +1,6 @@
 import type { RenderAdapter, RenderRequest, CompiledRenderPayload } from "../types";
 import { joinNegativeTerms } from "./negative";
+import { compilePollinationsPrompt } from "./pollinations-compiler";
 import { sanitizePromptForModeration } from "../providers/pollinations/moderation";
 
 const BACKDROP_ONLY =
@@ -35,13 +36,32 @@ function qualityModule(req: RenderRequest): string {
   return `${req.quality.colorDiscipline}, photorealistic commercial advertising photography, ${req.quality.target}`;
 }
 
-/** Flux adapter — compact modules, ignores coordinates */
+function compileFromBlueprint(request: RenderRequest, model: string): CompiledRenderPayload | null {
+  const bp = request.metadata?.visualBlueprint;
+  if (!bp) return null;
+  const compiled = compilePollinationsPrompt(bp, request.profileId);
+  return {
+    model,
+    prompt: compiled.prompt,
+    negativePrompt: compiled.negativePrompt,
+    width: request.canvas.width,
+    height: request.canvas.height,
+    modulesUsed: compiled.modulesUsed,
+    modulesIgnored: ["layout_coordinates", "hierarchy", "typography_zones", "ctr_wording"],
+    extraParams: model === "gptimage" ? { quality: "high" } : { safe: true },
+  };
+}
+
+/** Flux adapter — uses PollinationsCompiler when VisualSceneBlueprint present */
 export class PollinationsFluxAdapter implements RenderAdapter {
   readonly id = "pollinations-flux";
   readonly modelId = "flux" as const;
   readonly providerId = "pollinations" as const;
 
   compile(request: RenderRequest): CompiledRenderPayload {
+    const fromBlueprint = compileFromBlueprint(request, "flux");
+    if (fromBlueprint) return fromBlueprint;
+
     const modulesUsed = ["scene", "lighting", "environment", "camera", "materials", "quality"];
     const modulesIgnored = ["layout_coordinates", "hierarchy", "typography_zones"];
 
@@ -81,21 +101,26 @@ export class PollinationsFluxKontextAdapter implements RenderAdapter {
   readonly providerId = "pollinations" as const;
 
   compile(request: RenderRequest): CompiledRenderPayload {
+    const fromBlueprint = compileFromBlueprint(request, "kontext");
+    if (fromBlueprint) {
+      return {
+        ...fromBlueprint,
+        referenceImageUrl: request.providerHints.referenceImageUrl,
+      };
+    }
+
     const modulesUsed = ["scene", "environment", "lighting", "materials"];
     const modulesIgnored = ["camera_precision", "layout_coordinates"];
 
-    const prompt = sanitizePromptForModeration(
-      [
-        "transform background for commercial product card",
-        sceneModule(request),
-        environmentModule(request),
-        lightingModule(request),
-        materialsModule(request),
-        "preserve composition, reduce clutter, empty product zone",
-        BACKDROP_ONLY,
-      ].join(", "),
-      0,
-    );
+    const prompt = [
+      "transform background for commercial product card",
+      sceneModule(request),
+      environmentModule(request),
+      lightingModule(request),
+      materialsModule(request),
+      "preserve composition, reduce clutter, empty product zone",
+      BACKDROP_ONLY,
+    ].join(", ");
 
     return {
       model: "kontext",
@@ -117,19 +142,19 @@ export class PollinationsGPTImageAdapter implements RenderAdapter {
   readonly providerId = "pollinations" as const;
 
   compile(request: RenderRequest): CompiledRenderPayload {
+    const fromBlueprint = compileFromBlueprint(request, "gptimage");
+    if (fromBlueprint) return fromBlueprint;
+
     const modulesUsed = ["scene", "lighting", "quality"];
     const modulesIgnored = ["technical_camera", "layout_coordinates", "negative_prompt"];
 
-    const prompt = sanitizePromptForModeration(
-      [
-        `Premium ${request.profileId} marketplace card background.`,
-        sceneModule(request),
-        lightingModule(request),
-        qualityModule(request),
-        "Editorial luxury advertising. Empty center for product. No text. No logos.",
-      ].join(" "),
-      0,
-    );
+    const prompt = [
+      `Premium ${request.profileId} marketplace card background.`,
+      sceneModule(request),
+      lightingModule(request),
+      qualityModule(request),
+      "Editorial luxury advertising. Empty center for product. No text. No logos.",
+    ].join(" ");
 
     return {
       model: "gptimage",
@@ -149,19 +174,25 @@ export class PollinationsSeedreamAdapter implements RenderAdapter {
   readonly providerId = "pollinations" as const;
 
   compile(request: RenderRequest): CompiledRenderPayload {
+    const fromBlueprint = compileFromBlueprint(request, "seedream");
+    if (fromBlueprint) {
+      return {
+        ...fromBlueprint,
+        width: Math.max(960, request.canvas.width),
+        height: Math.max(960, request.canvas.height),
+      };
+    }
+
     const modulesUsed = ["scene", "environment", "lighting"];
     const modulesIgnored = ["layout_coordinates", "hierarchy"];
 
-    const prompt = sanitizePromptForModeration(
-      [
-        "lifestyle commercial photography background",
-        sceneModule(request),
-        environmentModule(request),
-        lightingModule(request),
-        "natural authentic atmosphere, empty foreground, no product, no text",
-      ].join(", "),
-      0,
-    );
+    const prompt = [
+      "lifestyle commercial photography background",
+      sceneModule(request),
+      environmentModule(request),
+      lightingModule(request),
+      "natural authentic atmosphere, empty foreground, no product, no text",
+    ].join(", ");
 
     return {
       model: "seedream",

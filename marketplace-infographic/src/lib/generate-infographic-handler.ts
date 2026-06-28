@@ -106,6 +106,8 @@ import type { QualityValidationResult } from "@/lib/design/quality-validator";
 import type { ArtDirectorModeId } from "@/lib/design-process/art-director-modes";
 import type { RenderModelId } from "@/lib/render-engine/types";
 import { buildRenderModelsChain } from "@/lib/render-engine/render-models";
+import { runVisualPipeline } from "@/lib/design/visual-pipeline";
+import type { VisualSceneBlueprint } from "@/lib/design/visual-pipeline";
 import type { FeedbackLearningSnapshot } from "@/lib/feedback/types";
 import { PIPELINE_VERSION } from "@/lib/pipeline-version";
 import {
@@ -1048,6 +1050,7 @@ export async function handleGenerateInfographic(
     let luxuryScoreValue: number | undefined;
     let compiledBackground: ReturnType<typeof compileBackgroundPrompt> | undefined;
     let renderEngineResult: RenderEngineOrchestratorResult | undefined;
+    let visualBlueprint: VisualSceneBlueprint | undefined;
     const useRenderEngineV17 = USE_RENDER_ENGINE_V17 && sdData.layout === "marketplace";
 
     if (sdData.layout === "marketplace") {
@@ -1095,6 +1098,21 @@ export async function handleGenerateInfographic(
       layoutSpec = built.layoutSpec;
       qualityGateV165 = built.qualityGate;
       qualityRefinementPasses = built.refinementPasses;
+
+      if (useRenderEngineV17 && layoutSpec) {
+        const pipeline = runVisualPipeline({
+          prompt: input.prompt,
+          analysis: productAnalysis,
+          layoutSpec,
+          palette,
+          sceneTypeHint: sceneDirection?.sceneType,
+        });
+        visualBlueprint = pipeline.visualBlueprint;
+        activeSceneBlueprint = pipeline.sceneBlueprint;
+        governanceDecisionLog.push(
+          ...pipeline.snippets.map((s) => `VisualPipeline ${s}`),
+        );
+      }
       luxuryScoreValue = built.qualityGate.luxuryScore.total;
       if (governanceBlueprint?.locked) {
         layoutSpec = governanceBlueprint.layoutSpec;
@@ -1214,6 +1232,8 @@ export async function handleGenerateInfographic(
               scenePlan,
               layoutSpec,
               sceneBlueprint: activeSceneBlueprint ?? sceneDirection?.blueprint,
+              visualBlueprint,
+              debugRequestId: variationSeed,
               luxuryScore: luxuryScoreValue,
               compositionScore: compositionDirection?.quality.total,
               sceneScore: sceneDirection?.quality.total,
