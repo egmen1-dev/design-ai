@@ -28,24 +28,63 @@
     .mp-header {
       position: relative;
       z-index: 6;
-      max-width: var(--comp-headline-width, 58%);
-      padding: calc(var(--canvas-h-num) * 0.012px) calc(var(--canvas-w-num) * 0.022px);
-      border-radius: calc(var(--canvas-w-num) * 0.016px);
-      background: rgba(255, 255, 255, 0.88);
-      border: 1px solid rgba(15, 23, 42, 0.08);
-      box-shadow: 0 calc(var(--canvas-h-num) * 0.006px) calc(var(--canvas-h-num) * 0.02px) rgba(15, 23, 42, 0.1);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      max-width: calc(var(--comp-headline-width, 52%) + var(--canvas-w-num) * 0.04px);
+      padding: calc(var(--canvas-h-num) * 0.016px) calc(var(--canvas-w-num) * 0.024px);
+      border-radius: calc(var(--canvas-w-num) * 0.014px);
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid rgba(15, 23, 42, 0.07);
+      box-shadow: 0 calc(var(--canvas-h-num) * 0.005px) calc(var(--canvas-h-num) * 0.016px) rgba(15, 23, 42, 0.08);
+    }
+
+    .mp-header__top {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: calc(var(--canvas-w-num) * 0.018px);
+      flex-wrap: wrap;
+    }
+
+    .mp-header__spec {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: calc(var(--canvas-w-num) * 0.1px);
+      padding: calc(var(--canvas-h-num) * 0.008px) calc(var(--canvas-w-num) * 0.018px);
+      border-radius: calc(var(--canvas-w-num) * 0.01px);
+      background: var(--spec-accent, var(--accent));
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .mp-header__spec-value {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: calc(var(--comp-headline-size-pct) * var(--canvas-h-num) / 100 * 0.72px);
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+    }
+
+    .mp-header__spec-unit {
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: calc(var(--comp-headline-size-pct) * var(--canvas-h-num) / 100 * 0.28px);
+      line-height: 1;
+      opacity: 0.92;
+      text-transform: lowercase;
     }
 
     .mp-title {
       font-family: var(--font-display);
-      font-weight: 800;
-      line-height: 1.06;
-      letter-spacing: -0.03em;
+      font-weight: 700;
+      font-size: calc(var(--comp-headline-size-pct) * var(--canvas-h-num) / 100 * 0.92px);
+      line-height: 1.08;
+      letter-spacing: -0.025em;
       text-shadow: none !important;
       margin: 0;
       color: #0f172a !important;
+      flex: 1 1 auto;
+      min-width: 0;
     }
 
     .mp-pill {
@@ -282,15 +321,14 @@
 
     <div class="canvas-grid layout-marketplace">
       <header class="mp-header">
-        <h1 class="mp-title">{{HEADLINE}}</h1>
+        <div class="mp-header__top">
+          <h1 class="mp-title">{{HEADLINE}}</h1>
+          {{HEADER_SPEC_HTML}}
+        </div>
         {{PILL_HTML}}
       </header>
 
       <div class="mp-body{{BODY_CLASS}}">
-        <aside class="mp-left" aria-label="Характеристики">
-          {{LEFT_SPECS_HTML}}
-        </aside>
-
         <section class="mp-product{{MERGED_PRODUCT_CLASS}}" aria-label="Товар">
           {{PRODUCT_HTML}}
         </section>

@@ -42,6 +42,33 @@ export async function getAlphaBounds(productBuffer: Buffer): Promise<AlphaBounds
   return { left, top, right, bottom, width: right - left + 1, height: bottom - top + 1 };
 }
 
+/** Y-координата самых нижних непрозрачных пикселей в нижней зоне cutout */
+export async function getAlphaFootBottom(productBuffer: Buffer): Promise<number | null> {
+  const bounds = await getAlphaBounds(productBuffer);
+  if (!bounds) return null;
+
+  const { data, info } = await sharp(productBuffer)
+    .ensureAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+
+  const w = info.width;
+  const h = info.height;
+  const scanTop = bounds.top + Math.round(bounds.height * 0.55);
+  let footBottom = bounds.bottom;
+
+  for (let y = scanTop; y <= bounds.bottom; y++) {
+    for (let x = bounds.left; x <= bounds.right; x++) {
+      const alpha = data[(y * w + x) * info.channels + (info.channels - 1)];
+      if (alpha > 40) {
+        footBottom = Math.max(footBottom, y);
+      }
+    }
+  }
+
+  return footBottom;
+}
+
 /** Оценивает линию пола по горизонтальному градиенту яркости в нижней части кадра. */
 export async function detectFloorY(
   backgroundBuffer: Buffer,
@@ -53,12 +80,12 @@ export async function detectFloorY(
 
   const scanLeft = hint ? Math.max(0, hint.left) : Math.round(w * 0.15);
   const scanWidth = hint ? Math.min(w - scanLeft, hint.width) : Math.round(w * 0.7);
-  const scanTop = Math.round(h * 0.45);
+  const scanTop = Math.round(h * 0.5);
   const scanHeight = h - scanTop;
 
   const { data, info } = await sharp(backgroundBuffer)
     .extract({ left: scanLeft, top: scanTop, width: scanWidth, height: scanHeight })
-    .resize(scanWidth, Math.min(scanHeight, 180), { fit: "fill" })
+    .resize(scanWidth, Math.min(scanHeight, 200), { fit: "fill" })
     .removeAlpha()
     .raw()
     .toBuffer({ resolveWithObject: true });
@@ -76,10 +103,10 @@ export async function detectFloorY(
     rowLum.push(sum / cols);
   }
 
-  let bestY = rows - 1;
+  let bestY = Math.round(rows * 0.72);
   let bestGrad = 0;
-  for (let y = 1; y < rows - 1; y++) {
-    const grad = Math.abs(rowLum[y + 1] - rowLum[y - 1]);
+  for (let y = 2; y < rows - 2; y++) {
+    const grad = Math.abs(rowLum[y + 2] - rowLum[y - 2]);
     if (grad > bestGrad) {
       bestGrad = grad;
       bestY = y;
@@ -87,7 +114,13 @@ export async function detectFloorY(
   }
 
   const scale = scanHeight / rows;
-  return scanTop + Math.round(bestY * scale);
+  const detected = scanTop + Math.round(bestY * scale);
+
+  if (bestGrad < 4) {
+    return Math.round(h * 0.78);
+  }
+
+  return Math.min(h - 24, Math.max(Math.round(h * 0.68), detected));
 }
 
 export async function sampleFloorColor(
@@ -99,7 +132,7 @@ export async function sampleFloorColor(
   const w = meta.width ?? 900;
   const h = meta.height ?? 1200;
   const left = Math.max(0, Math.min(w - 40, centerX - 20));
-  const top = Math.max(0, Math.min(h - 12, floorY - 4));
+  const top = Math.max(0, Math.min(h - 12, floorY + 2));
 
   const { data, info } = await sharp(backgroundBuffer)
     .extract({ left, top, width: 40, height: 12 })

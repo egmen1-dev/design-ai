@@ -328,10 +328,10 @@ export function planScene(input: ScenePlannerInput): {
 
   const depthOfField =
     concept.id === "premium_minimal"
-      ? "very shallow, creamy bokeh"
+      ? "sharp foreground, soft distant background only"
       : concept.id === "garden_scene" || concept.id === "outdoor_lifestyle"
-        ? "moderate, environmental blur"
-        : "shallow studio bokeh";
+        ? "natural depth, floor in focus"
+        : "sharp floor plane, gentle background falloff";
 
   let scene: ScenePlan = {
     cameraAngle: camera.cameraAngle,

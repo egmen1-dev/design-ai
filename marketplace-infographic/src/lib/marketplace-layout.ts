@@ -36,22 +36,33 @@ export function buildMarketplacePillHtml(subtitle: string, accent: string): stri
     </div>`;
 }
 
-/** Компактный бейдж характеристики — под заголовком слева */
-export function buildMarketplaceLeftSpecsHtml(
+/** Бейдж характеристики внутри шапки */
+export function buildMarketplaceHeaderSpecHtml(
   data: InfographicData,
   accent: string,
 ): string {
   const hero = data.specBlocks[0];
-  if (!hero) return "";
+  if (!hero?.value) return "";
 
   const heroLabel = hero.label ?? "";
   const heroValue = hero.value ?? "—";
+  const parts = heroValue.trim().split(/\s+/);
+  const main = parts[0] ?? heroValue;
+  const unit = parts.slice(1).join(" ") || heroLabel;
 
   return `
-    <div class="mp-spec-chip" style="--chip-accent:${accent};">
-      <span class="mp-spec-chip__value">${escapeHtml(heroValue)}</span>
-      ${heroLabel ? `<span class="mp-spec-chip__label">${escapeHtml(heroLabel)}</span>` : ""}
+    <div class="mp-header__spec" style="--spec-accent:${accent};">
+      <span class="mp-header__spec-value">${escapeHtml(main)}</span>
+      ${unit ? `<span class="mp-header__spec-unit">${escapeHtml(unit)}</span>` : ""}
     </div>`;
+}
+
+/** @deprecated используйте buildMarketplaceHeaderSpecHtml */
+export function buildMarketplaceLeftSpecsHtml(
+  data: InfographicData,
+  accent: string,
+): string {
+  return buildMarketplaceHeaderSpecHtml(data, accent);
 }
 
 /** Постерный режим — без боковых панелей */

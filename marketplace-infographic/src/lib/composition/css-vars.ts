@@ -63,17 +63,21 @@ export function compositionToCssBlock(layout: CompositionLayout): string {
       z-index: 8;
       left: calc(var(--comp-headline-left) * var(--canvas-w-num) / 100 * 1px);
       top: calc(var(--comp-headline-top) * var(--canvas-h-num) / 100 * 1px);
-      max-width: calc(var(--comp-headline-width) * var(--canvas-w-num) / 100 * 1px);
-      padding: 0;
-      margin: 0;
+      max-width: calc(var(--comp-headline-width) * var(--canvas-w-num) / 100 * 1px + var(--canvas-w-num) * 0.06px);
     }
 
     .mp-title {
-      font-size: calc(var(--comp-headline-size-pct) * var(--canvas-h-num) / 100 * 1px) !important;
+      font-size: calc(var(--comp-headline-size-pct) * var(--canvas-h-num) / 100 * 0.92px) !important;
       max-width: 100%;
       margin: 0 !important;
-      line-height: 1.05;
+      line-height: 1.08;
       overflow-wrap: break-word;
+      font-weight: 700 !important;
+    }
+
+    .mp-left,
+    .mp-spec-chip {
+      display: none !important;
     }
 
     .mp-pill {
@@ -175,43 +179,6 @@ export function compositionToCssBlock(layout: CompositionLayout): string {
 
     .mp-glass-badge {
       display: none !important;
-    }
-
-    .mp-spec-chip {
-      display: inline-flex;
-      flex-direction: row;
-      align-items: baseline;
-      gap: calc(var(--comp-safe) * var(--canvas-w-num) / 100 * 0.18px);
-      padding: calc(var(--comp-plaque-height) * var(--canvas-h-num) / 100 * 0.22px) calc(var(--comp-safe) * var(--canvas-w-num) / 100 * 0.32px);
-      border-radius: calc(var(--canvas-w-num) * 0.01px);
-      background: rgba(15, 23, 42, 0.82);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      box-shadow: 0 calc(var(--canvas-h-num) * 0.005px) calc(var(--canvas-h-num) * 0.014px) rgba(0, 0, 0, 0.18);
-      width: auto;
-      max-width: calc(var(--comp-plaque-lg) * var(--canvas-w-num) / 100 * 1.1px);
-    }
-
-    .mp-spec-chip__value {
-      font-family: var(--font-display);
-      font-weight: 800;
-      line-height: 1;
-      color: #fff;
-      font-size: calc(var(--comp-hero-value-size-pct) * var(--canvas-h-num) / 100 * 0.55px) !important;
-      letter-spacing: -0.02em;
-    }
-
-    .mp-spec-chip__label {
-      font-family: var(--font-body);
-      font-size: calc(var(--comp-sidebar-label-size-pct) * var(--canvas-h-num) / 100 * 0.85px);
-      font-weight: 600;
-      color: rgba(255, 255, 255, 0.78);
-      text-transform: lowercase;
-    }
-
-    .mp-left {
-      top: calc((var(--comp-headline-top) + var(--comp-headline-height) + 1.8) * var(--canvas-h-num) / 100 * 1px) !important;
-      left: calc(var(--comp-headline-left) * var(--canvas-w-num) / 100 * 1px) !important;
-      width: auto !important;
     }
 
     .mp-pill--glass {

@@ -19,6 +19,10 @@ export type ShadowGeneratorInput = {
   productHeight: number;
   productLeft: number;
   productTop: number;
+  /** Нижняя точка силуэта внутри cutout (px от верха изображения) */
+  alphaFootBottom: number;
+  /** Y на холсте, куда должны стоять «ноги» */
+  footCanvasY: number;
   lighting: SceneLightingProfile;
   shadowProfile: "contact" | "ambient" | "directional" | "mixed";
   productBuffer?: Buffer;
@@ -185,6 +189,8 @@ export async function generateShadows(input: ShadowGeneratorInput): Promise<Shad
     productHeight,
     productLeft,
     productTop,
+    alphaFootBottom,
+    footCanvasY,
     lighting,
     shadowProfile,
     productBuffer,
@@ -195,12 +201,13 @@ export async function generateShadows(input: ShadowGeneratorInput): Promise<Shad
   const direction = normalizeDirection(lightingDirectionOverride, lighting.direction);
   const offset = lightOffset(direction);
   const layers: ShadowLayer[] = [];
+  const footY = footCanvasY;
 
   if (productBuffer) {
     const alphaShadow = await renderAlphaContactShadow(
       productBuffer,
-      0.72,
-      10,
+      0.78,
+      8,
       offset.x,
       floorColor,
     );
@@ -208,12 +215,8 @@ export async function generateShadows(input: ShadowGeneratorInput): Promise<Shad
       const left =
         productLeft +
         Math.round((productWidth - alphaShadow.width) / 2) +
-        Math.round(offset.x * productWidth * 0.35);
-      const top =
-        productTop +
-        productHeight -
-        Math.round(alphaShadow.height * 0.55) +
-        Math.round(offset.y * productHeight * 0.5);
+        Math.round(offset.x * productWidth * 0.3);
+      const top = footY - Math.round(alphaShadow.height * 0.42);
       layers.push({
         buffer: alphaShadow.buffer,
         width: alphaShadow.width,
@@ -226,8 +229,8 @@ export async function generateShadows(input: ShadowGeneratorInput): Promise<Shad
   }
 
   const aoBuffer = await renderAmbientOcclusion(productWidth, productHeight, offset, floorColor);
-  const aoW = Math.round(productWidth * 0.82);
-  const aoH = Math.max(24, Math.round(productHeight * 0.09));
+  const aoW = Math.round(productWidth * 0.78);
+  const aoH = Math.max(20, Math.round(productHeight * 0.07));
   layers.push({
     buffer: aoBuffer,
     width: aoW,
@@ -235,8 +238,8 @@ export async function generateShadows(input: ShadowGeneratorInput): Promise<Shad
     left:
       productLeft +
       Math.round((productWidth - aoW) / 2) +
-      Math.round(offset.x * productWidth * 0.25),
-    top: productTop + productHeight - Math.round(aoH * 0.42),
+      Math.round(offset.x * productWidth * 0.2),
+    top: footY - Math.round(aoH * 0.55),
     type: "ambient-occlusion",
   });
 
@@ -261,11 +264,7 @@ export async function generateShadows(input: ShadowGeneratorInput): Promise<Shad
       productLeft +
       Math.round((productWidth - w) / 2) +
       Math.round(offset.x * productWidth * 0.55);
-    const top =
-      productTop +
-      productHeight -
-      Math.round(h * 0.28) +
-      Math.round(offset.y * productHeight);
+    const top = footY - Math.round(h * 0.22) + Math.round(offset.y * productHeight * 0.15);
 
     layers.push({ buffer, width: w, height: h, left, top, type });
   }

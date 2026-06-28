@@ -16,7 +16,7 @@ import type { InfographicData, RenderInfographicOptions } from "@/lib/infographi
 import type { InfographicSdInput } from "@/lib/validations";
 import {
   buildMarketplaceBottomRibbonHtml,
-  buildMarketplaceLeftSpecsHtml,
+  buildMarketplaceHeaderSpecHtml,
   buildMarketplacePillHtml,
   buildMarketplaceSidebarHtml,
   formatMarketplaceHeadline,
@@ -273,8 +273,9 @@ export function renderLayoutHtml(
       PRODUCT_NAME: escapeHtml(data.productName),
       STYLE: style,
       HEADLINE: escapeHtml(headline),
+      HEADER_SPEC_HTML: buildMarketplaceHeaderSpecHtml(data, accentHex),
       PILL_HTML: buildMarketplacePillHtml(subtitle, accentHex),
-      LEFT_SPECS_HTML: buildMarketplaceLeftSpecsHtml(data, accentHex),
+      LEFT_SPECS_HTML: "",
       BODY_CLASS: bodyClass,
       MERGED_PRODUCT_CLASS: options?.mergedImageDataUrl ? " mp-product--merged" : "",
       SIDEBAR_WRAP_HTML: sidebarWrapHtml,

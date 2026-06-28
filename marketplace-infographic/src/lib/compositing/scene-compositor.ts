@@ -5,6 +5,8 @@ import sharp from "sharp";
 
 import {
   PRODUCT_BOTTOM_PAD_PX,
+  PRODUCT_MAX_WIDTH_PX,
+  PRODUCT_SIDE_MARGIN_PX,
   PRODUCT_TARGET_MAX_HEIGHT_PX,
 } from "@/lib/product-render-policy";
 import { WB_COVER, xPct, yPct } from "@/lib/composition/canvas";
@@ -17,13 +19,14 @@ import { generateShadows } from "./shadow-generator";
 import { generateReflection } from "./reflection-generator";
 import { applyFilmGrain } from "./grain-matcher";
 import { applySceneHarmony, softenProductEdges } from "./scene-harmony";
-import { detectFloorY, sampleFloorColor } from "./ground-detector";
+import { detectFloorY, getAlphaFootBottom, sampleFloorColor } from "./ground-detector";
 
 const CANVAS_W = WB_COVER.width;
 const CANVAS_H = WB_COVER.height;
-const PRODUCT_MAX_W = 980;
 const PRODUCT_MAX_H = PRODUCT_TARGET_MAX_HEIGHT_PX;
 const BOTTOM_PAD = PRODUCT_BOTTOM_PAD_PX;
+const SIDE_MARGIN = PRODUCT_SIDE_MARGIN_PX;
+const HEADER_RESERVE_PX = Math.round(CANVAS_H * 0.2);
 
 export type SceneCompositeOptions = {
   layout?: "center" | "marketplace";
@@ -58,7 +61,6 @@ async function resizeBackground(bgBuffer: Buffer): Promise<Buffer> {
     .toBuffer();
 }
 
-/** Лёгкое размытие верхней зоны — для marketplace не применяем (фон должен остаться читаемым) */
 export async function softenBackgroundCenter(
   bgBuffer: Buffer,
   layout: SceneCompositeOptions["layout"] = "marketplace",
@@ -102,72 +104,102 @@ export async function softenBackgroundCenter(
     .toBuffer();
 }
 
-function prepareProductLayer(
+function computeMaxProductSize(
+  compositionLayout: CompositionLayout | undefined,
+  objectScale: number,
+): { maxW: number; maxH: number } {
+  const canvasMaxW = CANVAS_W - SIDE_MARGIN * 2;
+  const canvasMaxH = CANVAS_H - HEADER_RESERVE_PX - BOTTOM_PAD;
+
+  const comp = compositionLayout?.product;
+  if (comp) {
+    const zoneW = Math.round(xPct(comp.maxWidthPct));
+    const zoneH = Math.round(yPct(comp.maxHeightPct));
+    const scaleBoost = 0.82 + objectScale * 0.12;
+    return {
+      maxW: Math.min(canvasMaxW, Math.round(zoneW * scaleBoost)),
+      maxH: Math.min(canvasMaxH, Math.round(zoneH * scaleBoost)),
+    };
+  }
+
+  const scale = 0.62 + objectScale * 0.22;
+  return {
+    maxW: Math.min(PRODUCT_MAX_WIDTH_PX, Math.round(canvasMaxW * scale)),
+    maxH: Math.min(PRODUCT_MAX_H, Math.round(canvasMaxH * scale)),
+  };
+}
+
+async function prepareProductLayer(
   productBuffer: Buffer,
   layout: SceneCompositeOptions["layout"],
-  scale: number,
   rotationDeg: number,
-  maxWidthPx?: number,
-  maxHeightPx?: number,
+  maxWidthPx: number,
+  maxHeightPx: number,
 ): Promise<{ buffer: Buffer; width: number; height: number }> {
-  const maxW = maxWidthPx ?? Math.round(PRODUCT_MAX_W * scale);
-  const maxH = maxHeightPx ?? Math.round(PRODUCT_MAX_H * scale);
   let pipeline = sharp(productBuffer)
     .ensureAlpha()
-    .resize(maxW, maxH, { fit: "inside", withoutEnlargement: false });
+    .resize(maxWidthPx, maxHeightPx, { fit: "inside", withoutEnlargement: false });
 
   const tilt =
     rotationDeg !== 0
-      ? rotationDeg
-      : layout === "marketplace"
-        ? -5
-        : 0;
+      ? Math.max(-3, Math.min(3, rotationDeg))
+      : 0;
 
   if (tilt !== 0) {
     pipeline = pipeline.rotate(tilt, { background: { r: 0, g: 0, b: 0, alpha: 0 } });
   }
 
-  return pipeline.png().toBuffer({ resolveWithObject: true }).then((resized) => ({
-    buffer: resized.data,
-    width: resized.info.width,
-    height: resized.info.height,
-  }));
+  const resized = await pipeline.png().toBuffer({ resolveWithObject: true });
+  let { data: buffer, info } = resized;
+
+  const canvasMaxW = CANVAS_W - SIDE_MARGIN * 2;
+  const canvasMaxH = CANVAS_H - HEADER_RESERVE_PX - BOTTOM_PAD;
+  if (info.width > canvasMaxW || info.height > canvasMaxH) {
+    const fitted = await sharp(buffer)
+      .resize(canvasMaxW, canvasMaxH, { fit: "inside", withoutEnlargement: true })
+      .png()
+      .toBuffer({ resolveWithObject: true });
+    buffer = fitted.data;
+    info = fitted.info;
+  }
+
+  return {
+    buffer,
+    width: info.width,
+    height: info.height,
+  };
 }
 
-function bottomAnchorTop(
-  productHeight: number,
+function resolveHorizontalLeft(
+  productWidth: number,
   compositionLayout?: CompositionLayout,
-  floorY?: number,
+): number {
+  if (compositionLayout) {
+    const zoneLeft = Math.round(xPct(compositionLayout.product.left));
+    const zoneWidth = Math.round(xPct(compositionLayout.product.width));
+    const centered = zoneLeft + Math.round((zoneWidth - productWidth) / 2);
+    return Math.max(SIDE_MARGIN, Math.min(centered, CANVAS_W - SIDE_MARGIN - productWidth));
+  }
+  return Math.max(SIDE_MARGIN, Math.round((CANVAS_W - productWidth) / 2));
+}
+
+function resolveVerticalTop(
+  productHeight: number,
+  alphaFootBottom: number,
+  floorY: number,
+  compositionLayout?: CompositionLayout,
 ): number {
   const safeInsetPx = compositionLayout
     ? Math.round(yPct(compositionLayout.safeInsetPct))
     : BOTTOM_PAD;
   const zoneBottom = CANVAS_H - safeInsetPx;
 
-  let top = zoneBottom - productHeight;
+  let top = floorY - alphaFootBottom;
+  top = Math.min(top, zoneBottom - productHeight);
+  top = Math.max(HEADER_RESERVE_PX, top);
+  top = Math.min(top, CANVAS_H - BOTTOM_PAD - productHeight);
 
-  if (compositionLayout) {
-    const zoneTop = Math.round(yPct(compositionLayout.product.top));
-    top = Math.max(zoneTop, Math.min(top, zoneBottom - productHeight));
-  }
-
-  if (floorY !== undefined) {
-    const alphaFootOffset = Math.round(productHeight * 0.02);
-    const targetBottom = floorY + alphaFootOffset;
-    top = Math.min(top, targetBottom - productHeight);
-    top = Math.max(0, Math.min(top, CANVAS_H - productHeight));
-  }
-
-  return top;
-}
-
-function centerInZone(
-  productWidth: number,
-  compositionLayout: CompositionLayout,
-): number {
-  const zoneLeft = Math.round(xPct(compositionLayout.product.left));
-  const zoneWidth = Math.round(xPct(compositionLayout.product.width));
-  return zoneLeft + Math.round((zoneWidth - productWidth) / 2);
+  return Math.round(top);
 }
 
 export type SceneCompositeResult = {
@@ -177,10 +209,6 @@ export type SceneCompositeResult = {
   productPlacement: { left: number; top: number; width: number; height: number };
 };
 
-/**
- * Scene-first композитинг:
- * Lighting Matcher → Color Matcher → Shadows → Reflection → Sharp Composite
- */
 export async function compositeProductIntoScene(
   backgroundUrl: string,
   productUrl: string,
@@ -197,24 +225,13 @@ export async function compositeProductIntoScene(
   ]);
 
   const bgResized = await resizeBackground(bgRaw);
-
-  const rotationDeg = comp?.rotationDeg ?? 0;
-  const targetW = comp ? Math.round(xPct(comp.maxWidthPct)) : undefined;
-  const targetH = comp ? Math.round(yPct(comp.maxHeightPct)) : undefined;
-
-  const scaleFactor =
-    layout === "marketplace"
-      ? Math.max(1.2, 0.9 + objectScale * 0.42)
-      : 0.75 + objectScale * 0.45;
+  const { maxW, maxH } = computeMaxProductSize(options.compositionLayout, objectScale);
 
   const prePlacement = {
-    left: comp
-      ? Math.round(xPct(comp.left))
-      : Math.round((CANVAS_W - PRODUCT_MAX_W * scaleFactor) / 2) +
-        (layout === "marketplace" ? Math.round(CANVAS_W * 0.05) : 0),
-    top: 0,
-    width: targetW ?? Math.round(PRODUCT_MAX_W * scaleFactor),
-    height: targetH ?? Math.round(PRODUCT_MAX_H * scaleFactor),
+    left: SIDE_MARGIN,
+    top: HEADER_RESERVE_PX,
+    width: maxW,
+    height: maxH,
   };
 
   const floorY = await detectFloorY(bgResized, {
@@ -231,31 +248,25 @@ export async function compositeProductIntoScene(
     contrastBoost: 0.06,
   });
   matched = await matchColorToScene(matched, bgResized, lighting);
-
   const softenedProduct = await softenProductEdges(matched);
 
+  const rotationDeg = comp?.rotationDeg ?? 0;
   const product = await prepareProductLayer(
     softenedProduct,
     layout,
-    scaleFactor,
     rotationDeg,
-    targetW,
-    targetH,
+    maxW,
+    maxH,
   );
 
-  const productLeft = comp
-    ? centerInZone(product.width, options.compositionLayout!)
-    : Math.min(
-        Math.max(0, prePlacement.left),
-        CANVAS_W - product.width,
-      );
-
-  const productTop = comp
-    ? bottomAnchorTop(product.height, options.compositionLayout, floorY)
-    : layout === "marketplace"
-      ? bottomAnchorTop(product.height, options.compositionLayout, floorY) -
-        8
-      : CANVAS_H - BOTTOM_PAD - product.height;
+  const alphaFootBottom = (await getAlphaFootBottom(product.buffer)) ?? product.height;
+  const productLeft = resolveHorizontalLeft(product.width, options.compositionLayout);
+  const productTop = resolveVerticalTop(
+    product.height,
+    alphaFootBottom,
+    floorY,
+    options.compositionLayout,
+  );
 
   const floorColor = await sampleFloorColor(
     bgResized,
@@ -264,12 +275,15 @@ export async function compositeProductIntoScene(
   );
 
   const bgPrepared = await softenBackgroundCenter(bgRaw, layout);
+  const footCanvasY = productTop + alphaFootBottom;
 
   const shadows = await generateShadows({
     productWidth: product.width,
     productHeight: product.height,
     productLeft,
     productTop,
+    alphaFootBottom,
+    footCanvasY,
     lighting,
     shadowProfile: scene.shadowProfile === "ambient" ? "contact" : scene.shadowProfile,
     productBuffer: product.buffer,
@@ -330,7 +344,7 @@ export async function compositeProductIntoScene(
     .update(backgroundUrl)
     .update(productUrl)
     .update(scene.seed)
-    .update("ground-v2")
+    .update("ground-v3")
     .digest("hex")
     .slice(0, 16);
 
