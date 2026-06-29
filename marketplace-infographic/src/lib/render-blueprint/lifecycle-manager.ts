@@ -38,6 +38,15 @@ import {
   type StageExecutionResult,
 } from "./lifecycle-manager-types";
 import type { LifecycleManagedSection } from "./lifecycle-types";
+import {
+  EventBus,
+  DesignEventType,
+  EventCategory,
+  lifecycleEventToPublish,
+  mutationEventPayload,
+  validationEventPayload,
+  type DesignEvent,
+} from "./event-bus";
 
 const MANAGED: LifecycleManagedSection[] = [
   "product",
@@ -57,6 +66,31 @@ function isManagedSection(section: BlueprintSection): section is LifecycleManage
   return (MANAGED as string[]).includes(section);
 }
 
+const DESIGN_TO_LIFECYCLE: Partial<Record<string, LifecycleEvent["type"]>> = {
+  [DesignEventType.StageStarted]: LifecycleEventType.StageStarted,
+  [DesignEventType.StageCompleted]: LifecycleEventType.StageFinished,
+  [DesignEventType.MutationApplied]: LifecycleEventType.MutationApplied,
+  [DesignEventType.SnapshotCreated]: LifecycleEventType.SnapshotCreated,
+  [DesignEventType.RetryStarted]: LifecycleEventType.RetryStarted,
+  [DesignEventType.RollbackStarted]: LifecycleEventType.RollbackStarted,
+  [DesignEventType.ValidationFailed]: LifecycleEventType.ValidationFailed,
+  [DesignEventType.ConstraintFailed]: LifecycleEventType.ConstraintFailed,
+  [DesignEventType.PipelineCompleted]: LifecycleEventType.PipelineFinished,
+};
+
+function designEventToLifecycle(event: DesignEvent): LifecycleEvent | null {
+  const type = DESIGN_TO_LIFECYCLE[event.type];
+  if (!type) return null;
+  return {
+    type,
+    stage: event.metadata.stage,
+    revision: event.revision,
+    timestamp: event.timestamp,
+    agentId: event.payload.agentId as AgentContractId | undefined,
+    detail: event.payload.detail as string | undefined,
+  };
+}
+
 export type LifecycleManagerOptions = {
   registry?: AgentRegistry;
   mutationEngine?: MutationEngine;
@@ -64,6 +98,7 @@ export type LifecycleManagerOptions = {
   retryEngine?: RetryEngine;
   validationEngine?: ValidationEngine;
   constraintEngine?: ConstraintEngine;
+  eventBus?: EventBus;
 };
 
 export type ExecuteStageInput = Record<string, unknown>;
@@ -75,12 +110,14 @@ export class LifecycleManager {
   private readonly retryEngine: RetryEngine;
   private readonly validationEngine: ValidationEngine;
   private readonly constraintEngine: ConstraintEngine;
+  private readonly eventBus: EventBus;
 
   private graph: DecisionGraph;
   private pipelineState: PipelineStateId = PipelineState.NEW;
-  private readonly events: LifecycleEvent[] = [];
   private readonly logs: LifecycleLogEntry[] = [];
   private eventListeners: Array<(event: LifecycleEvent) => void> = [];
+  private blueprintId = "";
+  private currentStage: BlueprintLifecycle = "NEW";
 
   constructor(
     blueprint?: RenderBlueprint,
@@ -92,9 +129,43 @@ export class LifecycleManager {
     this.retryEngine = options.retryEngine ?? new RetryEngine();
     this.validationEngine = options.validationEngine ?? new ValidationEngine();
     this.constraintEngine = options.constraintEngine ?? new ConstraintEngine();
+    this.eventBus = options.eventBus ?? new EventBus();
     this.graph = blueprint
       ? DecisionGraph.fromBlueprint(blueprint)
       : new DecisionGraph();
+    if (blueprint) {
+      this.blueprintId = blueprint.meta.id;
+      this.eventBus.bindContext({ blueprintId: blueprint.meta.id, stage: blueprint.lifecycle.stage });
+    }
+    this.mutationEngine.onMutationApplied((evt) => {
+      this.eventBus.publish({
+        type: DesignEventType.MutationApplied,
+        category: EventCategory.MUTATION,
+        revision: evt.revision,
+        metadata: {
+          blueprintId: this.blueprintId,
+          stage: this.currentStage,
+          producer: evt.producer,
+        },
+        payload: mutationEventPayload({
+          section: evt.section,
+          producer: evt.producer,
+          revision: evt.revision,
+          durationMs: evt.duration,
+        }),
+      });
+      this.notifyLegacyListeners(LifecycleEventType.MutationApplied, this.currentStage, evt.revision, {
+        agentId: evt.producer as AgentContractId,
+      });
+    });
+  }
+
+  getEventBus(): EventBus {
+    return this.eventBus;
+  }
+
+  getDesignEvents(): readonly DesignEvent[] {
+    return this.eventBus.getLog();
   }
 
   getPipelineState(): PipelineStateId {
@@ -110,7 +181,10 @@ export class LifecycleManager {
   }
 
   getEvents(): readonly LifecycleEvent[] {
-    return this.events;
+    return this.eventBus
+      .getLog()
+      .map((e) => designEventToLifecycle(e))
+      .filter((e): e is LifecycleEvent => e !== null);
   }
 
   getLogs(): readonly LifecycleLogEntry[] {
@@ -150,12 +224,41 @@ export class LifecycleManager {
     stage: BlueprintLifecycle,
     agentId?: AgentContractId,
   ): ValidationReport {
+    this.eventBus.publish({
+      type: DesignEventType.ValidationStarted,
+      category: EventCategory.VALIDATION,
+      revision: blueprint.meta.revision ?? 0,
+      metadata: {
+        blueprintId: blueprint.meta.id,
+        stage,
+        producer: agentId ?? "validation-engine",
+      },
+      payload: { revision: blueprint.meta.revision ?? 0 },
+    });
+
     this.validationEngine.invalidateCache(blueprint.meta.revision ?? 0);
     const report = this.validationEngine.validate(blueprint, { graph: this.graph });
     this.lastValidationReport = report;
 
     if (report.hasFatal || report.hasError) {
-      this.emit(LifecycleEventType.ValidationFailed, stage, report.revision, {
+      this.eventBus.publish({
+        type: DesignEventType.ValidationFailed,
+        category: EventCategory.VALIDATION,
+        revision: report.revision,
+        metadata: { blueprintId: blueprint.meta.id, stage, producer: "validation-engine" },
+        payload: {
+          ...validationEventPayload({
+            revision: report.revision,
+            passed: false,
+            score: report.score,
+            errorCount: report.errors.length,
+            warningCount: report.warnings.length,
+          }),
+          agentId: agentId,
+          detail: report.errors.map((e) => e.message).join("; "),
+        },
+      });
+      this.notifyLegacyListeners(LifecycleEventType.ValidationFailed, stage, report.revision, {
         agentId,
         detail: report.errors.map((e) => e.message).join("; "),
       });
@@ -164,6 +267,29 @@ export class LifecycleManager {
         `Validation failed: ${report.errors.map((e) => e.message).join("; ")}`,
         "VALIDATION_FAILED",
       );
+    }
+
+    this.eventBus.publish({
+      type: DesignEventType.ValidationPassed,
+      category: EventCategory.VALIDATION,
+      revision: report.revision,
+      metadata: { blueprintId: blueprint.meta.id, stage, producer: "validation-engine" },
+      payload: validationEventPayload({
+        revision: report.revision,
+        passed: true,
+        score: report.score,
+        errorCount: 0,
+        warningCount: report.warnings.length,
+      }),
+    });
+    if (report.warnings.length) {
+      this.eventBus.publish({
+        type: DesignEventType.ValidationWarning,
+        category: EventCategory.VALIDATION,
+        revision: report.revision,
+        metadata: { blueprintId: blueprint.meta.id, stage, producer: "validation-engine" },
+        payload: { warningCount: report.warnings.length },
+      });
     }
     return report;
   }
@@ -181,21 +307,36 @@ export class LifecycleManager {
     this.registry.register(agent);
   }
 
-  private emit(
+  private notifyLegacyListeners(
     type: LifecycleEvent["type"],
     stage: BlueprintLifecycle,
     revision: number,
     extra?: Partial<LifecycleEvent>,
   ): void {
-    const event: LifecycleEvent = {
+    const legacy: LifecycleEvent = {
       type,
       stage,
       revision,
       timestamp: Date.now(),
       ...extra,
     };
-    this.events.push(event);
-    for (const listener of this.eventListeners) listener(event);
+    for (const listener of this.eventListeners) listener(legacy);
+  }
+
+  private publishLifecycle(
+    type: LifecycleEvent["type"],
+    stage: BlueprintLifecycle,
+    revision: number,
+    extra?: Partial<LifecycleEvent>,
+  ): void {
+    const blueprintId = this.blueprintId || "unknown";
+    this.eventBus.publish(
+      lifecycleEventToPublish(type, stage, revision, blueprintId, {
+        agentId: extra?.agentId,
+        detail: extra?.detail,
+      }),
+    );
+    this.notifyLegacyListeners(type, stage, revision, extra);
   }
 
   private log(entry: LifecycleLogEntry): void {
@@ -214,7 +355,18 @@ export class LifecycleManager {
     const startedAt = Date.now();
     this.pipelineState = PipelineState.RUNNING;
     const revision = blueprint.meta.revision ?? 0;
-    this.emit(LifecycleEventType.StageStarted, stage, revision);
+    this.blueprintId = blueprint.meta.id;
+    this.currentStage = stage;
+    this.eventBus.bindContext({ blueprintId: blueprint.meta.id, stage, producer: "lifecycle-manager" });
+    this.eventBus.lock();
+    this.eventBus.publish({
+      type: DesignEventType.PipelineStarted,
+      category: EventCategory.LIFECYCLE,
+      revision,
+      metadata: { blueprintId: blueprint.meta.id, stage, producer: "lifecycle-manager" },
+      payload: { pipelineId: this.eventBus.getPipelineId() },
+    });
+    this.publishLifecycle(LifecycleEventType.StageStarted, stage, revision);
 
     assertStagePreconditions(blueprint, stage);
 
@@ -245,8 +397,29 @@ export class LifecycleManager {
                 "AGENT_NOT_READY",
               );
             }
+            this.eventBus.publish({
+              type: DesignEventType.AgentStarted,
+              category: EventCategory.AGENT,
+              revision: current.meta.revision ?? 0,
+              metadata: {
+                blueprintId: current.meta.id,
+                stage,
+                producer: agent.id,
+              },
+              payload: { agentId: agent.id },
+            });
             const frozen = Object.freeze(structuredClone(current)) as RenderBlueprint;
             const agentResult = await agent.execute(frozen, input);
+            this.eventBus.publish({
+              type: DesignEventType.AgentCompleted,
+              category: EventCategory.AGENT,
+              revision: current.meta.revision ?? 0,
+              metadata: { blueprintId: current.meta.id, stage, producer: agent.id },
+              payload: {
+                agentId: agent.id,
+                confidence: agentResult.confidence,
+              },
+            });
             return { agent, agentResult };
           }),
         );
@@ -255,12 +428,27 @@ export class LifecycleManager {
 
         for (const { agent, agentResult } of results) {
           if (agentResult.errors?.some((e) => e.kind === "fatal")) {
-            this.emit(LifecycleEventType.ValidationFailed, stage, current.meta.revision ?? 0, {
+            this.eventBus.publish({
+              type: DesignEventType.AgentRejected,
+              category: EventCategory.AGENT,
+              revision: current.meta.revision ?? 0,
+              metadata: { blueprintId: current.meta.id, stage, producer: agent.id },
+              payload: { agentId: agent.id },
+            });
+            this.publishLifecycle(LifecycleEventType.ValidationFailed, stage, current.meta.revision ?? 0, {
               agentId: agent.id,
               detail: agentResult.errors!.map((e) => e.message).join("; "),
             });
             throw new AgentContractError("fatal", "Stage validation failed", "VALIDATION_FAILED");
           }
+
+          this.eventBus.publish({
+            type: DesignEventType.MutationReceived,
+            category: EventCategory.MUTATION,
+            revision: current.meta.revision ?? 0,
+            metadata: { blueprintId: current.meta.id, stage, producer: agent.id },
+            payload: { agentId: agent.id },
+          });
 
           const updates = agent.toUpdates(agentResult);
           const mutation = this.mutationEngine.apply({
@@ -269,6 +457,14 @@ export class LifecycleManager {
             agent,
             result: { ...agentResult, updates },
             expectedRevision: current.meta.revision ?? 0,
+          });
+
+          this.eventBus.publish({
+            type: DesignEventType.MutationValidated,
+            category: EventCategory.MUTATION,
+            revision: current.meta.revision ?? 0,
+            metadata: { blueprintId: current.meta.id, stage, producer: agent.id },
+            payload: { agentId: agent.id },
           });
 
           current = mutation.blueprint;
@@ -288,12 +484,16 @@ export class LifecycleManager {
           });
           lastSnapshotId = snapshot.id;
 
-          this.emit(LifecycleEventType.MutationApplied, stage, current.meta.revision ?? 0, {
-            agentId: agent.id,
-          });
-          this.emit(LifecycleEventType.SnapshotCreated, stage, current.meta.revision ?? 0, {
+          this.publishLifecycle(LifecycleEventType.SnapshotCreated, stage, current.meta.revision ?? 0, {
             agentId: agent.id,
             detail: snapshot.id,
+          });
+          this.eventBus.publish({
+            type: DesignEventType.AgentApproved,
+            category: EventCategory.AGENT,
+            revision: current.meta.revision ?? 0,
+            metadata: { blueprintId: current.meta.id, stage, producer: agent.id },
+            payload: { agentId: agent.id, snapshotId: snapshot.id },
           });
 
           this.log({
@@ -309,7 +509,8 @@ export class LifecycleManager {
       }
 
       this.pipelineState = PipelineState.RUNNING;
-      this.emit(LifecycleEventType.StageFinished, stage, current.meta.revision ?? 0);
+      this.publishLifecycle(LifecycleEventType.StageFinished, stage, current.meta.revision ?? 0);
+      this.eventBus.unlock();
 
       return {
         blueprint: current,
@@ -320,6 +521,20 @@ export class LifecycleManager {
       };
     } catch (error) {
       this.pipelineState = PipelineState.FAILED;
+      this.eventBus.publish({
+        type: DesignEventType.StageFailed,
+        category: EventCategory.LIFECYCLE,
+        revision: blueprint.meta.revision ?? 0,
+        metadata: { blueprintId: blueprint.meta.id, stage, producer: "lifecycle-manager" },
+        payload: { error: error instanceof Error ? error.message : "unknown" },
+      });
+      this.eventBus.publish({
+        type: DesignEventType.PipelineFailed,
+        category: EventCategory.LIFECYCLE,
+        revision: blueprint.meta.revision ?? 0,
+        metadata: { blueprintId: blueprint.meta.id, stage, producer: "lifecycle-manager" },
+      });
+      this.eventBus.unlock();
       throw error;
     }
   }
@@ -329,14 +544,20 @@ export class LifecycleManager {
     const result = this.snapshotManager.rollbackToLastValidated(blueprint, this.graph);
     this.graph = DecisionGraph.fromBlueprint(result.blueprint);
     this.pipelineState = PipelineState.RUNNING;
-    this.emit(LifecycleEventType.RollbackStarted, result.blueprint.lifecycle.stage, result.blueprint.meta.revision ?? 0, {
+    this.publishLifecycle(LifecycleEventType.RollbackStarted, result.blueprint.lifecycle.stage, result.blueprint.meta.revision ?? 0, {
       detail: result.snapshot.id,
     });
-    for (const event of result.events) {
-      this.emit(LifecycleEventType.RollbackStarted, result.resumeFrom, result.blueprint.meta.revision ?? 0, {
-        detail: event.type,
-      });
-    }
+    this.eventBus.publish({
+      type: DesignEventType.RollbackCompleted,
+      category: EventCategory.RECOVERY,
+      revision: result.blueprint.meta.revision ?? 0,
+      metadata: {
+        blueprintId: result.blueprint.meta.id,
+        stage: result.resumeFrom,
+        producer: "snapshot-manager",
+      },
+      payload: { snapshotId: result.snapshot.id },
+    });
     return result.blueprint;
   }
 
@@ -460,7 +681,7 @@ export class LifecycleManager {
   ): Promise<{ blueprint: RenderBlueprint; mutation: BlueprintMutationResult; result: TResult }> {
     const stage = blueprint.lifecycle.stage;
     this.retryEngine.recordRetry(kind, stage, agent.id);
-    this.emit(LifecycleEventType.RetryStarted, stage, blueprint.meta.revision ?? 0, {
+    this.publishLifecycle(LifecycleEventType.RetryStarted, stage, blueprint.meta.revision ?? 0, {
       agentId: agent.id,
       detail: kind,
     });
@@ -474,7 +695,7 @@ export class LifecycleManager {
         this.assertPreAdapterConstraints(next);
       } catch (error) {
         if (error instanceof ConstraintEngineError) {
-          this.emit(LifecycleEventType.ConstraintFailed, next.lifecycle.stage, next.meta.revision ?? 0, {
+          this.publishLifecycle(LifecycleEventType.ConstraintFailed, next.lifecycle.stage, next.meta.revision ?? 0, {
             detail: error.message,
           });
         }
@@ -488,7 +709,7 @@ export class LifecycleManager {
 
   finishPipeline(blueprint: RenderBlueprint): RenderBlueprint {
     this.pipelineState = PipelineState.FINISHED;
-    this.emit(LifecycleEventType.PipelineFinished, blueprint.lifecycle.stage, blueprint.meta.revision ?? 0);
+    this.publishLifecycle(LifecycleEventType.PipelineFinished, blueprint.lifecycle.stage, blueprint.meta.revision ?? 0);
     return blueprint;
   }
 }

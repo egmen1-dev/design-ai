@@ -214,6 +214,28 @@ export {
   validationResultFromReport,
   type StageSnapshot,
 } from "./snapshot-manager";
+
+export {
+  EventBus,
+  EventBusError,
+  DesignEventType,
+  EventCategory,
+  EVENT_TYPE_CATEGORY,
+  LIFECYCLE_TO_DESIGN_EVENT,
+  lifecycleEventToPublish,
+  mutationEventPayload,
+  validationEventPayload,
+  type DesignEvent,
+  type DesignEventPayload,
+  type DesignEventTypeId,
+  type EventCategoryId,
+  type EventMetadata,
+  type EventHandler,
+  type EventSubscription,
+  type EventBusOptions,
+  type EventReplayResult,
+  type PublishInput,
+} from "./event-bus";
 export { RetryEngine, RetryLimitExceededError as RetryEngineLimitError } from "./retry-engine";
 export { AgentRegistry, defaultAgentRegistry } from "./agent-registry";
 export { STAGE_PRECONDITIONS, assertStagePreconditions } from "./stage-preconditions";
