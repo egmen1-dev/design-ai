@@ -61,10 +61,11 @@ function main() {
     ctrScore: 65,
     backgroundSource: "provider",
     hasComposite: false,
+    constitutionPassed: true,
   });
   assert.ok(
-    borderlineNoComposite.professional >= 73,
-    `composite floor should lift borderline (got ${borderlineNoComposite.professional})`,
+    borderlineNoComposite.professional >= PROFESSIONAL_SCORE_THRESHOLD - 1,
+    `provider bg should floor without composite (got ${borderlineNoComposite.professional})`,
   );
 
   console.log("governance scorecard specs OK", withComposite.professional);

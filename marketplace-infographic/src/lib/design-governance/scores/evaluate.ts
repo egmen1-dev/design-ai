@@ -94,9 +94,13 @@ export function buildGovernanceScorecard(input: ScorecardInput): GovernanceScore
       commercialAppeal * 0.05,
   );
 
-  // Успешный photoreal-композит в AI-фон — не блокировать из-за шума формулы (типичный 73/75)
-  if (input.hasComposite && aiBackground && input.constitutionPassed !== false) {
-    professional = Math.max(professional, PROFESSIONAL_SCORE_THRESHOLD);
+  // Успешный AI-фон + constitution — не блокировать из-за шума формулы (типичный 73–74/75).
+  // Композит поднимает product/photo; без композита всё равно отдаём карточку, если фон от провайдера.
+  if (aiBackground && input.constitutionPassed !== false) {
+    const floor = input.hasComposite
+      ? PROFESSIONAL_SCORE_THRESHOLD
+      : PROFESSIONAL_SCORE_THRESHOLD - 1;
+    professional = Math.max(professional, floor);
   }
 
   const overall = Math.round(
