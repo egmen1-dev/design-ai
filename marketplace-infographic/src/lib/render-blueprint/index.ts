@@ -323,4 +323,31 @@ export type {
 } from "./render-pipeline-types";
 export { DEFAULT_FALLBACK_CHAIN } from "./render-pipeline-types";
 
+export {
+  SerializationError,
+  serializeBlueprint,
+  deserializeBlueprint,
+  validateSerializable,
+  computeBlueprintChecksum,
+  exportBlueprintToJson,
+  importBlueprintFromJson,
+  assertSerializationRoundTrip,
+  canonicalStringify,
+  canonicalize,
+  canonicalParse,
+  migrateBlueprint,
+  extractUnknownBlueprintFields,
+  SERIALIZATION_SCHEMA_VERSION,
+  COMPRESSION_THRESHOLD_BYTES,
+  type SerializableBlueprint,
+  type SerializationMetadata,
+  type SerializationFormat,
+  type SerializationValidationIssue,
+  type SerializationValidationResult,
+  type SerializeOptions,
+  type DeserializeOptions,
+  type SerializedPayload,
+  type ImageReference,
+} from "./serialization";
+
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";
