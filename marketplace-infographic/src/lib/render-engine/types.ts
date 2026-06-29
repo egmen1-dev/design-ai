@@ -201,7 +201,11 @@ export type RenderProviderOptions = {
   timeoutMs?: number;
   maxAttempts?: number;
   /** Scene hints for moderation fallback prompts */
-  moderationHints?: { atmosphere?: string; environment?: string };
+  moderationHints?: {
+    atmosphere?: string;
+    environment?: string;
+    coverConceptId?: import("@/lib/cover-concepts").CoverConceptId;
+  };
 };
 
 export type RenderAttempt = {

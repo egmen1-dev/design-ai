@@ -124,6 +124,7 @@ function compilePromptSegments(
 export type PollinationsCompileOptions = {
   coverConceptId?: CoverConceptId;
   profileLabel?: string;
+  environmentPhraseOverride?: string;
 };
 
 /** Compile VisualSceneBlueprint → Pollinations-optimized prompt (80–120 tokens) */
@@ -138,7 +139,8 @@ export function compilePollinationsPrompt(
   const floor = MATERIAL_PROFILES[blueprint.materials.floor];
 
   const environmentPhrase =
-    coverHints?.environmentPhrase ??
+    options?.environmentPhraseOverride?.trim() ||
+    coverHints?.environmentPhrase ||
     ARCHITECTURE_VISUAL[blueprint.scene.architecture];
 
   const priority = [
@@ -164,7 +166,9 @@ export function compilePollinationsPrompt(
   ].filter(Boolean) as string[];
 
   let prompt = compilePromptSegments(priority, optional, 110);
-  prompt = sanitizePromptForModeration(prompt.replace(BANNED_PHRASES, " "), 0);
+  prompt = sanitizePromptForModeration(prompt.replace(BANNED_PHRASES, " "), 0, {
+    coverConceptId: options?.coverConceptId,
+  });
 
   const negativePrompt = blueprint.negative.terms.slice(0, 12).join(", ");
   const validation = validatePollinationsPrompt(prompt, negativePrompt);

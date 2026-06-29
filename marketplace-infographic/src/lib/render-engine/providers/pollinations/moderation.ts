@@ -3,8 +3,23 @@
  * Product/industrial prompts (generators, workshops, Cyrillic) often trip the filter.
  */
 
+import type { CoverConceptId } from "@/lib/cover-concepts";
+import {
+  isOutdoorCoverConcept,
+  resolveCoverConceptVisualHints,
+} from "@/lib/design/visual-pipeline/catalogs/cover-concept";
+
 export const BARE_MINIMAL_PROMPT =
   "soft grey studio cyclorama backdrop, empty center, commercial product photography, no text";
+
+export const BARE_OUTDOOR_MINIMAL_PROMPT =
+  "sunny suburban lawn backdrop, garden path blurred, clear empty grass foreground, commercial product photography, no text";
+
+export type ModerationSceneHints = {
+  atmosphere?: string;
+  environment?: string;
+  coverConceptId?: CoverConceptId;
+};
 
 export class PollinationsModelBlockedError extends Error {
   readonly modelId: string;
@@ -53,8 +68,14 @@ const TRIGGER_REPLACEMENTS: Array<[RegExp, string]> = [
 const SAFE_STUDIO_PREFIX =
   "ultra realistic commercial product photography background, soft studio cyclorama";
 
+const SAFE_OUTDOOR_PREFIX =
+  "ultra realistic outdoor commercial product photography background";
+
 const SAFE_STUDIO_SUFFIX =
   "empty foreground for product compositing, backdrop only, no objects in product zone, no text, no letters, no watermark";
+
+const LEVEL1_DROP_RE = /\b(rugged|grime|steel|concrete|garage)\b/i;
+const LEVEL1_DROP_OUTDOOR_ONLY_RE = /\boutdoor sunset\b/i;
 
 export function isPollinationsModerationError(body: string): boolean {
   return MODERATION_ERROR_RE.test(body);
@@ -76,17 +97,30 @@ function applyTriggerReplacements(text: string): string {
   return out.replace(/\s+/g, " ").trim();
 }
 
+function moderationPrefix(hints?: ModerationSceneHints): string {
+  return isOutdoorCoverConcept(hints?.coverConceptId)
+    ? SAFE_OUTDOOR_PREFIX
+    : SAFE_STUDIO_PREFIX;
+}
+
+function coverEnvironmentFallback(hints?: ModerationSceneHints): string | undefined {
+  return resolveCoverConceptVisualHints(hints?.coverConceptId)?.environmentPhrase;
+}
+
 /**
  * Level 0 — light pass at compile time (keep scene detail).
  * Level 1 — strip scripts + replace trigger terms.
- * Level 2 — minimal safe studio prompt (drops scene narrative).
+ * Level 2 — minimal safe prompt (drops scene narrative).
  */
 export function sanitizePromptForModeration(
   prompt: string,
   level: 0 | 1 | 2 = 1,
+  hints?: ModerationSceneHints,
 ): string {
+  const outdoor = isOutdoorCoverConcept(hints?.coverConceptId);
+
   if (level === 2) {
-    return buildModerationFallbackPrompt();
+    return buildModerationFallbackPrompt(hints);
   }
 
   let out = stripNonLatinScript(prompt);
@@ -96,33 +130,43 @@ export function sanitizePromptForModeration(
     return out;
   }
 
-  // Level 1: keep photography modules but drop long environment clauses
+  // Level 1: keep photography modules; preserve outdoor clauses when coverConcept is outdoor
   const parts = out
     .split(/[,;]/)
     .map((p) => p.trim())
     .filter(Boolean)
-    .filter((p) => !/\b(rugged|grime|steel|concrete|garage|outdoor sunset)\b/i.test(p));
+    .filter((p) => {
+      if (LEVEL1_DROP_RE.test(p)) return false;
+      if (!outdoor && LEVEL1_DROP_OUTDOOR_ONLY_RE.test(p)) return false;
+      return true;
+    });
 
   const condensed = parts.slice(0, 8).join(", ");
   if (condensed.length < 40) {
-    return buildModerationFallbackPrompt();
+    return buildModerationFallbackPrompt(hints);
   }
-  return `${SAFE_STUDIO_PREFIX}, ${condensed}, ${SAFE_STUDIO_SUFFIX}`;
+  return `${moderationPrefix(hints)}, ${condensed}, ${SAFE_STUDIO_SUFFIX}`;
 }
 
-export function buildModerationFallbackPrompt(hints?: {
-  atmosphere?: string;
-  environment?: string;
-}): string {
+export function buildModerationFallbackPrompt(hints?: ModerationSceneHints): string {
+  const outdoor = isOutdoorCoverConcept(hints?.coverConceptId);
+  const coverPhrase = coverEnvironmentFallback(hints);
+
   const mood = hints?.atmosphere
     ? applyTriggerReplacements(stripNonLatinScript(hints.atmosphere))
-    : "neutral premium";
+    : outdoor
+      ? "warm natural"
+      : "neutral premium";
   const env = hints?.environment
     ? applyTriggerReplacements(stripNonLatinScript(hints.environment))
-    : "soft grey gradient backdrop";
+    : coverPhrase
+      ? coverPhrase.slice(0, 120)
+      : outdoor
+        ? "sunny lawn and garden path, blurred wooden fence"
+        : "soft grey gradient backdrop";
 
   return [
-    SAFE_STUDIO_PREFIX,
+    moderationPrefix(hints),
     `${mood} atmosphere`,
     `${env}, professional advertising lighting`,
     "photorealistic commercial photography, 70mm lens, soft key light",
@@ -130,15 +174,26 @@ export function buildModerationFallbackPrompt(hints?: {
   ].join(", ");
 }
 
+/** Last-resort prompt when all moderation variants fail */
+export function resolveBareMinimalPrompt(hints?: ModerationSceneHints): string {
+  if (isOutdoorCoverConcept(hints?.coverConceptId)) {
+    const coverPhrase = coverEnvironmentFallback(hints);
+    return coverPhrase
+      ? `${coverPhrase}, empty center, commercial product photography, no text`
+      : BARE_OUTDOOR_MINIMAL_PROMPT;
+  }
+  return BARE_MINIMAL_PROMPT;
+}
+
 /** Build escalating prompt variants for moderation retries. */
 export function buildModerationPromptVariants(
   prompt: string,
-  hints?: { atmosphere?: string; environment?: string },
+  hints?: ModerationSceneHints,
 ): string[] {
   const variants = [
-    sanitizePromptForModeration(prompt, 0),
-    sanitizePromptForModeration(prompt, 1),
-    sanitizePromptForModeration(prompt, 2),
+    sanitizePromptForModeration(prompt, 0, hints),
+    sanitizePromptForModeration(prompt, 1, hints),
+    sanitizePromptForModeration(prompt, 2, hints),
     buildModerationFallbackPrompt(hints),
   ];
   return [...new Set(variants)];

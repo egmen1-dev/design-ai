@@ -16,9 +16,10 @@ import { RENDER_ENGINE_CONFIG } from "../../config";
 import { WB_COVER } from "@/lib/composition/canvas";
 import {
   buildModerationPromptVariants,
-  BARE_MINIMAL_PROMPT,
+  resolveBareMinimalPrompt,
   isPollinationsModerationError,
   PollinationsModelBlockedError,
+  type ModerationSceneHints,
 } from "./moderation";
 
 /** Pollinations API max seed (INT32_MAX) */
@@ -169,9 +170,14 @@ export class PollinationsProvider implements RenderingProvider {
           .readUInt32BE(0),
     );
 
+    const moderationHints: ModerationSceneHints = {
+      ...options?.moderationHints,
+      coverConceptId: options?.moderationHints?.coverConceptId,
+    };
+
     const promptVariants = [
-      ...buildModerationPromptVariants(payload.prompt, options?.moderationHints),
-      BARE_MINIMAL_PROMPT,
+      ...buildModerationPromptVariants(payload.prompt, moderationHints),
+      resolveBareMinimalPrompt(moderationHints),
     ].filter((p, i, arr) => arr.indexOf(p) === i);
     let promptIndex = 0;
 

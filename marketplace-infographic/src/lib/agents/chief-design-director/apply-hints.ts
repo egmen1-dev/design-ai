@@ -1,6 +1,7 @@
 import type { LayoutTemplateId } from "@/lib/layout-engine/types";
 import { pickAllowedEnvironment } from "@/lib/layout-engine/background-categories";
 import type { ProductCategory } from "@/lib/product-analysis";
+import { resolveCoverConcept, type CoverConceptId } from "@/lib/cover-concepts";
 import type { ChiefDesignDirectorPlan } from "./types";
 
 export type FixApplicationHints = {
@@ -17,6 +18,10 @@ export function deriveFixApplicationHints(
   category: ProductCategory,
   productPrompt: string,
   seed: string,
+  options?: {
+    coverConceptId?: CoverConceptId;
+    coverConceptUserSelected?: boolean;
+  },
 ): FixApplicationHints {
   const hasCritical = (actions: ChiefDesignDirectorPlan["layoutChanges"]) =>
     actions.some((a) => a.priority === "critical");
@@ -37,7 +42,9 @@ export function deriveFixApplicationHints(
   }
 
   const backgroundEnvironment = needsBackgroundRetry
-    ? pickAllowedEnvironment(category, productPrompt, seed)
+    ? options?.coverConceptUserSelected && options.coverConceptId
+      ? resolveCoverConcept(options.coverConceptId).backgroundPromptSuffix
+      : pickAllowedEnvironment(category, productPrompt, seed)
     : undefined;
 
   const simplifyCardMeaning = plan.compositionChanges.some((a) =>

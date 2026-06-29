@@ -79,6 +79,7 @@ export class PollinationsFluxAdapter implements RenderAdapter {
         BACKDROP_ONLY,
       ].join(", "),
       0,
+      { coverConceptId: request.metadata?.coverConceptId },
     );
 
     return {

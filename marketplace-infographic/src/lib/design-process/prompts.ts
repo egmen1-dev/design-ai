@@ -18,6 +18,7 @@ export type DesignPromptInput = FoundationPromptInput & {
   genomeBlock?: string;
   trendIntelligenceBlock?: string;
   layoutSpec?: LayoutSpec;
+  artDirectorMode?: string;
 };
 
 export function buildFoundationStagePrompt(input: FoundationPromptInput): string {
@@ -85,6 +86,9 @@ export function buildDesignStagePrompt(input: DesignPromptInput): string {
   const layoutBlock = input.layoutSpec
     ? compileDesignInstructionsFromLayoutSpec(input.layoutSpec, cd)
     : null;
+  const artDirectorBlock = input.artDirectorMode
+    ? `## Art Director Mode\n${input.artDirectorMode} — align scene mood and background narrative with this mode.\n`
+    : "";
 
   return `${buildSystemPrompt()}
 
@@ -92,7 +96,7 @@ export function buildDesignStagePrompt(input: DesignPromptInput): string {
 
 You compile a Design Brief from LayoutSpec constraints. Do NOT write prose. Do NOT invent layout geometry.
 
-## Creative Concept (ANCHOR — do not change idea)
+${artDirectorBlock}## Creative Concept (ANCHOR — do not change idea)
 ${JSON.stringify(cd.creativeConcept, null, 2)}
 
 ## One thought

@@ -105,7 +105,11 @@ import type { ScenePlan } from "@/lib/design/scene-planner";
 import type { QualityValidationResult } from "@/lib/design/quality-validator";
 import type { ArtDirectorModeId } from "@/lib/design-process/art-director-modes";
 import type { RenderModelId } from "@/lib/render-engine/types";
-import { runVisualPipeline } from "@/lib/design/visual-pipeline";
+import { rebuildVisualPipelineForRender } from "@/lib/design/visual-pipeline/rebuild-for-render";
+import {
+  resolveCoverConceptFromArtDirectorMode,
+  resolveCoverConceptFromEnvironment,
+} from "@/lib/design/visual-pipeline/catalogs/cover-concept";
 import type { VisualSceneBlueprint } from "@/lib/design/visual-pipeline";
 import type { FeedbackLearningSnapshot } from "@/lib/feedback/types";
 import { PIPELINE_VERSION } from "@/lib/pipeline-version";
@@ -962,10 +966,21 @@ export async function handleGenerateInfographic(
     }
 
     // ── 1. Scene Planner (адаптирует Blueprint + Genome) ─────────────
+    const artDirectorCoverConcept =
+      !input.coverConcept && !storedScenePlan?.coverConceptId
+        ? resolveCoverConceptFromArtDirectorMode(
+            input.artDirectorMode,
+            productAnalysis.category,
+          )
+        : undefined;
+
     const { analysis, scene: plannedScene } = planScene({
       prompt: input.prompt,
-      coverConceptId: input.coverConcept ?? storedScenePlan?.coverConceptId,
-      coverConceptUserSelected: !!input.coverConcept,
+      coverConceptId:
+        input.coverConcept ??
+        storedScenePlan?.coverConceptId ??
+        artDirectorCoverConcept,
+      coverConceptUserSelected: !!input.coverConcept || !!artDirectorCoverConcept,
       visualHook,
       styleHint: input.style ?? (referenceContext?.hasStrongReference ? referenceContext.style : undefined),
       seed: variationSeed,
@@ -1100,19 +1115,17 @@ export async function handleGenerateInfographic(
       qualityRefinementPasses = built.refinementPasses;
 
       if (useRenderEngineV17 && layoutSpec) {
-        const pipeline = runVisualPipeline({
+        const pipeline = rebuildVisualPipelineForRender({
           prompt: input.prompt,
           analysis: productAnalysis,
           layoutSpec,
           palette,
           sceneTypeHint: sceneDirection?.sceneType,
-          coverConceptId: scenePlan.coverConceptId,
+          scenePlan,
+          decisionLog: governanceDecisionLog,
         });
         visualBlueprint = pipeline.visualBlueprint;
         activeSceneBlueprint = pipeline.sceneBlueprint;
-        governanceDecisionLog.push(
-          ...pipeline.snippets.map((s) => `VisualPipeline ${s}`),
-        );
       }
       luxuryScoreValue = built.qualityGate.luxuryScore.total;
       if (governanceBlueprint?.locked) {
@@ -1413,6 +1426,10 @@ export async function handleGenerateInfographic(
           analysis.category,
           input.prompt,
           `${variationSeed}:chief`,
+          {
+            coverConceptId: scenePlan.coverConceptId,
+            coverConceptUserSelected: scenePlan.coverConceptUserSelected,
+          },
         );
 
         if (hints.simplifyCardMeaning && cardMeaning) {
@@ -1447,20 +1464,48 @@ export async function handleGenerateInfographic(
           backgroundUrl &&
           usePhotorealMerge
         ) {
+          const chiefCoverConcept =
+            scenePlan.coverConceptUserSelected
+              ? scenePlan.coverConceptId
+              : resolveCoverConceptFromEnvironment(
+                  hints.backgroundEnvironment,
+                  analysis.category,
+                ) ?? scenePlan.coverConceptId;
+          const chiefScenePlan: ScenePlan = {
+            ...scenePlan,
+            coverConceptId: chiefCoverConcept,
+            backgroundType: hints.backgroundEnvironment,
+          };
+
+          if (useRenderEngineV17 && layoutSpec) {
+            const pipeline = rebuildVisualPipelineForRender({
+              prompt: input.prompt,
+              analysis: productAnalysis,
+              layoutSpec,
+              palette: paletteColorsForSd(assetsIntelligence?.palette),
+              sceneTypeHint: sceneDirection?.sceneType,
+              scenePlan: chiefScenePlan,
+              decisionLog: governanceDecisionLog,
+            });
+            visualBlueprint = pipeline.visualBlueprint;
+            activeSceneBlueprint = pipeline.sceneBlueprint;
+            scenePlan = chiefScenePlan;
+          }
+
           const bgPrompt = `${hints.backgroundEnvironment}, ultra realistic commercial photography, no text, no product`;
           if (designBrief) {
             designBrief = { ...designBrief, backgroundPrompt: bgPrompt.slice(0, 480) };
           }
           sdData.backgroundPrompt = bgPrompt;
           try {
-            const bg = await regenBackground("chief-bg");
+            const bg = await regenBackground("chief-bg", chiefScenePlan);
             backgroundUrl = bg.url;
             backgroundDataUrl = bg.dataUrl;
             backgroundSource = bg.source;
             if (bg.engine) renderEngineResult = bg.engine as RenderEngineOrchestratorResult;
             compositeResult = await compositeProductIntoScene(bg.url, productCutoutPath, {
               layout: "marketplace",
-              scene: scenePlan,
+              scene: chiefScenePlan,
               compositionLayout,
               objectScale,
             });
@@ -1568,7 +1613,8 @@ export async function handleGenerateInfographic(
 
       const retryScene = planScene({
         prompt: input.prompt,
-        coverConceptId: input.coverConcept,
+        coverConceptId: input.coverConcept ?? artDirectorCoverConcept,
+        coverConceptUserSelected: !!input.coverConcept || !!artDirectorCoverConcept,
         visualHook,
         styleHint: input.style,
         seed: `${variationSeed}:concept-${conceptRetryIndex}`,
@@ -1576,6 +1622,20 @@ export async function handleGenerateInfographic(
         sceneNarrative: nextConcept.sceneNarrative,
         compositionScenarioId: nextConcept.compositionScenarioId,
       }).scene;
+
+      if (useRenderEngineV17 && layoutSpec) {
+        const pipeline = rebuildVisualPipelineForRender({
+          prompt: input.prompt,
+          analysis: productAnalysis,
+          layoutSpec,
+          palette: paletteColorsForSd(assetsIntelligence?.palette),
+          sceneTypeHint: sceneDirection?.sceneType,
+          scenePlan: retryScene,
+          decisionLog: governanceDecisionLog,
+        });
+        visualBlueprint = pipeline.visualBlueprint;
+        activeSceneBlueprint = pipeline.sceneBlueprint;
+      }
 
       const retryCompiled = compileBackgroundPrompt({
         prompt: input.prompt,

@@ -60,6 +60,15 @@ function main() {
   });
   assert.equal(garden.visualBlueprint.scene.architecture, "nature");
 
+  const overridePrompt = compilePollinationsPrompt(garden.visualBlueprint, "outdoor", {
+    coverConceptId: "garden_scene",
+    environmentPhraseOverride: "custom meadow backdrop with wildflowers",
+  });
+  assert.ok(
+    overridePrompt.prompt.includes("custom meadow"),
+    "environmentPhraseOverride should win",
+  );
+
   console.log("pollinations-compiler OK", compiled.tokenEstimate, "tokens");
 }
 

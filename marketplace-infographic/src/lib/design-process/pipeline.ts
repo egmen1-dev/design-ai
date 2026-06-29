@@ -214,6 +214,7 @@ async function runDesignStage(
     genomeBlock: ctx.genomeBlock,
     trendIntelligenceBlock: ctx.trendIntelligenceBlock,
     layoutSpec,
+    artDirectorMode: ctx.artDirectorMode,
   });
 
   const raw = await callOllamaJson<unknown>(prompt, 0.28);

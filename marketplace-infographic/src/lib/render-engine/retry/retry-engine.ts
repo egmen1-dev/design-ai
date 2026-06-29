@@ -63,6 +63,7 @@ export async function renderWithRetry(input: RenderWithRetryInput): Promise<Rend
         moderationHints: {
           atmosphere: request.scene.atmosphere,
           environment: request.scene.environment,
+          coverConceptId: input.scenePlan.coverConceptId,
         },
       });
       attempt.result = result;

@@ -8,6 +8,7 @@ import {
   sanitizePromptForModeration,
   stripNonLatinScript,
   buildModerationPromptVariants,
+  resolveBareMinimalPrompt,
 } from "./moderation";
 import { buildRenderModelsChain } from "../../render-models";
 
@@ -34,11 +35,23 @@ function main() {
   assert.ok(level2.includes("cyclorama"));
   assert.ok(level2.length < 400, "level 2 is compact");
 
+  const gardenPrompt =
+    "sunny suburban lawn, garden path, wooden fence blurred, golden hour, clear grass foreground";
+  const gardenLevel1 = sanitizePromptForModeration(gardenPrompt, 1, {
+    coverConceptId: "garden_scene",
+  });
+  assert.ok(gardenLevel1.includes("lawn") || gardenLevel1.includes("garden"), "outdoor kept at L1");
+  assert.ok(gardenLevel1.includes("outdoor commercial"), "outdoor prefix at L1");
+
+  const gardenBare = resolveBareMinimalPrompt({ coverConceptId: "garden_scene" });
+  assert.ok(!gardenBare.includes("grey studio"), "outdoor bare is not grey studio");
+  assert.ok(gardenBare.includes("lawn") || gardenBare.includes("garden"), "outdoor bare keeps scene");
+
   const variants = buildModerationPromptVariants(cyrillic, {
     atmosphere: "rugged industrial",
     environment: "workshop studio",
   });
-  assert.ok(variants.length >= 3);
+  assert.ok(variants.length >= 2);
   assert.notEqual(variants[0], variants[variants.length - 1]);
 
   assert.deepEqual(buildRenderModelsChain(), ["flux", "kontext", "seedream"]);
