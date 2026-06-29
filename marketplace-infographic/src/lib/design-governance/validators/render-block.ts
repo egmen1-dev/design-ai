@@ -44,8 +44,7 @@ export function assertRenderAllowed(input: {
     input.professionalScore >= PROFESSIONAL_SCORE_THRESHOLD ||
     (nearMissBand &&
       input.constitutionPassed &&
-      input.backgroundResolved &&
-      input.hasComposite);
+      input.backgroundResolved);
 
   if (!professionalOk) {
     reasons.push(
@@ -56,7 +55,7 @@ export function assertRenderAllowed(input: {
     input.professionalScore >= PROFESSIONAL_SCORE_THRESHOLD - PROFESSIONAL_NEAR_MISS
   ) {
     console.info(
-      `[design-governance] professional near-miss ${input.professionalScore}/${PROFESSIONAL_SCORE_THRESHOLD} — allowed (composite+AI bg)`,
+      `[design-governance] professional near-miss ${input.professionalScore}/${PROFESSIONAL_SCORE_THRESHOLD} — allowed (AI background)`,
     );
   }
 
