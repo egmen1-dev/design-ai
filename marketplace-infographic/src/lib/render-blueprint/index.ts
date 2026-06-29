@@ -337,6 +337,9 @@ export {
   canonicalParse,
   migrateBlueprint,
   extractUnknownBlueprintFields,
+  mergeUnknownBlueprintFields,
+  runMigrationChain,
+  BLUEPRINT_MIGRATION_CHAIN,
   SERIALIZATION_SCHEMA_VERSION,
   COMPRESSION_THRESHOLD_BYTES,
   type SerializableBlueprint,
@@ -349,5 +352,43 @@ export {
   type SerializedPayload,
   type ImageReference,
 } from "./serialization";
+
+export {
+  CURRENT_BLUEPRINT_SCHEMA,
+  CURRENT_PIPELINE_VERSION,
+  parseBlueprintVersion,
+  formatBlueprintVersion,
+  compareBlueprintVersions,
+  readBlueprintSchemaVersion,
+  writeBlueprintSchemaVersion,
+  evaluateCompatibility,
+  compatibilityMessage,
+  isUpgradeOnly,
+} from "./blueprint-version";
+
+export {
+  CompatibilityStatus,
+  type BlueprintVersion,
+  type BlueprintMigration,
+  type VersionManifest,
+  type CompatibilityCheck,
+  type MigrationStep,
+  type MigrationResult,
+  type VersionReport,
+  type CompatibilityValidationResult,
+  type SnapshotVersionRecord,
+  type CompatibilityStatusId,
+} from "./blueprint-version-types";
+
+export {
+  VersionEngineError,
+  DEFAULT_ADAPTER_VERSION,
+  buildVersionManifest,
+  buildVersionManifestFromRegistry,
+  createVersionReport,
+  validateCompatibility,
+  prepareBlueprintForPipeline,
+  assertPipelineCompatible,
+} from "./version-engine";
 
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";

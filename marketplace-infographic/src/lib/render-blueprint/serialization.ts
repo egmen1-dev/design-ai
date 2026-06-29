@@ -33,7 +33,8 @@ export {
 } from "./serialization-types";
 
 export { canonicalStringify, canonicalize, canonicalParse } from "./canonical-json";
-export { migrateBlueprint, extractUnknownBlueprintFields } from "./blueprint-migration";
+export { migrateBlueprint, extractUnknownBlueprintFields, mergeUnknownBlueprintFields } from "./blueprint-migration";
+export { runMigrationChain, BLUEPRINT_MIGRATION_CHAIN } from "./blueprint-migration-engine";
 
 export class SerializationError extends Error {
   readonly issues: SerializationValidationIssue[];

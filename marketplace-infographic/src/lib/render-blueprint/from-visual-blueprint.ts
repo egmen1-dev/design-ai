@@ -11,6 +11,7 @@ import type {
   SceneEnvironmentId,
 } from "./types";
 import { createInitialLifecycleMeta } from "./lifecycle";
+import { CURRENT_BLUEPRINT_SCHEMA } from "./blueprint-version";
 import { RENDER_BLUEPRINT_VERSION } from "./types";
 
 function snapLens(mm: number): CameraLensId {
@@ -83,6 +84,7 @@ export function createEmptyRenderBlueprint(input: RenderBlueprintInput): RenderB
     meta: {
       id: input.id ?? randomUUID(),
       version: RENDER_BLUEPRINT_VERSION,
+      schemaVersion: CURRENT_BLUEPRINT_SCHEMA,
       revision: 0,
       generator: "flux",
       createdAt: now,

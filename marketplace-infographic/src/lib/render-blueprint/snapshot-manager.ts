@@ -28,6 +28,8 @@ import {
   type SnapshotRetentionPolicy,
   type RollbackStrategyId,
 } from "./snapshot-types";
+import { readBlueprintSchemaVersion } from "./blueprint-version";
+import { CURRENT_PIPELINE_VERSION, DEFAULT_ADAPTER_VERSION } from "./version-engine";
 
 export {
   RollbackStrategy,
@@ -245,7 +247,17 @@ export class SnapshotManager {
       retry: params.metadata?.retry ?? params.blueprint.meta.retry ?? 0,
       seed: params.metadata?.seed ?? params.blueprint.meta.seed,
       provider: params.metadata?.provider ?? params.blueprint.render.provider,
-      version: params.metadata?.version ?? String(params.blueprint.meta.version),
+      version:
+        params.metadata?.version ??
+        params.blueprint.meta.schemaVersion ??
+        String(params.blueprint.meta.version),
+      blueprintVersion:
+        params.metadata?.blueprintVersion ??
+        params.blueprint.meta.schemaVersion ??
+        readBlueprintSchemaVersion(params.blueprint as unknown as Record<string, unknown>),
+      pipelineVersion: params.metadata?.pipelineVersion ?? CURRENT_PIPELINE_VERSION,
+      agentVersions: params.metadata?.agentVersions,
+      adapterVersion: params.metadata?.adapterVersion ?? DEFAULT_ADAPTER_VERSION,
     };
 
     const checksum = computeChecksum(blueprint, graphSnap, validation);

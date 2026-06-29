@@ -40,7 +40,13 @@ export type SnapshotMetadata = {
   retry: number;
   seed: number;
   provider: string;
+  /** Legacy integer or string — prefer blueprintVersion */
   version: string;
+  /** Ch 3.13 — full version record for replay */
+  blueprintVersion?: string;
+  pipelineVersion?: string;
+  agentVersions?: Record<string, string>;
+  adapterVersion?: string;
 };
 
 export type SnapshotDelta = {
