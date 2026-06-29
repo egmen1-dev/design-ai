@@ -13,6 +13,7 @@ SPECS=(
   src/lib/render-blueprint/render-blueprint.spec.ts
   src/lib/render-blueprint/lifecycle.spec.ts
   src/lib/render-blueprint/agent-contracts.spec.ts
+  src/lib/render-blueprint/decision-graph.spec.ts
 )
 for f in "${SPECS[@]}"; do
   echo "==> $f"

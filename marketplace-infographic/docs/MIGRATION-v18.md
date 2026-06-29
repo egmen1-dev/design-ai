@@ -28,6 +28,17 @@
 npx tsx src/lib/render-blueprint/agent-contracts.spec.ts
 ```
 
+### Фаза 2c — Decision Graph ✅ (Chapter 3.3)
+
+- `decision-graph.ts` — runtime dependency graph, invalidation, partial rebuild
+- `DecisionGraph` — parents stored, children computed; HARD/SOFT/INFO edges
+- `LifecycleManager` — graph first, blueprint sync second (Golden Rule)
+- `docs/DESIGN-AI-v18-CHAPTER-3.3-DECISION-GRAPH.md`
+
+```bash
+npx tsx src/lib/render-blueprint/decision-graph.spec.ts
+```
+
 ### Фаза 2b — Legacy agent integration (planned)
 
 ### Фаза 3 — Critics before render

@@ -21,7 +21,8 @@ import {
   AGENT_WRITE_MATRIX,
 } from "./agent-matrix";
 import { applyAgentPatch, type SectionPayloadMap } from "./patch";
-import { DEPENDENCY_CHILDREN, advanceLifecycleStage } from "./lifecycle";
+import { advanceLifecycleStage } from "./lifecycle";
+import { DecisionGraph, type DecisionConflict, DECISION_NODE_ID } from "./decision-graph";
 
 const MANAGED: LifecycleManagedSection[] = [
   "product",
@@ -41,32 +42,31 @@ function isManagedSection(section: BlueprintSection): section is LifecycleManage
   return (MANAGED as string[]).includes(section);
 }
 
-/** Downstream dependents marked for re-computation after a section update. */
-function collectInvalidated(
-  blueprint: RenderBlueprint,
-  updatedSections: LifecycleManagedSection[],
-): BlueprintSection[] {
-  const invalidated = new Set<BlueprintSection>();
+function isDecisionGraphSection(section: string): boolean {
+  return Object.values(DECISION_NODE_ID).includes(section);
+}
 
-  for (const source of updatedSections) {
-    const queue = [...DEPENDENCY_CHILDREN[source]];
-    const visited = new Set<LifecycleManagedSection>();
-
-    while (queue.length) {
-      const section = queue.shift()!;
-      if (visited.has(section)) continue;
-      visited.add(section);
-
-      if (blueprint.lifecycle.sections[section] === SectionState.LOCKED) continue;
-
-      invalidated.add(section);
-      for (const child of DEPENDENCY_CHILDREN[section]) {
-        queue.push(child);
-      }
-    }
+function applyGraphDecisions(
+  graph: DecisionGraph,
+  agentId: AgentContractId,
+  result: AgentResultBase & { updates: AgentSectionUpdates },
+): { conflict: DecisionConflict | null; invalidatedSections: BlueprintSection[] } {
+  for (const key of Object.keys(result.updates) as (keyof AgentSectionUpdates)[]) {
+    const section = sectionKeyToPatchSection(key);
+    if (!section || !isDecisionGraphSection(section)) continue;
+    const data = result.updates[key];
+    if (!data) continue;
+    const nodeId = section === "materials" ? "materials" : section;
+    const conflict = graph.proposeUpdate(nodeId, agentId, data, result.confidence);
+    if (conflict) return { conflict, invalidatedSections: [] };
   }
-
-  return [...invalidated];
+  graph.assertValid();
+  const invalidationResults = graph.commitPending();
+  const invalidated = new Set<BlueprintSection>();
+  for (const inv of invalidationResults) {
+    for (const id of inv.dirtied) invalidated.add(id as BlueprintSection);
+  }
+  return { conflict: null, invalidatedSections: [...invalidated] };
 }
 
 function sectionKeyToPatchSection(
@@ -79,6 +79,7 @@ function sectionKeyToPatchSection(
 export class LifecycleManager {
   /**
    * Apply agent result to blueprint. Agents never call this — Orchestrator only.
+   * Golden Rule (Ch 3.3): Decision Graph first, RenderBlueprint second.
    */
   apply(
     agentId: AgentContractId,
@@ -102,6 +103,20 @@ export class LifecycleManager {
       assertAgentWriteAccess(agentId, section);
     }
 
+    const graph = DecisionGraph.fromBlueprint(blueprint);
+    const { conflict, invalidatedSections: graphInvalidated } = applyGraphDecisions(
+      graph,
+      agentId,
+      result,
+    );
+    if (conflict) {
+      throw new AgentContractError(
+        "recoverable",
+        `Decision conflict on ${conflict.nodeId}: ${conflict.reason} (${conflict.producers.join(" vs ")})`,
+        "DECISION_CONFLICT",
+      );
+    }
+
     let next = blueprint;
     const updatedSections: LifecycleManagedSection[] = [];
 
@@ -119,7 +134,8 @@ export class LifecycleManager {
       updatedSections.push(section);
     }
 
-    const invalidatedSections = collectInvalidated(next, updatedSections);
+    next = graph.syncStatesToBlueprint(next);
+    const invalidatedSections = graphInvalidated;
     const warnings = [...result.warnings];
     const errors: AgentError[] = result.errors ?? [];
 

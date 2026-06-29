@@ -107,6 +107,27 @@ export {
 
 export { LifecycleManager } from "./lifecycle-manager";
 
+export {
+  DecisionGraph,
+  DecisionGraphError,
+  DecisionType,
+  DependencyKind,
+  DEFAULT_DECISION_EDGES,
+  DECISION_EXECUTION_ORDER,
+  DECISION_NODE_ID,
+  DECISION_PRODUCERS,
+  agentIdToProducer,
+  type DecisionConflict,
+  type DecisionEdge,
+  type DecisionNode,
+  type DecisionProducerId,
+  type DecisionTypeId,
+  type DependencyKindId,
+  type GraphValidationIssue,
+  type GraphValidationResult,
+  type InvalidationResult,
+} from "./decision-graph";
+
 export { storyDirectorAgent, type StoryDirectorInput, type StoryDirectorResult } from "./agents/story-director-agent";
 
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";
