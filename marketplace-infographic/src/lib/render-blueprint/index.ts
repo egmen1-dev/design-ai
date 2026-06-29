@@ -286,4 +286,41 @@ export {
 
 export { storyDirectorAgent, type StoryDirectorInput, type StoryDirectorResult } from "./agents/story-director-agent";
 
+export {
+  compileFluxAdapterOutput,
+  RenderPipeline,
+  defaultRenderPipeline,
+  extractRenderIntent,
+  negotiateCapabilities,
+  compileNegativePrompt,
+  validateCompiledPrompt,
+  validateNegativePrompt,
+  compilePromptForProvider,
+  getProviderCapabilities,
+} from "./render-pipeline";
+export {
+  RenderPipelineError,
+  FluxRenderAdapter,
+  GptImageRenderAdapter,
+  SdxlRenderAdapter,
+  PollinationsRenderAdapter,
+  createDefaultAdapters,
+  frozenTestBlueprint,
+} from "./render-adapters";
+export type {
+  RenderIntent,
+  ProviderRequest,
+  ProviderResponse,
+  ProviderMetadata,
+  ProviderCapabilities,
+  ProviderId,
+  RenderAdapter,
+  CompiledProviderRequest,
+  ProviderRenderFn,
+  RenderPipelineOptions,
+  RenderPipelineResult,
+  NegotiatedFields,
+} from "./render-pipeline-types";
+export { DEFAULT_FALLBACK_CHAIN } from "./render-pipeline-types";
+
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";
