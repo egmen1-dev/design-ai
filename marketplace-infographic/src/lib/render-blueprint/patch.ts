@@ -1,32 +1,39 @@
 import type {
   BlueprintSection,
   RenderBlueprint,
-  RenderCameraSection,
-  RenderCreativeIntentSection,
-  RenderKnowledgeSection,
-  RenderLayoutSection,
-  RenderLightingSection,
-  RenderMaterialsSection,
-  RenderPhotographySection,
-  RenderSceneSection,
-  RenderStorySection,
+  CreativeBlueprint,
+  StoryBlueprint,
+  ProductBlueprint,
+  SceneBlueprint,
+  PhotographyBlueprint,
+  CameraBlueprint,
+  LightingBlueprint,
+  MaterialBlueprint,
+  CompositionBlueprint,
+  BackgroundBlueprint,
+  ConstraintBlueprint,
+  ValidationBlueprint,
 } from "./types";
 import {
   assertAgentMayWriteSection,
   assertAgentOutputsClean,
   assertBlueprintUnlocked,
+  assertPhotographyMoodClean,
 } from "./constitution";
 
 export type SectionPayloadMap = {
-  knowledge: Partial<RenderKnowledgeSection>;
-  creativeIntent: Partial<RenderCreativeIntentSection>;
-  story: Partial<RenderStorySection>;
-  scene: Partial<RenderSceneSection>;
-  photography: Partial<RenderPhotographySection>;
-  layout: Partial<RenderLayoutSection>;
-  lighting: Partial<RenderLightingSection>;
-  camera: Partial<RenderCameraSection>;
-  materials: Partial<RenderMaterialsSection>;
+  creative: Partial<CreativeBlueprint>;
+  story: Partial<StoryBlueprint>;
+  product: Partial<ProductBlueprint>;
+  scene: Partial<SceneBlueprint>;
+  photography: Partial<PhotographyBlueprint>;
+  camera: Partial<CameraBlueprint>;
+  lighting: Partial<LightingBlueprint>;
+  materials: Partial<MaterialBlueprint>;
+  composition: Partial<CompositionBlueprint>;
+  background: Partial<BackgroundBlueprint>;
+  constraints: Partial<ConstraintBlueprint>;
+  validation: Partial<ValidationBlueprint>;
 };
 
 export type AgentPatch<S extends keyof SectionPayloadMap = keyof SectionPayloadMap> = {
@@ -41,7 +48,6 @@ function collectStrings(obj: unknown): string[] {
   return Object.values(obj).flatMap(collectStrings);
 }
 
-/** Применить патч агента с guard constitution v18 */
 export function applyAgentPatch<S extends keyof SectionPayloadMap>(
   blueprint: RenderBlueprint,
   patch: AgentPatch<S>,
@@ -50,31 +56,36 @@ export function applyAgentPatch<S extends keyof SectionPayloadMap>(
   assertAgentMayWriteSection(patch.agentId, patch.section as BlueprintSection);
   assertAgentOutputsClean(collectStrings(patch.data), patch.agentId);
 
+  if (patch.section === "photography" && typeof patch.data === "object" && patch.data && "visualMood" in patch.data) {
+    const mood = (patch.data as Partial<PhotographyBlueprint>).visualMood;
+    if (mood) assertPhotographyMoodClean(mood, patch.agentId);
+  }
+
   const next: RenderBlueprint = {
     ...blueprint,
     meta: {
       ...blueprint.meta,
-      trace: [
-        ...blueprint.meta.trace,
+      audit: [
+        ...(blueprint.meta.audit ?? []),
         {
-          agentId: patch.agentId as RenderBlueprint["meta"]["trace"][0]["agentId"],
+          agentId: patch.agentId,
           section: patch.section as BlueprintSection,
           action: "patch",
-          at: new Date().toISOString(),
+          at: Date.now(),
         },
       ],
     },
   };
 
   switch (patch.section) {
-    case "knowledge":
-      next.knowledge = { ...next.knowledge, ...patch.data };
-      break;
-    case "creativeIntent":
-      next.creativeIntent = { ...next.creativeIntent, ...patch.data };
+    case "creative":
+      next.creative = { ...next.creative, ...patch.data };
       break;
     case "story":
       next.story = { ...next.story, ...patch.data };
+      break;
+    case "product":
+      next.product = { ...next.product, ...patch.data };
       break;
     case "scene":
       next.scene = { ...next.scene, ...patch.data };
@@ -82,17 +93,26 @@ export function applyAgentPatch<S extends keyof SectionPayloadMap>(
     case "photography":
       next.photography = { ...next.photography, ...patch.data };
       break;
-    case "layout":
-      next.layout = { ...next.layout, ...patch.data };
+    case "camera":
+      next.camera = { ...next.camera, ...patch.data };
       break;
     case "lighting":
       next.lighting = { ...next.lighting, ...patch.data };
       break;
-    case "camera":
-      next.camera = { ...next.camera, ...patch.data };
-      break;
     case "materials":
       next.materials = { ...next.materials, ...patch.data };
+      break;
+    case "composition":
+      next.composition = { ...next.composition, ...patch.data };
+      break;
+    case "background":
+      next.background = { ...next.background, ...patch.data };
+      break;
+    case "constraints":
+      next.constraints = { ...next.constraints, ...patch.data };
+      break;
+    case "validation":
+      next.validation = { ...next.validation, ...patch.data };
       break;
     default:
       break;

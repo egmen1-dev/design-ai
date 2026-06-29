@@ -1,191 +1,272 @@
 /**
- * DESIGN AI v18 — RenderBlueprint
- * Single source of truth. Agents mutate assigned sections only.
+ * DESIGN AI v18 — Chapter 3: RenderBlueprint
+ * Single source of truth. No prompts stored. No duplicate fields (Rule 001).
  */
-import type { ProductCategory } from "@/lib/product-analysis";
-import type { LayoutTemplateId } from "@/lib/layout-engine/types";
-import type { LayoutGeometry } from "@/lib/design/composition-director/types";
-import type {
-  DepthLevel,
-  LightingPresetId,
-  MaterialId,
-} from "@/lib/design/scene-blueprint/types";
-import type {
-  TargetEmotionId,
-  WeatherId,
-  TimeOfDayId,
-} from "@/lib/design/visual-pipeline/types";
-import type { SceneEnvironmentId } from "./environment";
 
-export const RENDER_BLUEPRINT_VERSION = "18.0" as const;
+export const RENDER_BLUEPRINT_VERSION = 18;
 
 export type BlueprintSection =
-  | "knowledge"
-  | "creativeIntent"
+  | "meta"
+  | "creative"
   | "story"
+  | "product"
   | "scene"
   | "photography"
-  | "layout"
-  | "lighting"
   | "camera"
+  | "lighting"
   | "materials"
-  | "palette"
+  | "composition"
+  | "background"
+  | "render"
   | "constraints"
-  | "render";
+  | "validation";
 
-export type AgentSectionOwner =
-  | "knowledge-engine"
-  | "creative-intent"
-  | "visual-story-director"
-  | "scene-director"
-  | "commercial-photo-director"
-  | "composition-director"
-  | "lighting-director"
-  | "camera-director"
-  | "material-director"
-  | "flux-adapter";
+export type RenderGeneratorId = "flux" | "gpt-image" | "imagen";
 
-/** Какой агент владеет какой секцией */
-export const SECTION_OWNERS: Record<Exclude<BlueprintSection, "palette" | "constraints" | "render">, AgentSectionOwner> = {
-  knowledge: "knowledge-engine",
-  creativeIntent: "creative-intent",
-  story: "visual-story-director",
-  scene: "scene-director",
-  photography: "commercial-photo-director",
-  layout: "composition-director",
-  lighting: "lighting-director",
-  camera: "camera-director",
-  materials: "material-director",
+export type MetaBlueprint = {
+  id: string;
+  version: number;
+  /** Только Flux Adapter — агенты не меняют */
+  generator: RenderGeneratorId;
+  createdAt: number;
+  seed: number;
+  retry: number;
+  layout: "marketplace";
+  locked?: boolean;
+  audit?: BlueprintAuditEntry[];
 };
 
-export type BlueprintTraceEntry = {
-  agentId: AgentSectionOwner | "system";
+export type BlueprintAuditEntry = {
+  agentId: string;
   section: BlueprintSection;
-  action: "set" | "patch" | "merge";
-  at: string;
+  action: "set" | "patch";
+  at: number;
 };
 
-export type RenderKnowledgeSection = {
-  marketSnippet?: string;
-  genomeId?: string;
-  memoryPatterns?: string[];
-  trendSnippet?: string;
-  category?: ProductCategory;
+export type MarketplaceId = "WB" | "Ozon" | "Amazon";
+
+export type CreativeGoal =
+  | "CTR"
+  | "Premium"
+  | "Luxury"
+  | "Minimal"
+  | "Technical"
+  | "Lifestyle";
+
+export type PriceSegmentId = "budget" | "middle" | "premium";
+
+export type CreativeBlueprint = {
+  marketplace: MarketplaceId;
+  goal: CreativeGoal;
+  priceSegment: PriceSegmentId;
+  audience: string;
+  emotion: string;
 };
 
-export type RenderCreativeIntentSection = {
-  customerNeed: string;
-  sellingAngle: string;
-  priceSegment: "budget" | "mid" | "premium";
+export type EmotionalToneId = "calm" | "confident" | "innovative" | "warm" | "luxury";
+
+export type StoryBlueprint = {
+  hook: string;
+  customerProblem: string;
+  customerDesire: string;
+  visualPromise: string;
+  emotionalTone: EmotionalToneId;
+  narrative: string;
 };
 
-/** Design Language — не Flux tokens */
-export type RenderStorySection = {
-  emotion: TargetEmotionId | "security" | "reliability";
-  customerNeed: string;
-  visualNarrative: string;
-  storyType?: "industrial_product" | "lifestyle" | "workshop" | "premium" | "technical" | "domestic";
-  usageContext?: "home" | "outdoor" | "professional" | "retail" | "utility";
+export type ProductFinishId = "matte" | "gloss" | "mixed";
+
+export type ProductBlueprint = {
+  category: string;
+  subCategory: string;
+  dominantColor: string[];
+  materials: string[];
+  finish: ProductFinishId;
+  shape: string;
+  cutout: boolean;
 };
 
-/** Единственное поле локации — scene.environment */
-export type RenderSceneSection = {
+/** Rule 001 — единственное поле локации: scene.environment */
+export type SceneEnvironmentId =
+  | "kitchen"
+  | "bathroom"
+  | "garage"
+  | "garden"
+  | "living_room"
+  | "studio"
+  | "workshop";
+
+export type SceneArchitectureId = "modern" | "classic" | "industrial" | "minimal";
+
+export type SceneTimeOfDayId = "morning" | "day" | "golden_hour" | "sunset" | "night";
+
+export type SceneWeatherId = "clear" | "cloudy" | "rain";
+
+export type SceneDepthId = "shallow" | "medium" | "deep";
+
+export type SceneBlueprint = {
   environment: SceneEnvironmentId;
-  time: TimeOfDayId;
-  weather: WeatherId;
-  depth: DepthLevel;
-  visualDensity: number;
+  architecture: SceneArchitectureId;
+  timeOfDay: SceneTimeOfDayId;
+  weather: SceneWeatherId;
+  depth: SceneDepthId;
+  surface: string;
 };
 
-export type DepthOfFieldId = "shallow" | "medium" | "deep";
+export type PhotographyStyleId = "commercial" | "editorial" | "catalog" | "advertising";
 
-/** Photography Language — бриф съёмки (Commercial Photo Director) */
-export type RenderPhotographySection = {
-  lensMm: number;
-  cameraHeight: "eye_level" | "low_hero" | "three_quarter" | "top_down";
-  distance: "close" | "medium" | "wide";
-  depthOfField: DepthOfFieldId;
-  lightingPreset: LightingPresetId | "warm_directional" | "luxury_softbox";
-  framing?: "product_hero" | "environment_context";
+export type ShotTypeId = "hero" | "wide" | "detail" | "macro";
+
+export type ContrastLevelId = "soft" | "medium" | "high";
+
+/** Photography — без camera.* (Rule 001). Без marketing-слов в visualMood. */
+export type PhotographyBlueprint = {
+  style: PhotographyStyleId;
+  shotType: ShotTypeId;
+  backgroundBlur: number;
+  contrast: ContrastLevelId;
+  visualMood: string;
+  realism: number;
 };
 
-export type RenderLightingSection = {
+export type CameraLensId = 35 | 50 | 70 | 85;
+
+export type CameraHeightId = "low" | "eye" | "high";
+
+export type CameraAngleId = "front" | "three-quarter" | "side";
+
+export type CameraDistanceId = "close" | "medium" | "far";
+
+export type CameraPerspectiveId = "natural" | "dramatic";
+
+/** camera.distance — единственное место для дистанции (Rule 001) */
+export type CameraBlueprint = {
+  lens: CameraLensId;
+  height: CameraHeightId;
+  angle: CameraAngleId;
+  distance: CameraDistanceId;
+  perspective: CameraPerspectiveId;
+};
+
+export type LightingPresetId =
+  | "studio"
+  | "window"
+  | "golden_hour"
+  | "softbox"
+  | "overcast";
+
+export type LightingBlueprint = {
   preset: LightingPresetId;
-  keyLight: "soft" | "directional" | "spot" | "overhead";
-  fill: "minimal" | "balanced" | "ambient";
-  rim: "none" | "subtle" | "strong";
-  temperatureK: number;
-  contrast: "low" | "medium" | "high";
-  shadowStyle: "soft" | "contact" | "directional";
+  temperature: number;
+  key: string;
+  fill: string;
+  rim: string;
+  back: string;
+  shadowSoftness: number;
+  reflectionStrength: number;
 };
 
-export type RenderCameraSection = {
-  lensMm: number;
-  angle: "eye_level" | "low_hero" | "three_quarter" | "top_down";
-  distance: "close" | "medium" | "wide";
-  framing: "product_hero" | "environment_context";
-  perspective: "natural" | "compressed" | "wide";
+export type MaterialReflectionId = "none" | "soft" | "medium";
+
+export type MaterialBlueprint = {
+  floor: string;
+  walls: string;
+  decor: string[];
+  reflection: MaterialReflectionId;
+  roughness: number;
 };
 
-export type RenderLayoutSection = {
-  templateId: LayoutTemplateId;
-  geometry: LayoutGeometry;
-  whitespaceTarget: number;
-  heroScale: number;
-  heroPosition: "left" | "right" | "center";
-  negativeSpace: "left" | "right" | "top" | "balanced";
+export type CompositionTemplateId = "hero_left" | "hero_right" | "center";
+
+/** Без x/y/width — это задача HTML (Chapter 3) */
+export type CompositionBlueprint = {
+  template: CompositionTemplateId;
+  heroWeight: number;
+  negativeSpace: number;
+  balance: number;
+  eyeFlow: string[];
+  foreground: boolean;
+  midground: boolean;
+  background: boolean;
 };
 
-export type RenderMaterialsSection = {
-  floor: MaterialId;
-  background: MaterialId;
-  surface: MaterialId;
-  reflection: "none" | "subtle" | "moderate" | "glossy";
-  texture: "matte" | "brushed" | "glossy" | "concrete";
+export type BackgroundComplexityId = "minimal" | "medium" | "rich";
+
+export type BackgroundBlueprint = {
+  complexity: BackgroundComplexityId;
+  containsPeople: boolean;
+  containsAnimals: boolean;
+  containsVehicles: boolean;
+  decorDensity: number;
+  secondaryObjects: string[];
 };
 
-export type RenderConstraintsSection = {
-  noProduct: true;
-  noText: true;
-  noLogos: true;
-  noPeople: true;
-  backdropOnly: true;
+export type RenderQualityId = "draft" | "production";
+
+export type RenderResolution = {
+  width: number;
+  height: number;
 };
 
-/** Заполняется только Flux Adapter — агенты read-only */
-export type RenderAdapterSection = {
-  model: "flux" | "kontext" | "seedream" | "gptimage";
-  compiledPrompt?: string;
-  negativePrompt?: string;
-  compiledAt?: string;
+/** Rule 004 — без prompt/negativePrompt. Только настройки рендера. */
+export type RenderBlueprintSettings = {
+  provider: string;
+  quality: RenderQualityId;
+  aspectRatio: "3:4";
+  resolution: RenderResolution;
+  negativePromptProfile: string;
+};
+
+export type ConstraintBlueprint = {
+  mustLeaveHeadlineSpace: boolean;
+  mustLeaveBadgeSpace: boolean;
+  mustLeaveBenefitsSpace: boolean;
+  mustAvoidText: boolean;
+  mustAvoidDuplicateObjects: boolean;
+  mustAvoidHeroOverlap: boolean;
+};
+
+export type ValidationBlueprint = {
+  storyApproved: boolean;
+  sceneApproved: boolean;
+  photoApproved: boolean;
+  layoutApproved: boolean;
+  chiefApproved: boolean;
+  professionalScore: number;
+  warnings: string[];
 };
 
 export type RenderBlueprint = {
-  version: typeof RENDER_BLUEPRINT_VERSION;
-  meta: {
-    category: ProductCategory;
-    seed: string;
-    locked: boolean;
-    trace: BlueprintTraceEntry[];
-  };
-  knowledge: RenderKnowledgeSection;
-  creativeIntent: RenderCreativeIntentSection;
-  story: RenderStorySection;
-  scene: RenderSceneSection;
-  photography: RenderPhotographySection;
-  layout: RenderLayoutSection;
-  lighting: RenderLightingSection;
-  camera: RenderCameraSection;
-  materials: RenderMaterialsSection;
-  palette: string[];
-  constraints: RenderConstraintsSection;
-  render: RenderAdapterSection;
+  meta: MetaBlueprint;
+  creative: CreativeBlueprint;
+  story: StoryBlueprint;
+  product: ProductBlueprint;
+  scene: SceneBlueprint;
+  photography: PhotographyBlueprint;
+  camera: CameraBlueprint;
+  lighting: LightingBlueprint;
+  materials: MaterialBlueprint;
+  composition: CompositionBlueprint;
+  background: BackgroundBlueprint;
+  render: RenderBlueprintSettings;
+  constraints: ConstraintBlueprint;
+  validation: ValidationBlueprint;
+};
+
+/** Побочный продукт адаптера — не хранится в RenderBlueprint (Rule 004) */
+export type FluxAdapterOutput = {
+  prompt: string;
+  negativePrompt: string;
+  generator: RenderGeneratorId;
+  compiledAt: number;
 };
 
 export type RenderBlueprintInput = {
-  category: ProductCategory;
-  seed: string;
-  customerNeed?: string;
+  id?: string;
+  seed: number;
+  category: string;
+  subCategory?: string;
+  marketplace?: MarketplaceId;
   environment?: SceneEnvironmentId;
-  palette?: string[];
+  dominantColor?: string[];
 };

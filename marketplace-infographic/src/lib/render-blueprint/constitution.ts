@@ -1,20 +1,35 @@
 /**
- * Design Constitution v18 — runtime rules for RenderBlueprint
+ * Design Constitution v18 — Chapter 3 rules
  */
-import type { BlueprintSection, RenderBlueprint } from "./types";
+import type { RenderBlueprint } from "./types";
+import type { BlueprintSection } from "./types";
+import { agentMayWriteSection } from "./ownership";
 
 export const CONSTITUTION_V18_VERSION = "18.0";
 
-/** Токены, которые агенты не могут возвращать (только Flux Adapter) */
+export const CONSTITUTION_V18_RULES = [
+  "Rule 001: Each entity exists only once (e.g. camera.distance, not scene.cameraDistance).",
+  "Rule 002: Each agent may change only its assigned section.",
+  "Rule 003: All fields have concrete types — no quality:string.",
+  "Rule 004: Prompt is forbidden in RenderBlueprint — adapter generates it.",
+  "Golden rule: Blueprint must fully describe the photo before adapter runs.",
+] as const;
+
+/** Flux + marketing tokens forbidden in agent string outputs */
 export const BANNED_AGENT_TOKENS =
-  /\b(flux|sdxl|photorealistic|8k|4k|ultra\s*realistic|backdrop\s*only|negative\s*prompt|pollinations|gptimage|seedream|ctr|click.?through|whitespace\s*\d|typography|behance|marketplace\s*fit)\b/i;
+  /\b(flux|sdxl|photorealistic|8k|4k|ultra\s*realistic|backdrop\s*only|negative\s*prompt|pollinations|gptimage|seedream|ctr|click.?through|whitespace\s*\d|typography|behance)\b/i;
+
+/** Forbidden in photography.visualMood (Chapter 3) */
+export const BANNED_PHOTOGRAPHY_MOOD =
+  /\b(premium|luxury|ctr|minimal|marketplace|hierarchy)\b/i;
 
 export type ConstitutionViolation = {
   code:
     | "CONSTITUTION_V18_SECTION_VIOLATION"
     | "CONSTITUTION_V18_BANNED_TOKEN"
-    | "CONSTITUTION_V18_RENDER_WRITE"
-    | "CONSTITUTION_V18_LOCKED";
+    | "CONSTITUTION_V18_PROMPT_STORED"
+    | "CONSTITUTION_V18_LOCKED"
+    | "CONSTITUTION_V18_NOT_VALIDATED";
   message: string;
   section?: BlueprintSection;
   agentId?: string;
@@ -30,26 +45,41 @@ export class ConstitutionV18Error extends Error {
   }
 }
 
-/** Агенты не могут писать в render.* */
-export function assertAgentMayWriteSection(
-  agentId: string,
-  section: BlueprintSection,
-): void {
-  if (section === "render") {
+export function assertAgentMayWriteSection(agentId: string, section: BlueprintSection): void {
+  if (section === "render" && agentId !== "system") {
     throw new ConstitutionV18Error([
       {
-        code: "CONSTITUTION_V18_RENDER_WRITE",
-        message: `Agent ${agentId} cannot write render section — Flux Adapter only`,
+        code: "CONSTITUTION_V18_SECTION_VIOLATION",
+        message: `Only system may configure render settings; adapter reads only`,
         section: "render",
         agentId,
       },
     ]);
   }
-  if (section === "constraints" || section === "palette") {
+  if (section === "meta" && agentId !== "system" && agentId !== "flux-adapter") {
     throw new ConstitutionV18Error([
       {
         code: "CONSTITUTION_V18_SECTION_VIOLATION",
-        message: `Agent ${agentId} cannot write system section ${section}`,
+        message: `Agent ${agentId} cannot write meta`,
+        section: "meta",
+        agentId,
+      },
+    ]);
+  }
+  if (agentId === "flux-adapter") {
+    throw new ConstitutionV18Error([
+      {
+        code: "CONSTITUTION_V18_SECTION_VIOLATION",
+        message: "flux-adapter is read-only on RenderBlueprint",
+        agentId,
+      },
+    ]);
+  }
+  if (!agentMayWriteSection(agentId, section)) {
+    throw new ConstitutionV18Error([
+      {
+        code: "CONSTITUTION_V18_SECTION_VIOLATION",
+        message: `Agent ${agentId} cannot write section ${section}`,
         section,
         agentId,
       },
@@ -69,7 +99,6 @@ export function assertBlueprintUnlocked(blueprint: RenderBlueprint, agentId: str
   }
 }
 
-/** Проверка строковых полей агента на Flux/marketing язык */
 export function scanAgentTextForBannedTokens(
   text: string,
   agentId: string,
@@ -79,38 +108,65 @@ export function scanAgentTextForBannedTokens(
   return [
     {
       code: "CONSTITUTION_V18_BANNED_TOKEN",
-      message: `Agent ${agentId} emitted banned token "${match[0]}" — use structured fields only`,
+      message: `Agent ${agentId} emitted banned token "${match[0]}"`,
       agentId,
     },
   ];
 }
 
-export function assertAgentOutputsClean(
-  values: string[],
-  agentId: string,
-): void {
+export function assertAgentOutputsClean(values: string[], agentId: string): void {
   const violations = values.flatMap((v) => scanAgentTextForBannedTokens(v, agentId));
   if (violations.length) throw new ConstitutionV18Error(violations);
 }
 
-/** §8–9: environment — единственное поле локации */
+export function assertPhotographyMoodClean(mood: string, agentId: string): void {
+  const match = mood.match(BANNED_PHOTOGRAPHY_MOOD);
+  if (!match) return;
+  throw new ConstitutionV18Error([
+    {
+      code: "CONSTITUTION_V18_BANNED_TOKEN",
+      message: `photography.visualMood must not contain marketing term "${match[0]}"`,
+      section: "photography",
+      agentId,
+    },
+  ]);
+}
+
+/** Rule 004 — prompt не должен храниться в blueprint */
+export function assertNoPromptStored(blueprint: RenderBlueprint): void {
+  const serialized = JSON.stringify(blueprint);
+  if (/"compiledPrompt"|"mergedPrompt"|"backgroundPrompt"/i.test(serialized)) {
+    throw new ConstitutionV18Error([
+      {
+        code: "CONSTITUTION_V18_PROMPT_STORED",
+        message: "RenderBlueprint must not store prompt strings",
+      },
+    ]);
+  }
+}
+
 export function assertSingleEnvironmentSource(blueprint: RenderBlueprint): void {
   if (!blueprint.scene.environment) {
     throw new ConstitutionV18Error([
       {
         code: "CONSTITUTION_V18_SECTION_VIOLATION",
-        message: "scene.environment is required — single source of location truth",
+        message: "scene.environment is required",
         section: "scene",
       },
     ]);
   }
 }
 
-export const CONSTITUTION_V18_RULES = [
-  "§1 Agents emit structured decisions only — no model-specific tokens.",
-  "§2 RenderBlueprint is the single source of truth.",
-  "§3 Each agent writes only its assigned section.",
-  "§4 Prompt compilation is exclusive to Flux Adapter (render section).",
-  "§5 scene.environment is the sole location field.",
-  "§6 Each semantic fact exists exactly once.",
-] as const;
+/** Золотое правило — prompt только после валидации всех секций */
+export function assertReadyForAdapter(blueprint: RenderBlueprint): void {
+  const v = blueprint.validation;
+  const failures: ConstitutionViolation[] = [];
+  if (!v.storyApproved) failures.push({ code: "CONSTITUTION_V18_NOT_VALIDATED", message: "story not approved" });
+  if (!v.sceneApproved) failures.push({ code: "CONSTITUTION_V18_NOT_VALIDATED", message: "scene not approved" });
+  if (!v.photoApproved) failures.push({ code: "CONSTITUTION_V18_NOT_VALIDATED", message: "photo not approved" });
+  if (!v.layoutApproved) failures.push({ code: "CONSTITUTION_V18_NOT_VALIDATED", message: "layout not approved" });
+  if (!v.chiefApproved) failures.push({ code: "CONSTITUTION_V18_NOT_VALIDATED", message: "chief not approved" });
+  if (failures.length) throw new ConstitutionV18Error(failures);
+  assertNoPromptStored(blueprint);
+  assertSingleEnvironmentSource(blueprint);
+}
