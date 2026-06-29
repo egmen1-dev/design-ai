@@ -14,6 +14,7 @@ import type {
 } from "../../types";
 import { RENDER_ENGINE_CONFIG } from "../../config";
 import { WB_COVER } from "@/lib/composition/canvas";
+import { writablePublicDir } from "@/lib/runtime-paths";
 import {
   buildModerationPromptVariants,
   resolveBareMinimalPrompt,
@@ -93,7 +94,7 @@ async function saveBackground(buffer: Buffer, promptHash: string): Promise<strin
     .resize(WB_COVER.width, WB_COVER.height, { fit: "cover", position: "centre" })
     .png()
     .toBuffer();
-  const dir = path.join(process.cwd(), "public", "backgrounds");
+  const dir = writablePublicDir("backgrounds");
   await mkdir(dir, { recursive: true });
   const filename = `v17-${promptHash.slice(0, 16)}-${Date.now()}.png`;
   await writeFile(path.join(dir, filename), normalized);

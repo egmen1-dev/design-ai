@@ -30,6 +30,7 @@ import {
   applyFloorColorSpill,
   fitProductWithSafePlacement,
 } from "./alpha-fit";
+import { publicDir, resolvePublicAssetPath, writablePublicDir } from "@/lib/runtime-paths";
 
 const CANVAS_W = WB_COVER.width;
 const CANVAS_H = WB_COVER.height;
@@ -57,10 +58,11 @@ async function loadImageBuffer(source: string): Promise<Buffer> {
     if (!res.ok) throw new Error(`FETCH_IMAGE_${res.status}`);
     return Buffer.from(await res.arrayBuffer());
   }
-  const rel = trimmed.startsWith("/") ? trimmed.slice(1) : trimmed;
-  const abs = path.isAbsolute(trimmed)
-    ? trimmed
-    : path.join(process.cwd(), "public", rel);
+  // URL paths from Next public (/backgrounds, /uploads)
+  if (trimmed.startsWith("/")) {
+    return readFile(await resolvePublicAssetPath(trimmed));
+  }
+  const abs = path.isAbsolute(trimmed) ? trimmed : publicDir(trimmed);
   return readFile(abs);
 }
 

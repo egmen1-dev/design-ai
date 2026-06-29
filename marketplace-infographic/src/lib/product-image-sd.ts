@@ -1,5 +1,6 @@
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";
+import { writablePublicDir } from "@/lib/runtime-paths";
 import {
   bufferToDataUrl,
   prepareProductImageFast,
@@ -34,7 +35,7 @@ export async function saveProductCutout(
   buffer: Buffer,
   userId: string,
 ): Promise<{ absPath: string; webPath: string }> {
-  const dir = path.join(process.cwd(), "public", "uploads", "cutouts");
+  const dir = writablePublicDir("uploads", "cutouts");
   await mkdir(dir, { recursive: true });
   const filename = `${userId}-${Date.now()}-cutout.png`;
   const absPath = path.join(dir, filename);
