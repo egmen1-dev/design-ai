@@ -14,6 +14,7 @@ SPECS=(
   src/lib/render-blueprint/lifecycle.spec.ts
   src/lib/render-blueprint/agent-contracts.spec.ts
   src/lib/render-blueprint/agent-registry.spec.ts
+  src/lib/render-blueprint/agent-registry-v43.spec.ts
   src/lib/render-blueprint/event-system.spec.ts
   src/lib/render-blueprint/snapshot-recovery.spec.ts
   src/lib/render-blueprint/lifecycle-manager.spec.ts

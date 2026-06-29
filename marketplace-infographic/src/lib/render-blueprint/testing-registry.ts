@@ -17,6 +17,7 @@ export const V18_TEST_REGISTRY: TestSpecEntry[] = [
   { id: "lifecycle", path: `${BP}/lifecycle.spec.ts`, category: TestCategory.BLUEPRINT, chapter: "3.1", description: "Lifecycle sections and states", usesLlm: false },
   { id: "agent-contracts", path: `${BP}/agent-contracts.spec.ts`, category: TestCategory.AGENT, chapter: "3.2", description: "Agent contracts and ownership", usesLlm: false },
   { id: "agent-registry", path: `${BP}/agent-registry.spec.ts`, category: TestCategory.AGENT, chapter: "3.10", description: "Agent registry DI", usesLlm: false },
+  { id: "agent-registry-v43", path: `${BP}/agent-registry-v43.spec.ts`, category: TestCategory.AGENT, chapter: "4.3", description: "Agent Registry catalog", usesLlm: false },
   { id: "event-system", path: `${BP}/event-system.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.9", description: "Event bus delivery", usesLlm: false },
   { id: "snapshot-recovery", path: `${BP}/snapshot-recovery.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.8", description: "Snapshot and recovery", usesLlm: false },
   { id: "lifecycle-manager", path: `${BP}/lifecycle-manager.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.4", description: "Lifecycle manager orchestration", usesLlm: false },

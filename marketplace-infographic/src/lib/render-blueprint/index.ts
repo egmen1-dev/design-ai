@@ -245,6 +245,14 @@ export {
   descriptorFromAgent,
   registrationFromAgent,
   AgentType,
+  AgentStatus,
+  RegistryEventType,
+  AGENT_REGISTRY_VERSION,
+  AGENT_REGISTRY_GOLDEN_RULE,
+  AGENT_CAPABILITY_TAGS,
+  capabilityTagsForAgent,
+  validateAgentRegistry,
+  assertAgentRegistryValid,
   DEFAULT_DIRECTOR_CAPABILITIES,
   DEFAULT_CRITIC_CAPABILITIES,
   DEFAULT_ADAPTER_CAPABILITIES,
@@ -259,6 +267,10 @@ export {
   type RegistryAgentReport,
   type RegistryReport,
   type RegistryRuntimeOptions,
+  type RegistryEvent,
+  type RegistryEventTypeId,
+  type AgentStatusId,
+  type RegistryValidationResult,
 } from "./agent-registry";
 export { STAGE_PRECONDITIONS, assertStagePreconditions } from "./stage-preconditions";
 export { canRunAgentsParallel, groupParallelAgents } from "./parallel-execution";

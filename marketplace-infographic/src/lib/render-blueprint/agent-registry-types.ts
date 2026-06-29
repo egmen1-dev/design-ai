@@ -1,8 +1,10 @@
 /**
- * Chapter 3.10 — Agent Registry types
+ * Chapter 3.10 / 4.3 — Agent Registry types
  */
 import type { BlueprintLifecycle } from "./lifecycle-types";
 import type { AgentContractId, AgentResultBase, BlueprintAgent } from "./agent-contracts";
+import type { AgentCategoryId } from "./universal-agent-contract-types";
+import type { BlueprintSection } from "./types";
 
 export const AgentType = {
   DIRECTOR: "DIRECTOR",
@@ -15,6 +17,33 @@ export const AgentType = {
 
 export type AgentTypeId = (typeof AgentType)[keyof typeof AgentType];
 
+/** Chapter 4.3 — agent availability status */
+export const AgentStatus = {
+  ACTIVE: "ACTIVE",
+  DISABLED: "DISABLED",
+  EXPERIMENTAL: "EXPERIMENTAL",
+  DEPRECATED: "DEPRECATED",
+} as const;
+
+export type AgentStatusId = (typeof AgentStatus)[keyof typeof AgentStatus];
+
+export const RegistryEventType = {
+  AGENT_REGISTERED: "agent_registered",
+  AGENT_UPDATED: "agent_updated",
+  AGENT_DISABLED: "agent_disabled",
+  AGENT_REMOVED: "agent_removed",
+} as const;
+
+export type RegistryEventTypeId = (typeof RegistryEventType)[keyof typeof RegistryEventType];
+
+export type RegistryEvent = {
+  type: RegistryEventTypeId;
+  agentId: string;
+  version: string;
+  at: number;
+  detail?: string;
+};
+
 export type AgentDescriptor = {
   id: AgentContractId;
   name: string;
@@ -23,6 +52,12 @@ export type AgentDescriptor = {
   type: AgentTypeId;
   producer: string;
   enabled: boolean;
+  /** Chapter 4.3 — ecosystem category */
+  category?: AgentCategoryId;
+  produces?: BlueprintSection[];
+  consumes?: BlueprintSection[];
+  capabilityTags?: string[];
+  status?: AgentStatusId;
 };
 
 export type AgentCapabilities = {
@@ -65,9 +100,19 @@ export type RegistryHealthIssue = {
     | "STAGE_MISMATCH"
     | "CYCLIC_DEPENDENCY"
     | "VISION_UNAVAILABLE"
-    | "DISABLED_STAGE_GAP";
+    | "DISABLED_STAGE_GAP"
+    | "OWNERSHIP_CONFLICT"
+    | "INVALID_CONTRACT"
+    | "INVALID_VERSION";
   message: string;
   agentId?: AgentContractId;
+};
+
+export type RegistryValidationResult = {
+  valid: boolean;
+  issues: RegistryHealthIssue[];
+  agentCount: number;
+  versionCount: number;
 };
 
 export type RegistryHealthResult = {
