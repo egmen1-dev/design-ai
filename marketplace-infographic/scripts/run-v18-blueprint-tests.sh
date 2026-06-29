@@ -23,6 +23,7 @@ SPECS=(
   src/lib/render-blueprint/vision-tests.spec.ts
   src/lib/render-blueprint/vision-qa.spec.ts
   src/lib/render-blueprint/architecture-validator.spec.ts
+  src/lib/render-blueprint/agent-ecosystem.spec.ts
   src/lib/render-blueprint/testing-architecture.spec.ts
 )
 for f in "${SPECS[@]}"; do

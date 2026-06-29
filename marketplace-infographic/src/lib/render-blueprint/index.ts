@@ -582,4 +582,37 @@ export {
   validateRecoveryArchitecture,
 } from "./architecture-validator";
 
+export {
+  AGENT_ECOSYSTEM_VERSION,
+  AGENT_ECOSYSTEM_GOLDEN_RULE,
+  AGENT_PRINCIPLES,
+  AGENT_PRINCIPLE_IDS,
+  AGENT_CATEGORIES,
+  AGENT_CATEGORY_MAP,
+  AgentPrinciple,
+  AgentEcosystemCategory,
+  getAgentCategory,
+  agentsInCategory,
+  getPrincipleDefinition,
+  getCategoryDefinition,
+  isDesignAgent,
+  type AgentPrincipleId,
+  type AgentEcosystemCategoryId,
+  type AgentPrincipleDefinition,
+  type AgentCategoryDefinition,
+  type AgentEcosystemViolation,
+  type AgentDecisionRecord,
+  type AgentEcosystemValidationReport,
+  type AgentEcosystemValidationContext,
+  type AgentEcosystemValidatorOptions,
+} from "./agent-ecosystem";
+
+export {
+  AgentEcosystemValidator,
+  AgentEcosystemError,
+  validateAgentEcosystem,
+  assertAgentEcosystem,
+  recordAgentDecision,
+} from "./agent-ecosystem-validator";
+
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";

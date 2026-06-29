@@ -48,7 +48,7 @@ export const storyDirectorAgent: BlueprintAgent<StoryDirectorInput, StoryDirecto
       decisionTrace: [
         `Hook derived from creative.goal=${input.creativeGoal}`,
         `Category context: ${input.productCategory}`,
-        "Story does not reference camera, lighting, or FLUX",
+        "Story scoped to narrative only — no camera or lighting decisions",
       ],
       warnings: [],
     };
