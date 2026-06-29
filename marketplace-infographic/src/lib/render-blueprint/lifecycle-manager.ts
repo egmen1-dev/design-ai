@@ -274,6 +274,7 @@ export class LifecycleManager {
           current = mutation.blueprint;
 
           this.assertPostMutationValidation(current, stage, agent.id);
+          const validationReport = this.lastValidationReport!;
 
           const snapshot = this.snapshotManager.store({
             blueprint: current,
@@ -282,6 +283,8 @@ export class LifecycleManager {
             agentId: agent.id,
             agentResult,
             validated: true,
+            validation: validationReport,
+            durationMs: Date.now() - startedAt,
           });
           lastSnapshotId = snapshot.id;
 
@@ -321,16 +324,44 @@ export class LifecycleManager {
     }
   }
 
-  /** Recovery — restore last VALIDATED snapshot + graph + revision */
+  /** Recovery — restore last VALIDATED snapshot + graph + revision (Ch 3.8) */
   recover(blueprint: RenderBlueprint): RenderBlueprint {
-    const { blueprint: restored, graph } = this.snapshotManager.rollbackToLastValidated(
-      blueprint,
-      this.graph,
-    );
-    this.graph = graph;
+    const result = this.snapshotManager.rollbackToLastValidated(blueprint, this.graph);
+    this.graph = DecisionGraph.fromBlueprint(result.blueprint);
     this.pipelineState = PipelineState.RUNNING;
-    this.emit(LifecycleEventType.RollbackStarted, restored.lifecycle.stage, restored.meta.revision ?? 0);
-    return restored;
+    this.emit(LifecycleEventType.RollbackStarted, result.blueprint.lifecycle.stage, result.blueprint.meta.revision ?? 0, {
+      detail: result.snapshot.id,
+    });
+    for (const event of result.events) {
+      this.emit(LifecycleEventType.RollbackStarted, result.resumeFrom, result.blueprint.meta.revision ?? 0, {
+        detail: event.type,
+      });
+    }
+    return result.blueprint;
+  }
+
+  rollbackSection(
+    section: import("./lifecycle-types").LifecycleManagedSection,
+    blueprint: RenderBlueprint,
+  ): RenderBlueprint {
+    const result = this.snapshotManager.rollbackSection(section, blueprint, this.graph);
+    this.graph = DecisionGraph.fromBlueprint(result.blueprint);
+    return result.blueprint;
+  }
+
+  rollbackStage(stage: BlueprintLifecycle, blueprint: RenderBlueprint): RenderBlueprint {
+    const result = this.snapshotManager.rollbackStage(stage, blueprint, this.graph);
+    this.graph = DecisionGraph.fromBlueprint(result.blueprint);
+    return result.blueprint;
+  }
+
+  compareSnapshots(a: string, b: string) {
+    return this.snapshotManager.compare(a, b);
+  }
+
+  finishPipelineWithRetention(blueprint: RenderBlueprint, succeeded = true): RenderBlueprint {
+    this.snapshotManager.applyRetention(succeeded, !succeeded);
+    return this.finishPipeline(blueprint);
   }
 
   /**

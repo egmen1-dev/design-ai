@@ -56,7 +56,7 @@ export {
   BlueprintLifecycle,
   SectionState,
   type BlueprintLifecycleMeta,
-  type BlueprintSnapshot,
+  type LifecycleStageSnapshot,
   type LifecycleManagedSection,
   type RollbackResult,
 } from "./lifecycle-types";
@@ -192,7 +192,28 @@ export {
   type ResolutionStrategyId,
 } from "./constraint-engine";
 
-export { SnapshotManager } from "./snapshot-manager";
+export {
+  RollbackStrategy,
+  RecoveryEventType,
+  DEFAULT_MAX_RECOVERY_ATTEMPTS,
+  DEFAULT_SNAPSHOT_RETENTION,
+  type BlueprintSnapshot,
+  type SnapshotMetadata,
+  type SnapshotDelta,
+  type SnapshotComparison,
+  type RecoveryEvent,
+  type RecoveryResult,
+  type SnapshotRecoveryOptions,
+  type SnapshotRetentionPolicy,
+  type LifecycleStageSnapshot,
+} from "./snapshot-types";
+export {
+  SnapshotManager,
+  SnapshotIntegrityError,
+  RecoveryLimitExceededError,
+  validationResultFromReport,
+  type StageSnapshot,
+} from "./snapshot-manager";
 export { RetryEngine, RetryLimitExceededError as RetryEngineLimitError } from "./retry-engine";
 export { AgentRegistry, defaultAgentRegistry } from "./agent-registry";
 export { STAGE_PRECONDITIONS, assertStagePreconditions } from "./stage-preconditions";

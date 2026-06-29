@@ -59,7 +59,7 @@ export const LIFECYCLE_MANAGED_SECTIONS: LifecycleManagedSection[] = [
   "validation",
 ];
 
-export type BlueprintSnapshot = {
+export type LifecycleStageSnapshot = {
   id: string;
   stage: BlueprintLifecycle;
   createdAt: number;
@@ -67,10 +67,13 @@ export type BlueprintSnapshot = {
   blueprint: import("./types").RenderBlueprint;
 };
 
+/** @deprecated Use LifecycleStageSnapshot */
+export type BlueprintSnapshot = LifecycleStageSnapshot;
+
 export type BlueprintLifecycleMeta = {
   stage: BlueprintLifecycle;
   sections: Record<LifecycleManagedSection, SectionState>;
-  snapshots: BlueprintSnapshot[];
+  snapshots: LifecycleStageSnapshot[];
   frozenAt?: number;
 };
 

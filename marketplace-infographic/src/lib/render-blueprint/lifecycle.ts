@@ -8,6 +8,7 @@ import {
   SectionState,
   LIFECYCLE_MANAGED_SECTIONS,
   type BlueprintLifecycleMeta,
+  type LifecycleStageSnapshot,
   type BlueprintSnapshot,
   type LifecycleManagedSection,
   type RollbackResult,
@@ -225,7 +226,7 @@ export function markSectionDirtyAfterPatch(
   return propagateDirty(next, section);
 }
 
-export function createLifecycleSnapshot(blueprint: RenderBlueprint): BlueprintSnapshot {
+export function createLifecycleSnapshot(blueprint: RenderBlueprint): LifecycleStageSnapshot {
   return {
     id: randomUUID(),
     stage: blueprint.lifecycle.stage,
