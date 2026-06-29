@@ -529,4 +529,31 @@ export {
   type VisionIssue,
 } from "./testing-architecture";
 
+export {
+  VisionQA,
+  VisionQAError,
+  defaultVisionQA,
+  analyzeVision,
+  VisionCategory,
+  IssueSeverity,
+  VISION_THRESHOLDS,
+  VISION_METRIC_WEIGHTS,
+  deriveVisionSignals,
+  hashVisionImage,
+  analyzeVisionSignals,
+  passesVisionThresholds,
+  recommendationsFromIssues,
+  VisionHistoryStore,
+  type VisionInput,
+  type VisionReport,
+  type VisionMetrics,
+  type VisionQAIssue,
+  type VisionRecommendation,
+  type VisionCategoryId,
+  type IssueSeverityId as VisionIssueSeverityId,
+  type VisionImageSignals,
+  type VisionHistoryEntry,
+  type BoundingBox,
+} from "./vision-qa-engine";
+
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";

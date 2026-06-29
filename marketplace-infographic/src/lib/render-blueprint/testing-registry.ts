@@ -25,6 +25,7 @@ export const V18_TEST_REGISTRY: TestSpecEntry[] = [
   { id: "observability", path: `${BP}/observability.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.15", description: "Diagnostics and traces", usesLlm: false },
   { id: "testing-architecture", path: `${BP}/testing-architecture.spec.ts`, category: TestCategory.REGRESSION, chapter: "3.17", description: "Testing framework meta", usesLlm: false },
   { id: "vision-tests", path: `${BP}/vision-tests.spec.ts`, category: TestCategory.VISION, chapter: "3.17", description: "Vision defect detection", usesLlm: false },
+  { id: "vision-qa", path: `${BP}/vision-qa.spec.ts`, category: TestCategory.VISION, chapter: "3.18", description: "Vision Quality Assurance", usesLlm: false },
 ];
 
 export function specsForCategory(category: TestCategoryId): TestSpecEntry[] {
