@@ -694,4 +694,31 @@ export {
   runAgentLifecycle,
 } from "./agent-lifecycle-orchestrator";
 
+export {
+  AGENT_DISCOVERY_VERSION,
+  AGENT_DISCOVERY_GOLDEN_RULE,
+  PipelineMode,
+  MARKETPLACE_AGENT_CHAIN,
+  MODE_SKIP_AGENTS,
+  agentsForLifecycleStage,
+  isAgentSkippedByMode,
+  defaultPipelineConfiguration,
+  type PipelineModeId,
+  type PipelineConfiguration,
+  type DiscoveryContext,
+  type ExecutionNode,
+  type ExecutionEdge,
+  type ExecutionGroup,
+  type ExecutionPlan,
+  type DiscoveryExclusion,
+  type DiscoveryExclusionCode,
+  type DiscoveryReport,
+} from "./agent-discovery";
+
+export {
+  AgentDiscoveryEngine,
+  AgentDiscoveryError,
+  discoverAgents,
+} from "./agent-discovery-engine";
+
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";
