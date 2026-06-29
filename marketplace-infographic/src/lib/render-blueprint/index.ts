@@ -456,4 +456,38 @@ export {
   type ObservabilityOptions,
 } from "./observability-engine";
 
+export {
+  RecoveryEngine,
+  RecoveryEngineError,
+  NonRecoverableError,
+  classifyError,
+  isNonRecoverable,
+  strategyForSeverity,
+  planVisionRecovery,
+  planProviderRecovery,
+  providerRecoveryToPlan,
+  rollbackStrategyForRecovery,
+  escalateStrategy,
+  assertRecoveryInvariants,
+  assertRecoveryInvariantsOrThrow,
+  validateAgentRecommendation,
+  RECOVERY_ESCALATION_CHAIN,
+  RecoveryErrorCategory,
+  ErrorSeverity,
+  RecoveryStrategy,
+  DEFAULT_RETRY_POLICY,
+  type RecoveryErrorCategoryId,
+  type ErrorSeverityId,
+  type RecoveryStrategyId,
+  type RetryPolicy,
+  type RecoveryRecommendation,
+  type ClassifiedError,
+  type RecoveryPlan,
+  type RecoveryLog,
+  type RecoveryMetrics,
+  type ProviderRecoveryAction,
+  type VisionProblemId,
+  type RecoveryInvariantViolation,
+} from "./recovery-engine";
+
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";
