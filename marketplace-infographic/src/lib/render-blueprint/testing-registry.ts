@@ -26,6 +26,7 @@ export const V18_TEST_REGISTRY: TestSpecEntry[] = [
   { id: "testing-architecture", path: `${BP}/testing-architecture.spec.ts`, category: TestCategory.REGRESSION, chapter: "3.17", description: "Testing framework meta", usesLlm: false },
   { id: "vision-tests", path: `${BP}/vision-tests.spec.ts`, category: TestCategory.VISION, chapter: "3.17", description: "Vision defect detection", usesLlm: false },
   { id: "vision-qa", path: `${BP}/vision-qa.spec.ts`, category: TestCategory.VISION, chapter: "3.18", description: "Vision Quality Assurance", usesLlm: false },
+  { id: "architecture-validator", path: `${BP}/architecture-validator.spec.ts`, category: TestCategory.BLUEPRINT, chapter: "3.19", description: "Architectural Invariants", usesLlm: false },
 ];
 
 export function specsForCategory(category: TestCategoryId): TestSpecEntry[] {

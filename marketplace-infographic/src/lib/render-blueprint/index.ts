@@ -556,4 +556,30 @@ export {
   type BoundingBox,
 } from "./vision-qa-engine";
 
+export {
+  ARCHITECTURAL_INVARIANTS_VERSION,
+  ARCHITECTURAL_INVARIANTS,
+  ARCHITECTURAL_INVARIANT_IDS,
+  ArchitecturalInvariantId,
+  getInvariantDefinition,
+  invariantByName,
+  type ArchitecturalInvariantDefinition,
+  type ArchitecturalInvariantIdValue,
+  type ArchitecturalInvariantSeverity,
+  type ArchitecturalInvariantViolation,
+  type ArchitectureValidationContext,
+  type ArchitectureValidationReport,
+  type ArchitectureValidatorOptions,
+} from "./architectural-invariants";
+
+export {
+  ArchitectureValidator,
+  ArchitectureValidatorError,
+  validateArchitecture,
+  assertArchitectureInvariants,
+  validateArchitectureAtPipelineStart,
+  assertPipelineArchitecture,
+  validateRecoveryArchitecture,
+} from "./architecture-validator";
+
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";

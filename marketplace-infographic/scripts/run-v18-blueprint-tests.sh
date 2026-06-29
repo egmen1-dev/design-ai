@@ -22,6 +22,7 @@ SPECS=(
   src/lib/render-blueprint/observability.spec.ts
   src/lib/render-blueprint/vision-tests.spec.ts
   src/lib/render-blueprint/vision-qa.spec.ts
+  src/lib/render-blueprint/architecture-validator.spec.ts
   src/lib/render-blueprint/testing-architecture.spec.ts
 )
 for f in "${SPECS[@]}"; do
