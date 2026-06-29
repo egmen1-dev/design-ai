@@ -24,6 +24,11 @@ import { assertStagePreconditions } from "./stage-preconditions";
 import { groupParallelAgents } from "./parallel-execution";
 import { ValidationEngine, type ValidationReport } from "./validation-engine";
 import {
+  ConstraintEngine,
+  ConstraintEngineError,
+  type ConstraintReport,
+} from "./constraint-engine";
+import {
   LifecycleEventType,
   PipelineState,
   RetryKind,
@@ -58,6 +63,7 @@ export type LifecycleManagerOptions = {
   snapshotManager?: SnapshotManager;
   retryEngine?: RetryEngine;
   validationEngine?: ValidationEngine;
+  constraintEngine?: ConstraintEngine;
 };
 
 export type ExecuteStageInput = Record<string, unknown>;
@@ -68,6 +74,7 @@ export class LifecycleManager {
   private readonly snapshotManager: SnapshotManager;
   private readonly retryEngine: RetryEngine;
   private readonly validationEngine: ValidationEngine;
+  private readonly constraintEngine: ConstraintEngine;
 
   private graph: DecisionGraph;
   private pipelineState: PipelineStateId = PipelineState.NEW;
@@ -84,6 +91,7 @@ export class LifecycleManager {
     this.snapshotManager = options.snapshotManager ?? new SnapshotManager();
     this.retryEngine = options.retryEngine ?? new RetryEngine();
     this.validationEngine = options.validationEngine ?? new ValidationEngine();
+    this.constraintEngine = options.constraintEngine ?? new ConstraintEngine();
     this.graph = blueprint
       ? DecisionGraph.fromBlueprint(blueprint)
       : new DecisionGraph();
@@ -118,6 +126,23 @@ export class LifecycleManager {
   }
 
   private lastValidationReport?: ValidationReport;
+  private lastConstraintReport?: ConstraintReport;
+
+  getConstraintEngine(): ConstraintEngine {
+    return this.constraintEngine;
+  }
+
+  getLastConstraintReport(): ConstraintReport | undefined {
+    return this.lastConstraintReport;
+  }
+
+  /** Ch 3.7 — mandatory before Render Adapter; never mutates blueprint */
+  assertPreAdapterConstraints(blueprint: RenderBlueprint): ConstraintReport {
+    this.constraintEngine.invalidateCache(blueprint.meta.revision ?? 0);
+    const report = this.constraintEngine.assertReady(blueprint);
+    this.lastConstraintReport = report;
+    return report;
+  }
 
   /** Ch 3.6 — mandatory after each mutation; never mutates blueprint */
   private assertPostMutationValidation(
@@ -414,6 +439,16 @@ export class LifecycleManager {
   completeStage(blueprint: RenderBlueprint): RenderBlueprint {
     const next = advanceLifecycleStage(blueprint);
     if (next.lifecycle.stage === "FROZEN") {
+      try {
+        this.assertPreAdapterConstraints(next);
+      } catch (error) {
+        if (error instanceof ConstraintEngineError) {
+          this.emit(LifecycleEventType.ConstraintFailed, next.lifecycle.stage, next.meta.revision ?? 0, {
+            detail: error.message,
+          });
+        }
+        throw error;
+      }
       this.graph.freezeAll();
       this.pipelineState = PipelineState.LOCKED;
     }

@@ -180,6 +180,7 @@ export function createEmptyRenderBlueprint(input: RenderBlueprintInput): RenderB
       mustAvoidText: true,
       mustAvoidDuplicateObjects: true,
       mustAvoidHeroOverlap: true,
+      set: { constraints: [], revision: 0 },
     },
     validation: {
       storyApproved: false,

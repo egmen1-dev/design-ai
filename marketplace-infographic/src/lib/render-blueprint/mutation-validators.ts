@@ -81,6 +81,7 @@ const SECTION_ALLOWED_KEYS: Record<string, readonly string[]> = {
     "mustAvoidText",
     "mustAvoidDuplicateObjects",
     "mustAvoidHeroOverlap",
+    "set",
   ],
   validation: [
     "storyApproved",

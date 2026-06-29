@@ -25,6 +25,7 @@ export const LifecycleEventType = {
   RetryStarted: "RetryStarted",
   RollbackStarted: "RollbackStarted",
   ValidationFailed: "ValidationFailed",
+  ConstraintFailed: "ConstraintFailed",
   PipelineFinished: "PipelineFinished",
 } as const;
 

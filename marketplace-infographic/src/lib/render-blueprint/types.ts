@@ -219,6 +219,8 @@ export type RenderBlueprintSettings = {
   negativePromptProfile: string;
 };
 
+export type ConstraintSet = import("./constraint-types").ConstraintSet;
+
 export type ConstraintBlueprint = {
   mustLeaveHeadlineSpace: boolean;
   mustLeaveBadgeSpace: boolean;
@@ -226,6 +228,8 @@ export type ConstraintBlueprint = {
   mustAvoidText: boolean;
   mustAvoidDuplicateObjects: boolean;
   mustAvoidHeroOverlap: boolean;
+  /** Merged constraint objects — typed payloads only (Ch 3.7) */
+  set: ConstraintSet;
 };
 
 export type ValidationBlueprint = {

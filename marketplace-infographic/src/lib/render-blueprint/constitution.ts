@@ -4,6 +4,7 @@
 import type { RenderBlueprint } from "./types";
 import type { BlueprintSection } from "./types";
 import { agentMayWriteSection } from "./ownership";
+import { ConstraintEngine } from "./constraint-engine";
 
 export const CONSTITUTION_V18_VERSION = "18.0";
 
@@ -157,7 +158,7 @@ export function assertSingleEnvironmentSource(blueprint: RenderBlueprint): void 
   }
 }
 
-/** Золотое правило — prompt только после валидации всех секций */
+/** Золотое правило — prompt только после валидации всех секций и constraint check (Ch 3.7) */
 export function assertReadyForAdapter(blueprint: RenderBlueprint): void {
   if (blueprint.lifecycle.stage !== "FROZEN" && blueprint.lifecycle.stage !== "RENDERING") {
     throw new ConstitutionV18Error([
@@ -169,4 +170,5 @@ export function assertReadyForAdapter(blueprint: RenderBlueprint): void {
   }
   assertNoPromptStored(blueprint);
   assertSingleEnvironmentSource(blueprint);
+  new ConstraintEngine().assertReady(blueprint);
 }

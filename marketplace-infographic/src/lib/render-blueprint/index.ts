@@ -17,6 +17,7 @@ export {
   type BackgroundBlueprint,
   type RenderBlueprintSettings,
   type ConstraintBlueprint,
+  type ConstraintSet,
   type ValidationBlueprint,
   type SceneEnvironmentId,
 } from "./types";
@@ -160,6 +161,37 @@ export {
   type ValidationRuleCategory,
   type ValidationEngineOptions,
 } from "./validation-engine";
+
+export {
+  ConstraintEngine,
+  ConstraintEngineError,
+  ConstraintCategory,
+  ConstraintPriority,
+  ConstraintSource,
+  ResolutionStrategy,
+  SOURCE_RESOLUTION_ORDER,
+  DEFAULT_CONSTRAINT_PROVIDERS,
+  SAFETY_CONSTRAINT_PROVIDER,
+  MARKETPLACE_CONSTRAINT_PROVIDER,
+  CREATIVE_CONSTRAINT_PROVIDER,
+  STORY_CONSTRAINT_PROVIDER,
+  COMPOSITION_CONSTRAINT_PROVIDER,
+  GOVERNANCE_CONSTRAINT_PROVIDER,
+  PROVIDER_FLUX_CONSTRAINT_PROVIDER,
+  ARCHITECTURE_CONSTRAINT_PROVIDER,
+  userConstraintsFromFlags,
+  constraintsForProviderCapability,
+  type Constraint,
+  type ConstraintSet,
+  type ConstraintConflict,
+  type ConstraintReport,
+  type ConstraintProvider,
+  type ConstraintEngineOptions,
+  type ConstraintPayload,
+  type ConstraintCategoryId,
+  type ResolutionStrategyId,
+} from "./constraint-engine";
+
 export { SnapshotManager } from "./snapshot-manager";
 export { RetryEngine, RetryLimitExceededError as RetryEngineLimitError } from "./retry-engine";
 export { AgentRegistry, defaultAgentRegistry } from "./agent-registry";
