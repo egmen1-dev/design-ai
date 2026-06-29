@@ -284,7 +284,7 @@ export {
   type InvalidationResult,
 } from "./decision-graph";
 
-export { storyDirectorAgent, type StoryDirectorInput, type StoryDirectorResult } from "./agents/story-director-agent";
+export { storyDirectorAgent, universalStoryDirectorAgent, type StoryDirectorInput, type StoryDirectorResult } from "./agents/story-director-agent";
 
 export {
   compileFluxAdapterOutput,
@@ -614,5 +614,48 @@ export {
   assertAgentEcosystem,
   recordAgentDecision,
 } from "./agent-ecosystem-validator";
+
+export {
+  UNIVERSAL_AGENT_CONTRACT_VERSION,
+  UNIVERSAL_AGENT_CONTRACT_GOLDEN_RULE,
+  STABLE_AGENT_IDS,
+  AgentCategory,
+  categoryForAgent,
+  consumesForAgent,
+  producesForAgent,
+  normalizeConfidence,
+  denormalizeConfidence,
+  createAgentContext,
+  preconditionsMet,
+  type AgentCategoryId,
+  type AgentContext,
+  type AgentRecommendation,
+  type AgentDiagnostics,
+  type UniversalAgentResult,
+  type UniversalBlueprintAgent,
+  type PipelineConfig,
+  type UniversalContractViolation,
+  type UniversalContractReport,
+  type LegacyAgentAdapterOptions,
+  type StableAgentId,
+} from "./universal-agent-contract";
+
+export {
+  wrapLegacyBlueprintAgent,
+  updatesToMutations,
+  buildAgentDiagnostics,
+  legacyResultToUniversal,
+  universalToLegacyConfidence,
+} from "./universal-agent-bridge";
+
+export {
+  UniversalAgentContractValidator,
+  UniversalContractError,
+  validateUniversalAgentInterface,
+  validateUniversalAgentResult,
+  validateUniversalAgentContract,
+  assertUniversalAgentContract,
+  assertNoForbiddenSideEffects,
+} from "./universal-agent-contract-validator";
 
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";

@@ -1,5 +1,5 @@
 /**
- * Chapter 3.2 — Example: Story Director contract agent (pure decision)
+ * Chapter 3.2 / 4.1 — Story Director contract agent (pure decision)
  */
 import type { StoryBlueprint } from "../types";
 import type { RenderBlueprint } from "../types";
@@ -10,6 +10,8 @@ import {
 } from "../agent-contracts";
 import { BlueprintLifecycle } from "../lifecycle-types";
 import { AGENT_STAGE_MATRIX } from "../agent-matrix";
+import { AgentCategory } from "../universal-agent-contract";
+import { wrapLegacyBlueprintAgent } from "../universal-agent-bridge";
 
 export type StoryDirectorInput = {
   productCategory: string;
@@ -58,3 +60,14 @@ export const storyDirectorAgent: BlueprintAgent<StoryDirectorInput, StoryDirecto
     return { story: result.story };
   },
 };
+
+/** Chapter 4.1 — Universal Agent Contract wrapper */
+export const universalStoryDirectorAgent = wrapLegacyBlueprintAgent(storyDirectorAgent, {
+  category: AgentCategory.CREATIVE_DIRECTOR,
+  consumes: ["creative", "product"],
+  produces: ["story"],
+  buildInput: (context) => ({
+    productCategory: context.blueprint.product.category,
+    creativeGoal: context.blueprint.creative.goal,
+  }),
+});
