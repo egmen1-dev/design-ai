@@ -1,9 +1,16 @@
-export function generatedImageSrc(imagePath: string): string {
-  if (imagePath.startsWith("/api/generated/")) {
-    return imagePath;
+export function generatedImageSrc(imagePath: string, cacheBust?: string | number): string {
+  const base = imagePath.startsWith("/api/generated/")
+    ? imagePath
+    : (() => {
+        const filename = imagePath.split("/").pop();
+        return filename ? `/api/generated/${filename}` : imagePath;
+      })();
+
+  if (cacheBust === undefined || cacheBust === "") {
+    return base;
   }
-  const filename = imagePath.split("/").pop();
-  return filename ? `/api/generated/${filename}` : imagePath;
+  const separator = base.includes("?") ? "&" : "?";
+  return `${base}${separator}v=${encodeURIComponent(String(cacheBust))}`;
 }
 
 export function generatedImageFilePath(imagePath: string): string {

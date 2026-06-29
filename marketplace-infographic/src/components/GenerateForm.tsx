@@ -2,15 +2,17 @@
 
 import { useEffect, useRef, useState } from "react";
 import { DownloadButton } from "@/components/DownloadButton";
+import { FeedbackButtons } from "@/components/FeedbackButtons";
+import { GenerationDiagnosticsPanel } from "@/components/GenerationDiagnosticsPanel";
 import { MarketplacePreview } from "@/components/MarketplacePreview";
 import { PromptHints } from "@/components/PromptHints";
+
+import { COVER_CONCEPTS, type CoverConceptId } from "@/lib/cover-concepts";
+import { ART_DIRECTOR_MODES, type ArtDirectorModeId } from "@/lib/design-process/art-director-modes";
 import {
-  DEFAULT_STYLE,
-  STYLE_KEYS,
-  STYLE_LABELS,
-  TRENDS,
-  type InfographicStyle,
-} from "@/lib/design-trends";
+  getActiveRenderModelOptions,
+  type RenderModelChoice,
+} from "@/lib/render-engine/render-models";
 
 const MAX_IMAGE_BYTES = 4 * 1024 * 1024;
 
@@ -43,22 +45,45 @@ const TEMPLATES = [
 ];
 
 const GENERATION_STEPS = [
-  "AI анализирует описание товара",
-  "Придумываем промпт фона (Ollama)",
-  "Генерируем фотореалистичный фон (Stable Diffusion)",
-  "Вырезаем фон у фото товара",
-  "Собираем инфографику 1200×1200",
+  "Анализ товара",
+  "Генерация 8 концепций",
+  "Оценка и выбор лучшей",
+  "Scene Planner + композиция",
+  "Render Engine (AI фон)",
+  "Финальная проверка и рендер",
 ];
+
+const HOOK_LABELS: Record<string, string> = {
+  oversized_product: "Крупный товар",
+  premium_badge: "Премиальная плашка",
+  emotional_background: "Эмоциональный фон",
+  dynamic_diagonal: "Динамичная диагональ",
+  spec_highlight: "Акцент на характеристиках",
+  luxury_minimal: "Люкс-минимализм",
+  lifestyle_scene: "Lifestyle-сцена",
+  tech_showcase: "Техно-витрина",
+  gift_bundle: "Подарочный комплект",
+  contrast_pop: "Контрастный акцент",
+  editorial_typography: "Редакционная типографика",
+  power_number: "Сильная цифра",
+};
+
+function hookLabel(type: string): string {
+  return HOOK_LABELS[type] ?? type.replace(/_/g, " ");
+}
 
 export function GenerateForm() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [prompt, setPrompt] = useState("");
-  const [style, setStyle] = useState<InfographicStyle>(DEFAULT_STYLE);
   const [productImage, setProductImage] = useState<string | null>(null);
   const [productFileName, setProductFileName] = useState<string | null>(null);
+  const [coverConcept, setCoverConcept] = useState<CoverConceptId | "auto">("auto");
+  const [artDirectorMode, setArtDirectorMode] = useState<ArtDirectorModeId>("marketplace_ctr");
+  const [renderModel, setRenderModel] = useState<RenderModelChoice>("auto");
   const [loading, setLoading] = useState(false);
   const [regenLoading, setRegenLoading] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
+  const [elapsedSec, setElapsedSec] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<{
     id: string;
@@ -67,24 +92,48 @@ export function GenerateForm() {
     credits: number;
     unlimited?: boolean;
     aiSource?: string;
-    appliedStyle?: InfographicStyle;
-    backgroundSource?: "sd" | "fallback";
+    designConcept?: string;
+    creativeMainIdea?: string;
+    oneThoughtHeadline?: string;
+    visualHook?: { type: string; reason: string; confidence?: number };
+    backgroundSource?: "sd" | "fallback" | "provider";
+    renderModel?: string;
+    diagnosticsUrl?: string;
+    diagnosticSteps?: number;
+    selectedArchetypeId?: string;
+    conceptCandidates?: number;
+    pipelineVersion?: string;
   } | null>(null);
 
   useEffect(() => {
     if (!loading && !regenLoading) {
       setStepIndex(0);
+      setElapsedSec(0);
       return;
     }
 
-    const timer = setInterval(() => {
+    const startedAt = Date.now();
+    const stepTimer = setInterval(() => {
       setStepIndex((current) =>
         current < GENERATION_STEPS.length - 1 ? current + 1 : current,
       );
-    }, 1800);
+    }, 2800);
 
-    return () => clearInterval(timer);
+    const clockTimer = setInterval(() => {
+      setElapsedSec(Math.floor((Date.now() - startedAt) / 1000));
+    }, 1000);
+
+    return () => {
+      clearInterval(stepTimer);
+      clearInterval(clockTimer);
+    };
   }, [loading, regenLoading]);
+
+  function formatElapsed(seconds: number): string {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes}:${secs.toString().padStart(2, "0")}`;
+  }
 
   async function handleApiError(res: Response, data: { error?: string }) {
     if (res.status === 402) {
@@ -94,6 +143,24 @@ export function GenerateForm() {
       return;
     }
     setError(data.error ?? "Ошибка генерации");
+  }
+
+  function networkErrorMessage(err: unknown): string {
+    if (err instanceof DOMException && err.name === "AbortError") {
+      return "Превышено время ожидания (12 мин). Попробуйте ещё раз или упростите описание.";
+    }
+    if (err instanceof TypeError) {
+      return "Соединение прервано. Сервер ещё может дорабатывать картинку — подождите 30 сек и обновите страницу «Мои генерации», либо попробуйте снова.";
+    }
+    return "Ошибка сети. Попробуйте ещё раз через минуту.";
+  }
+
+  async function parseJsonResponse<T>(res: Response): Promise<T | null> {
+    try {
+      return (await res.json()) as T;
+    } catch {
+      return null;
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -109,17 +176,25 @@ export function GenerateForm() {
     setResult(null);
 
     try {
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), 720_000);
+
       const res = await fetch("/api/generate-infographic", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           prompt,
-          style,
           productImage,
+          ...(coverConcept !== "auto" ? { coverConcept } : {}),
+          artDirectorMode,
+          ...(renderModel !== "auto" ? { renderModel } : {}),
         }),
+        signal: controller.signal,
       });
 
-      const data = (await res.json()) as {
+      window.clearTimeout(timeoutId);
+
+      const data = await parseJsonResponse<{
         error?: string;
         id?: string;
         imagePath?: string;
@@ -127,9 +202,33 @@ export function GenerateForm() {
         credits: number;
         unlimited?: boolean;
         aiSource?: string;
-        appliedStyle?: InfographicStyle;
-        backgroundSource?: "sd" | "fallback";
-      };
+        designConcept?: string;
+        creativeMainIdea?: string;
+        oneThoughtHeadline?: string;
+        selectedArchetypeId?: string;
+        conceptCandidates?: number;
+        visualHook?: { type: string; reason: string; confidence?: number };
+        backgroundSource?: "sd" | "fallback" | "provider";
+        renderModel?: string;
+        diagnosticsUrl?: string;
+        diagnosticSteps?: number;
+        pipelineVersion?: string;
+      }>(res);
+
+      if (!data) {
+        if (res.status === 502 || res.status === 503) {
+          setError(
+            "Сервер перезапустился во время генерации (ошибка 502). Попробуйте ещё раз — мы уже отключили нестабильную вырезку фона.",
+          );
+        } else if (res.status >= 500) {
+          setError(
+            "Внутренняя ошибка сервера. Попробуйте ещё раз через 30 секунд.",
+          );
+        } else {
+          setError("Пустой ответ сервера");
+        }
+        return;
+      }
 
       if (!res.ok) {
         await handleApiError(res, data);
@@ -143,11 +242,20 @@ export function GenerateForm() {
         credits: data.credits ?? 0,
         unlimited: data.unlimited,
         aiSource: data.aiSource,
-        appliedStyle: data.appliedStyle ?? style,
+        designConcept: data.designConcept,
+        creativeMainIdea: data.creativeMainIdea,
+        oneThoughtHeadline: data.oneThoughtHeadline,
+        visualHook: data.visualHook,
         backgroundSource: data.backgroundSource,
+        renderModel: data.renderModel,
+        diagnosticsUrl: data.diagnosticsUrl,
+        diagnosticSteps: data.diagnosticSteps,
+        pipelineVersion: data.pipelineVersion,
+        selectedArchetypeId: data.selectedArchetypeId,
+        conceptCandidates: data.conceptCandidates,
       });
-    } catch {
-      setError("Ошибка сети");
+    } catch (err) {
+      setError(networkErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -156,23 +264,53 @@ export function GenerateForm() {
   async function handleRegenerateBackground() {
     if (!result?.id) return;
 
+    if (!productImage) {
+      setError(
+        "Загрузите фото товара — без него перегенерация фона невозможна",
+      );
+      return;
+    }
+
     setRegenLoading(true);
     setError(null);
 
     try {
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), 720_000);
+
       const res = await fetch("/api/regenerate-background", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageId: result.id }),
+        body: JSON.stringify({
+          imageId: result.id,
+          productImage,
+          ...(renderModel !== "auto" ? { renderModel } : {}),
+        }),
+        signal: controller.signal,
       });
 
-      const data = (await res.json()) as {
+      window.clearTimeout(timeoutId);
+
+      const data = await parseJsonResponse<{
         error?: string;
         imagePath?: string;
         freeRemaining: number;
         credits: number;
-        backgroundSource?: "sd" | "fallback";
-      };
+        designConcept?: string;
+        visualHook?: { type: string; reason: string };
+        backgroundSource?: "sd" | "fallback" | "provider";
+        renderModel?: string;
+        pipelineVersion?: string;
+      }>(res);
+
+      if (!data) {
+        if (res.status === 502 || res.status === 503) {
+          setError("Сервер перезапустился (502). Попробуйте перегенерацию ещё раз.");
+        } else {
+          setError("Сервер не успел ответить при перегенерации фона");
+        }
+        return;
+      }
 
       if (!res.ok) {
         await handleApiError(res, data);
@@ -187,11 +325,15 @@ export function GenerateForm() {
               freeRemaining: data.freeRemaining ?? prev.freeRemaining,
               credits: data.credits ?? prev.credits,
               backgroundSource: data.backgroundSource ?? prev.backgroundSource,
+              renderModel: data.renderModel ?? prev.renderModel,
+              designConcept: data.designConcept ?? prev.designConcept,
+              visualHook: data.visualHook ?? prev.visualHook,
+              pipelineVersion: data.pipelineVersion ?? prev.pipelineVersion,
             }
           : prev,
       );
-    } catch {
-      setError("Ошибка сети");
+    } catch (err) {
+      setError(networkErrorMessage(err));
     } finally {
       setRegenLoading(false);
     }
@@ -236,8 +378,8 @@ export function GenerateForm() {
         Опишите товар для инфографики
       </label>
       <p className="mt-1 text-xs text-slate-500">
-        AI возьмёт из текста название, цифры и УТП, придумает фон для Stable Diffusion
-        и соберёт слайд 1200×1200
+        AI проанализирует товар, определит визуальный хук и соберёт уникальную
+        карточку 900×1200 для Wildberries
       </p>
 
       <div className="mt-3 flex flex-wrap gap-2">
@@ -267,36 +409,101 @@ export function GenerateForm() {
 
       <PromptHints prompt={prompt} onInsert={setPrompt} />
 
-      <div className="mt-4">
-        <p className="text-sm font-medium text-slate-300">Стиль дизайна</p>
-        <p className="mt-1 text-xs text-slate-500">
-          Влияет на фон, шрифты, блоки УТП и общее настроение слайда
+      <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950/50 px-4 py-3">
+        <p className="text-sm font-medium text-slate-300">Дизайн подбирается автоматически</p>
+        <p className="mt-1 text-xs leading-relaxed text-slate-500">
+          Вместо фиксированных стилей AI строит уникальную композицию: анализ товара →
+          визуальный хук → Design DNA → параметрический макет. Каждая карточка — новая
+          комбинация, как у профессионального арт-директора.
         </p>
-        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
-          {STYLE_KEYS.map((key) => {
-            const trend = TRENDS[key];
-            const selected = style === key;
-            return (
-              <button
-                key={key}
-                type="button"
-                onClick={() => setStyle(key)}
-                className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-left text-xs transition ${
-                  selected
-                    ? "border-brand-500 bg-brand-600/10 text-brand-300"
-                    : "border-slate-700 text-slate-400 hover:border-slate-500"
-                }`}
-              >
-                <span
-                  className="h-4 w-4 shrink-0 rounded-full border border-white/20"
-                  style={{ background: trend.accent }}
-                  aria-hidden
-                />
-                <span className="font-medium">{STYLE_LABELS[key]}</span>
-              </button>
-            );
-          })}
+      </div>
+
+      <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950/50 px-4 py-3">
+        <p className="text-sm font-medium text-slate-300">Режим арт-директора</p>
+        <p className="mt-1 text-xs leading-relaxed text-slate-500">
+          Система сгенерирует 8 разных концепций, оценит их и отрендерит лучшую.
+        </p>
+        <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+          {ART_DIRECTOR_MODES.map((mode) => (
+            <button
+              key={mode.id}
+              type="button"
+              onClick={() => setArtDirectorMode(mode.id)}
+              className={`rounded-lg border px-3 py-2 text-left transition ${
+                artDirectorMode === mode.id
+                  ? "border-brand-500 bg-brand-500/10"
+                  : "border-slate-700 hover:border-slate-500"
+              }`}
+            >
+              <span className="block text-xs font-medium text-slate-200">{mode.label}</span>
+              <span className="mt-0.5 block text-[10px] leading-snug text-slate-500">
+                {mode.description}
+              </span>
+            </button>
+          ))}
         </div>
+      </div>
+
+      <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950/50 px-4 py-3">
+        <p className="text-sm font-medium text-slate-300">Сцена обложки</p>
+        <p className="mt-1 text-xs leading-relaxed text-slate-500">
+          Creative Director сначала придумывает рекламную историю (не вёрстку), затем на обложке
+          остаётся одна мысль: заголовок + одна цифра + компактный бейдж.
+        </p>
+        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+          <button
+            type="button"
+            onClick={() => setCoverConcept("auto")}
+            className={`rounded-lg border px-3 py-2 text-left transition ${
+              coverConcept === "auto"
+                ? "border-brand-500 bg-brand-500/10"
+                : "border-slate-700 hover:border-slate-500"
+            }`}
+          >
+            <span className="block text-xs font-medium text-slate-200">Авто</span>
+            <span className="mt-0.5 block text-[10px] leading-snug text-slate-500">
+              По категории товара
+            </span>
+          </button>
+          {COVER_CONCEPTS.map((concept) => (
+            <button
+              key={concept.id}
+              type="button"
+              onClick={() => setCoverConcept(concept.id)}
+              className={`rounded-lg border px-3 py-2 text-left transition ${
+                coverConcept === concept.id
+                  ? "border-brand-500 bg-brand-500/10"
+                  : "border-slate-700 hover:border-slate-500"
+              }`}
+            >
+              <span className="block text-xs font-medium text-slate-200">{concept.label}</span>
+              <span className="mt-0.5 block text-[10px] leading-snug text-slate-500">
+                {concept.description}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950/50 px-4 py-3">
+        <label htmlFor="renderModel" className="text-sm font-medium text-slate-300">
+          Модель генерации фона
+        </label>
+        <p className="mt-1 text-xs leading-relaxed text-slate-500">
+          Render Engine v17 через Pollinations. «Авто» подбирает модель по категории товара.
+        </p>
+        <select
+          id="renderModel"
+          value={renderModel}
+          onChange={(e) => setRenderModel(e.target.value as RenderModelChoice)}
+          className="mt-3 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white focus:border-brand-500 focus:outline-none"
+        >
+          {getActiveRenderModelOptions().map((option) => (
+            <option key={option.id} value={option.id}>
+              {option.label} — {option.description}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="mt-4 rounded-lg border border-dashed border-slate-700 bg-slate-950/60 p-4">
@@ -307,7 +514,7 @@ export function GenerateForm() {
             </p>
             <p className="mt-1 text-xs text-slate-500">
               Обязательно. Фон автоматически вырежется (imgly), товар встанет на
-              сгенерированный Stable Diffusion фон. Лучше JPG/PNG на белом или однотонном фоне.
+              сгенерированный AI-фон. Лучше JPG/PNG на белом или однотонном фоне.
             </p>
           </div>
           <div className="flex gap-2">
@@ -373,6 +580,11 @@ export function GenerateForm() {
               />
             ))}
           </div>
+          <p className="mt-3 text-xs text-slate-500">
+            Прошло: <span className="font-mono text-slate-300">{formatElapsed(elapsedSec)}</span>
+            {" · "}
+            обычно 2–5 минут. Не закрывайте вкладку.
+          </p>
         </div>
       )}
 
@@ -381,32 +593,65 @@ export function GenerateForm() {
       {result && (
         <div className="mt-6">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-            <p className="text-sm text-slate-400">
-              {result.unlimited ? (
-                <span>Безлимит · Админ</span>
-              ) : (
-                <>
-                  Бесплатно сегодня: {result.freeRemaining} · Кредиты: {result.credits}
-                </>
+            <div className="text-sm text-slate-400">
+              <p>
+                {result.unlimited ? (
+                  <span>Безлимит · Админ</span>
+                ) : (
+                  <>
+                    Бесплатно сегодня: {result.freeRemaining} · Кредиты: {result.credits}
+                  </>
+                )}
+                {result.aiSource === "mock" && (
+                  <span className="ml-2 text-amber-400">· демо-режим</span>
+                )}
+                {result.backgroundSource === "fallback" && (
+                  <span className="ml-2 text-amber-400">· градиент вместо AI-фона</span>
+                )}
+                {result.renderModel && (
+                  <span className="ml-2 text-sky-400">· модель: {result.renderModel}</span>
+                )}
+                {result.pipelineVersion && (
+                  <span className="ml-2 text-emerald-500">· {result.pipelineVersion}</span>
+                )}
+              </p>
+              {result.oneThoughtHeadline && (
+                <p className="mt-1 text-sm font-medium text-slate-200">
+                  «{result.oneThoughtHeadline}»
+                </p>
               )}
-              {result.aiSource === "mock" && (
-                <span className="ml-2 text-amber-400">· демо-режим</span>
+              {result.creativeMainIdea && (
+                <p className="mt-0.5 text-xs text-slate-500">
+                  Идея: <span className="text-slate-300">{result.creativeMainIdea}</span>
+                </p>
               )}
-              {result.backgroundSource === "fallback" && (
-                <span className="ml-2 text-amber-400">· градиент вместо SD</span>
+              {result.designConcept && (
+                <p className="mt-1 text-xs text-slate-500">
+                  Концепция: <span className="text-slate-300">{result.designConcept}</span>
+                </p>
               )}
-              {result.appliedStyle && (
-                <span className="ml-2 text-slate-500">
-                  · стиль: {STYLE_LABELS[result.appliedStyle]}
-                </span>
+              {result.selectedArchetypeId && (
+                <p className="mt-0.5 text-xs text-emerald-500">
+                  Концепт: {result.selectedArchetypeId.replace(/_/g, " ")}
+                  {result.conceptCandidates ? ` · из ${result.conceptCandidates} вариантов` : ""}
+                </p>
               )}
-            </p>
-            <div className="flex flex-wrap gap-2">
+              {result.visualHook && (
+                <p className="mt-0.5 text-xs text-slate-500">
+                  Хук:{" "}
+                  <span className="text-brand-300">{hookLabel(result.visualHook.type)}</span>
+                  {" — "}
+                  {result.visualHook.reason}
+                </p>
+              )}
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <FeedbackButtons imageId={result.id} />
               <button
                 type="button"
                 onClick={handleRegenerateBackground}
-                disabled={loading || regenLoading}
-                className="rounded-lg border border-slate-600 px-3 py-2 text-xs font-medium text-slate-200 hover:border-brand-500 disabled:opacity-50"
+                disabled={loading || regenLoading || !productImage}
+                className="rounded-lg border border-slate-600 px-3 py-2 text-xs font-medium text-slate-200 hover:border-brand-500 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {regenLoading ? "Перегенерация..." : "Перегенерировать фон"}
               </button>
@@ -414,6 +659,10 @@ export function GenerateForm() {
             </div>
           </div>
           <MarketplacePreview imagePath={result.imagePath} />
+          <GenerationDiagnosticsPanel
+            imageId={result.id}
+            diagnosticsUrl={result.diagnosticsUrl}
+          />
         </div>
       )}
     </form>

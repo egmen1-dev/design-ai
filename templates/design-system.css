@@ -1,0 +1,362 @@
+/* design-ai — Wildberries infographic design system (1200×1200) */
+
+:root {
+  --canvas-w: 1200px;
+  --canvas-h: 1200px;
+  --pad-x: 72px;
+  --pad-y: 80px;
+  --gap-lg: 48px;
+  --gap-md: 30px;
+  --gap-sm: 20px;
+
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-display: "Montserrat", "Inter", sans-serif;
+
+  --title-size: 92px;
+  --title-weight: 800;
+  --title-line: 1.1;
+
+  --subtitle-size: 52px;
+  --subtitle-weight: 600;
+  --subtitle-line: 1.2;
+
+  --bullet-size: 38px;
+  --bullet-weight: 400;
+  --bullet-line: 1.5;
+
+  --brand-size: 28px;
+  --brand-weight: 700;
+
+  --icon-size: 44px;
+
+  --glass-bg: rgba(0, 0, 0, 0.52);
+  --glass-blur: blur(12px);
+  --glass-radius: 30px;
+  --glass-pad-y: 28px;
+  --glass-pad-x: 44px;
+
+  --accent: #e31e24;
+  --accent-dark: #b91c1c;
+  --accent-badge: #2563eb;
+  --text-on-dark: #ffffff;
+  --text-on-light: #0f172a;
+  --text-muted: rgba(255, 255, 255, 0.88);
+
+  --shadow-soft: 0 18px 48px rgba(0, 0, 0, 0.28);
+  --shadow-accent: 0 14px 36px rgba(227, 30, 36, 0.35);
+  --radius-pill: 999px;
+  --radius-card: 24px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: var(--canvas-w);
+  height: var(--canvas-h);
+  overflow: hidden;
+  font-family: var(--font-body);
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.canvas {
+  position: relative;
+  width: var(--canvas-w);
+  height: var(--canvas-h);
+  overflow: hidden;
+  color: var(--text-on-dark);
+}
+
+.canvas-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.canvas-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.canvas-grid {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  padding: var(--pad-y) var(--pad-x);
+  display: grid;
+}
+
+/* ——— Typography ——— */
+
+.display-title {
+  font-family: var(--font-display);
+  font-size: var(--title-size);
+  font-weight: var(--title-weight);
+  line-height: var(--title-line);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--title-color, var(--text-on-dark));
+}
+
+.display-subtitle {
+  font-family: var(--font-body);
+  font-size: var(--subtitle-size);
+  font-weight: var(--subtitle-weight);
+  line-height: var(--subtitle-line);
+  color: var(--subtitle-color, var(--text-muted));
+  margin-top: var(--gap-sm);
+}
+
+.brand-mark {
+  font-family: var(--font-display);
+  font-size: var(--brand-size);
+  font-weight: var(--brand-weight);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--brand-color, var(--text-on-dark));
+  opacity: 0.95;
+}
+
+/* ——— Glass panel (text on busy backgrounds) ——— */
+
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-radius: var(--glass-radius);
+  padding: var(--glass-pad-y) var(--glass-pad-x);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: var(--shadow-soft);
+}
+
+.glass-panel--light {
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--text-on-light);
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+/* ——— Accent pill / promo badge ——— */
+
+.accent-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 14px 28px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-badge);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.1;
+  box-shadow: var(--shadow-accent);
+}
+
+.accent-pill .material-symbols-outlined {
+  font-size: 36px;
+}
+
+.promo-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+  padding: 18px 32px;
+  border-radius: var(--radius-card);
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 42px;
+  font-weight: 900;
+  line-height: 1;
+  box-shadow: var(--shadow-accent);
+}
+
+.promo-badge__sub {
+  display: block;
+  margin-top: 6px;
+  font-family: var(--font-body);
+  font-size: 22px;
+  font-weight: 600;
+  opacity: 0.92;
+}
+
+/* ——— Bullets with Material icons ——— */
+
+.bullet-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+}
+
+.bullet-list--row {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--gap-md);
+}
+
+.bullet-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 28px;
+  border-radius: var(--radius-card);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  max-width: 100%;
+}
+
+.bullet-icon {
+  font-family: "Material Symbols Outlined";
+  font-size: var(--icon-size);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--accent-badge);
+  flex-shrink: 0;
+}
+
+.bullet-text {
+  font-size: var(--bullet-size);
+  font-weight: var(--bullet-weight);
+  line-height: var(--bullet-line);
+  color: var(--text-on-dark);
+}
+
+/* ——— Spec cards ——— */
+
+.spec-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap-md);
+  width: 100%;
+}
+
+.spec-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 28px 20px;
+  border-radius: var(--glass-radius);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: var(--shadow-soft);
+  min-height: 160px;
+}
+
+.spec-card__value {
+  font-family: var(--font-display);
+  font-size: 56px;
+  font-weight: 900;
+  line-height: 1;
+  color: #fff;
+}
+
+.spec-card__label {
+  margin-top: 10px;
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text-muted);
+}
+
+/* ——— Product stage ——— */
+
+.product-wrap {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.product-frame {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  max-width: 100%;
+  max-height: 100%;
+  padding: 24px;
+  border-radius: var(--glass-radius);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: var(--shadow-soft);
+}
+
+.product-photo {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 28px 40px rgba(0, 0, 0, 0.45));
+}
+
+.product-photo--cutout {
+  mix-blend-mode: normal;
+}
+
+.product-shadow {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  height: 40px;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.45) 0%, transparent 72%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ——— Decorative lines ——— */
+
+.deco-line {
+  height: 3px;
+  width: 120px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  margin-top: 20px;
+}
+
+.deco-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.deco-ring--tl {
+  top: 140px;
+  left: -40px;
+  width: 200px;
+  height: 200px;
+}
+
+.deco-ring--br {
+  bottom: 80px;
+  right: -60px;
+  width: 280px;
+  height: 280px;
+}

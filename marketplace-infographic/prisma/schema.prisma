@@ -93,6 +93,8 @@ model GeneratedImage {
   backgroundUrl String?
   productCutout String?
   usedFreeQuota Boolean  @default(true)
+  userFeedback  String?
+  feedbackAt    DateTime?
   createdAt     DateTime @default(now())
 }
 
@@ -101,4 +103,265 @@ model BackgroundCache {
   promptHash String   @unique
   imageUrl   String
   createdAt  DateTime @default(now())
+}
+
+enum FontCategory {
+  sans_serif
+  serif
+  display
+  monospace
+}
+
+model LibraryFont {
+  id             String          @id @default(uuid())
+  name           String
+  cssImport      String          @db.Text
+  fontFamily     String
+  category       FontCategory
+  styleTags      String[]
+  createdAt      DateTime        @default(now())
+  designExamples DesignExample[]
+}
+
+model LibraryBadge {
+  id             String          @id @default(uuid())
+  name           String
+  htmlTemplate   String          @db.Text
+  svgTemplate    String?         @db.Text
+  pngUrl         String?
+  styleTags      String[]
+  createdAt      DateTime        @default(now())
+  designExamples DesignExample[]
+}
+
+model ReferenceImage {
+  id          String   @id @default(uuid())
+  originalUrl String
+  notes       String?
+  createdAt   DateTime @default(now())
+}
+
+model DesignExample {
+  id           String        @id @default(uuid())
+  prompt       String        @db.Text
+  resultJson   String        @db.Text
+  imageUrl     String?
+  notes        String?
+  fontId       String?
+  font         LibraryFont?  @relation(fields: [fontId], references: [id], onDelete: SetNull)
+  badgeId      String?
+  badge        LibraryBadge? @relation(fields: [badgeId], references: [id], onDelete: SetNull)
+  appliedStyle String
+  tags         String[]
+  createdAt    DateTime      @default(now())
+}
+
+model DesignPattern {
+  id              String   @id @default(cuid())
+  patternKey      String   @unique
+  category        String
+  layoutTemplate  String
+  compositionType String
+  backgroundType  String
+  lightingType    String
+  fontFamily      String
+  badgeStyle      String
+  productScale    Float    @default(0.65)
+  textDensity     Float    @default(0.3)
+  negativeSpace   Float    @default(0.25)
+  primaryColor    String   @default("#1a1a2e")
+  secondaryColor  String   @default("#f97316")
+  designScore     Float    @default(0)
+  ctrPrediction   Float    @default(0)
+  likes           Int      @default(0)
+  dislikes        Int      @default(0)
+  usages          Int      @default(0)
+  successWeight   Float    @default(1)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([category, successWeight])
+  @@index([category, layoutTemplate])
+}
+
+model GenerationHistory {
+  id                 String   @id @default(cuid())
+  category           String
+  prompt             String   @db.Text
+  ollamaJson         Json?
+  scenePlanner       Json?
+  layoutEngine       Json?
+  font               String?
+  badge              String?
+  backgroundPrompt   String?  @db.Text
+  designScore        Float?
+  artDirectorScore   Float?
+  marketplaceScore   Float?
+  photographerScore  Float?
+  userLiked          Boolean?
+  generatedImage     String?
+  generatedImageId   String?
+  createdAt          DateTime @default(now())
+
+  @@index([category, createdAt])
+  @@index([createdAt])
+}
+
+model MarketCategoryKnowledge {
+  id                    String   @id @default(cuid())
+  category              String   @unique
+  marketVersion         Int      @default(1)
+  productsAnalyzed      Int      @default(0)
+  knowledgeContext      String   @db.Text
+  marketStatistics      Json
+  marketWeaknesses      Json
+  marketOpportunities   Json
+  designRecommendations Json
+  trendHistory          Json
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([category, updatedAt])
+}
+
+model MarketKnowledgeHistory {
+  id             String   @id @default(cuid())
+  category       String
+  marketVersion  Int
+  oldStatistics  Json?
+  newStatistics  Json
+  changes        Json
+  createdAt      DateTime @default(now())
+
+  @@index([category, createdAt])
+}
+
+model ParametricBadge {
+  id                 String    @id @default(cuid())
+  assetKey           String    @unique
+  name               String
+  style              String
+  model              Json
+  styleTags          String[]
+  categories         String[]
+  compatibleFonts    String[]  @default([])
+  compatiblePalettes String[]  @default([])
+  successScore       Float     @default(0.5)
+  usageCount         Int       @default(0)
+  lastUsedAt         DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@index([successScore])
+  @@index([categories])
+}
+
+model AssetFontProfile {
+  id                     String    @id @default(cuid())
+  assetKey               String    @unique
+  family                 String
+  fontId                 String?
+  tags                   String[]
+  marketplaceReadability Float     @default(70)
+  visualImpact           Float     @default(65)
+  successScore           Float     @default(0.5)
+  usageCount             Int       @default(0)
+  categories             String[]
+  lastUsedAt             DateTime?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+
+  @@index([successScore])
+}
+
+model AssetPalette {
+  id               String    @id @default(cuid())
+  assetKey         String    @unique
+  name             String
+  primary          String
+  secondary        String
+  accent           String
+  background       String
+  contrast         Float
+  premiumScore     Float
+  marketplaceScore Float
+  emotion          String?
+  categories       String[]
+  successScore     Float     @default(0.5)
+  usageCount       Int       @default(0)
+  lastUsedAt       DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([marketplaceScore])
+}
+
+model AssetShapeStyle {
+  id           String   @id @default(cuid())
+  assetKey     String   @unique
+  name         String
+  model        Json
+  styleFamily  String
+  categories   String[]
+  successScore Float    @default(0.5)
+  usageCount   Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model AssetSyncLog {
+  id           String   @id @default(cuid())
+  syncType     String
+  category     String?
+  itemsAdded   Int      @default(0)
+  itemsUpdated Int      @default(0)
+  completedAt  DateTime @default(now())
+
+  @@index([completedAt])
+}
+
+model DesignGenome {
+  id             String    @id @default(cuid())
+  genomeKey      String    @unique
+  category       String
+  customerIntent String?
+  heroConcept    String?
+  genome         Json
+  rankings       Json?
+  source         String    @default("generated")
+  successWeight  Float     @default(0.55)
+  usageCount     Int       @default(0)
+  likes          Int       @default(0)
+  dislikes       Int       @default(0)
+  lastUsedAt     DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([category, successWeight])
+}
+
+model TrendIntelligence {
+  id              String   @id @default(cuid())
+  category        String   @unique
+  trends          Json
+  styleSignals    Json
+  colorTrends     Json
+  fontTrends      Json
+  layoutTrends    Json
+  trendScore      Float    @default(70)
+  version         Int      @default(1)
+  updatedAt       DateTime @updatedAt
+  createdAt       DateTime @default(now())
+
+  @@index([trendScore])
+}
+
+model TrendSyncLog {
+  id             String   @id @default(cuid())
+  syncType       String
+  category       String?
+  sourcesUpdated Int      @default(0)
+  completedAt    DateTime @default(now())
+
+  @@index([completedAt])
 }

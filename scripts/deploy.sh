@@ -30,11 +30,15 @@ cd "${APP_DIR}/${APP_NAME}"
 echo "==> Stopping existing PM2 process before build"
 pm2 delete marketplace-infographic 2>/dev/null || true
 
+mkdir -p "${APP_DIR}/logs"
+
 echo "==> Removing previous Next.js build"
 rm -rf .next node_modules
 
-echo "==> Installing dependencies"
-npm ci
+echo "==> Installing dependencies (with devDependencies for build)"
+export npm_config_onnxruntime_node_install_cuda=skip
+# NODE_ENV=production on VPS skips devDeps — next build needs typescript/tailwind
+NODE_ENV=development npm ci
 
 echo "==> Generating Prisma client"
 npx prisma generate
@@ -49,9 +53,16 @@ fi
 echo "==> Building Next.js app"
 npm run build
 
-echo "==> Restarting PM2 process"
+echo "==> Syncing standalone env"
+cp .env .next/standalone/.env 2>/dev/null || true
+
+echo "==> Starting PM2 process"
 cd "${APP_DIR}"
-pm2 start ecosystem.config.cjs --update-env
+if pm2 describe marketplace-infographic >/dev/null 2>&1; then
+  pm2 reload ecosystem.config.cjs --update-env
+else
+  pm2 start ecosystem.config.cjs --update-env
+fi
 
 pm2 save
 pm2 status marketplace-infographic
@@ -59,5 +70,17 @@ pm2 status marketplace-infographic
 echo "==> Verifying local app routes"
 sleep 3
 curl -fsS http://127.0.0.1:3000/register | grep -q "Регистрация"
+
+echo "==> Pipeline version"
+HEALTH=$(curl -fsS http://127.0.0.1:3000/api/health || echo "{}")
+echo "$HEALTH"
+if echo "$HEALTH" | grep -qE '"pipelineVersion":"v17'; then
+  echo "==> OK: Render Engine v17 active"
+elif echo "$HEALTH" | grep -q '"status":"ok"'; then
+  echo "==> WARN: app ok but pipeline is not v17 — set RENDER_ENGINE_V17=1 in .env"
+else
+  echo "==> ERROR: health check failed"
+  exit 1
+fi
 
 echo "==> Deploy complete"

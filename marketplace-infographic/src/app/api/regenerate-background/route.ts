@@ -4,6 +4,8 @@ import { handleGenerateInfographic } from "@/lib/generate-infographic-handler";
 import { prisma } from "@/lib/prisma";
 import { regenerateBackgroundSchema } from "@/lib/validations";
 
+export const maxDuration = 720;
+
 export async function POST(request: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) {
@@ -42,6 +44,9 @@ export async function POST(request: NextRequest) {
       regenerateBackgroundOnly: true,
       existingImageId: parsed.data.imageId,
       backgroundSeed: seed,
+      style: parsed.data.style,
+      productImage: parsed.data.productImage,
+      renderModel: parsed.data.renderModel,
     });
 
     return NextResponse.json(result);
@@ -56,6 +61,19 @@ export async function POST(request: NextRequest) {
         },
         { status: 402 },
       );
+    }
+    if (code === "PRODUCT_IMAGE_REQUIRED") {
+      return NextResponse.json(
+        {
+          error:
+            "Не найдено фото товара. Загрузите фото снова и повторите перегенерацию.",
+          code: "PRODUCT_IMAGE_REQUIRED",
+        },
+        { status: 400 },
+      );
+    }
+    if (code === "IMAGE_NOT_FOUND") {
+      return NextResponse.json({ error: "Изображение не найдено" }, { status: 404 });
     }
     console.error("regenerate-background error:", error);
     return NextResponse.json({ error: "Не удалось перегенерировать фон" }, { status: 500 });

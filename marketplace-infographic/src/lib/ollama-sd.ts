@@ -1,108 +1,284 @@
-import { infographicSdSchema, type InfographicSdInput } from "@/lib/validations";
-import { getOllamaStatus, OLLAMA_BASE_URL, OLLAMA_MODEL } from "./ai-status";
+import {
+  DEFAULT_STYLE,
+  type InfographicStyle,
+} from "@/lib/design-trends";
+import type { DesignLibrary } from "@/lib/design-library";
+import { pickBestBadgeId, pickBestFontId } from "@/lib/asset-selection";
+import {
+  briefToCompositingHints,
+  briefToSdInput,
+  type CompositingHints,
+  type DesignBrief,
+} from "@/lib/design-brief/schema";
+import {
+  buildQualityRetryHint,
+  evaluateDesignBrief,
+} from "@/lib/design-brief/quality-gate";
+import { sanitizeDesignBrief } from "@/lib/design-brief/sanitize";
+import { cacheGet, cacheKey, cacheSet } from "@/lib/cache/generation-cache";
+import { buildMockFoundation } from "@/lib/design-process/mock";
+import {
+  applyPosterRules,
+  runDesignProcessPipeline,
+} from "@/lib/design-process/pipeline";
+import { buildMockCreativeDirector } from "@/lib/design-process/creative-concept";
+import { buildConceptVariants } from "@/lib/design-process/creative-concept";
+import { objectScaleFromHook } from "@/lib/design-process/visual-hook";
+import {
+  filterConsistentBullets,
+  gardenTrimmerBatteryBullets,
+} from "@/lib/bullet-consistency";
+import { analyzeProductPrompt } from "@/lib/product-analysis";
+import {
+  applyReferenceToSdData,
+  defaultMarketplaceColors,
+  resolveReferenceContext,
+  type ResolvedReferenceContext,
+} from "@/lib/reference-style-resolver";
+import { selectRelevantExamples } from "@/lib/select-relevant-examples";
+import type { InfographicSdInput } from "@/lib/validations";
+import { applyStyleToSdColors } from "@/lib/sd-style-theme";
+import { getOllamaStatus } from "./ai-status";
+
+import type { ArtDirectorModeId } from "@/lib/design-process/art-director-modes";
+import type { CreativeDirectorResult } from "@/lib/design-process/creative-concept";
 
 export type InfographicSdData = InfographicSdInput;
 
-function extractJson(text: string): string {
-  const start = text.indexOf("{");
-  const end = text.lastIndexOf("}");
-  if (start === -1 || end === -1 || end < start) {
-    throw new Error("Ollama не вернула валидный JSON");
-  }
-  return text.slice(start, end + 1);
+export type OllamaSdContext = {
+  library?: DesignLibrary;
+  examples?: Awaited<ReturnType<typeof selectRelevantExamples>>;
+  referenceContext?: ResolvedReferenceContext;
+  userId?: string;
+  artDirectorMode?: ArtDirectorModeId;
+  knowledgeBlock?: string;
+  marketIntelligenceBlock?: string;
+  assetsIntelligenceBlock?: string;
+  genomeBlock?: string;
+  trendIntelligenceBlock?: string;
+};
+
+export type GenerationResult = {
+  data: InfographicSdData;
+  brief: DesignBrief;
+  compositingHints: CompositingHints;
+  source: "ollama" | "mock";
+  qualityScore: number;
+  conceptRenderQueue?: CreativeDirectorResult[];
+  conceptCandidates?: number;
+};
+
+function applyAssetSelection(
+  brief: DesignBrief,
+  library: DesignLibrary | undefined,
+  analysis: ReturnType<typeof analyzeProductPrompt>,
+  style: InfographicStyle,
+): DesignBrief {
+  if (!library) return brief;
+  const accent = brief.colorPalette?.[0] ?? defaultMarketplaceColors()[0];
+
+  const fontId = pickBestFontId(library.fonts, analysis, style, brief.fontId);
+  const badgeId = pickBestBadgeId(library.badges, analysis, style, accent, brief.badgeId);
+
+  return { ...brief, fontId, badgeId };
 }
 
-const SD_EXAMPLE = `{
-  "layout": "hero",
-  "title": "ГЕНЕРАТОР",
-  "subtitle": "бензиновый",
-  "bullets": ["3 кВт мощность", "15 литров бак", "3000 Вт стабильная мощность", "тихая работа 65 дБ"],
-  "colors": ["#e31e24", "#2563eb", "#0f172a"],
-  "badge": "Kronwerk",
-  "backgroundPrompt": "professional marketplace product photo background, suburban garden with lush green grass, soft natural daylight, shallow depth of field, space in center for gasoline generator, photorealistic, 2025 ecommerce trend, high CTR, no text, no people, 8k"
-}`;
+function buildMockBrief(
+  prompt: string,
+  style: InfographicStyle,
+  library?: DesignLibrary,
+  referenceContext?: ResolvedReferenceContext,
+  artDirectorMode?: ArtDirectorModeId,
+): DesignBrief {
+  const analysis = analyzeProductPrompt(prompt);
+  const creative = buildMockCreativeDirector(prompt, analysis, artDirectorMode ?? "marketplace_ctr");
+  const foundation = buildMockFoundation(prompt, analysis.category);
+  const isTrimmer = analysis.category === "garden_tools";
+  const isGenerator = /генератор|generator/i.test(prompt);
+  const isBattery = /аккумулятор|акб|battery/i.test(prompt);
+  const colors = referenceContext?.colors?.length
+    ? referenceContext.colors
+    : defaultMarketplaceColors();
 
-export function generateMockSdData(prompt: string): InfographicSdData {
-  const lower = prompt.toLowerCase();
-  const isGenerator = /генератор|бензин|квт/.test(lower);
+  const trimmerBullets = isBattery
+    ? gardenTrimmerBatteryBullets()
+    : ["1300 Вт мощность", "65 дБ тихая работа", "3 мощных АКБ", "8 насадок", "лёгкий и компактный"];
 
-  return infographicSdSchema.parse({
-    layout: "hero",
-    title: isGenerator ? "ГЕНЕРАТОР" : "ТОВАР",
-    subtitle: isGenerator ? "бензиновый" : "новинка",
-    bullets: isGenerator
-      ? ["3 кВт мощность", "15 литров бак", "3000 Вт стабильная мощность"]
-      : ["Премиум качество", "Быстрая доставка", "Гарантия 12 месяцев"],
-    colors: ["#e31e24", "#2563eb", "#0f172a"],
-    badge: isGenerator ? "Kronwerk" : "Brand",
-    backgroundPrompt: isGenerator
-      ? "professional product photography background, suburban garden with green grass, soft daylight, center space for generator, photorealistic, marketplace infographic 2025, no text"
-      : "clean studio product photography background, soft gradient, professional lighting, center space for product, photorealistic, ecommerce 2025, no text",
-  });
+  const raw = sanitizeDesignBrief(
+    applyPosterRules(
+      {
+        designConcept: creative.creativeConcept.title,
+        creativeConcept: creative.creativeConcept,
+        oneThought: creative.oneThought,
+        designProcess: {
+          stage1: foundation.stage1,
+          visualHook: foundation.visualHook,
+          stage2: foundation.stage2,
+        },
+        visualHook: foundation.visualHook,
+        layout: "marketplace",
+        headline: creative.oneThought.headline,
+        subHeadline: creative.oneThought.badge ?? "новинка",
+        bullets: [`${creative.oneThought.answer} ${creative.oneThought.answerLabel}`.trim()],
+        deferredBullets: creative.oneThought.deferredSpecs,
+        colorPalette: colors,
+        badge: "Brand",
+        backgroundPrompt: `${creative.sceneNarrative}, ultra realistic, no text, no product`,
+        fontId: null,
+        badgeId: null,
+        objectScale: 0.72,
+        lightDirection: "top-left",
+        lightTemperature: "5500K",
+        shadowType: "contact-soft",
+        glassEffects: true,
+      } as DesignBrief,
+      creative,
+    ),
+    analysis.category,
+    prompt,
+  );
+
+  return applyAssetSelection(raw, library, analysis, style);
 }
 
-async function callOllamaSd(prompt: string): Promise<InfographicSdData> {
-  const systemPrompt = `Ты — арт-директор для Wildberries.
-
-Для каждого товара придумай текст и стиль инфографики 1200×1200, а также промпт на АНГЛИЙСКОМ для Stable Diffusion — идеальный фотореалистичный фон.
-Фон должен соответствовать трендам 2025, повышать кликабельность, передавать контекст использования товара.
-В backgroundPrompt: только описание сцены на английском, без текста на изображении, без людей, с местом по центру для товара.
-
-Верни ТОЛЬКО JSON:
-{
-  "layout": "hero" | "cards" | "split" | "minimal",
-  "title": "одно слово КАПСОМ — тип товара",
-  "subtitle": "короткий подтип строчными",
-  "bullets": ["2-5 УТП с цифрами из описания"],
-  "colors": ["#hex", "#hex", "#hex"],
-  "badge": "бренд",
-  "backgroundPrompt": "english prompt for SD XL, 10-200 chars, photorealistic scene"
-}
-
-Правила:
-- Факты только из описания товара
-- backgroundPrompt строго на английском
-- colors: accent, secondary, dark tone
-
-Пример:
-${SD_EXAMPLE}
-
-Товар:
-"${prompt}"`;
-
-  const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: OLLAMA_MODEL,
-      prompt: systemPrompt,
-      stream: false,
-      options: { temperature: 0.4, num_predict: 1536 },
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Ollama недоступна: ${response.status}`);
-  }
-
-  const data = (await response.json()) as { response?: string };
-  if (!data.response) throw new Error("Пустой ответ от Ollama");
-
-  const parsed = JSON.parse(extractJson(data.response)) as unknown;
-  return infographicSdSchema.parse(parsed);
+function clampLibraryIds(
+  data: InfographicSdData,
+  library?: DesignLibrary,
+): InfographicSdData {
+  if (!library) return data;
+  const fontIds = new Set(library.fonts.map((f) => f.id));
+  const badgeIds = new Set(library.badges.map((b) => b.id));
+  return {
+    ...data,
+    fontId: data.fontId && fontIds.has(data.fontId) ? data.fontId : null,
+    badgeId: data.badgeId && badgeIds.has(data.badgeId) ? data.badgeId : null,
+  };
 }
 
 export async function generateSdInfographicData(
   prompt: string,
-): Promise<{ data: InfographicSdData; source: "ollama" | "mock" }> {
+  style?: InfographicStyle,
+  context: OllamaSdContext = {},
+): Promise<GenerationResult> {
+  const referenceContext =
+    context.referenceContext ??
+    resolveReferenceContext(prompt, style ?? DEFAULT_STYLE, context.examples ?? []);
+
+  const enrichedContext: OllamaSdContext = { ...context, referenceContext };
+  const analysis = analyzeProductPrompt(prompt);
+  const cacheId = cacheKey([
+    "brief-v15-layout",
+    prompt.slice(0, 80),
+    style ?? "auto",
+    context.artDirectorMode ?? "marketplace_ctr",
+    context.userId?.slice(0, 8) ?? "anon",
+    referenceContext.topExample?.id ?? "none",
+  ]);
+
+  const cached = cacheGet<GenerationResult>(cacheId);
+  if (cached) return cached;
+
   const status = await getOllamaStatus();
+
+  const finalize = (
+    brief: DesignBrief,
+    source: "ollama" | "mock",
+    extras?: Pick<GenerationResult, "conceptRenderQueue" | "conceptCandidates">,
+  ): GenerationResult => {
+    let sd = briefToSdInput(brief, prompt);
+    sd = applyReferenceToSdData(sd, referenceContext);
+    if (!referenceContext.hasStrongReference && style) {
+      sd = applyStyleToSdColors(sd, style);
+    }
+    sd = clampLibraryIds(sd, context.library);
+
+    const result: GenerationResult = {
+      data: sd,
+      brief,
+      compositingHints: briefToCompositingHints(brief),
+      source,
+      qualityScore: evaluateDesignBrief(brief).score,
+      conceptRenderQueue: extras?.conceptRenderQueue,
+      conceptCandidates: extras?.conceptCandidates,
+    };
+    cacheSet(cacheId, result);
+    return result;
+  };
+
   if (status.mockMode || !status.available) {
-    return { data: generateMockSdData(prompt), source: "mock" };
+    const brief = buildMockBrief(
+      prompt,
+      style ?? DEFAULT_STYLE,
+      context.library,
+      referenceContext,
+      context.artDirectorMode,
+    );
+    const variants = buildConceptVariants(prompt, analysis, context.artDirectorMode ?? "marketplace_ctr");
+    return finalize(brief, "mock", {
+      conceptRenderQueue: variants,
+      conceptCandidates: variants.length,
+    });
   }
+
   try {
-    return { data: await callOllamaSd(prompt), source: "ollama" };
+    const pipelineResult = await runDesignProcessPipeline({
+      productPrompt: prompt,
+      style,
+      analysis,
+      library: context.library,
+      examples: context.examples,
+      referenceContext,
+      artDirectorMode: context.artDirectorMode,
+      userId: context.userId,
+      knowledgeBlock: context.knowledgeBlock,
+      marketIntelligenceBlock: context.marketIntelligenceBlock,
+      assetsIntelligenceBlock: context.assetsIntelligenceBlock,
+      genomeBlock: context.genomeBlock,
+      trendIntelligenceBlock: context.trendIntelligenceBlock,
+    });
+    const { brief } = pipelineResult;
+
+    const withAssets = applyAssetSelection(
+      brief,
+      context.library,
+      analysis,
+      style ?? DEFAULT_STYLE,
+    );
+    const result = finalize(withAssets, "ollama", {
+      conceptRenderQueue: pipelineResult.conceptRenderQueue,
+      conceptCandidates: pipelineResult.conceptCandidates,
+    });
+    cacheSet(cacheId, result);
+    return result;
   } catch (error) {
-    console.warn("Ollama SD failed, mock fallback:", error);
-    return { data: generateMockSdData(prompt), source: "mock" };
+    console.warn("Ollama design process failed, mock fallback:", error);
+    const brief = buildMockBrief(
+      prompt,
+      style ?? DEFAULT_STYLE,
+      context.library,
+      referenceContext,
+      context.artDirectorMode,
+    );
+    const variants = buildConceptVariants(prompt, analysis, context.artDirectorMode ?? "marketplace_ctr");
+    return finalize(brief, "mock", {
+      conceptRenderQueue: variants,
+      conceptCandidates: variants.length,
+    });
   }
+}
+
+export async function buildOllamaSdContext(
+  prompt: string,
+  library?: DesignLibrary,
+): Promise<OllamaSdContext> {
+  const [loadedLibrary, examples] = await Promise.all([
+    library ? Promise.resolve(library) : import("@/lib/design-library").then((m) => m.loadDesignLibrary()),
+    selectRelevantExamples(prompt, 5),
+  ]);
+
+  return {
+    library: loadedLibrary,
+    examples,
+    referenceContext: resolveReferenceContext(prompt, DEFAULT_STYLE, examples),
+  };
 }

@@ -2,6 +2,8 @@ import { mkdir, writeFile } from "fs/promises";
 import path from "path";
 import puppeteer from "puppeteer";
 
+import { WB_COVER } from "@/lib/composition/canvas";
+
 export async function renderHtmlToImage(
   html: string,
   outputFilename: string,
@@ -17,8 +19,15 @@ export async function renderHtmlToImage(
 
   try {
     const page = await browser.newPage();
-    await page.setViewport({ width: 1200, height: 1200, deviceScaleFactor: 2 });
-    await page.setContent(html, { waitUntil: "load" });
+    await page.setViewport({
+      width: WB_COVER.width,
+      height: WB_COVER.height,
+      deviceScaleFactor: 2,
+    });
+    await page.setContent(html, { waitUntil: "load", timeout: 45_000 });
+    await page.evaluate(async () => {
+      await document.fonts.ready;
+    });
     await page.evaluate(async () => {
       const images = Array.from(document.images);
       await Promise.all(
@@ -39,7 +48,7 @@ export async function renderHtmlToImage(
 
     const screenshot = await page.screenshot({
       type: "png",
-      clip: { x: 0, y: 0, width: 1200, height: 1200 },
+      clip: { x: 0, y: 0, width: WB_COVER.width, height: WB_COVER.height },
     });
     await writeFile(outputPath, screenshot);
 

@@ -21,6 +21,8 @@ public/uploads/*
 !public/uploads/.gitkeep
 !public/uploads/products/.gitkeep
 !public/uploads/cutouts/.gitkeep
+public/references/*
+!public/references/.gitkeep
 
 # Debug
 npm-debug.log*
@@ -39,3 +41,6 @@ prisma/*.db-journal
 
 # Puppeteer
 .cache/
+
+# Design Memory runtime store
+data/design-memory.json

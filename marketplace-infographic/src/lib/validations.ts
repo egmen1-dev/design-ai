@@ -1,14 +1,33 @@
 import { z } from "zod";
 import { DEFAULT_STYLE, STYLE_KEYS } from "./design-trends";
+import { COVER_CONCEPTS, type CoverConceptId } from "./cover-concepts";
+import { ART_DIRECTOR_MODES } from "./design-process/art-director-modes";
+import { RENDER_MODEL_IDS } from "./render-engine/render-models";
+
+const COVER_CONCEPT_IDS = COVER_CONCEPTS.map((c) => c.id) as [CoverConceptId, ...CoverConceptId[]];
+const ART_DIRECTOR_MODE_IDS = ART_DIRECTOR_MODES.map((m) => m.id) as [
+  (typeof ART_DIRECTOR_MODES)[number]["id"],
+  ...(typeof ART_DIRECTOR_MODES)[number]["id"][],
+];
 
 export const infographicSdSchema = z.object({
-  layout: z.enum(["hero", "cards", "split", "minimal"]).default("hero"),
+  layout: z.enum(["hero", "cards", "split", "minimal", "marketplace"]).default("marketplace"),
   title: z.string().min(1).max(60),
   subtitle: z.string().min(1).max(80),
-  bullets: z.array(z.string().min(1).max(80)).min(2).max(5),
+  bullets: z.array(z.string().min(1).max(80)).min(1).max(1),
+  deferredBullets: z.array(z.string().min(1).max(80)).max(6).optional(),
   colors: z.array(z.string().min(4).max(7)).min(2).max(5),
   badge: z.string().min(1).max(40),
-  backgroundPrompt: z.string().min(10).max(200),
+  backgroundPrompt: z.string().min(10).max(400),
+  fontId: z.string().uuid().nullable().optional().default(null),
+  badgeId: z.string().uuid().nullable().optional().default(null),
+  creativeHeadline: z.string().max(60).optional(),
+  heroMetric: z
+    .object({
+      value: z.string().max(20),
+      label: z.string().max(40),
+    })
+    .optional(),
 });
 
 export type InfographicSdInput = z.infer<typeof infographicSdSchema>;
@@ -27,12 +46,32 @@ export const generateInfographicSchema = z.object({
       "Загрузите JPG, PNG или WebP",
     )
     .refine((value) => value.length <= 6_000_000, "Фото слишком большое (макс. 4 МБ)"),
-  style: z.enum(STYLE_KEYS).optional().default(DEFAULT_STYLE),
+  /** @deprecated Стили заменены на Design DNA — поле игнорируется при генерации */
+  style: z.enum(STYLE_KEYS).optional(),
+  coverConcept: z.enum(COVER_CONCEPT_IDS).optional(),
+  artDirectorMode: z.enum(ART_DIRECTOR_MODE_IDS).optional(),
+  renderModel: z.enum(RENDER_MODEL_IDS).optional(),
 });
 
 export const regenerateBackgroundSchema = z.object({
   imageId: z.string().min(1),
   backgroundSeed: z.string().max(64).optional(),
+  style: z.enum(STYLE_KEYS).optional(),
+  renderModel: z.enum(RENDER_MODEL_IDS).optional(),
+  productImage: z
+    .string()
+    .trim()
+    .optional()
+    .refine(
+      (value) =>
+        !value ||
+        /^data:image\/(?:jpeg|png|webp);base64,/i.test(value),
+      "Загрузите JPG, PNG или WebP",
+    )
+    .refine(
+      (value) => !value || value.length <= 6_000_000,
+      "Фото слишком большое (макс. 4 МБ)",
+    ),
 });
 
 export const uploadImageSchema = z.object({

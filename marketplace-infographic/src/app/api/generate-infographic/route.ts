@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { loadDesignLibrary } from "@/lib/design-library";
 import { handleGenerateInfographic } from "@/lib/generate-infographic-handler";
+import { selectRelevantExamples } from "@/lib/select-relevant-examples";
 import { generateInfographicSchema } from "@/lib/validations";
+
+export const maxDuration = 720;
 
 export async function POST(request: NextRequest) {
   const session = await auth();
@@ -25,10 +29,20 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    const [library, examples] = await Promise.all([
+      loadDesignLibrary(),
+      selectRelevantExamples(parsed.data.prompt, 5, parsed.data.style),
+    ]);
+
     const result = await handleGenerateInfographic({
       userId: session.user.id,
       prompt: parsed.data.prompt,
       productImage: parsed.data.productImage,
+      style: parsed.data.style,
+      coverConcept: parsed.data.coverConcept,
+      artDirectorMode: parsed.data.artDirectorMode,
+      renderModel: parsed.data.renderModel,
+      ollamaContext: { library, examples },
     });
 
     return NextResponse.json(result);
@@ -47,7 +61,23 @@ export async function POST(request: NextRequest) {
     if (code === "PRODUCT_IMAGE_REQUIRED") {
       return NextResponse.json({ error: "Загрузите фото товара" }, { status: 400 });
     }
+    if (code === "GOVERNANCE_BLOCKED" || error instanceof Error && error.name === "GovernanceBlockedError") {
+      return NextResponse.json(
+        { error: error instanceof Error ? error.message : "Design governance blocked render", code: "GOVERNANCE_BLOCKED" },
+        { status: 422 },
+      );
+    }
+    if (code === "RENDER_BLOCKED" || error instanceof Error && error.name === "RenderBlockedError") {
+      return NextResponse.json(
+        { error: error instanceof Error ? error.message : "Render blocked", code: "RENDER_BLOCKED" },
+        { status: 422 },
+      );
+    }
     console.error("generate-infographic error:", error);
-    return NextResponse.json({ error: "Ошибка генерации" }, { status: 500 });
+    const message =
+      error instanceof Error && error.message.includes("timeout")
+        ? "Генерация заняла слишком много времени. Попробуйте снова."
+        : "Ошибка генерации";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

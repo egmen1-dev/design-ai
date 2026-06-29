@@ -4,6 +4,7 @@
   "start": "cd marketplace-infographic && npm run dev",
   "terminals": [],
   "env": {
-    "GITHUB_PAT": "${GITHUB_PAT}"
+    "GITHUB_PAT": "${GITHUB_PAT}",
+    "VPS_SSH_KEY": "${VPS_SSH_KEY}"
   }
 }
