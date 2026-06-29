@@ -10,6 +10,7 @@ import type {
   RenderBlueprintInput,
   SceneEnvironmentId,
 } from "./types";
+import { createInitialLifecycleMeta } from "./lifecycle";
 import { RENDER_BLUEPRINT_VERSION } from "./types";
 
 function snapLens(mm: number): CameraLensId {
@@ -90,6 +91,7 @@ export function createEmptyRenderBlueprint(input: RenderBlueprintInput): RenderB
       locked: false,
       audit: [{ agentId: "system", section: "meta", action: "set", at: now }],
     },
+    lifecycle: createInitialLifecycleMeta(),
     creative: {
       marketplace: input.marketplace ?? "WB",
       goal: "Lifestyle",

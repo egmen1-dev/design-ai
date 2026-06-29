@@ -159,14 +159,14 @@ export function assertSingleEnvironmentSource(blueprint: RenderBlueprint): void 
 
 /** Золотое правило — prompt только после валидации всех секций */
 export function assertReadyForAdapter(blueprint: RenderBlueprint): void {
-  const v = blueprint.validation;
-  const failures: ConstitutionViolation[] = [];
-  if (!v.storyApproved) failures.push({ code: "CONSTITUTION_V18_NOT_VALIDATED", message: "story not approved" });
-  if (!v.sceneApproved) failures.push({ code: "CONSTITUTION_V18_NOT_VALIDATED", message: "scene not approved" });
-  if (!v.photoApproved) failures.push({ code: "CONSTITUTION_V18_NOT_VALIDATED", message: "photo not approved" });
-  if (!v.layoutApproved) failures.push({ code: "CONSTITUTION_V18_NOT_VALIDATED", message: "layout not approved" });
-  if (!v.chiefApproved) failures.push({ code: "CONSTITUTION_V18_NOT_VALIDATED", message: "chief not approved" });
-  if (failures.length) throw new ConstitutionV18Error(failures);
+  if (blueprint.lifecycle.stage !== "FROZEN" && blueprint.lifecycle.stage !== "RENDERING") {
+    throw new ConstitutionV18Error([
+      {
+        code: "CONSTITUTION_V18_NOT_VALIDATED",
+        message: `Adapter requires FROZEN lifecycle, current: ${blueprint.lifecycle.stage}`,
+      },
+    ]);
+  }
   assertNoPromptStored(blueprint);
   assertSingleEnvironmentSource(blueprint);
 }

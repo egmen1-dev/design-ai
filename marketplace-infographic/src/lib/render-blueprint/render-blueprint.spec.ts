@@ -6,6 +6,7 @@ import {
   assertNoPromptStored,
   assertPhotographyMoodClean,
   assertReadyForAdapter,
+  advanceLifecycleStage,
   ConstitutionV18Error,
   createEmptyRenderBlueprint,
   environmentFromCoverConcept,
@@ -53,29 +54,53 @@ function testPhotographyBannedMood() {
   console.log("✔ photography.visualMood bans marketing words");
 }
 
-function testStoryDirectorPatchesCreativeAndStory() {
-  const bp = createEmptyRenderBlueprint({ seed: 3, category: "home_appliances", environment: "garden" });
-  const next = applyAgentPatch(bp, {
-    agentId: "visual-story-director",
-    section: "creative",
-    data: { goal: "Technical", emotion: "reliability" },
+function testStoryDirectorPatchesStoryOnly() {
+  let bp = createEmptyRenderBlueprint({ seed: 3, category: "home_appliances", environment: "garden" });
+  bp = advanceLifecycleStage(bp);
+  bp = applyAgentPatch(bp, {
+    agentId: "product-analyzer",
+    section: "product",
+    data: { shape: "generator" },
   });
-  assert.equal(next.creative.goal, "Technical");
-  const story = applyAgentPatch(next, {
+  bp = advanceLifecycleStage(bp);
+  bp = applyAgentPatch(bp, {
+    agentId: "creative-engine",
+    section: "creative",
+    data: { goal: "Technical", audience: "homeowners", emotion: "security" },
+  });
+  bp = advanceLifecycleStage(bp);
+
+  const story = applyAgentPatch(bp, {
     agentId: "visual-story-director",
     section: "story",
     data: { hook: "backup power", emotionalTone: "warm" },
   });
   assert.equal(story.story.hook, "backup power");
-  console.log("✔ Story Director → creative + story");
+  console.log("✔ Story Director → story only");
 }
 
 function testSceneDirectorPatchesSceneOnly() {
-  const bp = createEmptyRenderBlueprint({ seed: 4, category: "garden_tools", environment: "studio" });
+  let bp = createEmptyRenderBlueprint({ seed: 4, category: "garden_tools", environment: "studio" });
+  bp = advanceLifecycleStage(bp);
+  bp = applyAgentPatch(bp, { agentId: "product-analyzer", section: "product", data: { shape: "tool" } });
+  bp = advanceLifecycleStage(bp);
+  bp = applyAgentPatch(bp, {
+    agentId: "creative-engine",
+    section: "creative",
+    data: { audience: "gardeners", emotion: "confidence" },
+  });
+  bp = advanceLifecycleStage(bp);
+  bp = applyAgentPatch(bp, {
+    agentId: "visual-story-director",
+    section: "story",
+    data: { hook: "h", visualPromise: "p", narrative: "n" },
+  });
+  bp = advanceLifecycleStage(bp);
+
   const next = applyAgentPatch(bp, {
     agentId: "scene-director",
     section: "scene",
-    data: { environment: "garden", timeOfDay: "golden_hour" },
+    data: { environment: "garden", timeOfDay: "golden_hour", surface: "grass" },
   });
   assert.equal(next.scene.environment, "garden");
   assert.equal(next.scene.timeOfDay, "golden_hour");
@@ -90,19 +115,70 @@ function testCompositionHasNoPixelGeometry() {
 }
 
 function testGoldenRuleValidationBeforeAdapter() {
-  const bp = createEmptyRenderBlueprint({ seed: 6, category: "electronics" });
+  let bp = createEmptyRenderBlueprint({ seed: 6, category: "electronics" });
   assert.throws(() => assertReadyForAdapter(bp), ConstitutionV18Error);
-  let approved = bp;
-  for (const patch of [
-    { section: "validation" as const, data: { storyApproved: true } },
-    { section: "validation" as const, data: { sceneApproved: true } },
-    { section: "validation" as const, data: { photoApproved: true } },
-    { section: "validation" as const, data: { layoutApproved: true } },
-    { section: "validation" as const, data: { chiefApproved: true } },
-  ]) {
-    approved = applyAgentPatch(approved, { agentId: "chief-design-director", ...patch });
+
+  for (let i = 0; i < 9; i++) {
+    if (bp.lifecycle.stage === "PRODUCT_ANALYZED") {
+      bp = applyAgentPatch(bp, {
+        agentId: "product-analyzer",
+        section: "product",
+        data: { shape: "device" },
+      });
+    }
+    if (bp.lifecycle.stage === "CREATIVE_DEFINED") {
+      bp = applyAgentPatch(bp, {
+        agentId: "creative-engine",
+        section: "creative",
+        data: { audience: "tech", emotion: "innovative" },
+      });
+    }
+    if (bp.lifecycle.stage === "STORY_DEFINED") {
+      bp = applyAgentPatch(bp, {
+        agentId: "visual-story-director",
+        section: "story",
+        data: { hook: "h", visualPromise: "p", narrative: "n" },
+      });
+    }
+    if (bp.lifecycle.stage === "SCENE_DEFINED") {
+      bp = applyAgentPatch(bp, {
+        agentId: "scene-director",
+        section: "scene",
+        data: { environment: "studio", surface: "desk" },
+      });
+    }
+    if (bp.lifecycle.stage === "PHOTO_DEFINED") {
+      bp = applyAgentPatch(bp, {
+        agentId: "commercial-photo-director",
+        section: "photography",
+        data: { visualMood: "clean light", realism: 0.85 },
+      });
+    }
+    if (bp.lifecycle.stage === "COMPOSITION_DEFINED") {
+      bp = applyAgentPatch(bp, {
+        agentId: "composition-director",
+        section: "composition",
+        data: { eyeFlow: ["hero", "headline"] },
+      });
+    }
+    if (bp.lifecycle.stage === "VALIDATED") {
+      bp = applyAgentPatch(bp, {
+        agentId: "chief-design-director",
+        section: "validation",
+        data: {
+          storyApproved: true,
+          sceneApproved: true,
+          photoApproved: true,
+          layoutApproved: true,
+          chiefApproved: true,
+        },
+      });
+    }
+    bp = advanceLifecycleStage(bp);
   }
-  assert.doesNotThrow(() => assertReadyForAdapter(approved));
+
+  assert.equal(bp.lifecycle.stage, "FROZEN");
+  assert.doesNotThrow(() => assertReadyForAdapter(bp));
   console.log("✔ golden rule — validation before adapter");
 }
 
@@ -174,7 +250,7 @@ testRule001CameraDistanceOnlyInCamera();
 testRule002AgentSectionOwnership();
 testRule004NoPromptInBlueprint();
 testPhotographyBannedMood();
-testStoryDirectorPatchesCreativeAndStory();
+testStoryDirectorPatchesStoryOnly();
 testSceneDirectorPatchesSceneOnly();
 testCompositionHasNoPixelGeometry();
 testGoldenRuleValidationBeforeAdapter();

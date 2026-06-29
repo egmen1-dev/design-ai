@@ -14,12 +14,34 @@ import type {
   ConstraintBlueprint,
   ValidationBlueprint,
 } from "./types";
+import type { LifecycleManagedSection } from "./lifecycle-types";
 import {
   assertAgentMayWriteSection,
   assertAgentOutputsClean,
-  assertBlueprintUnlocked,
   assertPhotographyMoodClean,
 } from "./constitution";
+import {
+  assertSectionWritable,
+  markSectionDirtyAfterPatch,
+} from "./lifecycle";
+
+const MANAGED_SET = new Set<string>([
+  "product",
+  "creative",
+  "story",
+  "scene",
+  "photography",
+  "camera",
+  "lighting",
+  "materials",
+  "composition",
+  "constraints",
+  "validation",
+]);
+
+function isManagedSection(section: keyof SectionPayloadMap): section is LifecycleManagedSection {
+  return MANAGED_SET.has(section);
+}
 
 export type SectionPayloadMap = {
   creative: Partial<CreativeBlueprint>;
@@ -52,8 +74,10 @@ export function applyAgentPatch<S extends keyof SectionPayloadMap>(
   blueprint: RenderBlueprint,
   patch: AgentPatch<S>,
 ): RenderBlueprint {
-  assertBlueprintUnlocked(blueprint, patch.agentId);
   assertAgentMayWriteSection(patch.agentId, patch.section as BlueprintSection);
+  if (isManagedSection(patch.section)) {
+    assertSectionWritable(blueprint, patch.section);
+  }
   assertAgentOutputsClean(collectStrings(patch.data), patch.agentId);
 
   if (patch.section === "photography" && typeof patch.data === "object" && patch.data && "visualMood" in patch.data) {
@@ -116,6 +140,10 @@ export function applyAgentPatch<S extends keyof SectionPayloadMap>(
       break;
     default:
       break;
+  }
+
+  if (isManagedSection(patch.section)) {
+    return markSectionDirtyAfterPatch(next, patch.section);
   }
 
   return next;

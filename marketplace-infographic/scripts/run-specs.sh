@@ -11,6 +11,7 @@ SPECS=(
   src/lib/render-engine/providers/pollinations/moderation.spec.ts
   src/lib/design/visual-pipeline/visual-pipeline.spec.ts
   src/lib/render-blueprint/render-blueprint.spec.ts
+  src/lib/render-blueprint/lifecycle.spec.ts
 )
 for f in "${SPECS[@]}"; do
   echo "==> $f"

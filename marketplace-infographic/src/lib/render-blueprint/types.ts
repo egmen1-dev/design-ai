@@ -238,6 +238,7 @@ export type ValidationBlueprint = {
 
 export type RenderBlueprint = {
   meta: MetaBlueprint;
+  lifecycle: import("./lifecycle-types").BlueprintLifecycleMeta;
   creative: CreativeBlueprint;
   story: StoryBlueprint;
   product: ProductBlueprint;

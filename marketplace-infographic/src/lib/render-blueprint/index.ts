@@ -51,4 +51,37 @@ export {
   renderBlueprintToVisualSceneBlueprint,
 } from "./from-visual-blueprint";
 
+export {
+  BlueprintLifecycle,
+  SectionState,
+  type BlueprintLifecycleMeta,
+  type BlueprintSnapshot,
+  type LifecycleManagedSection,
+  type RollbackResult,
+} from "./lifecycle-types";
+
+export {
+  BlueprintLockedError,
+  LifecycleTransitionError,
+  DEPENDENCY_CHILDREN,
+  STAGE_EDITABLE_SECTIONS,
+  createInitialLifecycleMeta,
+  isLifecycleFrozen,
+  assertSectionWritable,
+  canTransitionSectionState,
+  propagateDirty,
+  markSectionDirtyAfterPatch,
+  createLifecycleSnapshot,
+  advanceLifecycleStage,
+  rollbackToSnapshot,
+  advanceToRendering,
+  advancePostRenderStage,
+} from "./lifecycle";
+
+export {
+  SECTION_VALIDATORS,
+  STAGE_LOCK_SECTIONS,
+  type SectionValidationResult,
+} from "./section-validators";
+
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";

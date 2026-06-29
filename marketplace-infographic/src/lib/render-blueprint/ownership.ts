@@ -3,7 +3,8 @@ import type { BlueprintSection } from "./types";
 /** Chapter 3 — ответственность агентов */
 export const AGENT_WRITE_PERMISSIONS: Record<string, BlueprintSection[]> = {
   "product-analyzer": ["product"],
-  "visual-story-director": ["creative", "story"],
+  "creative-engine": ["creative"],
+  "visual-story-director": ["story"],
   "scene-director": ["scene"],
   "commercial-photo-director": ["photography"],
   "camera-director": ["camera"],
