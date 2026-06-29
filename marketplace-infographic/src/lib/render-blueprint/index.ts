@@ -751,4 +751,29 @@ export {
   type SectionDependencyEdge,
 } from "./agent-dependency-engine";
 
+export {
+  AGENT_CONTEXT_VERSION,
+  AGENT_CONTEXT_GOLDEN_RULE,
+  buildAgentContextPackage,
+  bridgePipelineConfig,
+  validateAgentContextPackage,
+  scanContextSecurity,
+  projectAgentContext,
+  explainContextUsage,
+  serializeAgentContext,
+  deserializeAgentContext,
+  detectContextMutation,
+  type AgentContextPackage,
+  type AgentContextBuildInput,
+  type AgentDiagnosticContext,
+  type RuntimeContext,
+  type ContextValidationReport,
+  type ContextViolation,
+  type ContextProjection,
+  type ContextExplainabilityReport,
+  type ContextExplainabilityEntry,
+  type SerializedAgentContext,
+  type ContextViolationCode,
+} from "./agent-context-engine";
+
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";

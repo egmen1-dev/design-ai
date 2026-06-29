@@ -2,7 +2,6 @@
  * Chapter 4.1 — Universal Agent Contract types
  */
 import type { BlueprintMutation } from "./mutation-types";
-import type { DiagnosticContext } from "./observability-types";
 import type { BlueprintSnapshot } from "./snapshot-types";
 import type { BlueprintSection, RenderBlueprint } from "./types";
 
@@ -24,12 +23,15 @@ export type PipelineConfig = {
   seed?: number;
 };
 
-/** All inputs passed through unified context — extensions via new fields only */
+/** All inputs passed through unified context — extensions via new fields only (Ch 4.6) */
 export type AgentContext = {
   blueprint: Readonly<RenderBlueprint>;
-  snapshot?: BlueprintSnapshot;
+  snapshot?: Readonly<BlueprintSnapshot>;
+  configuration: import("./agent-discovery-types").PipelineConfiguration;
+  diagnostics: import("./agent-context-types").AgentDiagnosticContext;
+  runtime: Readonly<import("./agent-context-types").RuntimeContext>;
+  /** Ch 4.1 bridge — pipeline identity and debug flags */
   config: PipelineConfig;
-  diagnostics: DiagnosticContext;
 };
 
 export type AgentRecommendation = {

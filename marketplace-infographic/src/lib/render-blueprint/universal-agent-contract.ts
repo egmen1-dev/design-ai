@@ -4,6 +4,11 @@
 import type { AgentContractId } from "./agent-contracts";
 import { AGENT_READ_MATRIX, AGENT_WRITE_MATRIX } from "./agent-matrix";
 import { AgentEcosystemCategory, getAgentCategory } from "./agent-ecosystem";
+import {
+  buildAgentContextPackage,
+  bridgePipelineConfig,
+} from "./agent-context-engine";
+import { defaultPipelineConfiguration } from "./agent-discovery";
 import type { BlueprintSection } from "./types";
 import {
   AgentCategory,
@@ -99,23 +104,35 @@ export function createAgentContext(input: {
   marketplace?: string;
   debug?: boolean;
   seed?: number;
-  diagnostics?: import("./observability-types").DiagnosticContext;
+  configuration?: import("./agent-discovery-types").PipelineConfiguration;
+  runtime?: import("./agent-context-types").RuntimeContext;
+  diagnostics?: import("./agent-context-types").AgentDiagnosticContext;
+  agentId?: AgentContractId;
+  agentVersion?: string;
 }): AgentContext {
+  const pkg = buildAgentContextPackage({
+    blueprint: structuredClone(input.blueprint) as import("./types").RenderBlueprint,
+    snapshot: input.snapshot ? structuredClone(input.snapshot) : undefined,
+    configuration: input.configuration ?? defaultPipelineConfiguration(),
+    pipelineId: input.pipelineId,
+    diagnostics: input.diagnostics,
+    runtime: input.runtime,
+    agentId: input.agentId,
+    agentVersion: input.agentVersion,
+  });
+
   return {
-    blueprint: input.blueprint,
-    snapshot: input.snapshot,
-    config: {
-      pipelineId: input.pipelineId ?? input.diagnostics?.pipelineId ?? "pipeline",
-      marketplace: input.marketplace ?? input.blueprint.creative.marketplace,
-      debug: input.debug ?? false,
-      seed: input.seed ?? input.blueprint.meta.seed,
-    },
-    diagnostics: input.diagnostics ?? {
-      pipelineId: input.pipelineId ?? "pipeline",
-      blueprintRevision: input.blueprint.meta.revision ?? 0,
-      currentStage: input.blueprint.lifecycle.stage,
-      sessionId: "session",
-    },
+    blueprint: pkg.blueprint,
+    snapshot: pkg.snapshot,
+    configuration: pkg.configuration,
+    diagnostics: pkg.diagnostics,
+    runtime: pkg.runtime,
+    config: bridgePipelineConfig(pkg, {
+      pipelineId: input.pipelineId,
+      marketplace: input.marketplace,
+      debug: input.debug,
+      seed: input.seed,
+    }),
   };
 }
 
