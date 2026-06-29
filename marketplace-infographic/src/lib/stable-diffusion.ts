@@ -1,5 +1,6 @@
 import { createHash } from "crypto";
 import { mkdir, writeFile, readFile } from "fs/promises";
+import path from "path";
 import { resolvePublicAssetPath, writablePublicDir } from "@/lib/runtime-paths";
 import sharp from "sharp";
 import type { InfographicStyle } from "@/lib/design-trends";

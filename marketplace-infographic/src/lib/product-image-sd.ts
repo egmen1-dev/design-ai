@@ -1,4 +1,5 @@
 import { mkdir, writeFile } from "fs/promises";
+import path from "path";
 import { writablePublicDir } from "@/lib/runtime-paths";
 import {
   bufferToDataUrl,
