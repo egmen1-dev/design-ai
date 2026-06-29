@@ -1,6 +1,6 @@
 import { createHash } from "crypto";
 import { mkdir, writeFile, readFile } from "fs/promises";
-import path from "path";
+import { resolvePublicAssetPath, writablePublicDir } from "@/lib/runtime-paths";
 import sharp from "sharp";
 import type { InfographicStyle } from "@/lib/design-trends";
 import { WB_COVER } from "@/lib/composition/canvas";
@@ -128,7 +128,7 @@ async function normalizeToWbCover(buffer: Buffer): Promise<Buffer> {
 
 async function saveBackground(buffer: Buffer, promptHash: string): Promise<string> {
   const normalized = await normalizeToWbCover(buffer);
-  const dir = path.join(process.cwd(), "public", "backgrounds");
+  const dir = writablePublicDir("backgrounds");
   await mkdir(dir, { recursive: true });
   const filename = `${promptHash.slice(0, 16)}-${Date.now()}.png`;
   const absPath = path.join(dir, filename);
@@ -164,8 +164,7 @@ export async function generateBackground(
 }
 
 export async function backgroundToDataUrl(imageUrl: string): Promise<string> {
-  const rel = imageUrl.startsWith("/") ? imageUrl.slice(1) : imageUrl;
-  const absPath = path.join(process.cwd(), "public", rel);
+  const absPath = await resolvePublicAssetPath(imageUrl);
   const buffer = await readFile(absPath);
   return `data:image/png;base64,${buffer.toString("base64")}`;
 }

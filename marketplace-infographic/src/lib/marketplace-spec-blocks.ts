@@ -22,15 +22,19 @@ export function extractMarketplaceSpecBlocks(
     pushBlock(powerMatch[1].replace(",", "."), "кВт", "Стабильная мощность");
   }
 
-  const literMatch = prompt.match(/(\d+(?:[.,]\d+)?)\s*(?:л|литр)/i);
+  const literMatch = prompt.match(/(\d+(?:[.,]\d+)?)\s*(?:л|литр)(?!\s*\/\s*час)/i);
   if (literMatch) {
     pushBlock(`${literMatch[1].replace(",", ".")} л`, "бак", "Долгая автономность");
   }
 
+  const consumptionMatch = prompt.match(/(\d+(?:[.,]\d+)?)\s*л\s*\/\s*час/i);
+  if (consumptionMatch) {
+    pushBlock(consumptionMatch[1].replace(",", "."), "л/час", "Расход");
+  }
+
   const patterns: [RegExp, string, string?, boolean?][] = [
     [/(\d+(?:[.,]\d+)?)\s*(?:вт|Вт)/i, "Вт", "Мощность", true],
-    [/(\d+(?:[.,]\d+)?)\s*л\s*\/\s*час/i, "л/час", "Расход"],
-    [/(\d+(?:[.,]\d+)?)\s*(?:дб|дБ|db)/i, "дБ", "Тихая работа"],
+    [/(\d+(?:[.,]\d+)?)\s*(?:дб|дБ|db)/i, "дБ", "Тихая работа", true],
     [/(\d+)\s*час/i, "ч", "Время работы", true],
     [/(\d+(?:[.,]\d+)?)\s*(?:па|Па)/i, "Па", "Всасывание"],
     [/(\d+(?:[.,]\d+)?)\s*(?:мл|ml)/i, "мл", "Объём"],
