@@ -135,6 +135,31 @@ export type {
 } from "./mutation-types";
 export { hashSection, hashValue } from "./section-hash";
 export { validateMutation, validateBatchConflicts } from "./mutation-validators";
+
+export {
+  ValidationEngine,
+  ValidationLevel,
+  DEFAULT_VALIDATION_RULES,
+  VAL_001_BLUEPRINT_STRUCTURE,
+  VAL_002_LIFECYCLE,
+  VAL_003_DEPENDENCIES,
+  VAL_004_CAMERA,
+  VAL_005_LIGHTING,
+  VAL_006_COMPOSITION,
+  VAL_007_BACKGROUND,
+  VAL_008_PROFESSIONAL_LAYOUT,
+  VAL_009_MARKETPLACE,
+  VAL_010_ARCHITECTURE_INVARIANTS,
+  VAL_BUSINESS_SCENE_LOGIC,
+  type ValidationError,
+  type ValidationResult,
+  type ValidationRule,
+  type ValidationReport,
+  type ValidationSeverity,
+  type ValidationWarning,
+  type ValidationRuleCategory,
+  type ValidationEngineOptions,
+} from "./validation-engine";
 export { SnapshotManager } from "./snapshot-manager";
 export { RetryEngine, RetryLimitExceededError as RetryEngineLimitError } from "./retry-engine";
 export { AgentRegistry, defaultAgentRegistry } from "./agent-registry";

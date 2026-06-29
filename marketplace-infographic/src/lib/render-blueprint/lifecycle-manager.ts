@@ -22,6 +22,7 @@ import { RetryEngine, RetryLimitExceededError } from "./retry-engine";
 import { AgentRegistry } from "./agent-registry";
 import { assertStagePreconditions } from "./stage-preconditions";
 import { groupParallelAgents } from "./parallel-execution";
+import { ValidationEngine, type ValidationReport } from "./validation-engine";
 import {
   LifecycleEventType,
   PipelineState,
@@ -56,6 +57,7 @@ export type LifecycleManagerOptions = {
   mutationEngine?: MutationEngine;
   snapshotManager?: SnapshotManager;
   retryEngine?: RetryEngine;
+  validationEngine?: ValidationEngine;
 };
 
 export type ExecuteStageInput = Record<string, unknown>;
@@ -65,6 +67,7 @@ export class LifecycleManager {
   private readonly mutationEngine: MutationEngine;
   private readonly snapshotManager: SnapshotManager;
   private readonly retryEngine: RetryEngine;
+  private readonly validationEngine: ValidationEngine;
 
   private graph: DecisionGraph;
   private pipelineState: PipelineStateId = PipelineState.NEW;
@@ -80,6 +83,7 @@ export class LifecycleManager {
     this.mutationEngine = options.mutationEngine ?? new MutationEngine();
     this.snapshotManager = options.snapshotManager ?? new SnapshotManager();
     this.retryEngine = options.retryEngine ?? new RetryEngine();
+    this.validationEngine = options.validationEngine ?? new ValidationEngine();
     this.graph = blueprint
       ? DecisionGraph.fromBlueprint(blueprint)
       : new DecisionGraph();
@@ -103,6 +107,40 @@ export class LifecycleManager {
 
   getLogs(): readonly LifecycleLogEntry[] {
     return this.logs;
+  }
+
+  getValidationEngine(): ValidationEngine {
+    return this.validationEngine;
+  }
+
+  getLastValidationReport(): ValidationReport | undefined {
+    return this.lastValidationReport;
+  }
+
+  private lastValidationReport?: ValidationReport;
+
+  /** Ch 3.6 — mandatory after each mutation; never mutates blueprint */
+  private assertPostMutationValidation(
+    blueprint: RenderBlueprint,
+    stage: BlueprintLifecycle,
+    agentId?: AgentContractId,
+  ): ValidationReport {
+    this.validationEngine.invalidateCache(blueprint.meta.revision ?? 0);
+    const report = this.validationEngine.validate(blueprint, { graph: this.graph });
+    this.lastValidationReport = report;
+
+    if (report.hasFatal || report.hasError) {
+      this.emit(LifecycleEventType.ValidationFailed, stage, report.revision, {
+        agentId,
+        detail: report.errors.map((e) => e.message).join("; "),
+      });
+      throw new AgentContractError(
+        report.hasFatal ? "fatal" : "recoverable",
+        `Validation failed: ${report.errors.map((e) => e.message).join("; ")}`,
+        "VALIDATION_FAILED",
+      );
+    }
+    return report;
   }
 
   onEvent(listener: (event: LifecycleEvent) => void): () => void {
@@ -210,6 +248,8 @@ export class LifecycleManager {
 
           current = mutation.blueprint;
 
+          this.assertPostMutationValidation(current, stage, agent.id);
+
           const snapshot = this.snapshotManager.store({
             blueprint: current,
             graph: this.graph,
@@ -296,6 +336,7 @@ export class LifecycleManager {
     });
 
     this.graph = DecisionGraph.fromBlueprint(mutation.blueprint);
+    this.assertPostMutationValidation(mutation.blueprint, mutation.blueprint.lifecycle.stage, agentId);
     return mutation;
   }
 
@@ -337,6 +378,7 @@ export class LifecycleManager {
         expectedRevision,
       });
       this.graph = DecisionGraph.fromBlueprint(mutation.blueprint);
+      this.assertPostMutationValidation(mutation.blueprint, mutation.blueprint.lifecycle.stage, agent.id);
       return { blueprint: mutation.blueprint, mutation, result };
     } catch (error) {
       if (

@@ -64,6 +64,17 @@ npx tsx src/lib/render-blueprint/lifecycle-manager.spec.ts
 npx tsx src/lib/render-blueprint/mutation-engine.spec.ts
 ```
 
+### Фаза 2f — Validation Engine ✅ (Chapter 3.6)
+
+- `validation-engine.ts` — 4 levels, rule priority, revision cache
+- `validation-rules.ts` — VAL_001…VAL_010 + business scene logic
+- Integrated in `LifecycleManager` after every mutation
+- `docs/DESIGN-AI-v18-CHAPTER-3.6-VALIDATION-ENGINE.md`
+
+```bash
+npx tsx src/lib/render-blueprint/validation-engine.spec.ts
+```
+
 ### Фаза 2b — Legacy agent integration (planned)
 
 ### Фаза 3 — Critics before render
