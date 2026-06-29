@@ -237,7 +237,29 @@ export {
   type PublishInput,
 } from "./event-bus";
 export { RetryEngine, RetryLimitExceededError as RetryEngineLimitError } from "./retry-engine";
-export { AgentRegistry, defaultAgentRegistry } from "./agent-registry";
+export {
+  AgentRegistry,
+  AgentRegistryError,
+  createDefaultAgentRegistry,
+  defaultAgentRegistry,
+  descriptorFromAgent,
+  registrationFromAgent,
+  AgentType,
+  DEFAULT_DIRECTOR_CAPABILITIES,
+  DEFAULT_CRITIC_CAPABILITIES,
+  DEFAULT_ADAPTER_CAPABILITIES,
+  type AgentDescriptor,
+  type AgentCapabilities,
+  type AgentMetadata,
+  type AgentFactory,
+  type AgentRegistration,
+  type AgentInstanceRecord,
+  type RegistryHealthIssue,
+  type RegistryHealthResult,
+  type RegistryAgentReport,
+  type RegistryReport,
+  type RegistryRuntimeOptions,
+} from "./agent-registry";
 export { STAGE_PRECONDITIONS, assertStagePreconditions } from "./stage-preconditions";
 export { canRunAgentsParallel, groupParallelAgents } from "./parallel-execution";
 

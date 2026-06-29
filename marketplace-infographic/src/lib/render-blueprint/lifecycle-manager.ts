@@ -294,6 +294,14 @@ export class LifecycleManager {
     return report;
   }
 
+  getAgentRegistry(): AgentRegistry {
+    return this.registry;
+  }
+
+  getRegistryReport() {
+    return this.registry.getReport();
+  }
+
   onEvent(listener: (event: LifecycleEvent) => void): () => void {
     this.eventListeners.push(listener);
     return () => {
@@ -304,7 +312,7 @@ export class LifecycleManager {
   registerAgent<TInput, TResult extends AgentResultBase>(
     agent: BlueprintAgent<TInput, TResult>,
   ): void {
-    this.registry.register(agent);
+    this.registry.registerBlueprintAgent(agent as BlueprintAgent<unknown, AgentResultBase>);
   }
 
   private notifyLegacyListeners(
@@ -359,6 +367,7 @@ export class LifecycleManager {
     this.currentStage = stage;
     this.eventBus.bindContext({ blueprintId: blueprint.meta.id, stage, producer: "lifecycle-manager" });
     this.eventBus.lock();
+    this.registry.lock();
     this.eventBus.publish({
       type: DesignEventType.PipelineStarted,
       category: EventCategory.LIFECYCLE,
@@ -505,11 +514,18 @@ export class LifecycleManager {
             success: true,
             at: Date.now(),
           });
+          this.registry.recordRunResult(agent.id, {
+            durationMs: Date.now() - startedAt,
+            result: "success",
+            confidence: agentResult.confidence,
+          });
         }
       }
 
       this.pipelineState = PipelineState.RUNNING;
       this.publishLifecycle(LifecycleEventType.StageFinished, stage, current.meta.revision ?? 0);
+      this.registry.disposeInstances();
+      this.registry.unlock();
       this.eventBus.unlock();
 
       return {
@@ -535,6 +551,8 @@ export class LifecycleManager {
         metadata: { blueprintId: blueprint.meta.id, stage, producer: "lifecycle-manager" },
       });
       this.eventBus.unlock();
+      this.registry.disposeInstances();
+      this.registry.unlock();
       throw error;
     }
   }
