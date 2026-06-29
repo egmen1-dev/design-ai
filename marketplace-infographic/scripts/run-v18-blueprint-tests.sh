@@ -25,6 +25,7 @@ SPECS=(
   src/lib/render-blueprint/architecture-validator.spec.ts
   src/lib/render-blueprint/agent-ecosystem.spec.ts
   src/lib/render-blueprint/universal-agent-contract.spec.ts
+  src/lib/render-blueprint/agent-lifecycle.spec.ts
   src/lib/render-blueprint/testing-architecture.spec.ts
 )
 for f in "${SPECS[@]}"; do

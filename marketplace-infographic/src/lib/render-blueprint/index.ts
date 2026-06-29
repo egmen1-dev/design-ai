@@ -658,4 +658,28 @@ export {
   assertNoForbiddenSideEffects,
 } from "./universal-agent-contract-validator";
 
+export {
+  AGENT_LIFECYCLE_VERSION,
+  AGENT_LIFECYCLE_GOLDEN_RULE,
+  AGENT_LIFECYCLE_STAGE_ORDER,
+  AGENT_LIFECYCLE_GUARANTEES,
+  AgentLifecycleStage,
+  assertStageOrder,
+  nextLifecycleStage,
+  type AgentLifecycleStageId,
+  type AgentLifecycleStageRecord,
+  type AgentLifecycleFailure,
+  type AgentLifecycleResult,
+  type AgentLifecycleRunInput,
+  type AgentLifecycleOrchestratorOptions,
+  type AgentLifecycleGuarantee,
+} from "./agent-lifecycle";
+
+export {
+  AgentLifecycleOrchestrator,
+  AgentLifecycleSession,
+  AgentLifecycleError,
+  runAgentLifecycle,
+} from "./agent-lifecycle-orchestrator";
+
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";

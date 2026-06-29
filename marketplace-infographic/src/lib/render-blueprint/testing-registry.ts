@@ -29,6 +29,7 @@ export const V18_TEST_REGISTRY: TestSpecEntry[] = [
   { id: "architecture-validator", path: `${BP}/architecture-validator.spec.ts`, category: TestCategory.BLUEPRINT, chapter: "3.19", description: "Architectural Invariants", usesLlm: false },
   { id: "agent-ecosystem", path: `${BP}/agent-ecosystem.spec.ts`, category: TestCategory.AGENT, chapter: "4", description: "Agent Ecosystem principles and categories", usesLlm: false },
   { id: "universal-agent-contract", path: `${BP}/universal-agent-contract.spec.ts`, category: TestCategory.AGENT, chapter: "4.1", description: "Universal Agent Contract", usesLlm: false },
+  { id: "agent-lifecycle", path: `${BP}/agent-lifecycle.spec.ts`, category: TestCategory.AGENT, chapter: "4.2", description: "Agent Lifecycle orchestration", usesLlm: false },
 ];
 
 export function specsForCategory(category: TestCategoryId): TestSpecEntry[] {
