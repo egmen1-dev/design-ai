@@ -6,22 +6,29 @@
 
 ## Фазы
 
-### Фаза 1 — Типы и Constitution (текущий PR)
+## Фаза 1 — Типы и Constitution ✅
 
-- `src/lib/render-blueprint/types.ts` — схема v18
-- `src/lib/render-blueprint/constitution.ts` — правила секций, banned tokens
-- `src/lib/render-blueprint/patch.ts` — типизированные патчи агентов
-- `src/lib/render-blueprint/from-visual-blueprint.ts` — мост из v17 `VisualSceneBlueprint`
-- `src/lib/render-blueprint/environment.ts` — `SceneEnvironmentId`, маппинг с `coverConceptId`
-- Спека + документация
+- `src/lib/render-blueprint/types.ts` — **Chapter 3** полная схема
+- `docs/DESIGN-AI-v18-CHAPTER-3-RENDER-BLUEPRINT.md`
+- `ownership.ts` — таблица агент → секции
+- `FluxAdapterOutput` — prompt **вне** blueprint (Rule 004)
+- `scene.environment`: kitchen | garden | studio | …
 
-Флаг: `RENDER_BLUEPRINT_V18=1` (пока только для тестов и diagnostics; handler ещё на v17).
+Флаг: `RENDER_BLUEPRINT_V18=1` (handler ещё на v17).
 
-### Фаза 2 — Agent boundaries
+### Фаза 2 — Agent boundaries ✅ (Chapter 3.2)
 
-- Каждый `run*Director` принимает `RenderBlueprint`, возвращает `AgentPatch`
-- `applyAgentPatch(blueprint, patch)` с runtime guard по секциям
-- Governance resolver пишет в `RenderBlueprint`, не в строки
+- `agent-contracts.ts` — `BlueprintAgent`, `BlueprintMutationResult`, `RetryAdvice`
+- `lifecycle-manager.ts` — единственный мутатор после `agent.execute()`
+- `agent-matrix.ts` — read/write matrix; Critics / Chief / Flux Adapter — read-only
+- `agents/story-director-agent.ts` — эталонный контрактный агент
+- `docs/DESIGN-AI-v18-CHAPTER-3.2-AGENT-CONTRACTS.md`
+
+```bash
+npx tsx src/lib/render-blueprint/agent-contracts.spec.ts
+```
+
+### Фаза 2b — Legacy agent integration (planned)
 
 ### Фаза 3 — Critics before render
 
@@ -42,13 +49,12 @@
 ## Environment migration
 
 ```ts
-// v17 coverConceptId → v18 scene.environment
-commercial_studio   → studio_commercial
-outdoor_lifestyle   → outdoor_lifestyle
-home_interior       → home_interior
-garden_scene        → garden_lawn
-tech_showcase       → tech_showcase
-premium_minimal     → studio_premium
+commercial_studio   → studio
+outdoor_lifestyle   → garden
+home_interior       → living_room
+garden_scene        → garden
+tech_showcase       → studio
+premium_minimal     → studio
 ```
 
 ## Тест

@@ -84,4 +84,29 @@ export {
   type SectionValidationResult,
 } from "./section-validators";
 
+export {
+  type AgentContractId,
+  type AgentError,
+  type AgentErrorKind,
+  type AgentResultBase,
+  type AgentSectionUpdates,
+  type BlueprintAgent,
+  type BlueprintMutationResult,
+  type RetryAdvice,
+  AgentContractError,
+  assertAgentConfidence,
+} from "./agent-contracts";
+
+export {
+  AGENT_READ_MATRIX,
+  AGENT_WRITE_MATRIX,
+  AGENT_STAGE_MATRIX,
+  agentMayReadSection,
+  agentMayWriteSectionContract,
+} from "./agent-matrix";
+
+export { LifecycleManager } from "./lifecycle-manager";
+
+export { storyDirectorAgent, type StoryDirectorInput, type StoryDirectorResult } from "./agents/story-director-agent";
+
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";

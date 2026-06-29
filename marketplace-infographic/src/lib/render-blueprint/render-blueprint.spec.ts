@@ -162,17 +162,16 @@ function testGoldenRuleValidationBeforeAdapter() {
       });
     }
     if (bp.lifecycle.stage === "VALIDATED") {
-      bp = applyAgentPatch(bp, {
-        agentId: "chief-design-director",
-        section: "validation",
-        data: {
+      bp = {
+        ...bp,
+        validation: {
           storyApproved: true,
           sceneApproved: true,
           photoApproved: true,
           layoutApproved: true,
           chiefApproved: true,
         },
-      });
+      };
     }
     bp = advanceLifecycleStage(bp);
   }

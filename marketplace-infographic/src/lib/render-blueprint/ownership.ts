@@ -1,32 +1,19 @@
 import type { BlueprintSection } from "./types";
+import {
+  AGENT_WRITE_MATRIX,
+  agentMayWriteSectionContract,
+  type AgentContractId,
+} from "./agent-matrix";
 
-/** Chapter 3 — ответственность агентов */
-export const AGENT_WRITE_PERMISSIONS: Record<string, BlueprintSection[]> = {
-  "product-analyzer": ["product"],
-  "creative-engine": ["creative"],
-  "visual-story-director": ["story"],
-  "scene-director": ["scene"],
-  "commercial-photo-director": ["photography"],
-  "camera-director": ["camera"],
-  "lighting-director": ["lighting"],
-  "material-director": ["materials"],
-  "composition-director": ["composition"],
-  governance: ["constraints"],
-  "chief-design-director": ["validation"],
-  system: ["meta", "background", "render"],
-  "flux-adapter": [],
-};
+/** @deprecated Chapter 3.2 — use AGENT_WRITE_MATRIX */
+export const AGENT_WRITE_PERMISSIONS: Record<string, BlueprintSection[]> = AGENT_WRITE_MATRIX;
 
 export function agentMayWriteSection(agentId: string, section: BlueprintSection): boolean {
-  const allowed = AGENT_WRITE_PERMISSIONS[agentId];
-  if (!allowed) return false;
-  return allowed.includes(section);
+  if (!(agentId in AGENT_WRITE_MATRIX)) return false;
+  return agentMayWriteSectionContract(agentId as AgentContractId, section);
 }
 
 export function assertAgentOwnsSection(agentId: string, section: BlueprintSection): void {
-  if (agentId === "flux-adapter") {
-    throw new Error(`CONSTITUTION_V18: flux-adapter is read-only`);
-  }
   if (!agentMayWriteSection(agentId, section)) {
     throw new Error(
       `CONSTITUTION_V18_SECTION_VIOLATION: agent ${agentId} cannot write section ${section}`,

@@ -159,17 +159,17 @@ function testFrozenBlocksPatches() {
       });
     }
     if (bp.lifecycle.stage === BlueprintLifecycle.VALIDATED) {
-      bp = applyAgentPatch(bp, {
-        agentId: "chief-design-director",
-        section: "validation",
-        data: {
+      // Critics / Chief are read-only — Orchestrator records approvals before stage advance
+      bp = {
+        ...bp,
+        validation: {
           storyApproved: true,
           sceneApproved: true,
           photoApproved: true,
           layoutApproved: true,
           chiefApproved: true,
         },
-      });
+      };
     }
     bp = advanceLifecycleStage(bp);
   }
