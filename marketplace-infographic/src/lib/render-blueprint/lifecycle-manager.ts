@@ -1,28 +1,37 @@
 /**
- * Chapter 3.2 — Lifecycle Manager
- * Only component allowed to mutate RenderBlueprint after agent execute().
+ * Chapter 3.4 — Lifecycle Manager
+ * Central orchestrator — no design decisions, no LLM, no direct blueprint mutation.
  */
 import type { BlueprintSection, RenderBlueprint } from "./types";
-import type { LifecycleManagedSection } from "./lifecycle-types";
+import type { BlueprintLifecycle } from "./lifecycle-types";
 import { SectionState } from "./lifecycle-types";
 import {
   type AgentContractId,
-  type AgentError,
   type AgentResultBase,
   type AgentSectionUpdates,
   type BlueprintAgent,
   type BlueprintMutationResult,
-  assertAgentConfidence,
   AgentContractError,
 } from "./agent-contracts";
-import {
-  assertAgentWriteAccess,
-  AGENT_STAGE_MATRIX,
-  AGENT_WRITE_MATRIX,
-} from "./agent-matrix";
-import { applyAgentPatch, type SectionPayloadMap } from "./patch";
+import { AGENT_STAGE_MATRIX, AGENT_WRITE_MATRIX } from "./agent-matrix";
 import { advanceLifecycleStage } from "./lifecycle";
-import { DecisionGraph, type DecisionConflict, DECISION_NODE_ID } from "./decision-graph";
+import { DecisionGraph } from "./decision-graph";
+import { MutationEngine } from "./mutation-engine";
+import { SnapshotManager } from "./snapshot-manager";
+import { RetryEngine, RetryLimitExceededError } from "./retry-engine";
+import { AgentRegistry } from "./agent-registry";
+import { assertStagePreconditions } from "./stage-preconditions";
+import { groupParallelAgents } from "./parallel-execution";
+import {
+  LifecycleEventType,
+  PipelineState,
+  RetryKind,
+  type LifecycleEvent,
+  type LifecycleLogEntry,
+  type PipelineStateId,
+  type StageExecutionResult,
+} from "./lifecycle-manager-types";
+import type { LifecycleManagedSection } from "./lifecycle-types";
 
 const MANAGED: LifecycleManagedSection[] = [
   "product",
@@ -42,116 +51,252 @@ function isManagedSection(section: BlueprintSection): section is LifecycleManage
   return (MANAGED as string[]).includes(section);
 }
 
-function isDecisionGraphSection(section: string): boolean {
-  return Object.values(DECISION_NODE_ID).includes(section);
-}
+export type LifecycleManagerOptions = {
+  registry?: AgentRegistry;
+  mutationEngine?: MutationEngine;
+  snapshotManager?: SnapshotManager;
+  retryEngine?: RetryEngine;
+};
 
-function applyGraphDecisions(
-  graph: DecisionGraph,
-  agentId: AgentContractId,
-  result: AgentResultBase & { updates: AgentSectionUpdates },
-): { conflict: DecisionConflict | null; invalidatedSections: BlueprintSection[] } {
-  for (const key of Object.keys(result.updates) as (keyof AgentSectionUpdates)[]) {
-    const section = sectionKeyToPatchSection(key);
-    if (!section || !isDecisionGraphSection(section)) continue;
-    const data = result.updates[key];
-    if (!data) continue;
-    const nodeId = section === "materials" ? "materials" : section;
-    const conflict = graph.proposeUpdate(nodeId, agentId, data, result.confidence);
-    if (conflict) return { conflict, invalidatedSections: [] };
-  }
-  graph.assertValid();
-  const invalidationResults = graph.commitPending();
-  const invalidated = new Set<BlueprintSection>();
-  for (const inv of invalidationResults) {
-    for (const id of inv.dirtied) invalidated.add(id as BlueprintSection);
-  }
-  return { conflict: null, invalidatedSections: [...invalidated] };
-}
-
-function sectionKeyToPatchSection(
-  key: keyof AgentSectionUpdates,
-): keyof SectionPayloadMap | null {
-  if (key === "meta" || key === "render") return null;
-  return key as keyof SectionPayloadMap;
-}
+export type ExecuteStageInput = Record<string, unknown>;
 
 export class LifecycleManager {
+  private readonly registry: AgentRegistry;
+  private readonly mutationEngine: MutationEngine;
+  private readonly snapshotManager: SnapshotManager;
+  private readonly retryEngine: RetryEngine;
+
+  private graph: DecisionGraph;
+  private pipelineState: PipelineStateId = PipelineState.NEW;
+  private readonly events: LifecycleEvent[] = [];
+  private readonly logs: LifecycleLogEntry[] = [];
+  private eventListeners: Array<(event: LifecycleEvent) => void> = [];
+
+  constructor(
+    blueprint?: RenderBlueprint,
+    options: LifecycleManagerOptions = {},
+  ) {
+    this.registry = options.registry ?? new AgentRegistry();
+    this.mutationEngine = options.mutationEngine ?? new MutationEngine();
+    this.snapshotManager = options.snapshotManager ?? new SnapshotManager();
+    this.retryEngine = options.retryEngine ?? new RetryEngine();
+    this.graph = blueprint
+      ? DecisionGraph.fromBlueprint(blueprint)
+      : new DecisionGraph();
+  }
+
+  getPipelineState(): PipelineStateId {
+    return this.pipelineState;
+  }
+
+  getGraph(): DecisionGraph {
+    return this.graph;
+  }
+
+  getSnapshots() {
+    return this.snapshotManager.getAll();
+  }
+
+  getEvents(): readonly LifecycleEvent[] {
+    return this.events;
+  }
+
+  getLogs(): readonly LifecycleLogEntry[] {
+    return this.logs;
+  }
+
+  onEvent(listener: (event: LifecycleEvent) => void): () => void {
+    this.eventListeners.push(listener);
+    return () => {
+      this.eventListeners = this.eventListeners.filter((l) => l !== listener);
+    };
+  }
+
+  registerAgent<TInput, TResult extends AgentResultBase>(
+    agent: BlueprintAgent<TInput, TResult>,
+  ): void {
+    this.registry.register(agent);
+  }
+
+  private emit(
+    type: LifecycleEvent["type"],
+    stage: BlueprintLifecycle,
+    revision: number,
+    extra?: Partial<LifecycleEvent>,
+  ): void {
+    const event: LifecycleEvent = {
+      type,
+      stage,
+      revision,
+      timestamp: Date.now(),
+      ...extra,
+    };
+    this.events.push(event);
+    for (const listener of this.eventListeners) listener(event);
+  }
+
+  private log(entry: LifecycleLogEntry): void {
+    this.logs.push(entry);
+  }
+
   /**
-   * Apply agent result to blueprint. Agents never call this — Orchestrator only.
-   * Golden Rule (Ch 3.3): Decision Graph first, RenderBlueprint second.
+   * Chapter 3.4 execute algorithm:
+   * agent → validate → dependency graph → mutation → snapshot
+   */
+  async executeStage(
+    blueprint: RenderBlueprint,
+    stage: BlueprintLifecycle,
+    input: ExecuteStageInput = {},
+  ): Promise<StageExecutionResult> {
+    const startedAt = Date.now();
+    this.pipelineState = PipelineState.RUNNING;
+    const revision = blueprint.meta.revision ?? 0;
+    this.emit(LifecycleEventType.StageStarted, stage, revision);
+
+    assertStagePreconditions(blueprint, stage);
+
+    const agents = this.registry.getByStage(stage);
+    if (!agents.length) {
+      throw new AgentContractError(
+        "recoverable",
+        `No agent registered for stage ${stage}`,
+        "AGENT_NOT_REGISTERED",
+      );
+    }
+
+    this.graph = DecisionGraph.fromBlueprint(blueprint);
+    let current = blueprint;
+    let lastSnapshotId: string | undefined;
+    const stageEvents: LifecycleEvent[] = [];
+
+    const groups = groupParallelAgents(agents);
+
+    try {
+      for (const group of groups) {
+        const results = await Promise.all(
+          group.map(async (agent) => {
+            if (!agent.canExecute(current)) {
+              throw new AgentContractError(
+                "recoverable",
+                `Agent ${agent.id} cannot execute at stage ${current.lifecycle.stage}`,
+                "AGENT_NOT_READY",
+              );
+            }
+            const frozen = Object.freeze(structuredClone(current)) as RenderBlueprint;
+            const agentResult = await agent.execute(frozen, input);
+            return { agent, agentResult };
+          }),
+        );
+
+        this.pipelineState = PipelineState.VALIDATING;
+
+        for (const { agent, agentResult } of results) {
+          if (agentResult.errors?.some((e) => e.kind === "fatal")) {
+            this.emit(LifecycleEventType.ValidationFailed, stage, current.meta.revision ?? 0, {
+              agentId: agent.id,
+              detail: agentResult.errors!.map((e) => e.message).join("; "),
+            });
+            throw new AgentContractError("fatal", "Stage validation failed", "VALIDATION_FAILED");
+          }
+
+          const updates = agent.toUpdates(agentResult);
+          const mutation = this.mutationEngine.apply({
+            blueprint: current,
+            graph: this.graph,
+            agent,
+            result: { ...agentResult, updates },
+            expectedRevision: current.meta.revision ?? 0,
+          });
+
+          current = mutation.blueprint;
+
+          const snapshot = this.snapshotManager.store({
+            blueprint: current,
+            graph: this.graph,
+            stage,
+            agentId: agent.id,
+            agentResult,
+            validated: true,
+          });
+          lastSnapshotId = snapshot.id;
+
+          this.emit(LifecycleEventType.MutationApplied, stage, current.meta.revision ?? 0, {
+            agentId: agent.id,
+          });
+          this.emit(LifecycleEventType.SnapshotCreated, stage, current.meta.revision ?? 0, {
+            agentId: agent.id,
+            detail: snapshot.id,
+          });
+
+          this.log({
+            stage,
+            agentId: agent.id,
+            revision: current.meta.revision ?? 0,
+            durationMs: Date.now() - startedAt,
+            retryCount: this.retryEngine.getCount(RetryKind.Agent, stage, agent.id),
+            success: true,
+            at: Date.now(),
+          });
+        }
+      }
+
+      this.pipelineState = PipelineState.RUNNING;
+      this.emit(LifecycleEventType.StageFinished, stage, current.meta.revision ?? 0);
+
+      return {
+        blueprint: current,
+        graph: this.graph,
+        revision: current.meta.revision ?? 0,
+        snapshotId: lastSnapshotId,
+        events: stageEvents,
+      };
+    } catch (error) {
+      this.pipelineState = PipelineState.FAILED;
+      throw error;
+    }
+  }
+
+  /** Recovery — restore last VALIDATED snapshot + graph + revision */
+  recover(blueprint: RenderBlueprint): RenderBlueprint {
+    const { blueprint: restored, graph } = this.snapshotManager.rollbackToLastValidated(
+      blueprint,
+      this.graph,
+    );
+    this.graph = graph;
+    this.pipelineState = PipelineState.RUNNING;
+    this.emit(LifecycleEventType.RollbackStarted, restored.lifecycle.stage, restored.meta.revision ?? 0);
+    return restored;
+  }
+
+  /**
+   * Legacy API (Ch 3.2) — delegates to MutationEngine.
+   * Golden Rule: Decision Graph first, RenderBlueprint second.
    */
   apply(
     agentId: AgentContractId,
     blueprint: RenderBlueprint,
     result: AgentResultBase & { updates: AgentSectionUpdates },
   ): BlueprintMutationResult {
-    assertAgentConfidence(result.confidence, agentId);
+    this.graph = DecisionGraph.fromBlueprint(blueprint);
+    const agent = {
+      id: agentId,
+      version: "legacy",
+      stage: AGENT_STAGE_MATRIX[agentId],
+      canExecute: () => true,
+      execute: async () => result,
+      toUpdates: () => result.updates,
+    } as BlueprintAgent<unknown, AgentResultBase>;
 
-    if (result.errors?.some((e) => e.kind === "fatal")) {
-      throw new AgentContractError(
-        "fatal",
-        `Fatal agent errors from ${agentId}`,
-        "AGENT_FATAL",
-      );
-    }
-
-    const writableKeys = Object.keys(result.updates) as (keyof AgentSectionUpdates)[];
-    for (const key of writableKeys) {
-      const section = sectionKeyToPatchSection(key);
-      if (!section) continue;
-      assertAgentWriteAccess(agentId, section);
-    }
-
-    const graph = DecisionGraph.fromBlueprint(blueprint);
-    const { conflict, invalidatedSections: graphInvalidated } = applyGraphDecisions(
-      graph,
-      agentId,
+    const mutation = this.mutationEngine.apply({
+      blueprint,
+      graph: this.graph,
+      agent,
       result,
-    );
-    if (conflict) {
-      throw new AgentContractError(
-        "recoverable",
-        `Decision conflict on ${conflict.nodeId}: ${conflict.reason} (${conflict.producers.join(" vs ")})`,
-        "DECISION_CONFLICT",
-      );
-    }
+      expectedRevision: blueprint.meta.revision ?? 0,
+    });
 
-    let next = blueprint;
-    const updatedSections: LifecycleManagedSection[] = [];
-
-    for (const key of writableKeys) {
-      const section = sectionKeyToPatchSection(key);
-      if (!section || !isManagedSection(section)) continue;
-      const data = result.updates[key];
-      if (!data) continue;
-
-      next = applyAgentPatch(next, {
-        agentId,
-        section,
-        data: data as SectionPayloadMap[typeof section],
-      });
-      updatedSections.push(section);
-    }
-
-    next = graph.syncStatesToBlueprint(next);
-    const invalidatedSections = graphInvalidated;
-    const warnings = [...result.warnings];
-    const errors: AgentError[] = result.errors ?? [];
-
-    if (result.retryAdvice?.required) {
-      warnings.push(`Retry advised: ${result.retryAdvice.reason}`);
-    }
-
-    return {
-      blueprint: next,
-      updatedSections,
-      invalidatedSections,
-      warnings,
-      errors,
-      decisionTrace: result.decisionTrace,
-      nextStage: result.retryAdvice?.recommendedStage,
-    };
+    this.graph = DecisionGraph.fromBlueprint(mutation.blueprint);
+    return mutation;
   }
 
   canExecuteAgent(agentId: AgentContractId, blueprint: RenderBlueprint): boolean {
@@ -165,7 +310,6 @@ export class LifecycleManager {
     });
   }
 
-  /** Run agent execute → apply. Agent receives Readonly blueprint. */
   async runAgent<TInput, TResult extends AgentResultBase>(
     agent: BlueprintAgent<TInput, TResult>,
     blueprint: RenderBlueprint,
@@ -179,16 +323,66 @@ export class LifecycleManager {
       );
     }
 
+    const expectedRevision = blueprint.meta.revision ?? 0;
     const frozen = Object.freeze(structuredClone(blueprint)) as RenderBlueprint;
     const result = await agent.execute(frozen, input);
     const updates = agent.toUpdates(result);
-    const mutation = this.apply(agent.id, blueprint, { ...result, updates });
 
-    return { blueprint: mutation.blueprint, mutation, result };
+    try {
+      const mutation = this.mutationEngine.apply({
+        blueprint,
+        graph: DecisionGraph.fromBlueprint(blueprint),
+        agent: agent as BlueprintAgent<unknown, AgentResultBase>,
+        result: { ...result, updates },
+        expectedRevision,
+      });
+      this.graph = DecisionGraph.fromBlueprint(mutation.blueprint);
+      return { blueprint: mutation.blueprint, mutation, result };
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        "code" in error &&
+        (error as { code: string }).code === "OPTIMISTIC_LOCK"
+      ) {
+        throw new AgentContractError(
+          "recoverable",
+          error.message,
+          "OPTIMISTIC_LOCK",
+        );
+      }
+      throw error;
+    }
   }
 
-  /** Complete stage after agent(s) finished and validation passes */
+  async retryAgent<TInput, TResult extends AgentResultBase>(
+    kind: (typeof RetryKind)[keyof typeof RetryKind],
+    agent: BlueprintAgent<TInput, TResult>,
+    blueprint: RenderBlueprint,
+    input: TInput,
+  ): Promise<{ blueprint: RenderBlueprint; mutation: BlueprintMutationResult; result: TResult }> {
+    const stage = blueprint.lifecycle.stage;
+    this.retryEngine.recordRetry(kind, stage, agent.id);
+    this.emit(LifecycleEventType.RetryStarted, stage, blueprint.meta.revision ?? 0, {
+      agentId: agent.id,
+      detail: kind,
+    });
+    return this.runAgent(agent, blueprint, input);
+  }
+
   completeStage(blueprint: RenderBlueprint): RenderBlueprint {
-    return advanceLifecycleStage(blueprint);
+    const next = advanceLifecycleStage(blueprint);
+    if (next.lifecycle.stage === "FROZEN") {
+      this.graph.freezeAll();
+      this.pipelineState = PipelineState.LOCKED;
+    }
+    return next;
+  }
+
+  finishPipeline(blueprint: RenderBlueprint): RenderBlueprint {
+    this.pipelineState = PipelineState.FINISHED;
+    this.emit(LifecycleEventType.PipelineFinished, blueprint.lifecycle.stage, blueprint.meta.revision ?? 0);
+    return blueprint;
   }
 }
+
+export { RetryLimitExceededError };

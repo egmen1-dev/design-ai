@@ -39,6 +39,19 @@ npx tsx src/lib/render-blueprint/agent-contracts.spec.ts
 npx tsx src/lib/render-blueprint/decision-graph.spec.ts
 ```
 
+### Фаза 2d — Lifecycle Manager ✅ (Chapter 3.4)
+
+- `lifecycle-manager.ts` — `executeStage`, events, recovery, pipeline state machine
+- `mutation-engine.ts` — revision + optimistic lock
+- `snapshot-manager.ts` — VALIDATED-only rollback
+- `retry-engine.ts`, `agent-registry.ts`, `stage-preconditions.ts`
+- `meta.revision` на RenderBlueprint
+- `docs/DESIGN-AI-v18-CHAPTER-3.4-LIFECYCLE-MANAGER.md`
+
+```bash
+npx tsx src/lib/render-blueprint/lifecycle-manager.spec.ts
+```
+
 ### Фаза 2b — Legacy agent integration (planned)
 
 ### Фаза 3 — Critics before render

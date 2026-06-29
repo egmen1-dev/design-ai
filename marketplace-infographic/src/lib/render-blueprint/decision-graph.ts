@@ -568,6 +568,29 @@ export class DecisionGraph {
     return section;
   }
 
+  /** Runtime snapshot for StageSnapshot (Ch 3.4) — not persisted to DB */
+  exportSnapshot(): import("./lifecycle-manager-types").DecisionNodeSnapshot[] {
+    return [...this.nodes.values()].map((node) => ({
+      id: node.id,
+      type: node.type,
+      state: node.state,
+      confidence: node.confidence,
+      value: structuredClone(node.value),
+    }));
+  }
+
+  restoreFromSnapshot(snapshot: import("./lifecycle-manager-types").DecisionNodeSnapshot[]): void {
+    for (const snap of snapshot) {
+      const node = this.nodes.get(snap.id);
+      if (!node) continue;
+      node.state = snap.state;
+      node.confidence = snap.confidence;
+      node.value = structuredClone(snap.value);
+    }
+    this.pending.clear();
+    this.refreshChildren();
+  }
+
   private refreshChildren(): void {
     for (const node of this.nodes.values()) {
       node.children = [...(this.childrenMap.get(node.id) ?? [])];

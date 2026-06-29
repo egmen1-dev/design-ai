@@ -105,7 +105,31 @@ export {
   agentMayWriteSectionContract,
 } from "./agent-matrix";
 
-export { LifecycleManager } from "./lifecycle-manager";
+export { LifecycleManager, RetryLimitExceededError } from "./lifecycle-manager";
+
+export {
+  PipelineState,
+  LifecycleEventType,
+  RetryKind,
+  DEFAULT_RETRY_LIMITS,
+  type PipelineStateId,
+  type LifecycleEvent,
+  type LifecycleEventTypeId,
+  type RetryKindId,
+  type RetryLimits,
+  type StagePrecondition,
+  type DecisionNodeSnapshot,
+  type StageSnapshot,
+  type LifecycleLogEntry,
+  type StageExecutionResult,
+} from "./lifecycle-manager-types";
+
+export { MutationEngine, MutationEngineError } from "./mutation-engine";
+export { SnapshotManager } from "./snapshot-manager";
+export { RetryEngine, RetryLimitExceededError as RetryEngineLimitError } from "./retry-engine";
+export { AgentRegistry, defaultAgentRegistry } from "./agent-registry";
+export { STAGE_PRECONDITIONS, assertStagePreconditions } from "./stage-preconditions";
+export { canRunAgentsParallel, groupParallelAgents } from "./parallel-execution";
 
 export {
   DecisionGraph,

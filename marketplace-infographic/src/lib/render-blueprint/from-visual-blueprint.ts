@@ -83,6 +83,7 @@ export function createEmptyRenderBlueprint(input: RenderBlueprintInput): RenderB
     meta: {
       id: input.id ?? randomUUID(),
       version: RENDER_BLUEPRINT_VERSION,
+      revision: 0,
       generator: "flux",
       createdAt: now,
       seed: input.seed,

@@ -26,6 +26,8 @@ export type RenderGeneratorId = "flux" | "gpt-image" | "imagen";
 export type MetaBlueprint = {
   id: string;
   version: number;
+  /** Optimistic lock — bumped on every mutation (Ch 3.4) */
+  revision: number;
   /** Только Flux Adapter — агенты не меняют */
   generator: RenderGeneratorId;
   createdAt: number;
