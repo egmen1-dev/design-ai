@@ -427,4 +427,33 @@ export {
   type ParallelExecutionGroup,
 } from "./performance-model";
 
+export {
+  ObservabilityEngine,
+  ObservabilityError,
+  attachObservabilityToEventBus,
+  createDiagnosticContext,
+  DiagnosticLevel,
+  ErrorCategory,
+  ObservabilityLayer,
+  maskSecrets,
+  sanitizeDiagnosticData,
+  stripDebugOnlyFields,
+  type DiagnosticContext,
+  type DecisionTrace,
+  type MutationTrace,
+  type ValidationTrace,
+  type AgentDiagnostic,
+  type RenderDiagnostic,
+  type CompositeDiagnostic,
+  type VisionDiagnostic,
+  type RetryDiagnostic,
+  type TimelineEntry,
+  type DiagnosticMetrics,
+  type ExplainabilityReport,
+  type FailureReport,
+  type DiagnosticRecord,
+  type ObservabilityMode,
+  type ObservabilityOptions,
+} from "./observability-engine";
+
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";
