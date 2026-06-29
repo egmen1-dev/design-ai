@@ -125,6 +125,16 @@ export {
 } from "./lifecycle-manager-types";
 
 export { MutationEngine, MutationEngineError } from "./mutation-engine";
+export type {
+  BlueprintMutation,
+  MutationBatch,
+  MutationAppliedEvent,
+  MutationAuditEntry,
+  MutationApplyResult,
+  MutationBatchResult,
+} from "./mutation-types";
+export { hashSection, hashValue } from "./section-hash";
+export { validateMutation, validateBatchConflicts } from "./mutation-validators";
 export { SnapshotManager } from "./snapshot-manager";
 export { RetryEngine, RetryLimitExceededError as RetryEngineLimitError } from "./retry-engine";
 export { AgentRegistry, defaultAgentRegistry } from "./agent-registry";

@@ -6,6 +6,7 @@ import {
   createEmptyRenderBlueprint,
   LifecycleManager,
   SectionState,
+  MutationEngineError,
   storyDirectorAgent,
 } from "./index";
 
@@ -51,7 +52,7 @@ async function testLifecycleManagerApplyStory() {
   assert.ok(mutation.updatedSections.includes("story"));
   assert.ok(mutation.invalidatedSections.includes("scene"));
   assert.ok(mutation.invalidatedSections.includes("composition"));
-  assert.equal(blueprint.lifecycle.sections.story, SectionState.DIRTY);
+  assert.equal(blueprint.lifecycle.sections.story, SectionState.READY);
   assert.equal(blueprint.lifecycle.sections.product, SectionState.LOCKED);
   console.log("✔ LifecycleManager apply + dirty propagation");
 }
@@ -76,30 +77,34 @@ async function testAgentReceivesReadonlyBlueprint() {
 
 function testCriticsCannotWrite() {
   const mgr = new LifecycleManager();
+  const bp = bootstrapToStoryStage();
   assert.throws(
     () =>
-      mgr.apply("critics", createEmptyRenderBlueprint({ seed: 1, category: "x" }), {
+      mgr.apply("critics", bp, {
         confidence: 50,
         decisionTrace: [],
         warnings: [],
         updates: { story: { hook: "hack", customerProblem: "", customerDesire: "", visualPromise: "", emotionalTone: "calm", narrative: "" } },
       }),
-    /CONTRACT_VIOLATION/,
+    (err: unknown) => err instanceof MutationEngineError && err.code === "OWNERSHIP",
   );
   console.log("✔ critics write matrix empty");
 }
 
 function testChiefCannotWrite() {
   const mgr = new LifecycleManager();
+  let bp = createEmptyRenderBlueprint({ seed: 2, category: "x" });
+  bp.lifecycle.stage = BlueprintLifecycle.VALIDATED;
+  bp.lifecycle.sections.constraints = SectionState.LOCKED;
   assert.throws(
     () =>
-      mgr.apply("chief-design-director", createEmptyRenderBlueprint({ seed: 2, category: "x" }), {
+      mgr.apply("chief-design-director", bp, {
         confidence: 70,
         decisionTrace: [],
         warnings: [],
         updates: { validation: { chiefApproved: true } },
       }),
-    /CONTRACT_VIOLATION/,
+    (err: unknown) => err instanceof MutationEngineError && err.code === "OWNERSHIP",
   );
   console.log("✔ chief cannot mutate blueprint (rollback only)");
 }

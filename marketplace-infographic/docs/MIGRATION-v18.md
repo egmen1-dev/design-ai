@@ -52,6 +52,18 @@ npx tsx src/lib/render-blueprint/decision-graph.spec.ts
 npx tsx src/lib/render-blueprint/lifecycle-manager.spec.ts
 ```
 
+### Фаза 2e — Mutation Engine ✅ (Chapter 3.5)
+
+- `BlueprintMutation`, `MutationBatch` — atomic one-section rule
+- Validation pipeline: schema, lifecycle, revision, ownership, lock, dependency
+- SHA256 idempotency, audit trail, `MutationApplied` events
+- Section state → READY after apply; downstream DIRTY via graph
+- `docs/DESIGN-AI-v18-CHAPTER-3.5-MUTATION-ENGINE.md`
+
+```bash
+npx tsx src/lib/render-blueprint/mutation-engine.spec.ts
+```
+
 ### Фаза 2b — Legacy agent integration (planned)
 
 ### Фаза 3 — Critics before render
