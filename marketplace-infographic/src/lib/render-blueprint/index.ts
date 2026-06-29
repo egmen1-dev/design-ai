@@ -721,4 +721,34 @@ export {
   discoverAgents,
 } from "./agent-discovery-engine";
 
+export {
+  AGENT_DEPENDENCY_VERSION,
+  AGENT_DEPENDENCY_GOLDEN_RULE,
+  DEFAULT_SECTION_CHAIN,
+  buildSectionDependencyEdges,
+  detectSectionCycle,
+  topologicalSortSections,
+  downstreamSections,
+  exportDependencyGraph,
+  getAgentDependency,
+  getAllAgentDependencies,
+  getSectionOwner,
+  validateOwnership,
+  validateAgentDependencies,
+  validateDependencyGraph,
+  propagateSectionChange,
+  buildExecutionPlanFromDependencies,
+  agentsUnaffectedBySectionChange,
+  type AgentDependency,
+  type ConditionalDependency,
+  type DependencyRequirement,
+  type DependencyRequirementId,
+  type DependencyValidationContext,
+  type DependencyValidationReport,
+  type DependencyViolation,
+  type DependencyPropagationResult,
+  type DependencyGraphExport,
+  type SectionDependencyEdge,
+} from "./agent-dependency-engine";
+
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";
