@@ -11,6 +11,7 @@ import { runBusinessUnderstandingStage } from "./business-understanding-engine";
 import { runKnowledgeRetrievalStage } from "./knowledge-retrieval-stage-engine";
 import { runVisualStoryPlanningStage } from "./visual-story-planning-stage-engine";
 import { runScenePlanningStage } from "./scene-planning-stage-engine";
+import { runCompositionPlanningStage } from "./composition-planning-stage-engine";
 import {
   DesignPipelineLayer,
   DesignPipelinePrinciple,
@@ -727,6 +728,63 @@ export function executeDesignPipelineStage(
           violations.push(
             violation("PIPELINE_INCOMPLETE", "Scene Planning Stage failed validation", stageId),
             ...scene.violations.map((v) => violation("PIPELINE_INCOMPLETE", v.message, stageId)),
+          );
+        }
+      }
+    }
+  }
+
+  if (stageId === DesignPipelineStage.COMPOSITION_PLANNING) {
+    const analysis = analyzeProduct(buildProductAnalysisInputFromPipeline(input));
+    if (!analysis.section) {
+      violations.push(
+        violation("PIPELINE_INCOMPLETE", "Product Analysis must complete before Composition Planning", stageId),
+      );
+    } else {
+      const knowledge = runKnowledgeRetrievalStage({
+        profile: analysis.section.profile,
+        marketplace: input.marketplace,
+        style: analysis.section.profile.priceSegment,
+      });
+      const business = runBusinessUnderstandingStage({
+        profile: analysis.section.profile,
+        knowledge: knowledge.package!,
+        marketplace: input.marketplace,
+        brand: input.brand,
+      });
+      const story = runVisualStoryPlanningStage({
+        profile: analysis.section.profile,
+        business: business.section!,
+        knowledge: knowledge.package!,
+        marketplace: input.marketplace,
+        brand: input.brand,
+      });
+      const scene = runScenePlanningStage({
+        profile: analysis.section.profile,
+        business: business.section!,
+        story: story.section!.plannedBlueprint,
+        knowledge: knowledge.package!,
+        marketplace: input.marketplace,
+        brand: input.brand,
+      });
+      if (!scene.section || !story.section || !business.section || !knowledge.package) {
+        violations.push(
+          violation("PIPELINE_INCOMPLETE", "Scene Planning must complete before Composition Planning", stageId),
+        );
+      } else {
+        const composition = runCompositionPlanningStage({
+          profile: analysis.section.profile,
+          business: business.section,
+          story: story.section.plannedBlueprint,
+          scene: scene.section.plannedBlueprint,
+          knowledge: knowledge.package,
+          marketplace: input.marketplace,
+          brand: input.brand,
+        });
+        if (!composition.valid || !composition.section) {
+          violations.push(
+            violation("PIPELINE_INCOMPLETE", "Composition Planning Stage failed validation", stageId),
+            ...composition.violations.map((v) => violation("PIPELINE_INCOMPLETE", v.message, stageId)),
           );
         }
       }
