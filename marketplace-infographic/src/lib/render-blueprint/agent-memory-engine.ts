@@ -223,6 +223,13 @@ export const AGENT_MEMORY_ACCESS_MATRIX: Record<AgentContractId, AgentMemoryAcce
     learningTopics: ["historicalFailures", "ctrAnalytics"],
     referenceTopics: ["marketplaceRules", "commercialDesignRules"],
   },
+  "vision-critic": {
+    agentId: "vision-critic",
+    layers: [MemoryLayer.WORKING, MemoryLayer.KNOWLEDGE, MemoryLayer.LEARNING],
+    knowledgeTopics: ["visualDesignRules", "gestaltPrinciples"],
+    learningTopics: ["historicalVisionReports", "eyeTrackingKnowledge"],
+    referenceTopics: ["designConstitution", "marketplaceStandards"],
+  },
   "composition-director": {
     agentId: "composition-director",
     layers: [MemoryLayer.WORKING, MemoryLayer.KNOWLEDGE, MemoryLayer.LEARNING],

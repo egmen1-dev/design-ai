@@ -17,6 +17,7 @@ export type AgentContractId =
   | "marketplace-director"
   | "pattern-director"
   | "anti-pattern-director"
+  | "vision-critic"
   | "composition-director"
   | "governance"
   | "critics"
