@@ -90,6 +90,7 @@ export const V18_TEST_REGISTRY: TestSpecEntry[] = [
   { id: "agent-session-lifecycle", path: `${BP}/agent-session-lifecycle.spec.ts`, category: TestCategory.AGENT, chapter: "7.3", description: "Agent Lifecycle", usesLlm: false },
   { id: "agent-pipeline-communication", path: `${BP}/agent-pipeline-communication.spec.ts`, category: TestCategory.AGENT, chapter: "7.4", description: "Agent Communication Protocol", usesLlm: false },
   { id: "agent-memory-model", path: `${BP}/agent-memory-model.spec.ts`, category: TestCategory.AGENT, chapter: "7.5", description: "Agent Memory Model", usesLlm: false },
+  { id: "agent-professional-decision", path: `${BP}/agent-professional-decision.spec.ts`, category: TestCategory.AGENT, chapter: "7.6", description: "Agent Decision Engine", usesLlm: false },
   { id: "event-system", path: `${BP}/event-system.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.9", description: "Event bus delivery", usesLlm: false },
   { id: "snapshot-recovery", path: `${BP}/snapshot-recovery.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.8", description: "Snapshot and recovery", usesLlm: false },
   { id: "lifecycle-manager", path: `${BP}/lifecycle-manager.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.4", description: "Lifecycle manager orchestration", usesLlm: false },
