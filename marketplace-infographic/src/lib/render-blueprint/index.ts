@@ -339,6 +339,11 @@ export {
   type VisionQualityDirectorAgentInput,
   type VisionQualityDirectorResult,
 } from "./agents/vision-quality-director-agent";
+export {
+  chiefDesignDirectorAgent,
+  type ChiefDesignDirectorAgentInput,
+  type ChiefDesignDirectorResult,
+} from "./agents/chief-design-director-agent";
 
 export {
   compileFluxAdapterOutput,
@@ -1177,5 +1182,31 @@ export {
   type VisionQualityValidationReport,
   type VisionQualityFailureCode,
 } from "./vision-quality-director-engine";
+
+export {
+  CHIEF_DESIGN_DIRECTOR_VERSION,
+  CHIEF_DESIGN_DIRECTOR_GOLDEN_RULE,
+  CHIEF_DESIGN_DIRECTOR_ID,
+  CHIEF_DESIGN_DIRECTOR_PIPELINE_POSITION,
+  RetryStrategy,
+  FinalDecision,
+  ChiefProblemSeverity,
+  buildChiefReview,
+  validateChiefReview,
+  isChiefFailure,
+  runChiefDesignDirector,
+  type RetryStrategyId,
+  type FinalDecisionId,
+  type ChiefProblem,
+  type ChiefProblemSeverityId,
+  type CommercialPhotographerReviewSummary,
+  type RetryHistorySummary,
+  type GenerationDiagnosticsSummary,
+  type ChiefReview,
+  type ChiefDesignDirectorContext,
+  type ChiefExplainabilityReport,
+  type ChiefValidationReport,
+  type ChiefFailureCode,
+} from "./chief-design-director-engine";
 
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";
