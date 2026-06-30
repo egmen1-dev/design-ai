@@ -28,6 +28,7 @@ SPECS=(
   src/lib/render-blueprint/lighting-director.spec.ts
   src/lib/render-blueprint/camera-director.spec.ts
   src/lib/render-blueprint/material-director.spec.ts
+  src/lib/render-blueprint/render-adapter.spec.ts
   src/lib/render-blueprint/event-system.spec.ts
   src/lib/render-blueprint/snapshot-recovery.spec.ts
   src/lib/render-blueprint/lifecycle-manager.spec.ts

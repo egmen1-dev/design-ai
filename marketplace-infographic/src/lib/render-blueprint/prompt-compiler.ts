@@ -40,12 +40,20 @@ function sanitizePrompt(text: string): string {
 
 function baseSegments(intent: RenderIntent, includeComposition = true): string[] {
   const env = ENVIRONMENT_PHRASE[intent.scene.environment] ?? intent.scene.environment;
+  const lens = intent.camera.focalLength ?? intent.camera.lens;
+  const lightingDesc =
+    intent.lighting.lightingScheme?.replace(/_/g, " ") ??
+    LIGHTING_PHRASE[intent.lighting.preset] ??
+    intent.lighting.preset;
+  const contactSurface = intent.materials.contactSurface?.replace(/_/g, " ");
   const segments = [
     `${env}, ${intent.scene.architecture} architecture`,
     `${intent.scene.timeOfDay.replace("_", " ")} atmosphere`,
-    `${intent.materials.floor} floor, ${intent.materials.walls} walls`,
-    LIGHTING_PHRASE[intent.lighting.preset] ?? intent.lighting.preset,
-    `${intent.camera.lens}mm lens, ${intent.camera.distance} distance, ${intent.camera.angle} angle`,
+    contactSurface
+      ? `${intent.materials.floor} on ${contactSurface}`
+      : `${intent.materials.floor} floor, ${intent.materials.walls} walls`,
+    lightingDesc,
+    `${lens}mm lens, ${intent.camera.distance} distance, ${intent.camera.angle} angle`,
     intent.mood || "clean commercial atmosphere",
     "empty foreground for product compositing, backdrop only, no product, no text",
   ];

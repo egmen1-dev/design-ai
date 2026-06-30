@@ -328,6 +328,12 @@ export {
   type MaterialDirectorInput,
   type MaterialDirectorResult,
 } from "./agents/material-director-agent";
+export {
+  renderAdapterAgent,
+  compileRenderIntent,
+  type RenderAdapterInput,
+  type RenderAdapterResult,
+} from "./agents/render-adapter-agent";
 
 export {
   compileFluxAdapterOutput,
@@ -1128,5 +1134,24 @@ export {
   type MaterialValidationReport,
   type MaterialFailureCode,
 } from "./material-director-engine";
+
+export {
+  RENDER_ADAPTER_VERSION,
+  RENDER_ADAPTER_GOLDEN_RULE,
+  RENDER_ADAPTER_ID,
+  RENDER_ADAPTER_PIPELINE_POSITION,
+  buildAdapterRenderIntent,
+  validateAdapterRenderIntent,
+  isRenderAdapterFailure,
+  runRenderAdapter,
+  type SemanticSectionId,
+  type SemanticBlock,
+  type AdapterRenderIntent,
+  type RenderAdapterContext,
+  type PromptBlockTrace,
+  type RenderAdapterExplainabilityReport,
+  type RenderAdapterValidationReport,
+  type RenderAdapterFailureCode,
+} from "./render-adapter-engine";
 
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";

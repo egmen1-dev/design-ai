@@ -1,21 +1,14 @@
 /**
- * Chapter 3.11 — Render Adapters (stateless translators)
+ * Chapter 3.11 / 4.17 — Render Adapters (stateless translators)
  */
 import type { RenderBlueprint } from "./types";
 import { createEmptyRenderBlueprint } from "./from-visual-blueprint";
 import { BlueprintLifecycle } from "./lifecycle-types";
-import { assertReadyForAdapter } from "./constitution";
-import { extractRenderIntent } from "./render-intent";
-import { negotiateCapabilities } from "./capability-negotiation";
+import {
+  runRenderAdapter,
+  RENDER_ADAPTER_VERSION,
+} from "./render-adapter-engine";
 import { getProviderCapabilities } from "./provider-capabilities";
-import {
-  compilePromptForProvider,
-  validateCompiledPrompt,
-} from "./prompt-compiler";
-import {
-  compileNegativePrompt,
-  validateNegativePrompt,
-} from "./negative-prompt-contract";
 import type {
   CompiledProviderRequest,
   ProviderCapabilities,
@@ -33,66 +26,35 @@ export class RenderPipelineError extends Error {
   }
 }
 
-const ADAPTER_VERSION = "3.11.0";
-
 function buildRequest(
   blueprint: Readonly<RenderBlueprint>,
   provider: ProviderId,
   adapterId: string,
 ): CompiledProviderRequest {
-  assertReadyForAdapter(blueprint);
-  const intent = extractRenderIntent(blueprint);
-  const { capabilities, negotiated } = negotiateCapabilities(intent, provider);
-
-  const prompt = compilePromptForProvider(intent, provider);
-  const promptValidation = validateCompiledPrompt(prompt);
-  if (!promptValidation.ok) {
-    throw new RenderPipelineError(
-      `Prompt compilation failed: ${promptValidation.issues.join("; ")}`,
-    );
-  }
-
-  const negativePrompt = capabilities.supportsNegativePrompt
-    ? compileNegativePrompt(blueprint)
-    : "";
-  if (negativePrompt) {
-    const negValidation = validateNegativePrompt(negativePrompt);
-    if (!negValidation.ok) {
-      throw new RenderPipelineError(
-        `Negative prompt invalid: ${negValidation.issues.join("; ")}`,
-      );
-    }
-  }
-
-  const { width, height } = blueprint.render.resolution;
-  const seed = blueprint.meta.seed;
-
-  return {
-    prompt,
-    negativePrompt,
-    width,
-    height,
-    seed: capabilities.supportsSeed ? seed : 0,
-    steps: capabilities.supportsSteps ? (provider === "sdxl" ? 30 : 20) : 0,
-    cfg: capabilities.supportsCFG ? 7 : 0,
-    provider,
-    providerOptions: {
+  const { compiled } = runRenderAdapter({
+    blueprint,
+    context: {
+      providerId: provider,
       quality: blueprint.render.quality,
       aspectRatio: blueprint.render.aspectRatio,
-      adapterId,
-      adapterVersion: ADAPTER_VERSION,
-      seedSupported: capabilities.supportsSeed,
+      seed: blueprint.meta.seed,
     },
-    intent,
-    negotiated,
-    compiledAt: Date.now(),
+  });
+
+  return {
+    ...compiled,
+    providerOptions: {
+      ...compiled.providerOptions,
+      adapterId,
+      adapterVersion: RENDER_ADAPTER_VERSION,
+    },
   };
 }
 
 abstract class BaseRenderAdapter implements RenderAdapter {
   abstract readonly id: string;
   abstract readonly provider: ProviderId;
-  readonly adapterVersion = ADAPTER_VERSION;
+  readonly adapterVersion = RENDER_ADAPTER_VERSION;
   readonly capabilities: ProviderCapabilities;
   protected readonly renderFn?: ProviderRenderFn;
 
