@@ -62,6 +62,7 @@ export const V18_TEST_REGISTRY: TestSpecEntry[] = [
   { id: "knowledge-validation", path: `${BP}/knowledge-validation.spec.ts`, category: TestCategory.AGENT, chapter: "5.17", description: "Knowledge Validation", usesLlm: false },
   { id: "knowledge-versioning", path: `${BP}/knowledge-versioning.spec.ts`, category: TestCategory.AGENT, chapter: "5.18", description: "Knowledge Versioning", usesLlm: false },
   { id: "knowledge-learning", path: `${BP}/knowledge-learning.spec.ts`, category: TestCategory.AGENT, chapter: "5.19", description: "Knowledge Learning", usesLlm: false },
+  { id: "design-knowledge-golden-rules", path: `${BP}/design-knowledge-golden-rules.spec.ts`, category: TestCategory.AGENT, chapter: "5.20", description: "Golden Rules of Design Knowledge", usesLlm: false },
   { id: "event-system", path: `${BP}/event-system.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.9", description: "Event bus delivery", usesLlm: false },
   { id: "snapshot-recovery", path: `${BP}/snapshot-recovery.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.8", description: "Snapshot and recovery", usesLlm: false },
   { id: "lifecycle-manager", path: `${BP}/lifecycle-manager.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.4", description: "Lifecycle manager orchestration", usesLlm: false },
