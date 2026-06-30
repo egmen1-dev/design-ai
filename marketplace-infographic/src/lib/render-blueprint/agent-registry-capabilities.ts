@@ -19,6 +19,7 @@ export const AGENT_CAPABILITY_TAGS: Partial<Record<AgentContractId, readonly str
   "camera-director": ["camera-framing", "lens-selection"],
   "lighting-director": ["lighting-design", "shadow-control"],
   "material-director": ["material-finish", "surface-texture"],
+  "vision-quality-director": ["blueprint-vision-compare", "generation-validation"],
   "composition-director": ["composition-layout", "hero-placement"],
   critics: ["photo-review", "realism-review", "lighting-review"],
   governance: ["constraint-governance"],

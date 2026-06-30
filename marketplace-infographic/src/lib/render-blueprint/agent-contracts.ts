@@ -17,7 +17,8 @@ export type AgentContractId =
   | "governance"
   | "critics"
   | "chief-design-director"
-  | "flux-adapter";
+  | "flux-adapter"
+  | "vision-quality-director";
 
 export type AgentErrorKind = "recoverable" | "fatal";
 

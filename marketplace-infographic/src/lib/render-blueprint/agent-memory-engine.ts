@@ -220,6 +220,10 @@ export const AGENT_MEMORY_ACCESS_MATRIX: Record<AgentContractId, AgentMemoryAcce
     agentId: "flux-adapter",
     layers: [MemoryLayer.WORKING],
   },
+  "vision-quality-director": {
+    agentId: "vision-quality-director",
+    layers: [MemoryLayer.WORKING],
+  },
 };
 
 const ACTIVE_MEMORY_PACKAGES = new WeakSet<AgentMemoryPackage>();

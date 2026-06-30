@@ -36,6 +36,7 @@ export const AGENT_READ_MATRIX: Record<AgentContractId, BlueprintSection[]> = {
   critics: ALL_SECTIONS,
   "chief-design-director": ["validation"],
   "flux-adapter": ALL_SECTIONS,
+  "vision-quality-director": ALL_SECTIONS,
 };
 
 export const AGENT_WRITE_MATRIX: Record<AgentContractId, BlueprintSection[]> = {
@@ -52,6 +53,7 @@ export const AGENT_WRITE_MATRIX: Record<AgentContractId, BlueprintSection[]> = {
   critics: [],
   "chief-design-director": [],
   "flux-adapter": [],
+  "vision-quality-director": [],
 };
 
 export const AGENT_STAGE_MATRIX: Record<AgentContractId, BlueprintLifecycle> = {
@@ -68,6 +70,7 @@ export const AGENT_STAGE_MATRIX: Record<AgentContractId, BlueprintLifecycle> = {
   critics: BlueprintLifecycle.VALIDATED,
   "chief-design-director": BlueprintLifecycle.VALIDATED,
   "flux-adapter": BlueprintLifecycle.FROZEN,
+  "vision-quality-director": BlueprintLifecycle.RENDERING,
 };
 
 export function agentMayReadSection(agentId: AgentContractId, section: BlueprintSection): boolean {

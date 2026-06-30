@@ -131,6 +131,7 @@ export const AGENT_CATEGORY_MAP: Record<AgentContractId, AgentEcosystemCategoryI
   governance: AgentEcosystemCategory.ORCHESTRATOR,
   "chief-design-director": AgentEcosystemCategory.ORCHESTRATOR,
   "flux-adapter": null,
+  "vision-quality-director": AgentEcosystemCategory.CRITIC,
 };
 
 export function getAgentCategory(agentId: AgentContractId): AgentEcosystemCategoryId | null {

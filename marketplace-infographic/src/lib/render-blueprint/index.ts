@@ -334,6 +334,11 @@ export {
   type RenderAdapterInput,
   type RenderAdapterResult,
 } from "./agents/render-adapter-agent";
+export {
+  visionQualityDirectorAgent,
+  type VisionQualityDirectorAgentInput,
+  type VisionQualityDirectorResult,
+} from "./agents/vision-quality-director-agent";
 
 export {
   compileFluxAdapterOutput,
@@ -1153,5 +1158,24 @@ export {
   type RenderAdapterValidationReport,
   type RenderAdapterFailureCode,
 } from "./render-adapter-engine";
+
+export {
+  VISION_QUALITY_DIRECTOR_VERSION,
+  VISION_QUALITY_DIRECTOR_GOLDEN_RULE,
+  VISION_QUALITY_DIRECTOR_ID,
+  VISION_QUALITY_DIRECTOR_PIPELINE_POSITION,
+  RetryRecommendation,
+  VisionProblemSeverity,
+  buildVisionQualityReport,
+  validateVisionQualityReport,
+  runVisionQualityDirector,
+  type RetryRecommendationId,
+  type VisionProblem,
+  type VisionQualityReport,
+  type VisionQualityDirectorInput,
+  type VisionQualityExplainabilityReport,
+  type VisionQualityValidationReport,
+  type VisionQualityFailureCode,
+} from "./vision-quality-director-engine";
 
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";
