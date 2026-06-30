@@ -55,6 +55,7 @@ SPECS=(
   src/lib/render-blueprint/consumer-behavior-knowledge.spec.ts
   src/lib/render-blueprint/pattern-library.spec.ts
   src/lib/render-blueprint/anti-pattern-library.spec.ts
+  src/lib/render-blueprint/knowledge-retrieval.spec.ts
   src/lib/render-blueprint/event-system.spec.ts
   src/lib/render-blueprint/snapshot-recovery.spec.ts
   src/lib/render-blueprint/lifecycle-manager.spec.ts
