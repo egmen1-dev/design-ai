@@ -155,12 +155,20 @@ function buildDiagnostics(input: AgentContextBuildInput): AgentDiagnosticContext
 }
 
 function isolatedBlueprint(blueprint: RenderBlueprint): RenderBlueprint {
-  return structuredClone(blueprint);
+  try {
+    return structuredClone(blueprint);
+  } catch {
+    return JSON.parse(JSON.stringify(blueprint)) as RenderBlueprint;
+  }
 }
 
 function isolatedSnapshot(snapshot?: import("./snapshot-types").BlueprintSnapshot) {
   if (!snapshot) return undefined;
-  return structuredClone(snapshot);
+  try {
+    return structuredClone(snapshot);
+  } catch {
+    return JSON.parse(JSON.stringify(snapshot)) as import("./snapshot-types").BlueprintSnapshot;
+  }
 }
 
 /** Build isolated read-only Agent Context immediately before agent execution */

@@ -1,7 +1,6 @@
 /**
- * Chapter 3.2 / 4.1 — Story Director contract agent (pure decision)
+ * Chapter 3.2 / 4.1 / 4.10 — Visual Story Director agent
  */
-import type { StoryBlueprint } from "../types";
 import type { RenderBlueprint } from "../types";
 import {
   type AgentResultBase,
@@ -10,8 +9,16 @@ import {
 } from "../agent-contracts";
 import { BlueprintLifecycle } from "../lifecycle-types";
 import { AGENT_STAGE_MATRIX } from "../agent-matrix";
+import { buildAgentContextPackage } from "../agent-context-engine";
+import { denormalizeConfidence } from "../universal-agent-contract";
 import { AgentCategory } from "../universal-agent-contract";
 import { wrapLegacyBlueprintAgent } from "../universal-agent-bridge";
+import {
+  directorContextFromBlueprint,
+  runVisualStoryDirector,
+  VISUAL_STORY_DIRECTOR_VERSION,
+} from "../visual-story-director-engine";
+import type { StorySection } from "../visual-story-director-types";
 
 export type StoryDirectorInput = {
   productCategory: string;
@@ -19,12 +26,13 @@ export type StoryDirectorInput = {
 };
 
 export type StoryDirectorResult = AgentResultBase & {
-  story: StoryBlueprint;
+  story: StorySection["storyBlueprint"];
+  storySection?: StorySection;
 };
 
 export const storyDirectorAgent: BlueprintAgent<StoryDirectorInput, StoryDirectorResult> = {
   id: "visual-story-director",
-  version: "1.0.0",
+  version: VISUAL_STORY_DIRECTOR_VERSION,
   stage: BlueprintLifecycle.STORY_DEFINED,
 
   canExecute(blueprint) {
@@ -32,26 +40,23 @@ export const storyDirectorAgent: BlueprintAgent<StoryDirectorInput, StoryDirecto
   },
 
   async execute(blueprint, input) {
-    const hook =
-      input.creativeGoal === "Technical"
-        ? `Надёжность ${input.productCategory}`
-        : `Удобство ${input.productCategory}`;
+    const context = buildAgentContextPackage({
+      blueprint: blueprint as RenderBlueprint,
+      agentId: "visual-story-director",
+    });
+    const directorContext = {
+      ...directorContextFromBlueprint(blueprint as RenderBlueprint),
+      productCategory: input.productCategory,
+      creativeGoal: input.creativeGoal,
+    };
+
+    const result = runVisualStoryDirector({ context, directorContext });
 
     return {
-      story: {
-        hook,
-        customerProblem: blueprint.story.customerProblem || "нужда в качественном решении",
-        customerDesire: blueprint.story.customerDesire || "уверенность в покупке",
-        visualPromise: blueprint.story.visualPromise || hook,
-        emotionalTone: "confident",
-        narrative: `${hook} — визуальная история для WB`,
-      },
-      confidence: 82,
-      decisionTrace: [
-        `Hook derived from creative.goal=${input.creativeGoal}`,
-        `Category context: ${input.productCategory}`,
-        "Story scoped to narrative only — no camera or lighting decisions",
-      ],
+      story: result.section.storyBlueprint,
+      storySection: result.section,
+      confidence: denormalizeConfidence(result.confidence.value),
+      decisionTrace: result.decisionSession.toDecisionTraceStrings(),
       warnings: [],
     };
   },

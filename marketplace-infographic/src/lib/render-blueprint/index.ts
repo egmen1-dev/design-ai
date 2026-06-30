@@ -887,4 +887,34 @@ export {
   type ConfidenceValidationReport,
 } from "./agent-confidence-engine";
 
+export {
+  VISUAL_STORY_DIRECTOR_VERSION,
+  VISUAL_STORY_DIRECTOR_GOLDEN_RULE,
+  VISUAL_STORY_DIRECTOR_ID,
+  VISUAL_STORY_PIPELINE_POSITION,
+  STORY_TYPE_CATALOG,
+  StoryType,
+  CommercialGoal,
+  CustomerIntent,
+  VisualHook,
+  PrimaryEmotion,
+  buildStorySection,
+  validateStorySection,
+  isStoryFailure,
+  storySectionToMutations,
+  runVisualStoryDirector,
+  directorContextFromBlueprint,
+  type StoryTypeId,
+  type CommercialGoalId,
+  type CustomerIntentId,
+  type VisualHookId,
+  type PrimaryEmotionId,
+  type StoryTypeDefinition,
+  type StorySection,
+  type StoryDirectorContext,
+  type StoryExplainabilityReport,
+  type StoryValidationReport,
+  type StoryFailureCode,
+} from "./visual-story-director-engine";
+
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";

@@ -76,6 +76,12 @@ export type StoryBlueprint = {
   visualPromise: string;
   emotionalTone: EmotionalToneId;
   narrative: string;
+  /** Ch 4.10 — Visual Story Director metadata */
+  storyType?: string;
+  customerIntent?: string;
+  visualHook?: string;
+  primaryEmotion?: string;
+  commercialGoal?: string;
 };
 
 export type ProductFinishId = "matte" | "gloss" | "mixed";

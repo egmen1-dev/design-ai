@@ -48,7 +48,9 @@ async function testLifecycleManagerApplyStory() {
     productCategory: "home_appliances",
     creativeGoal: "Technical",
   });
-  assert.equal(result.story.hook, "Надёжность home_appliances");
+  assert.equal(result.story.hook, "Инновация home_appliances");
+  assert.equal(result.story.storyType, "technology");
+  assert.equal(result.story.commercialGoal, "highlight_innovation");
   assert.ok(mutation.updatedSections.includes("story"));
   assert.ok(mutation.invalidatedSections.includes("scene"));
   assert.ok(mutation.invalidatedSections.includes("composition"));
