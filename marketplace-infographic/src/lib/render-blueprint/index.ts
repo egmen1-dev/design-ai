@@ -322,6 +322,12 @@ export {
   type CameraDirectorInput,
   type CameraDirectorResult,
 } from "./agents/camera-director-agent";
+export {
+  materialDirectorAgent,
+  universalMaterialDirectorAgent,
+  type MaterialDirectorInput,
+  type MaterialDirectorResult,
+} from "./agents/material-director-agent";
 
 export {
   compileFluxAdapterOutput,
@@ -1085,5 +1091,42 @@ export {
   type CameraValidationReport,
   type CameraFailureCode,
 } from "./camera-director-engine";
+
+export {
+  MATERIAL_DIRECTOR_VERSION,
+  MATERIAL_DIRECTOR_GOLDEN_RULE,
+  MATERIAL_DIRECTOR_ID,
+  MATERIAL_DIRECTOR_PIPELINE_POSITION,
+  MATERIAL_WORLD_CATALOG,
+  SurfaceMaterialId,
+  ReflectionProfile,
+  RoughnessProfile,
+  BackgroundMaterial,
+  ContactSurface,
+  TextureComplexity,
+  MicroDetailLevel,
+  MaterialWorld,
+  buildMaterialSection,
+  validateMaterialSection,
+  isMaterialFailure,
+  materialSectionToMutations,
+  runMaterialDirector,
+  directorContextFromBlueprint as materialDirectorContextFromBlueprint,
+  type SurfaceMaterialKind,
+  type SurfaceMaterial,
+  type ReflectionProfileId,
+  type RoughnessProfileId,
+  type BackgroundMaterialId,
+  type ContactSurfaceId,
+  type TextureComplexityId,
+  type MicroDetailLevelId,
+  type MaterialWorldId,
+  type MaterialWorldDefinition,
+  type MaterialSection,
+  type MaterialDirectorContext,
+  type MaterialExplainabilityReport,
+  type MaterialValidationReport,
+  type MaterialFailureCode,
+} from "./material-director-engine";
 
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";

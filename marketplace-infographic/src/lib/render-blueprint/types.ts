@@ -226,6 +226,16 @@ export type MaterialBlueprint = {
   decor: string[];
   reflection: MaterialReflectionId;
   roughness: number;
+  /** Ch 4.16 — Material Director physics model */
+  materialWorld?: string;
+  surfacePalette?: import("./material-director-types").SurfaceMaterial[];
+  reflectionProfile?: string;
+  roughnessProfile?: string;
+  backgroundMaterial?: string;
+  contactSurface?: string;
+  textureComplexity?: string;
+  microDetailLevel?: string;
+  providerHints?: string[];
 };
 
 export type CompositionTemplateId = "hero_left" | "hero_right" | "center";

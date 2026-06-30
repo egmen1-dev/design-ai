@@ -30,6 +30,7 @@ export const V18_TEST_REGISTRY: TestSpecEntry[] = [
   { id: "commercial-photo-director", path: `${BP}/commercial-photo-director.spec.ts`, category: TestCategory.AGENT, chapter: "4.13", description: "Commercial Photo Director", usesLlm: false },
   { id: "lighting-director", path: `${BP}/lighting-director.spec.ts`, category: TestCategory.AGENT, chapter: "4.14", description: "Lighting Director", usesLlm: false },
   { id: "camera-director", path: `${BP}/camera-director.spec.ts`, category: TestCategory.AGENT, chapter: "4.15", description: "Camera Director", usesLlm: false },
+  { id: "material-director", path: `${BP}/material-director.spec.ts`, category: TestCategory.AGENT, chapter: "4.16", description: "Material Director", usesLlm: false },
   { id: "event-system", path: `${BP}/event-system.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.9", description: "Event bus delivery", usesLlm: false },
   { id: "snapshot-recovery", path: `${BP}/snapshot-recovery.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.8", description: "Snapshot and recovery", usesLlm: false },
   { id: "lifecycle-manager", path: `${BP}/lifecycle-manager.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.4", description: "Lifecycle manager orchestration", usesLlm: false },
