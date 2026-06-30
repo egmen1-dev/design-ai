@@ -41,9 +41,9 @@ function testGoldenRule() {
 }
 
 function testHighLevelPipeline() {
-  assert.equal(HIGH_LEVEL_PIPELINE.length, 17);
-  assert.equal(HIGH_LEVEL_PIPELINE[0].id, DesignPipelineStage.BUSINESS_GOAL);
-  assert.equal(HIGH_LEVEL_PIPELINE[16].id, DesignPipelineStage.KNOWLEDGE_LEARNING);
+  assert.equal(HIGH_LEVEL_PIPELINE.length, 18);
+  assert.equal(HIGH_LEVEL_PIPELINE[16].id, DesignPipelineStage.APPROVED_BLUEPRINT);
+  assert.equal(HIGH_LEVEL_PIPELINE[17].id, DesignPipelineStage.KNOWLEDGE_LEARNING);
   console.log("✔ high-level pipeline — business goal to knowledge learning");
 }
 
@@ -70,9 +70,11 @@ function testPipelinePrinciples() {
 function testStageOrder() {
   assert.equal(validatePipelineStageOrder().length, 0);
   const knowledge = HIGH_LEVEL_PIPELINE.find((s) => s.id === DesignPipelineStage.KNOWLEDGE_RETRIEVAL)!;
+  const business = HIGH_LEVEL_PIPELINE.find((s) => s.id === DesignPipelineStage.BUSINESS_UNDERSTANDING)!;
   const story = HIGH_LEVEL_PIPELINE.find((s) => s.id === DesignPipelineStage.VISUAL_STORY_PLANNING)!;
-  assert.ok(knowledge.order < story.order);
-  console.log("✔ stage order — knowledge retrieval before creative planning");
+  assert.ok(knowledge.order < business.order);
+  assert.ok(business.order < story.order);
+  console.log("✔ stage order — knowledge retrieval and business understanding before creative planning");
 }
 
 function testLayerCoverage() {
@@ -162,7 +164,7 @@ function testRunDesignPipeline() {
 function testValidateDesignPipeline() {
   const report = validateDesignPipeline();
   assert.equal(report.valid, true);
-  assert.equal(report.stageCount, 17);
+  assert.equal(report.stageCount, 18);
   assert.equal(report.layerCount, 7);
   assert.equal(report.principlesSatisfied, true);
   assert.equal(report.learningIntegrated, true);

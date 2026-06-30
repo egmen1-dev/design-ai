@@ -8,6 +8,7 @@ import {
   buildProductAnalysisInputFromPipeline,
 } from "./product-analysis-engine";
 import { runKnowledgeRetrievalStage } from "./knowledge-retrieval-stage-engine";
+import { runBusinessUnderstandingStage } from "./business-understanding-engine";
 import {
   DesignPipelineLayer,
   DesignPipelinePrinciple,
@@ -83,8 +84,16 @@ export const HIGH_LEVEL_PIPELINE: readonly DesignPipelineStageDefinition[] = [
     makesDesignDecision: false,
   },
   {
-    id: DesignPipelineStage.VISUAL_STORY_PLANNING,
+    id: DesignPipelineStage.BUSINESS_UNDERSTANDING,
     order: 4,
+    label: "Business Understanding",
+    layer: DesignPipelineLayer.KNOWLEDGE,
+    responsibility: "Transform product characteristics into commercial value and story strategy",
+    makesDesignDecision: false,
+  },
+  {
+    id: DesignPipelineStage.VISUAL_STORY_PLANNING,
+    order: 5,
     label: "Visual Story Planning",
     layer: DesignPipelineLayer.CREATIVE,
     agentIds: ["visual-story-director"],
@@ -94,7 +103,7 @@ export const HIGH_LEVEL_PIPELINE: readonly DesignPipelineStageDefinition[] = [
   },
   {
     id: DesignPipelineStage.SCENE_PLANNING,
-    order: 5,
+    order: 6,
     label: "Scene Planning",
     layer: DesignPipelineLayer.CREATIVE,
     agentIds: ["scene-director"],
@@ -104,7 +113,7 @@ export const HIGH_LEVEL_PIPELINE: readonly DesignPipelineStageDefinition[] = [
   },
   {
     id: DesignPipelineStage.COMPOSITION_PLANNING,
-    order: 6,
+    order: 7,
     label: "Composition Planning",
     layer: DesignPipelineLayer.CREATIVE,
     agentIds: ["composition-director"],
@@ -114,7 +123,7 @@ export const HIGH_LEVEL_PIPELINE: readonly DesignPipelineStageDefinition[] = [
   },
   {
     id: DesignPipelineStage.PHOTOGRAPHY_PLANNING,
-    order: 7,
+    order: 8,
     label: "Photography Planning",
     layer: DesignPipelineLayer.CREATIVE,
     agentIds: ["commercial-photo-director"],
@@ -124,7 +133,7 @@ export const HIGH_LEVEL_PIPELINE: readonly DesignPipelineStageDefinition[] = [
   },
   {
     id: DesignPipelineStage.BLUEPRINT_ASSEMBLY,
-    order: 8,
+    order: 9,
     label: "Blueprint Assembly",
     layer: DesignPipelineLayer.TECHNICAL,
     blueprintSections: ["story", "scene", "composition", "photography", "lighting", "camera", "materials"],
@@ -133,7 +142,7 @@ export const HIGH_LEVEL_PIPELINE: readonly DesignPipelineStageDefinition[] = [
   },
   {
     id: DesignPipelineStage.CONSENSUS_VALIDATION,
-    order: 9,
+    order: 10,
     label: "Consensus Validation",
     layer: DesignPipelineLayer.VALIDATION,
     agentIds: ["consensus-engine"],
@@ -142,7 +151,7 @@ export const HIGH_LEVEL_PIPELINE: readonly DesignPipelineStageDefinition[] = [
   },
   {
     id: DesignPipelineStage.RENDER_ADAPTER,
-    order: 10,
+    order: 11,
     label: "Render Adapter",
     layer: DesignPipelineLayer.RENDERING,
     agentIds: ["flux-adapter"],
@@ -152,7 +161,7 @@ export const HIGH_LEVEL_PIPELINE: readonly DesignPipelineStageDefinition[] = [
   },
   {
     id: DesignPipelineStage.RENDER_PROVIDER,
-    order: 11,
+    order: 12,
     label: "Render Provider",
     layer: DesignPipelineLayer.RENDERING,
     responsibility: "Execute image generation — swappable executor only",
@@ -160,7 +169,7 @@ export const HIGH_LEVEL_PIPELINE: readonly DesignPipelineStageDefinition[] = [
   },
   {
     id: DesignPipelineStage.VISION_ANALYSIS,
-    order: 12,
+    order: 13,
     label: "Vision Analysis",
     layer: DesignPipelineLayer.VALIDATION,
     agentIds: ["vision-quality-director"],
@@ -169,7 +178,7 @@ export const HIGH_LEVEL_PIPELINE: readonly DesignPipelineStageDefinition[] = [
   },
   {
     id: DesignPipelineStage.COMMERCIAL_VALIDATION,
-    order: 13,
+    order: 14,
     label: "Commercial Validation",
     layer: DesignPipelineLayer.VALIDATION,
     responsibility: "Assess commercial photography and conversion quality",
@@ -177,7 +186,7 @@ export const HIGH_LEVEL_PIPELINE: readonly DesignPipelineStageDefinition[] = [
   },
   {
     id: DesignPipelineStage.CHIEF_DESIGN_REVIEW,
-    order: 14,
+    order: 15,
     label: "Chief Design Review",
     layer: DesignPipelineLayer.VALIDATION,
     agentIds: ["chief-design-director"],
@@ -186,7 +195,7 @@ export const HIGH_LEVEL_PIPELINE: readonly DesignPipelineStageDefinition[] = [
   },
   {
     id: DesignPipelineStage.RETRY,
-    order: 15,
+    order: 16,
     label: "Retry",
     layer: DesignPipelineLayer.VALIDATION,
     agentIds: ["retry-architecture"],
@@ -196,7 +205,7 @@ export const HIGH_LEVEL_PIPELINE: readonly DesignPipelineStageDefinition[] = [
   },
   {
     id: DesignPipelineStage.APPROVED_BLUEPRINT,
-    order: 16,
+    order: 17,
     label: "Approved Blueprint",
     layer: DesignPipelineLayer.VALIDATION,
     responsibility: "Commercial-ready blueprint and image output",
@@ -204,7 +213,7 @@ export const HIGH_LEVEL_PIPELINE: readonly DesignPipelineStageDefinition[] = [
   },
   {
     id: DesignPipelineStage.KNOWLEDGE_LEARNING,
-    order: 17,
+    order: 18,
     label: "Knowledge Learning",
     layer: DesignPipelineLayer.LEARNING,
     agentIds: ["design-memory"],
@@ -224,7 +233,7 @@ export const PIPELINE_LAYERS: readonly DesignPipelineLayerDefinition[] = [
     id: DesignPipelineLayer.KNOWLEDGE,
     label: "Knowledge Layer",
     summary: "Knowledge Engine retrieval before creative decisions",
-    stages: [DesignPipelineStage.KNOWLEDGE_RETRIEVAL],
+    stages: [DesignPipelineStage.KNOWLEDGE_RETRIEVAL, DesignPipelineStage.BUSINESS_UNDERSTANDING],
   },
   {
     id: DesignPipelineLayer.CREATIVE,
@@ -336,6 +345,17 @@ export function validatePipelineStageOrder(): DesignPipelineViolation[] {
         "INVALID_STAGE_ORDER",
         "Knowledge Retrieval must precede Visual Story Planning",
         DesignPipelineStage.KNOWLEDGE_RETRIEVAL,
+      ),
+    );
+  }
+
+  const businessIdx = sorted.findIndex((s) => s.id === DesignPipelineStage.BUSINESS_UNDERSTANDING);
+  if (knowledgeIdx > businessIdx || businessIdx > storyIdx) {
+    violations.push(
+      violation(
+        "INVALID_STAGE_ORDER",
+        "Knowledge Retrieval and Business Understanding must precede Visual Story Planning",
+        DesignPipelineStage.BUSINESS_UNDERSTANDING,
       ),
     );
   }
@@ -586,6 +606,39 @@ export function executeDesignPipelineStage(
           violation("MISSING_KNOWLEDGE_STAGE", "Knowledge Retrieval Stage failed validation", stageId),
           ...stageReport.violations.map((v) => violation("MISSING_KNOWLEDGE_STAGE", v.message, stageId)),
         );
+      }
+    }
+  }
+
+  if (stageId === DesignPipelineStage.BUSINESS_UNDERSTANDING) {
+    const analysis = analyzeProduct(buildProductAnalysisInputFromPipeline(input));
+    if (!analysis.section) {
+      violations.push(
+        violation("PIPELINE_INCOMPLETE", "Product Analysis must complete before Business Understanding", stageId),
+      );
+    } else {
+      const knowledge = runKnowledgeRetrievalStage({
+        profile: analysis.section.profile,
+        marketplace: input.marketplace,
+        style: analysis.section.profile.priceSegment,
+      });
+      if (!knowledge.package) {
+        violations.push(
+          violation("PIPELINE_INCOMPLETE", "Knowledge Retrieval must complete before Business Understanding", stageId),
+        );
+      } else {
+        const business = runBusinessUnderstandingStage({
+          profile: analysis.section.profile,
+          knowledge: knowledge.package,
+          marketplace: input.marketplace,
+          brand: input.brand,
+        });
+        if (!business.valid || !business.section) {
+          violations.push(
+            violation("PIPELINE_INCOMPLETE", "Business Understanding Stage failed validation", stageId),
+            ...business.violations.map((v) => violation("PIPELINE_INCOMPLETE", v.message, stageId)),
+          );
+        }
       }
     }
   }

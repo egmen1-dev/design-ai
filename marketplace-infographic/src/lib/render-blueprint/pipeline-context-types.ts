@@ -60,12 +60,21 @@ export type AudienceProfile = {
   locale?: string;
 };
 
+export type CommercialBusinessModelContext = {
+  primaryValue: string;
+  storyStrategy: string;
+  rankedPriorities: string[];
+  emotionalDrivers: string[];
+  storyTypeHint?: string;
+};
+
 export type BusinessContextSection = {
   product: ProductContext;
   marketplace: MarketplaceContext;
   businessGoal: BusinessGoalContext;
   brand: BrandProfile;
   targetAudience: AudienceProfile;
+  commercialModel?: CommercialBusinessModelContext;
 };
 
 export type KnowledgeContextSection = {

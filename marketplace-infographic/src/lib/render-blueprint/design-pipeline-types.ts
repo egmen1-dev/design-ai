@@ -6,6 +6,7 @@ export const DesignPipelineStage = {
   BUSINESS_GOAL: "business_goal",
   PRODUCT_ANALYSIS: "product_analysis",
   KNOWLEDGE_RETRIEVAL: "knowledge_retrieval",
+  BUSINESS_UNDERSTANDING: "business_understanding",
   VISUAL_STORY_PLANNING: "visual_story_planning",
   SCENE_PLANNING: "scene_planning",
   COMPOSITION_PLANNING: "composition_planning",

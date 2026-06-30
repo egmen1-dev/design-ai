@@ -34,6 +34,7 @@ export {
   type MarketplaceContext,
   type BusinessGoalContext,
   type BrandProfile,
+  type CommercialBusinessModelContext,
   type AudienceProfile,
   type BusinessContextSection,
   type KnowledgeContextSection,
