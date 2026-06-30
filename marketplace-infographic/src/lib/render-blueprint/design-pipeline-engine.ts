@@ -5,6 +5,10 @@
 import { retrieveKnowledgePackage } from "./knowledge-retrieval-engine";
 import { buildSeedLearningFeedback, runKnowledgeLearningPipeline } from "./knowledge-learning-engine";
 import {
+  analyzeProduct,
+  buildProductAnalysisInputFromPipeline,
+} from "./product-analysis-engine";
+import {
   DesignPipelineLayer,
   DesignPipelinePrinciple,
   DesignPipelineStage,
@@ -551,6 +555,18 @@ export function executeDesignPipelineStage(
       passed: false,
       violations: [violation("PIPELINE_INCOMPLETE", `Unknown stage ${stageId}`, stageId)],
     };
+  }
+
+  if (stageId === DesignPipelineStage.PRODUCT_ANALYSIS) {
+    const analysis = analyzeProduct(buildProductAnalysisInputFromPipeline(input));
+    if (!analysis.valid || !analysis.section) {
+      violations.push(
+        violation("PIPELINE_INCOMPLETE", "Product Analysis Stage failed validation", stageId),
+        ...analysis.violations.map((v) =>
+          violation("PIPELINE_INCOMPLETE", v.message, stageId),
+        ),
+      );
+    }
   }
 
   if (stageId === DesignPipelineStage.KNOWLEDGE_RETRIEVAL && !context.skipKnowledgeRetrieval) {

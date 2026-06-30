@@ -291,7 +291,11 @@ export function applyContextPatch(
     metadata: { ...ctx.metadata, revision: nextRevision, updatedAt: Date.now() },
   };
 
-  if (patch.section === PipelineContextSection.CREATIVE) {
+  if (patch.section === PipelineContextSection.BUSINESS) {
+    updated.business = { ...ctx.business, ...patch.changes } as GenerationPipelineContext["business"];
+  } else if (patch.section === PipelineContextSection.KNOWLEDGE) {
+    updated.knowledge = { ...ctx.knowledge, ...patch.changes } as GenerationPipelineContext["knowledge"];
+  } else if (patch.section === PipelineContextSection.CREATIVE) {
     updated.creative = { ...ctx.creative, ...patch.changes } as GenerationPipelineContext["creative"];
   } else if (patch.section === PipelineContextSection.TECHNICAL) {
     updated.technical = { ...ctx.technical, ...patch.changes } as GenerationPipelineContext["technical"];

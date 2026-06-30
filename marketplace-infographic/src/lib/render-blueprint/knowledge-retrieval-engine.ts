@@ -112,6 +112,12 @@ export const AGENT_RETRIEVAL_DOMAINS: Partial<Record<AgentContractId, KnowledgeR
     KnowledgeRetrievalDomain.COLOR,
     KnowledgeRetrievalDomain.MARKETPLACE,
   ],
+  "product-analyzer": [
+    KnowledgeRetrievalDomain.MARKETPLACE,
+    KnowledgeRetrievalDomain.CONSUMER,
+    KnowledgeRetrievalDomain.PATTERN,
+    KnowledgeRetrievalDomain.PSYCHOLOGY,
+  ],
 };
 
 const retrievalCache = new Map<string, KnowledgePackage>();

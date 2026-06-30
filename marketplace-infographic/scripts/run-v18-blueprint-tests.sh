@@ -63,6 +63,7 @@ SPECS=(
   src/lib/render-blueprint/design-pipeline.spec.ts
   src/lib/render-blueprint/pipeline-orchestrator.spec.ts
   src/lib/render-blueprint/pipeline-context.spec.ts
+  src/lib/render-blueprint/product-analysis.spec.ts
   src/lib/render-blueprint/event-system.spec.ts
   src/lib/render-blueprint/snapshot-recovery.spec.ts
   src/lib/render-blueprint/lifecycle-manager.spec.ts
