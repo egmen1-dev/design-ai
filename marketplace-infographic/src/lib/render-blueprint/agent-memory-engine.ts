@@ -209,6 +209,13 @@ export const AGENT_MEMORY_ACCESS_MATRIX: Record<AgentContractId, AgentMemoryAcce
     learningTopics: ["ctrAnalytics", "conversionPatterns"],
     referenceTopics: ["marketplacePatternLibrary"],
   },
+  "pattern-director": {
+    agentId: "pattern-director",
+    layers: [MemoryLayer.WORKING, MemoryLayer.KNOWLEDGE, MemoryLayer.LEARNING],
+    knowledgeTopics: ["patternLibrary", "designGenome"],
+    learningTopics: ["ctrAnalytics", "historicalPatterns"],
+    referenceTopics: ["commercialPatternLibrary", "trendKnowledge"],
+  },
   "composition-director": {
     agentId: "composition-director",
     layers: [MemoryLayer.WORKING, MemoryLayer.KNOWLEDGE, MemoryLayer.LEARNING],

@@ -103,6 +103,7 @@ export const V18_TEST_REGISTRY: TestSpecEntry[] = [
   { id: "material-director-agent", path: `${BP}/material-director-agent.spec.ts`, category: TestCategory.AGENT, chapter: "7.16", description: "Material Director Agent", usesLlm: false },
   { id: "typography-director-agent", path: `${BP}/typography-director-agent.spec.ts`, category: TestCategory.AGENT, chapter: "7.17", description: "Typography Director Agent", usesLlm: false },
   { id: "marketplace-director-agent", path: `${BP}/marketplace-director-agent.spec.ts`, category: TestCategory.AGENT, chapter: "7.18", description: "Marketplace Director Agent", usesLlm: false },
+  { id: "pattern-director-agent", path: `${BP}/pattern-director-agent.spec.ts`, category: TestCategory.AGENT, chapter: "7.19", description: "Pattern Director Agent", usesLlm: false },
   { id: "event-system", path: `${BP}/event-system.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.9", description: "Event bus delivery", usesLlm: false },
   { id: "snapshot-recovery", path: `${BP}/snapshot-recovery.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.8", description: "Snapshot and recovery", usesLlm: false },
   { id: "lifecycle-manager", path: `${BP}/lifecycle-manager.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.4", description: "Lifecycle manager orchestration", usesLlm: false },
