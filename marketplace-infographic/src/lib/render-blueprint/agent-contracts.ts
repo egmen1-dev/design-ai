@@ -14,6 +14,7 @@ export type AgentContractId =
   | "lighting-director"
   | "material-director"
   | "typography-director"
+  | "marketplace-director"
   | "composition-director"
   | "governance"
   | "critics"

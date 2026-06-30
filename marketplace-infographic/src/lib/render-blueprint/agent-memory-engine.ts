@@ -202,6 +202,13 @@ export const AGENT_MEMORY_ACCESS_MATRIX: Record<AgentContractId, AgentMemoryAcce
     learningTopics: ["templateWeights"],
     referenceTopics: ["typographyLibrary"],
   },
+  "marketplace-director": {
+    agentId: "marketplace-director",
+    layers: [MemoryLayer.WORKING, MemoryLayer.KNOWLEDGE, MemoryLayer.LEARNING],
+    knowledgeTopics: ["marketplaceRules"],
+    learningTopics: ["ctrAnalytics", "conversionPatterns"],
+    referenceTopics: ["marketplacePatternLibrary"],
+  },
   "composition-director": {
     agentId: "composition-director",
     layers: [MemoryLayer.WORKING, MemoryLayer.KNOWLEDGE, MemoryLayer.LEARNING],
