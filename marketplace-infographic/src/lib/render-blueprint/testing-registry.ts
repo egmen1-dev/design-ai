@@ -86,6 +86,7 @@ export const V18_TEST_REGISTRY: TestSpecEntry[] = [
   { id: "pipeline-architecture-principles", path: `${BP}/pipeline-architecture-principles.spec.ts`, category: TestCategory.PIPELINE, chapter: "6.20", description: "Pipeline Architecture Principles", usesLlm: false },
   { id: "agent-implementation-spec", path: `${BP}/agent-implementation-spec.spec.ts`, category: TestCategory.AGENT, chapter: "7", description: "Agent Implementation Specification", usesLlm: false },
   { id: "agent-design-philosophy", path: `${BP}/agent-design-philosophy.spec.ts`, category: TestCategory.AGENT, chapter: "7.1", description: "Agent Design Philosophy", usesLlm: false },
+  { id: "base-agent-architecture", path: `${BP}/base-agent-architecture.spec.ts`, category: TestCategory.AGENT, chapter: "7.2", description: "Base Agent Architecture", usesLlm: false },
   { id: "event-system", path: `${BP}/event-system.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.9", description: "Event bus delivery", usesLlm: false },
   { id: "snapshot-recovery", path: `${BP}/snapshot-recovery.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.8", description: "Snapshot and recovery", usesLlm: false },
   { id: "lifecycle-manager", path: `${BP}/lifecycle-manager.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.4", description: "Lifecycle manager orchestration", usesLlm: false },
