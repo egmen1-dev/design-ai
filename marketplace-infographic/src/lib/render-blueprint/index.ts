@@ -1246,4 +1246,38 @@ export {
   type MemoryFailureCode,
 } from "./design-memory-engine";
 
+export {
+  AGENT_COMMUNICATION_PROTOCOL_VERSION,
+  AGENT_COMMUNICATION_GOLDEN_RULE,
+  COMMUNICATION_MODEL,
+  CommunicationPrinciple,
+  buildSectionOwnershipMap,
+  buildSectionVersionHistory,
+  buildAgentPublication,
+  validateNoDirectAgentCalls,
+  validateWritePermissions,
+  validateReadPermissions,
+  validateStructuredCommunication,
+  validateSectionVersioning,
+  validateImmutability,
+  validatePublicationExplainability,
+  validateOwnershipUniqueness,
+  validateErrorIsolation,
+  validateCommunicationProtocol,
+  assertCommunicationProtocol,
+  agentReadsOnlyRequiredSections,
+  agentWritesOnlyOwnedSections,
+  supportsLooseCoupling,
+  isCommunicationFailure,
+  type CommunicationPrincipleId,
+  type SectionOwnership,
+  type SectionVersionRecord,
+  type AgentPublication,
+  type DirectCallAttempt,
+  type CommunicationViolation,
+  type CommunicationProtocolReport,
+  type CommunicationValidationContext,
+  type CommunicationFailureCode,
+} from "./agent-communication-protocol-engine";
+
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";
