@@ -101,6 +101,7 @@ SPECS=(
   src/lib/render-blueprint/typography-director-agent.spec.ts
   src/lib/render-blueprint/marketplace-director-agent.spec.ts
   src/lib/render-blueprint/pattern-director-agent.spec.ts
+  src/lib/render-blueprint/anti-pattern-director-agent.spec.ts
   src/lib/render-blueprint/event-system.spec.ts
   src/lib/render-blueprint/snapshot-recovery.spec.ts
   src/lib/render-blueprint/lifecycle-manager.spec.ts
