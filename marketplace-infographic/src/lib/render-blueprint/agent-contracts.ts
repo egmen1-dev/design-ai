@@ -25,6 +25,7 @@ export type AgentContractId =
   | "critics"
   | "chief-design-director"
   | "learning-agent"
+  | "render-orchestrator"
   | "design-memory"
   | "flux-adapter"
   | "vision-quality-director";

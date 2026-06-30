@@ -272,6 +272,12 @@ export const AGENT_MEMORY_ACCESS_MATRIX: Record<AgentContractId, AgentMemoryAcce
     learningTopics: ["retryStatistics", "userFeedbackDatabase", "marketplaceAnalytics"],
     referenceTopics: ["designGenome", "designConstitution"],
   },
+  "render-orchestrator": {
+    agentId: "render-orchestrator",
+    layers: [MemoryLayer.WORKING, MemoryLayer.KNOWLEDGE, MemoryLayer.REFERENCE],
+    knowledgeTopics: ["renderRules", "pipelineKnowledge", "providerProfiles"],
+    referenceTopics: ["renderHistory", "performanceStatistics", "resourceDatabase"],
+  },
   "design-memory": {
     agentId: "design-memory",
     layers: [MemoryLayer.LEARNING],
