@@ -22,6 +22,7 @@ SPECS=(
   src/lib/render-blueprint/agent-decision.spec.ts
   src/lib/render-blueprint/agent-confidence.spec.ts
   src/lib/render-blueprint/visual-story-director.spec.ts
+  src/lib/render-blueprint/scene-director.spec.ts
   src/lib/render-blueprint/event-system.spec.ts
   src/lib/render-blueprint/snapshot-recovery.spec.ts
   src/lib/render-blueprint/lifecycle-manager.spec.ts

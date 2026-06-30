@@ -297,6 +297,7 @@ export {
 } from "./decision-graph";
 
 export { storyDirectorAgent, universalStoryDirectorAgent, type StoryDirectorInput, type StoryDirectorResult } from "./agents/story-director-agent";
+export { sceneDirectorAgent, universalSceneDirectorAgent, type SceneDirectorInput, type SceneDirectorResult } from "./agents/scene-director-agent";
 
 export {
   compileFluxAdapterOutput,
@@ -916,5 +917,33 @@ export {
   type StoryValidationReport,
   type StoryFailureCode,
 } from "./visual-story-director-engine";
+
+export {
+  SCENE_DIRECTOR_VERSION,
+  SCENE_DIRECTOR_GOLDEN_RULE,
+  SCENE_DIRECTOR_ID,
+  SCENE_DIRECTOR_PIPELINE_POSITION,
+  SCENE_TYPE_CATALOG,
+  ENVIRONMENT_CATALOG,
+  SceneType,
+  EnvironmentType,
+  DepthProfile,
+  buildSceneSection,
+  validateSceneSection,
+  isSceneFailure,
+  sceneSectionToMutations,
+  runSceneDirector,
+  directorContextFromBlueprint as sceneDirectorContextFromBlueprint,
+  type SceneTypeId,
+  type EnvironmentTypeId,
+  type DepthProfileId,
+  type SceneTypeDefinition,
+  type EnvironmentDefinition,
+  type SceneSection,
+  type SceneDirectorContext,
+  type SceneExplainabilityReport,
+  type SceneValidationReport,
+  type SceneFailureCode,
+} from "./scene-director-engine";
 
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";

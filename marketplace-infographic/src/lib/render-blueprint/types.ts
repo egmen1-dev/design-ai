@@ -121,6 +121,16 @@ export type SceneBlueprint = {
   weather: SceneWeatherId;
   depth: SceneDepthId;
   surface: string;
+  /** Ch 4.11 — Scene Director metadata */
+  sceneType?: string;
+  environmentType?: string;
+  backgroundNarrative?: string;
+  lightingMood?: string;
+  materialPalette?: string[];
+  depthProfile?: string;
+  cameraEnvironment?: string;
+  realismProfile?: string;
+  providerHints?: string[];
 };
 
 export type PhotographyStyleId = "commercial" | "editorial" | "catalog" | "advertising";
