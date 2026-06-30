@@ -51,6 +51,7 @@ SPECS=(
   src/lib/render-blueprint/photography-knowledge.spec.ts
   src/lib/render-blueprint/color-knowledge.spec.ts
   src/lib/render-blueprint/typography-knowledge.spec.ts
+  src/lib/render-blueprint/cognitive-psychology-knowledge.spec.ts
   src/lib/render-blueprint/event-system.spec.ts
   src/lib/render-blueprint/snapshot-recovery.spec.ts
   src/lib/render-blueprint/lifecycle-manager.spec.ts
