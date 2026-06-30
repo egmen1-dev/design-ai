@@ -73,6 +73,7 @@ SPECS=(
   src/lib/render-blueprint/blueprint-assembly-stage.spec.ts
   src/lib/render-blueprint/consensus-validation-stage.spec.ts
   src/lib/render-blueprint/render-adapter-stage.spec.ts
+  src/lib/render-blueprint/rendering-stage.spec.ts
   src/lib/render-blueprint/event-system.spec.ts
   src/lib/render-blueprint/snapshot-recovery.spec.ts
   src/lib/render-blueprint/lifecycle-manager.spec.ts
