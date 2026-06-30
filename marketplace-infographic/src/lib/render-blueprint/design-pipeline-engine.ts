@@ -2,7 +2,6 @@
  * Chapter 6 — Design Pipeline engine.
  * Central executive system orchestrating collaborative infographic creation.
  */
-import { buildSeedLearningFeedback, runKnowledgeLearningPipeline } from "./knowledge-learning-engine";
 import {
   analyzeProduct,
   buildProductAnalysisInputFromPipeline,
@@ -20,6 +19,7 @@ import { runRenderingStageSyncFromPipeline } from "./rendering-stage-engine";
 import { runVisionValidationStageFromPipeline } from "./vision-validation-stage-engine";
 import { runCommercialValidationStageFromPipeline } from "./commercial-validation-stage-engine";
 import { runChiefDesignDirectorReviewStageFromPipeline } from "./chief-design-director-review-stage-engine";
+import { runLearningFeedbackStageFromPipeline } from "./learning-feedback-stage-engine";
 import {
   DesignPipelineLayer,
   DesignPipelinePrinciple,
@@ -225,7 +225,7 @@ export const HIGH_LEVEL_PIPELINE: readonly DesignPipelineStageDefinition[] = [
   {
     id: DesignPipelineStage.KNOWLEDGE_LEARNING,
     order: 18,
-    label: "Knowledge Learning",
+    label: "Learning & Feedback",
     layer: DesignPipelineLayer.LEARNING,
     agentIds: ["design-memory"],
     responsibility: "Learn from design decisions after project completion",
@@ -1105,11 +1105,18 @@ export function executeDesignPipelineStage(
   }
 
   if (stageId === DesignPipelineStage.KNOWLEDGE_LEARNING && !context.skipLearning) {
-    const feedback = buildSeedLearningFeedback();
-    const cycle = runKnowledgeLearningPipeline("gen-kitchen-premium-001", feedback, { skipValidation: true });
-    if (cycle.confidenceAdjustments.length === 0 && !cycle.knowledgeUpdated) {
+    const learning = runLearningFeedbackStageFromPipeline({
+      marketplace: input.marketplace,
+      providerId: "flux",
+    });
+    if (!learning.valid || !learning.section) {
       violations.push(
-        violation("MISSING_LEARNING_STAGE", "Knowledge Learning produced no outcomes", stageId),
+        violation("MISSING_LEARNING_STAGE", "Learning & Feedback Stage failed validation", stageId),
+        ...learning.violations.map((v) => violation("MISSING_LEARNING_STAGE", v.message, stageId)),
+      );
+    } else if (!learning.section.learningPackageId) {
+      violations.push(
+        violation("MISSING_LEARNING_STAGE", "Learning & Feedback must produce learning package", stageId),
       );
     }
   }

@@ -77,6 +77,7 @@ SPECS=(
   src/lib/render-blueprint/vision-validation-stage.spec.ts
   src/lib/render-blueprint/commercial-validation-stage.spec.ts
   src/lib/render-blueprint/chief-design-director-review-stage.spec.ts
+  src/lib/render-blueprint/learning-feedback-stage.spec.ts
   src/lib/render-blueprint/event-system.spec.ts
   src/lib/render-blueprint/snapshot-recovery.spec.ts
   src/lib/render-blueprint/lifecycle-manager.spec.ts
