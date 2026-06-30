@@ -278,6 +278,12 @@ export const AGENT_MEMORY_ACCESS_MATRIX: Record<AgentContractId, AgentMemoryAcce
     knowledgeTopics: ["renderRules", "pipelineKnowledge", "providerProfiles"],
     referenceTopics: ["renderHistory", "performanceStatistics", "resourceDatabase"],
   },
+  "render-adapter": {
+    agentId: "render-adapter",
+    layers: [MemoryLayer.WORKING, MemoryLayer.KNOWLEDGE, MemoryLayer.REFERENCE],
+    knowledgeTopics: ["providerKnowledgeBase", "promptEngineeringLibrary", "renderRules"],
+    referenceTopics: ["historicalProviderStatistics", "designConstitution", "designMemory"],
+  },
   "design-memory": {
     agentId: "design-memory",
     layers: [MemoryLayer.LEARNING],
