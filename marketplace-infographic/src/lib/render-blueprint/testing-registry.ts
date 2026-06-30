@@ -56,6 +56,7 @@ export const V18_TEST_REGISTRY: TestSpecEntry[] = [
   { id: "typography-knowledge", path: `${BP}/typography-knowledge.spec.ts`, category: TestCategory.AGENT, chapter: "5.11", description: "Typography Knowledge", usesLlm: false },
   { id: "cognitive-psychology-knowledge", path: `${BP}/cognitive-psychology-knowledge.spec.ts`, category: TestCategory.AGENT, chapter: "5.12", description: "Cognitive Psychology Knowledge", usesLlm: false },
   { id: "consumer-behavior-knowledge", path: `${BP}/consumer-behavior-knowledge.spec.ts`, category: TestCategory.AGENT, chapter: "5.13", description: "Consumer Behavior Knowledge", usesLlm: false },
+  { id: "pattern-library", path: `${BP}/pattern-library.spec.ts`, category: TestCategory.AGENT, chapter: "5.14", description: "Pattern Library", usesLlm: false },
   { id: "event-system", path: `${BP}/event-system.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.9", description: "Event bus delivery", usesLlm: false },
   { id: "snapshot-recovery", path: `${BP}/snapshot-recovery.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.8", description: "Snapshot and recovery", usesLlm: false },
   { id: "lifecycle-manager", path: `${BP}/lifecycle-manager.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.4", description: "Lifecycle manager orchestration", usesLlm: false },
