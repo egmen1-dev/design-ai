@@ -45,6 +45,7 @@ export const V18_TEST_REGISTRY: TestSpecEntry[] = [
   { id: "agent-ecosystem-summary", path: `${BP}/agent-ecosystem-summary.spec.ts`, category: TestCategory.AGENT, chapter: "4.28", description: "Agent Ecosystem Summary", usesLlm: false },
   { id: "design-knowledge-philosophy", path: `${BP}/design-knowledge-philosophy.spec.ts`, category: TestCategory.AGENT, chapter: "5.1", description: "Philosophy of Design Knowledge", usesLlm: false },
   { id: "knowledge-architecture", path: `${BP}/knowledge-architecture.spec.ts`, category: TestCategory.AGENT, chapter: "5.2", description: "Knowledge Architecture", usesLlm: false },
+  { id: "knowledge-sources", path: `${BP}/knowledge-sources.spec.ts`, category: TestCategory.AGENT, chapter: "5.3", description: "Knowledge Sources", usesLlm: false },
   { id: "event-system", path: `${BP}/event-system.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.9", description: "Event bus delivery", usesLlm: false },
   { id: "snapshot-recovery", path: `${BP}/snapshot-recovery.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.8", description: "Snapshot and recovery", usesLlm: false },
   { id: "lifecycle-manager", path: `${BP}/lifecycle-manager.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.4", description: "Lifecycle manager orchestration", usesLlm: false },

@@ -42,6 +42,7 @@ SPECS=(
   src/lib/render-blueprint/agent-ecosystem-summary.spec.ts
   src/lib/render-blueprint/design-knowledge-philosophy.spec.ts
   src/lib/render-blueprint/knowledge-architecture.spec.ts
+  src/lib/render-blueprint/knowledge-sources.spec.ts
   src/lib/render-blueprint/event-system.spec.ts
   src/lib/render-blueprint/snapshot-recovery.spec.ts
   src/lib/render-blueprint/lifecycle-manager.spec.ts
