@@ -342,7 +342,12 @@ export function validateAdapterRenderIntent(
 
   if (
     blueprint.background.containsPeople === false &&
-    /\b(person|people|human|man|woman)\b/i.test(intent.positivePrompt)
+    /\b(person|people|human|man|woman)\b/i.test(
+      intent.positivePrompt
+        .replace(/\bno (people|person|humans?)\b/gi, "")
+        .replace(/\b(or|without)\s+(people|person|humans?)\b/gi, "")
+        .replace(/\bno text,\s*logos,\s*or people\b/gi, ""),
+    )
   ) {
     violations.push("CREATIVE_ADDITION");
   }

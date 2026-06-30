@@ -15,6 +15,7 @@ import { runCompositionPlanningStage } from "./composition-planning-stage-engine
 import { runPhotographyPlanningStage } from "./photography-planning-stage-engine";
 import { runBlueprintAssemblyStage } from "./blueprint-assembly-stage-engine";
 import { runConsensusValidationStage } from "./consensus-validation-stage-engine";
+import { runRenderAdapterStageFromPipeline } from "./render-adapter-stage-engine";
 import {
   DesignPipelineLayer,
   DesignPipelinePrinciple,
@@ -1022,6 +1023,19 @@ export function executeDesignPipelineStage(
           );
         }
       }
+    }
+  }
+
+  if (stageId === DesignPipelineStage.RENDER_ADAPTER) {
+    const adapter = runRenderAdapterStageFromPipeline({
+      marketplace: input.marketplace,
+      providerId: "flux",
+    });
+    if (!adapter.valid || !adapter.section) {
+      violations.push(
+        violation("PIPELINE_INCOMPLETE", "Render Adapter Stage failed validation", stageId),
+        ...adapter.violations.map((v) => violation("PIPELINE_INCOMPLETE", v.message, stageId)),
+      );
     }
   }
 
