@@ -79,6 +79,7 @@ export class AgentRegistryError extends Error {
 function inferAgentType(id: AgentContractId): AgentTypeId {
   if (id === "flux-adapter") return AgentType.ADAPTER;
   if (id === "governance" || id === "chief-design-director") return AgentType.ORCHESTRATOR;
+  if (id === "design-memory") return AgentType.ORCHESTRATOR;
   if (id === "critics") return AgentType.CRITIC;
   return AgentType.DIRECTOR;
 }

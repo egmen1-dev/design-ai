@@ -130,6 +130,7 @@ export const AGENT_CATEGORY_MAP: Record<AgentContractId, AgentEcosystemCategoryI
   critics: AgentEcosystemCategory.CRITIC,
   governance: AgentEcosystemCategory.ORCHESTRATOR,
   "chief-design-director": AgentEcosystemCategory.ORCHESTRATOR,
+  "design-memory": AgentEcosystemCategory.LEARNING_AGENT,
   "flux-adapter": null,
   "vision-quality-director": AgentEcosystemCategory.CRITIC,
 };

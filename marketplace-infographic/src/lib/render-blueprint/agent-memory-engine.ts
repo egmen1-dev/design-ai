@@ -216,6 +216,11 @@ export const AGENT_MEMORY_ACCESS_MATRIX: Record<AgentContractId, AgentMemoryAcce
     layers: [MemoryLayer.WORKING, MemoryLayer.LEARNING],
     learningTopics: ["generationStats"],
   },
+  "design-memory": {
+    agentId: "design-memory",
+    layers: [MemoryLayer.LEARNING],
+    learningTopics: ["designPatterns", "categoryWeights", "providerPatterns"],
+  },
   "flux-adapter": {
     agentId: "flux-adapter",
     layers: [MemoryLayer.WORKING],

@@ -31,6 +31,7 @@ SPECS=(
   src/lib/render-blueprint/render-adapter.spec.ts
   src/lib/render-blueprint/vision-quality-director.spec.ts
   src/lib/render-blueprint/chief-design-director.spec.ts
+  src/lib/render-blueprint/design-memory.spec.ts
   src/lib/render-blueprint/event-system.spec.ts
   src/lib/render-blueprint/snapshot-recovery.spec.ts
   src/lib/render-blueprint/lifecycle-manager.spec.ts

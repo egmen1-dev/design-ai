@@ -344,6 +344,11 @@ export {
   type ChiefDesignDirectorAgentInput,
   type ChiefDesignDirectorResult,
 } from "./agents/chief-design-director-agent";
+export {
+  designMemoryAgent,
+  type DesignMemoryAgentInput,
+  type DesignMemoryResult,
+} from "./agents/design-memory-agent";
 
 export {
   compileFluxAdapterOutput,
@@ -1208,5 +1213,37 @@ export {
   type ChiefValidationReport,
   type ChiefFailureCode,
 } from "./chief-design-director-engine";
+
+export {
+  DESIGN_MEMORY_VERSION,
+  DESIGN_MEMORY_GOLDEN_RULE,
+  DESIGN_MEMORY_ID,
+  DESIGN_MEMORY_PIPELINE_POSITION,
+  UserFeedback,
+  MEMORY_EMA_ALPHA,
+  createEmptyDesignKnowledgeStore,
+  extractBlueprintPattern,
+  computeMemoryOutcomeScore,
+  buildMemoryUpdate,
+  queryDesignMemory,
+  validateMemoryUpdate,
+  isMemoryFailure,
+  runDesignMemory,
+  type UserFeedbackId,
+  type CommercialMetrics,
+  type PatternDimensions,
+  type Pattern,
+  type WeightEntry,
+  type WeightMap,
+  type KnowledgeDelta,
+  type MemoryUpdate,
+  type DesignMemoryContext,
+  type MemoryQuery,
+  type MemoryQueryResult,
+  type DesignKnowledgeStore,
+  type MemoryExplainabilityReport,
+  type MemoryValidationReport,
+  type MemoryFailureCode,
+} from "./design-memory-engine";
 
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";

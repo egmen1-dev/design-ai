@@ -35,6 +35,7 @@ export const AGENT_READ_MATRIX: Record<AgentContractId, BlueprintSection[]> = {
   governance: ["composition", "story"],
   critics: ALL_SECTIONS,
   "chief-design-director": ["validation"],
+  "design-memory": ALL_SECTIONS,
   "flux-adapter": ALL_SECTIONS,
   "vision-quality-director": ALL_SECTIONS,
 };
@@ -52,6 +53,7 @@ export const AGENT_WRITE_MATRIX: Record<AgentContractId, BlueprintSection[]> = {
   governance: ["constraints"],
   critics: [],
   "chief-design-director": [],
+  "design-memory": [],
   "flux-adapter": [],
   "vision-quality-director": [],
 };
@@ -69,6 +71,7 @@ export const AGENT_STAGE_MATRIX: Record<AgentContractId, BlueprintLifecycle> = {
   governance: BlueprintLifecycle.CONSTRAINTS_DEFINED,
   critics: BlueprintLifecycle.VALIDATED,
   "chief-design-director": BlueprintLifecycle.VALIDATED,
+  "design-memory": BlueprintLifecycle.FINISHED,
   "flux-adapter": BlueprintLifecycle.FROZEN,
   "vision-quality-director": BlueprintLifecycle.RENDERING,
 };

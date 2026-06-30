@@ -24,6 +24,7 @@ export const AGENT_CAPABILITY_TAGS: Partial<Record<AgentContractId, readonly str
   critics: ["photo-review", "realism-review", "lighting-review"],
   governance: ["constraint-governance"],
   "chief-design-director": ["chief-review", "rollback-decision"],
+  "design-memory": ["pattern-learning", "knowledge-update", "memory-query"],
 };
 
 export function capabilityTagsForAgent(agentId: AgentContractId): string[] {
