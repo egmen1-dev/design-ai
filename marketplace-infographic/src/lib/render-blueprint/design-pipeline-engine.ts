@@ -19,6 +19,7 @@ import { runRenderAdapterStageFromPipeline } from "./render-adapter-stage-engine
 import { runRenderingStageSyncFromPipeline } from "./rendering-stage-engine";
 import { runVisionValidationStageFromPipeline } from "./vision-validation-stage-engine";
 import { runCommercialValidationStageFromPipeline } from "./commercial-validation-stage-engine";
+import { runChiefDesignDirectorReviewStageFromPipeline } from "./chief-design-director-review-stage-engine";
 import {
   DesignPipelineLayer,
   DesignPipelinePrinciple,
@@ -1078,6 +1079,28 @@ export function executeDesignPipelineStage(
         violation("PIPELINE_INCOMPLETE", "Commercial Validation Stage failed validation", stageId),
         ...commercial.violations.map((v) => violation("PIPELINE_INCOMPLETE", v.message, stageId)),
       );
+    }
+  }
+
+  if (stageId === DesignPipelineStage.CHIEF_DESIGN_REVIEW) {
+    const chief = runChiefDesignDirectorReviewStageFromPipeline({
+      marketplace: input.marketplace,
+      providerId: "flux",
+    });
+    if (!chief.valid || !chief.section) {
+      violations.push(
+        violation("PIPELINE_INCOMPLETE", "Chief Design Director Review Stage failed validation", stageId),
+        ...chief.violations.map((v) => violation("PIPELINE_INCOMPLETE", v.message, stageId)),
+      );
+    } else {
+      const approved =
+        chief.section.plannedReport.approvalStatus === "approved" ||
+        chief.section.plannedReport.approvalStatus === "approved_with_notes";
+      if (!approved && chief.section.plannedReport.professionalLevel < 50) {
+        violations.push(
+          violation("PIPELINE_INCOMPLETE", "Chief rejected work below minimum professional standard", stageId),
+        );
+      }
     }
   }
 
