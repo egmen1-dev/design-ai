@@ -453,7 +453,7 @@ export function validateMutationHistory(
   return violations;
 }
 
-export function validateProviderIndependence(blueprint: Readonly<RenderBlueprint>): EvolutionViolation[] {
+export function validateEvolutionProviderIndependence(blueprint: Readonly<RenderBlueprint>): EvolutionViolation[] {
   const violations: EvolutionViolation[] = [];
   try {
     assertNoPromptStored(blueprint);
@@ -508,7 +508,7 @@ export function validateConsistency(
     ...validateDependencyOrder(blueprint),
     ...validateSectionCompleteness(blueprint),
     ...validateMutationHistory(blueprint),
-    ...validateProviderIndependence(blueprint),
+    ...validateEvolutionProviderIndependence(blueprint),
   ];
 
   return {

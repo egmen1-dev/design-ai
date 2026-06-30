@@ -1297,7 +1297,7 @@ export {
   validateDependencyOrder,
   validateSectionCompleteness,
   validateMutationHistory,
-  validateProviderIndependence,
+  validateEvolutionProviderIndependence,
   buildEvolutionExplainability,
   validateConsistency,
   validateRenderReadiness,
@@ -1375,5 +1375,32 @@ export {
   type RetryValidationReport,
   type RetryFailureCode,
 } from "./retry-architecture-engine";
+
+export {
+  PROVIDER_INDEPENDENCE_VERSION,
+  PROVIDER_INDEPENDENCE_GOLDEN_RULE,
+  PROVIDER_ARCHITECTURE_STACK,
+  buildCapabilityProfile,
+  validateBlueprintAsSourceOfTruth,
+  validateNoProviderVocabularyInAgents,
+  validateSemanticIndependence,
+  compileAcrossProviders,
+  benchmarkProviders,
+  validateAdapterIsolation,
+  buildExplainabilityChain,
+  validateProviderIndependence,
+  assertProviderIndependent,
+  runProviderIndependence,
+  providerMigrationRequiresAdapterOnly,
+  isProviderIndependenceFailure,
+  type ProviderCapabilityProfile,
+  type ProviderIndependenceViolation,
+  type MultiProviderCompileResult,
+  type ProviderBenchmarkEntry,
+  type ExplainabilityChain,
+  type ProviderIndependenceReport,
+  type ProviderIndependenceContext,
+  type ProviderIndependenceFailureCode,
+} from "./provider-independence-engine";
 
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";
