@@ -88,6 +88,7 @@ SPECS=(
   src/lib/render-blueprint/agent-pipeline-communication.spec.ts
   src/lib/render-blueprint/agent-memory-model.spec.ts
   src/lib/render-blueprint/agent-professional-decision.spec.ts
+  src/lib/render-blueprint/product-analysis-agent.spec.ts
   src/lib/render-blueprint/event-system.spec.ts
   src/lib/render-blueprint/snapshot-recovery.spec.ts
   src/lib/render-blueprint/lifecycle-manager.spec.ts
