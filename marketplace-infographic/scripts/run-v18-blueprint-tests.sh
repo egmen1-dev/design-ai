@@ -84,6 +84,7 @@ SPECS=(
   src/lib/render-blueprint/agent-implementation-spec.spec.ts
   src/lib/render-blueprint/agent-design-philosophy.spec.ts
   src/lib/render-blueprint/base-agent-architecture.spec.ts
+  src/lib/render-blueprint/agent-session-lifecycle.spec.ts
   src/lib/render-blueprint/event-system.spec.ts
   src/lib/render-blueprint/snapshot-recovery.spec.ts
   src/lib/render-blueprint/lifecycle-manager.spec.ts
