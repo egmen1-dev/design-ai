@@ -107,6 +107,7 @@ export const V18_TEST_REGISTRY: TestSpecEntry[] = [
   { id: "anti-pattern-director-agent", path: `${BP}/anti-pattern-director-agent.spec.ts`, category: TestCategory.AGENT, chapter: "7.20", description: "Anti-Pattern Director Agent", usesLlm: false },
   { id: "vision-critic-agent", path: `${BP}/vision-critic-agent.spec.ts`, category: TestCategory.AGENT, chapter: "7.21", description: "Vision Critic Agent", usesLlm: false },
   { id: "commercial-critic-agent", path: `${BP}/commercial-critic-agent.spec.ts`, category: TestCategory.AGENT, chapter: "7.22", description: "Commercial Critic Agent", usesLlm: false },
+  { id: "senior-art-director-agent", path: `${BP}/senior-art-director-agent.spec.ts`, category: TestCategory.AGENT, chapter: "7.23", description: "Senior Art Director Agent", usesLlm: false },
   { id: "event-system", path: `${BP}/event-system.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.9", description: "Event bus delivery", usesLlm: false },
   { id: "snapshot-recovery", path: `${BP}/snapshot-recovery.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.8", description: "Snapshot and recovery", usesLlm: false },
   { id: "lifecycle-manager", path: `${BP}/lifecycle-manager.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.4", description: "Lifecycle manager orchestration", usesLlm: false },
