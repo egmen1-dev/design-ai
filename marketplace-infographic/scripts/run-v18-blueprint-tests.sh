@@ -82,6 +82,7 @@ SPECS=(
   src/lib/render-blueprint/pipeline-observability-stage.spec.ts
   src/lib/render-blueprint/pipeline-architecture-principles.spec.ts
   src/lib/render-blueprint/agent-implementation-spec.spec.ts
+  src/lib/render-blueprint/agent-design-philosophy.spec.ts
   src/lib/render-blueprint/event-system.spec.ts
   src/lib/render-blueprint/snapshot-recovery.spec.ts
   src/lib/render-blueprint/lifecycle-manager.spec.ts
