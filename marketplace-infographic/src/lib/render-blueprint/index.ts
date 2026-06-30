@@ -298,6 +298,12 @@ export {
 
 export { storyDirectorAgent, universalStoryDirectorAgent, type StoryDirectorInput, type StoryDirectorResult } from "./agents/story-director-agent";
 export { sceneDirectorAgent, universalSceneDirectorAgent, type SceneDirectorInput, type SceneDirectorResult } from "./agents/scene-director-agent";
+export {
+  compositionDirectorAgent,
+  universalCompositionDirectorAgent,
+  type CompositionDirectorInput,
+  type CompositionDirectorResult,
+} from "./agents/composition-director-agent";
 
 export {
   compileFluxAdapterOutput,
@@ -945,5 +951,33 @@ export {
   type SceneValidationReport,
   type SceneFailureCode,
 } from "./scene-director-engine";
+
+export {
+  COMPOSITION_DIRECTOR_VERSION,
+  COMPOSITION_DIRECTOR_GOLDEN_RULE,
+  COMPOSITION_DIRECTOR_ID,
+  COMPOSITION_DIRECTOR_PIPELINE_POSITION,
+  LAYOUT_TEMPLATE_CATALOG,
+  LayoutTemplate,
+  EyeFlowProfile,
+  HierarchyLevel,
+  buildLayoutSection,
+  validateLayoutSection,
+  isCompositionFailure,
+  layoutSectionToMutations,
+  runCompositionDirector,
+  rectsOverlap,
+  directorContextFromBlueprint as compositionDirectorContextFromBlueprint,
+  type LayoutTemplateId,
+  type EyeFlowProfileId,
+  type HierarchyLevelId,
+  type LayoutRect,
+  type LayoutTemplateDefinition,
+  type LayoutSection,
+  type CompositionDirectorContext,
+  type CompositionExplainabilityReport,
+  type CompositionValidationReport,
+  type CompositionFailureCode,
+} from "./composition-director-engine";
 
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";

@@ -198,7 +198,14 @@ export type MaterialBlueprint = {
 
 export type CompositionTemplateId = "hero_left" | "hero_right" | "center";
 
-/** Без x/y/width — это задача HTML (Chapter 3) */
+/** Без legacy hero x/y — Ch 4.12 adds normalized layout zones */
+export type LayoutRect = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
 export type CompositionBlueprint = {
   template: CompositionTemplateId;
   heroWeight: number;
@@ -208,6 +215,17 @@ export type CompositionBlueprint = {
   foreground: boolean;
   midground: boolean;
   background: boolean;
+  /** Ch 4.12 — Composition Director layout geometry */
+  templateId?: string;
+  heroArea?: LayoutRect;
+  headlineArea?: LayoutRect;
+  benefitsArea?: LayoutRect;
+  badgeArea?: LayoutRect;
+  ctaArea?: LayoutRect;
+  safeZones?: LayoutRect[];
+  visualHierarchy?: string[];
+  eyeFlowProfile?: string;
+  whiteSpace?: number;
 };
 
 export type BackgroundComplexityId = "minimal" | "medium" | "rich";
