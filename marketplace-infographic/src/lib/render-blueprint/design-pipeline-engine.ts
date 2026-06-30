@@ -13,6 +13,7 @@ import { runVisualStoryPlanningStage } from "./visual-story-planning-stage-engin
 import { runScenePlanningStage } from "./scene-planning-stage-engine";
 import { runCompositionPlanningStage } from "./composition-planning-stage-engine";
 import { runPhotographyPlanningStage } from "./photography-planning-stage-engine";
+import { runBlueprintAssemblyStage } from "./blueprint-assembly-stage-engine";
 import {
   DesignPipelineLayer,
   DesignPipelinePrinciple,
@@ -852,6 +853,83 @@ export function executeDesignPipelineStage(
           violations.push(
             violation("PIPELINE_INCOMPLETE", "Photography Planning Stage failed validation", stageId),
             ...photography.violations.map((v) => violation("PIPELINE_INCOMPLETE", v.message, stageId)),
+          );
+        }
+      }
+    }
+  }
+
+  if (stageId === DesignPipelineStage.BLUEPRINT_ASSEMBLY) {
+    const analysis = analyzeProduct(buildProductAnalysisInputFromPipeline(input));
+    if (!analysis.section) {
+      violations.push(
+        violation("PIPELINE_INCOMPLETE", "Product Analysis must complete before Blueprint Assembly", stageId),
+      );
+    } else {
+      const knowledge = runKnowledgeRetrievalStage({
+        profile: analysis.section.profile,
+        marketplace: input.marketplace,
+        style: analysis.section.profile.priceSegment,
+      });
+      const business = runBusinessUnderstandingStage({
+        profile: analysis.section.profile,
+        knowledge: knowledge.package!,
+        marketplace: input.marketplace,
+        brand: input.brand,
+      });
+      const story = runVisualStoryPlanningStage({
+        profile: analysis.section.profile,
+        business: business.section!,
+        knowledge: knowledge.package!,
+        marketplace: input.marketplace,
+        brand: input.brand,
+      });
+      const scene = runScenePlanningStage({
+        profile: analysis.section.profile,
+        business: business.section!,
+        story: story.section!.plannedBlueprint,
+        knowledge: knowledge.package!,
+        marketplace: input.marketplace,
+        brand: input.brand,
+      });
+      const composition = runCompositionPlanningStage({
+        profile: analysis.section.profile,
+        business: business.section!,
+        story: story.section!.plannedBlueprint,
+        scene: scene.section!.plannedBlueprint,
+        knowledge: knowledge.package!,
+        marketplace: input.marketplace,
+        brand: input.brand,
+      });
+      const photography = runPhotographyPlanningStage({
+        profile: analysis.section.profile,
+        story: story.section!.plannedBlueprint,
+        scene: scene.section!.plannedBlueprint,
+        composition: composition.section!.plannedBlueprint,
+        knowledge: knowledge.package!,
+        marketplace: input.marketplace,
+        brand: input.brand,
+      });
+      if (!photography.section || !composition.section || !scene.section || !story.section || !business.section || !knowledge.package) {
+        violations.push(
+          violation("PIPELINE_INCOMPLETE", "Photography Planning must complete before Blueprint Assembly", stageId),
+        );
+      } else {
+        const assembly = runBlueprintAssemblyStage({
+          profile: analysis.section.profile,
+          business: business.section,
+          story: story.section,
+          scene: scene.section,
+          composition: composition.section,
+          photography: photography.section,
+          knowledge: knowledge.package,
+          marketplace: input.marketplace,
+          brand: input.brand,
+        });
+        if (!assembly.valid || !assembly.section) {
+          violations.push(
+            violation("PIPELINE_INCOMPLETE", "Blueprint Assembly Stage failed validation", stageId),
+            ...assembly.violations.map((v) => violation("PIPELINE_INCOMPLETE", v.message, stageId)),
           );
         }
       }
