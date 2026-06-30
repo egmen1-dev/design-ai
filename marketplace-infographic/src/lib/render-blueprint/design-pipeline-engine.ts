@@ -14,6 +14,7 @@ import { runScenePlanningStage } from "./scene-planning-stage-engine";
 import { runCompositionPlanningStage } from "./composition-planning-stage-engine";
 import { runPhotographyPlanningStage } from "./photography-planning-stage-engine";
 import { runBlueprintAssemblyStage } from "./blueprint-assembly-stage-engine";
+import { runConsensusValidationStage } from "./consensus-validation-stage-engine";
 import {
   DesignPipelineLayer,
   DesignPipelinePrinciple,
@@ -930,6 +931,94 @@ export function executeDesignPipelineStage(
           violations.push(
             violation("PIPELINE_INCOMPLETE", "Blueprint Assembly Stage failed validation", stageId),
             ...assembly.violations.map((v) => violation("PIPELINE_INCOMPLETE", v.message, stageId)),
+          );
+        }
+      }
+    }
+  }
+
+  if (stageId === DesignPipelineStage.CONSENSUS_VALIDATION) {
+    const analysis = analyzeProduct(buildProductAnalysisInputFromPipeline(input));
+    if (!analysis.section) {
+      violations.push(
+        violation("PIPELINE_INCOMPLETE", "Product Analysis must complete before Consensus Validation", stageId),
+      );
+    } else {
+      const knowledge = runKnowledgeRetrievalStage({
+        profile: analysis.section.profile,
+        marketplace: input.marketplace,
+        style: analysis.section.profile.priceSegment,
+      });
+      const business = runBusinessUnderstandingStage({
+        profile: analysis.section.profile,
+        knowledge: knowledge.package!,
+        marketplace: input.marketplace,
+        brand: input.brand,
+      });
+      const story = runVisualStoryPlanningStage({
+        profile: analysis.section.profile,
+        business: business.section!,
+        knowledge: knowledge.package!,
+        marketplace: input.marketplace,
+        brand: input.brand,
+      });
+      const scene = runScenePlanningStage({
+        profile: analysis.section.profile,
+        business: business.section!,
+        story: story.section!.plannedBlueprint,
+        knowledge: knowledge.package!,
+        marketplace: input.marketplace,
+        brand: input.brand,
+      });
+      const composition = runCompositionPlanningStage({
+        profile: analysis.section.profile,
+        business: business.section!,
+        story: story.section!.plannedBlueprint,
+        scene: scene.section!.plannedBlueprint,
+        knowledge: knowledge.package!,
+        marketplace: input.marketplace,
+        brand: input.brand,
+      });
+      const photography = runPhotographyPlanningStage({
+        profile: analysis.section.profile,
+        story: story.section!.plannedBlueprint,
+        scene: scene.section!.plannedBlueprint,
+        composition: composition.section!.plannedBlueprint,
+        knowledge: knowledge.package!,
+        marketplace: input.marketplace,
+        brand: input.brand,
+      });
+      const assembly = runBlueprintAssemblyStage({
+        profile: analysis.section.profile,
+        business: business.section!,
+        story: story.section!,
+        scene: scene.section!,
+        composition: composition.section!,
+        photography: photography.section!,
+        knowledge: knowledge.package!,
+        marketplace: input.marketplace,
+        brand: input.brand,
+      });
+      if (!assembly.section || !photography.section || !business.section || !knowledge.package) {
+        violations.push(
+          violation("PIPELINE_INCOMPLETE", "Blueprint Assembly must complete before Consensus Validation", stageId),
+        );
+      } else {
+        const consensus = runConsensusValidationStage({
+          profile: analysis.section.profile,
+          business: business.section,
+          blueprint: assembly.section.blueprint,
+          constraintSet: assembly.section.constraintSet,
+          metadata: assembly.section.metadata,
+          knowledge: knowledge.package,
+          assemblyConflicts: assembly.section.conflicts,
+          marketplace: input.marketplace,
+          brand: input.brand,
+        });
+        if (!consensus.valid || !consensus.section?.plannedReport.approved) {
+          violations.push(
+            violation("PIPELINE_INCOMPLETE", "Consensus Validation Stage failed or blueprint not approved", stageId),
+            ...consensus.violations.map((v) => violation("PIPELINE_INCOMPLETE", v.message, stageId)),
           );
         }
       }

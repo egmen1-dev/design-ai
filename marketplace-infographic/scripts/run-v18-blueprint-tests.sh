@@ -71,6 +71,7 @@ SPECS=(
   src/lib/render-blueprint/composition-planning-stage.spec.ts
   src/lib/render-blueprint/photography-planning-stage.spec.ts
   src/lib/render-blueprint/blueprint-assembly-stage.spec.ts
+  src/lib/render-blueprint/consensus-validation-stage.spec.ts
   src/lib/render-blueprint/event-system.spec.ts
   src/lib/render-blueprint/snapshot-recovery.spec.ts
   src/lib/render-blueprint/lifecycle-manager.spec.ts
