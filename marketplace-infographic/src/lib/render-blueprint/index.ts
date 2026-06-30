@@ -310,6 +310,12 @@ export {
   type CommercialPhotoDirectorInput,
   type CommercialPhotoDirectorResult,
 } from "./agents/commercial-photo-director-agent";
+export {
+  lightingDirectorAgent,
+  universalLightingDirectorAgent,
+  type LightingDirectorInput,
+  type LightingDirectorResult,
+} from "./agents/lighting-director-agent";
 
 export {
   compileFluxAdapterOutput,
@@ -1015,5 +1021,35 @@ export {
   type PhotographyValidationReport,
   type PhotographyFailureCode,
 } from "./commercial-photo-director-engine";
+
+export {
+  LIGHTING_DIRECTOR_VERSION,
+  LIGHTING_DIRECTOR_GOLDEN_RULE,
+  LIGHTING_DIRECTOR_ID,
+  LIGHTING_DIRECTOR_PIPELINE_POSITION,
+  LIGHTING_SCHEME_CATALOG,
+  LightingStyle,
+  LightingScheme,
+  ColorTemperature,
+  buildLightingSection,
+  validateLightingSection,
+  isLightingFailure,
+  lightingSectionToMutations,
+  runLightingDirector,
+  directorContextFromBlueprint as lightingDirectorContextFromBlueprint,
+  type LightingStyleId,
+  type LightingSchemeId,
+  type ColorTemperatureId,
+  type LightProfile,
+  type AmbientProfile,
+  type ShadowProfile,
+  type ContrastProfile,
+  type LightingSchemeDefinition,
+  type LightingSection,
+  type LightingDirectorContext,
+  type LightingExplainabilityReport,
+  type LightingValidationReport,
+  type LightingFailureCode,
+} from "./lighting-director-engine";
 
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";

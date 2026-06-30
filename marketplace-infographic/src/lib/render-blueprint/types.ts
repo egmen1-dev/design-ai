@@ -195,6 +195,17 @@ export type LightingBlueprint = {
   back: string;
   shadowSoftness: number;
   reflectionStrength: number;
+  /** Ch 4.14 — Lighting Director physics model */
+  lightingStyle?: string;
+  lightingScheme?: string;
+  keyLight?: import("./lighting-director-types").LightProfile;
+  fillLight?: import("./lighting-director-types").LightProfile;
+  rimLight?: import("./lighting-director-types").LightProfile;
+  ambientLight?: import("./lighting-director-types").AmbientProfile;
+  shadowProfile?: import("./lighting-director-types").ShadowProfile;
+  contrastProfile?: import("./lighting-director-types").ContrastProfile;
+  lightingMood?: string;
+  providerHints?: string[];
 };
 
 export type MaterialReflectionId = "none" | "soft" | "medium";
