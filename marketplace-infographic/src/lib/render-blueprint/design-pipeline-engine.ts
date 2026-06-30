@@ -7,8 +7,9 @@ import {
   analyzeProduct,
   buildProductAnalysisInputFromPipeline,
 } from "./product-analysis-engine";
-import { runKnowledgeRetrievalStage } from "./knowledge-retrieval-stage-engine";
 import { runBusinessUnderstandingStage } from "./business-understanding-engine";
+import { runKnowledgeRetrievalStage } from "./knowledge-retrieval-stage-engine";
+import { runVisualStoryPlanningStage } from "./visual-story-planning-stage-engine";
 import {
   DesignPipelineLayer,
   DesignPipelinePrinciple,
@@ -637,6 +638,46 @@ export function executeDesignPipelineStage(
           violations.push(
             violation("PIPELINE_INCOMPLETE", "Business Understanding Stage failed validation", stageId),
             ...business.violations.map((v) => violation("PIPELINE_INCOMPLETE", v.message, stageId)),
+          );
+        }
+      }
+    }
+  }
+
+  if (stageId === DesignPipelineStage.VISUAL_STORY_PLANNING) {
+    const analysis = analyzeProduct(buildProductAnalysisInputFromPipeline(input));
+    if (!analysis.section) {
+      violations.push(
+        violation("PIPELINE_INCOMPLETE", "Product Analysis must complete before Visual Story Planning", stageId),
+      );
+    } else {
+      const knowledge = runKnowledgeRetrievalStage({
+        profile: analysis.section.profile,
+        marketplace: input.marketplace,
+        style: analysis.section.profile.priceSegment,
+      });
+      const business = runBusinessUnderstandingStage({
+        profile: analysis.section.profile,
+        knowledge: knowledge.package!,
+        marketplace: input.marketplace,
+        brand: input.brand,
+      });
+      if (!business.section || !knowledge.package) {
+        violations.push(
+          violation("PIPELINE_INCOMPLETE", "Business Understanding must complete before Visual Story Planning", stageId),
+        );
+      } else {
+        const story = runVisualStoryPlanningStage({
+          profile: analysis.section.profile,
+          business: business.section,
+          knowledge: knowledge.package,
+          marketplace: input.marketplace,
+          brand: input.brand,
+        });
+        if (!story.valid || !story.section) {
+          violations.push(
+            violation("PIPELINE_INCOMPLETE", "Visual Story Planning Stage failed validation", stageId),
+            ...story.violations.map((v) => violation("PIPELINE_INCOMPLETE", v.message, stageId)),
           );
         }
       }
