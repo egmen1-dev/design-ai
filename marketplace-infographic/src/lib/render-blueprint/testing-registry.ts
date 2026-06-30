@@ -112,6 +112,7 @@ export const V18_TEST_REGISTRY: TestSpecEntry[] = [
   { id: "learning-agent", path: `${BP}/learning-agent.spec.ts`, category: TestCategory.AGENT, chapter: "7.25", description: "Learning Agent", usesLlm: false },
   { id: "render-orchestrator-agent", path: `${BP}/render-orchestrator-agent.spec.ts`, category: TestCategory.AGENT, chapter: "7.26", description: "Render Orchestrator Agent", usesLlm: false },
   { id: "render-adapter-agent", path: `${BP}/render-adapter-agent.spec.ts`, category: TestCategory.AGENT, chapter: "7.27", description: "Render Adapter Agent", usesLlm: false },
+  { id: "render-validator-agent", path: `${BP}/render-validator-agent.spec.ts`, category: TestCategory.AGENT, chapter: "7.28", description: "Render Validator Agent", usesLlm: false },
   { id: "event-system", path: `${BP}/event-system.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.9", description: "Event bus delivery", usesLlm: false },
   { id: "snapshot-recovery", path: `${BP}/snapshot-recovery.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.8", description: "Snapshot and recovery", usesLlm: false },
   { id: "lifecycle-manager", path: `${BP}/lifecycle-manager.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.4", description: "Lifecycle manager orchestration", usesLlm: false },

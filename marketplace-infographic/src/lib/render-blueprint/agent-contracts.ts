@@ -27,6 +27,7 @@ export type AgentContractId =
   | "learning-agent"
   | "render-orchestrator"
   | "render-adapter"
+  | "render-validator"
   | "design-memory"
   | "flux-adapter"
   | "vision-quality-director";

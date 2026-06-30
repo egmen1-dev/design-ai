@@ -284,6 +284,13 @@ export const AGENT_MEMORY_ACCESS_MATRIX: Record<AgentContractId, AgentMemoryAcce
     knowledgeTopics: ["providerKnowledgeBase", "promptEngineeringLibrary", "renderRules"],
     referenceTopics: ["historicalProviderStatistics", "designConstitution", "designMemory"],
   },
+  "render-validator": {
+    agentId: "render-validator",
+    layers: [MemoryLayer.WORKING, MemoryLayer.KNOWLEDGE, MemoryLayer.LEARNING],
+    knowledgeTopics: ["renderQualityStandards", "artifactLibrary", "blueprintRules"],
+    learningTopics: ["historicalValidationReports", "designMemory"],
+    referenceTopics: ["designConstitution", "marketplaceRules"],
+  },
   "design-memory": {
     agentId: "design-memory",
     layers: [MemoryLayer.LEARNING],

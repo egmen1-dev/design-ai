@@ -109,6 +109,7 @@ SPECS=(
   src/lib/render-blueprint/learning-agent.spec.ts
   src/lib/render-blueprint/render-orchestrator-agent.spec.ts
   src/lib/render-blueprint/render-adapter-agent.spec.ts
+  src/lib/render-blueprint/render-validator-agent.spec.ts
   src/lib/render-blueprint/event-system.spec.ts
   src/lib/render-blueprint/snapshot-recovery.spec.ts
   src/lib/render-blueprint/lifecycle-manager.spec.ts
