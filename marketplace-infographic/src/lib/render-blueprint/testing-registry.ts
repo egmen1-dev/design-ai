@@ -53,6 +53,7 @@ export const V18_TEST_REGISTRY: TestSpecEntry[] = [
   { id: "composition-knowledge", path: `${BP}/composition-knowledge.spec.ts`, category: TestCategory.AGENT, chapter: "5.8", description: "Composition Knowledge", usesLlm: false },
   { id: "photography-knowledge", path: `${BP}/photography-knowledge.spec.ts`, category: TestCategory.AGENT, chapter: "5.9", description: "Photography Knowledge", usesLlm: false },
   { id: "color-knowledge", path: `${BP}/color-knowledge.spec.ts`, category: TestCategory.AGENT, chapter: "5.10", description: "Color Knowledge", usesLlm: false },
+  { id: "typography-knowledge", path: `${BP}/typography-knowledge.spec.ts`, category: TestCategory.AGENT, chapter: "5.11", description: "Typography Knowledge", usesLlm: false },
   { id: "event-system", path: `${BP}/event-system.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.9", description: "Event bus delivery", usesLlm: false },
   { id: "snapshot-recovery", path: `${BP}/snapshot-recovery.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.8", description: "Snapshot and recovery", usesLlm: false },
   { id: "lifecycle-manager", path: `${BP}/lifecycle-manager.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.4", description: "Lifecycle manager orchestration", usesLlm: false },
