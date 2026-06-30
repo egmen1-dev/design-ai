@@ -69,6 +69,7 @@ SPECS=(
   src/lib/render-blueprint/visual-story-planning-stage.spec.ts
   src/lib/render-blueprint/scene-planning-stage.spec.ts
   src/lib/render-blueprint/composition-planning-stage.spec.ts
+  src/lib/render-blueprint/photography-planning-stage.spec.ts
   src/lib/render-blueprint/event-system.spec.ts
   src/lib/render-blueprint/snapshot-recovery.spec.ts
   src/lib/render-blueprint/lifecycle-manager.spec.ts
