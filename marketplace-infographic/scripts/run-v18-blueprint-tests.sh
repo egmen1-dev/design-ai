@@ -106,6 +106,7 @@ SPECS=(
   src/lib/render-blueprint/commercial-critic-agent.spec.ts
   src/lib/render-blueprint/senior-art-director-agent.spec.ts
   src/lib/render-blueprint/chief-design-director-agent.spec.ts
+  src/lib/render-blueprint/learning-agent.spec.ts
   src/lib/render-blueprint/event-system.spec.ts
   src/lib/render-blueprint/snapshot-recovery.spec.ts
   src/lib/render-blueprint/lifecycle-manager.spec.ts

@@ -265,6 +265,13 @@ export const AGENT_MEMORY_ACCESS_MATRIX: Record<AgentContractId, AgentMemoryAcce
     layers: [MemoryLayer.WORKING, MemoryLayer.LEARNING],
     learningTopics: ["generationStats"],
   },
+  "learning-agent": {
+    agentId: "learning-agent",
+    layers: [MemoryLayer.WORKING, MemoryLayer.KNOWLEDGE, MemoryLayer.LEARNING],
+    knowledgeTopics: ["designMemory", "historicalProjects", "ctrDatabase"],
+    learningTopics: ["retryStatistics", "userFeedbackDatabase", "marketplaceAnalytics"],
+    referenceTopics: ["designGenome", "designConstitution"],
+  },
   "design-memory": {
     agentId: "design-memory",
     layers: [MemoryLayer.LEARNING],
