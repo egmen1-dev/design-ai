@@ -87,7 +87,7 @@ function testHighLevelPipelinePosition() {
   const completion = HIGH_LEVEL_PIPELINE.find((s) => s.id === DesignPipelineStage.PIPELINE_COMPLETION)!;
   assert.equal(completion.order, 19);
   assert.equal(completion.makesDesignDecision, false);
-  assert.equal(HIGH_LEVEL_PIPELINE.length, 19);
+  assert.equal(HIGH_LEVEL_PIPELINE.length, 20);
   console.log("✔ pipeline completion is stage 19 in design pipeline");
 }
 

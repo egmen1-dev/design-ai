@@ -22,6 +22,7 @@ export const DesignPipelineStage = {
   APPROVED_BLUEPRINT: "approved_blueprint",
   KNOWLEDGE_LEARNING: "knowledge_learning",
   PIPELINE_COMPLETION: "pipeline_completion",
+  PIPELINE_OBSERVABILITY: "pipeline_observability",
 } as const;
 
 export type DesignPipelineStageId =
@@ -35,6 +36,7 @@ export const DesignPipelineLayer = {
   RENDERING: "rendering",
   VALIDATION: "validation",
   LEARNING: "learning",
+  OBSERVABILITY: "observability",
 } as const;
 
 export type DesignPipelineLayerId =
@@ -89,6 +91,7 @@ export type DesignPipelineOutput = {
   commercialReportId?: string;
   learningPackageId?: string;
   finalProjectId?: string;
+  traceId?: string;
   designMemoryUpdated: boolean;
 };
 

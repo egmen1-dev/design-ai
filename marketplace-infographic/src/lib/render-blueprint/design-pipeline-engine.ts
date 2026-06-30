@@ -21,6 +21,7 @@ import { runCommercialValidationStageFromPipeline } from "./commercial-validatio
 import { runChiefDesignDirectorReviewStageFromPipeline } from "./chief-design-director-review-stage-engine";
 import { runLearningFeedbackStageFromPipeline } from "./learning-feedback-stage-engine";
 import { runPipelineCompletionStageFromPipeline } from "./pipeline-completion-stage-engine";
+import { runPipelineObservabilityStageFromPipeline } from "./pipeline-observability-stage-engine";
 import {
   DesignPipelineLayer,
   DesignPipelinePrinciple,
@@ -240,6 +241,14 @@ export const HIGH_LEVEL_PIPELINE: readonly DesignPipelineStageDefinition[] = [
     responsibility: "Finalize project, store artifacts, and deliver results to user",
     makesDesignDecision: false,
   },
+  {
+    id: DesignPipelineStage.PIPELINE_OBSERVABILITY,
+    order: 20,
+    label: "Pipeline Observability & Monitoring",
+    layer: DesignPipelineLayer.OBSERVABILITY,
+    responsibility: "Observe, measure, and document pipeline execution in real time",
+    makesDesignDecision: false,
+  },
 ] as const;
 
 export const PIPELINE_LAYERS: readonly DesignPipelineLayerDefinition[] = [
@@ -296,6 +305,12 @@ export const PIPELINE_LAYERS: readonly DesignPipelineLayerDefinition[] = [
     label: "Learning Layer",
     summary: "Post-pipeline knowledge learning, completion, and delivery",
     stages: [DesignPipelineStage.KNOWLEDGE_LEARNING, DesignPipelineStage.PIPELINE_COMPLETION],
+  },
+  {
+    id: DesignPipelineLayer.OBSERVABILITY,
+    label: "Observability Layer",
+    summary: "Pipeline telemetry, tracing, metrics, and audit",
+    stages: [DesignPipelineStage.PIPELINE_OBSERVABILITY],
   },
 ] as const;
 
@@ -382,6 +397,7 @@ export function validatePipelineStageOrder(): DesignPipelineViolation[] {
 
   const learningIdx = sorted.findIndex((s) => s.id === DesignPipelineStage.KNOWLEDGE_LEARNING);
   const completionIdx = sorted.findIndex((s) => s.id === DesignPipelineStage.PIPELINE_COMPLETION);
+  const observabilityIdx = sorted.findIndex((s) => s.id === DesignPipelineStage.PIPELINE_OBSERVABILITY);
   const approvedIdx = sorted.findIndex((s) => s.id === DesignPipelineStage.APPROVED_BLUEPRINT);
   if (learningIdx < approvedIdx) {
     violations.push(
@@ -401,6 +417,15 @@ export function validatePipelineStageOrder(): DesignPipelineViolation[] {
       ),
     );
   }
+  if (observabilityIdx < completionIdx) {
+    violations.push(
+      violation(
+        "INVALID_STAGE_ORDER",
+        "Pipeline Observability must follow Pipeline Completion",
+        DesignPipelineStage.PIPELINE_OBSERVABILITY,
+      ),
+    );
+  }
 
   return violations;
 }
@@ -417,8 +442,8 @@ export function validatePipelineLayerCoverage(): DesignPipelineViolation[] {
     }
   }
 
-  if (PIPELINE_LAYERS.length !== 7) {
-    violations.push(violation("LAYER_GAP", "Design Pipeline requires exactly 7 layers"));
+  if (PIPELINE_LAYERS.length !== 8) {
+    violations.push(violation("LAYER_GAP", "Design Pipeline requires exactly 8 layers"));
   }
 
   return violations;
@@ -1157,6 +1182,23 @@ export function executeDesignPipelineStage(
     }
   }
 
+  if (stageId === DesignPipelineStage.PIPELINE_OBSERVABILITY) {
+    const observability = runPipelineObservabilityStageFromPipeline({
+      marketplace: input.marketplace,
+      providerId: "flux",
+    });
+    if (!observability.valid || !observability.section) {
+      violations.push(
+        violation("PIPELINE_INCOMPLETE", "Pipeline Observability Stage failed validation", stageId),
+        ...observability.violations.map((v) => violation("PIPELINE_INCOMPLETE", v.message, stageId)),
+      );
+    } else if (!observability.section.plannedReport.traceId) {
+      violations.push(
+        violation("PIPELINE_INCOMPLETE", "Pipeline Observability must produce trace ID", stageId),
+      );
+    }
+  }
+
   return {
     stage: stageId,
     passed: violations.length === 0,
@@ -1182,6 +1224,7 @@ export function runDesignPipeline(
   let approved = false;
   let learningExecuted = false;
   let completionExecuted = false;
+  let observabilityExecuted = false;
 
   const executionOrder = HIGH_LEVEL_PIPELINE.filter((s) => s.id !== DesignPipelineStage.RETRY);
 
@@ -1193,7 +1236,8 @@ export function runDesignPipeline(
     if (
       !result.passed &&
       stageDef.id !== DesignPipelineStage.KNOWLEDGE_LEARNING &&
-      stageDef.id !== DesignPipelineStage.PIPELINE_COMPLETION
+      stageDef.id !== DesignPipelineStage.PIPELINE_COMPLETION &&
+      stageDef.id !== DesignPipelineStage.PIPELINE_OBSERVABILITY
     ) {
       break;
     }
@@ -1203,6 +1247,9 @@ export function runDesignPipeline(
     }
     if (stageDef.id === DesignPipelineStage.PIPELINE_COMPLETION) {
       completionExecuted = result.passed;
+    }
+    if (stageDef.id === DesignPipelineStage.PIPELINE_OBSERVABILITY) {
+      observabilityExecuted = result.passed;
     }
     if (stageDef.id === DesignPipelineStage.APPROVED_BLUEPRINT) {
       approved = result.passed;
@@ -1217,6 +1264,7 @@ export function runDesignPipeline(
     commercialReportId: `commercial-${pipelineId}`,
     learningPackageId: learningExecuted ? `learning-${pipelineId}` : undefined,
     finalProjectId: completionExecuted ? `project-${pipelineId}` : undefined,
+    traceId: observabilityExecuted ? `trace-${pipelineId}` : undefined,
     designMemoryUpdated: learningExecuted,
   };
 

@@ -41,18 +41,19 @@ function testGoldenRule() {
 }
 
 function testHighLevelPipeline() {
-  assert.equal(HIGH_LEVEL_PIPELINE.length, 19);
+  assert.equal(HIGH_LEVEL_PIPELINE.length, 20);
   assert.equal(HIGH_LEVEL_PIPELINE[16].id, DesignPipelineStage.APPROVED_BLUEPRINT);
   assert.equal(HIGH_LEVEL_PIPELINE[17].id, DesignPipelineStage.KNOWLEDGE_LEARNING);
   assert.equal(HIGH_LEVEL_PIPELINE[18].id, DesignPipelineStage.PIPELINE_COMPLETION);
-  console.log("✔ high-level pipeline — business goal to pipeline completion");
+  assert.equal(HIGH_LEVEL_PIPELINE[19].id, DesignPipelineStage.PIPELINE_OBSERVABILITY);
+  console.log("✔ high-level pipeline — business goal to pipeline observability");
 }
 
 function testPipelineLayers() {
-  assert.equal(PIPELINE_LAYERS.length, 7);
+  assert.equal(PIPELINE_LAYERS.length, 8);
   assert.equal(PIPELINE_LAYERS[0].id, DesignPipelineLayer.INPUT);
-  assert.equal(PIPELINE_LAYERS[6].id, DesignPipelineLayer.LEARNING);
-  console.log("✔ pipeline layers — input to knowledge to creative to learning");
+  assert.equal(PIPELINE_LAYERS[7].id, DesignPipelineLayer.OBSERVABILITY);
+  console.log("✔ pipeline layers — input to observability");
 }
 
 function testGenericAiContrast() {
@@ -165,8 +166,8 @@ function testRunDesignPipeline() {
 function testValidateDesignPipeline() {
   const report = validateDesignPipeline();
   assert.equal(report.valid, true);
-  assert.equal(report.stageCount, 19);
-  assert.equal(report.layerCount, 7);
+  assert.equal(report.stageCount, 20);
+  assert.equal(report.layerCount, 8);
   assert.equal(report.principlesSatisfied, true);
   assert.equal(report.learningIntegrated, true);
   assertDesignPipeline();
