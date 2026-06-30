@@ -38,6 +38,7 @@ SPECS=(
   src/lib/render-blueprint/retry-architecture.spec.ts
   src/lib/render-blueprint/provider-independence.spec.ts
   src/lib/render-blueprint/explainability-architecture.spec.ts
+  src/lib/render-blueprint/failure-recovery-architecture.spec.ts
   src/lib/render-blueprint/event-system.spec.ts
   src/lib/render-blueprint/snapshot-recovery.spec.ts
   src/lib/render-blueprint/lifecycle-manager.spec.ts

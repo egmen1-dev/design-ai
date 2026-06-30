@@ -41,6 +41,7 @@ export const V18_TEST_REGISTRY: TestSpecEntry[] = [
   { id: "retry-architecture", path: `${BP}/retry-architecture.spec.ts`, category: TestCategory.PIPELINE, chapter: "4.24", description: "Retry Architecture", usesLlm: false },
   { id: "provider-independence", path: `${BP}/provider-independence.spec.ts`, category: TestCategory.PIPELINE, chapter: "4.25", description: "Provider Independence", usesLlm: false },
   { id: "explainability-architecture", path: `${BP}/explainability-architecture.spec.ts`, category: TestCategory.PIPELINE, chapter: "4.26", description: "Explainability Architecture", usesLlm: false },
+  { id: "failure-recovery-architecture", path: `${BP}/failure-recovery-architecture.spec.ts`, category: TestCategory.PIPELINE, chapter: "4.27", description: "Failure Recovery Architecture", usesLlm: false },
   { id: "event-system", path: `${BP}/event-system.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.9", description: "Event bus delivery", usesLlm: false },
   { id: "snapshot-recovery", path: `${BP}/snapshot-recovery.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.8", description: "Snapshot and recovery", usesLlm: false },
   { id: "lifecycle-manager", path: `${BP}/lifecycle-manager.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.4", description: "Lifecycle manager orchestration", usesLlm: false },
