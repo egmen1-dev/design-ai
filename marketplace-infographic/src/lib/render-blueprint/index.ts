@@ -316,6 +316,12 @@ export {
   type LightingDirectorInput,
   type LightingDirectorResult,
 } from "./agents/lighting-director-agent";
+export {
+  cameraDirectorAgent,
+  universalCameraDirectorAgent,
+  type CameraDirectorInput,
+  type CameraDirectorResult,
+} from "./agents/camera-director-agent";
 
 export {
   compileFluxAdapterOutput,
@@ -1051,5 +1057,33 @@ export {
   type LightingValidationReport,
   type LightingFailureCode,
 } from "./lighting-director-engine";
+
+export {
+  CAMERA_DIRECTOR_VERSION,
+  CAMERA_DIRECTOR_GOLDEN_RULE,
+  CAMERA_DIRECTOR_ID,
+  CAMERA_DIRECTOR_PIPELINE_POSITION,
+  CAMERA_STYLE_CATALOG,
+  CameraStyle,
+  CameraAngleStyle,
+  CameraHeightStyle,
+  CameraDistanceStyle,
+  PerspectiveProfile,
+  DepthOfFieldProfile,
+  FramingProfile,
+  buildCameraSection,
+  validateCameraSection,
+  isCameraFailure,
+  cameraSectionToMutations,
+  runCameraDirector,
+  directorContextFromBlueprint as cameraDirectorContextFromBlueprint,
+  type CameraStyleId,
+  type CameraStyleDefinition,
+  type CameraSection,
+  type CameraDirectorContext,
+  type CameraExplainabilityReport,
+  type CameraValidationReport,
+  type CameraFailureCode,
+} from "./camera-director-engine";
 
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";

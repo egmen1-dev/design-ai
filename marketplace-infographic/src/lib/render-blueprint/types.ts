@@ -177,6 +177,16 @@ export type CameraBlueprint = {
   angle: CameraAngleId;
   distance: CameraDistanceId;
   perspective: CameraPerspectiveId;
+  /** Ch 4.15 — Camera Director viewpoint model */
+  cameraStyle?: string;
+  cameraAngle?: string;
+  cameraHeight?: string;
+  focalLength?: number;
+  perspectiveProfile?: string;
+  heroScale?: number;
+  depthOfField?: string;
+  framingProfile?: string;
+  providerHints?: string[];
 };
 
 export type LightingPresetId =
