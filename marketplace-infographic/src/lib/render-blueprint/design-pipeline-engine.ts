@@ -18,6 +18,7 @@ import { runConsensusValidationStage } from "./consensus-validation-stage-engine
 import { runRenderAdapterStageFromPipeline } from "./render-adapter-stage-engine";
 import { runRenderingStageSyncFromPipeline } from "./rendering-stage-engine";
 import { runVisionValidationStageFromPipeline } from "./vision-validation-stage-engine";
+import { runCommercialValidationStageFromPipeline } from "./commercial-validation-stage-engine";
 import {
   DesignPipelineLayer,
   DesignPipelinePrinciple,
@@ -1063,6 +1064,19 @@ export function executeDesignPipelineStage(
       violations.push(
         violation("PIPELINE_INCOMPLETE", "Vision Validation Stage failed validation", stageId),
         ...vision.violations.map((v) => violation("PIPELINE_INCOMPLETE", v.message, stageId)),
+      );
+    }
+  }
+
+  if (stageId === DesignPipelineStage.COMMERCIAL_VALIDATION) {
+    const commercial = runCommercialValidationStageFromPipeline({
+      marketplace: input.marketplace,
+      providerId: "flux",
+    });
+    if (!commercial.valid || !commercial.section) {
+      violations.push(
+        violation("PIPELINE_INCOMPLETE", "Commercial Validation Stage failed validation", stageId),
+        ...commercial.violations.map((v) => violation("PIPELINE_INCOMPLETE", v.message, stageId)),
       );
     }
   }

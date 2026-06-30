@@ -78,6 +78,7 @@ export const V18_TEST_REGISTRY: TestSpecEntry[] = [
   { id: "render-adapter-stage", path: `${BP}/render-adapter-stage.spec.ts`, category: TestCategory.PIPELINE, chapter: "6.12", description: "Render Adapter Stage", usesLlm: false },
   { id: "rendering-stage", path: `${BP}/rendering-stage.spec.ts`, category: TestCategory.PIPELINE, chapter: "6.13", description: "Rendering Stage", usesLlm: false },
   { id: "vision-validation-stage", path: `${BP}/vision-validation-stage.spec.ts`, category: TestCategory.PIPELINE, chapter: "6.14", description: "Vision Validation Stage", usesLlm: false },
+  { id: "commercial-validation-stage", path: `${BP}/commercial-validation-stage.spec.ts`, category: TestCategory.PIPELINE, chapter: "6.15", description: "Commercial Validation Stage", usesLlm: false },
   { id: "event-system", path: `${BP}/event-system.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.9", description: "Event bus delivery", usesLlm: false },
   { id: "snapshot-recovery", path: `${BP}/snapshot-recovery.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.8", description: "Snapshot and recovery", usesLlm: false },
   { id: "lifecycle-manager", path: `${BP}/lifecycle-manager.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.4", description: "Lifecycle manager orchestration", usesLlm: false },
