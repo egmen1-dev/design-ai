@@ -147,6 +147,17 @@ export type PhotographyBlueprint = {
   contrast: ContrastLevelId;
   visualMood: string;
   realism: number;
+  /** Ch 4.13 — Commercial Photo Director shoot plan */
+  photographyStyle?: string;
+  photoMood?: string;
+  depthProfile?: string;
+  focusStrategy?: string;
+  productInteraction?: string;
+  shootingNarrative?: string;
+  lightingIntent?: string;
+  cameraIntent?: string;
+  materialIntent?: string;
+  providerHints?: string[];
 };
 
 export type CameraLensId = 35 | 50 | 70 | 85;

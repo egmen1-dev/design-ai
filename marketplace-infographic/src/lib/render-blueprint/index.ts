@@ -304,6 +304,12 @@ export {
   type CompositionDirectorInput,
   type CompositionDirectorResult,
 } from "./agents/composition-director-agent";
+export {
+  commercialPhotoDirectorAgent,
+  universalCommercialPhotoDirectorAgent,
+  type CommercialPhotoDirectorInput,
+  type CommercialPhotoDirectorResult,
+} from "./agents/commercial-photo-director-agent";
 
 export {
   compileFluxAdapterOutput,
@@ -979,5 +985,35 @@ export {
   type CompositionValidationReport,
   type CompositionFailureCode,
 } from "./composition-director-engine";
+
+export {
+  COMMERCIAL_PHOTO_DIRECTOR_VERSION,
+  COMMERCIAL_PHOTO_DIRECTOR_GOLDEN_RULE,
+  COMMERCIAL_PHOTO_DIRECTOR_ID,
+  COMMERCIAL_PHOTO_PIPELINE_POSITION,
+  PHOTOGRAPHY_STYLE_CATALOG,
+  PhotographyStyle,
+  PhotoMood,
+  PhotoDepthProfile,
+  FocusStrategy,
+  ProductInteraction,
+  buildPhotographySection,
+  validatePhotographySection,
+  isPhotographyFailure,
+  photographySectionToMutations,
+  runCommercialPhotoDirector,
+  directorContextFromBlueprint as commercialPhotoDirectorContextFromBlueprint,
+  type PhotographyStyleId,
+  type PhotoMoodId,
+  type PhotoDepthProfileId,
+  type FocusStrategyId,
+  type ProductInteractionId,
+  type PhotographyStyleDefinition,
+  type PhotographySection,
+  type CommercialPhotoDirectorContext,
+  type PhotographyExplainabilityReport,
+  type PhotographyValidationReport,
+  type PhotographyFailureCode,
+} from "./commercial-photo-director-engine";
 
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";
