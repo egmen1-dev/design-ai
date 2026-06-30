@@ -1320,4 +1320,35 @@ export {
   type EvolutionFailureCode,
 } from "./blueprint-evolution-engine";
 
+export {
+  CONSENSUS_ENGINE_VERSION,
+  CONSENSUS_ENGINE_GOLDEN_RULE,
+  CONSENSUS_ENGINE_ID,
+  CONSENSUS_ENGINE_PIPELINE_POSITION,
+  ConflictType,
+  ConflictSeverity,
+  detectSemanticConflicts,
+  detectVisualConflicts,
+  detectMarketplaceConflicts,
+  detectProviderConflicts,
+  detectStructuralConflicts,
+  buildAgreementMatrix,
+  computeOverallConsistency,
+  buildConsensusReport,
+  validateConsensusReport,
+  isConsensusFailure,
+  runConsensusEngine,
+  type ConflictTypeId,
+  type ConflictSeverityId,
+  type BlueprintConflict,
+  type BlueprintWarning,
+  type AgreementPair,
+  type AgreementMatrix,
+  type ConsensusReport,
+  type ConsensusContext,
+  type ConsensusExplainabilityReport,
+  type ConsensusValidationReport,
+  type ConsensusFailureCode,
+} from "./consensus-engine-engine";
+
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";
