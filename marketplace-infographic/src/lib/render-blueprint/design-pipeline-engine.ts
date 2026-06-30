@@ -17,6 +17,7 @@ import { runBlueprintAssemblyStage } from "./blueprint-assembly-stage-engine";
 import { runConsensusValidationStage } from "./consensus-validation-stage-engine";
 import { runRenderAdapterStageFromPipeline } from "./render-adapter-stage-engine";
 import { runRenderingStageSyncFromPipeline } from "./rendering-stage-engine";
+import { runVisionValidationStageFromPipeline } from "./vision-validation-stage-engine";
 import {
   DesignPipelineLayer,
   DesignPipelinePrinciple,
@@ -1049,6 +1050,19 @@ export function executeDesignPipelineStage(
       violations.push(
         violation("PIPELINE_INCOMPLETE", "Rendering Stage failed validation", stageId),
         ...rendering.violations.map((v) => violation("PIPELINE_INCOMPLETE", v.message, stageId)),
+      );
+    }
+  }
+
+  if (stageId === DesignPipelineStage.VISION_ANALYSIS) {
+    const vision = runVisionValidationStageFromPipeline({
+      marketplace: input.marketplace,
+      providerId: "flux",
+    });
+    if (!vision.valid || !vision.section) {
+      violations.push(
+        violation("PIPELINE_INCOMPLETE", "Vision Validation Stage failed validation", stageId),
+        ...vision.violations.map((v) => violation("PIPELINE_INCOMPLETE", v.message, stageId)),
       );
     }
   }
