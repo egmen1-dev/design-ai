@@ -195,6 +195,13 @@ export const AGENT_MEMORY_ACCESS_MATRIX: Record<AgentContractId, AgentMemoryAcce
     knowledgeTopics: ["designGenome"],
     referenceTopics: ["materialLibrary"],
   },
+  "typography-director": {
+    agentId: "typography-director",
+    layers: [MemoryLayer.WORKING, MemoryLayer.KNOWLEDGE, MemoryLayer.LEARNING],
+    knowledgeTopics: ["typographyRules"],
+    learningTopics: ["templateWeights"],
+    referenceTopics: ["typographyLibrary"],
+  },
   "composition-director": {
     agentId: "composition-director",
     layers: [MemoryLayer.WORKING, MemoryLayer.KNOWLEDGE, MemoryLayer.LEARNING],
