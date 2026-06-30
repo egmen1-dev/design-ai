@@ -818,4 +818,37 @@ export {
   type SerializedMemoryReplay,
 } from "./agent-memory-engine";
 
+export {
+  AGENT_DECISION_VERSION,
+  AGENT_DECISION_GOLDEN_RULE,
+  DecisionStage,
+  DecisionQualityCriterion,
+  DecisionConstraintKind,
+  DECISION_STAGE_ORDER,
+  AgentDecisionSession,
+  evaluateDecisionQuality,
+  detectPromptThinkingViolation,
+  validateAgentDecision,
+  buildTraceFromState,
+  traceFromSession,
+  serializeDecisionReplay,
+  deserializeDecisionReplay,
+  defaultAlternativesForAgent,
+  scoreAlternative,
+  pickBestAlternative,
+  type DecisionStageId,
+  type DecisionQualityCriterionId,
+  type DecisionConstraintKindId,
+  type DecisionAlternative,
+  type DecisionEvaluation,
+  type AgentDecisionTrace,
+  type DecisionStageRecord,
+  type DecisionPipelineState,
+  type DecisionViolation,
+  type DecisionViolationCode,
+  type DecisionValidationReport,
+  type DecisionQualityReport,
+  type SerializedDecisionReplay,
+} from "./agent-decision-engine";
+
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";
