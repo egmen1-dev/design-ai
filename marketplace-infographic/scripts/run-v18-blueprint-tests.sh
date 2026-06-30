@@ -94,6 +94,7 @@ SPECS=(
   src/lib/render-blueprint/visual-story-director-agent.spec.ts
   src/lib/render-blueprint/scene-director-agent.spec.ts
   src/lib/render-blueprint/composition-director-agent.spec.ts
+  src/lib/render-blueprint/photography-director-agent.spec.ts
   src/lib/render-blueprint/event-system.spec.ts
   src/lib/render-blueprint/snapshot-recovery.spec.ts
   src/lib/render-blueprint/lifecycle-manager.spec.ts

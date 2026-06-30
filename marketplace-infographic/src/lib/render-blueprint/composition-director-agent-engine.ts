@@ -217,6 +217,26 @@ export function fromPlannedCompositionBlueprint(
   };
 }
 
+export function layoutPatternLabelToId(label: string): string {
+  const entry = Object.entries(LAYOUT_PATTERN_LABELS).find(([, value]) => value === label);
+  return entry?.[0] ?? label.toLowerCase().replace(/\s+/g, "_");
+}
+
+export function toPlannedCompositionFromAgentBlueprint(
+  layout: CompositionDirectorAgentBlueprint,
+): PlannedCompositionBlueprint {
+  return {
+    layoutPattern: layoutPatternLabelToId(layout.layoutPattern),
+    heroPlacement: { ...layout.heroPlacement },
+    textAreas: layout.textZones.map((zone) => ({ ...zone })),
+    badgeAreas: layout.badgeZones.map((zone) => ({ ...zone })),
+    negativeSpace: layout.negativeSpace.map((zone) => ({ ...zone })),
+    visualHierarchy: [...layout.visualHierarchy],
+    readingFlow: ["top_left", "hero_product", "primary_benefit", "supporting_information", "bottom_right"],
+    safeZones: layout.textZones.map((zone) => ({ ...zone })),
+  };
+}
+
 export function validateCompositionDirectorAgentBlueprint(
   blueprint?: CompositionDirectorAgentBlueprint,
   input?: CompositionDirectorAgentInput,
