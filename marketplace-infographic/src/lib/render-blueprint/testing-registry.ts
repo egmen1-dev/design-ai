@@ -38,6 +38,7 @@ export const V18_TEST_REGISTRY: TestSpecEntry[] = [
   { id: "agent-communication-protocol", path: `${BP}/agent-communication-protocol.spec.ts`, category: TestCategory.AGENT, chapter: "4.21", description: "Agent Communication Protocol", usesLlm: false },
   { id: "blueprint-evolution", path: `${BP}/blueprint-evolution.spec.ts`, category: TestCategory.BLUEPRINT, chapter: "4.22", description: "Blueprint Evolution", usesLlm: false },
   { id: "consensus-engine", path: `${BP}/consensus-engine.spec.ts`, category: TestCategory.AGENT, chapter: "4.23", description: "Consensus Engine", usesLlm: false },
+  { id: "retry-architecture", path: `${BP}/retry-architecture.spec.ts`, category: TestCategory.PIPELINE, chapter: "4.24", description: "Retry Architecture", usesLlm: false },
   { id: "event-system", path: `${BP}/event-system.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.9", description: "Event bus delivery", usesLlm: false },
   { id: "snapshot-recovery", path: `${BP}/snapshot-recovery.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.8", description: "Snapshot and recovery", usesLlm: false },
   { id: "lifecycle-manager", path: `${BP}/lifecycle-manager.spec.ts`, category: TestCategory.INTEGRATION, chapter: "3.4", description: "Lifecycle manager orchestration", usesLlm: false },

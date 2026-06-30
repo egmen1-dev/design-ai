@@ -35,6 +35,7 @@ SPECS=(
   src/lib/render-blueprint/agent-communication-protocol.spec.ts
   src/lib/render-blueprint/blueprint-evolution.spec.ts
   src/lib/render-blueprint/consensus-engine.spec.ts
+  src/lib/render-blueprint/retry-architecture.spec.ts
   src/lib/render-blueprint/event-system.spec.ts
   src/lib/render-blueprint/snapshot-recovery.spec.ts
   src/lib/render-blueprint/lifecycle-manager.spec.ts

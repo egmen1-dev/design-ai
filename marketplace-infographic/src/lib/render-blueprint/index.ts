@@ -1351,4 +1351,29 @@ export {
   type ConsensusFailureCode,
 } from "./consensus-engine-engine";
 
+export {
+  RETRY_ARCHITECTURE_VERSION,
+  RETRY_ARCHITECTURE_GOLDEN_RULE,
+  RETRY_ARCHITECTURE_ID,
+  RETRY_ARCHITECTURE_PIPELINE_POSITION,
+  RetryLevel,
+  selectRetryLevel,
+  computeRetryScope,
+  applyRetryBudget,
+  buildRetryPlan,
+  validateRetryPlan,
+  isRetryFailure,
+  runRetryArchitecture,
+  type RetryLevelId,
+  type PipelineStage,
+  type ProviderDiagnostics,
+  type RetryBudget,
+  type RetryHistoryEntry,
+  type RetryPlan,
+  type RetryArchitectureContext,
+  type RetryExplainabilityReport,
+  type RetryValidationReport,
+  type RetryFailureCode,
+} from "./retry-architecture-engine";
+
 export const USE_RENDER_BLUEPRINT_V18 = process.env.RENDER_BLUEPRINT_V18 === "1";
