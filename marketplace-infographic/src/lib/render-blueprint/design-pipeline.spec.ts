@@ -41,10 +41,11 @@ function testGoldenRule() {
 }
 
 function testHighLevelPipeline() {
-  assert.equal(HIGH_LEVEL_PIPELINE.length, 18);
+  assert.equal(HIGH_LEVEL_PIPELINE.length, 19);
   assert.equal(HIGH_LEVEL_PIPELINE[16].id, DesignPipelineStage.APPROVED_BLUEPRINT);
   assert.equal(HIGH_LEVEL_PIPELINE[17].id, DesignPipelineStage.KNOWLEDGE_LEARNING);
-  console.log("✔ high-level pipeline — business goal to knowledge learning");
+  assert.equal(HIGH_LEVEL_PIPELINE[18].id, DesignPipelineStage.PIPELINE_COMPLETION);
+  console.log("✔ high-level pipeline — business goal to pipeline completion");
 }
 
 function testPipelineLayers() {
@@ -164,7 +165,7 @@ function testRunDesignPipeline() {
 function testValidateDesignPipeline() {
   const report = validateDesignPipeline();
   assert.equal(report.valid, true);
-  assert.equal(report.stageCount, 18);
+  assert.equal(report.stageCount, 19);
   assert.equal(report.layerCount, 7);
   assert.equal(report.principlesSatisfied, true);
   assert.equal(report.learningIntegrated, true);

@@ -21,6 +21,7 @@ export const DesignPipelineStage = {
   RETRY: "retry",
   APPROVED_BLUEPRINT: "approved_blueprint",
   KNOWLEDGE_LEARNING: "knowledge_learning",
+  PIPELINE_COMPLETION: "pipeline_completion",
 } as const;
 
 export type DesignPipelineStageId =
@@ -87,6 +88,7 @@ export type DesignPipelineOutput = {
   visionReportId?: string;
   commercialReportId?: string;
   learningPackageId?: string;
+  finalProjectId?: string;
   designMemoryUpdated: boolean;
 };
 

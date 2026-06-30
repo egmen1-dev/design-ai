@@ -20,6 +20,7 @@ import { runVisionValidationStageFromPipeline } from "./vision-validation-stage-
 import { runCommercialValidationStageFromPipeline } from "./commercial-validation-stage-engine";
 import { runChiefDesignDirectorReviewStageFromPipeline } from "./chief-design-director-review-stage-engine";
 import { runLearningFeedbackStageFromPipeline } from "./learning-feedback-stage-engine";
+import { runPipelineCompletionStageFromPipeline } from "./pipeline-completion-stage-engine";
 import {
   DesignPipelineLayer,
   DesignPipelinePrinciple,
@@ -231,6 +232,14 @@ export const HIGH_LEVEL_PIPELINE: readonly DesignPipelineStageDefinition[] = [
     responsibility: "Learn from design decisions after project completion",
     makesDesignDecision: false,
   },
+  {
+    id: DesignPipelineStage.PIPELINE_COMPLETION,
+    order: 19,
+    label: "Pipeline Completion & Delivery",
+    layer: DesignPipelineLayer.LEARNING,
+    responsibility: "Finalize project, store artifacts, and deliver results to user",
+    makesDesignDecision: false,
+  },
 ] as const;
 
 export const PIPELINE_LAYERS: readonly DesignPipelineLayerDefinition[] = [
@@ -285,8 +294,8 @@ export const PIPELINE_LAYERS: readonly DesignPipelineLayerDefinition[] = [
   {
     id: DesignPipelineLayer.LEARNING,
     label: "Learning Layer",
-    summary: "Post-pipeline knowledge learning and Design Memory",
-    stages: [DesignPipelineStage.KNOWLEDGE_LEARNING],
+    summary: "Post-pipeline knowledge learning, completion, and delivery",
+    stages: [DesignPipelineStage.KNOWLEDGE_LEARNING, DesignPipelineStage.PIPELINE_COMPLETION],
   },
 ] as const;
 
@@ -372,6 +381,7 @@ export function validatePipelineStageOrder(): DesignPipelineViolation[] {
   }
 
   const learningIdx = sorted.findIndex((s) => s.id === DesignPipelineStage.KNOWLEDGE_LEARNING);
+  const completionIdx = sorted.findIndex((s) => s.id === DesignPipelineStage.PIPELINE_COMPLETION);
   const approvedIdx = sorted.findIndex((s) => s.id === DesignPipelineStage.APPROVED_BLUEPRINT);
   if (learningIdx < approvedIdx) {
     violations.push(
@@ -379,6 +389,15 @@ export function validatePipelineStageOrder(): DesignPipelineViolation[] {
         "INVALID_STAGE_ORDER",
         "Knowledge Learning must follow Approved Blueprint",
         DesignPipelineStage.KNOWLEDGE_LEARNING,
+      ),
+    );
+  }
+  if (completionIdx < learningIdx) {
+    violations.push(
+      violation(
+        "INVALID_STAGE_ORDER",
+        "Pipeline Completion must follow Knowledge Learning",
+        DesignPipelineStage.PIPELINE_COMPLETION,
       ),
     );
   }
@@ -1121,6 +1140,23 @@ export function executeDesignPipelineStage(
     }
   }
 
+  if (stageId === DesignPipelineStage.PIPELINE_COMPLETION) {
+    const completion = runPipelineCompletionStageFromPipeline({
+      marketplace: input.marketplace,
+      providerId: "flux",
+    });
+    if (!completion.valid || !completion.section) {
+      violations.push(
+        violation("PIPELINE_INCOMPLETE", "Pipeline Completion Stage failed validation", stageId),
+        ...completion.violations.map((v) => violation("PIPELINE_INCOMPLETE", v.message, stageId)),
+      );
+    } else if (!completion.section.finalProject.projectId) {
+      violations.push(
+        violation("PIPELINE_INCOMPLETE", "Pipeline Completion must produce final project package", stageId),
+      );
+    }
+  }
+
   return {
     stage: stageId,
     passed: violations.length === 0,
@@ -1145,6 +1181,7 @@ export function runDesignPipeline(
   let retryCount = 0;
   let approved = false;
   let learningExecuted = false;
+  let completionExecuted = false;
 
   const executionOrder = HIGH_LEVEL_PIPELINE.filter((s) => s.id !== DesignPipelineStage.RETRY);
 
@@ -1153,12 +1190,19 @@ export function runDesignPipeline(
     stages.push(result);
     violations.push(...result.violations);
 
-    if (!result.passed && stageDef.id !== DesignPipelineStage.KNOWLEDGE_LEARNING) {
+    if (
+      !result.passed &&
+      stageDef.id !== DesignPipelineStage.KNOWLEDGE_LEARNING &&
+      stageDef.id !== DesignPipelineStage.PIPELINE_COMPLETION
+    ) {
       break;
     }
 
     if (stageDef.id === DesignPipelineStage.KNOWLEDGE_LEARNING) {
       learningExecuted = result.passed;
+    }
+    if (stageDef.id === DesignPipelineStage.PIPELINE_COMPLETION) {
+      completionExecuted = result.passed;
     }
     if (stageDef.id === DesignPipelineStage.APPROVED_BLUEPRINT) {
       approved = result.passed;
@@ -1172,6 +1216,7 @@ export function runDesignPipeline(
     visionReportId: `vision-${pipelineId}`,
     commercialReportId: `commercial-${pipelineId}`,
     learningPackageId: learningExecuted ? `learning-${pipelineId}` : undefined,
+    finalProjectId: completionExecuted ? `project-${pipelineId}` : undefined,
     designMemoryUpdated: learningExecuted,
   };
 
