@@ -2,12 +2,12 @@
  * Chapter 6 — Design Pipeline engine.
  * Central executive system orchestrating collaborative infographic creation.
  */
-import { retrieveKnowledgePackage } from "./knowledge-retrieval-engine";
 import { buildSeedLearningFeedback, runKnowledgeLearningPipeline } from "./knowledge-learning-engine";
 import {
   analyzeProduct,
   buildProductAnalysisInputFromPipeline,
 } from "./product-analysis-engine";
+import { runKnowledgeRetrievalStage } from "./knowledge-retrieval-stage-engine";
 import {
   DesignPipelineLayer,
   DesignPipelinePrinciple,
@@ -570,20 +570,23 @@ export function executeDesignPipelineStage(
   }
 
   if (stageId === DesignPipelineStage.KNOWLEDGE_RETRIEVAL && !context.skipKnowledgeRetrieval) {
-    const pkg = retrieveKnowledgePackage({
-      context: {
-        category: input.category,
-        marketplace: input.marketplace,
-        businessGoal: input.businessGoal,
-        semanticQuery: `${input.category} ${input.businessGoal}`,
-      },
-      limit: 6,
-      useCache: false,
-    });
-    if (pkg.items.length === 0) {
+    const analysis = analyzeProduct(buildProductAnalysisInputFromPipeline(input));
+    if (!analysis.section) {
       violations.push(
-        violation("MISSING_KNOWLEDGE_STAGE", "Knowledge Retrieval returned empty package", stageId),
+        violation("MISSING_KNOWLEDGE_STAGE", "Product Analysis must complete before Knowledge Retrieval", stageId),
       );
+    } else {
+      const stageReport = runKnowledgeRetrievalStage({
+        profile: analysis.section.profile,
+        marketplace: input.marketplace,
+        style: analysis.section.profile.priceSegment,
+      });
+      if (!stageReport.valid || !stageReport.package) {
+        violations.push(
+          violation("MISSING_KNOWLEDGE_STAGE", "Knowledge Retrieval Stage failed validation", stageId),
+          ...stageReport.violations.map((v) => violation("MISSING_KNOWLEDGE_STAGE", v.message, stageId)),
+        );
+      }
     }
   }
 

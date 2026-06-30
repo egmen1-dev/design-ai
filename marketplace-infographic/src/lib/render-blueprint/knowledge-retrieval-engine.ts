@@ -72,6 +72,8 @@ export const CACHEABLE_CATEGORIES = [
   "appliances",
   "furniture",
   "tools",
+  "garden_tools",
+  "garden",
 ] as const;
 
 export const SEMANTIC_EXPANSIONS: Record<string, string[]> = {
@@ -83,6 +85,9 @@ export const SEMANTIC_EXPANSIONS: Record<string, string[]> = {
   lifestyle: ["scene", "warm", "comfort", "context"],
   minimal: ["clean", "negative_space", "simple", "amazon"],
   trust: ["clean", "professional", "quality", "realism"],
+  garden: ["garden", "outdoor", "plants", "seasonal", "tools", "sprayer", "comfort"],
+  sprayer: ["garden", "outdoor", "plants", "comfort", "time_saving", "seasonal"],
+  garden_tools: ["garden", "outdoor", "seasonal", "tools", "agricultural"],
   marketplace: ["thumbnail", "scan", "hero", "readability"],
 };
 
