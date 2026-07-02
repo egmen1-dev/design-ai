@@ -3,6 +3,7 @@
  * Consumer Psychology → Commercial Constitution Engine
  */
 import type { CommercialPlatformInput, CommercialForecastBundle } from "./types";
+import { runAllEcosystemEngines } from "./ecosystem-engine-runners";
 
 export const ECOSYSTEM_ENGINE_IDS = [
   "consumer-psychology",
@@ -82,7 +83,6 @@ export function runEcosystemEngineChain(input: CommercialPlatformInput): {
   forecasts: CommercialForecastBundle;
   enginesRun: EcosystemEngineId[];
 } {
-  const enginesRun: EcosystemEngineId[] = [...ECOSYSTEM_ENGINE_IDS];
-  const forecasts = runRevenuePredictionEngine(input);
-  return { forecasts, enginesRun };
+  const { reports, forecasts } = runAllEcosystemEngines(input);
+  return { forecasts, enginesRun: reports.map((r) => r.engineId) };
 }

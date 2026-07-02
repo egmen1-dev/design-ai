@@ -4,6 +4,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 SPECS=(
   src/lib/design-ai-book/design-ai-book-ch1-11.spec.ts
+  src/lib/design-ai-book/design-ai-book-pipeline.spec.ts
   src/lib/design-knowledge-platform/design-knowledge-platform.spec.ts
   src/lib/intelligent-orchestration-platform/intelligent-orchestration-platform.spec.ts
   src/lib/human-ai-collaboration/human-ai-collaboration.spec.ts

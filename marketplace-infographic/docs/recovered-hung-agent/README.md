@@ -1,16 +1,24 @@
-# Восстановлено из зависшего агента (stash audit-temp)
+# Восстановлено из зависшего агента — СМЕРЖЕНО
 
-Коммиты: `e435fdcc`, `0ad82ab1` (untracked files)
+Коммиты stash: `e435fdcc`, `0ad82ab1`
 
-Эти файлы **уже в репозитории** — не нужно скачивать полный архив, чтобы их получить.
+## Статус
 
-## Содержимое
+| Файлы | Куда смержено |
+|-------|---------------|
+| `commercial-intelligence-platform/` (Ch11) | `src/lib/commercial-intelligence-platform/` |
+| Ecosystem engines 11.1–11.17 (логика из design-ai-os) | `src/lib/commercial-intelligence-platform/ecosystem-engine-runners.ts` |
+| Unified pipeline Ch8→11 | `src/lib/design-ai-book/pipeline.ts` |
+| `design-ai-os/` (неправильная модель) | `docs/archive/deprecated-design-ai-os/` — **не использовать** |
 
-- `docs/AUDIT-DESIGN-AI-OS-CHAPTERS-1-11.md` — аудит из сессии агента
-- `docs/DESIGN-AI-OS-CHAPTER-11-COMMERCIAL-INTELLIGENCE-PLATFORM.md`
-- `scripts/run-commercial-intelligence-specs.sh`, `run-design-ai-os-specs.sh`
-- `src/lib/commercial-intelligence-platform/` — ранняя Ch11 (11.1–11.3)
-- `src/lib/design-ai-os/` — **устаревший scaffold** (неправильные названия глав)
+## Осталось здесь (только справка)
 
-Полный снимок на момент зависания (2138 файлов) — только в полном архиве:  
-`docs/full-project-archive/` → см. `DOWNLOAD-GITHUB-RU.md`
+- `docs/AUDIT-DESIGN-AI-OS-CHAPTERS-1-11.md` — исторический аудит
+- `docs/DESIGN-AI-OS-CHAPTER-11-COMMERCIAL-INTELLIGENCE-PLATFORM.md` — справка по Ch11
+
+## Проверка
+
+```bash
+cd marketplace-infographic
+./scripts/run-design-ai-book-audit.sh
+```

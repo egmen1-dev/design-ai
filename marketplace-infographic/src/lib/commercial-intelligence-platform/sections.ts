@@ -10,9 +10,7 @@ export const COMMERCIAL_INTELLIGENCE_SECTIONS: readonly PlatformSectionDefinitio
     id: e.id,
     label: e.label,
     responsibility: e.responsibility,
-    implementationStatus: e.id === "revenue-prediction" ? "full" as const
-      : ["commercial-constitution"].includes(e.id) ? "full" as const
-      : "registry" as const,
+    implementationStatus: "full" as const,
   })),
   {
     ref: "11.19",
