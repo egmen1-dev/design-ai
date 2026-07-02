@@ -1,0 +1,354 @@
+# DESIGN AI — Chief Architect Audit (Главы 1–11)
+
+| Поле | Значение |
+|------|----------|
+| **Дата** | 2026-07-02 |
+| **Аудитор** | Chief AI Architect review |
+| **Scope** | Книга Design AI v18 + коммерческая арка 8–11 |
+| **Эталонная ветка (гл. 3–7)** | `origin/cursor/render-validator-agent-ch728-b8ae` |
+| **Тесты v18 (гл. 3–7)** | **120/120 passed** (`scripts/run-v18-blueprint-tests.sh`) |
+| **Тесты гл. 11 (локально)** | **75/75 passed** (`scripts/run-commercial-intelligence-specs.sh`) |
+| **Production** | `main` → v17.1-design-governance, **без** v18 и без гл. 8–11 |
+
+---
+
+## 1. Executive Summary
+
+Книга Design AI состоит из **11 глав**. Главы **1–7** — технический фундамент (философия → platform architecture). Главы **8–11** — коммерческий контур (value/pricing → commercial intelligence).
+
+| Блок | Статус в GitHub | Зрелость |
+|------|-----------------|----------|
+| **Гл. 1–2** | Философия + blueprint-ядро есть, формальных разделов нет | 7/10 |
+| **Гл. 3–7** | **Полностью** на ветке `ch728`: 120 specs, 113 docs, 416 файлов | **9/10** |
+| **Гл. 8–10** | **Отсутствуют** (0 веток, 0 коммитов, 0 specs) | **0/10** |
+| **Гл. 11** | Частично восстановлена локально (11.18–11.20), **не запушена** | **5/10** |
+| **Интеграция в prod** | Handler v17.1, `RENDER_BLUEPRINT_V18=1` не подключён к API | **2/10** |
+
+**Главный вывод:** ядро книги (гл. 3–7) **не потеряно** — оно на 129 cursor-ветках, кульминация `ch728`. Потеряно на уровне **рабочего checkout / main**: откат до `ch613` отрезает гл. 6.14–7.28 (108 файлов). Главы 8–10 **никогда не попали в GitHub**. Глава 11 — только локальный recovery.
+
+---
+
+## 2. Карта книги (правильная нумерация)
+
+| Глава | Название | Разделов (план) | В GitHub | Docs | Specs | Код |
+|-------|----------|-----------------|----------|------|-------|-----|
+| **1** | Design Philosophy | обзор | ✅ | 1 | 0 | `constitution.ts` |
+| **2** | Blueprint | схема SSOT | ⚠️ | 0 | 0* | `types.ts`, `render-blueprint.spec.ts` |
+| **3** | Render Blueprint | ~19 | ✅ 19 | 20 | 21 | ✅ |
+| **4** | Agent Ecosystem | ~28 | ✅ 28 | 29 | 29 | ✅ |
+| **5** | Design Knowledge Engine | 20 | ✅ 20 | 20 | 20 | ✅ |
+| **6** | Design Pipeline | 20 | ✅ 20 | 21 | 21 | ✅ |
+| **7** | Platform Architecture | 28–40** | ✅ 28 | 29 | 29 | ✅ |
+| **8** | Value & Pricing | 27 | ❌ | 0 | 0 | 0 |
+| **9** | Commercial Strategy | 19 | ❌ | 0 | 0 | 0 |
+| **10** | Commercial Prediction | 15 | ❌ | 0 | 0 | 0 |
+| **11** | Commercial Intelligence | 20 | ⚠️ | 1 | 75*** | частично |
+
+\* `render-blueprint.spec.ts` зарегистрирован в registry как chapter `"3"` (структура blueprint), но концептуально относится к гл. 2.  
+\** В GitHub максимум `7.28`. Разделы `7.29`–`7.40` (до 40) **не найдены** в истории коммитов.  
+\*** 75 тестов = 25×3 для подмодулей 11.18, 11.19, 11.20; разделы 11.1–11.17 — заглушки в `ecosystem-engines.ts`.
+
+---
+
+## 3. Аудит по главам
+
+### Глава 1 — Design Philosophy
+
+**Назначение:** философия v18 — агенты принимают решения, prompt только в адаптере, SSOT = RenderBlueprint.
+
+| Критерий | Оценка |
+|----------|--------|
+| Спецификация | ✅ `docs/DESIGN-AI-v18-PHILOSOPHY.md` |
+| Constitution | ✅ `src/lib/render-blueprint/constitution.ts` |
+| Пронумерованные разделы | ❌ нет `1.1`, `1.2`… |
+| Тесты | ⚠️ покрытие через `render-blueprint.spec.ts` (Rule 001–004) |
+| В `main` | ❌ |
+
+**Зрелость: 7/10** — сильная философия и constitution, нет формальной структуры разделов.
+
+---
+
+### Глава 2 — Blueprint
+
+**Назначение:** объект `RenderBlueprint`, ownership секций, запрет prompt в blueprint.
+
+| Критерий | Оценка |
+|----------|--------|
+| Отдельные docs `CHAPTER-2` | ❌ **ни одного** во всей истории git |
+| Реализация | ✅ `types.ts`, `createEmptyRenderBlueprint()`, section types |
+| Обзор в гл. 3 | ✅ `DESIGN-AI-v18-CHAPTER-3-RENDER-BLUEPRINT.md` дублирует схему |
+| Тесты | ✅ `render-blueprint.spec.ts` (invariants, ownership, Rule 004) |
+| В `main` | ❌ |
+
+**Зрелость: 7/10** — код полный, документация главы 2 не выделена (слита с гл. 3).
+
+**Рекомендация:** создать `DESIGN-AI-v18-CHAPTER-2-BLUEPRINT.md` + registry chapter `"2"`.
+
+---
+
+### Глава 3 — Render Blueprint (19 разделов)
+
+**Назначение:** инфраструктура blueprint — lifecycle, mutation, validation, versioning, observability, vision QA.
+
+| Раздел | Модуль | Spec |
+|--------|--------|------|
+| 3 | Blueprint core | `render-blueprint.spec.ts` |
+| 3.1 | Lifecycle | `lifecycle.spec.ts` |
+| 3.2 | Agent Contracts | `agent-contracts.spec.ts` |
+| 3.3 | Decision Graph | `decision-graph.spec.ts` |
+| 3.4 | Lifecycle Manager | `lifecycle-manager.spec.ts` |
+| 3.5 | Mutation Engine | `mutation-engine.spec.ts` |
+| 3.6 | Validation Engine | `validation-engine.spec.ts` |
+| 3.7 | Constraint Engine | `constraint-engine.spec.ts` |
+| 3.8 | Snapshot Recovery | `snapshot-recovery.spec.ts` |
+| 3.9 | Event System | `event-system.spec.ts` |
+| 3.10 | Agent Registry | `agent-registry.spec.ts` |
+| 3.11 | Render Pipeline | `render-pipeline.spec.ts` |
+| 3.12 | Serialization | `serialization.spec.ts` |
+| 3.13 | Blueprint Versioning | `blueprint-versioning.spec.ts` |
+| 3.14 | Performance Model | `performance-model.spec.ts` |
+| 3.15 | Observability | `observability.spec.ts` |
+| 3.16 | Error Recovery | `recovery-engine.spec.ts` |
+| 3.17 | Testing Architecture | `testing-architecture.spec.ts`, `vision-tests.spec.ts` |
+| 3.18 | Vision QA | `vision-qa.spec.ts` |
+| 3.19 | Architectural Invariants | `architecture-validator.spec.ts` |
+
+**Зрелость: 9/10** — полная реализация на `ch728`, все 21 spec проходят.
+
+---
+
+### Глава 4 — Agent Ecosystem (28 разделов)
+
+**Назначение:** контракты агентов, registry, directors, consensus, retry, explainability.
+
+Все разделы `4`–`4.28` имеют **doc + engine + spec** на `ch728`. Ключевые: Universal Agent Contract (4.1), Directors (4.10–4.19), Consensus (4.23), Ecosystem Summary (4.28).
+
+**Зрелость: 9/10**
+
+---
+
+### Глава 5 — Design Knowledge Engine (20 разделов)
+
+**Назначение:** knowledge architecture, marketplace/style/composition/photography knowledge, pattern library, retrieval, learning.
+
+Разделы `5.1`–`5.20` — полный комплект doc + spec на `ch728`.
+
+**Зрелость: 9/10**
+
+---
+
+### Глава 6 — Design Pipeline (20 разделов)
+
+**Назначение:** orchestrator, planning stages, assembly, validation, rendering, post-render pipeline.
+
+| Раздел | Статус на `ch613` | Статус на `ch728` |
+|--------|-------------------|-------------------|
+| 6.1–6.13 | ✅ | ✅ |
+| 6.14 Vision Validation | ❌ | ✅ |
+| 6.15 Commercial Validation | ❌ | ✅ |
+| 6.16 Chief Design Director Review | ❌ | ✅ |
+| 6.17 Learning Feedback | ❌ | ✅ |
+| 6.18 Pipeline Completion | ❌ | ✅ |
+| 6.19 Pipeline Observability | ❌ | ✅ |
+| 6.20 Pipeline Architecture Principles | ❌ | ✅ |
+
+**Зрелость: 9/10** на `ch728`; **6/10** на ветках уровня `rendering-stage-ch613` (обрезана хвостовая треть).
+
+---
+
+### Глава 7 — Platform Architecture (28 в GitHub)
+
+**Назначение:** внутренний стандарт агента (9-stage model), base architecture, реализации director/critic/orchestrator agents.
+
+В репозитории глава названа **Agent Implementation Specification** (`DESIGN-AI-v18-CHAPTER-7-*`). Соответствует Platform Architecture по смыслу: как строить каждый агент внутри.
+
+| Раздел | Компонент |
+|--------|-----------|
+| 7.0 | Agent Implementation Spec |
+| 7.1–7.6 | Philosophy, Base Arch, Lifecycle, Communication, Memory, Decision |
+| 7.7–7.9 | Product Analysis, Business Understanding, Knowledge Retrieval agents |
+| 7.10–7.20 | Director agents |
+| 7.21–7.22 | Vision / Commercial critics |
+| 7.23–7.24 | Senior Art / Chief Design Director |
+| 7.25–7.28 | Learning, Render Orchestrator, Adapter, Validator |
+
+**Отсутствует в GitHub:** `7.29`–`7.40` (если план = 40 разделов).
+
+**Зрелость: 8/10** — 28 разделов реализованы и протестированы; разрыв до 40; не в `main`.
+
+---
+
+### Глава 8 — Value & Pricing (27 разделов — план)
+
+| Критерий | Статус |
+|----------|--------|
+| Ветки `ch8*` | **0** |
+| Коммиты `feat(ch8.*)` | **0** |
+| Docs / код / тесты | **0** |
+
+**Зрелость: 0/10** — глава не начата в публичном репозитории.
+
+---
+
+### Глава 9 — Commercial Strategy (19 разделов — план)
+
+**Зрелость: 0/10** — полностью отсутствует.
+
+---
+
+### Глава 10 — Commercial Prediction (15 разделов — план)
+
+**Зрелость: 0/10** — полностью отсутствует.
+
+---
+
+### Глава 11 — Commercial Intelligence (20 разделов — план)
+
+**Назначение:** единая коммерческая платформа — ecosystem engines, constitution, summary, manifest.
+
+| Раздел | Статус | Тесты |
+|--------|--------|-------|
+| 11.1–11.17 | Имена в `ecosystem-engines.ts`, логика-заглушка | ❌ |
+| 11.18 Commercial Constitution | ✅ engine + types + spec | 25/25 |
+| 11.19 Platform Summary | ✅ capstone | 25/25 |
+| 11.20 Manifest | ✅ handoff | 25/25 |
+
+**Модуль:** `src/lib/commercial-intelligence-platform/` (untracked / не в `ch728`).  
+**Коммиты зависшего агента** (`7bbe04ee`, `ddaf1ff5`) — **не найдены** на GitHub.
+
+**Зрелость: 5/10** — capstone 11.18–11.20 сильный; тело 11.1–11.17 и связь с гл. 8–10 отсутствуют.
+
+---
+
+## 4. Состояние веток и «что потеряно»
+
+### Эталон (максимум)
+
+```
+origin/cursor/render-validator-agent-ch728-b8ae
+  ├── 113 docs (DESIGN-AI-v18-*)
+  ├── 416 файлов render-blueprint/
+  └── 120 passing specs
+```
+
+### Типичный откат (потеря на checkout)
+
+Ветки уровня `rendering-stage-ch613` и текущий рабочий контекст до merge:
+
+- **−36 docs** (6.14–6.20, вся гл. 7)
+- **−108 файлов кода**
+- **−36 specs** (84 вместо 120)
+
+### `main`
+
+- **0** файлов `render-blueprint/`
+- **0** docs v18
+- Handler: `generate-infographic-handler.ts` → v17.1 design-governance only
+
+### Cursor-ветки
+
+**129** веток `cursor/*` на `origin` — гл. 3–7 инкрементально. Гл. 8–10 **не представлены**.
+
+---
+
+## 5. Production & Integration
+
+| Компонент | Статус |
+|-----------|--------|
+| `RENDER_BLUEPRINT_V18=1` | Флаг в `pipeline-version.ts` / `index.ts`, **handler не вызывает** v18 pipeline |
+| `generate-infographic-handler.ts` | v17.1 governance, SD/FLUX, **без** RenderBlueprint orchestration |
+| `runDesignAiOsPipeline()` | Локальный scaffold (`design-ai-os/`) — **не та книга**, не подключён |
+| Commercial Intelligence → handler | ❌ |
+
+**Риск:** две параллельные реальности — 120 тестов на feature-ветках и production на v17.
+
+---
+
+## 6. Security (blocking для prod)
+
+| Issue | Location | Severity |
+|-------|----------|----------|
+| Hardcoded admin email | `src/lib/admin.ts` → `BUILTIN_ADMIN_EMAILS` | **High** |
+| v18 не в main | Нет attack surface от blueprint, но и нет value | Info |
+
+---
+
+## 7. Матрица зрелости
+
+| Глава | Docs | Code | Tests | main | Итого |
+|-------|------|------|-------|------|-------|
+| 1 Philosophy | 8/10 | 8/10 | 6/10 | 0 | **7/10** |
+| 2 Blueprint | 3/10 | 9/10 | 8/10 | 0 | **7/10** |
+| 3 Render Blueprint | 10/10 | 10/10 | 10/10 | 0 | **9/10** |
+| 4 Agent Ecosystem | 10/10 | 10/10 | 10/10 | 0 | **9/10** |
+| 5 Design Knowledge | 10/10 | 10/10 | 10/10 | 0 | **9/10** |
+| 6 Design Pipeline | 10/10 | 10/10* | 10/10* | 0 | **9/10** |
+| 7 Platform Arch | 10/10 | 8/10** | 10/10 | 0 | **8/10** |
+| 8 Value & Pricing | 0 | 0 | 0 | 0 | **0/10** |
+| 9 Commercial Strategy | 0 | 0 | 0 | 0 | **0/10** |
+| 10 Commercial Prediction | 0 | 0 | 0 | 0 | **0/10** |
+| 11 Commercial Intelligence | 4/10 | 5/10 | 6/10 | 0 | **5/10** |
+
+\* на `ch728`; на `ch613` код/тесты гл. 6.14–6.20 отсутствуют.  
+\** 28/40 разделов если план = 40.
+
+**Средняя по имеющемуся коду (гл. 1–7): 8.3/10**  
+**Средняя по заявленной книге 1–11: 5.5/10**
+
+---
+
+## 8. Рекомендации
+
+### P0 — Восстановить единый источник истины
+
+1. Merge `render-validator-agent-ch728` → integration branch → `main` (или protected develop).
+2. Убрать расхождение `ch613` vs `ch728` — один canonical tip.
+
+### P1 — Закрыть гл. 8–10
+
+1. Найти локальные спеки зависшего агента (27 + 19 + 15 разделов).
+2. Ветки `cursor/value-pricing-ch8*` … по образцу `ch728`.
+
+### P1 — Дожать гл. 11
+
+1. Push `commercial-intelligence-platform/` на `origin`.
+2. Реализовать 11.1–11.17 (не только id в registry).
+3. Связать manifest → Creative Intelligence (гл. 12+).
+
+### P2 — Документация
+
+1. Выделить **главу 2** в отдельный `CHAPTER-2-BLUEPRINT.md`.
+2. Переименовать/алиасить гл. 7 docs: Platform Architecture = Agent Implementation.
+3. Удалить или переименовать ошибочный `design-ai-os/` scaffold (Consumer Psychology как «глава 1» — **неверная модель**).
+
+### P2 — Production wiring
+
+1. `generate-infographic-handler.ts` → v18 pipeline за флагом.
+2. Bridge: Commercial Manifest (11.20) → Design Brief.
+
+### P3 — Security
+
+1. Убрать `BUILTIN_ADMIN_EMAILS` из кода → только `ADMIN_EMAILS` env.
+
+---
+
+## 9. Команды верификации
+
+```bash
+# Полная книга гл. 3–7 (эталон)
+git checkout origin/cursor/render-validator-agent-ch728-b8ae
+bash scripts/run-v18-blueprint-tests.sh   # ожидание: 120 specs OK
+
+# Глава 11 (локально)
+bash scripts/run-commercial-intelligence-specs.sh   # ожидание: 75 tests OK
+```
+
+---
+
+## 10. Итог одной фразой
+
+**Главы 1–7 книги Design AI живы на GitHub (пик — `ch728`, 120 тестов). Главы 8–10 отсутствуют. Глава 11 частично восстановлена локально. В `main` и production — ничего из этого не работает.**
+
+---
+
+*Документ заменяет ошибочные аудиты, где «глава 11» путалась с `ch7.11` / `ch6.13` или с OS Consumer Psychology.*
