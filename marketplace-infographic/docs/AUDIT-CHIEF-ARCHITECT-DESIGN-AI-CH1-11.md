@@ -7,7 +7,9 @@
 | **Scope** | Книга Design AI: гл. 1–7 (v18) + гл. 8–11 (platform layer) |
 | **Эталонная ветка (гл. 3–7)** | `origin/cursor/render-validator-agent-ch728-b8ae` |
 | **Тесты v18 (гл. 3–7)** | **120/120 passed** (`scripts/run-v18-blueprint-tests.sh`) |
-| **Тесты гл. 11 (локально)** | **75/75 passed** (`scripts/run-commercial-intelligence-specs.sh`) |
+| **Тесты гл. 8–10** | **recovery registry** (`design-knowledge-platform`, `intelligent-orchestration-platform`, `human-ai-collaboration`) |
+| **Тесты гл. 11** | **88 passed** (13 book + 75 Ch11) — `scripts/run-platform-chapters-8-11-specs.sh` |
+| **Полный аудит** | **208 tests** — `scripts/run-design-ai-book-audit.sh` (120 v18 + 88 platform) |
 | **Production** | `main` → v17.1-design-governance, **без** v18 и без гл. 8–11 |
 
 ---
@@ -29,8 +31,8 @@ Ch8 Design Knowledge Platform (27)
 |------|-----------------|----------|
 | **Гл. 1–2** | Философия + blueprint-ядро есть, формальных разделов нет | 7/10 |
 | **Гл. 3–7** | **Полностью** на ветке `ch728`: 120 specs, 113 docs, 416 файлов | **9/10** |
-| **Гл. 8–10** | **Design Knowledge Platform** / **Intelligent Orchestration** / **Human AI Collaboration** — **0** в GitHub | **0/10** |
-| **Гл. 11** | **Commercial Intelligence Platform** — частично (11.18–11.20), в PR #5 | **5/10** |
+| **Гл. 8–10** | **Recovery scaffold** — полные реестры разделов, тесты на counts | **3/10** |
+| **Гл. 11** | **Commercial Intelligence Platform** — 11.18–11.20 full + registry | **6/10** |
 | **Интеграция в prod** | Handler v17.1, `RENDER_BLUEPRINT_V18=1` не подключён к API | **2/10** |
 
 **Главный вывод:** ядро книги (гл. 3–7) **не потеряно** — оно на 129 cursor-ветках, кульминация `ch728`. Потеряно на уровне **рабочего checkout / main**: откат до `ch613` отрезает гл. 6.14–7.28 (108 файлов). Главы 8–10 **никогда не попали в GitHub**. Глава 11 — только локальный recovery.
@@ -48,14 +50,24 @@ Ch8 Design Knowledge Platform (27)
 | **5** | Design Knowledge Engine | 20 | ✅ 20 | 20 | 20 | ✅ |
 | **6** | Design Pipeline | 20 | ✅ 20 | 21 | 21 | ✅ |
 | **7** | Platform Architecture | 28–40** | ✅ 28 | 29 | 29 | ✅ |
-| **8** | **Design Knowledge Platform** | **27** | ❌ | 0 | 0 | 0 |
-| **9** | **Intelligent Orchestration Platform** | **19** | ❌ | 0 | 0 | 0 |
-| **10** | **Human AI Collaboration** | **15** | ❌ | 0 | 0 | 0 |
-| **11** | **Commercial Intelligence Platform** | **20** | ⚠️ | 1 | 75*** | частично |
+| **8** | **Design Knowledge Platform** | **27** | ⚠️ registry | 1 | 5 | scaffold |
+| **9** | **Intelligent Orchestration Platform** | **19** | ⚠️ registry | 1 | 4 | scaffold |
+| **10** | **Human AI Collaboration** | **15** | ⚠️ registry | 1 | 4 | scaffold |
+| **11** | **Commercial Intelligence Platform** | **20** | ⚠️ | 2 | 75*** | 11.18–11.20 full |
 
 \* `render-blueprint.spec.ts` зарегистрирован в registry как chapter `"3"` (структура blueprint), но концептуально относится к гл. 2.  
 \** В GitHub максимум `7.28`. Разделы `7.29`–`7.40` (до 40) **не найдены** в истории коммитов.  
-\*** 75 тестов = 25×3 для подмодулей 11.18, 11.19, 11.20; разделы 11.1–11.17 — заглушки в `ecosystem-engines.ts`.
+\*** 88 platform tests = 13 integration + 75 Ch11; see `docs/DESIGN-AI-BOOK-INDEX-CH1-11.md`
+
+**Модули platform layer (локально, в этой ветке):**
+
+```
+src/lib/design-ai-book/              # registry глав 1–11
+src/lib/design-knowledge-platform/   # Ch8  8.1–8.27
+src/lib/intelligent-orchestration-platform/  # Ch9  9.1–9.19
+src/lib/human-ai-collaboration/      # Ch10 10.1–10.15
+src/lib/commercial-intelligence-platform/    # Ch11 11.1–11.20
+```
 
 ---
 
@@ -373,12 +385,9 @@ origin/cursor/render-validator-agent-ch728-b8ae
 ## 9. Команды верификации
 
 ```bash
-# Полная книга гл. 3–7 (эталон)
-git checkout origin/cursor/render-validator-agent-ch728-b8ae
-bash scripts/run-v18-blueprint-tests.sh   # ожидание: 120 specs OK
-
-# Глава 11 (локально)
-bash scripts/run-commercial-intelligence-specs.sh   # ожидание: 75 tests OK
+bash scripts/run-design-ai-book-audit.sh            # 208 tests (120 + 88)
+bash scripts/run-v18-blueprint-tests.sh             # chapters 3–7
+bash scripts/run-platform-chapters-8-11-specs.sh    # chapters 8–11
 ```
 
 ---
