@@ -3,6 +3,8 @@
 | Поле | Значение |
 |------|----------|
 | **Дата** | 2026-07-02 |
+| **Версия** | **2.0** (полный аудит + каталог разделов) |
+| **Ветка** | `cursor/design-ai-book-ch1-11-0e50` |
 | **Аудитор** | Chief AI Architect review |
 | **Scope** | Книга Design AI: гл. 1–7 (v18) + гл. 8–11 (platform layer) |
 | **Эталонная ветка (гл. 3–7)** | `origin/cursor/render-validator-agent-ch728-b8ae` |
@@ -208,12 +210,13 @@ src/lib/commercial-intelligence-platform/    # Ch11 11.1–11.20
 | Ветки `ch8*`, `design-knowledge-platform*` | **0** |
 | Коммиты `feat(ch8.*)` | **0** |
 | Docs `CHAPTER-8` | **0** |
-| Модуль `design-knowledge-platform/` | **0** |
-| Specs | **0** |
+| Модуль `design-knowledge-platform/` | ✅ recovery (`sections.ts` 8.1–8.27) |
+| Specs | ✅ 5 (registry + counts) |
+| Ветка | `cursor/design-ai-book-ch1-11-0e50` |
 
-**Связь с гл. 5:** в `render-blueprint/` реализован **Engine** (5.1–5.20, 20 specs) — это **не** замена гл. 8. Платформа 8.x в репозитории **не начата**.
+**Связь с гл. 5:** Engine (5.1–5.20) в `render-blueprint/` — фундамент. Platform 8.x — **recovery scaffold**, engines из зависшего агента не найдены.
 
-**Зрелость: 0/10**
+**Зрелость: 3/10** — реестр разделов полный, реализация pending.
 
 ---
 
@@ -224,9 +227,10 @@ src/lib/commercial-intelligence-platform/    # Ch11 11.1–11.20
 | Критерий | Статус |
 |----------|--------|
 | Ветки / коммиты `ch9*` | **0** |
-| Docs / код / тесты | **0** |
+| Модуль | ✅ `intelligent-orchestration-platform/` (9.1–9.19 registry) |
+| Specs | ✅ 4 |
 
-**Зрелость: 0/10** — полностью отсутствует в GitHub.
+**Зрелость: 3/10** — recovery scaffold на ветке `design-ai-book-ch1-11`.
 
 ---
 
@@ -237,9 +241,10 @@ src/lib/commercial-intelligence-platform/    # Ch11 11.1–11.20
 | Критерий | Статус |
 |----------|--------|
 | Ветки / коммиты `ch10*` | **0** |
-| Docs / код / тесты | **0** |
+| Модуль | ✅ `human-ai-collaboration/` (10.1–10.15 registry) |
+| Specs | ✅ 4 |
 
-**Зрелость: 0/10** — полностью отсутствует в GitHub.
+**Зрелость: 3/10** — recovery scaffold.
 
 ---
 
@@ -301,7 +306,7 @@ origin/cursor/render-validator-agent-ch728-b8ae
 |-----------|--------|
 | `RENDER_BLUEPRINT_V18=1` | Флаг в `pipeline-version.ts` / `index.ts`, **handler не вызывает** v18 pipeline |
 | `generate-infographic-handler.ts` | v17.1 governance, SD/FLUX, **без** RenderBlueprint orchestration |
-| `runDesignAiOsPipeline()` | Локальный scaffold (`design-ai-os/`) — **не та книга**, не подключён |
+| Platform pipeline 8→11 | Registry + Ch11 capstone; **не в handler** |
 | Commercial Intelligence → handler | ❌ |
 
 **Риск:** две параллельные реальности — 120 тестов на feature-ветках и production на v17.
@@ -328,20 +333,31 @@ origin/cursor/render-validator-agent-ch728-b8ae
 | 5 Design Knowledge | 10/10 | 10/10 | 10/10 | 0 | **9/10** |
 | 6 Design Pipeline | 10/10 | 10/10* | 10/10* | 0 | **9/10** |
 | 7 Platform Arch | 10/10 | 8/10** | 10/10 | 0 | **8/10** |
-| 8 Design Knowledge Platform | 0 | 0 | 0 | 0 | **0/10** |
-| 9 Intelligent Orchestration | 0 | 0 | 0 | 0 | **0/10** |
-| 10 Human AI Collaboration | 0 | 0 | 0 | 0 | **0/10** |
-| 11 Commercial Intelligence | 4/10 | 5/10 | 6/10 | 0 | **5/10** |
+| 8 Design Knowledge Platform | 4/10 | 3/10 | 4/10 | 0 | **3/10** |
+| 9 Intelligent Orchestration | 4/10 | 3/10 | 4/10 | 0 | **3/10** |
+| 10 Human AI Collaboration | 4/10 | 3/10 | 4/10 | 0 | **3/10** |
+| 11 Commercial Intelligence | 5/10 | 6/10 | 7/10 | 0 | **6/10** |
 
 \* на `ch728`; на `ch613` код/тесты гл. 6.14–6.20 отсутствуют.  
 \** 28/40 разделов если план = 40.
 
 **Средняя по имеющемуся коду (гл. 1–7): 8.3/10**  
-**Средняя по заявленной книге 1–11: 5.5/10**
+**Средняя по заявленной книге 1–11: 6.2/10**
 
 ---
 
-## 8. Рекомендации
+## 8. Приложения (в bundle)
+
+| Файл | Содержание |
+|------|------------|
+| `AUDIT-CHIEF-ARCHITECT-DESIGN-AI-CH1-11.md` | Этот документ |
+| `SECTIONS-CATALOG.md` | Все разделы 1.1–11.20 |
+| `DESIGN-AI-BOOK-INDEX-CH1-11.md` | Оглавление книги |
+| `TEST-RUN.log` | Лог `run-design-ai-book-audit.sh` (208 tests) |
+
+---
+
+## 9. Рекомендации
 
 ### P0 — Восстановить единый источник истины
 
@@ -382,7 +398,7 @@ origin/cursor/render-validator-agent-ch728-b8ae
 
 ---
 
-## 9. Команды верификации
+## 10. Команды верификации
 
 ```bash
 bash scripts/run-design-ai-book-audit.sh            # 208 tests (120 + 88)
@@ -392,7 +408,7 @@ bash scripts/run-platform-chapters-8-11-specs.sh    # chapters 8–11
 
 ---
 
-## 10. Итог одной фразой
+## 11. Итог одной фразой
 
 **Главы 1–7 живы на GitHub (`ch728`, 120 тестов). Главы 8–10 (Design Knowledge Platform / Intelligent Orchestration / Human AI Collaboration) отсутствуют. Глава 11 (Commercial Intelligence Platform) частично восстановлена. В `main` — ничего из platform layer не работает.**
 
