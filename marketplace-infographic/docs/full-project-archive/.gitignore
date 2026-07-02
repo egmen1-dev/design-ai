@@ -1,0 +1,5 @@
+# Large artifacts — use split parts (FULL-PROJECT-ARCHIVE.tar.gz.part-*)
+design-ai-all-branches.bundle
+design-ai-workspace-snapshot.tar.gz
+FULL-PROJECT-ARCHIVE.tar.gz
+recovered-hung-agent-stash/
