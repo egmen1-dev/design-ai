@@ -4,7 +4,7 @@
 |------|----------|
 | **Дата** | 2026-07-02 |
 | **Аудитор** | Chief AI Architect review |
-| **Scope** | Книга Design AI v18 + коммерческая арка 8–11 |
+| **Scope** | Книга Design AI: гл. 1–7 (v18) + гл. 8–11 (platform layer) |
 | **Эталонная ветка (гл. 3–7)** | `origin/cursor/render-validator-agent-ch728-b8ae` |
 | **Тесты v18 (гл. 3–7)** | **120/120 passed** (`scripts/run-v18-blueprint-tests.sh`) |
 | **Тесты гл. 11 (локально)** | **75/75 passed** (`scripts/run-commercial-intelligence-specs.sh`) |
@@ -14,14 +14,23 @@
 
 ## 1. Executive Summary
 
-Книга Design AI состоит из **11 глав**. Главы **1–7** — технический фундамент (философия → platform architecture). Главы **8–11** — коммерческий контур (value/pricing → commercial intelligence).
+Книга Design AI состоит из **11 глав**. Главы **1–7** — технический фундамент (философия → platform architecture). Главы **8–11** — **platform layer** поверх архитектуры:
+
+```
+Ch8 Design Knowledge Platform (27)
+  → Ch9 Intelligent Orchestration Platform (19)
+  → Ch10 Human AI Collaboration (15)
+  → Ch11 Commercial Intelligence Platform (20)
+```
+
+**Важно:** гл. **5** (Design Knowledge **Engine**, 20 разделов в v18) ≠ гл. **8** (Design Knowledge **Platform**, 27 разделов). Engine — слой знаний внутри blueprint; Platform — самостоятельная платформа книги.
 
 | Блок | Статус в GitHub | Зрелость |
 |------|-----------------|----------|
 | **Гл. 1–2** | Философия + blueprint-ядро есть, формальных разделов нет | 7/10 |
 | **Гл. 3–7** | **Полностью** на ветке `ch728`: 120 specs, 113 docs, 416 файлов | **9/10** |
-| **Гл. 8–10** | **Отсутствуют** (0 веток, 0 коммитов, 0 specs) | **0/10** |
-| **Гл. 11** | Частично восстановлена локально (11.18–11.20), **не запушена** | **5/10** |
+| **Гл. 8–10** | **Design Knowledge Platform** / **Intelligent Orchestration** / **Human AI Collaboration** — **0** в GitHub | **0/10** |
+| **Гл. 11** | **Commercial Intelligence Platform** — частично (11.18–11.20), в PR #5 | **5/10** |
 | **Интеграция в prod** | Handler v17.1, `RENDER_BLUEPRINT_V18=1` не подключён к API | **2/10** |
 
 **Главный вывод:** ядро книги (гл. 3–7) **не потеряно** — оно на 129 cursor-ветках, кульминация `ch728`. Потеряно на уровне **рабочего checkout / main**: откат до `ch613` отрезает гл. 6.14–7.28 (108 файлов). Главы 8–10 **никогда не попали в GitHub**. Глава 11 — только локальный recovery.
@@ -39,10 +48,10 @@
 | **5** | Design Knowledge Engine | 20 | ✅ 20 | 20 | 20 | ✅ |
 | **6** | Design Pipeline | 20 | ✅ 20 | 21 | 21 | ✅ |
 | **7** | Platform Architecture | 28–40** | ✅ 28 | 29 | 29 | ✅ |
-| **8** | Value & Pricing | 27 | ❌ | 0 | 0 | 0 |
-| **9** | Commercial Strategy | 19 | ❌ | 0 | 0 | 0 |
-| **10** | Commercial Prediction | 15 | ❌ | 0 | 0 | 0 |
-| **11** | Commercial Intelligence | 20 | ⚠️ | 1 | 75*** | частично |
+| **8** | **Design Knowledge Platform** | **27** | ❌ | 0 | 0 | 0 |
+| **9** | **Intelligent Orchestration Platform** | **19** | ❌ | 0 | 0 | 0 |
+| **10** | **Human AI Collaboration** | **15** | ❌ | 0 | 0 | 0 |
+| **11** | **Commercial Intelligence Platform** | **20** | ⚠️ | 1 | 75*** | частично |
 
 \* `render-blueprint.spec.ts` зарегистрирован в registry как chapter `"3"` (структура blueprint), но концептуально относится к гл. 2.  
 \** В GitHub максимум `7.28`. Разделы `7.29`–`7.40` (до 40) **не найдены** в истории коммитов.  
@@ -178,40 +187,63 @@
 
 ---
 
-### Глава 8 — Value & Pricing (27 разделов — план)
+### Глава 8 — Design Knowledge Platform (27 разделов — план)
+
+**Назначение:** платформенный слой design knowledge поверх гл. 5 (Engine). Объединяет knowledge sources, retrieval, validation, learning в единую **Platform** с 27 разделами (`8.1`–`8.27`).
 
 | Критерий | Статус |
 |----------|--------|
-| Ветки `ch8*` | **0** |
+| Ветки `ch8*`, `design-knowledge-platform*` | **0** |
 | Коммиты `feat(ch8.*)` | **0** |
+| Docs `CHAPTER-8` | **0** |
+| Модуль `design-knowledge-platform/` | **0** |
+| Specs | **0** |
+
+**Связь с гл. 5:** в `render-blueprint/` реализован **Engine** (5.1–5.20, 20 specs) — это **не** замена гл. 8. Платформа 8.x в репозитории **не начата**.
+
+**Зрелость: 0/10**
+
+---
+
+### Глава 9 — Intelligent Orchestration Platform (19 разделов — план)
+
+**Назначение:** интеллектуальная оркестрация агентов и pipeline на уровне платформы (`9.1`–`9.19`). Отличается от гл. 6 (Design Pipeline stages) и гл. 6.1 (orchestrator) — это **platform orchestration**, не stage-level pipeline.
+
+| Критерий | Статус |
+|----------|--------|
+| Ветки / коммиты `ch9*` | **0** |
 | Docs / код / тесты | **0** |
 
-**Зрелость: 0/10** — глава не начата в публичном репозитории.
+**Зрелость: 0/10** — полностью отсутствует в GitHub.
 
 ---
 
-### Глава 9 — Commercial Strategy (19 разделов — план)
+### Глава 10 — Human AI Collaboration (15 разделов — план)
 
-**Зрелость: 0/10** — полностью отсутствует.
+**Назначение:** модель совместной работы человека и AI (`10.1`–`10.15`) — review loops, explainability UX, human-in-the-loop decisions, collaboration protocols.
+
+| Критерий | Статус |
+|----------|--------|
+| Ветки / коммиты `ch10*` | **0** |
+| Docs / код / тесты | **0** |
+
+**Зрелость: 0/10** — полностью отсутствует в GitHub.
 
 ---
 
-### Глава 10 — Commercial Prediction (15 разделов — план)
-
-**Зрелость: 0/10** — полностью отсутствует.
-
----
-
-### Глава 11 — Commercial Intelligence (20 разделов — план)
+### Глава 11 — Commercial Intelligence Platform (20 разделов — план)
 
 **Назначение:** единая коммерческая платформа — ecosystem engines, constitution, summary, manifest.
 
 | Раздел | Статус | Тесты |
 |--------|--------|-------|
-| 11.1–11.17 | Имена в `ecosystem-engines.ts`, логика-заглушка | ❌ |
-| 11.18 Commercial Constitution | ✅ engine + types + spec | 25/25 |
+| 11.1–11.17 | Ecosystem engines (имена в `ecosystem-engines.ts`, код-заглушка) | ❌ |
+| 11.18 Commercial Constitution Platform | ✅ engine + types + spec | 25/25 |
 | 11.19 Platform Summary | ✅ capstone | 25/25 |
-| 11.20 Manifest | ✅ handoff | 25/25 |
+| 11.20 Commercial Intelligence Manifest | ✅ handoff | 25/25 |
+
+**Поток платформ 8→11 (целевой):**
+`Design Knowledge Platform` → `Intelligent Orchestration` → `Human AI Collaboration` → `Commercial Intelligence Manifest`
 
 **Модуль:** `src/lib/commercial-intelligence-platform/` (untracked / не в `ch728`).  
 **Коммиты зависшего агента** (`7bbe04ee`, `ddaf1ff5`) — **не найдены** на GitHub.
@@ -284,9 +316,9 @@ origin/cursor/render-validator-agent-ch728-b8ae
 | 5 Design Knowledge | 10/10 | 10/10 | 10/10 | 0 | **9/10** |
 | 6 Design Pipeline | 10/10 | 10/10* | 10/10* | 0 | **9/10** |
 | 7 Platform Arch | 10/10 | 8/10** | 10/10 | 0 | **8/10** |
-| 8 Value & Pricing | 0 | 0 | 0 | 0 | **0/10** |
-| 9 Commercial Strategy | 0 | 0 | 0 | 0 | **0/10** |
-| 10 Commercial Prediction | 0 | 0 | 0 | 0 | **0/10** |
+| 8 Design Knowledge Platform | 0 | 0 | 0 | 0 | **0/10** |
+| 9 Intelligent Orchestration | 0 | 0 | 0 | 0 | **0/10** |
+| 10 Human AI Collaboration | 0 | 0 | 0 | 0 | **0/10** |
 | 11 Commercial Intelligence | 4/10 | 5/10 | 6/10 | 0 | **5/10** |
 
 \* на `ch728`; на `ch613` код/тесты гл. 6.14–6.20 отсутствуют.  
@@ -304,10 +336,16 @@ origin/cursor/render-validator-agent-ch728-b8ae
 1. Merge `render-validator-agent-ch728` → integration branch → `main` (или protected develop).
 2. Убрать расхождение `ch613` vs `ch728` — один canonical tip.
 
-### P1 — Закрыть гл. 8–10
+### P1 — Закрыть гл. 8–10 (platform layer)
 
-1. Найти локальные спеки зависшего агента (27 + 19 + 15 разделов).
-2. Ветки `cursor/value-pricing-ch8*` … по образцу `ch728`.
+| Глава | Платформа | Разделов | Ветки (план) |
+|-------|-----------|----------|--------------|
+| 8 | Design Knowledge Platform | 27 | `cursor/design-knowledge-platform-ch8*` |
+| 9 | Intelligent Orchestration Platform | 19 | `cursor/intelligent-orchestration-platform-ch9*` |
+| 10 | Human AI Collaboration | 15 | `cursor/human-ai-collaboration-ch10*` |
+
+1. Найти локальные спеки зависшего агента (`8.1`–`8.27`, `9.1`–`9.19`, `10.1`–`10.15`).
+2. Не путать гл. 8 Platform с гл. 5 Engine — Platform строится **поверх** Engine.
 
 ### P1 — Дожать гл. 11
 
@@ -347,7 +385,7 @@ bash scripts/run-commercial-intelligence-specs.sh   # ожидание: 75 tests
 
 ## 10. Итог одной фразой
 
-**Главы 1–7 книги Design AI живы на GitHub (пик — `ch728`, 120 тестов). Главы 8–10 отсутствуют. Глава 11 частично восстановлена локально. В `main` и production — ничего из этого не работает.**
+**Главы 1–7 живы на GitHub (`ch728`, 120 тестов). Главы 8–10 (Design Knowledge Platform / Intelligent Orchestration / Human AI Collaboration) отсутствуют. Глава 11 (Commercial Intelligence Platform) частично восстановлена. В `main` — ничего из platform layer не работает.**
 
 ---
 
