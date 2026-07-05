@@ -1576,6 +1576,24 @@ directives:
     success:
       message_bus_documented: true
 
+  - id: CTX-001
+    title: DAOS Execution Context (Part 42)
+    priority: Critical
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/Architecture_Bible.md
+        - docs/architecture/architecture.yaml
+    requires:
+      - KNL-001
+      - TSK-001
+      - PC-001
+    checks:
+      - validate_yaml
+    success:
+      execution_context_documented: true
+
   - id: DIR-001
     title: Directive Registry
     priority: HIGH
@@ -1819,6 +1837,7 @@ glossary:
     TaskResult: Outcome of a Task — status, output, metrics, duration, warnings, errors, trace.
     Message: Unit of inter-platform communication via Message Bus (Part 41). Platforms never communicate directly.
     Message Bus: Central routing layer for Commands, Events, Queries, Responses, and Notifications.
+    ExecutionContext: Immutable execution envelope (Part 42). Every platform receives identical context.
     Platform: Independent architectural component. Owns one responsibility. Produces one Specification.
     Specification: Immutable DTO exchanged between platforms.
     ProductBrief: Initial project description. Created once.
@@ -1877,6 +1896,7 @@ architecture_index:
   Microkernel Architecture: "Part 39"
   Execution Model: "Part 40"
   Message Bus: "Part 41"
+  Execution Context: "Part 42"
 
 implementation_index:
   prefixes:
@@ -2251,6 +2271,26 @@ daos_message_bus:
       - analytics
   success_criteria:
     - no_direct_platform_communication
+
+daos_execution_context:
+  part: 42
+  purpose: every execution receives identical Context
+  execution_context_contains:
+    - project_state
+    - configuration
+    - architecture_version
+    - execution_plan
+    - knowledge_snapshot
+    - genome_snapshot
+    - marketplace_snapshot
+    - feature_flags
+    - assets
+    - runtime_metadata
+  immutability:
+    context_immutable: true
+    platform_cannot_modify_context: true
+  success_criteria:
+    - identical_context_implies_identical_decision
 
 volume_1:
   status: complete

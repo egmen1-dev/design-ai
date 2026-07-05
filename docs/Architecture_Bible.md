@@ -228,6 +228,9 @@ Version: 1.0 (Complete — Volume I)
   - [Message Types & Routing](#message-types)
   - [Message Store](#message-store)
   - [Directive MSG-001](#implementation-directive-msg-001)
+- [Part 42 — DAOS Execution Context](#part-42--daos-execution-context)
+  - [ExecutionContext](#executioncontext)
+  - [Directive CTX-001](#implementation-directive-ctx-001)
 - [Appendix A — Glossary](#appendix-a--glossary)
 - [Appendix B — Architecture Index](#appendix-b--architecture-index)
 - [Appendix C — Implementation Index](#appendix-c--implementation-index)
@@ -11083,6 +11086,76 @@ No direct platform communication.
 
 ---
 
+# PART 42 — DAOS EXECUTION CONTEXT
+
+# ============================================================================
+# PART 42
+# DAOS EXECUTION CONTEXT
+# ============================================================================
+
+## Purpose
+
+Every execution receives **identical Context**.
+
+Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `daos_execution_context`
+
+**Related:** Part 28 (ProjectState) · Part 40 (Execution Model) · Part 41 (Message Bus)
+
+---
+
+# EXECUTIONCONTEXT
+
+**ExecutionContext** contains:
+
+| Field | Description |
+|-------|-------------|
+| **ProjectState** | Immutable project state |
+| **Configuration** | Runtime configuration |
+| **Architecture Version** | Active architecture version |
+| **ExecutionPlan** | Planned execution graph |
+| **Knowledge Snapshot** | Point-in-time knowledge |
+| **Genome Snapshot** | Point-in-time design genome |
+| **Marketplace Snapshot** | Point-in-time marketplace rules |
+| **Feature Flags** | Enabled feature toggles |
+| **Assets** | Resolved asset references |
+| **Runtime Metadata** | Execution session metadata |
+
+---
+
+## Immutability Rule
+
+**Context is immutable.**
+
+Platform **cannot** modify Context.
+
+---
+
+## IMPLEMENTATION DIRECTIVE CTX-001
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Document** | Part 42 — DAOS Execution Context |
+| **Machine-readable** | `architecture.yaml` → `daos_execution_context` |
+| **Depends** | KNL-001 · TSK-001 · PC-001 |
+| **Status** | Completed |
+
+---
+
+# SUCCESS
+
+```
+Identical Context
+        ↓
+Identical Decision
+```
+
+---
+
+*END OF PART 42*
+
+---
+
 # APPENDIX A — GLOSSARY
 
 # ============================================================================
@@ -11116,6 +11189,7 @@ Machine-readable index: [`docs/architecture/architecture.yaml`](architecture/arc
 | **TaskResult** | Outcome of a Task — status, output, metrics, duration, warnings, errors, trace. |
 | **Message** | Unit of inter-platform communication via Message Bus (Part 41). Platforms never communicate directly. |
 | **Message Bus** | Central routing layer for Commands, Events, Queries, Responses, and Notifications. |
+| **ExecutionContext** | Immutable execution envelope (Part 42). Every platform receives identical context. |
 | **Platform** | Independent architectural component. Owns one responsibility. Produces one Specification. |
 | **Specification** | Immutable DTO exchanged between platforms. |
 | **ProductBrief** | Initial project description. Created once. |
@@ -11192,6 +11266,7 @@ Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architect
 | **Microkernel Architecture** | Part 39 |
 | **Execution Model** | Part 40 |
 | **Message Bus** | Part 41 |
+| **Execution Context** | Part 42 |
 
 ---
 
