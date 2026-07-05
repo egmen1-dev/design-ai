@@ -234,6 +234,9 @@ Version: 1.0 (Complete — Volume I)
 - [Part 44 — Fixed Roadmap](#part-44--fixed-roadmap)
   - [Phases A–F](#phase-a--documentation-stabilization)
   - [Directive RDM-001](#implementation-directive-rdm-001)
+- [Part 45 — Wave 1 Foundation Implementation Plan](#part-45--wave-1--foundation-implementation-plan)
+  - [Implementation Order & Deliverables](#implementation-order)
+  - [Directive W1-001](#implementation-directive-w1-001)
 - [Appendix A — Glossary](#appendix-a--glossary)
 - [Appendix B — Architecture Index](#appendix-b--architecture-index)
 - [Appendix C — Implementation Index](#appendix-c--implementation-index)
@@ -11399,6 +11402,233 @@ Not the product.
 
 ---
 
+# PART 45 — WAVE 1 — FOUNDATION IMPLEMENTATION PLAN
+
+# ============================================================================
+# PART 45
+# WAVE 1 — FOUNDATION IMPLEMENTATION PLAN
+# ============================================================================
+
+| | |
+|---|---|
+| **Status** | Ready For Implementation |
+| **Priority** | Maximum |
+| **Estimated Duration** | 5–10 working days |
+
+Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `wave_1_foundation`
+
+**Related:** Part 44 Phase B · RFC-000 · RFC-001 · PC-001–004
+
+---
+
+## Goal
+
+Introduce **DAOS Core** without breaking existing functionality.
+
+## Principle
+
+**Expand first. Replace later.**
+
+Never perform a big-bang rewrite.
+
+---
+
+# OBJECTIVES
+
+Wave 1 introduces the **architectural foundation**.
+
+- Business logic remains unchanged
+- Generation quality must **not** decrease
+- Existing generation pipeline continues while gradually moving to new architecture
+
+---
+
+# SUCCESS CRITERIA
+
+- [x] Project compiles
+- [x] Existing API works
+- [x] Existing rendering works
+- [x] ProjectState introduced
+- [ ] Contracts introduced (`src/lib/contracts/`)
+- [ ] Runtime skeleton introduced (`src/lib/runtime/`)
+- [x] Registry introduced
+- [x] Legacy remains operational
+
+---
+
+# IMPLEMENTATION ORDER
+
+## STEP 01 — Platform Core
+
+**Create** `src/lib/platform-core/`
+
+| Module | Status |
+|--------|--------|
+| ProjectState | ✓ Implemented |
+| ExecutionContext | ✓ Implemented |
+| ArchitectureRegistry | ✓ Implemented |
+| ConfigurationManager | ✓ Implemented |
+| VersionManager | ✓ Implemented |
+| PlatformRegistry | ✓ Implemented |
+
+---
+
+## STEP 02 — Contracts
+
+**Create** `src/lib/contracts/`
+
+- BaseSpecification
+- ResearchSpec
+- KnowledgeSpec
+- CommercialSpec
+- CreativeSpec
+- VisualBlueprint
+- RenderBlueprint
+- VisionReport
+- LearningReport
+
+---
+
+## STEP 03 — Runtime
+
+**Create** `src/lib/runtime/`
+
+- Runtime
+- ExecutionGraph
+- Scheduler
+- Task
+- TaskResult
+- EventBus
+- ExecutionEvents
+
+---
+
+## STEP 04 — Adapters
+
+```
+Current pipeline
+        ↓
+ProjectState
+        ↓
+Legacy Pipeline
+```
+
+Allows **gradual migration**.
+
+**First adapters:**
+
+- LegacyDesignPipelineAdapter
+- LegacyPromptAdapter
+- LegacyRenderAdapter
+- LegacyOverlayAdapter
+
+---
+
+## STEP 05 — Configuration
+
+Move configuration — no hardcoded values.
+
+Everything → **ConfigurationManager**
+
+---
+
+## STEP 06 — Register Platforms
+
+Register every platform:
+
+Research · Knowledge · Commercial · Creative · Visual · Rendering · Vision · Learning · Governance
+
+---
+
+# DO NOT TOUCH
+
+These modules migrate **later**:
+
+- Image Generation
+- Flux Provider
+- Overlay Rendering
+- Current HTML Templates
+- Background Generator
+- Prompt Compiler
+- Commercial Logic
+- Genome
+- Memory
+
+---
+
+# PROJECT STATE (Minimum Version)
+
+**ProjectState** contains:
+
+ProjectId · UserInput · ProductBrief · Configuration · Assets · Events · Metrics · ArchitectureVersion
+
+---
+
+# FIRST CONTRACTS
+
+BaseSpecification · ResearchSpec · KnowledgeSpec · CommercialSpec · CreativeSpec · VisualBlueprint · RenderBlueprint
+
+---
+
+# FIRST TESTS
+
+### Unit
+
+- ProjectState immutable
+- Runtime starts
+- Registry registers Platform
+- Contracts serializable
+- Architecture Validator passes
+
+### Integration
+
+- Legacy pipeline executes through Runtime
+
+---
+
+# ROLLBACK
+
+Disable Runtime → use Legacy Pipeline.
+
+**No business logic lost.**
+
+---
+
+# DELIVERABLES
+
+| Deliverable | Status |
+|-------------|--------|
+| ProjectState | ✓ |
+| Runtime Skeleton | Pending |
+| Contracts | Pending |
+| Registry | ✓ |
+| Configuration | ✓ |
+| EventBus | Pending |
+| Adapters | Pending |
+| Architecture Validation | Partial (scanner/analyzer exist) |
+
+---
+
+## IMPLEMENTATION DIRECTIVE W1-001
+
+| | |
+|---|---|
+| **Priority** | MAXIMUM |
+| **Document** | Part 45 — Wave 1 Foundation |
+| **Machine-readable** | `architecture.yaml` → `wave_1_foundation` |
+| **Depends** | RDM-001 · RFC-000 · PC-001–004 |
+| **Status** | Ready For Implementation |
+
+---
+
+*END OF WAVE 1*
+
+---
+
+*END OF PART 45*
+
+---
+
 # APPENDIX A — GLOSSARY
 
 # ============================================================================
@@ -11511,6 +11741,7 @@ Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architect
 | **Message Bus** | Part 41 |
 | **Execution Context** | Part 42 |
 | **Fixed Roadmap** | Part 44 |
+| **Wave 1 Foundation** | Part 45 |
 
 ---
 

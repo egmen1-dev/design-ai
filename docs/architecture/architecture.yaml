@@ -1626,6 +1626,33 @@ directives:
     success:
       fixed_roadmap_documented: true
 
+  - id: W1-001
+    title: Wave 1 Foundation Implementation Plan (Part 45)
+    priority: MAXIMUM
+    wave: 1
+    status: ready_for_implementation
+    estimated_days: "5-10"
+    files:
+      create:
+        - src/lib/contracts/
+        - src/lib/runtime/
+      modify:
+        - docs/Architecture_Bible.md
+        - docs/architecture/architecture.yaml
+    requires:
+      - RDM-001
+      - PC-001
+      - PC-002
+      - PC-003
+      - PC-004
+    checks:
+      - compile
+      - unit
+      - integration
+    success:
+      daos_core_beside_legacy: true
+      generation_quality_unchanged: true
+
   - id: DIR-001
     title: Directive Registry
     priority: HIGH
@@ -1930,6 +1957,7 @@ architecture_index:
   Message Bus: "Part 41"
   Execution Context: "Part 42"
   Fixed Roadmap: "Part 44"
+  Wave 1 Foundation: "Part 45"
 
 implementation_index:
   prefixes:
@@ -2445,6 +2473,137 @@ fixed_roadmap:
         - Cursor Task Generator
         - Architecture Compiler
       acceptance: architecture_automatically_measurable
+
+wave_1_foundation:
+  part: 45
+  status: ready_for_implementation
+  priority: maximum
+  estimated_duration: 5-10 working days
+  goal: introduce DAOS Core without breaking existing functionality
+  principle:
+    - expand_first
+    - replace_later
+    - no_big_bang_rewrite
+  objectives:
+    - introduce_architectural_foundation
+    - business_logic_unchanged
+    - generation_quality_must_not_decrease
+    - existing_pipeline_continues_during_migration
+  success_criteria:
+    - project_compiles
+    - existing_api_works
+    - existing_rendering_works
+    - project_state_introduced
+    - contracts_introduced
+    - runtime_skeleton_introduced
+    - registry_introduced
+    - legacy_remains_operational
+  implementation_order:
+    step_01:
+      path: src/lib/platform-core/
+      modules:
+        - ProjectState
+        - ExecutionContext
+        - ArchitectureRegistry
+        - ConfigurationManager
+        - VersionManager
+        - PlatformRegistry
+      implementation_status: partial
+    step_02:
+      path: src/lib/contracts/
+      modules:
+        - BaseSpecification
+        - ResearchSpec
+        - KnowledgeSpec
+        - CommercialSpec
+        - CreativeSpec
+        - VisualBlueprint
+        - RenderBlueprint
+        - VisionReport
+        - LearningReport
+      implementation_status: pending
+    step_03:
+      path: src/lib/runtime/
+      modules:
+        - Runtime
+        - ExecutionGraph
+        - Scheduler
+        - Task
+        - TaskResult
+        - EventBus
+        - ExecutionEvents
+      implementation_status: pending
+    step_04:
+      name: adapters
+      flow:
+        - current_pipeline
+        - project_state
+        - legacy_pipeline
+      adapters:
+        - LegacyDesignPipelineAdapter
+        - LegacyPromptAdapter
+        - LegacyRenderAdapter
+        - LegacyOverlayAdapter
+      implementation_status: pending
+    step_05:
+      name: configuration_migration
+      target: ConfigurationManager
+      implementation_status: partial
+    step_06:
+      name: register_platforms
+      platforms:
+        - Research
+        - Knowledge
+        - Commercial
+        - Creative
+        - Visual
+        - Rendering
+        - Vision
+        - Learning
+        - Governance
+      implementation_status: pending
+  do_not_touch:
+    - Image Generation
+    - Flux Provider
+    - Overlay Rendering
+    - Current HTML Templates
+    - Background Generator
+    - Prompt Compiler
+    - Commercial Logic
+    - Genome
+    - Memory
+  project_state_minimum:
+    - ProjectId
+    - UserInput
+    - ProductBrief
+    - Configuration
+    - Assets
+    - Events
+    - Metrics
+    - ArchitectureVersion
+  first_tests:
+    unit:
+      - project_state_immutable
+      - runtime_starts
+      - registry_registers_platform
+      - contracts_serializable
+      - architecture_validator_passes
+    integration:
+      - legacy_pipeline_executes_through_runtime
+  rollback:
+    steps:
+      - disable_runtime
+      - use_legacy_pipeline
+    rule: no_business_logic_lost
+  deliverables:
+    - ProjectState
+    - Runtime Skeleton
+    - Contracts
+    - Registry
+    - Configuration
+    - EventBus
+    - Adapters
+    - Architecture Validation
 
 volume_1:
   status: complete
