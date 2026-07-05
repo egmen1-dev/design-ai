@@ -61,6 +61,7 @@ Architecture Bible → ADR → RFC → Implementation Directive → Pull Request
 | CTG-002 | docs/cursor Wave-01..20 | Critical | Completed | — | — | — |
 | CTG-003 | architecture:tasks/waves/plan | Critical | Completed | — | — | — |
 | ANA-001 | Architecture Analyzer (Part 36) | Critical | Completed | — | — | — |
+| KNL-001 | DAOS Kernel (Part 37) | Critical | Completed | — | — | 1 |
 | DTO-001 | Base Contract & Specifications | Critical | Blocked | ADR-002 | RFC-001 | 02 |
 | DTO-002 | ProjectState implementation | Critical | Blocked | ADR-002 | RFC-001 | 02 |
 | RUN-001 | Runtime engine skeleton | Critical | Blocked | — | RFC-002 | 01 |

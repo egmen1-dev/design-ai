@@ -209,6 +209,10 @@ Version: 1.0 (Complete — Volume I)
 - [Part 36 — Architecture Analyzer](#part-36--architecture-analyzer)
   - [Analyzer Pipeline & Reports](#architecture-analyzer)
   - [Directive ANA-001](#implementation-directive-ana-001)
+- [Part 37 — DAOS Kernel](#part-37--daos-kernel)
+  - [Kernel Architecture & Services](#kernel-architecture)
+  - [Kernel API & Lifecycle](#kernel-api)
+  - [Directive KNL-001](#implementation-directive-knl-001)
 - [Appendix A — Glossary](#appendix-a--glossary)
 - [Appendix B — Architecture Index](#appendix-b--architecture-index)
 - [Appendix C — Implementation Index](#appendix-c--implementation-index)
@@ -10224,6 +10228,195 @@ Architecture always **measurable**.
 
 ---
 
+# PART 37 — DAOS KERNEL
+
+# ============================================================================
+# PART 37
+# DAOS KERNEL
+# Design AI Operating System Kernel
+# ============================================================================
+
+## Purpose
+
+The Kernel is the **heart of DAOS**.
+
+Every platform · every provider · every runtime component · every execution · every decision — must pass through the Kernel.
+
+The Kernel owns **orchestration**.
+
+The Kernel **never** owns business logic.
+
+**Implementation:** `marketplace-infographic/src/lib/kernel/`
+
+```bash
+cd marketplace-infographic && npx tsx src/lib/kernel/kernel.spec.ts
+```
+
+---
+
+## Responsibilities
+
+Kernel owns:
+
+- Runtime
+- Scheduler
+- ProjectState
+- Execution Graph
+- Platform Registry
+- Provider Registry
+- Event Bus
+- Metrics
+- Cache
+- Version Manager
+- Configuration
+- Security
+
+Nothing else.
+
+---
+
+# KERNEL ARCHITECTURE
+
+```
+                    DAOS Kernel
+                          │
+        ┌─────────────────┼──────────────────┐
+        │                 │                  │
+   Runtime          ProjectState       Registry
+        │                 │                  │
+   Scheduler          Contracts        Platforms
+        │                 │                  │
+   Execution         Specifications     Providers
+```
+
+---
+
+## Kernel Principles
+
+**Kernel never knows:** Commercial · Creative · Visual · Knowledge · Vision · Learning
+
+**Kernel only knows:** Execution.
+
+---
+
+## Kernel Services
+
+| Service | Module |
+|---------|--------|
+| Execution Service | `KernelRuntime.ts` |
+| Registry Service | `KernelRegistry.ts` |
+| Configuration Service | `KernelConfiguration.ts` |
+| Metrics Service | `KernelMetrics.ts` |
+| Logging Service | `KernelEvents.ts` |
+| Version Service | delegated via `PlatformCore` |
+| Cache Service | lifecycle flush on shutdown |
+| Security Service | readiness gate (`assertReady`) |
+| Event Service | `KernelEvents.ts` |
+
+---
+
+# KERNEL API
+
+| Method | Purpose |
+|--------|---------|
+| `initialize()` | Load configuration, start runtime, load registries |
+| `registerPlatform()` | Register platform implementation |
+| `registerProvider()` | Register provider adapter |
+| `registerPlugin()` | Register plugin |
+| `createProject()` | Create immutable `ProjectState` |
+| `execute()` | Run platform against `ProjectState` |
+| `shutdown()` | Stop runtime, flush cache, save metrics/events |
+
+---
+
+## Kernel Startup
+
+```
+Load Configuration
+        ↓
+Initialize Runtime
+        ↓
+Load Registry
+        ↓
+Load Providers
+        ↓
+Load Platforms
+        ↓
+Load Plugins
+        ↓
+Load Runtime Graph
+        ↓
+Ready
+```
+
+---
+
+## Kernel Shutdown
+
+```
+Stop Runtime
+        ↓
+Flush Cache
+        ↓
+Save Metrics
+        ↓
+Save Events
+        ↓
+Release Assets
+        ↓
+Shutdown
+```
+
+---
+
+## Files
+
+```
+src/lib/kernel/
+├── Kernel.ts
+├── KernelRuntime.ts
+├── KernelRegistry.ts
+├── KernelConfiguration.ts
+├── KernelLifecycle.ts
+├── KernelEvents.ts
+├── KernelMetrics.ts
+├── KernelHealth.ts
+├── types.ts
+├── index.ts
+└── kernel.spec.ts
+```
+
+---
+
+## IMPLEMENTATION DIRECTIVE KNL-001
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Create** | `src/lib/kernel/` |
+| **Depends** | PC-001–004 (Platform Core) |
+| **Acceptance** | `npx tsx src/lib/kernel/kernel.spec.ts` passes; every project starts through Kernel |
+| **Status** | Completed |
+
+---
+
+# ACCEPTANCE
+
+- Every project starts through Kernel
+- Nothing bypasses Kernel
+
+---
+
+# SUCCESS
+
+Kernel is the **sole orchestration entry point** for Design AI OS.
+
+---
+
+*END OF PART 37*
+
+---
+
 # APPENDIX A — GLOSSARY
 
 # ============================================================================
@@ -10248,6 +10441,7 @@ Machine-readable index: [`docs/architecture/architecture.yaml`](architecture/arc
 | **Architecture Bible** | The canonical architecture specification. Single Source of Truth. |
 | **ProjectState** | Immutable object containing the complete project state. Never partially modified. |
 | **Runtime** | Execution engine. Coordinates platforms. Never makes business decisions. |
+| **Kernel** | Heart of DAOS. Owns orchestration, registries, lifecycle. Never owns business logic. |
 | **Platform** | Independent architectural component. Owns one responsibility. Produces one Specification. |
 | **Specification** | Immutable DTO exchanged between platforms. |
 | **ProductBrief** | Initial project description. Created once. |
@@ -10316,6 +10510,10 @@ Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architect
 | **Release** | Part 31 |
 | **Observability** | Part 32 |
 | **Architecture Laws** | Part 33 |
+| **Code Rewrite** | Part 34 |
+| **Cursor Tasks** | Part 35 |
+| **Architecture Analyzer** | Part 36 |
+| **DAOS Kernel** | Part 37 |
 
 ---
 
@@ -10341,6 +10539,7 @@ Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architect
 | Prefix | Domain |
 |--------|--------|
 | **PC** | Platform Core |
+| **KNL** | DAOS Kernel |
 | **RUN** | Runtime |
 | **DTO** | Contracts |
 | **CRE** | Creative |
@@ -10361,6 +10560,8 @@ Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architect
 
 ```
 PC
+ ↓
+KNL
  ↓
 RUN
  ↓

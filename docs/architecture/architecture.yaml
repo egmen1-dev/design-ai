@@ -1480,6 +1480,38 @@ directives:
       modify:
         - package.json
 
+  - id: ANA-001
+    title: Architecture Analyzer (Part 36)
+    priority: Critical
+    wave: 0
+    status: completed
+    files:
+      create:
+        - scripts/architecture-analyzer/
+        - docs/architecture/reports/
+    requires:
+      - CRB-001
+    checks:
+      - architecture:analyze
+
+  - id: KNL-001
+    title: DAOS Kernel (Part 37)
+    priority: Critical
+    wave: 1
+    status: completed
+    files:
+      create:
+        - src/lib/kernel/
+    requires:
+      - PC-001
+      - PC-002
+      - PC-003
+      - PC-004
+    checks:
+      - unit
+    success:
+      every_project_through_kernel: true
+
   - id: DIR-001
     title: Directive Registry
     priority: HIGH
@@ -1714,6 +1746,7 @@ glossary:
     Architecture Bible: Canonical architecture specification. Single Source of Truth.
     ProjectState: Immutable object containing the complete project state. Never partially modified.
     Runtime: Execution engine. Coordinates platforms. Never makes business decisions.
+    Kernel: Heart of DAOS. Owns orchestration, registries, lifecycle. Never owns business logic.
     Platform: Independent architectural component. Owns one responsibility. Produces one Specification.
     Specification: Immutable DTO exchanged between platforms.
     ProductBrief: Initial project description. Created once.
@@ -1764,10 +1797,15 @@ architecture_index:
   Release: "Part 31"
   Observability: "Part 32"
   Architecture Laws: "Part 33"
+  Code Rewrite: "Part 34"
+  Cursor Tasks: "Part 35"
+  Architecture Analyzer: "Part 36"
+  DAOS Kernel: "Part 37"
 
 implementation_index:
   prefixes:
     PC: Platform Core
+    KNL: DAOS Kernel
     RUN: Runtime
     DTO: Contracts
     CRE: Creative
@@ -1783,6 +1821,7 @@ implementation_index:
     ADR: Decision Records
   execution_order:
     - PC
+    - KNL
     - RUN
     - DTO
     - KNOW
@@ -1852,6 +1891,60 @@ architecture_analyzer:
     - CoverageReport.md
   read_only: true
   target_score: 98
+
+daos_kernel:
+  part: 37
+  path: marketplace-infographic/src/lib/kernel/
+  business_logic: forbidden
+  responsibilities:
+    - runtime
+    - scheduler
+    - project_state
+    - execution_graph
+    - platform_registry
+    - provider_registry
+    - event_bus
+    - metrics
+    - cache
+    - version_manager
+    - configuration
+    - security
+  api:
+    - initialize
+    - registerPlatform
+    - registerProvider
+    - registerPlugin
+    - createProject
+    - execute
+    - shutdown
+  files:
+    - Kernel.ts
+    - KernelRuntime.ts
+    - KernelRegistry.ts
+    - KernelConfiguration.ts
+    - KernelLifecycle.ts
+    - KernelEvents.ts
+    - KernelMetrics.ts
+    - KernelHealth.ts
+  startup:
+    - load_configuration
+    - initialize_runtime
+    - load_registry
+    - load_providers
+    - load_platforms
+    - load_plugins
+    - load_runtime_graph
+    - ready
+  shutdown:
+    - stop_runtime
+    - flush_cache
+    - save_metrics
+    - save_events
+    - release_assets
+    - shutdown
+  acceptance:
+    - every_project_starts_through_kernel
+    - nothing_bypasses_kernel
 
 volume_1:
   status: complete
