@@ -30,6 +30,10 @@ Version: 1.0 (Draft)
   - [Category C — Platform Isolation](#category-c--platform-isolation)
   - [Category D — System Infrastructure](#category-d--system-infrastructure)
   - [Category E — Rendering](#category-e--rendering)
+  - [Category F — Governance](#category-f--governance)
+  - [Category G — Knowledge Platform](#category-g--knowledge-platform)
+  - [Category H — Commercial Platform](#category-h--commercial-platform)
+  - [Category I — Creative Platform](#category-i--creative-platform)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -677,7 +681,388 @@ Rendering does not consume immutable specifications.
 
 ---
 
-*END OF PART 2 (Section 2.1–2.6)*
+# CATEGORY F — GOVERNANCE
+
+## Overview
+
+Governance is responsible for ensuring that every platform decision is consistent with the global project strategy.
+
+Current implementation already contains:
+
+- Constitution
+- Resolver
+- Decision Trace
+- Validators
+- Professional Score
+- Blueprint Lock
+
+This is a very strong foundation.
+
+However Governance currently validates mostly local design decisions.
+
+It does not govern the complete lifecycle of the project.
+
+---
+
+## F-001
+
+Governance validates scenes.
+
+It should validate projects.
+
+Current:
+
+```
+Scene
+  ↓
+Composition
+  ↓
+Layout
+```
+
+Target:
+
+```
+Project Strategy
+  ↓
+Commercial Strategy
+  ↓
+Creative Strategy
+  ↓
+Visual Strategy
+  ↓
+Rendering Strategy
+```
+
+---
+
+## F-002
+
+Governance starts too late.
+
+Today Governance begins after several architectural decisions have already been made.
+
+Target:
+
+Governance starts immediately after ProductBrief creation.
+
+---
+
+## F-003
+
+Governance cannot reject business strategy.
+
+It validates layout.
+
+It does not validate commercial reasoning.
+
+Future Governance must validate:
+
+- buyer psychology
+- commercial hierarchy
+- category consistency
+- marketplace strategy
+- visual communication
+
+---
+
+## F-004
+
+Professional Score is heuristic.
+
+Professional Score must become composite.
+
+Target score:
+
+```
+Commercial Score
+  +
+Creative Score
+  +
+Visual Score
+  +
+Vision Score
+  +
+Marketplace Score
+  ↓
+Final Score
+```
+
+---
+
+## F-005
+
+Current Constitution validates Blueprint.
+
+Future Constitution validates:
+
+```
+Blueprint
+  ↓
+Rendering
+  ↓
+Overlay
+  ↓
+Final PNG
+```
+
+---
+
+## F-006
+
+Governance has no rollback.
+
+Every rejected strategy should be restorable.
+
+---
+
+## Target Architecture
+
+Governance becomes central authority.
+
+Every platform reports into Governance.
+
+No platform bypasses Governance.
+
+---
+
+# CATEGORY G — KNOWLEDGE PLATFORM
+
+## Overview
+
+Knowledge Platform already contains:
+
+- Design Genome
+- Knowledge Engine
+- Market Intelligence
+- Trend Intelligence
+- Reference Analyzer
+
+The audit confirmed that the problem is not lack of knowledge.
+
+The problem is fragmentation.
+
+---
+
+## G-001
+
+Knowledge exists in multiple isolated modules.
+
+Target:
+
+Single Design Knowledge Platform.
+
+---
+
+## G-002
+
+Knowledge becomes Prompt.
+
+Target:
+
+Knowledge becomes KnowledgeSpec.
+
+---
+
+## G-003
+
+Research is optional.
+
+Research must become mandatory.
+
+No rendering starts before research completion.
+
+---
+
+## G-004
+
+Knowledge has no confidence propagation.
+
+Every knowledge item must contain:
+
+- confidence
+- source
+- freshness
+- evidence
+
+---
+
+## G-005
+
+Knowledge has no lifecycle.
+
+Knowledge should evolve through:
+
+```
+Research
+  ↓
+Validation
+  ↓
+Commercial Evaluation
+  ↓
+Production
+  ↓
+Learning
+```
+
+---
+
+## G-006
+
+Knowledge retrieval is synchronous.
+
+Future platform should support:
+
+- cache
+- priority
+- background refresh
+- monthly updates
+- category snapshots
+
+---
+
+# CATEGORY H — COMMERCIAL PLATFORM
+
+## Overview
+
+Commercial Intelligence currently exists.
+
+However it influences only a small part of the rendering pipeline.
+
+Commercial Strategy should become one of the main architectural drivers of the project.
+
+---
+
+## H-001
+
+Commercial Platform must produce CommercialSpec.
+
+Never Prompt.
+
+---
+
+## H-002
+
+Commercial Platform must know:
+
+- Buyer
+- Marketplace
+- Category
+- Competitors
+- Price Segment
+- Offer
+- Brand
+- USP
+- Objections
+- Trust Drivers
+
+---
+
+## H-003
+
+Commercial decisions must survive until Final PNG.
+
+---
+
+## H-004
+
+Rendering must never reinterpret commercial decisions.
+
+It only executes them.
+
+---
+
+## H-005
+
+Commercial hierarchy should define visual hierarchy.
+
+Not vice versa.
+
+---
+
+## H-006
+
+CTR prediction should become one module.
+
+Not architecture.
+
+---
+
+## H-007
+
+Commercial Platform becomes mandatory.
+
+Every project must pass through it.
+
+---
+
+# CATEGORY I — CREATIVE PLATFORM
+
+## Overview
+
+Creative Platform already exists as Design Process.
+
+Future architecture renames it to:
+
+**Creative Intelligence Platform**
+
+---
+
+## I-001
+
+Creative Platform returns CreativeSpec.
+
+Not DesignBrief.
+
+---
+
+## I-002
+
+Concept generation becomes deterministic pipeline.
+
+```
+Concept
+  ↓
+Evaluation
+  ↓
+Selection
+  ↓
+CreativeSpec
+```
+
+---
+
+## I-003
+
+Creative Platform stores rejected concepts.
+
+Reasoning is preserved.
+
+---
+
+## I-004
+
+Creative Platform never writes prompts.
+
+---
+
+## I-005
+
+Creative Platform defines emotional direction.
+
+Visual Platform executes it.
+
+---
+
+## I-006
+
+Creative decisions remain immutable.
+
+No downstream platform may modify them.
+
+---
+
+*END OF PART 2 (Sections 2.1–2.6; Categories A–I)*
 
 ---
 
