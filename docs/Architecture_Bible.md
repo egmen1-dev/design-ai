@@ -206,6 +206,9 @@ Version: 1.0 (Complete — Volume I)
 - [Part 35 — Cursor Task Generator](#part-35--cursor-task-generator)
   - [Task Format & Waves](#task-format)
   - [Directives CTG-001–003](#implementation-directive-ctg-001)
+- [Part 36 — Architecture Analyzer](#part-36--architecture-analyzer)
+  - [Analyzer Pipeline & Reports](#architecture-analyzer)
+  - [Directive ANA-001](#implementation-directive-ana-001)
 - [Appendix A — Glossary](#appendix-a--glossary)
 - [Appendix B — Architecture Index](#appendix-b--architecture-index)
 - [Appendix C — Implementation Index](#appendix-c--implementation-index)
@@ -10113,6 +10116,111 @@ Pre-Implementation · Implementation · Post-Implementation (in `docs/cursor/PLA
 ---
 
 *END OF PART 35*
+
+---
+
+# PART 36 — ARCHITECTURE ANALYZER
+
+# ============================================================================
+# PART 36
+# ARCHITECTURE ANALYZER
+# ============================================================================
+
+## Purpose
+
+Architecture must **continuously audit itself**.
+
+Every commit should update **Architecture Report**.
+
+Implementation: `marketplace-infographic/scripts/architecture-analyzer/`
+
+```bash
+cd marketplace-infographic && npm run architecture:analyze
+```
+
+Output: `docs/architecture/reports/`
+
+---
+
+# ARCHITECTURE ANALYZER
+
+```
+Repository
+    ↓
+AST Scanner (imports/exports)
+    ↓
+Dependency Scanner
+    ↓
+Layer Scanner
+    ↓
+Architecture Validator
+    ↓
+Report Generator
+```
+
+Reuses Part 34 `architecture-scanner` pipeline.
+
+---
+
+# REPORTS
+
+| Report | File |
+|--------|------|
+| Architecture Dashboard | `Dashboard.md` |
+| Architecture Report | `ArchitectureReport.md` |
+| Dependency Report | `DependencyReport.md` |
+| Complexity Report | `ComplexityReport.md` |
+| Technical Debt Report | `TechnicalDebtReport.md` |
+| Migration Progress | `MigrationProgress.md` |
+| Coverage Report | `CoverageReport.md` |
+
+---
+
+# TECHNICAL DEBT
+
+Every violation stored as **TD-NNN** with severity and recommendation.
+
+Example: **TD-001** — Prompt outside Provider Adapter — **Critical** — Move to Provider Adapter
+
+---
+
+# COMPLEXITY
+
+Cyclomatic complexity (estimate) · File size · Dependency count · Coupling · Cohesion · Architecture Score
+
+---
+
+# MIGRATION PROGRESS
+
+Per-platform progress bars (Platform Core, Commercial, Visual, …) derived from repository state.
+
+---
+
+# ARCHITECTURE DASHBOARD
+
+Overall Score · Platform Health · Technical Debt · Migration Status · Critical Violations
+
+---
+
+## IMPLEMENTATION DIRECTIVE ANA-001
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Create** | `scripts/architecture-analyzer/` |
+| **Files** | `Analyzer.ts` · `DebtScanner.ts` · `DependencyScanner.ts` · `ComplexityScanner.ts` · `DashboardGenerator.ts` |
+| **Acceptance** | `npm run architecture:analyze` generates all reports |
+| **Status** | Completed |
+
+---
+
+# SUCCESS
+
+Architecture always **measurable**.
+
+---
+
+*END OF PART 36*
 
 ---
 

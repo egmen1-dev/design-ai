@@ -1451,6 +1451,35 @@ directives:
     rules:
       - never modify source code
 
+  - id: CTG-001
+    title: Cursor Task Generator (Part 35)
+    priority: Critical
+    wave: 0
+    status: completed
+    files:
+      create:
+        - scripts/cursor-task-generator/
+    requires:
+      - CRB-001
+
+  - id: CTG-002
+    title: Generate docs/cursor Wave-01..20
+    priority: Critical
+    wave: 0
+    status: completed
+    files:
+      create:
+        - docs/cursor/
+
+  - id: CTG-003
+    title: architecture:tasks waves plan scripts
+    priority: Critical
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - package.json
+
   - id: DIR-001
     title: Directive Registry
     priority: HIGH
@@ -1805,6 +1834,24 @@ cursor_task_generator:
     - Review
     - Completed
     - Rejected
+
+architecture_analyzer:
+  part: 36
+  path: marketplace-infographic/scripts/architecture-analyzer/
+  output_dir: docs/architecture/reports/
+  commands:
+    analyze: npm run architecture:analyze
+    dashboard: npm run architecture:dashboard
+  reports:
+    - Dashboard.md
+    - ArchitectureReport.md
+    - DependencyReport.md
+    - ComplexityReport.md
+    - TechnicalDebtReport.md
+    - MigrationProgress.md
+    - CoverageReport.md
+  read_only: true
+  target_score: 98
 
 volume_1:
   status: complete
