@@ -61,6 +61,13 @@ Version: 1.0 (Draft)
   - [Design Graph](#design-graph)
   - [Version Control](#version-control)
   - [Implementation Directives RT-001–RT-003](#implementation-directive-rt-001)
+- [Part 6 — Design DNA & Knowledge](#part-6--design-dna--knowledge)
+  - [6.1–6.3 Design DNA Platform](#61-purpose)
+  - [Design Genome Platform](#design-genome-platform)
+  - [Research Intelligence Platform](#research-intelligence-platform)
+  - [Knowledge Runtime](#knowledge-runtime)
+  - [Knowledge Graph](#new-idea--knowledge-graph)
+  - [Implementation Directive KD-001](#implementation-directive-kd-001)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -3143,6 +3150,343 @@ Allows:
 
 ---
 
+# PART 6 — DESIGN DNA & KNOWLEDGE
+
+# ============================================================================
+# PART 6
+# DESIGN DNA PLATFORM
+# ============================================================================
+
+## 6.1 Purpose
+
+Design DNA stores universal design principles.
+
+Unlike Design Genome, Design DNA never depends on category.
+
+Design DNA represents permanent knowledge.
+
+---
+
+### Design DNA includes
+
+- Visual Hierarchy
+- Contrast
+- Alignment
+- Whitespace
+- Gestalt
+- Color Theory
+- Typography
+- Eye Tracking
+- Reading Patterns
+- Cognitive Load
+- Information Density
+- Attention Management
+- Accessibility
+- Perception
+- Composition
+
+Design DNA never changes per category.
+
+Garden tools. Electronics. Furniture. Cosmetics.
+
+All use identical Design DNA.
+
+---
+
+## 6.2 DNA Rules
+
+Every rule contains:
+
+- Rule ID
+- Description
+- Reason
+- Evidence
+- Priority
+- Examples
+- Counter Examples
+- Validation Rules
+- Metrics
+
+**Examples:**
+
+| ID | Rule | Validation |
+|----|------|------------|
+| **DNA-001** | Headline must be dominant | Headline Area > Badge Area |
+| **DNA-002** | Product always dominates background | — |
+| **DNA-003** | Typography never competes with product | — |
+| **DNA-004** | Whitespace is mandatory | — |
+| **DNA-005** | Maximum information density | 45% Canvas |
+
+---
+
+## 6.3 DNA Validator
+
+```
+VisualBlueprint
+  ↓
+DNA Validator
+  ↓
+Validation Report
+  ↓
+Passed | Rejected | Suggestions
+```
+
+---
+
+### Files
+
+Create `src/lib/platforms/design-dna/`:
+
+- `DesignDNAPlatform.ts`
+- `DNARules.ts`
+- `DNAValidator.ts`
+- `DNARegistry.ts`
+- `DNAMetrics.ts`
+- `DNAReport.ts`
+
+**Acceptance:** Every VisualBlueprint passes DNA validation.
+
+---
+
+# DESIGN GENOME PLATFORM
+
+## Purpose
+
+Store category specific knowledge.
+
+---
+
+### Genome Examples
+
+- Garden Equipment
+- Electronics
+- Kitchen
+- Furniture
+- Automotive
+- Beauty
+- Pets
+- Fashion
+- Construction
+
+---
+
+### Genome contains
+
+- Successful Layouts
+- Commercial Patterns
+- Marketplace Statistics
+- Scene Library
+- Lighting Library
+- Composition Library
+- Badge Library
+- Typography Library
+
+---
+
+### Output
+
+**GenomeSpec**
+
+---
+
+### Relationship
+
+```
+Design DNA
+  ↓
+Design Genome
+  ↓
+Project Decisions
+```
+
+---
+
+# RESEARCH INTELLIGENCE PLATFORM
+
+## Purpose
+
+Research before thinking.
+
+Never make decisions.
+
+Collect evidence only.
+
+---
+
+### Sources
+
+- Marketplace
+- Competitors
+- Reviews
+- Questions
+- Manual
+- Manufacturer
+- Brand
+- Statistics
+- Historical Projects
+- Knowledge Base
+
+---
+
+### Research Graph
+
+```
+Category
+├── Competitors
+├── Reviews
+├── Questions
+├── References
+├── Trends
+└── Marketplace
+  ↓
+ResearchSpec
+```
+
+---
+
+### Research Confidence
+
+Every fact stores:
+
+- confidence
+- source
+- freshness
+- quality
+- verification
+
+---
+
+### Implementation
+
+`src/lib/platforms/research/`:
+
+- `Crawler.ts`
+- `SourceManager.ts`
+- `EvidenceCollector.ts`
+- `ConfidenceEngine.ts`
+- `ResearchGraph.ts`
+- `ResearchSpec.ts`
+
+**Acceptance:** No platform receives raw internet data. Only ResearchSpec.
+
+---
+
+# KNOWLEDGE RUNTIME
+
+## Purpose
+
+Merge all knowledge into one specification.
+
+---
+
+### Inputs
+
+- ResearchSpec
+- GenomeSpec
+- DesignDNA
+- Marketplace Rules
+- Historical Knowledge
+
+---
+
+### Output
+
+**KnowledgeSpec**
+
+---
+
+### Knowledge Layers
+
+```
+Layer 1 — DNA
+  ↓
+Layer 2 — Genome
+  ↓
+Layer 3 — Research
+  ↓
+Layer 4 — Historical Memory
+  ↓
+KnowledgeSpec
+```
+
+Knowledge never writes Prompt.
+
+Knowledge produces facts only.
+
+---
+
+# NEW IDEA — KNOWLEDGE GRAPH
+
+Instead of storing isolated objects, store graph.
+
+Example:
+
+```
+Battery
+  ↓
+Power
+  ↓
+Garden Tools
+  ↓
+Outdoor
+  ↓
+Green
+  ↓
+Nature
+  ↓
+Warm Lighting
+  ↓
+Golden Hour
+  ↓
+Commercial Emotion
+```
+
+The graph allows reasoning instead of keyword search.
+
+---
+
+### Future
+
+```
+Knowledge Graph
+  ↓
+LLM
+  ↓
+Reasoning
+  ↓
+KnowledgeSpec
+```
+
+Instead of:
+
+```
+LLM
+  ↓
+Prompt
+  ↓
+Guessing
+```
+
+---
+
+# IMPLEMENTATION DIRECTIVE KD-001
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Create** | |
+| | `src/lib/platforms/design-dna/` |
+| | `src/lib/platforms/genome/` |
+| | `src/lib/platforms/knowledge-runtime/` |
+
+**Acceptance:** KnowledgeSpec contains DNA, Genome, Research, Historical Knowledge, Confidence, Evidence, Decision Trace — without duplication.
+
+---
+
+*END OF PART 6*
+
+---
+
 # APPENDIX A — REPOSITORY IMPLEMENTATION REFERENCE
 
 > Практическая привязка Part 1 (канон) и Part 2 (аудит) к текущему коду репозитория `design-ai`.  
@@ -3535,4 +3879,4 @@ pm2 logs marketplace-infographic --lines 50
 
 ---
 
-*Architecture Bible — living document. Part 1 is canonical law. Part 2 is the architecture audit. Part 3 is the production pipeline. Part 4 is platform specification. Part 5 is runtime architecture. Appendix A tracks repository implementation.*
+*Architecture Bible — living document. Part 1 is canonical law. Part 2 is the architecture audit. Part 3 is the production pipeline. Part 4 is platform specification. Part 5 is runtime architecture. Part 6 is design DNA & knowledge. Appendix A tracks repository implementation.*
