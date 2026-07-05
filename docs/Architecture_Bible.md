@@ -135,6 +135,12 @@ Version: 1.0 (Draft)
   - [Module Migrations](#module-design-process)
   - [Global Migration Rules](#global-migration-rules)
   - [Migration Priorities & Stop Conditions](#migration-priorities)
+- [Part 19 — Implementation Playbook](#part-19--implementation-playbook)
+  - [Global Execution Strategy](#global-execution-strategy)
+  - [Wave 01–10](#wave-01--platform-core)
+  - [Implementation Order](#implementation-order)
+  - [Refactor Strategy & Code Review](#refactor-strategy)
+  - [Stop Conditions & Success Metrics](#stop-conditions-1)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -7070,6 +7076,256 @@ Cursor **MUST stop** migration if:
 ---
 
 *END OF PART 18*
+
+---
+
+# PART 19 — IMPLEMENTATION PLAYBOOK
+
+# ============================================================================
+# PART 19
+# IMPLEMENTATION PLAYBOOK
+# ============================================================================
+
+## Purpose
+
+This chapter defines how Cursor performs migration.
+
+Architecture Bible defines **WHAT** must be built.
+
+Implementation Playbook defines **HOW** migration is executed.
+
+No implementation may violate this playbook.
+
+---
+
+# GLOBAL EXECUTION STRATEGY
+
+Migration is executed in **Waves**.
+
+Each Wave must be completed before the next Wave starts.
+
+Every Wave ends with:
+
+- Compilation
+- Tests
+- Architecture Validation
+- Runtime Validation
+- Manual Review
+
+Only after successful validation may the next Wave begin.
+
+---
+
+# WAVE 01 — PLATFORM CORE
+
+| | |
+|---|---|
+| **Objective** | Introduce the new architecture without affecting production |
+
+### Tasks
+
+- [ ] Create `platform-core`
+- [ ] Create `contracts`
+- [ ] Create `runtime`
+- [ ] Create `registry`
+- [ ] Create `ProjectState`
+- [ ] Create `EventBus`
+- [ ] Create `VersionManager`
+
+### Forbidden
+
+Refactoring business logic. Deleting legacy code.
+
+### Acceptance
+
+New architecture compiles. Legacy remains functional.
+
+### Rollback
+
+Delete `platform-core` only.
+
+---
+
+# WAVE 02 — CONTRACTS
+
+### Tasks
+
+- [ ] Introduce `BaseSpecification`
+- [ ] Introduce immutable DTO
+- [ ] Replace duplicated DTO
+- [ ] Introduce `ProjectState`
+- [ ] Introduce Versioning
+
+**Acceptance:** All new modules use official Contracts. Legacy adapters remain operational.
+
+---
+
+# WAVE 03 — RESEARCH & KNOWLEDGE
+
+### Tasks
+
+Reuse existing implementation. **Do NOT rewrite.**
+
+### Introduce
+
+`KnowledgeRuntime` · `KnowledgeQuery` · `KnowledgeGraph` · `KnowledgeSpec`
+
+**Acceptance:** Knowledge Platform produces one immutable output.
+
+---
+
+# WAVE 04 — COMMERCIAL
+
+### Tasks
+
+- [ ] Reuse existing strategy
+- [ ] Remove Prompt generation
+- [ ] Return `CommercialSpec`
+- [ ] Integrate Runtime
+- [ ] Integrate `DecisionTrace`
+
+**Acceptance:** Commercial decisions survive until Rendering.
+
+---
+
+# WAVE 05 — CREATIVE
+
+### Tasks
+
+- [ ] Replace `DesignBrief`
+- [ ] Introduce `CreativeSpec`
+- [ ] Separate Creative and Visual responsibilities
+
+**Acceptance:** Creative Platform owns concepts only.
+
+---
+
+# WAVE 06 — VISUAL
+
+### Tasks
+
+**Extract:** Scene · Lighting · Camera · Composition · Typography · Overlay Zones
+
+**Return:** `VisualBlueprint`
+
+**Acceptance:** Rendering receives `VisualBlueprint`.
+
+---
+
+# WAVE 07 — RENDERING
+
+### Tasks
+
+**Keep:** Background · Composition · Provider · Shadow · Export
+
+**Move:** Business logic · Creative logic · Prompt
+
+**Acceptance:** Rendering executes only.
+
+---
+
+# WAVE 08 — VISION
+
+### Tasks
+
+**Move:** Professional Score · Marketplace Validation · Commercial Validation · Typography Validation · Composition Validation
+
+**Acceptance:** Every PNG validated.
+
+---
+
+# WAVE 09 — LEARNING
+
+### Tasks
+
+**Merge:** Feedback · Genome · Memory · Learning
+
+**Return:** `LearningReport`
+
+**Acceptance:** Knowledge automatically updated.
+
+---
+
+# WAVE 10 — LEGACY CLEANUP
+
+### Tasks
+
+**Remove:** `DesignBrief` · Duplicate DTO · Old Prompt Builders · Dead Code · Unused Interfaces
+
+**Acceptance:** Legacy isolated.
+
+---
+
+# IMPLEMENTATION ORDER
+
+### Never
+
+```
+Platform → Platform → Platform
+```
+
+### Always
+
+```
+Contracts → Runtime → Platform → Rendering → Vision → Learning
+```
+
+---
+
+# REFACTOR STRATEGY
+
+1. **Reuse** first
+2. **Extend** second
+3. **Rewrite** last
+
+New implementation must never duplicate existing functionality.
+
+---
+
+# CODE REVIEW CHECKLIST
+
+Before merge:
+
+- [ ] Uses `ProjectState`
+- [ ] Uses official Contracts
+- [ ] No Prompt outside Provider Adapter
+- [ ] No Legacy imports
+- [ ] Runtime compliant
+- [ ] Architecture compliant
+- [ ] `DecisionTrace` present
+- [ ] Tests passed
+- [ ] Architecture Score unchanged or higher
+
+---
+
+# STOP CONDITIONS
+
+Immediately stop migration if:
+
+- Architecture Score decreases
+- Tests fail
+- Platform boundaries violated
+- Runtime bypassed
+- Legacy imported
+- Prompt generated outside Provider Adapter
+
+---
+
+# SUCCESS METRICS
+
+| Metric | Target |
+|--------|--------|
+| Architecture Score | ≥ 98 |
+| Coverage | ≥ 95% |
+| Legacy Imports | 0 |
+| Architecture Violations | 0 |
+| Platform Isolation | 100% |
+| DTO Compliance | 100% |
+| Runtime Compliance | 100% |
+
+---
+
+*END OF PART 19*
 
 ---
 
