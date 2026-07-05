@@ -20,15 +20,25 @@ Version: 1.0 (Draft)
   - [Non Goals](#non-goals)
   - [Design Philosophy](#design-philosophy)
   - [High Level Architecture](#high-level-architecture)
-- [Part 2 — Implementation Reference](#part-2--implementation-reference)
-  - [Current Architecture](#current-architecture)
-  - [Architecture Audit](#architecture-audit)
-  - [Future Architecture](#future-architecture)
+- [Part 2 — Current Architecture Audit](#part-2--current-architecture-audit)
+  - [2.1 Purpose](#21-purpose)
+  - [2.2 Executive Summary](#22-executive-summary)
+  - [2.3 Root Cause](#23-root-cause)
+  - [2.4 Main Architectural Problems](#24-main-architectural-problems)
+  - [Category A — Information Loss](#category-a--information-loss)
+  - [Category B — Legacy Architecture](#category-b--legacy-architecture)
+  - [Category C — Platform Isolation](#category-c--platform-isolation)
+  - [Category D — System Infrastructure](#category-d--system-infrastructure)
+  - [Category E — Rendering](#category-e--rendering)
+- [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
+  - [Current Architecture (codebase)](#current-architecture-codebase)
+  - [Laws Compliance Matrix](#laws-compliance-matrix)
+  - [Future Architecture (code map)](#future-architecture-code-map)
   - [Project State](#project-state)
   - [Production Pipeline](#production-pipeline)
   - [Platform Specifications](#platform-specifications)
   - [Governance](#governance)
-  - [Rendering](#rendering)
+  - [Rendering (modules)](#rendering-modules)
   - [Testing](#testing)
   - [Roadmap](#roadmap)
 
@@ -316,13 +326,369 @@ Final PNG
 
 ---
 
-# PART 2 — IMPLEMENTATION REFERENCE
+# PART 2 — CURRENT ARCHITECTURE AUDIT
 
-> Практическая привязка канонической спецификации (Part 1) к текущему коду репозитория `design-ai`.
+# ============================================================================
+# PART 2
+# CURRENT ARCHITECTURE AUDIT
+# ============================================================================
+
+## 2.1 Purpose
+
+The purpose of this chapter is to document every architectural limitation found during the complete audit of Design AI OS.
+
+The goal of this audit is not to criticize the current implementation.
+
+The goal is to identify architectural bottlenecks that prevent the system from reaching professional marketplace-quality generation.
+
+All findings in this chapter are mandatory inputs for future migration.
 
 ---
 
-# CURRENT ARCHITECTURE
+## 2.2 Executive Summary
+
+Current project already contains an unusually high amount of intelligence.
+
+The project already has:
+
+- Research
+- Knowledge Engine
+- Design Genome
+- Market Intelligence
+- Commercial Intelligence
+- Creative Pipeline
+- Visual Pipeline
+- Layout Specification
+- Constitution
+- Governance
+- Render Engine
+- Critics
+- Memory
+- Registry
+- Decision Trace
+
+This means the project is NOT lacking intelligence.
+
+Instead, the intelligence is fragmented.
+
+The audit discovered that most quality losses happen while transferring information between modules.
+
+The problem is therefore architectural.
+
+Not algorithmic.
+
+---
+
+## 2.3 Root Cause
+
+Current architecture can be simplified as:
+
+```
+Knowledge
+  ↓
+Decision
+  ↓
+Prompt
+  ↓
+Image
+```
+
+The Prompt becomes the carrier of all knowledge.
+
+This is the fundamental architectural mistake.
+
+A prompt is a lossy representation.
+
+It cannot preserve:
+
+- hierarchy
+- reasoning
+- relationships
+- confidence
+- alternatives
+- constraints
+
+Therefore every platform loses information before rendering starts.
+
+---
+
+## 2.4 Main Architectural Problems
+
+The audit grouped every discovered issue into major categories.
+
+| Category | Name |
+|----------|------|
+| **A** | Information Loss |
+| **B** | Legacy Architecture |
+| **C** | Platform Isolation |
+| **D** | Weak Runtime / System Infrastructure |
+| **E** | Rendering Bottlenecks |
+| **F** | Governance Limitations |
+| **G** | Knowledge Fragmentation |
+| **H** | Commercial Intelligence Loss |
+| **I** | Creative Compression |
+| **J** | Missing System Infrastructure |
+
+Every detailed issue belongs to one of these categories.
+
+---
+
+# CATEGORY A — INFORMATION LOSS
+
+## A-001
+
+Structured knowledge becomes plain text.
+
+```
+Knowledge Engine
+  ↓
+Prompt
+  ↓
+Flux
+```
+
+Knowledge should become Specification instead.
+
+---
+
+## A-002
+
+Creative decisions become DesignBrief.
+
+DesignBrief cannot preserve all commercial decisions.
+
+---
+
+## A-003
+
+Commercial strategy disappears before rendering.
+
+Rendering receives descriptions.
+
+It does not receive business intent.
+
+---
+
+## A-004
+
+Layout becomes Prompt instead of Layout Contract.
+
+Coordinates become recommendations.
+
+Not requirements.
+
+---
+
+## A-005
+
+Visual hierarchy is recreated multiple times.
+
+Every recreation introduces errors.
+
+---
+
+## A-006
+
+Provider Prompt becomes the primary architecture.
+
+Instead of being only Provider Adapter.
+
+---
+
+# CATEGORY B — LEGACY ARCHITECTURE
+
+## B-001
+
+Legacy Prompt Pipeline still participates in production.
+
+---
+
+## B-002
+
+Legacy HTML Templates still influence layout.
+
+---
+
+## B-003
+
+Old InfographicData model cannot represent modern platform decisions.
+
+---
+
+## B-004
+
+Legacy modules are mixed with Production modules.
+
+No clear separation exists.
+
+---
+
+## B-005
+
+Backward compatibility influences architecture.
+
+Instead of architecture defining compatibility.
+
+---
+
+# CATEGORY C — PLATFORM ISOLATION
+
+## C-001
+
+Knowledge Platform is not the mandatory source of knowledge.
+
+Some agents bypass it.
+
+---
+
+## C-002
+
+Commercial Platform is optional.
+
+It should be mandatory.
+
+---
+
+## C-003
+
+Creative Platform outputs DesignBrief instead of CreativeSpec.
+
+---
+
+## C-004
+
+Visual Platform mixes planning and rendering.
+
+Responsibilities overlap.
+
+---
+
+## C-005
+
+Rendering Platform still performs architectural decisions.
+
+Rendering should execute.
+
+Not decide.
+
+---
+
+# CATEGORY D — SYSTEM INFRASTRUCTURE
+
+## D-001
+
+No unified ProjectState.
+
+---
+
+## D-002
+
+No immutable DTO chain.
+
+---
+
+## D-003
+
+No Platform API.
+
+---
+
+## D-004
+
+No Event Bus.
+
+---
+
+## D-005
+
+No Runtime Engine.
+
+---
+
+## D-006
+
+No Dependency Injection layer.
+
+---
+
+## D-007
+
+No Schema Registry.
+
+---
+
+## D-008
+
+No Decision History.
+
+---
+
+## D-009
+
+No Versioned Specifications.
+
+---
+
+## D-010
+
+No Digital Twin.
+
+---
+
+# CATEGORY E — RENDERING
+
+## E-001
+
+Prompt Compiler is still Prompt Compiler.
+
+It should become Specification Compiler.
+
+---
+
+## E-002
+
+Render Blueprint loses information.
+
+---
+
+## E-003
+
+Overlay generation is disconnected from Rendering Blueprint.
+
+---
+
+## E-004
+
+Provider Adapter receives text instead of structured Render Instructions.
+
+---
+
+## E-005
+
+Provider implementation affects architecture.
+
+Architecture should affect Provider.
+
+---
+
+## E-006
+
+Rendering does not consume immutable specifications.
+
+---
+
+*END OF PART 2 (Section 2.1–2.6)*
+
+---
+
+# APPENDIX A — REPOSITORY IMPLEMENTATION REFERENCE
+
+> Практическая привязка Part 1 (канон) и Part 2 (аудит) к текущему коду репозитория `design-ai`.  
+> Это **не** Part 2 — справочник по реализации, не дублирует аудит.
+
+---
+
+# CURRENT ARCHITECTURE (codebase)
 
 ## Миссия продукта
 
@@ -408,7 +774,7 @@ design-ai/
 
 ---
 
-# ARCHITECTURE AUDIT
+# LAWS COMPLIANCE MATRIX
 
 ## Соответствие Architecture Laws
 
@@ -440,7 +806,7 @@ design-ai/
 
 ---
 
-# FUTURE ARCHITECTURE
+# FUTURE ARCHITECTURE (code map)
 
 ## Target pipeline → код
 
@@ -620,7 +986,7 @@ GOVERNANCE_PROFESSIONAL_NEAR_MISS=3
 
 ---
 
-# RENDERING
+# RENDERING (modules)
 
 Модуль: `src/lib/render-engine/`
 
@@ -707,4 +1073,4 @@ pm2 logs marketplace-infographic --lines 50
 
 ---
 
-*Architecture Bible — living document. Part 1 is canonical law. Part 2 tracks implementation reality.*
+*Architecture Bible — living document. Part 1 is canonical law. Part 2 is the architecture audit. Appendix A tracks repository implementation.*
