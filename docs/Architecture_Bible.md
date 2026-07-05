@@ -44,6 +44,12 @@ Version: 1.0 (Draft)
   - [3.3 Production Lifecycle](#33-production-lifecycle)
   - [3.4–3.17 Pipeline Stages](#34-stage-1--project-creation)
   - [3.18 Pipeline Rules](#318-pipeline-rules)
+- [Part 4 — Platform Specification](#part-4--platform-specification)
+  - [4.1–4.9 Platform Architecture Contract](#41-platform-architecture)
+  - [Project Intelligence Platform](#project-intelligence-platform)
+  - [Research Platform](#research-platform)
+  - [Knowledge Platform](#knowledge-platform)
+  - [Commercial Platform](#commercial-platform)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -1912,6 +1918,434 @@ No exceptions.
 
 ---
 
+# PART 4 — PLATFORM SPECIFICATION
+
+# ============================================================================
+# PART 4
+# PLATFORM SPECIFICATION
+# ============================================================================
+
+## 4.1 Platform Architecture
+
+Design AI Operating System consists of independent intelligent platforms.
+
+Each platform has exactly one responsibility.
+
+Platforms never communicate directly.
+
+Platforms exchange immutable specifications through ProjectState.
+
+Every platform implements the same architecture contract.
+
+---
+
+## 4.2 Universal Platform Interface
+
+Every platform MUST implement the following interface.
+
+```typescript
+export interface Platform<TInput, TOutput> {
+  initialize(context: PlatformContext): Promise<void>;
+
+  validateInput(input: TInput): ValidationResult;
+
+  execute(input: TInput): Promise<TOutput>;
+
+  validateOutput(output: TOutput): ValidationResult;
+
+  explain(output: TOutput): Explanation;
+
+  metrics(): PlatformMetrics;
+}
+```
+
+No exceptions.
+
+---
+
+## 4.3 Platform Lifecycle
+
+Every platform executes identical lifecycle.
+
+```
+Input Validation
+  ↓
+Load Context
+  ↓
+Read Project State
+  ↓
+Execute
+  ↓
+Validate
+  ↓
+Store Decision Trace
+  ↓
+Store Metrics
+  ↓
+Return Immutable Specification
+```
+
+No platform skips lifecycle stages.
+
+---
+
+## 4.4 Platform Categories
+
+The system consists of three types of platforms.
+
+### Intelligence Platforms
+
+Responsible for making decisions.
+
+- Research Platform
+- Knowledge Platform
+- Commercial Platform
+- Creative Platform
+- Visual Platform
+- Vision Platform
+- Learning Platform
+
+### Infrastructure Platforms
+
+Responsible for system execution.
+
+- Project State
+- Runtime
+- Governance
+- Provider Adapter
+- Compiler Layer
+- Metrics
+- Logging
+- Debug
+- Events
+
+### Utility Platforms
+
+Responsible for supporting execution.
+
+- Cache
+- Configuration
+- Assets
+- Storage
+- Reference Library
+- Template Registry
+- Analytics
+
+---
+
+## 4.5 Platform Independence
+
+Platforms MUST NOT import each other.
+
+**Forbidden:**
+
+```
+Commercial
+  ↓
+Visual
+  ↓
+Prompt
+```
+
+**Allowed:**
+
+```
+Commercial
+  ↓
+CommercialSpec
+  ↓
+ProjectState
+  ↓
+Visual
+```
+
+Platforms communicate through specifications only.
+
+---
+
+## 4.6 Platform Context
+
+Every platform receives identical execution context.
+
+```typescript
+interface PlatformContext {
+  projectId: string;
+  runId: string;
+  projectState: ProjectState;
+  configuration: SystemConfiguration;
+  runtime: RuntimeContext;
+  logger: Logger;
+  metrics: MetricsCollector;
+  cache: PlatformCache;
+}
+```
+
+---
+
+## 4.7 Platform Output
+
+Every platform returns immutable specification.
+
+Never Prompt.
+
+Never HTML.
+
+Never PNG.
+
+Only Specification.
+
+---
+
+## 4.8 Platform Validation
+
+Every platform validates:
+
+```
+Input
+  ↓
+Business Rules
+  ↓
+Architecture Laws
+  ↓
+Output
+  ↓
+Acceptance Rules
+```
+
+Failure stops pipeline.
+
+---
+
+## 4.9 Platform Metrics
+
+Every platform records:
+
+- Execution Time
+- Memory
+- Confidence
+- Retries
+- Warnings
+- Errors
+- Decision Count
+- Specification Size
+
+No hidden execution.
+
+---
+
+# PROJECT INTELLIGENCE PLATFORM
+
+## Purpose
+
+Project Intelligence is the entry point of the whole operating system.
+
+No other platform may start first.
+
+**Responsibilities:**
+
+- create project
+- assign identifiers
+- initialize runtime
+- initialize project state
+- initialize event bus
+- initialize trace
+- initialize debug
+
+**Output:** ProjectBrief
+
+---
+
+## API
+
+```
+execute()
+  ↓
+ProjectBrief
+```
+
+| | |
+|---|---|
+| **Consumes** | User Request |
+| **Returns** | ProjectBrief |
+
+---
+
+## Implementation Directive PI-001
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Create** | `src/lib/platforms/project-intelligence/` |
+
+**Files:**
+
+- `ProjectIntelligencePlatform.ts`
+- `ProjectBootstrap.ts`
+- `ProjectInitializer.ts`
+- `ProjectIdentity.ts`
+
+**Acceptance:** ProjectState successfully created.
+
+---
+
+# RESEARCH PLATFORM
+
+## Purpose
+
+Research everything before making any decision.
+
+Never design.
+
+Never render.
+
+Research only.
+
+---
+
+## Research includes
+
+- Category
+- Marketplace
+- Competitors
+- Buyer
+- Psychology
+- References
+- Visual Trends
+- Commercial Trends
+- Product Class
+- Brand Position
+- Price Segment
+
+---
+
+## Output
+
+**ResearchSpec**
+
+---
+
+## Implementation Directive RP-001
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Create** | `src/lib/platforms/research/` |
+
+**Files:**
+
+- `ResearchPlatform.ts`
+- `CategoryResearch.ts`
+- `CompetitorResearch.ts`
+- `MarketplaceResearch.ts`
+- `BuyerResearch.ts`
+- `TrendResearch.ts`
+- `ReferenceResearch.ts`
+- `PsychologyResearch.ts`
+- `ResearchAggregator.ts`
+- `ResearchSpec.ts`
+
+**Acceptance:** Rendering cannot start without ResearchSpec.
+
+---
+
+# KNOWLEDGE PLATFORM
+
+## Purpose
+
+Convert Research into reusable structured knowledge.
+
+Knowledge Platform owns:
+
+- Design Genome
+- Reference Library
+- Marketplace Knowledge
+- Commercial Patterns
+- Visual Patterns
+- Historical Memory
+- Trend Knowledge
+- Category Knowledge
+
+---
+
+## Output
+
+**KnowledgeSpec**
+
+---
+
+## Implementation Directive KP-001
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Create** | `src/lib/platforms/knowledge/` |
+
+**Files:**
+
+- `KnowledgePlatform.ts`
+- `GenomeResolver.ts`
+- `PatternResolver.ts`
+- `ReferenceResolver.ts`
+- `KnowledgeAggregator.ts`
+- `KnowledgeConfidence.ts`
+- `KnowledgeSpec.ts`
+
+**Acceptance:** Knowledge Platform becomes mandatory.
+
+---
+
+# COMMERCIAL PLATFORM
+
+## Purpose
+
+Determine how the product should sell.
+
+Commercial Platform owns:
+
+- Buyer Psychology
+- Commercial Hierarchy
+- USP
+- Trust
+- Objections
+- Marketing
+- Attention Strategy
+- Information Priority
+
+Nothing else.
+
+---
+
+## Output
+
+**CommercialSpec**
+
+---
+
+## Implementation Directive CP-001
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Create** | `src/lib/platforms/commercial/` |
+
+**Files:**
+
+- `CommercialPlatform.ts`
+- `CommercialStrategy.ts`
+- `BuyerPsychology.ts`
+- `AttentionStrategy.ts`
+- `USPSelector.ts`
+- `CommercialHierarchy.ts`
+- `CommercialSpec.ts`
+
+**Acceptance:** Commercial decisions reach Final PNG unchanged.
+
+---
+
+*END OF PART 4 (Platforms 1–4)*
+
+---
+
 # APPENDIX A — REPOSITORY IMPLEMENTATION REFERENCE
 
 > Практическая привязка Part 1 (канон) и Part 2 (аудит) к текущему коду репозитория `design-ai`.  
@@ -2304,4 +2738,4 @@ pm2 logs marketplace-infographic --lines 50
 
 ---
 
-*Architecture Bible — living document. Part 1 is canonical law. Part 2 is the architecture audit. Part 3 is the production pipeline. Appendix A tracks repository implementation.*
+*Architecture Bible — living document. Part 1 is canonical law. Part 2 is the architecture audit. Part 3 is the production pipeline. Part 4 is platform specification. Appendix A tracks repository implementation.*
