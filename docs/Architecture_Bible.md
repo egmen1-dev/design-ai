@@ -34,6 +34,10 @@ Version: 1.0 (Draft)
   - [Category G — Knowledge Platform](#category-g--knowledge-platform)
   - [Category H — Commercial Platform](#category-h--commercial-platform)
   - [Category I — Creative Platform](#category-i--creative-platform)
+  - [Category J — Visual Intelligence Platform](#category-j--visual-intelligence-platform)
+  - [Category K — Rendering Platform](#category-k--rendering-platform)
+  - [Category L — Project State](#category-l--project-state)
+  - [Category M — Specification Chain](#category-m--specification-chain)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -1062,7 +1066,438 @@ No downstream platform may modify them.
 
 ---
 
-*END OF PART 2 (Sections 2.1–2.6; Categories A–I)*
+# CATEGORY J — VISUAL INTELLIGENCE PLATFORM
+
+## Overview
+
+Visual Intelligence Platform is responsible for transforming business decisions into visual decisions.
+
+Visual Platform does NOT generate images.
+
+Visual Platform generates visual specifications.
+
+Rendering executes those specifications.
+
+---
+
+## Responsibilities
+
+Visual Platform owns:
+
+- Scene
+- Composition
+- Camera
+- Lighting
+- Materials
+- Color System
+- Product Position
+- Visual Hierarchy
+- Attention Flow
+- Negative Space
+- Safe Zones
+
+Nothing else.
+
+---
+
+## Inputs
+
+Visual Platform consumes:
+
+- ProductBrief
+- KnowledgeSpec
+- CommercialSpec
+- CreativeSpec
+
+---
+
+## Output
+
+**VisualBlueprint** — only.
+
+---
+
+## J-001
+
+Visual Platform never creates prompts.
+
+---
+
+## J-002
+
+Visual Platform never creates HTML.
+
+---
+
+## J-003
+
+Visual Platform never communicates with Flux.
+
+---
+
+## J-004
+
+Visual Platform never renders.
+
+---
+
+## J-005
+
+Visual Platform defines.
+
+Rendering executes.
+
+---
+
+## Internal Pipeline
+
+```
+CommercialSpec
+  ↓
+CreativeSpec
+  ↓
+Scene Planner
+  ↓
+Composition Planner
+  ↓
+Lighting Planner
+  ↓
+Camera Planner
+  ↓
+Material Planner
+  ↓
+Visual Hierarchy Planner
+  ↓
+VisualBlueprint
+```
+
+---
+
+## Required DTO
+
+**VisualBlueprint** contains:
+
+- Scene
+- Composition
+- Lighting
+- Camera
+- Materials
+- Product Placement
+- Overlay Safe Zones
+- Attention Path
+- Rendering Constraints
+- Decision Trace
+
+---
+
+## Success Criteria
+
+Visual Platform must be deterministic.
+
+Given identical input specifications, VisualBlueprint should always be identical.
+
+---
+
+# CATEGORY K — RENDERING PLATFORM
+
+## Overview
+
+Rendering Platform is NOT responsible for design.
+
+Rendering Platform executes RenderBlueprint.
+
+Nothing else.
+
+---
+
+## Responsibilities
+
+Rendering owns:
+
+- Canvas
+- Background Generation
+- Provider Selection
+- Shadow Integration
+- Product Composition
+- Overlay Rendering
+- PNG Export
+
+---
+
+## Rendering Flow
+
+```
+RenderBlueprint
+  ↓
+Provider Adapter
+  ↓
+Generated Background
+  ↓
+Product Composer
+  ↓
+Overlay Renderer
+  ↓
+Vision Platform
+  ↓
+PNG
+```
+
+---
+
+## K-001
+
+Rendering never analyses products.
+
+---
+
+## K-002
+
+Rendering never changes composition.
+
+---
+
+## K-003
+
+Rendering never changes typography.
+
+---
+
+## K-004
+
+Rendering never changes commercial hierarchy.
+
+---
+
+## K-005
+
+Rendering never creates business decisions.
+
+---
+
+## Provider Independence
+
+Rendering must support:
+
+- Flux
+- GPT Image
+- Imagen
+- Stable Diffusion
+- Future Providers
+
+without changing architecture.
+
+---
+
+## Provider Adapter
+
+Every provider receives identical RenderBlueprint.
+
+Provider Adapter converts RenderBlueprint into provider specific request.
+
+Only Provider Adapter may generate Prompt.
+
+---
+
+## Provider Interface
+
+```typescript
+interface ProviderAdapter {
+  supports(): boolean;
+  compile(): RenderInstructions;
+  render(): RenderResult;
+  validate(): ValidationReport;
+}
+```
+
+---
+
+## Render Blueprint
+
+RenderBlueprint becomes mandatory.
+
+Rendering without RenderBlueprint is forbidden.
+
+---
+
+## Success Criteria
+
+Changing provider must require changing one module only.
+
+**Provider Adapter.**
+
+---
+
+# CATEGORY L — PROJECT STATE
+
+## Overview
+
+ProjectState becomes the central nervous system.
+
+Every platform reads ProjectState.
+
+Every platform writes new immutable specifications.
+
+No platform communicates directly.
+
+---
+
+## Contains
+
+- ProductBrief
+- ResearchSpec
+- KnowledgeSpec
+- CommercialSpec
+- CreativeSpec
+- VisualBlueprint
+- RenderBlueprint
+- OverlayBlueprint
+- VisionReport
+- LearningReport
+- DecisionTrace
+- Events
+- Metrics
+- DebugArtifacts
+
+---
+
+## State Flow
+
+```
+Created
+  ↓
+Research
+  ↓
+Knowledge
+  ↓
+Commercial
+  ↓
+Creative
+  ↓
+Visual
+  ↓
+Render
+  ↓
+Vision
+  ↓
+Completed
+```
+
+---
+
+## Rules
+
+ProjectState cannot be partially mutated.
+
+Every update creates a new immutable snapshot.
+
+---
+
+## Snapshot Example
+
+```
+ProjectState_v12
+  ↓
+ProjectState_v13
+  ↓
+ProjectState_v14
+```
+
+---
+
+## Benefits
+
+- Replay
+- Rollback
+- Debug
+- Learning
+- Analytics
+- Reproducibility
+
+---
+
+# CATEGORY M — SPECIFICATION CHAIN
+
+## Purpose
+
+Specifications replace prompts.
+
+Specifications preserve information.
+
+Specifications explain decisions.
+
+Specifications are immutable.
+
+---
+
+## Complete Chain
+
+```
+ProductBrief
+  ↓
+ResearchSpec
+  ↓
+KnowledgeSpec
+  ↓
+CommercialSpec
+  ↓
+CreativeSpec
+  ↓
+VisualBlueprint
+  ↓
+RenderBlueprint
+  ↓
+OverlayBlueprint
+  ↓
+VisionReport
+  ↓
+LearningReport
+```
+
+---
+
+## Rules
+
+Every specification:
+
+- has unique id
+- has version
+- has author platform
+- has timestamp
+- has confidence
+- has decision trace
+- has evidence
+
+---
+
+## Forbidden
+
+```
+Prompt
+  ↓
+Prompt
+  ↓
+Prompt
+```
+
+architecture.
+
+Only:
+
+```
+Specification
+  ↓
+Specification
+  ↓
+Specification
+  ↓
+Provider Adapter
+  ↓
+Prompt
+```
+
+---
+
+*END OF PART 2 (Sections 2.1–2.6; Categories A–M)*
 
 ---
 
