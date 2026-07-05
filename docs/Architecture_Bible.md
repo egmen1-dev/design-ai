@@ -231,6 +231,9 @@ Version: 1.0 (Complete — Volume I)
 - [Part 42 — DAOS Execution Context](#part-42--daos-execution-context)
   - [ExecutionContext](#executioncontext)
   - [Directive CTX-001](#implementation-directive-ctx-001)
+- [Part 44 — Fixed Roadmap](#part-44--fixed-roadmap)
+  - [Phases A–F](#phase-a--documentation-stabilization)
+  - [Directive RDM-001](#implementation-directive-rdm-001)
 - [Appendix A — Glossary](#appendix-a--glossary)
 - [Appendix B — Architecture Index](#appendix-b--architecture-index)
 - [Appendix C — Implementation Index](#appendix-c--implementation-index)
@@ -11195,6 +11198,207 @@ Identical Decision
 
 ---
 
+# PART 44 — FIXED ROADMAP
+
+# ============================================================================
+# PART 44
+# FIXED ROADMAP
+# ============================================================================
+
+| | |
+|---|---|
+| **Status** | Accepted |
+| **Primary Goal** | Best marketplace infographic generator |
+
+Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `fixed_roadmap`
+
+**Related:** RFC-000 · Part 25 (Implementation Plan) · Part 38 (Constitution)
+
+---
+
+## Purpose
+
+Prevent endless architecture expansion.
+
+Architecture must serve **product quality**.
+
+**Primary goal remains:** Best marketplace infographic generator.
+
+---
+
+# PHASE A — DOCUMENTATION STABILIZATION
+
+## Goal
+
+Turn current Architecture Bible into **canonical specification**.
+
+## Tasks
+
+- [ ] Remove duplicated concepts
+- [ ] Unify terminology
+- [ ] Create table of contents
+- [ ] Create glossary
+- [ ] Create RFC index
+- [ ] Create ADR index
+- [ ] Create Directive index
+- [ ] Mark speculative ideas as **Future**
+- [ ] Mark mandatory architecture as **Core**
+
+## Acceptance
+
+`Architecture_Bible.md` becomes **stable reference**.
+
+---
+
+# PHASE B — CORE FOUNDATION
+
+## Goal
+
+Implement minimal **DAOS Core**.
+
+Build only what is needed for production migration.
+
+## Create
+
+- ProjectState
+- Contracts
+- Runtime Skeleton
+- Registry
+- EventBus
+- Configuration
+- AssetManager
+
+## Do NOT implement
+
+- Architecture Compiler
+- Plugin Marketplace
+- AI CEO
+- Full SDK
+
+…until core product quality improves.
+
+## Acceptance
+
+- Existing generation still works
+- New core exists beside legacy
+
+---
+
+# PHASE C — ADAPT EXISTING INTELLIGENCE
+
+## Goal
+
+Reuse existing modules. **Do not rewrite from scratch.**
+
+## Adapt
+
+- Design Genome
+- Knowledge Engine
+- Market Intelligence
+- Commercial Intelligence
+- Design Process
+- Visual Pipeline
+- Design Governance
+- Render Engine
+- Feedback
+- Memory
+
+## Acceptance
+
+- Existing intelligence outputs **official Specs**
+- No intelligence module returns **Prompt**
+
+---
+
+# PHASE D — RENDER QUALITY BREAKTHROUGH
+
+## Goal
+
+Fix real **image quality** bottleneck.
+
+## Tasks
+
+- [ ] RenderBlueprint becomes source of truth
+- [ ] OverlayBlueprint replaces old InfographicData
+- [ ] Provider Adapter becomes only Prompt generator
+- [ ] Vision Critic becomes mandatory
+- [ ] Premium mode disables fast shortcuts
+- [ ] Debug artifacts saved for every run
+
+## Acceptance
+
+Generated marketplace images **visibly improve**.
+
+---
+
+# PHASE E — LEGACY QUARANTINE
+
+## Goal
+
+Remove old architecture from main path.
+
+## Tasks
+
+- [ ] Move old prompt/html/sd modules to `legacy`
+- [ ] Block legacy imports inside Runtime
+- [ ] Remove duplicate DTOs
+- [ ] Remove old API generation path or proxy it
+
+## Acceptance
+
+Production generation uses **only DAOS pipeline**.
+
+---
+
+# PHASE F — ARCHITECTURE TOOLING
+
+## Goal
+
+Automate future evolution.
+
+**Only after product quality improves.**
+
+## Implement
+
+- Architecture Validator
+- Architecture Scanner
+- Code Rewrite Bible Generator
+- Cursor Task Generator
+- Architecture Compiler
+
+## Acceptance
+
+Architecture becomes **automatically measurable**.
+
+---
+
+# FINAL RULE
+
+**Do not build infrastructure before it improves generation quality.**
+
+DAOS exists to create **better commercial images**.
+
+Architecture is a **means**.
+
+Not the product.
+
+---
+
+## IMPLEMENTATION DIRECTIVE RDM-001
+
+| | |
+|---|---|
+| **Priority** | MAXIMUM |
+| **Document** | Part 44 — Fixed Roadmap |
+| **Machine-readable** | `architecture.yaml` → `fixed_roadmap` |
+| **Status** | Completed |
+
+---
+
+*END OF PART 44*
+
+---
+
 # APPENDIX A — GLOSSARY
 
 # ============================================================================
@@ -11306,6 +11510,7 @@ Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architect
 | **Execution Model** | Part 40 |
 | **Message Bus** | Part 41 |
 | **Execution Context** | Part 42 |
+| **Fixed Roadmap** | Part 44 |
 
 ---
 

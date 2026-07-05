@@ -1610,6 +1610,22 @@ directives:
     success:
       daos_charter_documented: true
 
+  - id: RDM-001
+    title: Fixed Roadmap (Part 44)
+    priority: MAXIMUM
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/Architecture_Bible.md
+        - docs/architecture/architecture.yaml
+    requires:
+      - RFC-000
+    checks:
+      - validate_yaml
+    success:
+      fixed_roadmap_documented: true
+
   - id: DIR-001
     title: Directive Registry
     priority: HIGH
@@ -1913,6 +1929,7 @@ architecture_index:
   Execution Model: "Part 40"
   Message Bus: "Part 41"
   Execution Context: "Part 42"
+  Fixed Roadmap: "Part 44"
 
 implementation_index:
   prefixes:
@@ -2340,6 +2357,94 @@ rfc_index:
     title: Asset Platform
     path: docs/rfc/RFC-006.md
     status: accepted
+
+fixed_roadmap:
+  part: 44
+  status: accepted
+  primary_goal: best marketplace infographic generator
+  purpose: prevent endless architecture expansion; architecture serves product quality
+  final_rule: do not build infrastructure before it improves generation quality
+  phases:
+    A:
+      name: Documentation Stabilization
+      goal: Architecture Bible becomes canonical specification
+      tasks:
+        - remove_duplicated_concepts
+        - unify_terminology
+        - create_table_of_contents
+        - create_glossary
+        - create_rfc_index
+        - create_adr_index
+        - create_directive_index
+        - mark_speculative_as_future
+        - mark_mandatory_as_core
+      acceptance: Architecture_Bible.md becomes stable reference
+    B:
+      name: Core Foundation
+      goal: minimal DAOS Core for production migration
+      create:
+        - ProjectState
+        - Contracts
+        - Runtime Skeleton
+        - Registry
+        - EventBus
+        - Configuration
+        - AssetManager
+      defer_until_quality_improves:
+        - Architecture Compiler
+        - Plugin Marketplace
+        - AI CEO
+        - Full SDK
+      acceptance:
+        - existing_generation_still_works
+        - new_core_exists_beside_legacy
+    C:
+      name: Adapt Existing Intelligence
+      goal: reuse existing modules without rewrite from scratch
+      adapt:
+        - Design Genome
+        - Knowledge Engine
+        - Market Intelligence
+        - Commercial Intelligence
+        - Design Process
+        - Visual Pipeline
+        - Design Governance
+        - Render Engine
+        - Feedback
+        - Memory
+      acceptance:
+        - intelligence_outputs_official_specs
+        - no_intelligence_module_returns_prompt
+    D:
+      name: Render Quality Breakthrough
+      goal: fix real image quality bottleneck
+      tasks:
+        - render_blueprint_source_of_truth
+        - overlay_blueprint_replaces_infographic_data
+        - provider_adapter_only_prompt_generator
+        - vision_critic_mandatory
+        - premium_mode_disables_fast_shortcuts
+        - debug_artifacts_every_run
+      acceptance: generated_marketplace_images_visibly_improve
+    E:
+      name: Legacy Quarantine
+      goal: remove old architecture from main path
+      tasks:
+        - move_old_modules_to_legacy
+        - block_legacy_imports_in_runtime
+        - remove_duplicate_dtos
+        - remove_or_proxy_old_api_generation_path
+      acceptance: production_uses_only_daos_pipeline
+    F:
+      name: Architecture Tooling
+      goal: automate future evolution after product quality improves
+      implement:
+        - Architecture Validator
+        - Architecture Scanner
+        - Code Rewrite Bible Generator
+        - Cursor Task Generator
+        - Architecture Compiler
+      acceptance: architecture_automatically_measurable
 
 volume_1:
   status: complete
