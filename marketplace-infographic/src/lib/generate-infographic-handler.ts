@@ -129,6 +129,16 @@ import { runQualityGate, applyRefinementPatch, type QualityGateResult } from "@/
 import type { CoverConceptId } from "@/lib/cover-concepts";
 import { evaluateFinalQuality } from "@/lib/design/final-quality-validator";
 import { applyPosterRules } from "@/lib/design-process/pipeline";
+import { createLegacyDAOSState } from "@/lib/daos";
+import {
+  getDaosGenerationPolicy,
+  resolveDaosGenerationMode,
+} from "@/lib/daos/config/generation-mode";
+import { enrichDaosStateFromPipeline } from "@/lib/daos/adapters/pipeline-enrichment";
+import { createDaosDebugBundle, writeDaosDebugBundle, writeDaosDebugSummary, createDaosDebugSummary, extractDaosRenderDebug } from "@/lib/daos/debug";
+import { evaluateDaosFinalGate } from "@/lib/daos/gates";
+import type { DAOSProjectState } from "@/lib/daos/core/project-state";
+import type { KnowledgeContext } from "@/lib/design/knowledge-engine";
 
 export type GenerateInfographicInput = {
   userId: string;
@@ -210,6 +220,46 @@ export type GenerateInfographicResult = {
   diagnosticsUrl?: string;
   diagnosticSteps?: number;
 };
+
+function daosDiagnosticSummary(
+  state: DAOSProjectState,
+  extras?: {
+    debugBundlePath?: string;
+    meaningLossWarningCount?: number;
+    meaningLossCriticalCount?: number;
+    debugSummaryPath?: string;
+    debugSummaryStatus?: "ok" | "warning" | "critical";
+    debugSummaryScore?: number;
+    finalGateStatus?: "passed" | "warning" | "failed";
+    finalGateScore?: number;
+    finalGateBlocking?: false;
+    finalGateReasons?: string[];
+  },
+) {
+  return {
+    projectId: state.projectId,
+    runId: state.runId,
+    status: state.status,
+    architectureVersion: state.architectureVersion,
+    briefId: state.brief?.id,
+    decisionTraceCount: state.decisionTrace.length,
+    specsAdapted: {
+      knowledge: Boolean(state.knowledgeSpec),
+      commercial: Boolean(state.commercialSpec),
+      creative: Boolean(state.creativeSpec),
+      visual: Boolean(state.visualBlueprint),
+      render: Boolean(state.renderBlueprint),
+    },
+    specIds: {
+      knowledgeSpecId: state.knowledgeSpec?.id,
+      commercialSpecId: state.commercialSpec?.id,
+      creativeSpecId: state.creativeSpec?.id,
+      visualBlueprintId: state.visualBlueprint?.id,
+      renderBlueprintId: state.renderBlueprint?.id,
+    },
+    ...extras,
+  };
+}
 
 function briefMeta(brief?: DesignBrief) {
   const hook = brief?.designProcess?.visualHook ?? brief?.visualHook;
@@ -698,6 +748,18 @@ export async function handleGenerateInfographic(
   const slot = await consumeGenerationSlot(input.userId);
   const pipelineStartedAt = Date.now();
 
+  const daosGenerationMode = resolveDaosGenerationMode();
+  const daosGenerationPolicy = getDaosGenerationPolicy(daosGenerationMode);
+
+  const daosState = createLegacyDAOSState({
+    prompt: input.prompt || "",
+    generationMode: daosGenerationMode,
+  });
+
+  if (process.env.DAOS_DEBUG === "1") {
+    console.debug("[daos] Wave 1 state created", daosDiagnosticSummary(daosState));
+  }
+
   try {
     await loadDesignMemoryStore().catch((error) => {
       console.warn("[design-memory] preload failed:", error);
@@ -720,6 +782,7 @@ export async function handleGenerateInfographic(
     let conceptRenderQueue: CreativeDirectorResult[] = [];
     let knowledgeCategory: KnowledgeCategory | undefined;
     let knowledgePatternsUsed = 0;
+    let knowledgeContext: KnowledgeContext | undefined;
     let marketIntelligence: MarketIntelligenceContext | undefined;
     let marketNoveltyScore: number | undefined;
     let assetsIntelligence: AssetsIntelligenceContext | undefined;
@@ -797,6 +860,7 @@ export async function handleGenerateInfographic(
       ]);
       knowledgeCategory = knowledge.category;
       knowledgePatternsUsed = knowledge.patterns.length;
+      knowledgeContext = knowledge;
       marketIntelligence = market;
       assetsIntelligence = assets;
       trendIntelligence = trend;
@@ -2053,6 +2117,94 @@ export async function handleGenerateInfographic(
       }
     }
 
+    const enrichedDaosState = enrichDaosStateFromPipeline(daosState, {
+      knowledge:
+        knowledgeContext || marketIntelligence || genomeIntelligence || assetsIntelligence
+          ? {
+              knowledge: knowledgeContext,
+              market: marketIntelligence,
+              genome: genomeIntelligence,
+              assets: assetsIntelligence,
+            }
+          : undefined,
+      commercial:
+        designBrief || seniorAdReview || ctrReview || marketIntelligence
+          ? {
+              designBrief,
+              seniorAdReview,
+              ctrReview,
+              marketIntelligence,
+            }
+          : undefined,
+      creative: activeCreative ?? undefined,
+      visual:
+        visualBlueprint || compositionResult || scenePlan || sceneDirection
+          ? {
+              visualBlueprint,
+              scenePlan,
+              compositionResult,
+              sceneDirection,
+            }
+          : undefined,
+      render: renderEngineResult
+        ? {
+            request: renderEngineResult.request,
+            renderEngineResult,
+            renderProvider: renderEngineResult.request?.providerId,
+          }
+        : undefined,
+    });
+    const renderDebug = extractDaosRenderDebug({
+      renderEngineResult,
+      backgroundSource,
+      compiledBackground,
+    });
+    const daosDebugBundle = createDaosDebugBundle(enrichedDaosState, {
+      renderDebug,
+      generationMode: daosGenerationMode,
+      generationPolicy: daosGenerationPolicy,
+    });
+    const daosDebugWrite = await writeDaosDebugBundle(daosDebugBundle);
+    if (!daosDebugWrite.ok) {
+      console.warn(daosDebugWrite.warning);
+    }
+
+    const daosDebugSummary = createDaosDebugSummary(daosDebugBundle);
+    const daosFinalGate = evaluateDaosFinalGate({
+      summary: daosDebugSummary,
+      generationMode: daosGenerationMode,
+    });
+
+    const daosSummaryWrite = await writeDaosDebugSummary({
+      bundle: daosDebugBundle,
+      bundlePath: daosDebugWrite.ok ? daosDebugWrite.path : undefined,
+      finalGate: daosFinalGate,
+    });
+    if (!daosSummaryWrite.ok) {
+      console.warn(daosSummaryWrite.error);
+    }
+
+    const meaningLossWarnings = daosDebugBundle.meaningLossReport.warnings;
+    const daosProjectState = daosDiagnosticSummary(enrichedDaosState, {
+      debugBundlePath: daosDebugWrite.ok ? daosDebugWrite.relativePath : undefined,
+      meaningLossWarningCount: meaningLossWarnings.filter((w) => w.severity === "warning").length,
+      meaningLossCriticalCount: meaningLossWarnings.filter((w) => w.severity === "critical").length,
+      debugSummaryPath: daosSummaryWrite.ok ? daosSummaryWrite.relativeSummaryPath : undefined,
+      debugSummaryStatus: daosSummaryWrite.ok ? daosDebugSummary.status : undefined,
+      debugSummaryScore: daosSummaryWrite.ok ? daosDebugSummary.score : undefined,
+      finalGateStatus: daosFinalGate.status,
+      finalGateScore: daosFinalGate.score,
+      finalGateBlocking: daosFinalGate.blocking,
+      finalGateReasons: daosFinalGate.reasons,
+    });
+
+    if (process.env.DAOS_DEBUG === "1") {
+      console.debug("[daos] Wave 2 specs adapted", daosProjectState);
+      if (daosDebugWrite.ok) {
+        console.debug("[daos] Wave 3 debug bundle saved", daosDebugWrite.path);
+      }
+    }
+
     const assembleGenerationDiagnostic = (generationId: string) =>
       buildGenerationDiagnostic({
         generationId,
@@ -2084,6 +2236,7 @@ export async function handleGenerateInfographic(
         finalQuality,
         conceptRetries: conceptRetryIndex,
         feedbackLearning: payloadExtras.feedbackLearning,
+        daosProjectState,
       });
 
     if (input.regenerateBackgroundOnly && input.existingImageId) {
