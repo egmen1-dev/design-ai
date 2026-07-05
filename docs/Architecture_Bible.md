@@ -50,6 +50,12 @@ Version: 1.0 (Draft)
   - [Research Platform](#research-platform)
   - [Knowledge Platform](#knowledge-platform)
   - [Commercial Platform](#commercial-platform)
+  - [Creative Intelligence Platform](#creative-intelligence-platform)
+  - [Visual Intelligence Platform (spec)](#visual-intelligence-platform-spec)
+  - [Rendering Platform (spec)](#rendering-platform-spec)
+  - [Vision Platform (spec)](#vision-platform-spec)
+  - [Learning Platform (spec)](#learning-platform-spec)
+  - [Implementation Wave 1](#implementation-wave-1)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -2342,7 +2348,442 @@ Nothing else.
 
 ---
 
-*END OF PART 4 (Platforms 1–4)*
+# CREATIVE INTELLIGENCE PLATFORM
+
+## Purpose
+
+Convert CommercialSpec into a single creative direction.
+
+Creative Platform owns:
+
+- Big Idea
+- Concept
+- Story
+- Emotion
+- Visual Hook
+- Metaphor
+- Style Direction
+
+**Output:** CreativeSpec
+
+---
+
+## Internal Pipeline
+
+```
+CommercialSpec
+  ↓
+Concept Generator
+  ↓
+Concept Evaluator
+  ↓
+Concept Critic
+  ↓
+Creative Director
+  ↓
+CreativeSpec
+```
+
+---
+
+## Internal Agents
+
+**Concept Generator** — creates 10–30 concepts.
+
+**Concept Critic** — scores concepts. Metrics:
+
+- originality
+- marketplace fit
+- emotional impact
+- simplicity
+- memorability
+
+**Creative Director** — chooses ONE concept. Stores rejection reasons.
+
+---
+
+## Output DTO
+
+**CreativeSpec** contains:
+
+- selectedConcept
+- rejectedConcepts
+- visualHook
+- emotionalPromise
+- narrative
+- styleDirection
+- confidence
+- decisionTrace
+
+---
+
+## Files
+
+Create `src/lib/platforms/creative/`:
+
+- `CreativePlatform.ts`
+- `ConceptGenerator.ts`
+- `ConceptEvaluator.ts`
+- `CreativeDirector.ts`
+- `CreativeCritic.ts`
+- `CreativeSpec.ts`
+
+---
+
+## Files To Modify
+
+`src/lib/design-process/` → Replace DesignBrief with CreativeSpec.
+
+---
+
+## Acceptance
+
+- No prompts
+- No rendering
+- No HTML
+- Creative decisions survive until Final PNG
+
+---
+
+# VISUAL INTELLIGENCE PLATFORM (spec)
+
+## Purpose
+
+Transform CreativeSpec into VisualBlueprint.
+
+Never render.
+
+Never call providers.
+
+---
+
+## Internal Modules
+
+- Scene Planner
+- Composition Planner
+- Camera Planner
+- Lighting Planner
+- Material Planner
+- Color Planner
+- Whitespace Planner
+- Attention Planner
+- Overlay Planner
+
+---
+
+## Output
+
+**VisualBlueprint** contains:
+
+- Scene
+- Composition
+- Camera
+- Lighting
+- Materials
+- Product Position
+- Overlay Safe Zones
+- Whitespace
+- Attention Path
+- Color Tokens
+- Typography Tokens
+- Decision Trace
+
+---
+
+## New Idea — Design Tokens
+
+Introduce Design Tokens.
+
+Every visual decision becomes reusable token.
+
+Example tokens:
+
+- TypographyToken
+- SpacingToken
+- BadgeToken
+- ShadowToken
+- RadiusToken
+- ColorToken
+- OverlayToken
+
+Instead of HTML choosing styles, Overlay Engine consumes DesignTokens.
+
+---
+
+## Files
+
+Create `src/lib/platforms/visual/`:
+
+- `ScenePlanner.ts`
+- `CompositionPlanner.ts`
+- `LightingPlanner.ts`
+- `CameraPlanner.ts`
+- `WhitespacePlanner.ts`
+- `ColorPlanner.ts`
+- `AttentionPlanner.ts`
+- `VisualPlatform.ts`
+- `VisualBlueprint.ts`
+- `DesignTokens.ts`
+
+---
+
+## Acceptance
+
+Visual layer produces only blueprint.
+
+No provider logic.
+
+---
+
+# RENDERING PLATFORM (spec)
+
+## Purpose
+
+Execute RenderBlueprint.
+
+Nothing more.
+
+---
+
+## Internal Modules
+
+- Render Planner
+- Provider Adapter
+- Background Generator
+- Product Integrator
+- Shadow Generator
+- Overlay Renderer
+- Exporter
+
+---
+
+## Rendering Modes
+
+| Mode | Behavior |
+|------|----------|
+| `draft` | Fast, minimal retries |
+| `balanced` | Default |
+| `premium` | Higher quality |
+| `enterprise` | Never skips retries |
+
+---
+
+## New Idea — RenderGraph
+
+Rendering becomes graph execution.
+
+```
+Background
+  ↓
+Shadow
+  ↓
+Product
+  ↓
+Reflection
+  ↓
+Overlay
+  ↓
+Export
+```
+
+Each node may retry independently.
+
+Instead of restarting full render.
+
+---
+
+## Files
+
+Create `src/lib/platforms/rendering/`:
+
+- `RenderGraph.ts`
+- `RenderExecutor.ts`
+- `RenderPlanner.ts`
+- `ProviderManager.ts`
+- `CompositionEngine.ts`
+- `Exporter.ts`
+
+---
+
+## Files To Modify
+
+`render-engine/` → Convert to RenderGraph architecture.
+
+---
+
+## Acceptance
+
+RenderGraph retries individual nodes.
+
+No full restart.
+
+---
+
+# VISION PLATFORM (spec)
+
+## Purpose
+
+Judge image quality.
+
+Never improve image.
+
+Only evaluate.
+
+---
+
+## Critics
+
+- Marketplace Critic
+- Commercial Critic
+- Typography Critic
+- Composition Critic
+- Readability Critic
+- Brand Critic
+- Product Critic
+- Background Critic
+- Emotion Critic
+- Professional Critic
+
+---
+
+## New Idea — Weighted Voting
+
+Each critic votes.
+
+Example weights:
+
+| Critic | Weight |
+|--------|--------|
+| Marketplace | 30% |
+| Commercial | 25% |
+| Typography | 10% |
+| Composition | 10% |
+| Product | 15% |
+| Brand | 10% |
+| → | **Final Score** |
+
+---
+
+## Vision Rules
+
+If Marketplace Critic fails → PNG rejected.
+
+No exceptions.
+
+---
+
+## Files
+
+Create `src/lib/platforms/vision/`:
+
+- `VisionPlatform.ts`
+- `MarketplaceCritic.ts`
+- `CommercialCritic.ts`
+- `TypographyCritic.ts`
+- `CompositionCritic.ts`
+- `ProfessionalCritic.ts`
+- `VisionReport.ts`
+
+---
+
+## Acceptance
+
+No PNG without VisionReport.
+
+---
+
+# LEARNING PLATFORM (spec)
+
+## Purpose
+
+Every generation improves future generations.
+
+---
+
+## Inputs
+
+- VisionReport
+- User Feedback
+- Marketplace Statistics
+- CTR
+- Conversion
+- Manual Rating
+
+---
+
+## Output
+
+- LearningReport
+- Genome Update
+- Confidence Update
+- Memory Update
+
+---
+
+## New Idea — Evolution ID
+
+Every project receives Evolution ID.
+
+```
+Project v1
+  ↓
+Project v2
+  ↓
+Project v3
+```
+
+System remembers **WHY** quality improved.
+
+Not only **THAT** it improved.
+
+---
+
+## Files
+
+Create `src/lib/platforms/learning/`:
+
+- `LearningPlatform.ts`
+- `FeedbackEngine.ts`
+- `GenomeTrainer.ts`
+- `ConfidenceUpdater.ts`
+- `EvolutionTracker.ts`
+- `LearningReport.ts`
+
+---
+
+## Acceptance
+
+Every completed project updates knowledge base.
+
+---
+
+# IMPLEMENTATION WAVE 1
+
+**Priority:** CRITICAL
+
+## Tasks
+
+- [ ] Create `platform-core`
+- [ ] Create contracts
+- [ ] Create ProjectState
+- [ ] Create EventBus
+- [ ] Create Platform API
+- [ ] Create Runtime
+- [ ] Remove DesignBrief dependency
+- [ ] Introduce CreativeSpec
+- [ ] Introduce VisualBlueprint
+- [ ] Introduce RenderBlueprint
+- [ ] Introduce VisionReport
+
+## Acceptance
+
+- System compiles
+- Legacy untouched
+- New architecture isolated
+
+---
+
+*END OF PART 4 (Platforms 1–10 + Implementation Wave 1)*
 
 ---
 
