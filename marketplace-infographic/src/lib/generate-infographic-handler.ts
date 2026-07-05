@@ -129,6 +129,8 @@ import { runQualityGate, applyRefinementPatch, type QualityGateResult } from "@/
 import type { CoverConceptId } from "@/lib/cover-concepts";
 import { evaluateFinalQuality } from "@/lib/design/final-quality-validator";
 import { applyPosterRules } from "@/lib/design-process/pipeline";
+import { createLegacyDAOSState } from "@/lib/daos";
+import type { DAOSProjectState } from "@/lib/daos/core/project-state";
 
 export type GenerateInfographicInput = {
   userId: string;
@@ -210,6 +212,17 @@ export type GenerateInfographicResult = {
   diagnosticsUrl?: string;
   diagnosticSteps?: number;
 };
+
+function daosDiagnosticSummary(state: DAOSProjectState) {
+  return {
+    projectId: state.projectId,
+    runId: state.runId,
+    status: state.status,
+    architectureVersion: state.architectureVersion,
+    briefId: state.brief?.id,
+    decisionTraceCount: state.decisionTrace.length,
+  };
+}
 
 function briefMeta(brief?: DesignBrief) {
   const hook = brief?.designProcess?.visualHook ?? brief?.visualHook;
@@ -697,6 +710,15 @@ export async function handleGenerateInfographic(
 ): Promise<GenerateInfographicResult> {
   const slot = await consumeGenerationSlot(input.userId);
   const pipelineStartedAt = Date.now();
+
+  const daosState = createLegacyDAOSState({
+    prompt: input.prompt || "",
+  });
+  const daosProjectState = daosDiagnosticSummary(daosState);
+
+  if (process.env.DAOS_DEBUG === "1") {
+    console.debug("[daos] Wave 1 state created", daosProjectState);
+  }
 
   try {
     await loadDesignMemoryStore().catch((error) => {
@@ -2084,6 +2106,7 @@ export async function handleGenerateInfographic(
         finalQuality,
         conceptRetries: conceptRetryIndex,
         feedbackLearning: payloadExtras.feedbackLearning,
+        daosProjectState,
       });
 
     if (input.regenerateBackgroundOnly && input.existingImageId) {

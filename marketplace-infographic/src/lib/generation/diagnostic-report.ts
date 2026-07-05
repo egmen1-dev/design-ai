@@ -80,6 +80,14 @@ export type GenerationDiagnosticReport = {
   finalQuality?: FinalQualityScore;
   feedbackLearning?: FeedbackLearningSnapshot;
   scenePlan?: ScenePlan;
+  daosProjectState?: {
+    projectId: string;
+    runId: string;
+    status: string;
+    architectureVersion: string;
+    briefId?: string;
+    decisionTraceCount: number;
+  };
 };
 
 export function buildStoredRenderReport(input: {
@@ -159,6 +167,7 @@ export type BuildGenerationDiagnosticInput = {
   finalQuality?: FinalQualityScore;
   conceptRetries?: number;
   feedbackLearning?: FeedbackLearningSnapshot;
+  daosProjectState?: GenerationDiagnosticReport["daosProjectState"];
 };
 
 export function buildGenerationDiagnostic(
@@ -364,6 +373,16 @@ export function buildGenerationDiagnostic(
     });
   }
 
+  if (input.daosProjectState) {
+    steps.push({
+      id: "daos_project_state",
+      label: "DAOS ProjectState (Wave 1)",
+      status: "ok",
+      summary: `${input.daosProjectState.status} · ${input.daosProjectState.projectId}`,
+      data: input.daosProjectState as unknown as Record<string, unknown>,
+    });
+  }
+
   steps.push({
     id: "html_render",
     label: "HTML → PNG",
@@ -403,5 +422,6 @@ export function buildGenerationDiagnostic(
     finalQuality: input.finalQuality,
     feedbackLearning: input.feedbackLearning,
     scenePlan: input.scenePlan,
+    daosProjectState: input.daosProjectState,
   };
 }

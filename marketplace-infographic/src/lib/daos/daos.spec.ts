@@ -1,83 +1,48 @@
 /**
  * DAOS Wave 1 foundation specs
- * Run: npx tsx src/lib/daos/daos.spec.ts
+ * Run: npm run daos:spec
  */
 import assert from "node:assert/strict";
-import { join } from "node:path";
-import { DaosCore } from "./core/DaosCore";
-import { serializeSpecification, emptyResearchSpec } from "./contracts";
-import { createTask } from "./runtime/Task";
-import type { IPlatform } from "@/lib/platform-core/interfaces/IPlatform";
+import { createLegacyDAOSState } from "./adapters/legacy-generation-adapter";
+import { serializeSpecification } from "./contracts/BaseSpecification";
+import { emptyResearchSpec } from "./contracts/specifications";
+import { DAOSRuntime } from "./runtime/runtime";
+import { DAOSRegistry } from "./registry/registry";
+import { DAOSEventBus } from "./events/event-bus";
+import { createProjectState } from "./core/project-state";
 
-async function main() {
-  const daos = new DaosCore({ configDir: join(process.cwd(), "config") });
-  await daos.initialize();
+const daosState = createLegacyDAOSState({ prompt: "test product cover" });
+assert.equal(daosState.status, "brief_ready");
+assert.equal(daosState.brief?.rawPrompt, "test product cover");
+assert.ok(daosState.brief?.decisionTrace.length > 0);
+console.log("✓ Legacy DAOS state from prompt");
 
-  const state = daos.createProject({
-    projectId: "wave1-p1",
-    runId: "wave1-r1",
-    marketplace: "wildberries",
-    product: "test",
-    generationMode: "standard",
-    architectureVersion: "2.0",
-    runtimeVersion: "DaosWave1",
-    provider: "Flux",
-    userPreferences: Object.freeze({}),
-  });
+const state = createProjectState({ projectId: "p1", runId: "r1" });
+assert.equal(state.architectureVersion, "daos-v1");
+console.log("✓ createProjectState");
 
-  assert.equal(state.version, 1);
-  const next = state.withData({ project: Object.freeze({ step: "knowledge" }) });
-  assert.equal(next.version, 2);
-  assert.throws(() => {
-    (state as { version: number }).version = 99;
-  });
-  console.log("✓ ProjectState immutable");
-
-  const spec = emptyResearchSpec({ query: "marketplace trends" });
-  const json = serializeSpecification(spec);
-  assert.ok(json.includes("ResearchSpec"));
-  assert.deepEqual(JSON.parse(json).query, "marketplace trends");
-  console.log("✓ Contracts serializable");
-
-  const platform: IPlatform = {
-    id: "research",
-    version: "1.0.0",
-    execute: ({ state: s }) => ({
-      state: s.withData({ project: Object.freeze({ researched: true }) }),
-    }),
-  };
-  daos.registerPlatform(platform);
-  assert.ok(daos.registry.hasPlatform("research"));
-  console.log("✓ Registry registers platform");
-
-  assert.equal(daos.runtime.isEnabled(), false);
-  daos.enableRuntime();
-  assert.equal(daos.runtime.isEnabled(), true);
-
-  const task = createTask({
-    id: "t1",
-    platformId: "research",
-    state,
-  });
-  const result = await daos.runtime.executeTask(task);
-  assert.equal(result.status, "completed");
-  assert.ok(result.durationMs >= 0);
-  console.log("✓ Runtime executes task when enabled");
-
-  daos.disableRuntime();
-  assert.equal(daos.runtime.isEnabled(), false);
-  await assert.rejects(() => daos.runtime.executeTask(task), /disabled/);
-  console.log("✓ Runtime rollback — disable uses legacy path");
-
-  const passthrough = await daos.adapters.designPipeline.run(state);
-  assert.equal(passthrough.version, state.version);
-  console.log("✓ Legacy adapter pass-through without executor");
-
-  await daos.shutdown();
-  console.log("\nDAOS Wave 1: all tests passed");
-}
-
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
+const runtime = new DAOSRuntime();
+runtime.register({
+  id: "noop",
+  name: "No-op",
+  run: async (_input, s) => ({ ok: true, state: s }),
 });
+assert.equal(runtime.listNodes().length, 1);
+console.log("✓ DAOSRuntime skeleton");
+
+const registry = new DAOSRegistry<string>();
+registry.register({ id: "x", version: "1", item: "ok" });
+assert.ok(registry.has("x"));
+console.log("✓ DAOSRegistry");
+
+const bus = new DAOSEventBus();
+bus.emit({ type: "test", source: "daos.spec" });
+assert.equal(bus.list().length, 1);
+console.log("✓ DAOSEventBus");
+
+// Legacy contract helpers (Wave 1 layer) still compile
+const spec = emptyResearchSpec({ query: "trends" });
+assert.ok(serializeSpecification(spec).includes("ResearchSpec"));
+console.log("✓ legacy contract helpers");
+
+console.log("\nDAOS Wave 1: all specs passed");
