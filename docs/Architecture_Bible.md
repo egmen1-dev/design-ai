@@ -203,6 +203,9 @@ Version: 1.0 (Complete — Volume I)
 - [Part 34 — Code Rewrite Bible Generator](#part-34--code-rewrite-bible-generator)
   - [Generator Pipeline](#generator-pipeline)
   - [Directives CRB-001–003](#implementation-directive-crb-001)
+- [Part 35 — Cursor Task Generator](#part-35--cursor-task-generator)
+  - [Task Format & Waves](#task-format)
+  - [Directives CTG-001–003](#implementation-directive-ctg-001)
 - [Appendix A — Glossary](#appendix-a--glossary)
 - [Appendix B — Architecture Index](#appendix-b--architecture-index)
 - [Appendix C — Implementation Index](#appendix-c--implementation-index)
@@ -9938,6 +9941,178 @@ Generator **never modifies source code**. Reads repository; writes reports only.
 ---
 
 *END OF PART 34*
+
+---
+
+# PART 35 — CURSOR TASK GENERATOR
+
+# ============================================================================
+# PART 35
+# CURSOR TASK GENERATOR
+# ============================================================================
+
+## Purpose
+
+Architecture must automatically produce **implementation tasks**.
+
+Cursor must execute generated tasks.
+
+Cursor must **never interpret architecture** — Cursor executes implementation.
+
+---
+
+## Input
+
+```
+Architecture_Bible.md + Code_Rewrite_Bible.md + Repository Analysis
+                    ↓
+           Cursor Task Generator
+```
+
+Implementation: `marketplace-infographic/scripts/cursor-task-generator/`
+
+---
+
+## Output
+
+```
+docs/cursor/
+  Wave-01.md … Wave-20.md
+  README.md
+  PLAN.md
+```
+
+Regenerate: `npm run architecture:tasks`
+
+---
+
+# TASK FORMAT
+
+| Field | Description |
+|-------|-------------|
+| Task ID | e.g. TASK-001 |
+| Wave | 01–20 |
+| Priority | Critical · High · Medium · Low |
+| Risk | low · medium · high · critical |
+| Estimated Time | Hours |
+| Dependencies | Task IDs |
+| Files | Paths to create/modify |
+| Acceptance | Done criteria |
+| Rollback | Undo procedure |
+| Architecture Reference | Part / Directive |
+| RFC / ADR Reference | When applicable |
+
+---
+
+## TASK EXAMPLE — TASK-001
+
+| | |
+|---|---|
+| **Title** | Introduce ProjectState |
+| **Priority** | Critical |
+| **Wave** | 01 |
+| **Files** | `ProjectState.ts`, `src/lib/contracts/` |
+| **Acceptance** | ProjectState immutable · No compilation errors · Runtime compatible |
+| **Rollback** | Remove ProjectState · Restore adapters |
+
+---
+
+## TASK STATES
+
+`Pending` · `Ready` · `Running` · `Blocked` · `Review` · `Completed` · `Rejected`
+
+Generator builds dependency graph automatically.
+
+---
+
+## TASK GROUPING
+
+Platform · Runtime · Provider · Assets · Vision · Learning · Legacy
+
+---
+
+## IMPLEMENTATION WAVES
+
+| Wave | Name |
+|------|------|
+| 01 | Platform Core |
+| 02 | Contracts |
+| 03 | Runtime |
+| 04 | Knowledge |
+| 05 | Commercial |
+| 06 | Creative |
+| 07 | Visual |
+| 08 | Rendering |
+| 09 | Vision |
+| 10 | Learning |
+| 11 | Providers |
+| 12 | Assets |
+| 13 | SDK |
+| 14 | Architecture Validation |
+| 15 | Legacy Cleanup |
+| 16 | Performance |
+| 17 | Marketplace |
+| 18 | Testing |
+| 19 | Documentation |
+| 20 | Release |
+
+---
+
+## TASK VALIDATION
+
+Every task validated: architecture exists · files exist · dependencies valid · acceptance · rollback
+
+---
+
+## AUTOMATIC CHECKLISTS
+
+Pre-Implementation · Implementation · Post-Implementation (in `docs/cursor/PLAN.md`)
+
+---
+
+## IMPLEMENTATION DIRECTIVE CTG-001
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Create** | `scripts/cursor-task-generator/` |
+| **Status** | Completed |
+
+---
+
+## IMPLEMENTATION DIRECTIVE CTG-002
+
+| | |
+|---|---|
+| **Create** | `docs/cursor/Wave-01.md` … `Wave-20.md` |
+| **Status** | Completed |
+
+---
+
+## IMPLEMENTATION DIRECTIVE CTG-003
+
+```json
+{
+  "architecture:tasks": "npx tsx scripts/cursor-task-generator/generate-tasks.ts",
+  "architecture:waves": "npx tsx scripts/cursor-task-generator/list-waves.ts",
+  "architecture:plan": "npx tsx scripts/cursor-task-generator/export-plan.ts"
+}
+```
+
+**Status:** Completed
+
+---
+
+# SUCCESS CRITERIA
+
+- Every migration becomes executable
+- Cursor receives deterministic tasks
+- No architectural interpretation
+- Automatic wave generation
+
+---
+
+*END OF PART 35*
 
 ---
 

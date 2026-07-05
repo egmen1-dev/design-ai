@@ -12,6 +12,9 @@
     "test:v18-blueprint": "bash scripts/run-v18-blueprint-tests.sh",
     "architecture:scan": "npx tsx scripts/architecture-scanner/scan-repository.ts",
     "architecture:report": "npx tsx scripts/architecture-scanner/generate-code-rewrite-bible-cli.ts",
+    "architecture:tasks": "npx tsx scripts/cursor-task-generator/generate-tasks.ts",
+    "architecture:waves": "npx tsx scripts/cursor-task-generator/list-waves.ts",
+    "architecture:plan": "npx tsx scripts/cursor-task-generator/export-plan.ts",
     "postinstall": "npx prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate deploy"

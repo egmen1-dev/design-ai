@@ -1787,13 +1787,32 @@ code_rewrite_bible_generator:
     - PROVIDER_LOGIC_IN_PLATFORM
     - RENDERING_MAKES_BUSINESS_DECISION
 
+cursor_task_generator:
+  part: 35
+  path: marketplace-infographic/scripts/cursor-task-generator/
+  output_dir: docs/cursor/
+  waves: 20
+  commands:
+    tasks: npm run architecture:tasks
+    waves: npm run architecture:waves
+    plan: npm run architecture:plan
+  read_only: true
+  task_states:
+    - Pending
+    - Ready
+    - Running
+    - Blocked
+    - Review
+    - Completed
+    - Rejected
+
 volume_1:
   status: complete
   version: "1.0"
   architecture_status: stable
   migration_status: ready
-  cursor_status: not_ready
-  cursor_not_ready_reason: Run architecture:scan; complete migration per generated Code_Rewrite_Bible.md
+  cursor_status: ready_for_tasks
+  cursor_not_ready_reason: Execute tasks from docs/cursor/Wave-*.md per Part 24 protocol
   next_document: docs/Code_Rewrite_Bible.md
   expected_pages:
     architecture_bible: "400-700"

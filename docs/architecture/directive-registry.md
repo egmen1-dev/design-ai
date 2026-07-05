@@ -57,6 +57,9 @@ Architecture Bible → ADR → RFC → Implementation Directive → Pull Request
 | CRB-001 | Architecture scanner (Part 34) | Critical | Completed | — | — | — |
 | CRB-002 | architecture:scan npm scripts | Critical | Completed | — | — | — |
 | CRB-003 | Scanner read-only policy | Critical | Completed | — | — | — |
+| CTG-001 | Cursor Task Generator (Part 35) | Critical | Completed | — | — | — |
+| CTG-002 | docs/cursor Wave-01..20 | Critical | Completed | — | — | — |
+| CTG-003 | architecture:tasks/waves/plan | Critical | Completed | — | — | — |
 | DTO-001 | Base Contract & Specifications | Critical | Blocked | ADR-002 | RFC-001 | 02 |
 | DTO-002 | ProjectState implementation | Critical | Blocked | ADR-002 | RFC-001 | 02 |
 | RUN-001 | Runtime engine skeleton | Critical | Blocked | — | RFC-002 | 01 |
