@@ -54,6 +54,9 @@ Architecture Bible → ADR → RFC → Implementation Directive → Pull Request
 | IDX-001 | Architecture Index (Appendix B) | HIGH | Completed | — | — | — |
 | IMP-001 | Implementation Index (Appendix C) | HIGH | Completed | — | — | — |
 | VOL-001 | Volume I Completion (Appendix D) | CRITICAL | Completed | — | — | — |
+| CRB-001 | Architecture scanner (Part 34) | Critical | Completed | — | — | — |
+| CRB-002 | architecture:scan npm scripts | Critical | Completed | — | — | — |
+| CRB-003 | Scanner read-only policy | Critical | Completed | — | — | — |
 | DTO-001 | Base Contract & Specifications | Critical | Blocked | ADR-002 | RFC-001 | 02 |
 | DTO-002 | ProjectState implementation | Critical | Blocked | ADR-002 | RFC-001 | 02 |
 | RUN-001 | Runtime engine skeleton | Critical | Blocked | — | RFC-002 | 01 |

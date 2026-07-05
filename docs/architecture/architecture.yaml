@@ -1408,6 +1408,49 @@ directives:
     success:
       implementation_index_documented: true
 
+  - id: VOL-001
+    title: Volume I Completion (Appendix D)
+    priority: CRITICAL
+    wave: 0
+    status: completed
+    files:
+      create:
+        - docs/Code_Rewrite_Bible.md
+      modify:
+        - docs/Architecture_Bible.md
+    success:
+      volume_1_complete: true
+
+  - id: CRB-001
+    title: Architecture scanner (Part 34)
+    priority: Critical
+    wave: 0
+    status: completed
+    files:
+      create:
+        - scripts/architecture-scanner/
+    checks:
+      - architecture:scan
+    success:
+      generates_code_rewrite_bible: true
+
+  - id: CRB-002
+    title: Architecture scan npm scripts
+    priority: Critical
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - package.json
+
+  - id: CRB-003
+    title: Scanner read-only policy
+    priority: Critical
+    wave: 0
+    status: completed
+    rules:
+      - never modify source code
+
   - id: DIR-001
     title: Directive Registry
     priority: HIGH
@@ -1722,13 +1765,35 @@ implementation_index:
     - LEARN
     - LEGACY
 
+code_rewrite_bible_generator:
+  part: 34
+  path: marketplace-infographic/scripts/architecture-scanner/
+  output: docs/Code_Rewrite_Bible.md
+  commands:
+    scan: npm run architecture:scan
+    report: npm run architecture:report
+  read_only: true
+  violation_types:
+    - PROMPT_OUTSIDE_PROVIDER
+    - LEGACY_IMPORT_IN_RUNTIME
+    - PLATFORM_IMPORTS_PLATFORM
+    - RUNTIME_IMPORTS_PROVIDER
+    - BUSINESS_LOGIC_IN_UTILS
+    - FILESYSTEM_ACCESS_OUTSIDE_ASSET_PLATFORM
+    - HTML_LAYOUT_OWNS_DESIGN
+    - DTO_NOT_REGISTERED
+    - MISSING_DECISION_TRACE
+    - MISSING_PROJECT_STATE
+    - PROVIDER_LOGIC_IN_PLATFORM
+    - RENDERING_MAKES_BUSINESS_DECISION
+
 volume_1:
   status: complete
   version: "1.0"
   architecture_status: stable
   migration_status: ready
   cursor_status: not_ready
-  cursor_not_ready_reason: Code Rewrite Bible required
+  cursor_not_ready_reason: Run architecture:scan; complete migration per generated Code_Rewrite_Bible.md
   next_document: docs/Code_Rewrite_Bible.md
   expected_pages:
     architecture_bible: "400-700"

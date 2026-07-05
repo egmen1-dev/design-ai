@@ -199,6 +199,10 @@ Version: 1.0 (Complete — Volume I)
   - [Debug Bundle](#debug-bundle)
 - [Part 33 — Final Architecture Laws](#part-33--final-architecture-laws)
   - [LAW-036–LAW-050](#law-036)
+- **Volume II — Code Rewrite**
+- [Part 34 — Code Rewrite Bible Generator](#part-34--code-rewrite-bible-generator)
+  - [Generator Pipeline](#generator-pipeline)
+  - [Directives CRB-001–003](#implementation-directive-crb-001)
 - [Appendix A — Glossary](#appendix-a--glossary)
 - [Appendix B — Architecture Index](#appendix-b--architecture-index)
 - [Appendix C — Implementation Index](#appendix-c--implementation-index)
@@ -9795,6 +9799,148 @@ Architecture validation **blocks** invalid releases.
 
 ---
 
+# PART 34 — CODE REWRITE BIBLE GENERATOR
+
+# ============================================================================
+# VOLUME II — CODE REWRITE
+# PART 34 — CODE REWRITE BIBLE GENERATOR
+# ============================================================================
+
+## Purpose
+
+Code Rewrite Bible must **not** be written manually.
+
+It must be **generated from the real repository**.
+
+| Reason | |
+|--------|--|
+| Repository changes often | |
+| Manual file specifications become outdated | |
+| Cursor needs current file-level instructions | |
+| Architecture must remain synchronized with code | |
+
+---
+
+## Goal
+
+Automatic scanner generates [`docs/Code_Rewrite_Bible.md`](Code_Rewrite_Bible.md) explaining per file:
+
+what it does · architecture layer · Bible violations · keep / move / delete / refactor · directive · required tests
+
+---
+
+# GENERATOR PIPELINE
+
+```
+Repository → File Scanner → Import Analyzer → Responsibility Classifier
+  → Architecture Mapper → Violation Detector → Migration Planner
+  → Markdown Generator → Code_Rewrite_Bible.md
+```
+
+Implementation: `marketplace-infographic/scripts/architecture-scanner/`
+
+---
+
+# FILE SCANNER
+
+**Scans:** `src/` · `app/` · `components/` · `docs/` · `scripts/` · `prisma/`
+
+**Ignores:** `node_modules/` · `.next/` · `dist/` · `build/` · `generated/` · `.cache/`
+
+---
+
+# FILE METADATA
+
+```ts
+type FileMetadata = {
+  path: string
+  extension: string
+  size: number
+  lines: number
+  exports: string[]
+  imports: string[]
+  dependencies: string[]
+  detectedLayer: ArchitectureLayer
+  detectedResponsibility: string[]
+  risk: "low" | "medium" | "high" | "critical"
+}
+```
+
+---
+
+# ARCHITECTURE LAYERS
+
+`app` · `components` · `platform-core` · `runtime` · `contracts` · `platforms` · `providers` · `sdk` · `assets` · `infrastructure` · `shared` · `legacy` · `docs` · `tests`
+
+Unclassified → `unknown` (risk: **high**)
+
+---
+
+# VIOLATION TYPES
+
+`PROMPT_OUTSIDE_PROVIDER` · `LEGACY_IMPORT_IN_RUNTIME` · `PLATFORM_IMPORTS_PLATFORM` · `RUNTIME_IMPORTS_PROVIDER` · `BUSINESS_LOGIC_IN_UTILS` · `FILESYSTEM_ACCESS_OUTSIDE_ASSET_PLATFORM` · `HTML_LAYOUT_OWNS_DESIGN` · `DTO_NOT_REGISTERED` · `MISSING_DECISION_TRACE` · `MISSING_PROJECT_STATE` · `PROVIDER_LOGIC_IN_PLATFORM` · `RENDERING_MAKES_BUSINESS_DECISION`
+
+---
+
+# ARCHITECTURE SCORE
+
+Factors: platform isolation · contract compliance · runtime compliance · prompt isolation · legacy isolation · provider isolation · asset isolation · test coverage · documentation coverage
+
+**Target: ≥ 98**
+
+---
+
+## IMPLEMENTATION DIRECTIVE CRB-001
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Create** | `scripts/architecture-scanner/` |
+| **Acceptance** | `npm run architecture:scan` generates `docs/Code_Rewrite_Bible.md` |
+
+**Status:** Completed
+
+---
+
+## IMPLEMENTATION DIRECTIVE CRB-002
+
+Add package scripts:
+
+```json
+{
+  "architecture:scan": "npx tsx scripts/architecture-scanner/scan-repository.ts",
+  "architecture:report": "npx tsx scripts/architecture-scanner/generate-code-rewrite-bible-cli.ts"
+}
+```
+
+**Status:** Completed
+
+---
+
+## IMPLEMENTATION DIRECTIVE CRB-003
+
+Generator **never modifies source code**. Reads repository; writes reports only.
+
+**Status:** Completed
+
+---
+
+# SUCCESS CRITERIA
+
+- Scanner reads full repository
+- Every file classified
+- Violations detected
+- Migration plan generated
+- `Code_Rewrite_Bible.md` generated
+- Cursor can use generated tasks
+- No manual file-by-file writing required
+
+---
+
+*END OF PART 34*
+
+---
+
 # APPENDIX A — GLOSSARY
 
 # ============================================================================
@@ -10402,4 +10548,4 @@ pm2 logs marketplace-infographic --lines 50
 
 ---
 
-*Architecture Bible — living document. Parts 1–33 (LAW-001–050). **Appendix A** — Glossary. **Appendix B** — Architecture Index. **Appendix C** — Implementation Index. **Appendix D** — repository implementation reference.*
+*Architecture Bible — Volume I complete (v1.0). Parts 1–33 (LAW-001–050). **Appendix A** — Glossary. **Appendix B** — Architecture Index. **Appendix C** — Implementation Index. **Appendix D** — Volume I Completion. **Appendix E** — repository implementation reference. Next: [`Code_Rewrite_Bible.md`](Code_Rewrite_Bible.md).*
