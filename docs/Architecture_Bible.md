@@ -68,6 +68,12 @@ Version: 1.0 (Draft)
   - [Knowledge Runtime](#knowledge-runtime)
   - [Knowledge Graph](#new-idea--knowledge-graph)
   - [Implementation Directive KD-001](#implementation-directive-kd-001)
+- [Part 7 — Reasoning Engine](#part-7--reasoning-engine)
+  - [7.1 Reasoning Engine](#71-purpose)
+  - [Platform Councils](#platform-councils)
+  - [Decision Graph](#decision-graph)
+  - [Spec Compiler](#spec-compiler)
+  - [Implementation Directives RS-001–RS-002](#implementation-directive-rs-001)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -3487,6 +3493,270 @@ Guessing
 
 ---
 
+# PART 7 — REASONING ENGINE
+
+# ============================================================================
+# PART 7
+# REASONING ENGINE
+# ============================================================================
+
+## 7.1 Purpose
+
+Reasoning Engine is the brain of Design AI OS.
+
+Platforms produce knowledge.
+
+Reasoning produces decisions.
+
+Without Reasoning Platform the system is only a collection of independent agents.
+
+---
+
+### Responsibilities
+
+Reasoning Engine:
+
+- collects specifications
+- detects conflicts
+- evaluates alternatives
+- builds hypotheses
+- selects optimal solution
+- explains decisions
+
+---
+
+### Inputs
+
+- ResearchSpec
+- KnowledgeSpec
+- CommercialSpec
+- CreativeSpec
+- VisualBlueprint
+
+---
+
+### Output
+
+- DecisionPackage
+- DecisionGraph
+- DecisionTrace
+
+---
+
+### Internal Pipeline
+
+```
+Collect
+  ↓
+Analyze
+  ↓
+Conflict Detection
+  ↓
+Hypothesis Generation
+  ↓
+Evaluation
+  ↓
+Voting
+  ↓
+Decision
+  ↓
+Decision Package
+```
+
+---
+
+### Conflict Detection
+
+Example:
+
+```
+Commercial  → Luxury
+Creative    → Minimalism
+Visual      → Crowded Layout
+  ↓
+Conflict
+```
+
+Reasoning Engine detects conflict before rendering.
+
+---
+
+### Decision Package
+
+**DecisionPackage** contains:
+
+- selectedDecision
+- rejectedAlternatives
+- confidence
+- evidence
+- reasoning
+- dependencies
+- affectedPlatforms
+- rollbackPoint
+
+---
+
+# PLATFORM COUNCILS
+
+Every important decision is made by Council.
+
+Never single agent.
+
+---
+
+### Commercial Council
+
+Buyer Expert · Marketplace Expert · Pricing Expert · Marketing Expert · Psychology Expert
+
+↓ **CommercialSpec**
+
+---
+
+### Creative Council
+
+Creative Director · Art Director · Brand Expert · Photographer · Storytelling Expert
+
+↓ **CreativeSpec**
+
+---
+
+### Visual Council
+
+Composition Expert · Lighting Expert · Typography Expert · Color Expert · UX Expert
+
+↓ **VisualBlueprint**
+
+---
+
+### Vision Council
+
+Marketplace Critic · Typography Critic · Composition Critic · Commercial Critic · Professional Critic
+
+↓ **VisionReport**
+
+---
+
+### Voting Model
+
+Each member returns: decision, confidence, reason, evidence
+
+↓ **Consensus Engine** ↓ **Final Decision**
+
+---
+
+### Consensus Rules
+
+| Mode | Use case |
+|------|----------|
+| Simple Majority | — |
+| Weighted Majority | Commercial Strategy |
+| Unanimous | Vision Approval |
+
+Architecture decides which mode is required.
+
+---
+
+# DECISION GRAPH
+
+Every decision becomes graph node.
+
+```
+Project
+├── Commercial Decision
+├── Creative Decision
+├── Visual Decision
+├── Render Decision
+└── Vision Decision
+```
+
+Every node stores:
+
+- who decided
+- why
+- confidence
+- alternatives
+- dependencies
+- future impact
+
+---
+
+# SPEC COMPILER
+
+### Purpose
+
+Compile specifications.
+
+Never compile prompts.
+
+```
+CommercialSpec
+  ↓
+CreativeSpec
+  ↓
+VisualBlueprint
+  ↓
+RenderBlueprint
+  ↓
+Provider Adapter
+```
+
+Compiler preserves information.
+
+No data loss.
+
+---
+
+# IMPLEMENTATION DIRECTIVE RS-001
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Create** | `src/lib/platforms/reasoning/` |
+
+**Files:**
+
+- `ReasoningPlatform.ts`
+- `ConsensusEngine.ts`
+- `ConflictDetector.ts`
+- `DecisionGraph.ts`
+- `DecisionPackage.ts`
+- `DecisionTrace.ts`
+- `CouncilManager.ts`
+
+**Acceptance:** Every important platform decision passes through Reasoning Engine.
+
+---
+
+# IMPLEMENTATION DIRECTIVE RS-002
+
+| | |
+|---|---|
+| **Create** | `src/lib/platforms/councils/` |
+
+**Files:**
+
+- `CommercialCouncil.ts`
+- `CreativeCouncil.ts`
+- `VisualCouncil.ts`
+- `VisionCouncil.ts`
+- `KnowledgeCouncil.ts`
+
+**Acceptance:** Single-agent decisions are forbidden for strategic decisions.
+
+---
+
+# NEW ARCHITECTURAL RULE
+
+No platform may directly overwrite another platform's output.
+
+Changes are made only by creating a new specification version approved by the Reasoning Engine.
+
+---
+
+*END OF PART 7*
+
+---
+
 # APPENDIX A — REPOSITORY IMPLEMENTATION REFERENCE
 
 > Практическая привязка Part 1 (канон) и Part 2 (аудит) к текущему коду репозитория `design-ai`.  
@@ -3879,4 +4149,4 @@ pm2 logs marketplace-infographic --lines 50
 
 ---
 
-*Architecture Bible — living document. Part 1 is canonical law. Part 2 is the architecture audit. Part 3 is the production pipeline. Part 4 is platform specification. Part 5 is runtime architecture. Part 6 is design DNA & knowledge. Appendix A tracks repository implementation.*
+*Architecture Bible — living document. Part 1 is canonical law. Part 2 is the architecture audit. Part 3 is the production pipeline. Part 4 is platform specification. Part 5 is runtime architecture. Part 6 is design DNA & knowledge. Part 7 is reasoning engine. Appendix A tracks repository implementation.*
