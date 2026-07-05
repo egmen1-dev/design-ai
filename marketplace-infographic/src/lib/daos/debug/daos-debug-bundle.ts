@@ -6,6 +6,12 @@ import {
   type DaosMeaningLossWarning,
 } from "./daos-meaning-loss";
 import type { DAOSRenderDebugArtifact } from "./render-debug-bridge";
+import type { DAOSGenerationMode, DAOSGenerationPolicy } from "../config/generation-mode";
+import {
+  getDaosGenerationPolicy,
+  isPremiumGuardrailMode,
+  summarizeDaosGenerationPolicy,
+} from "../config/generation-mode";
 
 export type DaosDebugBundle = {
   projectId: string;
@@ -42,7 +48,12 @@ export type DaosDebugBundle = {
     promptCaptured: boolean;
     modulesIgnoredCount: number;
     fallbackUsed: boolean;
+    generationMode: DAOSGenerationMode;
+    fastShortcutsAllowed: boolean;
+    premiumGuardrailsActive: boolean;
   };
+  generationMode: DAOSGenerationMode;
+  generationPolicySummary: ReturnType<typeof summarizeDaosGenerationPolicy>;
   renderDebug?: DAOSRenderDebugArtifact;
   meaningLossReport: DaosMeaningLossReport;
 };
@@ -51,10 +62,17 @@ export function createDaosDebugBundle(
   state: DAOSProjectState,
   options?: {
     renderDebug?: DAOSRenderDebugArtifact;
+    generationMode?: DAOSGenerationMode;
+    generationPolicy?: DAOSGenerationPolicy;
   },
 ): DaosDebugBundle {
   const renderDebug = options?.renderDebug;
-  const meaningLossReport = analyzeDaosMeaningLoss(state, renderDebug);
+  const generationMode =
+    options?.generationMode ?? state.brief?.generationMode ?? "balanced";
+  const generationPolicy =
+    options?.generationPolicy ?? getDaosGenerationPolicy(generationMode);
+  const generationPolicySummary = summarizeDaosGenerationPolicy(generationPolicy);
+  const meaningLossReport = analyzeDaosMeaningLoss(state, { renderDebug, generationMode });
   const createdAt = new Date().toISOString();
 
   return {
@@ -92,7 +110,12 @@ export function createDaosDebugBundle(
       promptCaptured: Boolean(renderDebug?.finalPrompt),
       modulesIgnoredCount: renderDebug?.modulesIgnored?.length ?? 0,
       fallbackUsed: Boolean(renderDebug?.fallbackUsed),
+      generationMode,
+      fastShortcutsAllowed: generationPolicy.allowFastShortcuts,
+      premiumGuardrailsActive: isPremiumGuardrailMode(generationMode),
     },
+    generationMode,
+    generationPolicySummary,
     renderDebug,
     meaningLossReport,
   };

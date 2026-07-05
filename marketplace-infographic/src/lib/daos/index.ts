@@ -5,3 +5,11 @@ export * from "./runtime/runtime";
 export * from "./registry/registry";
 export * from "./events/event-bus";
 export * from "./adapters/legacy-generation-adapter";
+export {
+  resolveDaosGenerationMode,
+  getDaosGenerationPolicy,
+  summarizeDaosGenerationPolicy,
+  isPremiumGuardrailMode,
+  type DAOSGenerationMode,
+  type DAOSGenerationPolicy,
+} from "./config/generation-mode";

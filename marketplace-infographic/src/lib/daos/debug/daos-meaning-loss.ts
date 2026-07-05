@@ -6,6 +6,16 @@ import type {
   VisualBlueprint,
 } from "../contracts/specs";
 import type { DAOSRenderDebugArtifact } from "./render-debug-bridge";
+import {
+  getDaosGenerationPolicy,
+  isPremiumGuardrailMode,
+  type DAOSGenerationMode,
+} from "../config/generation-mode";
+
+export type AnalyzeDaosMeaningLossOptions = {
+  renderDebug?: DAOSRenderDebugArtifact;
+  generationMode?: DAOSGenerationMode;
+};
 
 export type DaosMeaningLossSeverity = "warning" | "critical";
 
@@ -260,11 +270,37 @@ function analyzeRenderPromptRisk(render: RenderBlueprint | undefined): DaosMeani
   return [];
 }
 
+function warningSeverity(
+  code: string,
+  defaultSeverity: DaosMeaningLossSeverity,
+  generationMode?: DAOSGenerationMode,
+): DaosMeaningLossSeverity {
+  if (!isPremiumGuardrailMode(generationMode)) {
+    return defaultSeverity;
+  }
+  if (code === "PROMPT_MISSING" || code === "FALLBACK_USED" || code === "RENDER_DEBUG_MISSING") {
+    return "critical";
+  }
+  return defaultSeverity;
+}
+
 function analyzeRenderDebugLoss(
   render: RenderBlueprint | undefined,
   renderDebug: DAOSRenderDebugArtifact | undefined,
+  generationMode?: DAOSGenerationMode,
 ): DaosMeaningLossWarning[] {
   const warnings: DaosMeaningLossWarning[] = [];
+  const policy = generationMode ? getDaosGenerationPolicy(generationMode) : undefined;
+
+  if (policy?.requireRenderDebug && !renderDebug) {
+    warnings.push({
+      code: "RENDER_DEBUG_MISSING",
+      severity: warningSeverity("RENDER_DEBUG_MISSING", "warning", generationMode),
+      message: "premium guardrails require renderDebug artifact but none was captured",
+      spec: "renderBlueprint",
+    });
+  }
+
   if (!render && !renderDebug) return warnings;
 
   const hasRenderContext = Boolean(render || renderDebug?.renderRequestSummary || renderDebug?.finalPrompt);
@@ -281,7 +317,7 @@ function analyzeRenderDebugLoss(
   if (render && !renderDebug?.finalPrompt) {
     warnings.push({
       code: "PROMPT_MISSING",
-      severity: "warning",
+      severity: warningSeverity("PROMPT_MISSING", "warning", generationMode),
       message: "renderBlueprint exists but finalPrompt is missing in renderDebug",
       spec: "renderBlueprint",
     });
@@ -319,7 +355,7 @@ function analyzeRenderDebugLoss(
   if (renderDebug?.fallbackUsed === true) {
     warnings.push({
       code: "FALLBACK_USED",
-      severity: "warning",
+      severity: warningSeverity("FALLBACK_USED", "warning", generationMode),
       message: renderDebug.fallbackReason
         ? `render fallback used: ${renderDebug.fallbackReason}`
         : "render fallback used",
@@ -333,8 +369,10 @@ function analyzeRenderDebugLoss(
 /** Deterministic loss-of-meaning checks between DAOS specs (no LLM). */
 export function analyzeDaosMeaningLoss(
   state: DAOSProjectState,
-  renderDebug?: DAOSRenderDebugArtifact,
+  options?: AnalyzeDaosMeaningLossOptions,
 ): DaosMeaningLossReport {
+  const renderDebug = options?.renderDebug;
+  const generationMode = options?.generationMode ?? state.brief?.generationMode;
   const missingSpecs = collectMissingSpecs(state);
   const lowConfidenceWarnings = collectLowConfidenceSpecs(state);
   const lowConfidenceSpecs = lowConfidenceWarnings.map((w) => w.spec!).filter(Boolean);
@@ -353,7 +391,7 @@ export function analyzeDaosMeaningLoss(
     state.renderBlueprint,
   );
   const renderPromptRisk = analyzeRenderPromptRisk(state.renderBlueprint);
-  const renderDebugLoss = analyzeRenderDebugLoss(state.renderBlueprint, renderDebug);
+  const renderDebugLoss = analyzeRenderDebugLoss(state.renderBlueprint, renderDebug, generationMode);
 
   const warnings = [
     ...lowConfidenceWarnings,

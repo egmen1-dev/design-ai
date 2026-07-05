@@ -91,27 +91,33 @@ const state = updateProjectState(createProjectState({ projectId: PROJECT_ID, run
   renderBlueprint,
 });
 
-const missingPromptReport = analyzeDaosMeaningLoss(state, { createdAt: new Date().toISOString() });
+const missingPromptReport = analyzeDaosMeaningLoss(state, {
+  renderDebug: { createdAt: new Date().toISOString() },
+});
 assert.ok(missingPromptReport.renderDebugLoss.some((w) => w.code === "PROMPT_MISSING"));
 console.log("✓ meaning-loss catches PROMPT_MISSING");
 
 const modulesReport = analyzeDaosMeaningLoss(state, {
-  createdAt: new Date().toISOString(),
-  provider: "pollinations",
-  finalPrompt: "x".repeat(150),
-  promptLength: 150,
-  modulesIgnored: ["layout_coordinates"],
+  renderDebug: {
+    createdAt: new Date().toISOString(),
+    provider: "pollinations",
+    finalPrompt: "x".repeat(150),
+    promptLength: 150,
+    modulesIgnored: ["layout_coordinates"],
+  },
 });
 assert.ok(modulesReport.renderDebugLoss.some((w) => w.code === "MODULES_IGNORED"));
 console.log("✓ meaning-loss catches MODULES_IGNORED");
 
 const fallbackReport = analyzeDaosMeaningLoss(state, {
-  createdAt: new Date().toISOString(),
-  provider: "pollinations",
-  finalPrompt: "x".repeat(150),
-  promptLength: 150,
-  fallbackUsed: true,
-  fallbackReason: "pipeline backgroundSource=fallback",
+  renderDebug: {
+    createdAt: new Date().toISOString(),
+    provider: "pollinations",
+    finalPrompt: "x".repeat(150),
+    promptLength: 150,
+    fallbackUsed: true,
+    fallbackReason: "pipeline backgroundSource=fallback",
+  },
 });
 assert.ok(fallbackReport.renderDebugLoss.some((w) => w.code === "FALLBACK_USED"));
 console.log("✓ meaning-loss catches FALLBACK_USED");

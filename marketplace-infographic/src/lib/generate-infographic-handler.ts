@@ -130,6 +130,10 @@ import type { CoverConceptId } from "@/lib/cover-concepts";
 import { evaluateFinalQuality } from "@/lib/design/final-quality-validator";
 import { applyPosterRules } from "@/lib/design-process/pipeline";
 import { createLegacyDAOSState } from "@/lib/daos";
+import {
+  getDaosGenerationPolicy,
+  resolveDaosGenerationMode,
+} from "@/lib/daos/config/generation-mode";
 import { enrichDaosStateFromPipeline } from "@/lib/daos/adapters/pipeline-enrichment";
 import { createDaosDebugBundle, writeDaosDebugBundle, extractDaosRenderDebug } from "@/lib/daos/debug";
 import type { DAOSProjectState } from "@/lib/daos/core/project-state";
@@ -736,8 +740,12 @@ export async function handleGenerateInfographic(
   const slot = await consumeGenerationSlot(input.userId);
   const pipelineStartedAt = Date.now();
 
+  const daosGenerationMode = resolveDaosGenerationMode();
+  const daosGenerationPolicy = getDaosGenerationPolicy(daosGenerationMode);
+
   const daosState = createLegacyDAOSState({
     prompt: input.prompt || "",
+    generationMode: daosGenerationMode,
   });
 
   if (process.env.DAOS_DEBUG === "1") {
@@ -2143,7 +2151,11 @@ export async function handleGenerateInfographic(
       backgroundSource,
       compiledBackground,
     });
-    const daosDebugBundle = createDaosDebugBundle(enrichedDaosState, { renderDebug });
+    const daosDebugBundle = createDaosDebugBundle(enrichedDaosState, {
+      renderDebug,
+      generationMode: daosGenerationMode,
+      generationPolicy: daosGenerationPolicy,
+    });
     const daosDebugWrite = await writeDaosDebugBundle(daosDebugBundle);
     if (!daosDebugWrite.ok) {
       console.warn(daosDebugWrite.warning);

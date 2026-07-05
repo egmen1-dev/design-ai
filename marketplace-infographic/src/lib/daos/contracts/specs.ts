@@ -10,6 +10,7 @@ export type ProductBrief = DAOSBaseSpecification & {
     width: number;
     height: number;
   };
+  generationMode?: import("../config/generation-mode").DAOSGenerationMode;
 };
 
 export type ResearchSpec = DAOSBaseSpecification & {

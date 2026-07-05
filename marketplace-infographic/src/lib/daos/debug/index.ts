@@ -11,6 +11,7 @@ export {
   type DaosMeaningLossReport,
   type DaosMeaningLossWarning,
   type DaosMeaningLossSeverity,
+  type AnalyzeDaosMeaningLossOptions,
 } from "./daos-meaning-loss";
 export {
   extractDaosRenderDebug,
