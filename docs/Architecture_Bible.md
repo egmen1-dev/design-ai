@@ -164,6 +164,11 @@ Version: 1.0 (Draft)
 - [Part 25 — Implementation Plan](#part-25--implementation-plan)
   - [Phase 1–8](#phase-1--platform-core)
   - [Final Acceptance](#final-acceptance)
+- [Part 26 — Repository Specification](#part-26--repository-specification)
+  - [Root & Application Layers](#root)
+  - [lib/ Platforms & Providers](#lib)
+  - [Legacy, Generated & docs/](#legacy)
+  - [Directive REP-001](#implementation-directive-rep-001)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -8287,6 +8292,188 @@ Migration is **complete** only when **all** criteria are met:
 ---
 
 *END OF PART 25*
+
+---
+
+# PART 26 — REPOSITORY SPECIFICATION
+
+# ============================================================================
+# PART 26
+# REPOSITORY SPECIFICATION
+# ============================================================================
+
+## Purpose
+
+This chapter defines the **canonical repository structure**.
+
+Every source file belongs to exactly one architectural layer.
+
+No file may exist outside the repository architecture.
+
+Canonical DSL: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `repository`
+
+---
+
+# ROOT
+
+```
+marketplace-infographic/
+```
+
+Next.js application root. All application source lives under `marketplace-infographic/src/`.
+
+---
+
+# APPLICATION — `app/`
+
+| | |
+|---|---|
+| **Path** | `marketplace-infographic/src/app/` |
+| **Responsibilities** | Next.js routes · API · UI · Authentication |
+
+**Forbidden:** Business Logic · Rendering · Knowledge · Commercial
+
+---
+
+# COMPONENTS — `components/`
+
+| | |
+|---|---|
+| **Path** | `marketplace-infographic/src/components/` |
+| **Responsibilities** | Reusable UI |
+
+**Forbidden:** Platform Logic · Business Logic
+
+---
+
+# LIB — `lib/`
+
+| | |
+|---|---|
+| **Path** | `marketplace-infographic/src/lib/` |
+| **Responsibilities** | Entire Design AI OS |
+
+### Subdirectories
+
+| Directory | Purpose |
+|-----------|---------|
+| `platform-core/` | Platform registry, shared infrastructure |
+| `runtime/` | Runtime engine, ProjectState, EventBus |
+| `contracts/` | Immutable DTOs and specifications |
+| `platforms/` | Platform implementations |
+| `providers/` | Provider adapters (IProvider) |
+| `sdk/` | Platform SDK, Plugin SDK, Skill SDK |
+| `assets/` | Asset platform |
+| `legacy/` | Compatibility shims only |
+
+---
+
+# PLATFORMS — `platforms/`
+
+```
+platforms/
+  Research/
+  Knowledge/
+  Commercial/
+  Creative/
+  Visual/
+  Rendering/
+  Vision/
+  Learning/
+  Governance/
+```
+
+Each platform is isolated. No cross-platform business logic imports.
+
+---
+
+# PROVIDERS — `providers/`
+
+```
+providers/
+  Flux/
+  GPTImage/
+  Imagen/
+  StableDiffusion/
+```
+
+Every provider implements **IProvider**. Prompt generation only inside Provider Adapter.
+
+---
+
+# LEGACY — `legacy/`
+
+| | |
+|---|---|
+| **Purpose** | Compatibility only |
+| **Forbidden** | New code |
+
+Current modules (`design-process/`, `render-engine/`, `prompt/`, etc.) migrate here or into `platforms/` per Part 18–19. No new files in legacy paths.
+
+---
+
+# PUBLIC — `public/`
+
+```
+public/
+  backgrounds/
+  icons/
+  fonts/
+```
+
+Static assets only. No business logic.
+
+---
+
+# GENERATED — `generated/`
+
+Generated artifacts only. **Never committed.** Add to `.gitignore`.
+
+---
+
+# UPLOADS — `uploads/`
+
+Temporary assets only. Not source of truth.
+
+---
+
+# DOCUMENTATION — `docs/`
+
+```
+docs/
+  Architecture_Bible.md
+  architecture/
+    adr/
+    architecture.yaml
+    directive-registry.md
+    migration-logs/
+  rfc/
+  migration/
+  api/
+```
+
+| Path | Content |
+|------|---------|
+| `docs/Architecture_Bible.md` | Canonical human-readable architecture |
+| `docs/architecture/adr/` | Architecture Decision Records |
+| `docs/rfc/` | Request for Comments |
+| `docs/migration/` | Migration reports and plans |
+| `docs/api/` | API documentation |
+
+---
+
+## IMPLEMENTATION DIRECTIVE REP-001
+
+| | |
+|---|---|
+| **Priority** | HIGH |
+| **Phase** | 1 (Platform Core) |
+| **Action** | Move files into canonical architecture. **Do not change business logic.** |
+| **Acceptance** | Repository matches Architecture Bible and `architecture.yaml` → `repository` |
+
+---
+
+*END OF PART 26*
 
 ---
 

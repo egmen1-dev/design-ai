@@ -18,6 +18,109 @@ architecture:
     - LAW-021
     - LAW-022
 
+repository:
+  root: marketplace-infographic/
+  src: marketplace-infographic/src/
+  layers:
+    - name: application
+      path: src/app/
+      responsibilities:
+        - Next.js routes
+        - API
+        - UI
+        - Authentication
+      forbidden:
+        - business_logic
+        - rendering
+        - knowledge
+        - commercial
+
+    - name: components
+      path: src/components/
+      responsibilities:
+        - reusable UI
+      forbidden:
+        - platform_logic
+        - business_logic
+
+    - name: lib
+      path: src/lib/
+      responsibilities:
+        - entire Design AI OS
+      subdirectories:
+        - platform-core
+        - runtime
+        - contracts
+        - platforms
+        - providers
+        - sdk
+        - assets
+        - legacy
+
+  platforms:
+    path: src/lib/platforms/
+    modules:
+      - Research
+      - Knowledge
+      - Commercial
+      - Creative
+      - Visual
+      - Rendering
+      - Vision
+      - Learning
+      - Governance
+
+  providers:
+    path: src/lib/providers/
+    interface: IProvider
+    implementations:
+      - Flux
+      - GPTImage
+      - Imagen
+      - StableDiffusion
+
+  legacy:
+    path: src/lib/legacy/
+    purpose: compatibility only
+    forbidden:
+      - new_code
+    migrate_from:
+      - design-process
+      - render-engine
+      - prompt
+      - design-governance
+      - design
+      - feedback
+      - memory
+
+  public:
+    path: public/
+    subdirectories:
+      - backgrounds
+      - icons
+      - fonts
+    forbidden:
+      - business_logic
+
+  generated:
+    path: generated/
+    committed: false
+
+  uploads:
+    path: uploads/
+    purpose: temporary assets only
+
+  documentation:
+    path: docs/
+    files:
+      - Architecture_Bible.md
+    subdirectories:
+      - architecture/adr
+      - architecture/migration-logs
+      - rfc
+      - migration
+      - api
+
 runtime:
   id: RuntimeV2
   path: src/lib/runtime/
@@ -683,6 +786,34 @@ directives:
       - validate_yaml
     success:
       architecture_score_min: 98
+
+  - id: REP-001
+    title: Move files into canonical repository structure
+    priority: HIGH
+    wave: 1
+    phase: 1
+    status: blocked
+    requires:
+      - RUN-001
+      - DTO-001
+    files:
+      create:
+        - src/lib/platform-core/
+        - src/lib/runtime/
+        - src/lib/contracts/
+        - src/lib/platforms/
+        - src/lib/providers/
+        - src/lib/sdk/
+        - src/lib/assets/
+        - src/lib/legacy/
+    rules:
+      - do not change business logic
+    checks:
+      - compile
+      - unit
+      - architecture
+    success:
+      repository_matches_bible: true
 
   - id: DIR-001
     title: Directive Registry
