@@ -99,6 +99,11 @@ Version: 1.0 (Draft)
   - [Platform 04 — Render Engine](#platform-04--render-engine)
   - [Platform 05 — Prompt System](#platform-05--prompt-system)
   - [LAW-021–LAW-022](#new-law)
+- [Part 12 — Runtime & Orchestration Migration](#part-12--runtime--orchestration-migration)
+  - [Current State & Target](#current-state)
+  - [RUN-001–RUN-004](#implementation-directive-run-001)
+  - [Project Graph & Failure Recovery](#project-graph)
+  - [Success Criteria](#success-criteria)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -5163,6 +5168,293 @@ Architecture migration must preserve working code whenever possible.
 
 ---
 
+# PART 12 — RUNTIME & ORCHESTRATION MIGRATION
+
+# ============================================================================
+# PART 12
+# RUNTIME & ORCHESTRATION MIGRATION
+# ============================================================================
+
+## Purpose
+
+Introduce a single orchestration layer.
+
+Existing intelligence remains.
+
+Execution model changes.
+
+No platform executes another platform directly.
+
+---
+
+# CURRENT STATE
+
+Current project already contains:
+
+- ✓ Design Governance
+- ✓ Critics
+- ✓ Registry
+- ✓ Design Process
+- ✓ Knowledge Engine
+- ✓ Render Engine
+- ✓ Prompt Compiler
+- ✓ Memory
+- ✓ Constitution
+
+### Main problem
+
+Execution responsibility is distributed.
+
+Platforms partially orchestrate themselves.
+
+This creates:
+
+- duplicated logic
+- retries in different places
+- inconsistent lifecycle
+- difficult debugging
+- hidden dependencies
+
+### Target
+
+- Single Runtime
+- Single Scheduler
+- Single Execution Graph
+
+---
+
+# RUNTIME RESPONSIBILITIES
+
+Runtime becomes the **only** orchestrator.
+
+**Runtime owns:**
+
+- lifecycle
+- execution order
+- retries
+- timeout
+- metrics
+- events
+- dependency graph
+- cancellation
+- rollback
+- caching
+
+Nothing else.
+
+**Runtime NEVER:**
+
+- generates prompts
+- makes design decisions
+- evaluates design
+- renders images
+
+---
+
+# PLATFORM EXECUTION
+
+### Current
+
+```
+Research → calls Knowledge → calls Creative → calls Visual → calls Render
+```
+
+### Future
+
+```
+Runtime → Research → Runtime → Knowledge → Runtime → Commercial
+  → Runtime → Creative → Runtime → Visual → Runtime → Rendering
+```
+
+---
+
+# PROJECT STATE
+
+### Current
+
+Data transferred through objects.
+
+### Target
+
+Everything transferred through **ProjectState**.
+
+**ProjectState** contains:
+
+- ResearchSpec
+- KnowledgeSpec
+- CommercialSpec
+- CreativeSpec
+- VisualBlueprint
+- RenderBlueprint
+- VisionReport
+- LearningReport
+- DecisionTrace
+- Events
+- Artifacts
+- Metrics
+
+---
+
+# IMPLEMENTATION DIRECTIVE RUN-001
+
+| | |
+|---|---|
+| **Status** | NEW |
+| **Priority** | CRITICAL |
+| **Create** | `src/lib/runtime/` |
+
+**Files:**
+
+- `Runtime.ts`
+- `ExecutionManager.ts`
+- `ExecutionContext.ts`
+- `Scheduler.ts`
+- `PlatformRunner.ts`
+- `PipelineRunner.ts`
+- `ExecutionResult.ts`
+
+**Acceptance:** Runtime becomes single execution owner.
+
+---
+
+# IMPLEMENTATION DIRECTIVE RUN-002
+
+| | |
+|---|---|
+| **Status** | NEW |
+| **Priority** | CRITICAL |
+| **Create** | `src/lib/runtime/graph/` |
+
+**Files:**
+
+- `ExecutionNode.ts`
+- `ExecutionEdge.ts`
+- `ExecutionGraph.ts`
+- `ExecutionPlanner.ts`
+- `ExecutionValidator.ts`
+
+**Acceptance:** Pipeline represented as DAG.
+
+---
+
+# IMPLEMENTATION DIRECTIVE RUN-003
+
+| | |
+|---|---|
+| **Status** | NEW |
+| **Priority** | HIGH |
+| **Create** | `src/lib/runtime/events/` |
+
+**Files:**
+
+- `EventBus.ts`
+- `EventStore.ts`
+- `PlatformEvents.ts`
+- `ProjectEvents.ts`
+- `RenderEvents.ts`
+
+**Acceptance:** Every action generates immutable event.
+
+---
+
+# IMPLEMENTATION DIRECTIVE RUN-004
+
+| | |
+|---|---|
+| **Status** | NEW |
+| **Priority** | HIGH |
+| **Create** | `src/lib/runtime/cache/` |
+
+**Files:**
+
+- `SpecificationCache.ts`
+- `NodeCache.ts`
+- `ProviderCache.ts`
+- `ArtifactCache.ts`
+
+**Acceptance:** Identical specifications reuse cached results.
+
+---
+
+# PROJECT GRAPH
+
+Every project becomes graph.
+
+```
+Project
+├── Research
+│      ├── Marketplace
+│      ├── Competitors
+│      ├── Reviews
+│      └── References
+├── Knowledge
+├── Commercial
+├── Creative
+├── Visual
+├── Rendering
+├── Vision
+└── Learning
+```
+
+Every node stores: Version · Confidence · DecisionTrace · ExecutionTime · Dependencies
+
+---
+
+# FAILURE RECOVERY
+
+| | |
+|---|---|
+| **Current** | Render failed → Restart pipeline |
+| **Future** | Render node failed → Retry node → Continue |
+
+Node-level retries only.
+
+---
+
+# CHECKPOINTS
+
+| Checkpoint | Stage |
+|------------|-------|
+| 1 | Research Complete |
+| 2 | Commercial Complete |
+| 3 | Creative Complete |
+| 4 | Visual Approved |
+| 5 | Render Complete |
+| 6 | Vision Approved |
+
+Any checkpoint may become rollback target.
+
+---
+
+# MIGRATION SCORE
+
+| | |
+|---|---|
+| **Runtime** | |
+| Current Coverage | 20% |
+| Reuse | 10% |
+| Rewrite | 90% |
+| Risk | **HIGH** |
+| Reason | Runtime currently does not exist as a dedicated architectural layer |
+
+---
+
+# SUCCESS CRITERIA
+
+- ✓ Every platform isolated
+- ✓ Runtime owns execution
+- ✓ Platforms never call each other
+- ✓ Replay supported
+- ✓ Rollback supported
+- ✓ Parallel execution supported
+- ✓ Complete Decision Trace
+
+---
+
+*END OF PART 12*
+
+---
+
 # APPENDIX A — REPOSITORY IMPLEMENTATION REFERENCE
 
 > Практическая привязка Part 1 (канон) и Part 2 (аудит) к текущему коду репозитория `design-ai`.  
@@ -5555,4 +5847,4 @@ pm2 logs marketplace-infographic --lines 50
 
 ---
 
-*Architecture Bible — living document. Part 1 is canonical law (LAW-001–022). Part 2 is the architecture audit. Part 3 is the production pipeline. Part 4 is platform specification. Part 5 is runtime architecture. Part 6 is design DNA & knowledge. Part 7 is reasoning engine. Part 8 is file-by-file migration. Part 9 is AI CEO platform. Part 10 is platform SDK. Part 11 is migration of existing platforms. Appendix A tracks repository implementation.*
+*Architecture Bible — living document. Part 1 is canonical law (LAW-001–022). Parts 2–12 define audit, pipeline, platforms, runtime, migration, CEO, SDK, and orchestration. Appendix A tracks repository implementation.*
