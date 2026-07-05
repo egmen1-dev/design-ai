@@ -141,6 +141,18 @@ Version: 1.0 (Draft)
   - [Implementation Order](#implementation-order)
   - [Refactor Strategy & Code Review](#refactor-strategy)
   - [Stop Conditions & Success Metrics](#stop-conditions-1)
+- [Part 20 — Architecture Decision Records (ADR)](#part-20--architecture-decision-records-adr)
+  - [ADR Template & Directory](#directory)
+  - [ADR-001–005](#adr-001--prompt-driven-architecture)
+  - [ADR Rules & Directive ADR-001](#adr-rules)
+- [Part 21 — Request for Comments (RFC)](#part-21--request-for-comments-rfc)
+  - [RFC Lifecycle & Template](#rfc-lifecycle)
+  - [RFC-001–006](#rfc-001--projectstate)
+  - [RFC Rules & Directive RFC-001](#rfc-rules)
+- [Part 22 — Implementation Directives](#part-22--implementation-directives)
+  - [Directive Template & Relations](#directive-template)
+  - [Directive Registry (DIR-001)](#implementation-directive-dir-001)
+  - [Success Criteria](#success-criteria-3)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -7326,6 +7338,374 @@ Immediately stop migration if:
 ---
 
 *END OF PART 19*
+
+---
+
+# PART 20 — ARCHITECTURE DECISION RECORDS (ADR)
+
+# ============================================================================
+# PART 20
+# ARCHITECTURE DECISION RECORDS (ADR)
+# ============================================================================
+
+## Purpose
+
+Every architectural decision must be documented.
+
+Architecture must explain not only **WHAT** was built.
+
+Architecture must explain **WHY** it was built.
+
+No architectural change may exist without ADR.
+
+---
+
+# DIRECTORY
+
+```
+docs/
+  architecture/
+    adr/
+      ADR-000.md
+      ADR-001.md
+      ADR-002.md
+      ...
+```
+
+---
+
+# ADR TEMPLATE
+
+| Field | Description |
+|-------|-------------|
+| ADR Number | Sequential identifier |
+| Title | Short decision title |
+| Status | Proposed · Accepted · Deprecated · Superseded |
+| Context | Background and constraints |
+| Problem | What is wrong today |
+| Alternatives | Options considered |
+| Decision | What was chosen |
+| Consequences | Positive and negative outcomes |
+| Migration | How to adopt |
+| Affected Files | Code and docs touched |
+| Acceptance | Done criteria |
+| Rollback | How to undo |
+
+---
+
+# ADR-001 — PROMPT DRIVEN ARCHITECTURE
+
+| | |
+|---|---|
+| **Status** | Accepted |
+
+### Problem
+
+Prompt contains all knowledge. Knowledge is lost. Prompt is not versioned. Prompt cannot explain decisions.
+
+### Decision
+
+Replace Prompt Driven Architecture with **Specification Driven Architecture**.
+
+### Reason
+
+Specifications preserve information. Prompt does not.
+
+### Consequences
+
+**Positive:** Versioning · Replay · Decision Trace · Platform isolation
+
+**Negative:** Higher implementation complexity.
+
+**Related:** LAW-001 · Part 1 · Part 13 · ADR-002 · ADR-003
+
+---
+
+# ADR-002 — PROJECTSTATE
+
+### Problem
+
+Platforms exchange arbitrary objects.
+
+### Decision
+
+Introduce **ProjectState**.
+
+### Reason
+
+Single immutable state.
+
+### Consequences
+
+Replay · Rollback · Tracing.
+
+**Related:** Part 13 · RFC-001 · DTO-001
+
+---
+
+# ADR-003 — PROVIDER ADAPTER
+
+### Problem
+
+Prompt generation exists in multiple modules.
+
+### Decision
+
+Move Prompt generation into **Provider Adapter**.
+
+### Consequences
+
+Providers become replaceable.
+
+**Related:** LAW-001 · Part 18 (Prompt module) · RFC-004
+
+---
+
+# ADR-004 — RENDERGRAPH
+
+### Problem
+
+Full render restarts after every failure.
+
+### Decision
+
+Introduce **RenderGraph**.
+
+### Consequences
+
+Node-level retry.
+
+**Related:** Part 18 (Render Engine) · RFC-005
+
+---
+
+# ADR-005 — KNOWLEDGE ENGINE
+
+### Problem
+
+Knowledge duplicated.
+
+### Decision
+
+Create unified **Knowledge Engine**.
+
+**Related:** Part 17 · Part 18 (Knowledge) · RFC-003
+
+---
+
+# ADR RULES
+
+```
+Every architectural change → requires ADR
+Every ADR → must reference Implementation Directives
+Every Implementation Directive → must reference ADR
+```
+
+---
+
+## IMPLEMENTATION DIRECTIVE ADR-001
+
+| | |
+|---|---|
+| **Priority** | HIGH |
+| **Create** | `docs/architecture/adr/` |
+| **Acceptance** | Every architectural change documented |
+
+---
+
+*END OF PART 20*
+
+---
+
+# PART 21 — REQUEST FOR COMMENTS (RFC)
+
+# ============================================================================
+# PART 21
+# REQUEST FOR COMMENTS (RFC)
+# ============================================================================
+
+## Purpose
+
+Large changes must be discussed before implementation.
+
+Architecture evolves through **RFC**, not code.
+
+---
+
+# RFC LIFECYCLE
+
+```
+Draft → Review → Accepted → Implemented → Released → Archived
+```
+
+---
+
+# RFC TEMPLATE
+
+| Field | Description |
+|-------|-------------|
+| RFC Number | Sequential identifier |
+| Title | Change title |
+| Author | Proposer |
+| Status | Draft · Review · Accepted · Implemented · Released · Archived |
+| Motivation | Why this change |
+| Architecture | Target design |
+| Implementation | Execution plan |
+| Migration | Adoption path |
+| Alternatives | Other options |
+| Compatibility | Breaking vs non-breaking |
+| Risks | Known risks |
+| Acceptance | Done criteria |
+
+---
+
+# RFC-001 — PROJECTSTATE
+
+Immutable project state container. See `docs/rfc/RFC-001.md`.
+
+**Related:** ADR-002 · Part 13 · DTO-001
+
+---
+
+# RFC-002 — RUNTIME
+
+Runtime orchestration engine. See `docs/rfc/RFC-002.md`.
+
+**Related:** Part 5 · Part 12 · RUN-001–004
+
+---
+
+# RFC-003 — KNOWLEDGE ENGINE
+
+Unified knowledge platform. See `docs/rfc/RFC-003.md`.
+
+**Related:** ADR-005 · Part 17 · KNG-001–002
+
+---
+
+# RFC-004 — PROVIDER ADAPTER
+
+Single prompt compiler boundary. See `docs/rfc/RFC-004.md`.
+
+**Related:** ADR-003 · LAW-001
+
+---
+
+# RFC-005 — RENDERGRAPH
+
+Node-level render execution. See `docs/rfc/RFC-005.md`.
+
+**Related:** ADR-004 · Part 18 (Render Engine)
+
+---
+
+# RFC-006 — ASSET PLATFORM
+
+Asset graph and versioning. See `docs/rfc/RFC-006.md`.
+
+**Related:** Part 14 · AST-001–002
+
+---
+
+# RFC RULES
+
+- No implementation without RFC
+- No breaking change without RFC
+- No platform rewrite without RFC
+
+---
+
+## IMPLEMENTATION DIRECTIVE RFC-001
+
+| | |
+|---|---|
+| **Priority** | MEDIUM |
+| **Create** | `docs/rfc/` |
+| **Acceptance** | Every breaking architectural change documented |
+
+---
+
+*END OF PART 21*
+
+---
+
+# PART 22 — IMPLEMENTATION DIRECTIVES
+
+# ============================================================================
+# PART 22
+# IMPLEMENTATION DIRECTIVES
+# ============================================================================
+
+## Purpose
+
+Implementation Directives are **executable architecture**.
+
+Cursor executes **Directives**, not Architecture Bible.
+
+---
+
+# DIRECTIVE TEMPLATE
+
+| Field | Description |
+|-------|-------------|
+| Directive ID | Unique identifier (e.g. DTO-001, RUN-001) |
+| Priority | Critical · High · Medium · Low |
+| Estimated Time | Effort estimate |
+| Risk | Low · Medium · High |
+| Dependencies | Prerequisite directives |
+| Files To Create | New files |
+| Files To Modify | Changed files |
+| Files To Delete | Removed files |
+| Tests | Required test coverage |
+| Acceptance | Done criteria |
+| Rollback | Undo procedure |
+
+---
+
+## Example — ID-001
+
+| | |
+|---|---|
+| **Title** | Introduce ProjectState |
+| **Priority** | Critical |
+| **Estimated Time** | 6 hours |
+| **Risk** | Medium |
+| **Dependencies** | None |
+| **Files** | `ProjectState.ts` · `ProjectSnapshot.ts` · `ExecutionContext.ts` |
+| **Acceptance** | Project compiles. ProjectState immutable. |
+| **Rollback** | Remove new Runtime. |
+
+---
+
+# DIRECTIVE RELATIONS
+
+```
+ADR → RFC → Implementation Directive → Pull Request → Release
+```
+
+---
+
+## IMPLEMENTATION DIRECTIVE DIR-001
+
+Create **Directive Registry**.
+
+Track: Completed · In Progress · Blocked · Rejected
+
+Registry location: `docs/architecture/directive-registry.md`
+
+---
+
+# SUCCESS CRITERIA
+
+```
+Architecture → RFC → Directive → Code → Tests → Release
+```
+
+Every step traceable.
+
+---
+
+*END OF PART 22*
 
 ---
 
