@@ -131,6 +131,7 @@ import { evaluateFinalQuality } from "@/lib/design/final-quality-validator";
 import { applyPosterRules } from "@/lib/design-process/pipeline";
 import { createLegacyDAOSState } from "@/lib/daos";
 import { enrichDaosStateFromPipeline } from "@/lib/daos/adapters/pipeline-enrichment";
+import { createDaosDebugBundle, writeDaosDebugBundle } from "@/lib/daos/debug";
 import type { DAOSProjectState } from "@/lib/daos/core/project-state";
 import type { KnowledgeContext } from "@/lib/design/knowledge-engine";
 
@@ -215,7 +216,14 @@ export type GenerateInfographicResult = {
   diagnosticSteps?: number;
 };
 
-function daosDiagnosticSummary(state: DAOSProjectState) {
+function daosDiagnosticSummary(
+  state: DAOSProjectState,
+  extras?: {
+    debugBundlePath?: string;
+    meaningLossWarningCount?: number;
+    meaningLossCriticalCount?: number;
+  },
+) {
   return {
     projectId: state.projectId,
     runId: state.runId,
@@ -237,6 +245,7 @@ function daosDiagnosticSummary(state: DAOSProjectState) {
       visualBlueprintId: state.visualBlueprint?.id,
       renderBlueprintId: state.renderBlueprint?.id,
     },
+    ...extras,
   };
 }
 
@@ -2129,10 +2138,24 @@ export async function handleGenerateInfographic(
           }
         : undefined,
     });
-    const daosProjectState = daosDiagnosticSummary(enrichedDaosState);
+    const daosDebugBundle = createDaosDebugBundle(enrichedDaosState);
+    const daosDebugWrite = await writeDaosDebugBundle(daosDebugBundle);
+    if (!daosDebugWrite.ok) {
+      console.warn(daosDebugWrite.warning);
+    }
+
+    const meaningLossWarnings = daosDebugBundle.meaningLossReport.warnings;
+    const daosProjectState = daosDiagnosticSummary(enrichedDaosState, {
+      debugBundlePath: daosDebugWrite.ok ? daosDebugWrite.relativePath : undefined,
+      meaningLossWarningCount: meaningLossWarnings.filter((w) => w.severity === "warning").length,
+      meaningLossCriticalCount: meaningLossWarnings.filter((w) => w.severity === "critical").length,
+    });
 
     if (process.env.DAOS_DEBUG === "1") {
       console.debug("[daos] Wave 2 specs adapted", daosProjectState);
+      if (daosDebugWrite.ok) {
+        console.debug("[daos] Wave 3 debug bundle saved", daosDebugWrite.path);
+      }
     }
 
     const assembleGenerationDiagnostic = (generationId: string) =>

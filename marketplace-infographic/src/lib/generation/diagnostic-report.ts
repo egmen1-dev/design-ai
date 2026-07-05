@@ -101,6 +101,9 @@ export type GenerationDiagnosticReport = {
       visualBlueprintId?: string;
       renderBlueprintId?: string;
     };
+    debugBundlePath?: string;
+    meaningLossWarningCount?: number;
+    meaningLossCriticalCount?: number;
   };
 };
 
