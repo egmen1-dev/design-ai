@@ -1297,6 +1297,19 @@ directives:
     requires:
       - DSP-003
 
+  - id: EVO-001
+    title: Evolution Strategy policy (Part 30)
+    priority: HIGH
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/architecture/architecture.yaml
+    checks:
+      - validate_yaml
+    success:
+      evolution_policy_documented: true
+
   - id: DIR-001
     title: Directive Registry
     priority: HIGH
@@ -1414,6 +1427,54 @@ stop_conditions:
   - runtime_bypassed
   - legacy_imported
   - prompt_outside_provider_adapter
+
+evolution:
+  purpose: continuous evolution without breaking existing functionality
+  principles:
+    - never rewrite when extension is possible
+    - backward compatibility unless RFC approves breaking change
+    - platforms evolve independently
+    - no hidden coupling
+    - new capabilities must be measurable
+  maturity_model:
+    - id: 1
+      name: Working Prototype
+    - id: 2
+      name: Modular Architecture
+    - id: 3
+      name: Platform Architecture
+    - id: 4
+      name: Operating System
+      current_target: true
+    - id: 5
+      name: Self Improving Design Intelligence
+      future_target: true
+  versioning_required:
+    - platform
+    - contract
+    - decision
+    - asset
+    - knowledge_object
+  feature_introduction:
+    - RFC
+    - ADR
+    - architecture_approval
+    - implementation_directive
+    - implementation
+    - architecture_validation
+    - release
+  deprecation_policy:
+    steps:
+      - marked
+      - adapter_created
+      - migration
+      - removal
+    immediate_deletion: forbidden
+  backward_compatibility:
+    adapters_required: true
+    minimum_major_releases: 1
+  success_criteria:
+    - architecture evolves without large rewrites
 
 cursor_execution:
   purpose: Cursor executes Architecture DSL; must not redesign architecture

@@ -185,6 +185,10 @@ Version: 1.0 (Draft)
   - [Design Process (DSP-001–004)](#module-design-process)
   - [Design Governance (GOV-002–003)](#module-design-governance)
   - [Render Engine (REN-002–003)](#module-render-engine)
+- [Part 30 — Evolution Strategy](#part-30--evolution-strategy)
+  - [Evolution Principles](#evolution-principles)
+  - [Maturity Model & Current Position](#maturity-model)
+  - [Feature Introduction & Deprecation](#feature-introduction)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -9223,6 +9227,156 @@ Remove **Prompt** ownership.
 ---
 
 *END OF PART 29*
+
+---
+
+# PART 30 — EVOLUTION STRATEGY
+
+# ============================================================================
+# PART 30
+# EVOLUTION STRATEGY
+# ============================================================================
+
+## Purpose
+
+Design AI OS is designed to **evolve continuously**.
+
+Architecture must support change **without breaking** existing functionality.
+
+Evolution is a **first-class architectural concern**.
+
+Canonical DSL: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `evolution`
+
+---
+
+# EVOLUTION PRINCIPLES
+
+### Principle 1
+
+Never rewrite when **extension** is possible.
+
+### Principle 2
+
+Every architectural improvement must preserve **backward compatibility** unless explicitly approved by **RFC**.
+
+### Principle 3
+
+Every platform must evolve **independently**.
+
+### Principle 4
+
+No architectural decision may introduce **hidden coupling**.
+
+### Principle 5
+
+Every new capability must be **measurable**.
+
+---
+
+# MATURITY MODEL
+
+```
+Level 1  Working Prototype
+           ↓
+Level 2  Modular Architecture
+           ↓
+Level 3  Platform Architecture
+           ↓
+Level 4  Operating System
+           ↓
+Level 5  Self Improving Design Intelligence
+```
+
+---
+
+# CURRENT POSITION
+
+| | |
+|---|---|
+| **Current Target** | Level 4 — Design AI Operating System |
+| **Future Target** | Level 5 — Self Improving Design Intelligence |
+
+---
+
+# EVOLUTION RULES
+
+Everything versioned:
+
+| Object | Rule |
+|--------|------|
+| Every platform | Versioned |
+| Every contract | Versioned |
+| Every decision | Versioned |
+| Every asset | Versioned |
+| Every knowledge object | Versioned |
+
+---
+
+# FEATURE INTRODUCTION
+
+```
+New Feature
+    ↓
+RFC
+    ↓
+ADR
+    ↓
+Architecture Approval
+    ↓
+Implementation Directive
+    ↓
+Implementation
+    ↓
+Architecture Validation
+    ↓
+Release
+```
+
+Aligns with Part 20–22 (ADR → RFC → Directive → PR → Release).
+
+---
+
+# DEPRECATION POLICY
+
+```
+Deprecated functionality
+    ↓
+Marked
+    ↓
+Adapter created
+    ↓
+Migration
+    ↓
+Removal
+```
+
+**Never immediate deletion.**
+
+---
+
+# BACKWARD COMPATIBILITY
+
+Adapters required. Minimum **one major release** before removal.
+
+---
+
+# SUCCESS CRITERIA
+
+Architecture evolves **without large rewrites**.
+
+---
+
+## IMPLEMENTATION DIRECTIVE EVO-001
+
+| | |
+|---|---|
+| **Priority** | HIGH |
+| **Create** | Evolution policy in `architecture.yaml` |
+| **Acceptance** | Feature introduction and deprecation paths machine-readable |
+
+---
+
+*END OF PART 30*
 
 ---
 
