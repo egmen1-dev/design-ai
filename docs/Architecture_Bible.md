@@ -56,6 +56,11 @@ Version: 1.0 (Draft)
   - [Vision Platform (spec)](#vision-platform-spec)
   - [Learning Platform (spec)](#learning-platform-spec)
   - [Implementation Wave 1](#implementation-wave-1)
+- [Part 5 — Runtime Architecture](#part-5--runtime-architecture)
+  - [5.1–5.9 Runtime Engine](#51-runtime-engine)
+  - [Design Graph](#design-graph)
+  - [Version Control](#version-control)
+  - [Implementation Directives RT-001–RT-003](#implementation-directive-rt-001)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -2787,6 +2792,357 @@ Every completed project updates knowledge base.
 
 ---
 
+# PART 5 — RUNTIME ARCHITECTURE
+
+# ============================================================================
+# PART 5
+# RUNTIME ARCHITECTURE
+# ============================================================================
+
+## 5.1 Runtime Engine
+
+### Purpose
+
+Runtime coordinates execution.
+
+Runtime never makes business decisions.
+
+Runtime never generates images.
+
+Runtime manages execution.
+
+**Responsibilities:**
+
+- platform scheduling
+- dependency resolution
+- retries
+- caching
+- events
+- metrics
+- logging
+- execution graph
+
+---
+
+### Runtime Flow
+
+```
+Project
+  ↓
+Runtime
+  ↓
+Task Graph
+  ↓
+Platform Execution
+  ↓
+Validation
+  ↓
+Commit
+  ↓
+Next Stage
+```
+
+---
+
+## 5.2 Execution Graph
+
+Every project becomes DAG (Directed Acyclic Graph).
+
+Example:
+
+```
+ProductBrief
+  ↓
+ResearchSpec
+  ↓
+KnowledgeSpec
+  ↓
+CommercialSpec
+  ↓
+CreativeSpec
+  ↓
+VisualBlueprint
+  ↓
+RenderBlueprint
+  ↓
+VisionReport
+```
+
+Nodes execute independently.
+
+---
+
+## 5.3 Runtime Scheduler
+
+Scheduler determines:
+
+- execution order
+- parallel tasks
+- retry strategy
+- timeout
+- cache reuse
+
+**Parallel execution example:**
+
+```
+Research
+  ↓
+├── Competitors
+├── References
+├── Marketplace
+├── Buyer
+└── Trends
+  ↓
+ResearchSpec
+```
+
+Instead of sequential execution.
+
+---
+
+## 5.4 Dependency Resolver
+
+Every node declares `dependsOn`.
+
+Example:
+
+```
+CommercialSpec     dependsOn     KnowledgeSpec
+CreativeSpec       dependsOn     CommercialSpec
+VisualBlueprint    dependsOn     CreativeSpec
+```
+
+Runtime automatically resolves execution order.
+
+---
+
+## 5.5 Event Bus
+
+Every action creates event.
+
+**Events:**
+
+- ProjectCreated
+- ResearchStarted
+- ResearchCompleted
+- KnowledgeCompleted
+- CommercialCompleted
+- CreativeCompleted
+- VisualCompleted
+- RenderingStarted
+- RenderingCompleted
+- VisionPassed
+- VisionRejected
+- LearningCompleted
+- ProjectFinished
+
+---
+
+### Event DTO
+
+**Event** fields:
+
+- id
+- timestamp
+- projectId
+- platform
+- eventType
+- payload
+- duration
+- metadata
+
+---
+
+## 5.6 Cache Engine
+
+Every specification cached.
+
+**Cache Key:**
+
+```
+Platform
+  ↓
+Input Hash
+  ↓
+Version
+  ↓
+Output DTO
+```
+
+Allows instant regeneration.
+
+---
+
+## 5.7 Retry Engine
+
+Retries become node based.
+
+| | |
+|---|---|
+| **Current** | Entire render retry |
+| **Future** | Retry Lighting only, Background only, Overlay only, Vision only |
+
+Huge performance improvement.
+
+---
+
+## 5.8 Runtime Metrics
+
+Every node stores:
+
+- Execution Time
+- Memory
+- CPU
+- LLM Tokens
+- Retries
+- Confidence
+- Warnings
+- Errors
+- Output Size
+
+---
+
+## 5.9 Runtime Debug
+
+Every execution produces:
+
+- Timeline
+- Decision Graph
+- Execution Graph
+- Memory Usage
+- Prompt
+- DTOs
+- Events
+- Metrics
+- Artifacts
+
+Nothing hidden.
+
+---
+
+# DESIGN GRAPH
+
+## New Core Architecture
+
+Replace linear pipeline with Design Graph.
+
+Every decision becomes node.
+
+Example:
+
+```
+Project
+├── Product
+├── Research
+│   ├── Buyer
+│   ├── Competitors
+│   ├── References
+│   └── Trends
+├── Knowledge
+├── Commercial
+├── Creative
+├── Visual
+├── Rendering
+└── Vision
+```
+
+**Benefits:**
+
+- partial recompute
+- rollback
+- version diff
+- cache
+- explainability
+- future collaboration
+
+---
+
+# VERSION CONTROL
+
+Every specification has version.
+
+Example:
+
+```
+CommercialSpec v1 → v2 → v3
+```
+
+History never deleted.
+
+Allows:
+
+- Diff
+- Rollback
+- Analytics
+- Learning
+
+---
+
+# IMPLEMENTATION DIRECTIVE RT-001
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Create** | `src/lib/runtime/` |
+
+**Files:**
+
+- `Runtime.ts`
+- `Scheduler.ts`
+- `ExecutionGraph.ts`
+- `DependencyResolver.ts`
+- `RetryEngine.ts`
+- `EventBus.ts`
+- `RuntimeMetrics.ts`
+- `RuntimeLogger.ts`
+- `RuntimeCache.ts`
+
+**Acceptance:** Runtime executes complete DAG.
+
+---
+
+# IMPLEMENTATION DIRECTIVE RT-002
+
+| | |
+|---|---|
+| **Create** | `src/lib/runtime/events/` |
+
+**Files:**
+
+- `ProjectEvents.ts`
+- `ResearchEvents.ts`
+- `CommercialEvents.ts`
+- `CreativeEvents.ts`
+- `VisualEvents.ts`
+- `RenderEvents.ts`
+- `VisionEvents.ts`
+- `LearningEvents.ts`
+
+**Acceptance:** Every action emits event.
+
+---
+
+# IMPLEMENTATION DIRECTIVE RT-003
+
+| | |
+|---|---|
+| **Create** | `src/lib/runtime/debug/` |
+
+**Files:**
+
+- `ExecutionTimeline.ts`
+- `DecisionTraceViewer.ts`
+- `GraphExporter.ts`
+- `MetricsExporter.ts`
+
+**Acceptance:** Every project fully replayable.
+
+---
+
+*END OF PART 5*
+
+---
+
 # APPENDIX A — REPOSITORY IMPLEMENTATION REFERENCE
 
 > Практическая привязка Part 1 (канон) и Part 2 (аудит) к текущему коду репозитория `design-ai`.  
@@ -3179,4 +3535,4 @@ pm2 logs marketplace-infographic --lines 50
 
 ---
 
-*Architecture Bible — living document. Part 1 is canonical law. Part 2 is the architecture audit. Part 3 is the production pipeline. Part 4 is platform specification. Appendix A tracks repository implementation.*
+*Architecture Bible — living document. Part 1 is canonical law. Part 2 is the architecture audit. Part 3 is the production pipeline. Part 4 is platform specification. Part 5 is runtime architecture. Appendix A tracks repository implementation.*
