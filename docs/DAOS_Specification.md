@@ -237,6 +237,9 @@ Version: 1.0 (Complete — Volume I)
 - [Part 45 — Wave 1 Foundation Implementation Plan](#part-45--wave-1--foundation-implementation-plan)
   - [Implementation Order & Deliverables](#implementation-order)
   - [Directive W1-001](#implementation-directive-w1-001)
+- [Part 46 — Development Principles](#part-46--development-principles)
+  - [Principles 01–12](#principle-01--product-first)
+  - [Directive DEV-001](#implementation-directive-dev-001)
 - [Appendix A — Glossary](#appendix-a--glossary)
 - [Appendix B — Architecture Index](#appendix-b--architecture-index)
 - [Appendix C — Implementation Index](#appendix-c--implementation-index)
@@ -11629,6 +11632,180 @@ Disable Runtime → use Legacy Pipeline.
 
 ---
 
+# PART 46 — DEVELOPMENT PRINCIPLES
+
+# ============================================================================
+# PART 46
+# DEVELOPMENT PRINCIPLES
+# ============================================================================
+
+| | |
+|---|---|
+| **Status** | Canonical |
+| **Priority** | Maximum |
+
+Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `development_principles`
+
+**Related:** Part 38 (Constitution) · Part 44 (Fixed Roadmap) · RFC-000
+
+---
+
+## Purpose
+
+Define **mandatory development principles** for every future change.
+
+These principles override implementation preferences.
+
+**Every Pull Request must satisfy them.**
+
+---
+
+# PRINCIPLE 01 — PRODUCT FIRST
+
+Every architectural decision must improve the **generated product**.
+
+Architecture is never created for its own sake.
+
+If a change increases complexity without improving image quality, commercial quality, stability, or maintainability — **the change must be rejected**.
+
+---
+
+# PRINCIPLE 02 — REUSE FIRST
+
+Before writing new code:
+
+1. Search existing implementation
+2. Determine reuse percentage
+3. Extend existing module if possible
+4. Rewrite only as a last resort
+
+---
+
+# PRINCIPLE 03 — SMALL MIGRATIONS
+
+Never rewrite large subsystems in one step.
+
+Every migration must:
+
+- compile
+- pass tests
+- preserve production behavior
+
+---
+
+# PRINCIPLE 04 — MEASURABLE IMPROVEMENTS
+
+Every migration must improve at least **one measurable metric**.
+
+Examples:
+
+- Architecture Score
+- Professional Score
+- CTR Prediction
+- Generation Time
+- Memory Usage
+- Test Coverage
+
+---
+
+# PRINCIPLE 05 — NO HIDDEN LOGIC
+
+Business logic must **never** be hidden inside:
+
+- utilities
+- helpers
+- providers
+- templates
+- React components
+
+---
+
+# PRINCIPLE 06 — ONE RESPONSIBILITY
+
+Every module owns **exactly one** responsibility.
+
+If responsibility grows — **extract a new module**.
+
+---
+
+# PRINCIPLE 07 — BACKWARD COMPATIBILITY
+
+Breaking changes require:
+
+- **RFC**
+- **migration strategy**
+- **rollback plan**
+
+---
+
+# PRINCIPLE 08 — DEBUGGABILITY
+
+Every execution must be **reproducible**.
+
+Every generation stores:
+
+- specifications
+- blueprints
+- metrics
+- logs
+- decision trace
+
+---
+
+# PRINCIPLE 09 — PROVIDER INDEPENDENCE
+
+Changing provider must **not** require changes to Commercial, Creative, Visual, Knowledge, or Runtime.
+
+---
+
+# PRINCIPLE 10 — ARCHITECTURE BEFORE OPTIMIZATION
+
+Correct architecture has priority over micro-optimizations.
+
+---
+
+# PRINCIPLE 11 — QUALITY BEFORE SPEED
+
+**Premium mode** always prioritizes quality.
+
+**Fast mode** is allowed to simplify execution.
+
+---
+
+# PRINCIPLE 12 — KNOWLEDGE ACCUMULATION
+
+Every successful generation **strengthens** the system.
+
+Every failed generation **teaches** the system.
+
+Nothing is discarded without analysis.
+
+---
+
+# FINAL DEVELOPMENT RULE
+
+**DAOS must become better after every release.**
+
+If a release does not improve the system, it should not exist.
+
+---
+
+## IMPLEMENTATION DIRECTIVE DEV-001
+
+| | |
+|---|---|
+| **Priority** | MAXIMUM |
+| **Document** | Part 46 — Development Principles |
+| **Machine-readable** | `architecture.yaml` → `development_principles` |
+| **Depends** | CON-001 · RDM-001 |
+| **Status** | Completed |
+
+---
+
+*END OF PART 46*
+
+---
+
 # APPENDIX A — GLOSSARY
 
 # ============================================================================
@@ -11742,6 +11919,7 @@ Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architect
 | **Execution Context** | Part 42 |
 | **Fixed Roadmap** | Part 44 |
 | **Wave 1 Foundation** | Part 45 |
+| **Development Principles** | Part 46 |
 
 ---
 

@@ -1653,6 +1653,23 @@ directives:
       daos_core_beside_legacy: true
       generation_quality_unchanged: true
 
+  - id: DEV-001
+    title: Development Principles (Part 46)
+    priority: MAXIMUM
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/DAOS_Specification.md
+        - docs/architecture/architecture.yaml
+    requires:
+      - CON-001
+      - RDM-001
+    checks:
+      - validate_yaml
+    success:
+      development_principles_documented: true
+
   - id: DIR-001
     title: Directive Registry
     priority: HIGH
@@ -1958,6 +1975,7 @@ architecture_index:
   Execution Context: "Part 42"
   Fixed Roadmap: "Part 44"
   Wave 1 Foundation: "Part 45"
+  Development Principles: "Part 46"
 
 implementation_index:
   prefixes:
@@ -2604,6 +2622,58 @@ wave_1_foundation:
     - EventBus
     - Adapters
     - Architecture Validation
+
+development_principles:
+  part: 46
+  status: canonical
+  priority: maximum
+  purpose: mandatory development principles for every future change; override implementation preferences
+  applies_to: every_pull_request
+  principles:
+    - id: "01"
+      name: Product First
+      rule: architecture must improve generated product; reject complexity without quality gain
+    - id: "02"
+      name: Reuse First
+      rule: search, measure reuse, extend before rewrite
+    - id: "03"
+      name: Small Migrations
+      rule: never big-bang rewrite; compile, test, preserve production behavior
+    - id: "04"
+      name: Measurable Improvements
+      rule: every migration improves at least one metric
+      metrics:
+        - Architecture Score
+        - Professional Score
+        - CTR Prediction
+        - Generation Time
+        - Memory Usage
+        - Test Coverage
+    - id: "05"
+      name: No Hidden Logic
+      rule: business logic never in utilities, helpers, providers, templates, React components
+    - id: "06"
+      name: One Responsibility
+      rule: one responsibility per module; extract when responsibility grows
+    - id: "07"
+      name: Backward Compatibility
+      rule: breaking changes require RFC, migration strategy, rollback plan
+    - id: "08"
+      name: Debuggability
+      rule: reproducible execution; store specs, blueprints, metrics, logs, decision trace
+    - id: "09"
+      name: Provider Independence
+      rule: provider change must not affect Commercial, Creative, Visual, Knowledge, Runtime
+    - id: "10"
+      name: Architecture Before Optimization
+      rule: correct architecture over micro-optimizations
+    - id: "11"
+      name: Quality Before Speed
+      rule: premium prioritizes quality; fast mode may simplify
+    - id: "12"
+      name: Knowledge Accumulation
+      rule: success strengthens system; failure teaches; nothing discarded without analysis
+  final_rule: DAOS must become better after every release
 
 volume_1:
   status: complete
