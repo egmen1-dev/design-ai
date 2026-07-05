@@ -131,6 +131,10 @@ Version: 1.0 (Draft)
   - [Knowledge Graph & API](#knowledge-graph-1)
   - [KNG-001–KNG-002](#implementation-directive-kng-001)
   - [Success Criteria](#success-criteria-2)
+- [Part 18 — File Rewrite Specification](#part-18--file-rewrite-specification)
+  - [Module Migrations](#module-design-process)
+  - [Global Migration Rules](#global-migration-rules)
+  - [Migration Priorities & Stop Conditions](#migration-priorities)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -6812,6 +6816,263 @@ confidence · source · timestamp · verification · priority · expired
 
 ---
 
+# PART 18 — FILE REWRITE SPECIFICATION
+
+# ============================================================================
+# PART 18
+# FILE REWRITE SPECIFICATION
+# ============================================================================
+
+## Purpose
+
+This chapter defines migration of every critical module.
+
+Architecture is no longer discussed.
+
+Only implementation.
+
+Cursor **MUST** follow this chapter exactly.
+
+No architectural decisions may be invented during implementation.
+
+---
+
+# MODULE — DESIGN PROCESS
+
+| | |
+|---|---|
+| **Location** | `src/lib/design-process/` |
+| **Status** | KEEP |
+| **Architecture Quality** | 8.5 / 10 |
+| **Rewrite Required** | 35% |
+
+### Current Responsibilities
+
+- ✓ Concept Generation
+- ✓ Creative Evaluation
+- ✓ Layout Planning
+- ✓ Prompt Building
+- ✓ Scene Selection
+
+### Problems
+
+Creative and Visual logic mixed. Prompt generation mixed. No immutable DTO. No Runtime integration. No DecisionTrace.
+
+### Keep
+
+Concept Generator · Creative Evaluator · Scene Selection · Creative Memory
+
+### Move
+
+| From | To |
+|------|-----|
+| Scene Planning | Visual Platform |
+| Prompt Builder | Provider Adapter |
+| Execution | Runtime |
+
+### Delete
+
+DesignBrief
+
+### Create
+
+CreativeSpec · DecisionTrace · CreativeDecision · CreativeAlternative · ConfidenceScore
+
+**Acceptance:** Creative Platform contains ONLY creative logic.
+
+---
+
+# MODULE — DESIGN GOVERNANCE
+
+| | |
+|---|---|
+| **Location** | `src/lib/design-governance/` |
+| **Status** | KEEP |
+| **Architecture Quality** | 9.5 / 10 |
+| **Rewrite Required** | 20% |
+
+### Keep
+
+Constitution · Blueprint Lock · Validators · Resolver · Architecture Rules
+
+### Move
+
+Professional Score → Vision Platform
+
+### Add
+
+ProjectState Validation · Specification Validation · Execution Validation · Architecture Validation
+
+**Acceptance:** Governance becomes architecture authority.
+
+---
+
+# MODULE — RENDER ENGINE
+
+| | |
+|---|---|
+| **Location** | `src/lib/render-engine/` |
+| **Status** | KEEP |
+| **Architecture Quality** | 8 / 10 |
+| **Rewrite Required** | 40% |
+
+### Keep
+
+Provider Integration · Background Generation · Composition · Shadow Engine · Export
+
+### Move
+
+| From | To |
+|------|-----|
+| Prompt | Provider Adapter |
+| Commercial Logic | Commercial Platform |
+| Creative Decisions | Creative Platform |
+
+### New Modules
+
+RenderGraph · RenderNodes · RetryEngine · NodeScheduler
+
+**Acceptance:** Rendering executes RenderBlueprint only.
+
+---
+
+# MODULE — KNOWLEDGE
+
+| | |
+|---|---|
+| **Location** | `src/lib/design/` |
+| **Status** | KEEP |
+| **Architecture Quality** | 9 / 10 |
+| **Rewrite Required** | 15% |
+
+### Keep
+
+Genome · Memory · Registry · Patterns · Rules
+
+### Create
+
+Knowledge Runtime · Knowledge Query API · Knowledge Graph
+
+**Acceptance:** Knowledge becomes single source of truth.
+
+---
+
+# MODULE — PROMPT
+
+| | |
+|---|---|
+| **Location** | `src/lib/prompt/` |
+| **Status** | LEGACY |
+| **Architecture Quality** | 6 / 10 |
+
+### Keep
+
+Compiler · Templates · Provider Mapping
+
+### Move
+
+Everything → Provider Adapter
+
+**Forbidden:** Prompt generation outside Provider Adapter.
+
+**Acceptance:** One Prompt Compiler.
+
+---
+
+# MODULE — TEMPLATES
+
+| | |
+|---|---|
+| **Location** | `src/lib/templates/` |
+| **Status** | KEEP |
+| **Rewrite** | 60% |
+
+| | |
+|---|---|
+| **Current** | HTML defines layout |
+| **Future** | Blueprint defines layout. Templates render only. |
+
+**Acceptance:** OverlayBlueprint becomes source of truth.
+
+---
+
+# MODULE — MEMORY
+
+| | |
+|---|---|
+| **Location** | `src/lib/memory/` |
+| **Status** | KEEP |
+| **Rewrite** | 10% |
+
+### Keep
+
+Memory Engine · History · Learning
+
+### Add
+
+Decision Memory · Architecture Memory · Commercial Memory · Marketplace Memory
+
+**Acceptance:** Every decision replayable.
+
+---
+
+# MODULE — FEEDBACK
+
+| | |
+|---|---|
+| **Location** | `src/lib/feedback/` |
+| **Status** | KEEP |
+| **Rewrite** | 20% |
+
+| | |
+|---|---|
+| **Current** | Stores feedback |
+| **Future** | Learning Platform · Genome Trainer · Confidence Trainer · Marketplace Trainer |
+
+**Acceptance:** Every completed generation updates knowledge.
+
+---
+
+# GLOBAL MIGRATION RULES
+
+Before changing any file, Cursor **MUST**:
+
+1. Search existing implementation
+2. Determine reuse percentage
+3. Determine migration path
+4. Update Architecture Report
+5. Only then modify code
+
+---
+
+# MIGRATION PRIORITIES
+
+| Priority | Scope |
+|----------|-------|
+| **1** | Runtime · ProjectState · Contracts |
+| **2** | Commercial · Creative · Visual |
+| **3** | Rendering · Vision · Learning |
+| **4** | Legacy Cleanup |
+| **5** | Optimization |
+
+---
+
+# STOP CONDITIONS
+
+Cursor **MUST stop** migration if:
+
+- Architecture Score decreases
+- Tests fail
+- Platform boundaries violated
+- Prompt created outside Provider Adapter
+- Legacy imported into Runtime
+
+---
+
+*END OF PART 18*
+
+---
+
 # APPENDIX A — REPOSITORY IMPLEMENTATION REFERENCE
 
 > Практическая привязка Part 1 (канон) и Part 2 (аудит) к текущему коду репозитория `design-ai`.  
@@ -7204,4 +7465,4 @@ pm2 logs marketplace-infographic --lines 50
 
 ---
 
-*Architecture Bible — living document. Part 1 is canonical law (LAW-001–030). Parts 2–17 define audit, pipeline, platforms, runtime, contracts, assets, engineering standards, CI validation, knowledge engine, migration, CEO, SDK, and orchestration. Appendix A tracks repository implementation.*
+*Architecture Bible — living document. Part 1 is canonical law (LAW-001–030). Parts 2–18 define audit, pipeline, platforms, runtime, contracts, migration specs, knowledge engine, CEO, SDK, and orchestration. Appendix A tracks repository implementation.*
