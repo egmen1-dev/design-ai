@@ -4,6 +4,12 @@ Architecture Decision Records (ADRs) document **why** architectural choices were
 
 See **Part 20** in [Architecture_Bible.md](../Architecture_Bible.md).
 
+## Source of Truth
+
+**Primary:** [`architecture.yaml`](architecture.yaml) — machine-readable DSL (Part 23)
+
+**Secondary:** Architecture Bible, ADRs, RFCs (human-readable)
+
 ## Index
 
 | ADR | Title | Status |

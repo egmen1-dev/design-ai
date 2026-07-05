@@ -28,6 +28,7 @@ Architecture Bible → ADR → RFC → Implementation Directive → Pull Request
 | ADR-001 | Create `docs/architecture/adr/` | HIGH | Completed | — | — | — |
 | RFC-001 | Create `docs/rfc/` | MEDIUM | Completed | — | — | — |
 | DIR-001 | Directive Registry | HIGH | Completed | — | — | — |
+| DSL-001 | Architecture DSL (`architecture.yaml`) | HIGH | Completed | — | — | — |
 | DTO-001 | Base Contract & Specifications | Critical | Blocked | ADR-002 | RFC-001 | 02 |
 | DTO-002 | ProjectState implementation | Critical | Blocked | ADR-002 | RFC-001 | 02 |
 | RUN-001 | Runtime engine skeleton | Critical | Blocked | — | RFC-002 | 01 |

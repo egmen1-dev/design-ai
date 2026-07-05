@@ -153,6 +153,10 @@ Version: 1.0 (Draft)
   - [Directive Template & Relations](#directive-template)
   - [Directive Registry (DIR-001)](#implementation-directive-dir-001)
   - [Success Criteria](#success-criteria-3)
+- [Part 23 — Design AI Architecture DSL](#part-23--design-ai-architecture-dsl)
+  - [Design Principles & Root Document](#design-principles)
+  - [Platform & Directive Schema](#platform-description)
+  - [Validation, State & Events](#architecture-validation)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -7706,6 +7710,297 @@ Every step traceable.
 ---
 
 *END OF PART 22*
+
+---
+
+# PART 23 — DESIGN AI ARCHITECTURE DSL
+
+# ============================================================================
+# PART 23
+# DESIGN AI ARCHITECTURE DSL
+# ============================================================================
+
+## Purpose
+
+Architecture Bible must become **executable**.
+
+Every architectural object must have a machine-readable representation.
+
+Human-readable documentation becomes secondary.
+
+**DSL becomes Source Of Truth.**
+
+Canonical file: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml)
+
+---
+
+# DESIGN PRINCIPLES
+
+The DSL must satisfy:
+
+- Human readable
+- Machine readable
+- Version controlled
+- Diff friendly
+- Easy to validate
+- Easy to generate
+- Easy to execute
+
+---
+
+# ROOT DOCUMENT
+
+`architecture.yaml` contains:
+
+| Section | Description |
+|---------|-------------|
+| `version` | DSL schema version |
+| `architecture` | Architecture version and mode |
+| `runtime` | Runtime engine definition |
+| `platforms` | Platform specifications |
+| `contracts` | Immutable DTO contracts |
+| `providers` | Provider capabilities and limits |
+| `assets` | Asset types and storage |
+| `waves` | Migration waves (Part 19) |
+| `directives` | Executable implementation directives |
+| `validator` | Architecture validation rules |
+| `project_state` | Specification chain |
+| `events` | Runtime events and emissions |
+
+### Example — project defaults
+
+```yaml
+project:
+  architecture: "2.0"
+  runtime: RuntimeV2
+  provider: Flux
+  mode: Enterprise
+```
+
+---
+
+# PLATFORM DESCRIPTION
+
+```yaml
+platform:
+  id: commercial
+  version: 2
+  status: refactor
+  reuse: 90
+  rewrite: 10
+  owner: Commercial Team
+```
+
+### Input
+
+```yaml
+input:
+  - ProductBrief
+  - KnowledgeSpec
+```
+
+### Output
+
+```yaml
+output:
+  - CommercialSpec
+```
+
+### Dependencies
+
+```yaml
+depends_on:
+  - Knowledge
+  - Runtime
+```
+
+### Files
+
+```yaml
+create:
+  - CommercialSpec.ts
+  - CommercialRuntime.ts
+modify:
+  - Strategy.ts
+  - Hierarchy.ts
+delete:
+  - DesignBrief.ts
+```
+
+### Validation
+
+```yaml
+validation:
+  immutable: true
+  decision_trace: true
+  confidence: true
+  versioned: true
+```
+
+### Tests
+
+```yaml
+tests:
+  - unit
+  - integration
+  - architecture
+  - marketplace
+```
+
+### Acceptance
+
+```yaml
+acceptance:
+  - returns CommercialSpec
+  - no prompt generation
+  - runtime compatible
+```
+
+### Rollback
+
+```yaml
+rollback:
+  action: restore previous platform
+```
+
+---
+
+# DIRECTIVE DESCRIPTION
+
+```yaml
+directive:
+  id: DIR-034
+  priority: Critical
+  wave: 4
+  estimated_hours: 5
+```
+
+### Files
+
+```yaml
+files:
+  create: []
+  modify: []
+  delete: []
+```
+
+### Dependencies
+
+```yaml
+requires:
+  - Runtime
+  - Contracts
+```
+
+### Execution
+
+```yaml
+steps:
+  - 1
+  - 2
+  - 3
+```
+
+### Checks
+
+```yaml
+checks:
+  - compile
+  - unit
+  - architecture
+```
+
+### Success
+
+```yaml
+success:
+  architecture_score_min: 98
+```
+
+---
+
+# ARCHITECTURE VALIDATION
+
+```yaml
+validator:
+  checks:
+    - platform_boundaries
+    - contracts
+    - runtime
+    - providers
+    - prompt
+    - legacy
+```
+
+---
+
+# PROVIDER
+
+```yaml
+provider:
+  id: Flux
+capabilities:
+  - image
+  - background
+limitations:
+  - text_rendering
+  - typography
+```
+
+Prompt generation **only** inside Provider Adapter (LAW-001).
+
+---
+
+# ASSETS
+
+```yaml
+asset:
+  type: product
+  version: 3
+  storage: Asset Platform
+```
+
+---
+
+# PROJECT STATE
+
+```yaml
+state:
+  - ProductBrief
+  - ResearchSpec
+  - KnowledgeSpec
+  - CommercialSpec
+  - CreativeSpec
+  - VisualBlueprint
+  - RenderBlueprint
+```
+
+---
+
+# EVENT
+
+```yaml
+event:
+  name: CommercialCompleted
+emit:
+  - Event
+  - Metrics
+  - DecisionTrace
+```
+
+---
+
+## IMPLEMENTATION DIRECTIVE DSL-001
+
+| | |
+|---|---|
+| **Priority** | HIGH |
+| **Create** | `docs/architecture/architecture.yaml` |
+| **Acceptance** | DSL validates; platforms, waves, directives machine-readable |
+
+---
+
+*END OF PART 23*
 
 ---
 

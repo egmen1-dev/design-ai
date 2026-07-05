@@ -1,0 +1,684 @@
+# Design AI Architecture DSL
+# Source of truth — see Architecture Bible Part 23
+# Human-readable docs: docs/Architecture_Bible.md (secondary)
+
+version: "1.0"
+
+project:
+  architecture: "2.0"
+  runtime: RuntimeV2
+  provider: Flux
+  mode: Enterprise
+
+architecture:
+  score_target: 98
+  coverage_target: 95
+  laws:
+    - LAW-001  # Prompt is NOT source of truth
+    - LAW-021
+    - LAW-022
+
+runtime:
+  id: RuntimeV2
+  path: src/lib/runtime/
+  components:
+    - ProjectState
+    - ProjectSnapshot
+    - ExecutionContext
+    - EventBus
+    - VersionManager
+    - DesignGraph
+    - PlatformRegistry
+  rules:
+    sole_orchestrator: true
+    legacy_imports: forbidden
+
+contracts:
+  path: src/lib/contracts/
+  base: BaseSpecification
+  immutable: true
+  specs:
+    - ProductBrief
+    - ResearchSpec
+    - KnowledgeSpec
+    - CommercialSpec
+    - CreativeSpec
+    - VisualBlueprint
+    - RenderBlueprint
+    - LearningReport
+  trace:
+    - DecisionTrace
+    - CreativeDecision
+    - CreativeAlternative
+    - ConfidenceScore
+
+platforms:
+  - id: project-intelligence
+    version: 1
+    status: planned
+    reuse: 0
+    rewrite: 100
+    owner: Platform Team
+    input:
+      - ProductBrief
+    output:
+      - ProductBrief
+    depends_on:
+      - Runtime
+    validation:
+      immutable: true
+      decision_trace: true
+      confidence: false
+      versioned: true
+    tests:
+      - unit
+      - integration
+      - architecture
+    acceptance:
+      - returns ProductBrief
+      - no prompt generation
+      - runtime compatible
+
+  - id: research
+    version: 1
+    status: planned
+    reuse: 70
+    rewrite: 30
+    owner: Research Team
+    input:
+      - ProductBrief
+    output:
+      - ResearchSpec
+    depends_on:
+      - Runtime
+      - Contracts
+    validation:
+      immutable: true
+      decision_trace: true
+      confidence: true
+      versioned: true
+    tests:
+      - unit
+      - integration
+      - architecture
+    acceptance:
+      - returns ResearchSpec
+      - no prompt generation
+      - runtime compatible
+
+  - id: knowledge
+    version: 2
+    status: refactor
+    reuse: 85
+    rewrite: 15
+    owner: Knowledge Team
+    path: src/lib/design/
+    input:
+      - ResearchSpec
+    output:
+      - KnowledgeSpec
+    depends_on:
+      - Runtime
+      - Contracts
+    files:
+      create:
+        - KnowledgeRuntime.ts
+        - KnowledgeQuery.ts
+        - KnowledgeGraph.ts
+      modify:
+        - genome/
+        - registry/
+      delete: []
+    validation:
+      immutable: true
+      decision_trace: true
+      confidence: true
+      versioned: true
+    tests:
+      - unit
+      - integration
+      - architecture
+    acceptance:
+      - returns KnowledgeSpec
+      - single immutable output
+      - no prompt generation
+      - runtime compatible
+    rollback:
+      action: restore previous platform
+
+  - id: commercial
+    version: 2
+    status: refactor
+    reuse: 90
+    rewrite: 10
+    owner: Commercial Team
+    path: src/lib/platforms/commercial/
+    input:
+      - ProductBrief
+      - KnowledgeSpec
+    output:
+      - CommercialSpec
+    depends_on:
+      - Knowledge
+      - Runtime
+    files:
+      create:
+        - CommercialSpec.ts
+        - CommercialRuntime.ts
+      modify:
+        - Strategy.ts
+        - Hierarchy.ts
+      delete:
+        - DesignBrief.ts
+    validation:
+      immutable: true
+      decision_trace: true
+      confidence: true
+      versioned: true
+    tests:
+      - unit
+      - integration
+      - architecture
+      - marketplace
+    acceptance:
+      - returns CommercialSpec
+      - no prompt generation
+      - runtime compatible
+    rollback:
+      action: restore previous platform
+    events:
+      emit:
+        - CommercialCompleted
+      output:
+        - Event
+        - Metrics
+        - DecisionTrace
+
+  - id: creative
+    version: 2
+    status: refactor
+    reuse: 65
+    rewrite: 35
+    owner: Creative Team
+    path: src/lib/design-process/
+    input:
+      - CommercialSpec
+    output:
+      - CreativeSpec
+    depends_on:
+      - Commercial
+      - Runtime
+    files:
+      create:
+        - CreativeSpec.ts
+        - DecisionTrace.ts
+        - CreativeDecision.ts
+        - CreativeAlternative.ts
+        - ConfidenceScore.ts
+      modify:
+        - concept-generator/
+        - creative-evaluator/
+        - scene-selection/
+      delete:
+        - DesignBrief.ts
+    validation:
+      immutable: true
+      decision_trace: true
+      confidence: true
+      versioned: true
+    tests:
+      - unit
+      - integration
+      - architecture
+    acceptance:
+      - returns CreativeSpec
+      - concepts only
+      - no prompt generation
+      - runtime compatible
+
+  - id: visual
+    version: 1
+    status: planned
+    reuse: 50
+    rewrite: 50
+    owner: Visual Team
+    input:
+      - CreativeSpec
+    output:
+      - VisualBlueprint
+    depends_on:
+      - Creative
+      - Runtime
+    extracts:
+      - Scene
+      - Lighting
+      - Camera
+      - Composition
+      - Typography
+      - OverlayZones
+    validation:
+      immutable: true
+      decision_trace: true
+      confidence: true
+      versioned: true
+    tests:
+      - unit
+      - integration
+      - architecture
+    acceptance:
+      - returns VisualBlueprint
+      - rendering receives VisualBlueprint
+      - no prompt generation
+
+  - id: rendering
+    version: 2
+    status: refactor
+    reuse: 60
+    rewrite: 40
+    owner: Rendering Team
+    path: src/lib/render-engine/
+    input:
+      - VisualBlueprint
+      - RenderBlueprint
+    output:
+      - RenderBlueprint
+    depends_on:
+      - Visual
+      - ProviderAdapter
+      - Runtime
+    files:
+      create:
+        - RenderGraph.ts
+        - RenderNodes.ts
+        - RetryEngine.ts
+        - NodeScheduler.ts
+      modify:
+        - background/
+        - composition/
+        - shadow/
+        - export/
+      delete: []
+    keeps:
+      - Background
+      - Composition
+      - Provider
+      - Shadow
+      - Export
+    moves_out:
+      - business_logic
+      - creative_logic
+      - prompt
+    validation:
+      immutable: true
+      decision_trace: true
+      confidence: false
+      versioned: true
+    tests:
+      - unit
+      - integration
+      - architecture
+      - marketplace
+    acceptance:
+      - executes RenderBlueprint only
+      - node level retry
+      - no prompt generation outside adapter
+
+  - id: vision
+    version: 1
+    status: planned
+    reuse: 40
+    rewrite: 60
+    owner: Vision Team
+    input:
+      - RenderBlueprint
+    output:
+      - ValidationReport
+    depends_on:
+      - Rendering
+      - Runtime
+    moves_in:
+      - ProfessionalScore
+      - MarketplaceValidation
+      - CommercialValidation
+      - TypographyValidation
+      - CompositionValidation
+    validation:
+      immutable: true
+      decision_trace: true
+      confidence: true
+      versioned: true
+    tests:
+      - unit
+      - integration
+      - architecture
+      - marketplace
+    acceptance:
+      - every PNG validated
+
+  - id: learning
+    version: 1
+    status: refactor
+    reuse: 80
+    rewrite: 20
+    owner: Learning Team
+    path: src/lib/feedback/
+    input:
+      - ValidationReport
+      - ProjectState
+    output:
+      - LearningReport
+    depends_on:
+      - Vision
+      - Knowledge
+      - Runtime
+    merges:
+      - Feedback
+      - Genome
+      - Memory
+      - Learning
+    validation:
+      immutable: true
+      decision_trace: true
+      confidence: true
+      versioned: true
+    tests:
+      - unit
+      - integration
+      - architecture
+    acceptance:
+      - returns LearningReport
+      - knowledge automatically updated
+
+  - id: governance
+    version: 2
+    status: keep
+    reuse: 80
+    rewrite: 20
+    owner: Governance Team
+    path: src/lib/design-governance/
+    validation_rules:
+      - ProjectState
+      - Specification
+      - Execution
+      - Architecture
+    moves_out:
+      - ProfessionalScore
+    acceptance:
+      - architecture authority
+
+  - id: provider-adapter
+    version: 1
+    status: planned
+    reuse: 70
+    rewrite: 30
+    owner: Platform Team
+    path: src/lib/platforms/provider-adapter/
+    input:
+      - RenderBlueprint
+    output:
+      - ProviderPrompt
+    sole_prompt_compiler: true
+    depends_on:
+      - Contracts
+      - Runtime
+    moves_in:
+      - src/lib/prompt/
+    validation:
+      immutable: true
+      decision_trace: false
+      confidence: false
+      versioned: true
+    acceptance:
+      - one prompt compiler
+      - providers replaceable
+
+providers:
+  - id: Flux
+    capabilities:
+      - image
+      - background
+    limitations:
+      - text_rendering
+      - typography
+    prompt_path: provider-adapter/mapping/flux
+
+  - id: OpenAI
+    capabilities:
+      - image
+    limitations:
+      - typography
+    prompt_path: provider-adapter/mapping/openai
+
+assets:
+  - type: product
+    version: 3
+    storage: Asset Platform
+  - type: background
+    version: 1
+    storage: Asset Platform
+  - type: overlay
+    version: 1
+    storage: Asset Platform
+  - type: export
+    version: 1
+    storage: Asset Platform
+
+project_state:
+  chain:
+    - ProductBrief
+    - ResearchSpec
+    - KnowledgeSpec
+    - CommercialSpec
+    - CreativeSpec
+    - VisualBlueprint
+    - RenderBlueprint
+  immutable: true
+  snapshot: ProjectSnapshot
+
+events:
+  - name: CommercialCompleted
+    platform: commercial
+    emit:
+      - Event
+      - Metrics
+      - DecisionTrace
+  - name: CreativeCompleted
+    platform: creative
+    emit:
+      - Event
+      - Metrics
+      - DecisionTrace
+  - name: RenderCompleted
+    platform: rendering
+    emit:
+      - Event
+      - Metrics
+  - name: LearningCompleted
+    platform: learning
+    emit:
+      - Event
+      - LearningReport
+
+waves:
+  - id: 1
+    name: Platform Core
+    tasks:
+      - platform-core
+      - contracts
+      - runtime
+      - registry
+      - ProjectState
+      - EventBus
+      - VersionManager
+    forbidden:
+      - refactor business logic
+      - delete legacy
+  - id: 2
+    name: Contracts
+    tasks:
+      - BaseSpecification
+      - immutable DTO
+      - replace duplicated DTO
+      - ProjectState
+      - Versioning
+  - id: 3
+    name: Research & Knowledge
+    reuse_only: true
+  - id: 4
+    name: Commercial
+    platform: commercial
+  - id: 5
+    name: Creative
+    platform: creative
+  - id: 6
+    name: Visual
+    platform: visual
+  - id: 7
+    name: Rendering
+    platform: rendering
+  - id: 8
+    name: Vision
+    platform: vision
+  - id: 9
+    name: Learning
+    platform: learning
+  - id: 10
+    name: Legacy Cleanup
+    remove:
+      - DesignBrief
+      - duplicate DTO
+      - old prompt builders
+      - dead code
+
+directives:
+  - id: DSL-001
+    title: Architecture DSL root document
+    priority: HIGH
+    wave: 0
+    status: completed
+    files:
+      create:
+        - docs/architecture/architecture.yaml
+    checks:
+      - compile
+      - validate_yaml
+    success:
+      architecture_score_min: 98
+
+  - id: DIR-001
+    title: Directive Registry
+    priority: HIGH
+    wave: 0
+    status: completed
+    files:
+      create:
+        - docs/architecture/directive-registry.md
+
+  - id: DTO-001
+    title: Base Contract & Specifications
+    priority: Critical
+    wave: 2
+    estimated_hours: 8
+    status: blocked
+    requires:
+      - Runtime
+      - Contracts
+    files:
+      create:
+        - src/lib/contracts/BaseSpecification.ts
+    checks:
+      - compile
+      - unit
+      - architecture
+    success:
+      architecture_score_min: 98
+
+  - id: DTO-002
+    title: ProjectState implementation
+    priority: Critical
+    wave: 2
+    estimated_hours: 6
+    status: blocked
+    requires:
+      - Runtime
+      - Contracts
+    files:
+      create:
+        - src/lib/runtime/ProjectState.ts
+        - src/lib/runtime/ProjectSnapshot.ts
+        - src/lib/runtime/ExecutionContext.ts
+    checks:
+      - compile
+      - unit
+      - architecture
+    success:
+      architecture_score_min: 98
+
+  - id: DIR-034
+    title: Commercial Platform migration
+    priority: Critical
+    wave: 4
+    estimated_hours: 5
+    status: blocked
+    requires:
+      - Runtime
+      - Contracts
+      - Knowledge
+    platform: commercial
+    steps:
+      - Remove prompt generation from commercial module
+      - Introduce CommercialSpec immutable output
+      - Integrate DecisionTrace
+      - Wire Runtime
+    checks:
+      - compile
+      - unit
+      - architecture
+    success:
+      architecture_score_min: 98
+
+  - id: RUN-001
+    title: Runtime engine skeleton
+    priority: Critical
+    wave: 1
+    estimated_hours: 12
+    status: blocked
+    requires: []
+    files:
+      create:
+        - src/lib/runtime/index.ts
+        - src/lib/platform-core/
+    checks:
+      - compile
+      - unit
+      - architecture
+
+validator:
+  checks:
+    - platform_boundaries
+    - contracts
+    - runtime
+    - providers
+    - prompt
+    - legacy
+  rules:
+    prompt_outside_adapter: fail
+    legacy_in_runtime: fail
+    platform_isolation: required
+    dto_compliance: required
+
+implementation_order:
+  - Contracts
+  - Runtime
+  - Platform
+  - Rendering
+  - Vision
+  - Learning
+
+stop_conditions:
+  - architecture_score_decreases
+  - tests_fail
+  - platform_boundaries_violated
+  - runtime_bypassed
+  - legacy_imported
+  - prompt_outside_provider_adapter
