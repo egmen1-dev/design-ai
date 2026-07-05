@@ -86,6 +86,12 @@ Version: 1.0 (Draft)
   - [Architecture Versioning](#architecture-versioning)
   - [LAW-011–LAW-015](#new-architecture-law)
   - [Implementation Directives CEO-001–CEO-002](#implementation-directive-ceo-001)
+- [Part 10 — Platform SDK](#part-10--platform-sdk)
+  - [Platform Interface & Registry](#platform-interface)
+  - [Plugin SDK](#plugin-sdk)
+  - [Skill SDK](#skill-sdk)
+  - [LAW-016–LAW-020](#new-architecture-law-1)
+  - [Implementation Directives SDK-001–SDK-002](#implementation-directive-sdk-001)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -284,6 +290,36 @@ Every platform must be replaceable without changing neighboring platforms.
 ## LAW-015
 
 Every provider must implement the same interface.
+
+---
+
+## LAW-016
+
+No Runtime imports Platform implementation directly.
+
+---
+
+## LAW-017
+
+Every Platform is replaceable.
+
+---
+
+## LAW-018
+
+Every Skill is reusable.
+
+---
+
+## LAW-019
+
+Plugins cannot break Runtime.
+
+---
+
+## LAW-020
+
+SDK compatibility is mandatory.
 
 ---
 
@@ -4448,6 +4484,325 @@ Every provider must implement the same interface.
 
 ---
 
+# PART 10 — PLATFORM SDK
+
+# ============================================================================
+# PART 10
+# PLATFORM SDK
+# ============================================================================
+
+## Purpose
+
+Platform SDK defines how every platform is created.
+
+The Runtime knows nothing about platform implementation.
+
+Runtime only knows Platform API.
+
+---
+
+# PLATFORM INTERFACE
+
+Every platform MUST implement:
+
+```typescript
+interface Platform {
+  id(): string;
+  version(): string;
+  initialize(): Promise<void>;
+  execute(): Promise<unknown>;
+  validate(): ValidationResult;
+  explain(): Explanation;
+  metrics(): PlatformMetrics;
+  shutdown(): Promise<void>;
+}
+```
+
+No additional mandatory methods allowed.
+
+---
+
+# PLATFORM MANIFEST
+
+Every platform contains manifest.
+
+**Example:**
+
+| Field | Value |
+|-------|-------|
+| Platform ID | Commercial |
+| Version | 2.0 |
+| Author | Design AI |
+| Capabilities | Commercial Strategy, Buyer Psychology, USP |
+| Priority | Required |
+| Dependencies | Knowledge Platform |
+| Runtime Version | >=2.0 |
+
+---
+
+# PLATFORM REGISTRY
+
+```
+PlatformRegistry
+  ↓ register()
+  ↓ Commercial → Creative → Visual → Vision → Learning → Research → Knowledge
+```
+
+Runtime never imports platforms.
+
+Runtime requests them from Registry.
+
+---
+
+# DYNAMIC LOADING
+
+Platforms loaded dynamically.
+
+```
+PlatformRegistry.load()
+  ↓ Commercial → Creative → Vision → Execute
+```
+
+Allows plugin architecture.
+
+---
+
+# DEPENDENCY INJECTION
+
+Platforms receive:
+
+- Logger
+- Cache
+- Runtime
+- Configuration
+- ProjectState
+- Metrics
+- Feature Flags
+
+Never create dependencies manually.
+
+---
+
+# PLATFORM CONFIGURATION
+
+Every platform has `platform.yaml`:
+
+- Name
+- Version
+- Dependencies
+- Feature Flags
+- Memory Limits
+- Timeouts
+- Priority
+- Capabilities
+
+---
+
+# PLATFORM CAPABILITIES
+
+**Commercial Platform:** Buyer · Marketplace · Psychology · USP · Pricing · Trust · Emotion
+
+**Visual Platform:** Lighting · Composition · Scene · Typography · Camera · Materials
+
+---
+
+# PLATFORM LIFECYCLE
+
+```
+Install → Validate → Initialize → Execute → Shutdown → Unload
+```
+
+---
+
+# PLATFORM ISOLATION
+
+```
+Platform crash → Runtime survives → Other platforms continue
+```
+
+No global failure.
+
+---
+
+# PLUGIN SDK
+
+Plugins are first-class citizens.
+
+Plugins never modify Runtime.
+
+Plugins extend Runtime.
+
+---
+
+### Plugin Types
+
+- Commercial Plugin
+- Creative Plugin
+- Visual Plugin
+- Vision Plugin
+- Knowledge Plugin
+- Provider Plugin
+- Learning Plugin
+- Analytics Plugin
+- DNA Plugin
+- Genome Plugin
+
+---
+
+### Plugin Manifest
+
+- Plugin ID
+- Plugin Version
+- Compatible Runtime
+- Compatible SDK
+- Capabilities
+- Dependencies
+- Permissions
+
+---
+
+### Plugin Permissions
+
+- Read ProjectState
+- Write Specification
+- Read Cache
+- Read Assets
+- Access Internet
+- Access Providers
+
+Permissions explicitly granted.
+
+---
+
+### Plugin Sandbox
+
+Plugins execute inside sandbox.
+
+No plugin may modify Runtime.
+
+No plugin may modify another plugin.
+
+---
+
+### Plugin Registry
+
+```
+Discover → Validate → Install → Enable → Disable → Update → Remove
+```
+
+---
+
+### Plugin Marketplace
+
+Future: Community plugins · Commercial plugins · Internal plugins · Enterprise plugins
+
+---
+
+# SKILL SDK
+
+Platforms consist of Skills.
+
+**Commercial Platform:**
+
+```
+Buyer Skill → Pricing Skill → Trust Skill → Marketplace Skill → USP Skill → FOMO Skill
+```
+
+**Visual Platform:**
+
+```
+Lighting Skill → Composition Skill → Color Skill → Camera Skill → Typography Skill → Whitespace Skill
+```
+
+---
+
+### Skill API
+
+```
+Skill → Input → Decision → Confidence → Trace → Output
+```
+
+Skills reusable.
+
+**Example:** Typography Skill → Marketplace · Presentation · Banner · Email
+
+One implementation. Multiple products.
+
+---
+
+# IMPLEMENTATION DIRECTIVE SDK-001
+
+| | |
+|---|---|
+| **Priority** | HIGH |
+| **Create** | `src/lib/sdk/` |
+
+**Files:**
+
+- `Platform.ts`
+- `PlatformManifest.ts`
+- `PlatformRegistry.ts`
+- `Plugin.ts`
+- `PluginRegistry.ts`
+- `Skill.ts`
+- `SkillRegistry.ts`
+- `SDKVersion.ts`
+
+**Acceptance:** Every platform loaded through SDK.
+
+---
+
+# IMPLEMENTATION DIRECTIVE SDK-002
+
+**Create** `plugins/`:
+
+- `commercial/`
+- `creative/`
+- `visual/`
+- `vision/`
+- `provider/`
+- `learning/`
+
+**Acceptance:** Runtime discovers plugins automatically.
+
+---
+
+# NEW ARCHITECTURE LAW
+
+## LAW-016
+
+No Runtime imports Platform implementation directly.
+
+---
+
+## LAW-017
+
+Every Platform is replaceable.
+
+---
+
+## LAW-018
+
+Every Skill is reusable.
+
+---
+
+## LAW-019
+
+Plugins cannot break Runtime.
+
+---
+
+## LAW-020
+
+SDK compatibility is mandatory.
+
+---
+
+*END OF PART 10*
+
+---
+
 # APPENDIX A — REPOSITORY IMPLEMENTATION REFERENCE
 
 > Практическая привязка Part 1 (канон) и Part 2 (аудит) к текущему коду репозитория `design-ai`.  
@@ -4840,4 +5195,4 @@ pm2 logs marketplace-infographic --lines 50
 
 ---
 
-*Architecture Bible — living document. Part 1 is canonical law. Part 2 is the architecture audit. Part 3 is the production pipeline. Part 4 is platform specification. Part 5 is runtime architecture. Part 6 is design DNA & knowledge. Part 7 is reasoning engine. Part 8 is file-by-file migration. Part 9 is AI CEO platform. Appendix A tracks repository implementation.*
+*Architecture Bible — living document. Part 1 is canonical law (LAW-001–020). Part 2 is the architecture audit. Part 3 is the production pipeline. Part 4 is platform specification. Part 5 is runtime architecture. Part 6 is design DNA & knowledge. Part 7 is reasoning engine. Part 8 is file-by-file migration. Part 9 is AI CEO platform. Part 10 is platform SDK. Appendix A tracks repository implementation.*
