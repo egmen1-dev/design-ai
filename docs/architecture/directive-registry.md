@@ -52,6 +52,7 @@ Architecture Bible → ADR → RFC → Implementation Directive → Pull Request
 | LAW-036 | Final Architecture Laws LAW-036–050 (Part 33) | CRITICAL | Completed | — | — | — |
 | GLO-001 | Glossary (Appendix A) | HIGH | Completed | — | — | — |
 | IDX-001 | Architecture Index (Appendix B) | HIGH | Completed | — | — | — |
+| IMP-001 | Implementation Index (Appendix C) | HIGH | Completed | — | — | — |
 | DTO-001 | Base Contract & Specifications | Critical | Blocked | ADR-002 | RFC-001 | 02 |
 | DTO-002 | ProjectState implementation | Critical | Blocked | ADR-002 | RFC-001 | 02 |
 | RUN-001 | Runtime engine skeleton | Critical | Blocked | — | RFC-002 | 01 |

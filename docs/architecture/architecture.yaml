@@ -1380,6 +1380,20 @@ directives:
     success:
       glossary_documented: true
 
+  - id: IDX-001
+    title: Architecture Index (Appendix B)
+    priority: HIGH
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/Architecture_Bible.md
+        - docs/architecture/architecture.yaml
+    checks:
+      - validate_yaml
+    success:
+      architecture_index_documented: true
+
   - id: DIR-001
     title: Directive Registry
     priority: HIGH
@@ -1664,6 +1678,35 @@ architecture_index:
   Release: "Part 31"
   Observability: "Part 32"
   Architecture Laws: "Part 33"
+
+implementation_index:
+  prefixes:
+    PC: Platform Core
+    RUN: Runtime
+    DTO: Contracts
+    CRE: Creative
+    VIS: Visual
+    REN: Rendering
+    GOV: Governance
+    KNOW: Knowledge
+    AST: Assets
+    SDK: Platform SDK
+    CEO: Execution Strategy
+    CI: Architecture Validation
+    RFC: Architecture Evolution
+    ADR: Decision Records
+  execution_order:
+    - PC
+    - RUN
+    - DTO
+    - KNOW
+    - COM
+    - CRE
+    - VIS
+    - REN
+    - VISION
+    - LEARN
+    - LEGACY
 
 cursor_execution:
   purpose: Cursor executes Architecture DSL; must not redesign architecture

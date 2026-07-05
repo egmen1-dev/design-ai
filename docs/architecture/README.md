@@ -20,6 +20,8 @@ See **Part 20** in [Architecture_Bible.md](../Architecture_Bible.md).
 
 **Architecture Index:** Appendix B — topic → Part map in `architecture.yaml` → `architecture_index`.
 
+**Implementation Index:** Appendix C — directive prefixes and execution order in `architecture.yaml` → `implementation_index`.
+
 ## Index
 
 | ADR | Title | Status |

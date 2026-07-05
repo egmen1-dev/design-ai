@@ -201,7 +201,8 @@ Version: 1.0 (Draft)
   - [LAW-036–LAW-050](#law-036)
 - [Appendix A — Glossary](#appendix-a--glossary)
 - [Appendix B — Architecture Index](#appendix-b--architecture-index)
-- [Appendix C — Repository Implementation Reference](#appendix-c--repository-implementation-reference)
+- [Appendix C — Implementation Index](#appendix-c--implementation-index)
+- [Appendix D — Repository Implementation Reference](#appendix-d--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
   - [Future Architecture (code map)](#future-architecture-code-map)
@@ -9849,11 +9850,54 @@ Machine-readable index: [`docs/architecture/architecture.yaml`](architecture/arc
 
 ---
 
-# APPENDIX B — REPOSITORY IMPLEMENTATION REFERENCE
+# APPENDIX B — ARCHITECTURE INDEX
+
+# ============================================================================
+# APPENDIX B
+# ARCHITECTURE INDEX
+# ============================================================================
+
+Quick reference: topic → Part number.
+
+Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `architecture_index`
+
+| Topic | Parts |
+|-------|-------|
+| **Architecture** | Part 1–4 |
+| **Runtime** | Part 5 |
+| **Design DNA** | Part 6 |
+| **Reasoning** | Part 7 |
+| **Migration** | Part 8 |
+| **AI CEO** | Part 9 |
+| **SDK** | Part 10 |
+| **Platform Migration** | Part 11 |
+| **Runtime Migration** | Part 12 |
+| **Contracts** | Part 13 |
+| **Assets** | Part 14 |
+| **Engineering Standards** | Part 15 |
+| **Architecture Validation** | Part 16 |
+| **Knowledge Engine** | Part 17 |
+| **Implementation** | Part 18–19 |
+| **ADR** | Part 20 |
+| **RFC** | Part 21 |
+| **DSL** | Part 23 |
+| **Repository** | Part 27 |
+| **Evolution** | Part 30 |
+| **Release** | Part 31 |
+| **Observability** | Part 32 |
+| **Architecture Laws** | Part 33 |
+
+---
+
+*END OF APPENDIX B*
+
+---
+
+# APPENDIX C — REPOSITORY IMPLEMENTATION REFERENCE
 
 > Практическая привязка Part 1 (канон) и Part 2 (аудит) к текущему коду репозитория `design-ai`.  
 > Это **не** Part 2 — справочник по реализации, не дублирует аудит.  
-> Ранее **Appendix A** — переименован после добавления Glossary.
+> Ранее **Appendix A**, затем **Appendix B** — переименован после добавления Glossary и Architecture Index.
 
 ---
 
@@ -10242,4 +10286,4 @@ pm2 logs marketplace-infographic --lines 50
 
 ---
 
-*Architecture Bible — living document. Parts 1–33 define canonical law (LAW-001–050), audit, pipeline, platforms, runtime, contracts, migration, and governance. **Appendix A** is the Glossary. **Appendix B** tracks repository implementation.*
+*Architecture Bible — living document. Parts 1–33 define canonical law (LAW-001–050). **Appendix A** — Glossary. **Appendix B** — Architecture Index. **Appendix C** — repository implementation reference.*
