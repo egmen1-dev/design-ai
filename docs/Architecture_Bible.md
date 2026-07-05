@@ -109,6 +109,11 @@ Version: 1.0 (Draft)
   - [Base Contract & Specifications](#base-contract)
   - [Contract Rules RULE-001–007](#contract-rules)
   - [DTO-001–DTO-002](#implementation-directive-dto-001)
+- [Part 14 — Asset Platform](#part-14--asset-platform)
+  - [Asset Types & Object](#asset-types)
+  - [Asset Graph & Manager](#asset-graph)
+  - [AST-001–AST-002](#implementation-directive-ast-001)
+  - [Success Criteria](#success-criteria-1)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -5707,6 +5712,224 @@ Legacy DTOs become adapters until migration finishes.
 
 ---
 
+# PART 14 — ASSET PLATFORM
+
+# ============================================================================
+# PART 14
+# ASSET PLATFORM
+# ============================================================================
+
+## Purpose
+
+Asset Platform becomes the single owner of every file inside Design AI OS.
+
+No platform accesses filesystem directly.
+
+All file operations go through Asset Platform.
+
+---
+
+# CURRENT AUDIT
+
+### Current Storage
+
+- `public/backgrounds/`
+- `uploads/`
+- `generated/`
+- `merged/`
+- `templates/`
+- `references/`
+- `cache/`
+
+### Problems
+
+- duplicated loading
+- duplicated save logic
+- duplicated cache
+- inconsistent naming
+- orphan files
+- no versioning
+- no metadata
+- no asset graph
+
+### Architecture Assessment
+
+Storage already exists. Needs **centralization**. Not rewrite.
+
+---
+
+# ASSET TYPES
+
+- Product Assets
+- Reference Assets
+- Background Assets
+- Generated Assets
+- Intermediate Assets
+- Overlay Assets
+- Debug Assets
+- Export Assets
+- Temporary Assets
+- Learning Assets
+
+---
+
+# ASSET OBJECT
+
+Every file becomes **Asset**.
+
+**Asset** fields:
+
+- id
+- type
+- projectId
+- version
+- createdAt
+- ownerPlatform
+- checksum
+- mime
+- width
+- height
+- metadata
+- dependencies
+- tags
+- status
+
+---
+
+# ASSET GRAPH
+
+```
+Product
+  ↓
+Cutout
+  ↓
+Merged
+  ↓
+Background
+  ↓
+Overlay
+  ↓
+PNG
+```
+
+Every asset knows: Parent · Children · Producer · Consumer
+
+---
+
+# ASSET MANAGER
+
+**Responsibilities:**
+
+Load · Save · Move · Copy · Delete · Version · Compress · Cache · Preview · Metadata
+
+---
+
+# FILES TO REFACTOR
+
+| Current | Target |
+|---------|--------|
+| `public/backgrounds/` | Asset Platform |
+| `uploads/` | Asset Platform |
+| `generated/` | Asset Platform |
+| `merged/` | Asset Platform |
+| `cache/` | Asset Platform |
+
+---
+
+# NEW MODULES
+
+Create `src/lib/assets/`:
+
+- `AssetManager.ts`
+- `AssetRegistry.ts`
+- `AssetStorage.ts`
+- `AssetVersion.ts`
+- `AssetMetadata.ts`
+- `AssetGraph.ts`
+- `AssetCache.ts`
+- `AssetCleanup.ts`
+- `AssetPreview.ts`
+
+---
+
+# ASSET VERSIONING
+
+```
+Product.png → Product_v1 → Product_v2 → Product_v3
+```
+
+Never overwrite.
+
+---
+
+# CHECKSUM
+
+Every asset receives checksum.
+
+Allows: Duplicate detection · Cache reuse · Integrity validation
+
+---
+
+# CLEANUP POLICY
+
+| Asset Type | Policy |
+|------------|--------|
+| Temporary Assets | TTL → Delete |
+| Generated Assets | Keep |
+| Project Assets | Permanent |
+
+---
+
+# IMPLEMENTATION DIRECTIVE AST-001
+
+| | |
+|---|---|
+| **Priority** | HIGH |
+| **Status** | REFACTOR |
+
+Keep existing folders. Replace direct filesystem access with AssetManager.
+
+---
+
+# IMPLEMENTATION DIRECTIVE AST-002
+
+| | |
+|---|---|
+| **Priority** | MEDIUM |
+
+Create **AssetGraph**.
+
+**Acceptance:** Every generated image has complete dependency graph.
+
+---
+
+# MIGRATION SCORE
+
+| | |
+|---|---|
+| Current Coverage | 45% |
+| Reuse | 70% |
+| Rewrite | 30% |
+| Risk | **LOW** |
+
+---
+
+# SUCCESS CRITERIA
+
+- ✓ Single filesystem API
+- ✓ Versioned assets
+- ✓ Asset graph
+- ✓ Metadata
+- ✓ Cleanup
+- ✓ Cache
+- ✓ Preview
+
+---
+
+*END OF PART 14*
+
+---
+
 # APPENDIX A — REPOSITORY IMPLEMENTATION REFERENCE
 
 > Практическая привязка Part 1 (канон) и Part 2 (аудит) к текущему коду репозитория `design-ai`.  
@@ -6099,4 +6322,4 @@ pm2 logs marketplace-infographic --lines 50
 
 ---
 
-*Architecture Bible — living document. Part 1 is canonical law (LAW-001–022). Parts 2–13 define audit, pipeline, platforms, runtime, contracts, migration, CEO, SDK, and orchestration. Appendix A tracks repository implementation.*
+*Architecture Bible — living document. Part 1 is canonical law (LAW-001–022). Parts 2–14 define audit, pipeline, platforms, runtime, contracts, assets, migration, CEO, SDK, and orchestration. Appendix A tracks repository implementation.*
