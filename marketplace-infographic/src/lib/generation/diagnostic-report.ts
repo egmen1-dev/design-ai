@@ -104,6 +104,9 @@ export type GenerationDiagnosticReport = {
     debugBundlePath?: string;
     meaningLossWarningCount?: number;
     meaningLossCriticalCount?: number;
+    debugSummaryPath?: string;
+    debugSummaryStatus?: "ok" | "warning" | "critical";
+    debugSummaryScore?: number;
   };
 };
 

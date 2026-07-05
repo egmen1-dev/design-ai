@@ -135,7 +135,7 @@ import {
   resolveDaosGenerationMode,
 } from "@/lib/daos/config/generation-mode";
 import { enrichDaosStateFromPipeline } from "@/lib/daos/adapters/pipeline-enrichment";
-import { createDaosDebugBundle, writeDaosDebugBundle, extractDaosRenderDebug } from "@/lib/daos/debug";
+import { createDaosDebugBundle, writeDaosDebugBundle, writeDaosDebugSummary, createDaosDebugSummary, extractDaosRenderDebug } from "@/lib/daos/debug";
 import type { DAOSProjectState } from "@/lib/daos/core/project-state";
 import type { KnowledgeContext } from "@/lib/design/knowledge-engine";
 
@@ -226,6 +226,9 @@ function daosDiagnosticSummary(
     debugBundlePath?: string;
     meaningLossWarningCount?: number;
     meaningLossCriticalCount?: number;
+    debugSummaryPath?: string;
+    debugSummaryStatus?: "ok" | "warning" | "critical";
+    debugSummaryScore?: number;
   },
 ) {
   return {
@@ -2161,11 +2164,23 @@ export async function handleGenerateInfographic(
       console.warn(daosDebugWrite.warning);
     }
 
+    const daosSummaryWrite = await writeDaosDebugSummary({
+      bundle: daosDebugBundle,
+      bundlePath: daosDebugWrite.ok ? daosDebugWrite.path : undefined,
+    });
+    if (!daosSummaryWrite.ok) {
+      console.warn(daosSummaryWrite.error);
+    }
+
+    const daosDebugSummary = createDaosDebugSummary(daosDebugBundle);
     const meaningLossWarnings = daosDebugBundle.meaningLossReport.warnings;
     const daosProjectState = daosDiagnosticSummary(enrichedDaosState, {
       debugBundlePath: daosDebugWrite.ok ? daosDebugWrite.relativePath : undefined,
       meaningLossWarningCount: meaningLossWarnings.filter((w) => w.severity === "warning").length,
       meaningLossCriticalCount: meaningLossWarnings.filter((w) => w.severity === "critical").length,
+      debugSummaryPath: daosSummaryWrite.ok ? daosSummaryWrite.relativeSummaryPath : undefined,
+      debugSummaryStatus: daosSummaryWrite.ok ? daosDebugSummary.status : undefined,
+      debugSummaryScore: daosSummaryWrite.ok ? daosDebugSummary.score : undefined,
     });
 
     if (process.env.DAOS_DEBUG === "1") {
