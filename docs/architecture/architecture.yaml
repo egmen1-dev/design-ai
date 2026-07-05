@@ -1512,6 +1512,20 @@ directives:
     success:
       every_project_through_kernel: true
 
+  - id: CON-001
+    title: Design AI Constitution (Part 38)
+    priority: MAXIMUM
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/Architecture_Bible.md
+        - docs/architecture/architecture.yaml
+    checks:
+      - validate_yaml
+    success:
+      constitution_documented: true
+
   - id: DIR-001
     title: Directive Registry
     priority: HIGH
@@ -1744,6 +1758,7 @@ glossary:
   purpose: canonical terminology — one meaning per term, no synonyms
   terms:
     Architecture Bible: Canonical architecture specification. Single Source of Truth.
+    Constitution: Canonical governing principles (Part 38). Architecture has priority over implementation.
     ProjectState: Immutable object containing the complete project state. Never partially modified.
     Runtime: Execution engine. Coordinates platforms. Never makes business decisions.
     Kernel: Heart of DAOS. Owns orchestration, registries, lifecycle. Never owns business logic.
@@ -1801,6 +1816,7 @@ architecture_index:
   Cursor Tasks: "Part 35"
   Architecture Analyzer: "Part 36"
   DAOS Kernel: "Part 37"
+  Constitution: "Part 38"
 
 implementation_index:
   prefixes:
@@ -1945,6 +1961,77 @@ daos_kernel:
   acceptance:
     - every_project_starts_through_kernel
     - nothing_bypasses_kernel
+
+design_ai_constitution:
+  part: 38
+  version: "1.0"
+  status: canonical
+  priority: maximum
+  preamble:
+    purpose: commercially successful visual communication
+    system_purpose: decision generation
+    rendering: implementation detail only
+  articles:
+    - id: I
+      title: Architecture
+      principle: Architecture has priority over implementation
+    - id: II
+      title: Single Source Of Truth
+      principle: Architecture Bible is SSOT; code follows architecture
+    - id: III
+      title: Responsibility
+      principle: Every module owns one responsibility; no overlap
+    - id: IV
+      title: Immutability
+      principle: Specifications, Blueprints, and ProjectState are immutable
+    - id: V
+      title: Platform Independence
+      principle: Platforms communicate only through Specifications
+    - id: VI
+      title: Runtime
+      principle: Only Runtime controls execution
+    - id: VII
+      title: Knowledge
+      principle: Knowledge independent of rendering; survives provider replacement
+    - id: VIII
+      title: Prompts
+      principle: Prompt is implementation detail, never architecture
+    - id: IX
+      title: Providers
+      principle: Providers interchangeable; architecture never depends on provider
+    - id: X
+      title: Learning
+      principle: Every completed project improves the system
+    - id: XI
+      title: Traceability
+      principle: Decisions explainable, reproducible, versioned
+    - id: XII
+      title: Reuse
+      principle: Reuse before rewrite; extension before replacement; migration before deletion
+    - id: XIII
+      title: Quality
+      principle: Commercial quality over implementation elegance
+    - id: XIV
+      title: Validation
+      principle: Architecture automatically validated
+    - id: XV
+      title: Evolution
+      principle: Evolve through RFC, ADR, Implementation Directives only
+    - id: XVI
+      title: Backward Compatibility
+      principle: Breaking changes require migration path
+    - id: XVII
+      title: Security
+      principle: Minimum required permissions per platform
+    - id: XVIII
+      title: Observability
+      principle: Metrics, Events, Decision Trace, Artifacts on every execution
+    - id: XIX
+      title: Simplicity
+      principle: Fewer concepts, abstractions, dependencies; justify complexity
+    - id: XX
+      title: Mission
+      principle: World's best commercial design intelligence system
 
 volume_1:
   status: complete

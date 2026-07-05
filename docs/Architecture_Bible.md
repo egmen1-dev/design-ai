@@ -213,6 +213,9 @@ Version: 1.0 (Complete — Volume I)
   - [Kernel Architecture & Services](#kernel-architecture)
   - [Kernel API & Lifecycle](#kernel-api)
   - [Directive KNL-001](#implementation-directive-knl-001)
+- [Part 38 — Design AI Constitution](#part-38--design-ai-constitution)
+  - [Preamble & Articles I–XX](#preamble)
+  - [Directive CON-001](#implementation-directive-con-001)
 - [Appendix A — Glossary](#appendix-a--glossary)
 - [Appendix B — Architecture Index](#appendix-b--architecture-index)
 - [Appendix C — Implementation Index](#appendix-c--implementation-index)
@@ -10417,6 +10420,235 @@ Kernel is the **sole orchestration entry point** for Design AI OS.
 
 ---
 
+# PART 38 — DESIGN AI CONSTITUTION
+
+# ============================================================================
+# PART 38
+# DESIGN AI CONSTITUTION
+# ============================================================================
+
+| | |
+|---|---|
+| **Version** | 1.0 |
+| **Status** | Canonical |
+| **Priority** | Maximum |
+
+Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `design_ai_constitution`
+
+---
+
+# PREAMBLE
+
+Design AI Operating System exists to create **commercially successful visual communication**.
+
+The purpose of the system is **not** image generation.
+
+The purpose of the system is **decision generation**.
+
+Rendering is only one implementation detail.
+
+---
+
+# ARTICLE I — ARCHITECTURE
+
+Architecture has priority over implementation.
+
+Implementation may change.
+
+Architecture remains.
+
+---
+
+# ARTICLE II — SINGLE SOURCE OF TRUTH
+
+**Architecture Bible** is **Single Source Of Truth**.
+
+Code must follow Architecture.
+
+Architecture never follows Code.
+
+---
+
+# ARTICLE III — RESPONSIBILITY
+
+Every module owns **one** responsibility.
+
+Responsibilities never overlap.
+
+---
+
+# ARTICLE IV — IMMUTABILITY
+
+Every **Specification** — immutable.
+
+Every **Blueprint** — immutable.
+
+**ProjectState** — immutable.
+
+---
+
+# ARTICLE V — PLATFORM INDEPENDENCE
+
+Platforms communicate only through **Specifications**.
+
+Platforms never know implementation details of other platforms.
+
+---
+
+# ARTICLE VI — RUNTIME
+
+Only **Runtime** controls execution.
+
+Platforms never orchestrate execution.
+
+---
+
+# ARTICLE VII — KNOWLEDGE
+
+Knowledge exists independently of rendering.
+
+Knowledge survives provider replacement.
+
+---
+
+# ARTICLE VIII — PROMPTS
+
+Prompt is implementation detail.
+
+Prompt never becomes architecture.
+
+---
+
+# ARTICLE IX — PROVIDERS
+
+Providers are interchangeable.
+
+Architecture never depends on provider.
+
+---
+
+# ARTICLE X — LEARNING
+
+Every completed project improves the system.
+
+Knowledge continuously evolves.
+
+---
+
+# ARTICLE XI — TRACEABILITY
+
+Every decision must be **explainable**.
+
+Every decision must be **reproducible**.
+
+Every decision must be **versioned**.
+
+---
+
+# ARTICLE XII — REUSE
+
+Reuse before rewrite.
+
+Extension before replacement.
+
+Migration before deletion.
+
+---
+
+# ARTICLE XIII — QUALITY
+
+Commercial quality has priority over implementation elegance.
+
+Architecture exists to improve generated results.
+
+Not to satisfy engineering preferences.
+
+---
+
+# ARTICLE XIV — VALIDATION
+
+Architecture must be **automatically validated**.
+
+Human review is insufficient.
+
+---
+
+# ARTICLE XV — EVOLUTION
+
+Architecture evolves through:
+
+- **RFC**
+- **ADR**
+- **Implementation Directives**
+
+Never through undocumented changes.
+
+---
+
+# ARTICLE XVI — BACKWARD COMPATIBILITY
+
+Breaking changes require migration path.
+
+---
+
+# ARTICLE XVII — SECURITY
+
+Every Platform executes with **minimum required permissions**.
+
+---
+
+# ARTICLE XVIII — OBSERVABILITY
+
+Nothing is hidden.
+
+Every execution produces:
+
+- **Metrics**
+- **Events**
+- **Decision Trace**
+- **Artifacts**
+
+---
+
+# ARTICLE XIX — SIMPLICITY
+
+Prefer fewer concepts.
+
+Prefer fewer abstractions.
+
+Prefer fewer dependencies.
+
+Complexity must always be justified.
+
+---
+
+# ARTICLE XX — MISSION
+
+Design AI OS exists to become the **world's best commercial design intelligence system**.
+
+Every architectural decision must move the system closer to that goal.
+
+---
+
+## IMPLEMENTATION DIRECTIVE CON-001
+
+| | |
+|---|---|
+| **Priority** | MAXIMUM |
+| **Document** | Part 38 — Design AI Constitution |
+| **Machine-readable** | `architecture.yaml` → `design_ai_constitution` |
+| **Status** | Completed |
+
+---
+
+*END OF CONSTITUTION*
+
+---
+
+*END OF PART 38*
+
+---
+
 # APPENDIX A — GLOSSARY
 
 # ============================================================================
@@ -10439,6 +10671,7 @@ Machine-readable index: [`docs/architecture/architecture.yaml`](architecture/arc
 | Term | Definition |
 |------|------------|
 | **Architecture Bible** | The canonical architecture specification. Single Source of Truth. |
+| **Constitution** | Canonical governing principles (Part 38). Architecture has priority over implementation. |
 | **ProjectState** | Immutable object containing the complete project state. Never partially modified. |
 | **Runtime** | Execution engine. Coordinates platforms. Never makes business decisions. |
 | **Kernel** | Heart of DAOS. Owns orchestration, registries, lifecycle. Never owns business logic. |
@@ -10514,6 +10747,7 @@ Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architect
 | **Cursor Tasks** | Part 35 |
 | **Architecture Analyzer** | Part 36 |
 | **DAOS Kernel** | Part 37 |
+| **Constitution** | Part 38 |
 
 ---
 
