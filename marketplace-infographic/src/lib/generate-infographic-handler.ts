@@ -149,6 +149,10 @@ import {
   type DAOSRenderEngineContextSummary,
 } from "@/lib/daos/adapters/render-engine-context-adapter";
 import { evaluateDaosFinalGate } from "@/lib/daos/gates";
+import {
+  createDaosContextEffectAudit,
+  summarizeDaosContextEffectAudit,
+} from "@/lib/daos/audit/context-effect-audit";
 import type { DAOSProjectState } from "@/lib/daos/core/project-state";
 import type { KnowledgeContext } from "@/lib/design/knowledge-engine";
 
@@ -256,6 +260,10 @@ function daosDiagnosticSummary(
     daosRenderContextEnabled?: boolean;
     daosRenderContextAttached?: boolean;
     daosRenderContextCompleteness?: number;
+    contextEffectAuditStatus?: string;
+    contextEffectPromptDelta?: number;
+    contextEffectScoreDelta?: number;
+    contextEffectNotes?: string;
   },
 ) {
   return {
@@ -2268,19 +2276,69 @@ export async function handleGenerateInfographic(
       renderContextEnabled: daosRenderContextEnabled,
       useRenderEngineV17,
     });
-    const daosDebugWrite = await writeDaosDebugBundle(daosDebugBundle);
-    if (!daosDebugWrite.ok) {
-      console.warn(daosDebugWrite.warning);
-    }
-
     const daosDebugSummary = createDaosDebugSummary(daosDebugBundle);
     const daosFinalGate = evaluateDaosFinalGate({
       summary: daosDebugSummary,
       generationMode: daosGenerationMode,
     });
 
+    const baselinePromptLength = daosPromptContextInjected
+      ? Math.max(0, input.prompt.length)
+      : (renderDebug.promptLength ?? compiledBackground?.prompt?.length ?? input.prompt.length);
+    const withContextPromptLength =
+      renderDebug.promptLength ??
+      (daosPromptContextInjected
+        ? input.prompt.length + daosPromptContextLength
+        : compiledBackground?.prompt?.length ?? input.prompt.length);
+
+    const beforeContextBundle = createDaosDebugBundle(enrichedDaosState, {
+      renderDebug,
+      generationMode: daosGenerationMode,
+      generationPolicy: daosGenerationPolicy,
+      promptContextInjected: false,
+      promptContextEnabled: false,
+      renderContextAttached: false,
+      renderContextEnabled: false,
+      useRenderEngineV17,
+    });
+    const beforeContextSummary = createDaosDebugSummary(beforeContextBundle);
+    const beforeContextGate = evaluateDaosFinalGate({
+      summary: beforeContextSummary,
+      generationMode: daosGenerationMode,
+    });
+    const contextEffectAudit = createDaosContextEffectAudit(
+      {
+        bundle: beforeContextBundle,
+        summary: beforeContextSummary,
+        finalGate: beforeContextGate,
+        promptLength: baselinePromptLength,
+        containsDaosContextBlock: false,
+        promptContextInjected: false,
+        renderContextAttached: false,
+      },
+      {
+        bundle: daosDebugBundle,
+        summary: daosDebugSummary,
+        finalGate: daosFinalGate,
+        promptLength: withContextPromptLength,
+        containsDaosContextBlock: daosPromptContextInjected,
+        promptContextInjected: daosPromptContextInjected,
+        renderContextAttached: daosRenderContextAttached,
+      },
+    );
+    const contextEffectAuditSummary = summarizeDaosContextEffectAudit(contextEffectAudit);
+    const daosDebugBundleWithAudit = {
+      ...daosDebugBundle,
+      contextEffectAudit,
+    };
+
+    const daosDebugWrite = await writeDaosDebugBundle(daosDebugBundleWithAudit);
+    if (!daosDebugWrite.ok) {
+      console.warn(daosDebugWrite.warning);
+    }
+
     const daosSummaryWrite = await writeDaosDebugSummary({
-      bundle: daosDebugBundle,
+      bundle: daosDebugBundleWithAudit,
       bundlePath: daosDebugWrite.ok ? daosDebugWrite.path : undefined,
       finalGate: daosFinalGate,
     });
@@ -2332,6 +2390,10 @@ export async function handleGenerateInfographic(
       daosRenderContextEnabled,
       daosRenderContextAttached,
       daosRenderContextCompleteness,
+      contextEffectAuditStatus: contextEffectAuditSummary.status,
+      contextEffectPromptDelta: contextEffectAuditSummary.promptDelta,
+      contextEffectScoreDelta: contextEffectAuditSummary.scoreDelta,
+      contextEffectNotes: contextEffectAuditSummary.notes,
     });
 
     if (process.env.DAOS_DEBUG === "1") {

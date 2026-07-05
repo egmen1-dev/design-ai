@@ -15,6 +15,7 @@ import {
 import type { DAOSPipelineContextSummary } from "../pipeline/daos-pipeline-context";
 import { summarizeDaosPipelineContext, createDaosPipelineContext } from "../pipeline/daos-pipeline-context";
 import type { DAOSRenderEngineContextSummary } from "../adapters/render-engine-context-adapter";
+import type { DAOSContextEffectAudit } from "../audit/context-effect-audit";
 
 export type DaosDebugBundle = {
   projectId: string;
@@ -63,6 +64,7 @@ export type DaosDebugBundle = {
   promptContextInjected?: boolean;
   renderContextAttached?: boolean;
   renderContextSummary?: DAOSRenderEngineContextSummary;
+  contextEffectAudit?: DAOSContextEffectAudit;
   meaningLossReport: DaosMeaningLossReport;
 };
 
@@ -79,6 +81,7 @@ export function createDaosDebugBundle(
     renderContextSummary?: DAOSRenderEngineContextSummary;
     renderContextEnabled?: boolean;
     useRenderEngineV17?: boolean;
+    contextEffectAudit?: DAOSContextEffectAudit;
   },
 ): DaosDebugBundle {
   const renderDebug = options?.renderDebug;
@@ -146,6 +149,7 @@ export function createDaosDebugBundle(
     promptContextInjected: options?.promptContextInjected,
     renderContextAttached: options?.renderContextAttached,
     renderContextSummary: options?.renderContextSummary,
+    contextEffectAudit: options?.contextEffectAudit,
     meaningLossReport,
   };
 }
