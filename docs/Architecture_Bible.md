@@ -92,6 +92,13 @@ Version: 1.0 (Draft)
   - [Skill SDK](#skill-sdk)
   - [LAW-016–LAW-020](#new-architecture-law-1)
   - [Implementation Directives SDK-001–SDK-002](#implementation-directive-sdk-001)
+- [Part 11 — Migration of Existing Platforms](#part-11--migration-of-existing-platforms)
+  - [Platform 01 — Design Governance](#platform-01--design-governance)
+  - [Platform 02 — Design Process](#platform-02--design-process)
+  - [Platform 03 — Design Knowledge](#platform-03--design-knowledge)
+  - [Platform 04 — Render Engine](#platform-04--render-engine)
+  - [Platform 05 — Prompt System](#platform-05--prompt-system)
+  - [LAW-021–LAW-022](#new-law)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -320,6 +327,18 @@ Plugins cannot break Runtime.
 ## LAW-020
 
 SDK compatibility is mandatory.
+
+---
+
+## LAW-021
+
+Reuse before Rewrite.
+
+---
+
+## LAW-022
+
+Architecture migration must preserve working code whenever possible.
 
 ---
 
@@ -4803,6 +4822,347 @@ SDK compatibility is mandatory.
 
 ---
 
+# PART 11 — MIGRATION OF EXISTING PLATFORMS
+
+# ============================================================================
+# PART 11
+# MIGRATION OF EXISTING PLATFORMS
+# ============================================================================
+
+This chapter does not describe ideal architecture.
+
+It describes migration of the **CURRENT** implementation.
+
+Every migration is based on the architecture audit.
+
+- No duplicate functionality should be created.
+- Existing implementations must be reused whenever possible.
+- New code is added only where architectural gaps exist.
+
+---
+
+# PLATFORM 01 — DESIGN GOVERNANCE
+
+## Current Status
+
+**Implemented.**
+
+### Current Modules
+
+`src/lib/design-governance/`
+
+### Current Responsibilities
+
+- Constitution
+- Blueprint Validation
+- Resolver
+- Validators
+- Trace
+- Professional Score
+- Conflict Resolution
+
+---
+
+## Architecture Assessment
+
+Strong implementation.
+
+Governance already contains enough logic to become one of the core platforms.
+
+---
+
+## Problems Found
+
+1. Governance validates blueprint — should validate the whole project
+2. Professional Score is heuristic — needs Vision integration
+3. Governance starts too late — should start immediately after ProductBrief
+4. Business validation is missing
+5. No ProjectState integration
+
+---
+
+## Migration
+
+**Keep** existing implementation. **Split** responsibilities.
+
+| Move | To |
+|------|-----|
+| Image validation | Vision Platform |
+| Execution control | Runtime |
+
+**Integrate** ProjectState.
+
+### New Responsibilities
+
+- Architecture validation
+- DTO validation
+- Constitution validation
+- Platform validation
+- Decision approval
+- Runtime approval
+
+**Do NOT** add rendering logic.
+
+---
+
+## Implementation Directive GOV-001
+
+| | |
+|---|---|
+| **Status** | REFACTOR — Do NOT rewrite module. Reuse existing implementation. |
+
+**Tasks:**
+
+- [ ] integrate ProjectState
+- [ ] remove image evaluation
+- [ ] introduce Runtime hooks
+- [ ] introduce Specification validation
+- [ ] introduce EventBus
+
+**Acceptance:** Governance becomes architecture authority.
+
+---
+
+# PLATFORM 02 — DESIGN PROCESS
+
+## Current Status
+
+**Implemented.** Module: `src/lib/design-process/`
+
+---
+
+## Architecture Assessment
+
+Good foundation. Needs separation.
+
+### Problems
+
+Current pipeline mixes: Creative · Visual · Execution · Decision · Prompt
+
+These responsibilities must be separated.
+
+---
+
+## Migration
+
+```
+Design Process
+  ↓
+Creative Intelligence Platform
+```
+
+| Move | To |
+|------|-----|
+| Concept generation | Creative |
+| Scene planning | Visual |
+| Execution | Runtime |
+
+**Keep:** Concept logic, Creative evaluation, Creative critic, Creative memory
+
+**Delete:** DesignBrief
+
+**Replace with:** CreativeSpec
+
+---
+
+## Implementation Directive CRE-001
+
+| | |
+|---|---|
+| **Status** | REFACTOR |
+| **Priority** | CRITICAL |
+| **Files** | `design-process/` |
+
+**Tasks:**
+
+- [ ] remove DesignBrief
+- [ ] create CreativeSpec
+- [ ] create DecisionTrace
+- [ ] create Alternatives
+- [ ] create Confidence
+
+**Acceptance:** Creative Platform contains creative logic only.
+
+---
+
+# PLATFORM 03 — DESIGN KNOWLEDGE
+
+## Current Status
+
+**Implemented.**
+
+### Modules
+
+Knowledge · Genome · Market Intelligence · Patterns · Registry
+
+---
+
+## Architecture Assessment
+
+Excellent. **No rewrite required.**
+
+### Problems
+
+- Knowledge stored in multiple modules
+- No central runtime
+- No KnowledgeSpec
+
+---
+
+## Migration
+
+Reuse existing implementation.
+
+**Create:** Knowledge Runtime
+
+```
+Merge: DNA + Genome + Research + Market + Memory
+  ↓
+KnowledgeSpec
+```
+
+No duplicate knowledge.
+
+---
+
+## Implementation Directive KNOW-001
+
+| | |
+|---|---|
+| **Status** | EXTEND — Do NOT rewrite |
+
+**Tasks:**
+
+- [ ] create KnowledgeRuntime
+- [ ] merge existing modules
+- [ ] emit KnowledgeSpec
+- [ ] emit Evidence
+- [ ] emit Confidence
+
+**Acceptance:** Knowledge Platform becomes single source of knowledge.
+
+---
+
+# PLATFORM 04 — RENDER ENGINE
+
+## Current Status
+
+**Implemented.**
+
+---
+
+## Architecture Assessment
+
+Strong. Needs simplification.
+
+### Problems
+
+Contains business decisions, creative decisions, and rendering decisions. Responsibilities mixed.
+
+---
+
+## Migration
+
+**Keep:** Rendering algorithms.
+
+| Move | To |
+|------|-----|
+| Business | Commercial |
+| Creative | Creative |
+| Visual | Visual |
+| Render | Rendering |
+
+Rendering should execute only.
+
+---
+
+## Implementation Directive REN-001
+
+| | |
+|---|---|
+| **Status** | REFACTOR |
+| **Priority** | CRITICAL |
+
+**Keep:** Provider integration, Image composition, Shadow engine, Export
+
+**Move out:** Business decisions, Prompt decisions, Creative decisions
+
+**Acceptance:** Render Engine executes RenderBlueprint only.
+
+---
+
+# PLATFORM 05 — PROMPT SYSTEM
+
+## Current Status
+
+**Implemented.**
+
+---
+
+## Architecture Assessment
+
+**Legacy.**
+
+### Problems
+
+- Prompt generated in multiple places
+- Prompt contains architecture
+
+---
+
+## Migration
+
+**Keep** Prompt Compiler.
+
+**Move into** Provider Adapter.
+
+Prompt becomes implementation detail.
+
+No platform except Provider Adapter generates Prompt.
+
+---
+
+## Implementation Directive PROMPT-001
+
+| | |
+|---|---|
+| **Status** | REFACTOR |
+| **Priority** | HIGH |
+
+**Acceptance:** Exactly one Prompt Compiler remains.
+
+---
+
+# GLOBAL RULE
+
+Before creating new code, Cursor **MUST** search existing implementation.
+
+| Situation | Action |
+|-----------|--------|
+| Implementation already exists | **Reuse** |
+| Implementation partially exists | **Extend** |
+| Architecture cannot be preserved | Rewrite |
+
+---
+
+# NEW LAW
+
+## LAW-021
+
+Reuse before Rewrite.
+
+---
+
+## LAW-022
+
+Architecture migration must preserve working code whenever possible.
+
+---
+
+*END OF PART 11*
+
+---
+
 # APPENDIX A — REPOSITORY IMPLEMENTATION REFERENCE
 
 > Практическая привязка Part 1 (канон) и Part 2 (аудит) к текущему коду репозитория `design-ai`.  
@@ -5195,4 +5555,4 @@ pm2 logs marketplace-infographic --lines 50
 
 ---
 
-*Architecture Bible — living document. Part 1 is canonical law (LAW-001–020). Part 2 is the architecture audit. Part 3 is the production pipeline. Part 4 is platform specification. Part 5 is runtime architecture. Part 6 is design DNA & knowledge. Part 7 is reasoning engine. Part 8 is file-by-file migration. Part 9 is AI CEO platform. Part 10 is platform SDK. Appendix A tracks repository implementation.*
+*Architecture Bible — living document. Part 1 is canonical law (LAW-001–022). Part 2 is the architecture audit. Part 3 is the production pipeline. Part 4 is platform specification. Part 5 is runtime architecture. Part 6 is design DNA & knowledge. Part 7 is reasoning engine. Part 8 is file-by-file migration. Part 9 is AI CEO platform. Part 10 is platform SDK. Part 11 is migration of existing platforms. Appendix A tracks repository implementation.*
