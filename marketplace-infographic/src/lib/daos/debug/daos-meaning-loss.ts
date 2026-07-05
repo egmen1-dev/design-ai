@@ -5,6 +5,7 @@ import type {
   RenderBlueprint,
   VisualBlueprint,
 } from "../contracts/specs";
+import type { DAOSRenderDebugArtifact } from "./render-debug-bridge";
 
 export type DaosMeaningLossSeverity = "warning" | "critical";
 
@@ -23,6 +24,7 @@ export type DaosMeaningLossReport = {
   creativeToVisualLoss: DaosMeaningLossWarning[];
   visualToRenderLoss: DaosMeaningLossWarning[];
   renderPromptRisk: DaosMeaningLossWarning[];
+  renderDebugLoss: DaosMeaningLossWarning[];
   warnings: DaosMeaningLossWarning[];
 };
 
@@ -48,6 +50,8 @@ const PLACEHOLDER_VALUES = new Set([
 ]);
 
 const LOW_CONFIDENCE_THRESHOLD = 0.6;
+const PROMPT_MIN_LENGTH = 120;
+const PROMPT_MAX_LENGTH = 2500;
 
 function tokenize(text: string): string[] {
   return text
@@ -256,8 +260,81 @@ function analyzeRenderPromptRisk(render: RenderBlueprint | undefined): DaosMeani
   return [];
 }
 
+function analyzeRenderDebugLoss(
+  render: RenderBlueprint | undefined,
+  renderDebug: DAOSRenderDebugArtifact | undefined,
+): DaosMeaningLossWarning[] {
+  const warnings: DaosMeaningLossWarning[] = [];
+  if (!render && !renderDebug) return warnings;
+
+  const hasRenderContext = Boolean(render || renderDebug?.renderRequestSummary || renderDebug?.finalPrompt);
+
+  if (!renderDebug?.provider?.trim() && hasRenderContext) {
+    warnings.push({
+      code: "PROVIDER_MISSING",
+      severity: "warning",
+      message: "render debug artifact has no provider",
+      spec: "renderBlueprint",
+    });
+  }
+
+  if (render && !renderDebug?.finalPrompt) {
+    warnings.push({
+      code: "PROMPT_MISSING",
+      severity: "warning",
+      message: "renderBlueprint exists but finalPrompt is missing in renderDebug",
+      spec: "renderBlueprint",
+    });
+  }
+
+  const promptLength = renderDebug?.promptLength ?? renderDebug?.finalPrompt?.length;
+  if (promptLength !== undefined) {
+    if (promptLength < PROMPT_MIN_LENGTH) {
+      warnings.push({
+        code: "PROMPT_TOO_SHORT",
+        severity: "warning",
+        message: `promptLength ${promptLength} is below ${PROMPT_MIN_LENGTH}`,
+        spec: "renderBlueprint",
+      });
+    }
+    if (promptLength > PROMPT_MAX_LENGTH) {
+      warnings.push({
+        code: "PROMPT_TOO_LONG",
+        severity: "warning",
+        message: `promptLength ${promptLength} exceeds ${PROMPT_MAX_LENGTH}`,
+        spec: "renderBlueprint",
+      });
+    }
+  }
+
+  if ((renderDebug?.modulesIgnored?.length ?? 0) > 0) {
+    warnings.push({
+      code: "MODULES_IGNORED",
+      severity: "warning",
+      message: `render compiler ignored modules: ${renderDebug!.modulesIgnored!.join(", ")}`,
+      spec: "renderBlueprint",
+    });
+  }
+
+  if (renderDebug?.fallbackUsed === true) {
+    warnings.push({
+      code: "FALLBACK_USED",
+      severity: "warning",
+      message: renderDebug.fallbackReason
+        ? `render fallback used: ${renderDebug.fallbackReason}`
+        : "render fallback used",
+      spec: "renderBlueprint",
+    });
+  }
+
+  return warnings;
+}
+
 /** Deterministic loss-of-meaning checks between DAOS specs (no LLM). */
-export function analyzeDaosMeaningLoss(state: DAOSProjectState): DaosMeaningLossReport {
+export function analyzeDaosMeaningLoss(
+  state: DAOSProjectState,
+  renderDebug?: DAOSRenderDebugArtifact,
+): DaosMeaningLossReport {
   const missingSpecs = collectMissingSpecs(state);
   const lowConfidenceWarnings = collectLowConfidenceSpecs(state);
   const lowConfidenceSpecs = lowConfidenceWarnings.map((w) => w.spec!).filter(Boolean);
@@ -276,6 +353,7 @@ export function analyzeDaosMeaningLoss(state: DAOSProjectState): DaosMeaningLoss
     state.renderBlueprint,
   );
   const renderPromptRisk = analyzeRenderPromptRisk(state.renderBlueprint);
+  const renderDebugLoss = analyzeRenderDebugLoss(state.renderBlueprint, renderDebug);
 
   const warnings = [
     ...lowConfidenceWarnings,
@@ -283,6 +361,7 @@ export function analyzeDaosMeaningLoss(state: DAOSProjectState): DaosMeaningLoss
     ...creativeToVisualLoss,
     ...visualToRenderLoss,
     ...renderPromptRisk,
+    ...renderDebugLoss,
   ];
 
   return {
@@ -293,6 +372,7 @@ export function analyzeDaosMeaningLoss(state: DAOSProjectState): DaosMeaningLoss
     creativeToVisualLoss,
     visualToRenderLoss,
     renderPromptRisk,
+    renderDebugLoss,
     warnings,
   };
 }

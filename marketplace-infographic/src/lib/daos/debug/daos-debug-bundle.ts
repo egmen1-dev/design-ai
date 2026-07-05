@@ -5,6 +5,7 @@ import {
   type DaosMeaningLossReport,
   type DaosMeaningLossWarning,
 } from "./daos-meaning-loss";
+import type { DAOSRenderDebugArtifact } from "./render-debug-bridge";
 
 export type DaosDebugBundle = {
   projectId: string;
@@ -38,12 +39,22 @@ export type DaosDebugBundle = {
     missingSpecs: string[];
     confidenceBySpec: Record<string, number | undefined>;
     warnings: DaosMeaningLossWarning[];
+    promptCaptured: boolean;
+    modulesIgnoredCount: number;
+    fallbackUsed: boolean;
   };
+  renderDebug?: DAOSRenderDebugArtifact;
   meaningLossReport: DaosMeaningLossReport;
 };
 
-export function createDaosDebugBundle(state: DAOSProjectState): DaosDebugBundle {
-  const meaningLossReport = analyzeDaosMeaningLoss(state);
+export function createDaosDebugBundle(
+  state: DAOSProjectState,
+  options?: {
+    renderDebug?: DAOSRenderDebugArtifact;
+  },
+): DaosDebugBundle {
+  const renderDebug = options?.renderDebug;
+  const meaningLossReport = analyzeDaosMeaningLoss(state, renderDebug);
   const createdAt = new Date().toISOString();
 
   return {
@@ -78,7 +89,11 @@ export function createDaosDebugBundle(state: DAOSProjectState): DaosDebugBundle 
       missingSpecs: meaningLossReport.missingSpecs,
       confidenceBySpec: confidenceBySpec(state),
       warnings: meaningLossReport.warnings,
+      promptCaptured: Boolean(renderDebug?.finalPrompt),
+      modulesIgnoredCount: renderDebug?.modulesIgnored?.length ?? 0,
+      fallbackUsed: Boolean(renderDebug?.fallbackUsed),
     },
+    renderDebug,
     meaningLossReport,
   };
 }

@@ -131,7 +131,7 @@ import { evaluateFinalQuality } from "@/lib/design/final-quality-validator";
 import { applyPosterRules } from "@/lib/design-process/pipeline";
 import { createLegacyDAOSState } from "@/lib/daos";
 import { enrichDaosStateFromPipeline } from "@/lib/daos/adapters/pipeline-enrichment";
-import { createDaosDebugBundle, writeDaosDebugBundle } from "@/lib/daos/debug";
+import { createDaosDebugBundle, writeDaosDebugBundle, extractDaosRenderDebug } from "@/lib/daos/debug";
 import type { DAOSProjectState } from "@/lib/daos/core/project-state";
 import type { KnowledgeContext } from "@/lib/design/knowledge-engine";
 
@@ -2138,7 +2138,12 @@ export async function handleGenerateInfographic(
           }
         : undefined,
     });
-    const daosDebugBundle = createDaosDebugBundle(enrichedDaosState);
+    const renderDebug = extractDaosRenderDebug({
+      renderEngineResult,
+      backgroundSource,
+      compiledBackground,
+    });
+    const daosDebugBundle = createDaosDebugBundle(enrichedDaosState, { renderDebug });
     const daosDebugWrite = await writeDaosDebugBundle(daosDebugBundle);
     if (!daosDebugWrite.ok) {
       console.warn(daosDebugWrite.warning);

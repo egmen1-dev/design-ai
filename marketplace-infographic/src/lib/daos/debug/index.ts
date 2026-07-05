@@ -12,3 +12,7 @@ export {
   type DaosMeaningLossWarning,
   type DaosMeaningLossSeverity,
 } from "./daos-meaning-loss";
+export {
+  extractDaosRenderDebug,
+  type DAOSRenderDebugArtifact,
+} from "./render-debug-bridge";
