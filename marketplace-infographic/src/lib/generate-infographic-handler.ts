@@ -137,6 +137,10 @@ import {
 import { enrichDaosStateFromPipeline } from "@/lib/daos/adapters/pipeline-enrichment";
 import { createDaosDebugBundle, writeDaosDebugBundle, writeDaosDebugSummary, createDaosDebugSummary, extractDaosRenderDebug, updateDaosDebugIndex } from "@/lib/daos/debug";
 import { createDaosPipelineContext } from "@/lib/daos/pipeline";
+import {
+  createDaosPromptContextBlock,
+  isDaosPromptContextEnabled,
+} from "@/lib/daos/pipeline/daos-prompt-context";
 import { evaluateDaosFinalGate } from "@/lib/daos/gates";
 import type { DAOSProjectState } from "@/lib/daos/core/project-state";
 import type { KnowledgeContext } from "@/lib/design/knowledge-engine";
@@ -239,6 +243,9 @@ function daosDiagnosticSummary(
     pipelineContextCompleteness?: number;
     pipelineContextMissingSpecs?: string[];
     pipelineContextWarnings?: string[];
+    daosPromptContextEnabled?: boolean;
+    daosPromptContextLength?: number;
+    daosPromptContextInjected?: boolean;
   },
 ) {
   return {
@@ -1225,10 +1232,56 @@ export async function handleGenerateInfographic(
       });
     }
 
+    const daosPromptContextEnabled = isDaosPromptContextEnabled();
+    let daosPromptContextBlock = "";
+    let daosPromptContextInjected = false;
+    let daosPromptContextLength = 0;
+
+    if (daosPromptContextEnabled) {
+      const interimDaosState = enrichDaosStateFromPipeline(daosState, {
+        knowledge:
+          knowledgeContext || marketIntelligence || genomeIntelligence || assetsIntelligence
+            ? {
+                knowledge: knowledgeContext,
+                market: marketIntelligence,
+                genome: genomeIntelligence,
+                assets: assetsIntelligence,
+              }
+            : undefined,
+        commercial:
+          designBrief || seniorAdReview || ctrReview || marketIntelligence
+            ? {
+                designBrief,
+                seniorAdReview,
+                ctrReview,
+                marketIntelligence,
+              }
+            : undefined,
+        creative: activeCreative ?? undefined,
+        visual:
+          visualBlueprint || compositionResult || scenePlan || sceneDirection
+            ? {
+                visualBlueprint,
+                scenePlan,
+                compositionResult,
+                sceneDirection,
+              }
+            : undefined,
+      });
+      const interimContext = createDaosPipelineContext(interimDaosState);
+      daosPromptContextBlock = createDaosPromptContextBlock(interimContext);
+      daosPromptContextLength = daosPromptContextBlock.length;
+      daosPromptContextInjected = daosPromptContextBlock.length > 0;
+    }
+
+    const daosAugmentedPrompt = daosPromptContextInjected
+      ? `${input.prompt}\n\n${daosPromptContextBlock}`
+      : input.prompt;
+
     // ── 3. Render Engine v17 OR Prompt Compiler → background ─────────
     if (!useRenderEngineV17) {
       compiledBackground = compileBackgroundPrompt({
-        prompt: input.prompt,
+        prompt: daosAugmentedPrompt,
         analysis,
         scenePlan,
         layoutSpec,
@@ -2160,6 +2213,8 @@ export async function handleGenerateInfographic(
         : undefined,
     });
     const daosPipelineContext = createDaosPipelineContext(enrichedDaosState);
+    const finalPromptContextBlock =
+      createDaosPromptContextBlock(daosPipelineContext) || daosPromptContextBlock;
     const renderDebug = extractDaosRenderDebug({
       renderEngineResult,
       backgroundSource,
@@ -2169,6 +2224,9 @@ export async function handleGenerateInfographic(
       renderDebug,
       generationMode: daosGenerationMode,
       generationPolicy: daosGenerationPolicy,
+      promptContextBlockPreview: finalPromptContextBlock || undefined,
+      promptContextInjected: daosPromptContextInjected,
+      promptContextEnabled: daosPromptContextEnabled,
     });
     const daosDebugWrite = await writeDaosDebugBundle(daosDebugBundle);
     if (!daosDebugWrite.ok) {
@@ -2228,6 +2286,9 @@ export async function handleGenerateInfographic(
       pipelineContextCompleteness: daosPipelineContext.completenessScore,
       pipelineContextMissingSpecs: daosPipelineContext.missingSpecs,
       pipelineContextWarnings: daosPipelineContext.warnings,
+      daosPromptContextEnabled,
+      daosPromptContextLength,
+      daosPromptContextInjected,
     });
 
     if (process.env.DAOS_DEBUG === "1") {

@@ -115,6 +115,9 @@ export type GenerationDiagnosticReport = {
     pipelineContextCompleteness?: number;
     pipelineContextMissingSpecs?: string[];
     pipelineContextWarnings?: string[];
+    daosPromptContextEnabled?: boolean;
+    daosPromptContextLength?: number;
+    daosPromptContextInjected?: boolean;
   };
 };
 

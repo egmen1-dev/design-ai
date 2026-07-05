@@ -20,6 +20,8 @@ import {
 export type AnalyzeDaosMeaningLossOptions = {
   renderDebug?: DAOSRenderDebugArtifact;
   generationMode?: DAOSGenerationMode;
+  promptContextInjected?: boolean;
+  promptContextEnabled?: boolean;
 };
 
 export type DaosMeaningLossSeverity = "warning" | "critical";
@@ -41,6 +43,7 @@ export type DaosMeaningLossReport = {
   renderPromptRisk: DaosMeaningLossWarning[];
   renderDebugLoss: DaosMeaningLossWarning[];
   pipelineContextLoss: DaosMeaningLossWarning[];
+  promptContextLoss: DaosMeaningLossWarning[];
   warnings: DaosMeaningLossWarning[];
 };
 
@@ -395,6 +398,25 @@ function analyzePipelineContextLoss(
   ];
 }
 
+function analyzePromptContextLoss(
+  completenessScore: number,
+  options?: AnalyzeDaosMeaningLossOptions,
+): DaosMeaningLossWarning[] {
+  if (!options?.promptContextEnabled) {
+    return [];
+  }
+  if (completenessScore >= DAOS_PIPELINE_COMPLETENESS_CRITICAL_THRESHOLD && !options.promptContextInjected) {
+    return [
+      {
+        code: "DAOS_CONTEXT_NOT_INJECTED",
+        severity: "warning",
+        message: `pipeline context completeness ${completenessScore} is sufficient but DAOS prompt context was not injected`,
+      },
+    ];
+  }
+  return [];
+}
+
 /** Deterministic loss-of-meaning checks between DAOS specs (no LLM). */
 export function analyzeDaosMeaningLoss(
   state: DAOSProjectState,
@@ -422,6 +444,12 @@ export function analyzeDaosMeaningLoss(
   const renderPromptRisk = analyzeRenderPromptRisk(state.renderBlueprint);
   const renderDebugLoss = analyzeRenderDebugLoss(state.renderBlueprint, renderDebug, generationMode);
   const pipelineContextLoss = analyzePipelineContextLoss(state, generationMode);
+  const { completenessScore } = computePipelineCompleteness(state);
+  const promptContextLoss = analyzePromptContextLoss(completenessScore, {
+    ...options,
+    promptContextEnabled: options?.promptContextEnabled,
+    promptContextInjected: options?.promptContextInjected,
+  });
 
   const warnings = [
     ...lowConfidenceWarnings,
@@ -431,6 +459,7 @@ export function analyzeDaosMeaningLoss(
     ...renderPromptRisk,
     ...renderDebugLoss,
     ...pipelineContextLoss,
+    ...promptContextLoss,
   ];
 
   return {
@@ -443,6 +472,7 @@ export function analyzeDaosMeaningLoss(
     renderPromptRisk,
     renderDebugLoss,
     pipelineContextLoss,
+    promptContextLoss,
     warnings,
   };
 }

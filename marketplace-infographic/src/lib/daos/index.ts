@@ -30,6 +30,10 @@ export {
   createDaosPipelineContext,
   summarizeDaosPipelineContext,
   computePipelineCompleteness,
+  createDaosPromptContextBlock,
+  createDaosPromptContextSummary,
+  isDaosPromptContextEnabled,
   type DAOSPipelineContext,
   type DAOSPipelineContextSummary,
+  type DAOSPromptContextSummary,
 } from "./pipeline";

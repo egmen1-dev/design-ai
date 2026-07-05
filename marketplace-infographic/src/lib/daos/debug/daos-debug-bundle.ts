@@ -58,6 +58,8 @@ export type DaosDebugBundle = {
   generationPolicySummary: ReturnType<typeof summarizeDaosGenerationPolicy>;
   renderDebug?: DAOSRenderDebugArtifact;
   pipelineContextSummary?: DAOSPipelineContextSummary;
+  promptContextBlockPreview?: string;
+  promptContextInjected?: boolean;
   meaningLossReport: DaosMeaningLossReport;
 };
 
@@ -67,6 +69,9 @@ export function createDaosDebugBundle(
     renderDebug?: DAOSRenderDebugArtifact;
     generationMode?: DAOSGenerationMode;
     generationPolicy?: DAOSGenerationPolicy;
+    promptContextBlockPreview?: string;
+    promptContextInjected?: boolean;
+    promptContextEnabled?: boolean;
   },
 ): DaosDebugBundle {
   const renderDebug = options?.renderDebug;
@@ -76,7 +81,12 @@ export function createDaosDebugBundle(
     options?.generationPolicy ?? getDaosGenerationPolicy(generationMode);
   const generationPolicySummary = summarizeDaosGenerationPolicy(generationPolicy);
   const pipelineContextSummary = summarizeDaosPipelineContext(createDaosPipelineContext(state));
-  const meaningLossReport = analyzeDaosMeaningLoss(state, { renderDebug, generationMode });
+  const meaningLossReport = analyzeDaosMeaningLoss(state, {
+    renderDebug,
+    generationMode,
+    promptContextEnabled: options?.promptContextEnabled,
+    promptContextInjected: options?.promptContextInjected,
+  });
   const createdAt = new Date().toISOString();
 
   return {
@@ -122,6 +132,8 @@ export function createDaosDebugBundle(
     generationPolicySummary,
     renderDebug,
     pipelineContextSummary,
+    promptContextBlockPreview: options?.promptContextBlockPreview,
+    promptContextInjected: options?.promptContextInjected,
     meaningLossReport,
   };
 }
