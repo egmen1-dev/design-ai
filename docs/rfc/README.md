@@ -14,6 +14,7 @@ Draft → Review → Accepted → Implemented → Released → Archived
 
 | RFC | Title | Status |
 |-----|-------|--------|
+| [RFC-000](RFC-000.md) | Design AI Operating System | Accepted |
 | [RFC-001](RFC-001.md) | ProjectState | Accepted |
 | [RFC-002](RFC-002.md) | Runtime | Accepted |
 | [RFC-003](RFC-003.md) | Knowledge Engine | Accepted |

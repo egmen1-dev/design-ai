@@ -1594,6 +1594,22 @@ directives:
     success:
       execution_context_documented: true
 
+  - id: RFC-000
+    title: Design AI Operating System (RFC-000)
+    priority: MAXIMUM
+    wave: 0
+    status: completed
+    files:
+      create:
+        - docs/rfc/RFC-000.md
+      modify:
+        - docs/Architecture_Bible.md
+        - docs/rfc/README.md
+    checks:
+      - validate_yaml
+    success:
+      daos_charter_documented: true
+
   - id: DIR-001
     title: Directive Registry
     priority: HIGH
@@ -2291,6 +2307,39 @@ daos_execution_context:
     platform_cannot_modify_context: true
   success_criteria:
     - identical_context_implies_identical_decision
+
+rfc_index:
+  RFC-000:
+    title: Design AI Operating System
+    path: docs/rfc/RFC-000.md
+    status: accepted
+    version: "1.0"
+    priority: maximum
+    purpose: master charter for DAOS
+  RFC-001:
+    title: ProjectState
+    path: docs/rfc/RFC-001.md
+    status: accepted
+  RFC-002:
+    title: Runtime
+    path: docs/rfc/RFC-002.md
+    status: accepted
+  RFC-003:
+    title: Knowledge Engine
+    path: docs/rfc/RFC-003.md
+    status: accepted
+  RFC-004:
+    title: Provider Adapter
+    path: docs/rfc/RFC-004.md
+    status: accepted
+  RFC-005:
+    title: RenderGraph
+    path: docs/rfc/RFC-005.md
+    status: accepted
+  RFC-006:
+    title: Asset Platform
+    path: docs/rfc/RFC-006.md
+    status: accepted
 
 volume_1:
   status: complete

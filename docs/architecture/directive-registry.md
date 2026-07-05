@@ -26,6 +26,7 @@ Architecture Bible → ADR → RFC → Implementation Directive → Pull Request
 | ID | Title | Priority | Status | ADR | RFC | Wave |
 |----|-------|----------|--------|-----|-----|------|
 | ADR-001 | Create `docs/architecture/adr/` | HIGH | Completed | — | — | — |
+| RFC-000 | Design AI Operating System (RFC-000) | Maximum | Completed | — | — | — |
 | RFC-001 | Create `docs/rfc/` | MEDIUM | Completed | — | — | — |
 | DIR-001 | Directive Registry | HIGH | Completed | — | — | — |
 | DSL-001 | Architecture DSL (`architecture.yaml`) | HIGH | Completed | — | — | — |

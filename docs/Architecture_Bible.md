@@ -149,7 +149,7 @@ Version: 1.0 (Complete — Volume I)
   - [ADR Rules & Directive ADR-001](#adr-rules)
 - [Part 21 — Request for Comments (RFC)](#part-21--request-for-comments-rfc)
   - [RFC Lifecycle & Template](#rfc-lifecycle)
-  - [RFC-001–006](#rfc-001--projectstate)
+  - [RFC-000–006](#rfc-000--design-ai-operating-system)
   - [RFC Rules & Directive RFC-001](#rfc-rules)
 - [Part 22 — Implementation Directives](#part-22--implementation-directives)
   - [Directive Template & Relations](#directive-template)
@@ -7761,6 +7761,34 @@ Draft → Review → Accepted → Implemented → Released → Archived
 
 ---
 
+# RFC-000 — DESIGN AI OPERATING SYSTEM
+
+Master charter for Design AI OS. See `docs/rfc/RFC-000.md`.
+
+| | |
+|---|---|
+| **Status** | Accepted |
+| **Version** | 1.0 |
+| **Priority** | Maximum |
+
+**Mission:** DAOS is a commercial design intelligence operating system — not an image generator. Purpose is better commercial design decisions that are explainable, reproducible, and continuously improving.
+
+**Vision:** Intelligence separated from implementation · Knowledge from rendering · Commercial from visual · Architecture from code · Prompt from reasoning · Providers interchangeable.
+
+**Primary Goals:** Agency-level marketplace creatives · Continuous knowledge improvement · Provider independence · Architecture driven · Explainable decisions · Scale without degradation.
+
+**Non Goals:** Not a prompt library, template engine, script collection, Flux wrapper, GPT wrapper, or rendering engine.
+
+**Core Principles:** Architecture First · Knowledge First · Commercial First · Specification First · Provider Independent · Runtime Driven · Immutable State · Continuous Learning · Explainable Decisions.
+
+**Architectural Model:** User Request → ProductBrief → Research → Knowledge → Commercial → Creative → Visual → Render Blueprint → Provider → Vision → Learning → Knowledge Update
+
+**Success Metrics:** Commercial Score · CTR Prediction · Marketplace Fit · Professional Score · Readability · Visual Hierarchy · Architecture Score · Learning Quality
+
+**Related:** Part 1 · Part 38 (Constitution) · RFC-001–006
+
+---
+
 # RFC-001 — PROJECTSTATE
 
 Immutable project state container. See `docs/rfc/RFC-001.md`.
@@ -7824,6 +7852,17 @@ Asset graph and versioning. See `docs/rfc/RFC-006.md`.
 | **Priority** | MEDIUM |
 | **Create** | `docs/rfc/` |
 | **Acceptance** | Every breaking architectural change documented |
+
+---
+
+## IMPLEMENTATION DIRECTIVE RFC-000
+
+| | |
+|---|---|
+| **Priority** | MAXIMUM |
+| **Create** | `docs/rfc/RFC-000.md` |
+| **Acceptance** | Master DAOS charter documented (mission, vision, goals, principles) |
+| **Status** | Completed |
 
 ---
 
