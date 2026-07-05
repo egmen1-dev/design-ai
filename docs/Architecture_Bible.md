@@ -74,6 +74,10 @@ Version: 1.0 (Draft)
   - [Decision Graph](#decision-graph)
   - [Spec Compiler](#spec-compiler)
   - [Implementation Directives RS-001–RS-002](#implementation-directive-rs-001)
+- [Part 8 — File-by-File Migration](#part-8--file-by-file-migration)
+  - [Wave 1–5 Platform Core](#wave-1--platform-core)
+  - [Existing Files Migration](#existing-files)
+  - [Global Acceptance](#global-acceptance)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -3757,6 +3761,319 @@ Changes are made only by creating a new specification version approved by the Re
 
 ---
 
+# PART 8 — FILE-BY-FILE MIGRATION
+
+# ============================================================================
+# PART 8
+# FILE-BY-FILE MIGRATION
+# ============================================================================
+
+## Purpose
+
+This chapter defines migration of the existing codebase.
+
+Every migration must be deterministic.
+
+No implementation decisions may be invented by the coding agent.
+
+The architecture defined in this document has priority.
+
+---
+
+# WAVE 1 — PLATFORM CORE
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Goal** | Introduce new architecture without breaking existing production |
+
+Legacy remains operational until Wave 8.
+
+---
+
+## Platform Core
+
+**Create** `src/lib/platform-core/`
+
+**Structure:**
+
+```
+platform-core/
+├── ProjectState/
+├── Contracts/
+├── Runtime/
+├── Events/
+├── Registry/
+├── Validation/
+├── Metrics/
+├── Debug/
+├── Cache/
+└── Versioning/
+```
+
+**Implementation:** Nothing inside legacy imports `platform-core`. Only new pipeline uses `platform-core`.
+
+**Acceptance:** ProjectState compiles. No production changes yet.
+
+---
+
+# WAVE 2 — PROJECT STATE
+
+**Create:**
+
+- `ProjectState.ts`
+- `ProjectSnapshot.ts`
+- `ProjectVersion.ts`
+- `ProjectMetadata.ts`
+- `ExecutionContext.ts`
+- `ProjectConfiguration.ts`
+- `DecisionHistory.ts`
+- `ProjectArtifacts.ts`
+
+**Delete:** Nothing.
+
+**Modify:** Every future platform receives ProjectState. Never receives Prompt.
+
+**Acceptance:** Project recreated entirely from ProjectState.
+
+---
+
+# WAVE 3 — CONTRACTS
+
+**Create** `Contracts/`:
+
+- `ProductBrief.ts`
+- `ResearchSpec.ts`
+- `KnowledgeSpec.ts`
+- `CommercialSpec.ts`
+- `CreativeSpec.ts`
+- `VisualBlueprint.ts`
+- `RenderBlueprint.ts`
+- `OverlayBlueprint.ts`
+- `VisionReport.ts`
+- `LearningReport.ts`
+- `DecisionPackage.ts`
+
+**Acceptance:** Every platform exchanges DTO only.
+
+---
+
+# WAVE 4 — RUNTIME
+
+**Create:**
+
+- `Runtime.ts`
+- `ExecutionGraph.ts`
+- `Scheduler.ts`
+- `DependencyResolver.ts`
+- `RetryManager.ts`
+- `NodeExecutor.ts`
+- `PipelineExecutor.ts`
+
+**New Rule:** No platform calls another platform directly. Runtime executes graph.
+
+**Acceptance:** Entire pipeline controlled by Runtime.
+
+---
+
+# WAVE 5 — DESIGN GRAPH
+
+**Create:**
+
+- `DecisionNode.ts`
+- `DecisionEdge.ts`
+- `DecisionGraph.ts`
+- `DecisionVersion.ts`
+- `DecisionReplay.ts`
+
+**Purpose:** Replace linear pipeline.
+
+**Acceptance:** Any node recomputed independently.
+
+---
+
+# EXISTING FILES
+
+## `src/lib/design-process/`
+
+| | |
+|---|---|
+| **Status** | Refactor |
+| **Current** | Creates DesignBrief |
+| **Future** | Produces CreativeSpec |
+
+**Tasks:**
+
+- Remove DesignBrief
+- Introduce CreativeSpec
+- Introduce DecisionTrace
+- Introduce Confidence
+- Introduce Alternatives
+
+**Acceptance:** No DesignBrief left.
+
+---
+
+## `src/lib/design-governance/`
+
+| | |
+|---|---|
+| **Status** | Keep + Refactor |
+
+**Tasks — split into:**
+
+- Governance Platform
+- Constitution
+- Validation
+- Decision Approval
+- Blueprint Lock
+- Professional Evaluation
+
+**Move:** Scores → Vision Platform
+
+**Acceptance:** Governance validates architecture. Vision validates image.
+
+---
+
+## `src/lib/render-engine/`
+
+| | |
+|---|---|
+| **Status** | Refactor |
+| **Priority** | Critical |
+
+**Split:**
+
+```
+Planner
+  ↓
+Provider Adapter
+  ↓
+Composition Engine
+  ↓
+RenderGraph
+  ↓
+Exporter
+```
+
+**Forbidden:** Business logic. Commercial decisions. Creative decisions.
+
+**Acceptance:** Render Engine executes RenderBlueprint only.
+
+---
+
+## `src/lib/design/`
+
+| | |
+|---|---|
+| **Status** | Split completely |
+
+**Move:**
+
+| From | To |
+|------|-----|
+| Knowledge | Knowledge Platform |
+| Genome | Genome Platform |
+| Prompt | Legacy |
+| Visual | Visual Platform |
+| Rules | Design DNA |
+
+**Acceptance:** `src/lib/design/` contains no business logic.
+
+---
+
+## `src/lib/example-engine/`
+
+**Rename:** Reference Intelligence
+
+**New Responsibilities:**
+
+- Reference ranking
+- Layout extraction
+- Typography extraction
+- Commercial analysis
+- Pattern clustering
+
+**Acceptance:** Produces ReferenceSpec.
+
+---
+
+## `src/lib/feedback/`
+
+**Rename:** Learning Platform
+
+**Add:**
+
+- CTR Learning
+- Marketplace Learning
+- Genome Update
+- Confidence Update
+- Preference Learning
+
+**Acceptance:** Every completed project improves future projects.
+
+---
+
+## `src/lib/prompt/`
+
+| | |
+|---|---|
+| **Status** | Legacy |
+
+**Forbidden:** Direct imports.
+
+**Only** Provider Adapter may access prompt generation.
+
+**Acceptance:** Prompt generated in one place only.
+
+---
+
+## `src/lib/templates/`
+
+| | |
+|---|---|
+| **Status** | Legacy |
+
+**Replace with:** Overlay Renderer.
+
+**Acceptance:** HTML templates no longer define layout. Layout comes from OverlayBlueprint.
+
+---
+
+## `src/lib/pipeline-config.ts`
+
+**Replace:**
+
+```
+FAST_GENERATION → GenerationMode
+```
+
+Modes: `draft` | `balanced` | `premium` | `enterprise`
+
+**Acceptance:** Enterprise never disables quality.
+
+---
+
+# GLOBAL ACCEPTANCE
+
+- [ ] Prompt exists only once
+- [ ] ProjectState exists
+- [ ] Runtime exists
+- [ ] DecisionGraph exists
+- [ ] RenderGraph exists
+- [ ] All platforms isolated
+- [ ] All DTO immutable
+- [ ] Legacy isolated
+- [ ] Vision mandatory
+- [ ] Learning mandatory
+- [ ] No architecture violations
+
+---
+
+*END OF PART 8*
+
+---
+
 # APPENDIX A — REPOSITORY IMPLEMENTATION REFERENCE
 
 > Практическая привязка Part 1 (канон) и Part 2 (аудит) к текущему коду репозитория `design-ai`.  
@@ -4149,4 +4466,4 @@ pm2 logs marketplace-infographic --lines 50
 
 ---
 
-*Architecture Bible — living document. Part 1 is canonical law. Part 2 is the architecture audit. Part 3 is the production pipeline. Part 4 is platform specification. Part 5 is runtime architecture. Part 6 is design DNA & knowledge. Part 7 is reasoning engine. Appendix A tracks repository implementation.*
+*Architecture Bible — living document. Part 1 is canonical law. Part 2 is the architecture audit. Part 3 is the production pipeline. Part 4 is platform specification. Part 5 is runtime architecture. Part 6 is design DNA & knowledge. Part 7 is reasoning engine. Part 8 is file-by-file migration. Appendix A tracks repository implementation.*
