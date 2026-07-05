@@ -13,3 +13,9 @@ export {
   type DAOSGenerationMode,
   type DAOSGenerationPolicy,
 } from "./config/generation-mode";
+export {
+  evaluateDaosFinalGate,
+  renderDaosFinalGateMarkdownSection,
+  type DAOSFinalGateResult,
+  type DAOSFinalGateStatus,
+} from "./gates";

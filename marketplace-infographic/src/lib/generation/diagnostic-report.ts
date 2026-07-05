@@ -107,6 +107,10 @@ export type GenerationDiagnosticReport = {
     debugSummaryPath?: string;
     debugSummaryStatus?: "ok" | "warning" | "critical";
     debugSummaryScore?: number;
+    finalGateStatus?: "passed" | "warning" | "failed";
+    finalGateScore?: number;
+    finalGateBlocking?: false;
+    finalGateReasons?: string[];
   };
 };
 

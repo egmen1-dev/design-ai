@@ -136,6 +136,7 @@ import {
 } from "@/lib/daos/config/generation-mode";
 import { enrichDaosStateFromPipeline } from "@/lib/daos/adapters/pipeline-enrichment";
 import { createDaosDebugBundle, writeDaosDebugBundle, writeDaosDebugSummary, createDaosDebugSummary, extractDaosRenderDebug } from "@/lib/daos/debug";
+import { evaluateDaosFinalGate } from "@/lib/daos/gates";
 import type { DAOSProjectState } from "@/lib/daos/core/project-state";
 import type { KnowledgeContext } from "@/lib/design/knowledge-engine";
 
@@ -229,6 +230,10 @@ function daosDiagnosticSummary(
     debugSummaryPath?: string;
     debugSummaryStatus?: "ok" | "warning" | "critical";
     debugSummaryScore?: number;
+    finalGateStatus?: "passed" | "warning" | "failed";
+    finalGateScore?: number;
+    finalGateBlocking?: false;
+    finalGateReasons?: string[];
   },
 ) {
   return {
@@ -2164,15 +2169,21 @@ export async function handleGenerateInfographic(
       console.warn(daosDebugWrite.warning);
     }
 
+    const daosDebugSummary = createDaosDebugSummary(daosDebugBundle);
+    const daosFinalGate = evaluateDaosFinalGate({
+      summary: daosDebugSummary,
+      generationMode: daosGenerationMode,
+    });
+
     const daosSummaryWrite = await writeDaosDebugSummary({
       bundle: daosDebugBundle,
       bundlePath: daosDebugWrite.ok ? daosDebugWrite.path : undefined,
+      finalGate: daosFinalGate,
     });
     if (!daosSummaryWrite.ok) {
       console.warn(daosSummaryWrite.error);
     }
 
-    const daosDebugSummary = createDaosDebugSummary(daosDebugBundle);
     const meaningLossWarnings = daosDebugBundle.meaningLossReport.warnings;
     const daosProjectState = daosDiagnosticSummary(enrichedDaosState, {
       debugBundlePath: daosDebugWrite.ok ? daosDebugWrite.relativePath : undefined,
@@ -2181,6 +2192,10 @@ export async function handleGenerateInfographic(
       debugSummaryPath: daosSummaryWrite.ok ? daosSummaryWrite.relativeSummaryPath : undefined,
       debugSummaryStatus: daosSummaryWrite.ok ? daosDebugSummary.status : undefined,
       debugSummaryScore: daosSummaryWrite.ok ? daosDebugSummary.score : undefined,
+      finalGateStatus: daosFinalGate.status,
+      finalGateScore: daosFinalGate.score,
+      finalGateBlocking: daosFinalGate.blocking,
+      finalGateReasons: daosFinalGate.reasons,
     });
 
     if (process.env.DAOS_DEBUG === "1") {

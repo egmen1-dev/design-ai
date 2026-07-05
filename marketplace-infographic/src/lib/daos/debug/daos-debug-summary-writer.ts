@@ -4,6 +4,10 @@ import {
   createDaosDebugSummary,
   renderDaosDebugSummaryMarkdown,
 } from "./daos-debug-summary";
+import {
+  renderDaosFinalGateMarkdownSection,
+  type DAOSFinalGateResult,
+} from "../gates/final-gate";
 
 const SUMMARY_JSON = "daos-debug-summary.json";
 const SUMMARY_MARKDOWN = "daos-debug-summary.md";
@@ -37,10 +41,14 @@ function relativeSiblingPath(bundlePath: string, filename: string): string {
 export async function writeDaosDebugSummary(input: {
   bundle: unknown;
   bundlePath?: string;
+  finalGate?: DAOSFinalGateResult;
 }): Promise<DaosDebugSummaryWriteResult> {
   try {
     const summary = createDaosDebugSummary(input.bundle);
-    const markdown = renderDaosDebugSummaryMarkdown(summary);
+    let markdown = renderDaosDebugSummaryMarkdown(summary);
+    if (input.finalGate) {
+      markdown += renderDaosFinalGateMarkdownSection(input.finalGate);
+    }
 
     if (!input.bundlePath) {
       return { ok: true };
