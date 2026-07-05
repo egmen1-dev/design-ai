@@ -22,6 +22,22 @@ architecture:
     - LAW-033  # No platform code inside Providers
     - LAW-034  # No Runtime code inside Platforms
     - LAW-035  # Repository structure is architecture
+    - LAW-036  # ProjectState is immutable
+    - LAW-037  # Every platform owns exactly one responsibility
+    - LAW-038  # No platform communicates directly with another platform
+    - LAW-039  # Only Runtime orchestrates execution
+    - LAW-040  # Only Provider Adapter generates prompts
+    - LAW-041  # Only Asset Platform accesses filesystem
+    - LAW-042  # Knowledge queried only through Knowledge Engine
+    - LAW-043  # Rendering executes blueprints only
+    - LAW-044  # Vision is mandatory
+    - LAW-045  # Learning executes after every completed generation
+    - LAW-046  # Every architectural change requires ADR
+    - LAW-047  # Every breaking change requires RFC
+    - LAW-048  # Every implementation requires Directive
+    - LAW-049  # Architecture validation blocks invalid releases
+    - LAW-050  # Architecture Bible is the single source of truth
+  law_count: 50
 
 repository:
   root: marketplace-infographic/
@@ -1322,6 +1338,19 @@ directives:
       - validate_yaml
     success:
       release_policy_documented: true
+
+  - id: OBS-001
+    title: Observability policy (Part 32)
+    priority: HIGH
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/architecture/architecture.yaml
+    checks:
+      - validate_yaml
+    success:
+      observability_policy_documented: true
 
   - id: DIR-001
     title: Directive Registry

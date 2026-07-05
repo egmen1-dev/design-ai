@@ -127,6 +127,7 @@ Version: 1.0 (Draft)
   - [CI-001–CI-003](#implementation-directive-ci-001)
   - [LAW-026–LAW-030](#new-law-2)
   - [LAW-031–LAW-035](#law-031)
+  - [LAW-036–LAW-050](#law-036)
 - [Part 17 — Design Knowledge Engine](#part-17--design-knowledge-engine)
   - [Current Audit & Target](#current-audit-1)
   - [Knowledge Graph & API](#knowledge-graph-1)
@@ -9490,6 +9491,90 @@ Every release **reproducible**.
 ---
 
 *END OF PART 31*
+
+---
+
+# PART 32 — OBSERVABILITY
+
+# ============================================================================
+# PART 32
+# OBSERVABILITY
+# ============================================================================
+
+## Purpose
+
+Nothing inside Design AI OS is **hidden**.
+
+Canonical DSL: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `observability`
+
+---
+
+# EVERY PLATFORM EMITS
+
+| Emission | Description |
+|----------|-------------|
+| **Events** | Lifecycle and completion signals |
+| **Metrics** | Timing, counts, scores |
+| **Decision Trace** | Replayable decisions with confidence |
+| **Warnings** | Non-fatal issues |
+| **Errors** | Failures with context |
+| **Artifacts** | Outputs (specs, blueprints, images) |
+
+Aligns with Part 28 Event Registry and Part 23 platform `emit` definitions.
+
+---
+
+# EVERY PROJECT STORES
+
+| Stored | Description |
+|--------|-------------|
+| **Timeline** | Chronological execution history |
+| **Execution Graph** | DAG of runtime nodes |
+| **Decision Graph** | Platform decision dependencies |
+| **Architecture Version** | Active architecture release |
+| **Platform Versions** | Per-platform version map |
+| **Knowledge Version** | Knowledge graph snapshot |
+| **Genome Version** | Design genome snapshot |
+
+Stored in **ProjectState** and retrievable via Debug Bundle.
+
+---
+
+# DEBUG BUNDLE
+
+Complete project snapshot for reproduction and support:
+
+| Contents | |
+|----------|--|
+| Logs | |
+| Specifications | |
+| Blueprints | |
+| Reports | |
+| Assets | |
+| Metrics | |
+| Configuration | |
+
+---
+
+# SUCCESS
+
+Every project **fully reproducible**.
+
+Aligns with Part 30 versioning, Part 31 release artifacts, and Part 25 final acceptance (replay, rollback, DecisionTrace complete).
+
+---
+
+## IMPLEMENTATION DIRECTIVE OBS-001
+
+| | |
+|---|---|
+| **Priority** | HIGH |
+| **Create** | Observability policy in `architecture.yaml` |
+| **Acceptance** | Platform emissions and Debug Bundle schema machine-readable |
+
+---
+
+*END OF PART 32*
 
 ---
 

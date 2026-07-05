@@ -49,6 +49,7 @@ Architecture Bible → ADR → RFC → Implementation Directive → Pull Request
 | EVO-001 | Evolution Strategy (Part 30) | HIGH | Completed | — | — | — |
 | REL-001 | Release Strategy (Part 31) | HIGH | Completed | — | — | — |
 | OBS-001 | Observability (Part 32) | HIGH | Completed | — | — | — |
+| LAW-036 | Final Architecture Laws LAW-036–050 (Part 33) | CRITICAL | Completed | — | — | — |
 | DTO-001 | Base Contract & Specifications | Critical | Blocked | ADR-002 | RFC-001 | 02 |
 | DTO-002 | ProjectState implementation | Critical | Blocked | ADR-002 | RFC-001 | 02 |
 | RUN-001 | Runtime engine skeleton | Critical | Blocked | — | RFC-002 | 01 |
