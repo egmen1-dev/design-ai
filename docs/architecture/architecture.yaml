@@ -1522,6 +1522,35 @@ release:
   success_criteria:
     - every release reproducible
 
+observability:
+  purpose: nothing inside Design AI OS is hidden
+  platform_emits:
+    - events
+    - metrics
+    - decision_trace
+    - warnings
+    - errors
+    - artifacts
+  project_stores:
+    - timeline
+    - execution_graph
+    - decision_graph
+    - architecture_version
+    - platform_versions
+    - knowledge_version
+    - genome_version
+  debug_bundle:
+    contains:
+      - logs
+      - specifications
+      - blueprints
+      - reports
+      - assets
+      - metrics
+      - configuration
+  success_criteria:
+    - every project fully reproducible
+
 cursor_execution:
   purpose: Cursor executes Architecture DSL; must not redesign architecture
   dsl_path: docs/architecture/architecture.yaml
