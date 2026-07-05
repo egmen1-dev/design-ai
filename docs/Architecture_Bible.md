@@ -220,6 +220,10 @@ Version: 1.0 (Complete — Volume I)
   - [Microkernel & Extensions](#microkernel)
   - [Boot, Shutdown & Failure Isolation](#boot-process)
   - [Directive MKR-001](#implementation-directive-mkr-001)
+- [Part 40 — DAOS Execution Model](#part-40--daos-execution-model)
+  - [Task Unit & Lifecycle](#execution-unit)
+  - [Task Graph & Types](#task-graph)
+  - [Directive TSK-001](#implementation-directive-tsk-001)
 - [Appendix A — Glossary](#appendix-a--glossary)
 - [Appendix B — Architecture Index](#appendix-b--architecture-index)
 - [Appendix C — Implementation Index](#appendix-c--implementation-index)
@@ -10818,6 +10822,153 @@ Kernel uptime independent from Platform stability.
 
 ---
 
+# PART 40 — DAOS EXECUTION MODEL
+
+# ============================================================================
+# PART 40
+# DAOS EXECUTION MODEL
+# ============================================================================
+
+## Purpose
+
+Everything inside DAOS executes as **Tasks**.
+
+Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `daos_execution_model`
+
+**Related:** Part 37 (Kernel) · Part 39 (Microkernel)
+
+---
+
+# EXECUTION UNIT
+
+**Task** is the atomic execution unit.
+
+A Task contains:
+
+| Field | Description |
+|-------|-------------|
+| **Input** | Execution input payload |
+| **Platform** | Target platform |
+| **Specification** | Immutable specification in scope |
+| **Timeout** | Maximum execution time |
+| **Priority** | Scheduling priority |
+| **Dependencies** | Upstream task dependencies |
+| **Expected Output** | Required output specification |
+
+---
+
+# TASK LIFECYCLE
+
+```
+Created
+    ↓
+Queued
+    ↓
+Running
+    ↓
+Validated
+    ↓
+Committed
+    ↓
+Completed
+```
+
+---
+
+# TASK GRAPH
+
+```
+Project
+    ↓
+Task Graph
+    ↓
+Platform Tasks
+    ↓
+Provider Tasks
+    ↓
+Asset Tasks
+```
+
+---
+
+# TASK TYPES
+
+| Type | Domain |
+|------|--------|
+| Research | Research platform |
+| Knowledge | Knowledge platform |
+| Commercial | Commercial platform |
+| Creative | Creative platform |
+| Visual | Visual platform |
+| Render | Rendering platform |
+| Vision | Vision platform |
+| Learning | Learning platform |
+| Asset | Asset platform |
+
+---
+
+# TASK PRIORITY
+
+| Level | Use |
+|-------|-----|
+| **Critical** | Blocking pipeline stages |
+| **High** | Core generation path |
+| **Medium** | Standard work |
+| **Low** | Deferred work |
+| **Background** | Non-blocking maintenance |
+
+---
+
+# TASK RESULT
+
+**TaskResult** contains:
+
+- **Status**
+- **Output**
+- **Metrics**
+- **Duration**
+- **Warnings**
+- **Errors**
+- **Trace**
+
+---
+
+# FAILED TASK
+
+```
+Retry
+    ↓
+Rollback
+    ↓
+Alternative Strategy
+    ↓
+Abort
+```
+
+---
+
+## IMPLEMENTATION DIRECTIVE TSK-001
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Document** | Part 40 — DAOS Execution Model |
+| **Machine-readable** | `architecture.yaml` → `daos_execution_model` |
+| **Depends** | KNL-001 · MKR-001 |
+| **Status** | Completed |
+
+---
+
+# SUCCESS
+
+Entire project represented as **Task Graph**.
+
+---
+
+*END OF PART 40*
+
+---
+
 # APPENDIX A — GLOSSARY
 
 # ============================================================================
@@ -10846,6 +10997,9 @@ Machine-readable index: [`docs/architecture/architecture.yaml`](architecture/arc
 | **Kernel** | Heart of DAOS. Owns orchestration, registries, lifecycle. Never owns business logic. |
 | **Microkernel** | Minimal Kernel core (Part 39). Execution only — no business intelligence. |
 | **Extension** | Platform or provider loaded by Kernel at runtime. Never imported by Kernel. |
+| **Task** | Atomic execution unit inside DAOS (Part 40). Contains input, platform, specification, timeout, priority, dependencies, expected output. |
+| **Task Graph** | DAG of Tasks representing an entire project execution. |
+| **TaskResult** | Outcome of a Task — status, output, metrics, duration, warnings, errors, trace. |
 | **Platform** | Independent architectural component. Owns one responsibility. Produces one Specification. |
 | **Specification** | Immutable DTO exchanged between platforms. |
 | **ProductBrief** | Initial project description. Created once. |
@@ -10920,6 +11074,7 @@ Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architect
 | **DAOS Kernel** | Part 37 |
 | **Constitution** | Part 38 |
 | **Microkernel Architecture** | Part 39 |
+| **Execution Model** | Part 40 |
 
 ---
 

@@ -1542,6 +1542,23 @@ directives:
     success:
       microkernel_architecture_documented: true
 
+  - id: TSK-001
+    title: DAOS Execution Model (Part 40)
+    priority: Critical
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/Architecture_Bible.md
+        - docs/architecture/architecture.yaml
+    requires:
+      - KNL-001
+      - MKR-001
+    checks:
+      - validate_yaml
+    success:
+      execution_model_documented: true
+
   - id: DIR-001
     title: Directive Registry
     priority: HIGH
@@ -1780,6 +1797,9 @@ glossary:
     Kernel: Heart of DAOS. Owns orchestration, registries, lifecycle. Never owns business logic.
     Microkernel: Minimal Kernel core (Part 39). Execution only — no business intelligence.
     Extension: Platform or provider loaded by Kernel at runtime. Never imported by Kernel.
+    Task: Atomic execution unit inside DAOS (Part 40). Contains input, platform, specification, timeout, priority, dependencies, expected output.
+    Task Graph: DAG of Tasks representing an entire project execution.
+    TaskResult: Outcome of a Task — status, output, metrics, duration, warnings, errors, trace.
     Platform: Independent architectural component. Owns one responsibility. Produces one Specification.
     Specification: Immutable DTO exchanged between platforms.
     ProductBrief: Initial project description. Created once.
@@ -1836,6 +1856,7 @@ architecture_index:
   DAOS Kernel: "Part 37"
   Constitution: "Part 38"
   Microkernel Architecture: "Part 39"
+  Execution Model: "Part 40"
 
 implementation_index:
   prefixes:
@@ -2116,6 +2137,64 @@ daos_microkernel:
     without_kernel_restart: true
   success_criteria:
     - kernel_uptime_independent_from_platform_stability
+
+daos_execution_model:
+  part: 40
+  purpose: everything inside DAOS executes as Tasks
+  execution_unit: Task
+  task_contains:
+    - input
+    - platform
+    - specification
+    - timeout
+    - priority
+    - dependencies
+    - expected_output
+  lifecycle:
+    - created
+    - queued
+    - running
+    - validated
+    - committed
+    - completed
+  task_graph:
+    - project
+    - task_graph
+    - platform_tasks
+    - provider_tasks
+    - asset_tasks
+  task_types:
+    - research
+    - knowledge
+    - commercial
+    - creative
+    - visual
+    - render
+    - vision
+    - learning
+    - asset
+  task_priority:
+    - critical
+    - high
+    - medium
+    - low
+    - background
+  task_result:
+    - status
+    - output
+    - metrics
+    - duration
+    - warnings
+    - errors
+    - trace
+  failed_task:
+    steps:
+      - retry
+      - rollback
+      - alternative_strategy
+      - abort
+  success_criteria:
+    - entire_project_represented_as_task_graph
 
 volume_1:
   status: complete

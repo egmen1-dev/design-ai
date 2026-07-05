@@ -64,6 +64,7 @@ Architecture Bible → ADR → RFC → Implementation Directive → Pull Request
 | KNL-001 | DAOS Kernel (Part 37) | Critical | Completed | — | — | 1 |
 | CON-001 | Design AI Constitution (Part 38) | Maximum | Completed | — | — | — |
 | MKR-001 | DAOS Microkernel Architecture (Part 39) | Maximum | Completed | — | — | — |
+| TSK-001 | DAOS Execution Model (Part 40) | Critical | Completed | — | — | — |
 | DTO-001 | Base Contract & Specifications | Critical | Blocked | ADR-002 | RFC-001 | 02 |
 | DTO-002 | ProjectState implementation | Critical | Blocked | ADR-002 | RFC-001 | 02 |
 | RUN-001 | Runtime engine skeleton | Critical | Blocked | — | RFC-002 | 01 |
