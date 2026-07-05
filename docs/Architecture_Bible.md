@@ -216,6 +216,10 @@ Version: 1.0 (Complete — Volume I)
 - [Part 38 — Design AI Constitution](#part-38--design-ai-constitution)
   - [Preamble & Articles I–XX](#preamble)
   - [Directive CON-001](#implementation-directive-con-001)
+- [Part 39 — DAOS Microkernel Architecture](#part-39--daos-microkernel-architecture)
+  - [Microkernel & Extensions](#microkernel)
+  - [Boot, Shutdown & Failure Isolation](#boot-process)
+  - [Directive MKR-001](#implementation-directive-mkr-001)
 - [Appendix A — Glossary](#appendix-a--glossary)
 - [Appendix B — Architecture Index](#appendix-b--architecture-index)
 - [Appendix C — Implementation Index](#appendix-c--implementation-index)
@@ -10649,6 +10653,171 @@ Every architectural decision must move the system closer to that goal.
 
 ---
 
+# PART 39 — DAOS MICROKERNEL ARCHITECTURE
+
+# ============================================================================
+# PART 39
+# DAOS MICROKERNEL ARCHITECTURE
+# ============================================================================
+
+| | |
+|---|---|
+| **Version** | 1.0 |
+| **Priority** | Maximum |
+
+Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `daos_microkernel`
+
+**Related:** Part 37 (DAOS Kernel implementation)
+
+---
+
+## Purpose
+
+DAOS follows **Microkernel Architecture**.
+
+Business intelligence must **never** exist inside the Kernel.
+
+| Layer | Owns |
+|-------|------|
+| **Kernel** | Execution |
+| **Platforms** | Intelligence |
+| **Providers** | Implementation |
+
+---
+
+# MICROKERNEL
+
+Kernel contains **only**:
+
+- Runtime
+- ProjectState
+- Registry
+- Scheduler
+- Execution Graph
+- Cache
+- Metrics
+- Events
+- Configuration
+- Security
+- Version Manager
+
+---
+
+# EXTENSIONS
+
+Everything else is **Extension**:
+
+- Commercial
+- Creative
+- Knowledge
+- Research
+- Vision
+- Learning
+- Marketplace
+- Rendering
+- Providers
+- Assets
+
+---
+
+## MICROKERNEL LAW
+
+**Kernel never imports Extensions.**
+
+Extensions register themselves.
+
+---
+
+# BOOT PROCESS
+
+```
+Load Configuration
+        ↓
+Initialize Kernel
+        ↓
+Load Runtime
+        ↓
+Load Registries
+        ↓
+Load Extensions
+        ↓
+Resolve Dependencies
+        ↓
+Health Check
+        ↓
+Ready
+```
+
+---
+
+# SHUTDOWN
+
+```
+Stop Runtime
+        ↓
+Flush Events
+        ↓
+Flush Metrics
+        ↓
+Persist State
+        ↓
+Unload Extensions
+        ↓
+Shutdown Kernel
+```
+
+---
+
+# FAILURE ISOLATION
+
+```
+Platform Crash
+        ↓
+Unload Platform
+        ↓
+Retry
+        ↓
+Continue Runtime
+```
+
+**Kernel never crashes because Extension crashes.**
+
+---
+
+# HOT RELOAD
+
+Every Platform supports:
+
+- **Unload**
+- **Reload**
+- **Upgrade**
+
+Without restarting Kernel.
+
+---
+
+## IMPLEMENTATION DIRECTIVE MKR-001
+
+| | |
+|---|---|
+| **Priority** | MAXIMUM |
+| **Document** | Part 39 — DAOS Microkernel Architecture |
+| **Machine-readable** | `architecture.yaml` → `daos_microkernel` |
+| **Depends** | KNL-001 (Part 37) |
+| **Status** | Completed |
+
+---
+
+# SUCCESS
+
+Kernel uptime independent from Platform stability.
+
+---
+
+*END OF PART 39*
+
+---
+
 # APPENDIX A — GLOSSARY
 
 # ============================================================================
@@ -10675,6 +10844,8 @@ Machine-readable index: [`docs/architecture/architecture.yaml`](architecture/arc
 | **ProjectState** | Immutable object containing the complete project state. Never partially modified. |
 | **Runtime** | Execution engine. Coordinates platforms. Never makes business decisions. |
 | **Kernel** | Heart of DAOS. Owns orchestration, registries, lifecycle. Never owns business logic. |
+| **Microkernel** | Minimal Kernel core (Part 39). Execution only — no business intelligence. |
+| **Extension** | Platform or provider loaded by Kernel at runtime. Never imported by Kernel. |
 | **Platform** | Independent architectural component. Owns one responsibility. Produces one Specification. |
 | **Specification** | Immutable DTO exchanged between platforms. |
 | **ProductBrief** | Initial project description. Created once. |
@@ -10748,6 +10919,7 @@ Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architect
 | **Architecture Analyzer** | Part 36 |
 | **DAOS Kernel** | Part 37 |
 | **Constitution** | Part 38 |
+| **Microkernel Architecture** | Part 39 |
 
 ---
 

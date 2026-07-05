@@ -1526,6 +1526,22 @@ directives:
     success:
       constitution_documented: true
 
+  - id: MKR-001
+    title: DAOS Microkernel Architecture (Part 39)
+    priority: MAXIMUM
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/Architecture_Bible.md
+        - docs/architecture/architecture.yaml
+    requires:
+      - KNL-001
+    checks:
+      - validate_yaml
+    success:
+      microkernel_architecture_documented: true
+
   - id: DIR-001
     title: Directive Registry
     priority: HIGH
@@ -1762,6 +1778,8 @@ glossary:
     ProjectState: Immutable object containing the complete project state. Never partially modified.
     Runtime: Execution engine. Coordinates platforms. Never makes business decisions.
     Kernel: Heart of DAOS. Owns orchestration, registries, lifecycle. Never owns business logic.
+    Microkernel: Minimal Kernel core (Part 39). Execution only — no business intelligence.
+    Extension: Platform or provider loaded by Kernel at runtime. Never imported by Kernel.
     Platform: Independent architectural component. Owns one responsibility. Produces one Specification.
     Specification: Immutable DTO exchanged between platforms.
     ProductBrief: Initial project description. Created once.
@@ -1817,6 +1835,7 @@ architecture_index:
   Architecture Analyzer: "Part 36"
   DAOS Kernel: "Part 37"
   Constitution: "Part 38"
+  Microkernel Architecture: "Part 39"
 
 implementation_index:
   prefixes:
@@ -2032,6 +2051,71 @@ design_ai_constitution:
     - id: XX
       title: Mission
       principle: World's best commercial design intelligence system
+
+daos_microkernel:
+  part: 39
+  version: "1.0"
+  priority: maximum
+  model: microkernel
+  separation:
+    kernel: execution
+    platforms: intelligence
+    providers: implementation
+  microkernel_contains:
+    - runtime
+    - project_state
+    - registry
+    - scheduler
+    - execution_graph
+    - cache
+    - metrics
+    - events
+    - configuration
+    - security
+    - version_manager
+  extensions:
+    - commercial
+    - creative
+    - knowledge
+    - research
+    - vision
+    - learning
+    - marketplace
+    - rendering
+    - providers
+    - assets
+  microkernel_law: kernel never imports extensions; extensions register themselves
+  boot_process:
+    - load_configuration
+    - initialize_kernel
+    - load_runtime
+    - load_registries
+    - load_extensions
+    - resolve_dependencies
+    - health_check
+    - ready
+  shutdown:
+    - stop_runtime
+    - flush_events
+    - flush_metrics
+    - persist_state
+    - unload_extensions
+    - shutdown_kernel
+  failure_isolation:
+    steps:
+      - platform_crash
+      - unload_platform
+      - retry
+      - continue_runtime
+    rule: kernel never crashes because extension crashes
+  hot_reload:
+    platform_supports:
+      - unload
+      - reload
+      - upgrade
+    without_kernel_restart: true
+  success_criteria:
+    - kernel_uptime_independent_from_platform_stability
 
 volume_1:
   status: complete
