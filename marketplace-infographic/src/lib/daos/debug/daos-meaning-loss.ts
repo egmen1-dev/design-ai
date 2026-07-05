@@ -1,0 +1,389 @@
+import type { DAOSProjectState } from "../core/project-state";
+import type {
+  CommercialSpec,
+  CreativeSpec,
+  RenderBlueprint,
+  VisualBlueprint,
+} from "../contracts/specs";
+import type { DAOSRenderDebugArtifact } from "./render-debug-bridge";
+
+export type DaosMeaningLossSeverity = "warning" | "critical";
+
+export type DaosMeaningLossWarning = {
+  code: string;
+  severity: DaosMeaningLossSeverity;
+  message: string;
+  spec?: string;
+};
+
+export type DaosMeaningLossReport = {
+  missingSpecs: string[];
+  lowConfidenceSpecs: string[];
+  emptyDecisionTraceSpecs: string[];
+  commercialToCreativeLoss: DaosMeaningLossWarning[];
+  creativeToVisualLoss: DaosMeaningLossWarning[];
+  visualToRenderLoss: DaosMeaningLossWarning[];
+  renderPromptRisk: DaosMeaningLossWarning[];
+  renderDebugLoss: DaosMeaningLossWarning[];
+  warnings: DaosMeaningLossWarning[];
+};
+
+const SPEC_KEYS = [
+  "brief",
+  "knowledgeSpec",
+  "commercialSpec",
+  "creativeSpec",
+  "visualBlueprint",
+  "renderBlueprint",
+] as const;
+
+type SpecKey = (typeof SPEC_KEYS)[number];
+
+const PLACEHOLDER_VALUES = new Set([
+  "pending",
+  "unknown",
+  "n/a",
+  "commercial message pending",
+  "scene pending",
+  "composition pending",
+  "lighting pending",
+]);
+
+const LOW_CONFIDENCE_THRESHOLD = 0.6;
+const PROMPT_MIN_LENGTH = 120;
+const PROMPT_MAX_LENGTH = 2500;
+
+function tokenize(text: string): string[] {
+  return text
+    .toLowerCase()
+    .split(/[^a-zа-яё0-9]+/i)
+    .filter((word) => word.length >= 3);
+}
+
+function hasWordOverlap(sourcePhrases: string[], targetText: string): boolean {
+  const targetTokens = new Set(tokenize(targetText));
+  if (targetTokens.size === 0) return false;
+
+  for (const phrase of sourcePhrases) {
+    for (const token of tokenize(phrase)) {
+      if (targetTokens.has(token)) return true;
+    }
+  }
+  return false;
+}
+
+function isEmptyField(value: string | undefined): boolean {
+  if (!value?.trim()) return true;
+  return PLACEHOLDER_VALUES.has(value.trim().toLowerCase());
+}
+
+function specConfidence(spec: { confidence?: { score?: number } } | undefined): number | undefined {
+  return spec?.confidence?.score;
+}
+
+function collectMissingSpecs(state: DAOSProjectState): string[] {
+  return SPEC_KEYS.filter((key) => !state[key]);
+}
+
+function collectLowConfidenceSpecs(state: DAOSProjectState): DaosMeaningLossWarning[] {
+  const warnings: DaosMeaningLossWarning[] = [];
+  const lowConfidenceSpecs: string[] = [];
+
+  for (const key of SPEC_KEYS) {
+    const spec = state[key];
+    if (!spec) continue;
+    const score = specConfidence(spec);
+    if (score !== undefined && score < LOW_CONFIDENCE_THRESHOLD) {
+      lowConfidenceSpecs.push(key);
+      warnings.push({
+        code: "LOW_CONFIDENCE",
+        severity: "warning",
+        message: `${key} confidence ${score.toFixed(2)} is below ${LOW_CONFIDENCE_THRESHOLD}`,
+        spec: key,
+      });
+    }
+  }
+
+  return warnings;
+}
+
+function collectEmptyDecisionTraceSpecs(state: DAOSProjectState): string[] {
+  const empty: string[] = [];
+  for (const key of SPEC_KEYS) {
+    const spec = state[key];
+    if (spec && spec.decisionTrace.length === 0) {
+      empty.push(key);
+    }
+  }
+  return empty;
+}
+
+function analyzeCommercialToCreativeLoss(
+  commercial: CommercialSpec | undefined,
+  creative: CreativeSpec | undefined,
+): DaosMeaningLossWarning[] {
+  if (!commercial?.usp?.length) return [];
+
+  const creativeText = [
+    creative?.concept,
+    creative?.visualHook,
+    creative?.mood,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  if (!creative) {
+    return [
+      {
+        code: "COMMERCIAL_TO_CREATIVE_MISSING",
+        severity: "warning",
+        message: "commercialSpec has USP points but creativeSpec is missing",
+        spec: "creativeSpec",
+      },
+    ];
+  }
+
+  if (!hasWordOverlap(commercial.usp, creativeText)) {
+    return [
+      {
+        code: "COMMERCIAL_TO_CREATIVE_LOSS",
+        severity: "warning",
+        message: "commercialSpec.usp terms do not appear in creativeSpec concept/visualHook/mood",
+        spec: "creativeSpec",
+      },
+    ];
+  }
+
+  return [];
+}
+
+function analyzeCreativeToVisualLoss(
+  creative: CreativeSpec | undefined,
+  visual: VisualBlueprint | undefined,
+): DaosMeaningLossWarning[] {
+  if (!creative?.visualHook?.trim()) return [];
+
+  if (!visual) {
+    return [
+      {
+        code: "CREATIVE_TO_VISUAL_MISSING",
+        severity: "warning",
+        message: "creativeSpec.visualHook is set but visualBlueprint is missing",
+        spec: "visualBlueprint",
+      },
+    ];
+  }
+
+  if (isEmptyField(visual.scene) && isEmptyField(visual.composition)) {
+    return [
+      {
+        code: "CREATIVE_TO_VISUAL_LOSS",
+        severity: "warning",
+        message: "creativeSpec.visualHook is set but visualBlueprint.scene/composition are empty or placeholder",
+        spec: "visualBlueprint",
+      },
+    ];
+  }
+
+  return [];
+}
+
+function inferExpectedRenderStrategy(visual: VisualBlueprint): RenderBlueprint["renderStrategy"] | undefined {
+  const text = `${visual.scene} ${visual.composition} ${visual.lighting}`.toLowerCase();
+  if (/(lifestyle|interior|environment|room|kitchen|outdoor|scene)/.test(text)) {
+    return "integrated_scene";
+  }
+  if (/(studio|white background|isolated|cutout|plain)/.test(text)) {
+    return "background_only";
+  }
+  return undefined;
+}
+
+function analyzeVisualToRenderLoss(
+  visual: VisualBlueprint | undefined,
+  render: RenderBlueprint | undefined,
+): DaosMeaningLossWarning[] {
+  if (!visual) return [];
+  if (isEmptyField(visual.scene) && isEmptyField(visual.composition)) return [];
+
+  if (!render) {
+    return [
+      {
+        code: "VISUAL_TO_RENDER_MISSING",
+        severity: "warning",
+        message: "visualBlueprint is present but renderBlueprint is missing",
+        spec: "renderBlueprint",
+      },
+    ];
+  }
+
+  const expected = inferExpectedRenderStrategy(visual);
+  if (expected && render.renderStrategy !== expected) {
+    return [
+      {
+        code: "VISUAL_TO_RENDER_STRATEGY_MISMATCH",
+        severity: "warning",
+        message: `visualBlueprint implies ${expected} but renderBlueprint uses ${render.renderStrategy}`,
+        spec: "renderBlueprint",
+      },
+    ];
+  }
+
+  if (!render.provider) {
+    return [
+      {
+        code: "VISUAL_TO_RENDER_PROVIDER_MISSING",
+        severity: "warning",
+        message: "visualBlueprint is present but renderBlueprint.provider is empty",
+        spec: "renderBlueprint",
+      },
+    ];
+  }
+
+  return [];
+}
+
+function analyzeRenderPromptRisk(render: RenderBlueprint | undefined): DaosMeaningLossWarning[] {
+  if (!render) return [];
+
+  if (render.promptAllowedOnlyInAdapter !== true) {
+    return [
+      {
+        code: "RENDER_PROMPT_CONTRACT_VIOLATION",
+        severity: "critical",
+        message: "renderBlueprint.promptAllowedOnlyInAdapter must be true",
+        spec: "renderBlueprint",
+      },
+    ];
+  }
+
+  return [];
+}
+
+function analyzeRenderDebugLoss(
+  render: RenderBlueprint | undefined,
+  renderDebug: DAOSRenderDebugArtifact | undefined,
+): DaosMeaningLossWarning[] {
+  const warnings: DaosMeaningLossWarning[] = [];
+  if (!render && !renderDebug) return warnings;
+
+  const hasRenderContext = Boolean(render || renderDebug?.renderRequestSummary || renderDebug?.finalPrompt);
+
+  if (!renderDebug?.provider?.trim() && hasRenderContext) {
+    warnings.push({
+      code: "PROVIDER_MISSING",
+      severity: "warning",
+      message: "render debug artifact has no provider",
+      spec: "renderBlueprint",
+    });
+  }
+
+  if (render && !renderDebug?.finalPrompt) {
+    warnings.push({
+      code: "PROMPT_MISSING",
+      severity: "warning",
+      message: "renderBlueprint exists but finalPrompt is missing in renderDebug",
+      spec: "renderBlueprint",
+    });
+  }
+
+  const promptLength = renderDebug?.promptLength ?? renderDebug?.finalPrompt?.length;
+  if (promptLength !== undefined) {
+    if (promptLength < PROMPT_MIN_LENGTH) {
+      warnings.push({
+        code: "PROMPT_TOO_SHORT",
+        severity: "warning",
+        message: `promptLength ${promptLength} is below ${PROMPT_MIN_LENGTH}`,
+        spec: "renderBlueprint",
+      });
+    }
+    if (promptLength > PROMPT_MAX_LENGTH) {
+      warnings.push({
+        code: "PROMPT_TOO_LONG",
+        severity: "warning",
+        message: `promptLength ${promptLength} exceeds ${PROMPT_MAX_LENGTH}`,
+        spec: "renderBlueprint",
+      });
+    }
+  }
+
+  if ((renderDebug?.modulesIgnored?.length ?? 0) > 0) {
+    warnings.push({
+      code: "MODULES_IGNORED",
+      severity: "warning",
+      message: `render compiler ignored modules: ${renderDebug!.modulesIgnored!.join(", ")}`,
+      spec: "renderBlueprint",
+    });
+  }
+
+  if (renderDebug?.fallbackUsed === true) {
+    warnings.push({
+      code: "FALLBACK_USED",
+      severity: "warning",
+      message: renderDebug.fallbackReason
+        ? `render fallback used: ${renderDebug.fallbackReason}`
+        : "render fallback used",
+      spec: "renderBlueprint",
+    });
+  }
+
+  return warnings;
+}
+
+/** Deterministic loss-of-meaning checks between DAOS specs (no LLM). */
+export function analyzeDaosMeaningLoss(
+  state: DAOSProjectState,
+  renderDebug?: DAOSRenderDebugArtifact,
+): DaosMeaningLossReport {
+  const missingSpecs = collectMissingSpecs(state);
+  const lowConfidenceWarnings = collectLowConfidenceSpecs(state);
+  const lowConfidenceSpecs = lowConfidenceWarnings.map((w) => w.spec!).filter(Boolean);
+  const emptyDecisionTraceSpecs = collectEmptyDecisionTraceSpecs(state);
+
+  const commercialToCreativeLoss = analyzeCommercialToCreativeLoss(
+    state.commercialSpec,
+    state.creativeSpec,
+  );
+  const creativeToVisualLoss = analyzeCreativeToVisualLoss(
+    state.creativeSpec,
+    state.visualBlueprint,
+  );
+  const visualToRenderLoss = analyzeVisualToRenderLoss(
+    state.visualBlueprint,
+    state.renderBlueprint,
+  );
+  const renderPromptRisk = analyzeRenderPromptRisk(state.renderBlueprint);
+  const renderDebugLoss = analyzeRenderDebugLoss(state.renderBlueprint, renderDebug);
+
+  const warnings = [
+    ...lowConfidenceWarnings,
+    ...commercialToCreativeLoss,
+    ...creativeToVisualLoss,
+    ...visualToRenderLoss,
+    ...renderPromptRisk,
+    ...renderDebugLoss,
+  ];
+
+  return {
+    missingSpecs,
+    lowConfidenceSpecs,
+    emptyDecisionTraceSpecs,
+    commercialToCreativeLoss,
+    creativeToVisualLoss,
+    visualToRenderLoss,
+    renderPromptRisk,
+    renderDebugLoss,
+    warnings,
+  };
+}
+
+export function confidenceBySpec(state: DAOSProjectState): Record<SpecKey, number | undefined> {
+  return {
+    brief: specConfidence(state.brief),
+    knowledgeSpec: specConfidence(state.knowledgeSpec),
+    commercialSpec: specConfidence(state.commercialSpec),
+    creativeSpec: specConfidence(state.creativeSpec),
+    visualBlueprint: specConfidence(state.visualBlueprint),
+    renderBlueprint: specConfidence(state.renderBlueprint),
+  };
+}
