@@ -161,6 +161,9 @@ Version: 1.0 (Draft)
   - [Execution Steps 1–10](#execution-steps)
   - [Forbidden & Required Actions](#cursor-must-never)
   - [Migration Report](#migration-report)
+- [Part 25 — Implementation Plan](#part-25--implementation-plan)
+  - [Phase 1–8](#phase-1--platform-core)
+  - [Final Acceptance](#final-acceptance)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -8114,6 +8117,176 @@ Logs directory: `docs/architecture/migration-logs/`
 ---
 
 *END OF PART 24*
+
+---
+
+# PART 25 — IMPLEMENTATION PLAN
+
+# ============================================================================
+# IMPLEMENTATION PLAN
+# ============================================================================
+
+## Purpose
+
+Master implementation roadmap from foundation to production-ready architecture.
+
+Phases are sequential. Each phase completes before the next begins.
+
+Per-phase gates: compilation · tests · architecture validation · migration report (Part 24).
+
+Canonical DSL: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `phases`
+
+---
+
+# PHASE 1 — PLATFORM CORE
+
+| Component | Scope |
+|-----------|-------|
+| Platform Core | `src/lib/platform-core/` |
+| Runtime | `src/lib/runtime/` |
+| Contracts | `src/lib/contracts/` |
+| ProjectState | Immutable state container |
+
+**Maps to:** Part 19 Wave 01–02 · Phase 1 in DSL
+
+**Acceptance:** New architecture compiles. Legacy remains functional. No business logic refactored.
+
+---
+
+# PHASE 2 — KNOWLEDGE
+
+| Component | Scope |
+|-----------|-------|
+| Knowledge | KnowledgeRuntime · KnowledgeQuery · KnowledgeGraph |
+| Research | ResearchSpec pipeline |
+| Marketplace | Marketplace rules and validation data |
+| Genome | Design genome (`src/lib/design/`) |
+| Memory | Memory engine (`src/lib/memory/`) |
+
+**Maps to:** Part 19 Wave 03 · Reuse existing — do NOT rewrite
+
+**Acceptance:** Knowledge Platform produces one immutable `KnowledgeSpec`.
+
+---
+
+# PHASE 3 — COMMERCIAL · CREATIVE · VISUAL
+
+| Platform | Output |
+|----------|--------|
+| Commercial | `CommercialSpec` |
+| Creative | `CreativeSpec` |
+| Visual | `VisualBlueprint` |
+
+**Maps to:** Part 19 Wave 04–06
+
+**Acceptance:** Creative owns concepts only. Visual owns layout/scene. No prompt generation.
+
+---
+
+# PHASE 4 — RENDERING · PROVIDER · VISION
+
+| Component | Scope |
+|-----------|-------|
+| Rendering | RenderGraph · RenderNodes · execute `RenderBlueprint` only |
+| Provider Adapter | Sole prompt compiler (LAW-001) |
+| Vision | Every PNG validated |
+
+**Maps to:** Part 19 Wave 07–08 · RFC-004 · RFC-005
+
+**Acceptance:** Rendering executes only. Prompt isolated in Provider Adapter. Vision mandatory.
+
+---
+
+# PHASE 5 — LEARNING
+
+| Component | Scope |
+|-----------|-------|
+| Learning | Learning Platform |
+| Feedback | Feedback → trainers |
+| Optimization | Confidence and genome trainers |
+
+**Maps to:** Part 19 Wave 09
+
+**Acceptance:** Every completed generation updates knowledge. Returns `LearningReport`.
+
+---
+
+# PHASE 6 — LEGACY CLEANUP
+
+| Task | Scope |
+|------|-------|
+| Legacy Cleanup | Remove `DesignBrief`, duplicate DTOs, old prompt builders |
+| Dead Code | Unused interfaces and modules |
+| Architecture Validation | CI validator enforced (Part 16) |
+
+**Maps to:** Part 19 Wave 10 · Part 16 CI-001
+
+**Acceptance:** Legacy isolated. Zero legacy imports in Runtime.
+
+---
+
+# PHASE 7 — PERFORMANCE
+
+| Component | Scope |
+|-----------|-------|
+| Performance | Baseline profiling |
+| Caching | Knowledge and render caches |
+| Parallel Runtime | DAG parallel execution |
+| GPU Optimization | Render node GPU paths |
+
+**Maps to:** Part 18 Priority 5 (Optimization)
+
+**Acceptance:** No architecture score regression. Measurable latency improvement.
+
+---
+
+# PHASE 8 — EXTENSIBILITY
+
+| Component | Scope |
+|-----------|-------|
+| Plugin SDK | Part 10 SDK-001 |
+| Skills | Skill SDK |
+| External Providers | Provider registry extensions |
+| Marketplace Extensions | Wildberries · Ozon plugins |
+
+**Maps to:** Part 10 · LAW-016–020
+
+**Acceptance:** Platforms register via SDK. No core boundary violations.
+
+---
+
+# FINAL ACCEPTANCE
+
+Migration is **complete** only when **all** criteria are met:
+
+| Criterion | Target |
+|-----------|--------|
+| Architecture Score | ≥ 98 |
+| Coverage | ≥ 95% |
+| Legacy | Isolated |
+| Runtime | Isolated |
+| Contracts | Immutable |
+| Prompt | Isolated (Provider Adapter only) |
+| Vision | Mandatory |
+| Learning | Active |
+| Replay | Supported |
+| Rollback | Supported |
+| DecisionTrace | Complete |
+| ProjectState | Immutable |
+
+---
+
+## IMPLEMENTATION DIRECTIVE PLAN-001
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Create** | Implementation Plan (Part 25), `phases` in `architecture.yaml` |
+| **Acceptance** | All 8 phases documented; final acceptance criteria machine-readable |
+
+---
+
+*END OF PART 25*
 
 ---
 

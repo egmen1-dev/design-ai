@@ -499,6 +499,98 @@ events:
       - Event
       - LearningReport
 
+phases:
+  - id: 1
+    name: Platform Core
+    components:
+      - platform-core
+      - runtime
+      - contracts
+      - ProjectState
+    waves: [1, 2]
+    status: pending
+
+  - id: 2
+    name: Knowledge
+    components:
+      - knowledge
+      - research
+      - marketplace
+      - genome
+      - memory
+    waves: [3]
+    reuse_only: true
+    status: pending
+
+  - id: 3
+    name: Commercial Creative Visual
+    components:
+      - commercial
+      - creative
+      - visual
+    waves: [4, 5, 6]
+    status: pending
+
+  - id: 4
+    name: Rendering Provider Vision
+    components:
+      - rendering
+      - provider-adapter
+      - vision
+    waves: [7, 8]
+    status: pending
+
+  - id: 5
+    name: Learning
+    components:
+      - learning
+      - feedback
+      - optimization
+    waves: [9]
+    status: pending
+
+  - id: 6
+    name: Legacy Cleanup
+    components:
+      - legacy-cleanup
+      - dead-code
+      - architecture-validation
+    waves: [10]
+    status: pending
+
+  - id: 7
+    name: Performance
+    components:
+      - performance
+      - caching
+      - parallel-runtime
+      - gpu-optimization
+    status: pending
+
+  - id: 8
+    name: Extensibility
+    components:
+      - plugin-sdk
+      - skills
+      - external-providers
+      - marketplace-extensions
+    status: pending
+
+final_acceptance:
+  architecture_score_min: 98
+  coverage_min: 95
+  criteria:
+    - legacy_isolated
+    - runtime_isolated
+    - contracts_immutable
+    - prompt_isolated
+    - vision_mandatory
+    - learning_active
+    - replay_supported
+    - rollback_supported
+    - decision_trace_complete
+    - project_state_immutable
+
 waves:
   - id: 1
     name: Platform Core
@@ -576,6 +668,19 @@ directives:
         - docs/architecture/migration-logs/
     checks:
       - compile
+    success:
+      architecture_score_min: 98
+
+  - id: PLAN-001
+    title: Implementation Plan (Phases 1-8)
+    priority: Critical
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/architecture/architecture.yaml
+    checks:
+      - validate_yaml
     success:
       architecture_score_min: 98
 
