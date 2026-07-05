@@ -1310,6 +1310,19 @@ directives:
     success:
       evolution_policy_documented: true
 
+  - id: REL-001
+    title: Release Strategy policy (Part 31)
+    priority: HIGH
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/architecture/architecture.yaml
+    checks:
+      - validate_yaml
+    success:
+      release_policy_documented: true
+
   - id: DIR-001
     title: Directive Registry
     priority: HIGH
@@ -1475,6 +1488,39 @@ evolution:
     minimum_major_releases: 1
   success_criteria:
     - architecture evolves without large rewrites
+
+release:
+  purpose: identical lifecycle for every release
+  lifecycle:
+    - release_candidate
+    - architecture_validation
+    - unit_tests
+    - integration_tests
+    - marketplace_tests
+    - golden_tests
+    - performance_tests
+    - manual_review
+    - release
+  types:
+    - patch
+    - minor
+    - major
+    - architecture
+  architecture_release_requires:
+    - RFC
+    - ADR
+    - migration_guide
+    - architecture_report
+  artifacts:
+    - architecture_report
+    - migration_report
+    - performance_report
+    - compatibility_report
+  rollback:
+    required: true
+    every_release_reversible: true
+  success_criteria:
+    - every release reproducible
 
 cursor_execution:
   purpose: Cursor executes Architecture DSL; must not redesign architecture

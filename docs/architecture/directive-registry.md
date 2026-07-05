@@ -47,6 +47,7 @@ Architecture Bible → ADR → RFC → Implementation Directive → Pull Request
 | REN-002 | Introduce RenderGraph | Critical | Blocked | ADR-004 | RFC-005 | 7 |
 | REN-003 | Remove Prompt ownership (render-engine) | Critical | Blocked | ADR-003 | RFC-004 | 7 |
 | EVO-001 | Evolution Strategy (Part 30) | HIGH | Completed | — | — | — |
+| REL-001 | Release Strategy (Part 31) | HIGH | Completed | — | — | — |
 | DTO-001 | Base Contract & Specifications | Critical | Blocked | ADR-002 | RFC-001 | 02 |
 | DTO-002 | ProjectState implementation | Critical | Blocked | ADR-002 | RFC-001 | 02 |
 | RUN-001 | Runtime engine skeleton | Critical | Blocked | — | RFC-002 | 01 |

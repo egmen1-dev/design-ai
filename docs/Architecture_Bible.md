@@ -189,6 +189,10 @@ Version: 1.0 (Draft)
   - [Evolution Principles](#evolution-principles)
   - [Maturity Model & Current Position](#maturity-model)
   - [Feature Introduction & Deprecation](#feature-introduction)
+- [Part 31 — Release Strategy](#part-31--release-strategy)
+  - [Release Lifecycle](#release-lifecycle)
+  - [Release Types & Architecture Release](#release-types)
+  - [Artifacts & Rollback](#release-artifacts)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -9377,6 +9381,112 @@ Architecture evolves **without large rewrites**.
 ---
 
 *END OF PART 30*
+
+---
+
+# PART 31 — RELEASE STRATEGY
+
+# ============================================================================
+# PART 31
+# RELEASE STRATEGY
+# ============================================================================
+
+## Purpose
+
+Every release follows an **identical lifecycle**.
+
+Canonical DSL: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `release`
+
+---
+
+# RELEASE LIFECYCLE
+
+```
+Release Candidate
+       ↓
+Architecture Validation
+       ↓
+Unit Tests
+       ↓
+Integration Tests
+       ↓
+Marketplace Tests
+       ↓
+Golden Tests
+       ↓
+Performance Tests
+       ↓
+Manual Review
+       ↓
+Release
+```
+
+No stage may be skipped. Aligns with Part 19 wave gates and Part 24 execution protocol (Step 8–9).
+
+---
+
+# RELEASE TYPES
+
+| Type | Scope |
+|------|-------|
+| **Patch** | Bug fixes, no contract changes |
+| **Minor** | Additive features, backward compatible |
+| **Major** | Breaking changes (RFC required) |
+| **Architecture** | Platform, contract, or runtime structural change |
+
+---
+
+# ARCHITECTURE RELEASE
+
+Architecture releases **require**:
+
+- RFC
+- ADR
+- Migration Guide
+- Architecture Report
+
+Aligns with Part 20–22 and LAW-028 (every release stores Architecture Report).
+
+---
+
+# RELEASE ARTIFACTS
+
+Every release produces:
+
+| Artifact | Purpose |
+|----------|---------|
+| **Architecture Report** | Score, violations, compliance |
+| **Migration Report** | Files changed, remaining tasks (Part 24) |
+| **Performance Report** | Latency, registry lookup, render timings |
+| **Compatibility Report** | Adapter status, deprecated APIs |
+
+---
+
+# ROLLBACK
+
+Every release **must be reversible**.
+
+Rollback procedure documented per Implementation Directive. Legacy adapters remain until deprecation policy completes (Part 30).
+
+---
+
+# SUCCESS
+
+Every release **reproducible**.
+
+---
+
+## IMPLEMENTATION DIRECTIVE REL-001
+
+| | |
+|---|---|
+| **Priority** | HIGH |
+| **Create** | Release policy in `architecture.yaml` |
+| **Acceptance** | Release lifecycle and artifacts machine-readable |
+
+---
+
+*END OF PART 31*
 
 ---
 
