@@ -348,8 +348,8 @@ export function mapEngineConflict(conflict: BlueprintConflict): PlannedConsensus
 export function planRetryTargets(conflicts: PlannedConsensusConflict[]): string[] {
   const targets = new Set<string>();
   for (const conflict of conflicts) {
-    for (const module of conflict.modules) {
-      const mapped = RETRY_TARGET_MAP[module];
+    for (const mod of conflict.modules) {
+      const mapped = RETRY_TARGET_MAP[mod];
       if (mapped) {
         for (const target of mapped) targets.add(target);
       }

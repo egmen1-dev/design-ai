@@ -152,7 +152,7 @@ function evidenceLevelFromSources(sources: DesignKnowledgeRule["evidenceSources"
 }
 
 export function knowledgeObjectFromRule(rule: DesignKnowledgeRule, now = Date.now()): KnowledgeObject {
-  const module = DOMAIN_TO_MODULE[rule.domain] ?? KnowledgeModule.DESIGN;
+  const knowledgeModule = DOMAIN_TO_MODULE[rule.domain] ?? KnowledgeModule.DESIGN;
   const category = DOMAIN_TO_CATEGORY[rule.domain] ?? KnowledgeCategory.DESIGN;
   const evidenceLevel = evidenceLevelFromSources(rule.evidenceSources);
 
@@ -187,7 +187,7 @@ export function knowledgeObjectFromRule(rule: DesignKnowledgeRule, now = Date.no
     id: rule.id,
     type: "design_rule",
     category,
-    module,
+    module: knowledgeModule,
     title: rule.preference.replace(/_/g, " "),
     description: rule.reason,
     rules,
@@ -474,11 +474,11 @@ export function validateKnowledgeConsistency(
   }
 
   const modules = new Set(Object.values(graph.objects).map((o) => o.module));
-  for (const module of KNOWLEDGE_ENGINE_MODULES) {
-    if (module === KnowledgeModule.LEARNING || module === KnowledgeModule.ANTI_PATTERN_LIBRARY) {
+  for (const mod of KNOWLEDGE_ENGINE_MODULES) {
+    if (mod === KnowledgeModule.LEARNING || mod === KnowledgeModule.ANTI_PATTERN_LIBRARY) {
       continue;
     }
-    if (!modules.has(module) && module !== KnowledgeModule.COLOR && module !== KnowledgeModule.TYPOGRAPHY) {
+    if (!modules.has(mod) && mod !== KnowledgeModule.COLOR && mod !== KnowledgeModule.TYPOGRAPHY) {
       // seed graph may not populate every module yet — only flag if zero objects for core modules
     }
   }
