@@ -26,6 +26,7 @@ Architecture Bible → ADR → RFC → Implementation Directive → Pull Request
 | ID | Title | Priority | Status | ADR | RFC | Wave |
 |----|-------|----------|--------|-----|-----|------|
 | ADR-001 | Create `docs/architecture/adr/` | HIGH | Completed | — | — | — |
+| RFC-000 | Design AI Operating System (RFC-000) | Maximum | Completed | — | — | — |
 | RFC-001 | Create `docs/rfc/` | MEDIUM | Completed | — | — | — |
 | DIR-001 | Directive Registry | HIGH | Completed | — | — | — |
 | DSL-001 | Architecture DSL (`architecture.yaml`) | HIGH | Completed | — | — | — |
@@ -33,6 +34,44 @@ Architecture Bible → ADR → RFC → Implementation Directive → Pull Request
 | PLAN-001 | Implementation Plan (Part 25, Phases 1–8) | CRITICAL | Completed | — | — | — |
 | REP-001 | Canonical repository structure (Part 26) | HIGH | Blocked | — | — | 1 |
 | REP-002 | Normalize repository structure v2 (Part 27) | HIGH | Refactor | — | — | 1 |
+| PC-001 | Create ProjectState (Part 28) | Critical | Completed | ADR-002 | RFC-001 | 1 |
+| PC-002 | Create Architecture Registry | Critical | Completed | — | RFC-002 | 1 |
+| PC-003 | Create Version Manager | Critical | Completed | — | — | 1 |
+| PC-004 | Create Configuration Manager | Critical | Completed | — | — | 1 |
+| PC-005 | Replace object passing with ProjectState | Critical | In Progress | ADR-002 | RFC-001 | 1 |
+| DSP-001 | Replace DesignBrief with CreativeSpec (Part 29) | Critical | Blocked | — | — | 5 |
+| DSP-002 | Move Scene Planner to Visual Platform | High | Blocked | — | — | 6 |
+| DSP-003 | Move Prompt Builder to Provider Adapter | Critical | Blocked | ADR-003 | RFC-004 | 7 |
+| DSP-004 | Remove execution orchestration (design-process) | Critical | Blocked | — | RFC-002 | 5 |
+| GOV-002 | Split Governance and Vision | High | Blocked | — | — | 8 |
+| GOV-003 | ProjectState validation in governance | Critical | Blocked | ADR-002 | RFC-001 | 2 |
+| REN-002 | Introduce RenderGraph | Critical | Blocked | ADR-004 | RFC-005 | 7 |
+| REN-003 | Remove Prompt ownership (render-engine) | Critical | Blocked | ADR-003 | RFC-004 | 7 |
+| EVO-001 | Evolution Strategy (Part 30) | HIGH | Completed | — | — | — |
+| REL-001 | Release Strategy (Part 31) | HIGH | Completed | — | — | — |
+| OBS-001 | Observability (Part 32) | HIGH | Completed | — | — | — |
+| LAW-036 | Final Architecture Laws LAW-036–050 (Part 33) | CRITICAL | Completed | — | — | — |
+| GLO-001 | Glossary (Appendix A) | HIGH | Completed | — | — | — |
+| IDX-001 | Architecture Index (Appendix B) | HIGH | Completed | — | — | — |
+| IMP-001 | Implementation Index (Appendix C) | HIGH | Completed | — | — | — |
+| VOL-001 | Volume I Completion (Appendix D) | CRITICAL | Completed | — | — | — |
+| CRB-001 | Architecture scanner (Part 34) | Critical | Completed | — | — | — |
+| CRB-002 | architecture:scan npm scripts | Critical | Completed | — | — | — |
+| CRB-003 | Scanner read-only policy | Critical | Completed | — | — | — |
+| CTG-001 | Cursor Task Generator (Part 35) | Critical | Completed | — | — | — |
+| CTG-002 | docs/cursor Wave-01..20 | Critical | Completed | — | — | — |
+| CTG-003 | architecture:tasks/waves/plan | Critical | Completed | — | — | — |
+| ANA-001 | Architecture Analyzer (Part 36) | Critical | Completed | — | — | — |
+| KNL-001 | DAOS Kernel (Part 37) | Critical | Completed | — | — | 1 |
+| CON-001 | Design AI Constitution (Part 38) | Maximum | Completed | — | — | — |
+| MKR-001 | DAOS Microkernel Architecture (Part 39) | Maximum | Completed | — | — | — |
+| TSK-001 | DAOS Execution Model (Part 40) | Critical | Completed | — | — | — |
+| MSG-001 | DAOS Message Bus (Part 41) | Critical | Completed | — | — | — |
+| CTX-001 | DAOS Execution Context (Part 42) | Critical | Completed | — | — | — |
+| RDM-001 | Fixed Roadmap (Part 44) | Maximum | Completed | — | — | — |
+| W1-001 | Wave 1 Foundation (Part 45) | Maximum | In Progress | — | RFC-000 | 1 |
+| DEV-001 | Development Principles (Part 46) | Maximum | Completed | — | — | — |
+| ENG-001 | DAOS Engineering Manifesto (Part 47) | Maximum | Completed | — | — | — |
 | DTO-001 | Base Contract & Specifications | Critical | Blocked | ADR-002 | RFC-001 | 02 |
 | DTO-002 | ProjectState implementation | Critical | Blocked | ADR-002 | RFC-001 | 02 |
 | RUN-001 | Runtime engine skeleton | Critical | Blocked | — | RFC-002 | 01 |

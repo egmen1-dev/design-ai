@@ -31,6 +31,8 @@ export type RegenerateBackgroundInput = {
   legacyPrompt: string;
   legacyStyle?: InfographicStyle;
   decisionLog?: string[];
+  /** DAOS Wave 11 — advisory metadata only (ignored unless DAOS_RENDER_CONTEXT=1) */
+  daosContext?: import("@/lib/daos/adapters/render-engine-context-adapter").DAOSRenderEngineContextSummary;
 };
 
 export type RegenerateBackgroundResult = {
@@ -70,7 +72,10 @@ export async function regenerateMarketplaceBackground(
           modelOverride: modelId,
           lockModel: true,
           qualityInput: input.qualityInput,
-        } satisfies RenderWithRetryInput);
+          ...(input.daosContext ? { daosContext: input.daosContext } : {}),
+        } satisfies RenderWithRetryInput & {
+          daosContext?: import("@/lib/daos/adapters/render-engine-context-adapter").DAOSRenderEngineContextSummary;
+        });
 
         const adapterPrompt =
           engine.selectedAttempt.result?.compiled.prompt ?? "v17 background";
