@@ -120,6 +120,12 @@ Version: 1.0 (Draft)
   - [Logging, Errors, Events](#logging-standard)
   - [STD-001–STD-002](#implementation-directive-std-001)
   - [LAW-023–LAW-025](#new-law-1)
+- [Part 16 — Architecture Validation & CI](#part-16--architecture-validation--ci)
+  - [Architecture Validator](#architecture-validator)
+  - [Validation Levels & Checks](#validation-levels)
+  - [CI Pipeline](#ci-pipeline)
+  - [CI-001–CI-003](#implementation-directive-ci-001)
+  - [LAW-026–LAW-030](#new-law-2)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -378,6 +384,36 @@ Architecture violations fail CI.
 ## LAW-025
 
 Every merge request must pass Architecture Validation.
+
+---
+
+## LAW-026
+
+Architecture validation is mandatory.
+
+---
+
+## LAW-027
+
+No Pull Request may bypass Architecture Validation.
+
+---
+
+## LAW-028
+
+Every Release stores Architecture Report.
+
+---
+
+## LAW-029
+
+Every architectural violation receives unique identifier.
+
+---
+
+## LAW-030
+
+Architecture Score below target blocks production deployment.
 
 ---
 
@@ -6201,6 +6237,304 @@ Every merge request must pass Architecture Validation.
 
 ---
 
+# PART 16 — ARCHITECTURE VALIDATION & CI
+
+# ============================================================================
+# PART 16
+# ARCHITECTURE VALIDATION & CI
+# ============================================================================
+
+## Purpose
+
+Architecture must be enforced automatically.
+
+Developer discipline is not sufficient.
+
+Every commit, merge request and release must pass Architecture Validation.
+
+Architecture becomes executable.
+
+---
+
+# ARCHITECTURE VALIDATOR
+
+The validator runs automatically.
+
+```
+Source Code
+  ↓
+AST Analysis
+  ↓
+Dependency Analysis
+  ↓
+Architecture Rules
+  ↓
+Project Report
+  ↓
+PASS / FAIL
+```
+
+No manual review required.
+
+---
+
+# VALIDATION LEVELS
+
+| Level | Scope |
+|-------|-------|
+| 1 | Formatting |
+| 2 | Naming |
+| 3 | Dependencies |
+| 4 | Architecture |
+| 5 | Runtime |
+| 6 | Performance |
+| 7 | Marketplace Validation |
+
+---
+
+# ARCHITECTURE CHECKS
+
+Validator checks:
+
+- ✓ Platform boundaries
+- ✓ Contracts
+- ✓ Runtime
+- ✓ Registry
+- ✓ Provider Adapter
+- ✓ ProjectState
+- ✓ DecisionTrace
+- ✓ Asset Platform
+- ✓ Design DNA
+- ✓ Design Genome
+
+---
+
+# DEPENDENCY VALIDATION
+
+### Forbidden
+
+| From | To |
+|------|-----|
+| Platform | Platform |
+| Runtime | Commercial |
+| Commercial | Rendering |
+| Creative | Provider |
+
+### Allowed
+
+```
+Platform → Contracts → Runtime → SDK
+```
+
+---
+
+# PROMPT VALIDATION
+
+Prompt may exist **only** inside Provider Adapter.
+
+Every other Prompt creation → **FAIL**
+
+---
+
+# DTO VALIDATION
+
+Every DTO must inherit **BaseSpecification**.
+
+Missing inheritance → **FAIL**
+
+---
+
+# PROJECT STATE VALIDATION
+
+Every Platform reads **ProjectState**.
+
+Every Platform returns **Specification**.
+
+Direct mutation → **FAIL**
+
+---
+
+# LEGACY VALIDATION
+
+**Cannot import `legacy/`:** Runtime, Platform
+
+**Allowed:** Provider Adapter, Legacy Adapters
+
+---
+
+# PROVIDER VALIDATION
+
+Every Provider implements **IProvider**:
+
+- `supports()`
+- `compile()`
+- `render()`
+- `health()`
+- `estimateCost()`
+
+Missing methods → **FAIL**
+
+---
+
+# PLUGIN VALIDATION
+
+Validated: Plugin Manifest · SDK Version · Permissions · Dependencies
+
+---
+
+# PERFORMANCE VALIDATION
+
+Every platform reports: Execution Time · Memory · Retries · Warnings · Errors · Confidence
+
+If metrics missing → **FAIL**
+
+---
+
+# TEST VALIDATION
+
+Every Platform requires:
+
+- Unit Tests
+- Integration Tests
+- Architecture Tests
+- Golden Tests
+- Performance Tests
+
+**Coverage >= 90%**
+
+---
+
+# CI PIPELINE
+
+```
+Commit
+  ↓ Lint
+  ↓ Type Check
+  ↓ Architecture Validation
+  ↓ Unit Tests
+  ↓ Integration Tests
+  ↓ Golden Tests
+  ↓ Performance Tests
+  ↓ Marketplace Tests
+  ↓ Package
+  ↓ Deploy
+```
+
+---
+
+# ARCHITECTURE REPORT
+
+Every CI creates report.
+
+**Example:**
+
+| Metric | Score |
+|--------|-------|
+| Architecture | 97 |
+| Dependency | 100 |
+| Runtime | 95 |
+| Contracts | 100 |
+| Legacy | 98 |
+| Performance | 94 |
+| **Overall** | **97** |
+
+---
+
+# IMPLEMENTATION DIRECTIVE CI-001
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Create** | `architecture-validator/` |
+
+**Files:**
+
+- `DependencyValidator.ts`
+- `ContractValidator.ts`
+- `PromptValidator.ts`
+- `RuntimeValidator.ts`
+- `ProviderValidator.ts`
+- `ArchitectureReporter.ts`
+
+---
+
+# IMPLEMENTATION DIRECTIVE CI-002
+
+| | |
+|---|---|
+| **Priority** | HIGH |
+
+GitHub Actions: Architecture Validation must run **before merge**.
+
+---
+
+# IMPLEMENTATION DIRECTIVE CI-003
+
+| | |
+|---|---|
+| **Priority** | HIGH |
+
+**Block Merge** if Architecture Score **< 95**
+
+---
+
+# NEW LAW
+
+## LAW-026
+
+Architecture validation is mandatory.
+
+---
+
+## LAW-027
+
+No Pull Request may bypass Architecture Validation.
+
+---
+
+## LAW-028
+
+Every Release stores Architecture Report.
+
+---
+
+## LAW-029
+
+Every architectural violation receives unique identifier.
+
+---
+
+## LAW-030
+
+Architecture Score below target blocks production deployment.
+
+---
+
+# AUDIT NOTES
+
+| | |
+|---|---|
+| Migration Impact | **LOW** |
+| Reason | Governance layer only — existing business logic unchanged |
+
+---
+
+# SUCCESS CRITERIA
+
+- ✓ Automatic architecture validation
+- ✓ Dependency enforcement
+- ✓ Prompt isolation
+- ✓ Runtime isolation
+- ✓ Provider validation
+- ✓ CI integration
+- ✓ Merge protection
+
+---
+
+*END OF PART 16*
+
+---
+
 # APPENDIX A — REPOSITORY IMPLEMENTATION REFERENCE
 
 > Практическая привязка Part 1 (канон) и Part 2 (аудит) к текущему коду репозитория `design-ai`.  
@@ -6593,4 +6927,4 @@ pm2 logs marketplace-infographic --lines 50
 
 ---
 
-*Architecture Bible — living document. Part 1 is canonical law (LAW-001–025). Parts 2–15 define audit, pipeline, platforms, runtime, contracts, assets, engineering standards, migration, CEO, SDK, and orchestration. Appendix A tracks repository implementation.*
+*Architecture Bible — living document. Part 1 is canonical law (LAW-001–030). Parts 2–16 define audit, pipeline, platforms, runtime, contracts, assets, engineering standards, CI validation, migration, CEO, SDK, and orchestration. Appendix A tracks repository implementation.*
