@@ -2,7 +2,7 @@
 
 > Architecture Bible
 
-Version: 1.0 (Draft)
+Version: 1.0 (Complete — Volume I)
 
 Продакшен: **https://design-ai.shop**  
 Обновлено: 2026-07-05
@@ -202,7 +202,8 @@ Version: 1.0 (Draft)
 - [Appendix A — Glossary](#appendix-a--glossary)
 - [Appendix B — Architecture Index](#appendix-b--architecture-index)
 - [Appendix C — Implementation Index](#appendix-c--implementation-index)
-- [Appendix D — Repository Implementation Reference](#appendix-d--repository-implementation-reference)
+- [Appendix D — Volume I Completion](#appendix-d--volume-i-completion)
+- [Appendix E — Repository Implementation Reference](#appendix-e--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
   - [Future Architecture (code map)](#future-architecture-code-map)
@@ -9893,11 +9894,126 @@ Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architect
 
 ---
 
-# APPENDIX C — REPOSITORY IMPLEMENTATION REFERENCE
+# APPENDIX C — IMPLEMENTATION INDEX
+
+# ============================================================================
+# APPENDIX C
+# IMPLEMENTATION INDEX
+# ============================================================================
+
+Directive prefix reference and execution order.
+
+Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `implementation_index`
+
+---
+
+## Directive Prefixes
+
+| Prefix | Domain |
+|--------|--------|
+| **PC** | Platform Core |
+| **RUN** | Runtime |
+| **DTO** | Contracts |
+| **CRE** | Creative |
+| **VIS** | Visual |
+| **REN** | Rendering |
+| **GOV** | Governance |
+| **KNOW** | Knowledge |
+| **AST** | Assets |
+| **SDK** | Platform SDK |
+| **CEO** | Execution Strategy |
+| **CI** | Architecture Validation |
+| **RFC** | Architecture Evolution |
+| **ADR** | Decision Records |
+
+---
+
+## Execution Order
+
+```
+PC
+ ↓
+RUN
+ ↓
+DTO
+ ↓
+KNOW
+ ↓
+COM
+ ↓
+CRE
+ ↓
+VIS
+ ↓
+REN
+ ↓
+VISION
+ ↓
+LEARN
+ ↓
+LEGACY
+```
+
+Aligns with Part 19 Implementation Playbook and Part 25 Implementation Plan.
+
+---
+
+*END OF APPENDIX C*
+
+---
+
+# APPENDIX D — VOLUME I COMPLETION
+
+# ============================================================================
+# APPENDIX D
+# VOLUME I COMPLETION
+# ============================================================================
+
+| | |
+|---|---|
+| **Architecture Bible Version** | 1.0 |
+| **Status** | Complete |
+| **Architecture Status** | Stable |
+| **Migration Status** | Ready |
+| **Cursor Status** | Not Ready |
+
+### Reason
+
+**Code Rewrite Bible** required.
+
+---
+
+## Next Document
+
+| | |
+|---|---|
+| **Document** | [`Code_Rewrite_Bible.md`](Code_Rewrite_Bible.md) |
+| **Purpose** | Describe migration of every important source file. No architectural theory. Implementation only. |
+
+---
+
+## Expected Size
+
+| Document | Pages |
+|----------|-------|
+| Architecture Bible | ≈ 400–700 |
+| Code Rewrite Bible | ≈ 1000–2000 |
+
+---
+
+# END OF VOLUME I
+
+---
+
+*END OF APPENDIX D*
+
+---
+
+# APPENDIX E — REPOSITORY IMPLEMENTATION REFERENCE
 
 > Практическая привязка Part 1 (канон) и Part 2 (аудит) к текущему коду репозитория `design-ai`.  
 > Это **не** Part 2 — справочник по реализации, не дублирует аудит.  
-> Ранее **Appendix A**, затем **Appendix B** — переименован после добавления Glossary и Architecture Index.
+> Ранее **Appendix A** → **B** → **C** → **D** — переименован по мере добавления Glossary, Index, Implementation Index, Volume I Completion.
 
 ---
 
@@ -10286,4 +10402,4 @@ pm2 logs marketplace-infographic --lines 50
 
 ---
 
-*Architecture Bible — living document. Parts 1–33 define canonical law (LAW-001–050). **Appendix A** — Glossary. **Appendix B** — Architecture Index. **Appendix C** — repository implementation reference.*
+*Architecture Bible — living document. Parts 1–33 (LAW-001–050). **Appendix A** — Glossary. **Appendix B** — Architecture Index. **Appendix C** — Implementation Index. **Appendix D** — repository implementation reference.*

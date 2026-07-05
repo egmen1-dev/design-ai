@@ -1394,6 +1394,20 @@ directives:
     success:
       architecture_index_documented: true
 
+  - id: IMP-001
+    title: Implementation Index (Appendix C)
+    priority: HIGH
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/Architecture_Bible.md
+        - docs/architecture/architecture.yaml
+    checks:
+      - validate_yaml
+    success:
+      implementation_index_documented: true
+
   - id: DIR-001
     title: Directive Registry
     priority: HIGH
@@ -1707,6 +1721,18 @@ implementation_index:
     - VISION
     - LEARN
     - LEGACY
+
+volume_1:
+  status: complete
+  version: "1.0"
+  architecture_status: stable
+  migration_status: ready
+  cursor_status: not_ready
+  cursor_not_ready_reason: Code Rewrite Bible required
+  next_document: docs/Code_Rewrite_Bible.md
+  expected_pages:
+    architecture_bible: "400-700"
+    code_rewrite_bible: "1000-2000"
 
 cursor_execution:
   purpose: Cursor executes Architecture DSL; must not redesign architecture
