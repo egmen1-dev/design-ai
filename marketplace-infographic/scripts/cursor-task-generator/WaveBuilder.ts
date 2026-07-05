@@ -181,7 +181,7 @@ const WAVE_TEMPLATES: Record<number, Template[]> = {
       priority: "Critical",
       estimatedHours: 4,
       dependsOn: ["TASK-150"],
-      files: ["docs/Architecture_Bible.md"],
+      files: ["docs/DAOS_Specification.md"],
       acceptance: ["All release artifacts", "Rollback documented"],
       rollback: ["Revert release tag"],
       architectureRef: "Part 31",

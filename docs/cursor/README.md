@@ -1,7 +1,7 @@
 # Cursor Implementation Plan
 
 > Generated: 2026-07-05T14:46:26.170Z  
-> Input: Architecture_Bible.md + Code_Rewrite_Bible.md + Repository Analysis
+> Input: DAOS_Specification.md + Code_Rewrite_Bible.md + Repository Analysis
 
 ## Waves
 

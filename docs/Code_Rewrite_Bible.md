@@ -4,7 +4,7 @@
 
 Generated: 2026-07-05T14:44:26.343Z  
 Scanner root: `/workspace/marketplace-infographic`  
-Architecture Bible: [Architecture_Bible.md](Architecture_Bible.md) Part 34
+Architecture Bible: [DAOS_Specification.md](DAOS_Specification.md) Part 34
 
 ---
 

@@ -29,7 +29,7 @@
 
 ### Files
 
-- `docs/Architecture_Bible.md`
+- `docs/DAOS_Specification.md`
 
 ### Acceptance
 

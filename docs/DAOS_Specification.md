@@ -1,6 +1,6 @@
 # DESIGN AI OPERATING SYSTEM
 
-> Architecture Bible
+> DAOS Specification
 
 Version: 1.0 (Complete — Volume I)
 
@@ -8672,7 +8672,7 @@ Temporary assets only. Not source of truth.
 
 ```
 docs/
-  Architecture_Bible.md
+  DAOS_Specification.md
   architecture/
     adr/
     architecture.yaml
@@ -8685,7 +8685,7 @@ docs/
 
 | Path | Content |
 |------|---------|
-| `docs/Architecture_Bible.md` | Canonical human-readable architecture |
+| `docs/DAOS_Specification.md` | Canonical human-readable architecture |
 | `docs/architecture/adr/` | Architecture Decision Records |
 | `docs/rfc/` | Request for Comments |
 | `docs/migration/` | Migration reports and plans |
@@ -8749,7 +8749,7 @@ marketplace-infographic/
 └── next.config.js
 ```
 
-> **Monorepo note:** `docs/Architecture_Bible.md` lives at repository root `docs/` (design-ai). App-specific docs may mirror under `marketplace-infographic/docs/`.
+> **Monorepo note:** `docs/DAOS_Specification.md` lives at repository root `docs/` (design-ai). App-specific docs may mirror under `marketplace-infographic/docs/`.
 
 ---
 
@@ -8887,7 +8887,7 @@ tests/
 
 ```
 docs/
-├── Architecture_Bible.md
+├── DAOS_Specification.md
 ├── architecture/adr/
 ├── rfc/
 ├── migration/
@@ -10034,7 +10034,7 @@ Cursor must **never interpret architecture** — Cursor executes implementation.
 ## Input
 
 ```
-Architecture_Bible.md + Code_Rewrite_Bible.md + Repository Analysis
+DAOS_Specification.md + Code_Rewrite_Bible.md + Repository Analysis
                     ↓
            Cursor Task Generator
 ```
@@ -11249,7 +11249,7 @@ Turn current Architecture Bible into **canonical specification**.
 
 ## Acceptance
 
-`Architecture_Bible.md` becomes **stable reference**.
+`DAOS_Specification.md` becomes **stable reference**.
 
 ---
 
@@ -11956,7 +11956,7 @@ design-ai/
 ├── .github/workflows/           # CI + Deploy
 ├── DEPLOY.md
 └── docs/
-    └── Architecture_Bible.md    # ← этот файл
+    └── DAOS_Specification.md    # ← этот файл
 ```
 
 ---

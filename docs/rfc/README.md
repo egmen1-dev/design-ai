@@ -2,7 +2,7 @@
 
 RFCs document large architectural changes **before** implementation.
 
-See **Part 21** in [Architecture_Bible.md](../Architecture_Bible.md).
+See **Part 21** in [DAOS_Specification.md](../DAOS_Specification.md).
 
 ## Lifecycle
 

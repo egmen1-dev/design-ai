@@ -1,6 +1,6 @@
 # Design AI Architecture DSL
 # Source of truth — see Architecture Bible Part 23
-# Human-readable docs: docs/Architecture_Bible.md (secondary)
+# Human-readable docs: docs/DAOS_Specification.md (secondary)
 
 version: "1.0"
 
@@ -134,7 +134,7 @@ repository:
   documentation:
     path: docs/
     files:
-      - Architecture_Bible.md
+      - DAOS_Specification.md
     subdirectories:
       - architecture/adr
       - architecture/migration-logs
@@ -1359,7 +1359,7 @@ directives:
     status: completed
     files:
       modify:
-        - docs/Architecture_Bible.md
+        - docs/DAOS_Specification.md
         - docs/architecture/architecture.yaml
     checks:
       - validate_yaml
@@ -1373,7 +1373,7 @@ directives:
     status: completed
     files:
       modify:
-        - docs/Architecture_Bible.md
+        - docs/DAOS_Specification.md
         - docs/architecture/architecture.yaml
     checks:
       - validate_yaml
@@ -1387,7 +1387,7 @@ directives:
     status: completed
     files:
       modify:
-        - docs/Architecture_Bible.md
+        - docs/DAOS_Specification.md
         - docs/architecture/architecture.yaml
     checks:
       - validate_yaml
@@ -1401,7 +1401,7 @@ directives:
     status: completed
     files:
       modify:
-        - docs/Architecture_Bible.md
+        - docs/DAOS_Specification.md
         - docs/architecture/architecture.yaml
     checks:
       - validate_yaml
@@ -1417,7 +1417,7 @@ directives:
       create:
         - docs/Code_Rewrite_Bible.md
       modify:
-        - docs/Architecture_Bible.md
+        - docs/DAOS_Specification.md
     success:
       volume_1_complete: true
 
@@ -1519,7 +1519,7 @@ directives:
     status: completed
     files:
       modify:
-        - docs/Architecture_Bible.md
+        - docs/DAOS_Specification.md
         - docs/architecture/architecture.yaml
     checks:
       - validate_yaml
@@ -1533,7 +1533,7 @@ directives:
     status: completed
     files:
       modify:
-        - docs/Architecture_Bible.md
+        - docs/DAOS_Specification.md
         - docs/architecture/architecture.yaml
     requires:
       - KNL-001
@@ -1549,7 +1549,7 @@ directives:
     status: completed
     files:
       modify:
-        - docs/Architecture_Bible.md
+        - docs/DAOS_Specification.md
         - docs/architecture/architecture.yaml
     requires:
       - KNL-001
@@ -1566,7 +1566,7 @@ directives:
     status: completed
     files:
       modify:
-        - docs/Architecture_Bible.md
+        - docs/DAOS_Specification.md
         - docs/architecture/architecture.yaml
     requires:
       - KNL-001
@@ -1583,7 +1583,7 @@ directives:
     status: completed
     files:
       modify:
-        - docs/Architecture_Bible.md
+        - docs/DAOS_Specification.md
         - docs/architecture/architecture.yaml
     requires:
       - KNL-001
@@ -1603,7 +1603,7 @@ directives:
       create:
         - docs/rfc/RFC-000.md
       modify:
-        - docs/Architecture_Bible.md
+        - docs/DAOS_Specification.md
         - docs/rfc/README.md
     checks:
       - validate_yaml
@@ -1617,7 +1617,7 @@ directives:
     status: completed
     files:
       modify:
-        - docs/Architecture_Bible.md
+        - docs/DAOS_Specification.md
         - docs/architecture/architecture.yaml
     requires:
       - RFC-000
@@ -1637,7 +1637,7 @@ directives:
         - src/lib/contracts/
         - src/lib/runtime/
       modify:
-        - docs/Architecture_Bible.md
+        - docs/DAOS_Specification.md
         - docs/architecture/architecture.yaml
     requires:
       - RDM-001
@@ -2406,7 +2406,7 @@ fixed_roadmap:
         - create_directive_index
         - mark_speculative_as_future
         - mark_mandatory_as_core
-      acceptance: Architecture_Bible.md becomes stable reference
+      acceptance: DAOS_Specification.md becomes stable reference
     B:
       name: Core Foundation
       goal: minimal DAOS Core for production migration
@@ -2620,7 +2620,7 @@ volume_1:
 cursor_execution:
   purpose: Cursor executes Architecture DSL; must not redesign architecture
   dsl_path: docs/architecture/architecture.yaml
-  bible_path: docs/Architecture_Bible.md
+  bible_path: docs/DAOS_Specification.md
   directive_registry: docs/architecture/directive-registry.md
   migration_report_template: docs/architecture/migration-report-template.md
   migration_logs_dir: docs/architecture/migration-logs/

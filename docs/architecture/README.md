@@ -2,7 +2,7 @@
 
 Architecture Decision Records (ADRs) document **why** architectural choices were made.
 
-See **Part 20** in [Architecture_Bible.md](../Architecture_Bible.md).
+See **Part 20** in [DAOS_Specification.md](../DAOS_Specification.md).
 
 ## Source of Truth
 

@@ -85,7 +85,7 @@ export function generateMarkdown(result: ScanResult): string {
 
 Generated: ${summary.scannedAt}  
 Scanner root: \`${summary.root}\`  
-Architecture Bible: [Architecture_Bible.md](Architecture_Bible.md) Part 34
+Architecture Bible: [DAOS_Specification.md](DAOS_Specification.md) Part 34
 
 ---
 
