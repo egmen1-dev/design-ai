@@ -157,6 +157,10 @@ Version: 1.0 (Draft)
   - [Design Principles & Root Document](#design-principles)
   - [Platform & Directive Schema](#platform-description)
   - [Validation, State & Events](#architecture-validation)
+- [Part 24 — Cursor Execution Protocol](#part-24--cursor-execution-protocol)
+  - [Execution Steps 1–10](#execution-steps)
+  - [Forbidden & Required Actions](#cursor-must-never)
+  - [Migration Report](#migration-report)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -8001,6 +8005,115 @@ emit:
 ---
 
 *END OF PART 23*
+
+---
+
+# PART 24 — CURSOR EXECUTION PROTOCOL
+
+# ============================================================================
+# CURSOR EXECUTION PROTOCOL
+# ============================================================================
+
+## Purpose
+
+Cursor is **not** allowed to redesign architecture.
+
+Cursor **executes** Architecture DSL.
+
+Canonical DSL: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml)
+
+---
+
+# EXECUTION STEPS
+
+```
+STEP 1   Read Architecture Bible
+           ↓
+STEP 2   Load DSL
+           ↓
+STEP 3   Load Directive
+           ↓
+STEP 4   Locate files
+           ↓
+STEP 5   Estimate reuse
+           ↓
+STEP 6   Create migration plan
+           ↓
+STEP 7   Implement
+           ↓
+STEP 8   Run tests
+           ↓
+STEP 9   Run Architecture Validation
+           ↓
+STEP 10  Generate Migration Report
+```
+
+| Step | Action | Output |
+|------|--------|--------|
+| **1** | Read Architecture Bible | Context for WHY (secondary to DSL) |
+| **2** | Load `architecture.yaml` | Machine-readable source of truth |
+| **3** | Load active Directive from registry | Scoped task with acceptance criteria |
+| **4** | Locate files (`create` / `modify` / `delete`) | File inventory |
+| **5** | Estimate reuse % per platform spec | Reuse vs rewrite decision |
+| **6** | Create migration plan | Steps aligned to Wave and Directive |
+| **7** | Implement | Minimal diff; reuse first |
+| **8** | Run tests | Unit · integration · architecture |
+| **9** | Run Architecture Validation | Validator checks from DSL |
+| **10** | Generate Migration Report | See [Migration Report Template](architecture/migration-report-template.md) |
+
+---
+
+# CURSOR MUST NEVER
+
+- Invent architecture
+- Create new DTO (without ADR + RFC + Directive)
+- Rename contracts
+- Move platform boundaries
+- Skip tests
+- Ignore validation
+
+---
+
+# CURSOR MUST ALWAYS
+
+- Reuse code
+- Read existing implementation
+- Update Architecture Report
+- Update Directive Status (in `directive-registry.md`)
+- Generate Migration Log
+
+---
+
+# MIGRATION REPORT
+
+Every completed Directive execution **must** produce a Migration Report containing:
+
+| Field | Description |
+|-------|-------------|
+| **Modified Files** | Paths changed |
+| **Created Files** | New files |
+| **Deleted Files** | Removed files |
+| **Architecture Score** | Before / after |
+| **Coverage** | Test coverage % |
+| **Remaining Tasks** | Open items for next Directive |
+
+Template: [`docs/architecture/migration-report-template.md`](architecture/migration-report-template.md)
+
+Logs directory: `docs/architecture/migration-logs/`
+
+---
+
+## IMPLEMENTATION DIRECTIVE EXEC-001
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Create** | Cursor Execution Protocol (Part 24), migration report template |
+| **Acceptance** | Every Cursor migration follows 10-step protocol; report generated per Directive |
+
+---
+
+*END OF PART 24*
 
 ---
 

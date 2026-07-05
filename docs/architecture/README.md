@@ -10,6 +10,8 @@ See **Part 20** in [Architecture_Bible.md](../Architecture_Bible.md).
 
 **Secondary:** Architecture Bible, ADRs, RFCs (human-readable)
 
+**Execution:** Part 24 Cursor Execution Protocol — Cursor executes DSL, does not redesign architecture.
+
 ## Index
 
 | ADR | Title | Status |

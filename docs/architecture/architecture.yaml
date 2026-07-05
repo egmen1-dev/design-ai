@@ -565,6 +565,20 @@ directives:
     success:
       architecture_score_min: 98
 
+  - id: EXEC-001
+    title: Cursor Execution Protocol
+    priority: Critical
+    wave: 0
+    status: completed
+    files:
+      create:
+        - docs/architecture/migration-report-template.md
+        - docs/architecture/migration-logs/
+    checks:
+      - compile
+    success:
+      architecture_score_min: 98
+
   - id: DIR-001
     title: Directive Registry
     priority: HIGH
@@ -682,3 +696,55 @@ stop_conditions:
   - runtime_bypassed
   - legacy_imported
   - prompt_outside_provider_adapter
+
+cursor_execution:
+  purpose: Cursor executes Architecture DSL; must not redesign architecture
+  dsl_path: docs/architecture/architecture.yaml
+  bible_path: docs/Architecture_Bible.md
+  directive_registry: docs/architecture/directive-registry.md
+  migration_report_template: docs/architecture/migration-report-template.md
+  migration_logs_dir: docs/architecture/migration-logs/
+  steps:
+    - id: 1
+      action: Read Architecture Bible
+    - id: 2
+      action: Load DSL
+      file: docs/architecture/architecture.yaml
+    - id: 3
+      action: Load Directive
+      file: docs/architecture/directive-registry.md
+    - id: 4
+      action: Locate files
+    - id: 5
+      action: Estimate reuse
+    - id: 6
+      action: Create migration plan
+    - id: 7
+      action: Implement
+    - id: 8
+      action: Run tests
+    - id: 9
+      action: Run Architecture Validation
+    - id: 10
+      action: Generate Migration Report
+  forbidden:
+    - invent architecture
+    - create new DTO without ADR RFC Directive
+    - rename contracts
+    - move platform boundaries
+    - skip tests
+    - ignore validation
+  required:
+    - reuse code
+    - read existing implementation
+    - update Architecture Report
+    - update Directive Status
+    - generate Migration Log
+  migration_report:
+    fields:
+      - modified_files
+      - created_files
+      - deleted_files
+      - architecture_score
+      - coverage
+      - remaining_tasks
