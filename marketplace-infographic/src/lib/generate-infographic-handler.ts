@@ -135,7 +135,7 @@ import {
   resolveDaosGenerationMode,
 } from "@/lib/daos/config/generation-mode";
 import { enrichDaosStateFromPipeline } from "@/lib/daos/adapters/pipeline-enrichment";
-import { createDaosDebugBundle, writeDaosDebugBundle, writeDaosDebugSummary, createDaosDebugSummary, extractDaosRenderDebug } from "@/lib/daos/debug";
+import { createDaosDebugBundle, writeDaosDebugBundle, writeDaosDebugSummary, createDaosDebugSummary, extractDaosRenderDebug, updateDaosDebugIndex } from "@/lib/daos/debug";
 import { evaluateDaosFinalGate } from "@/lib/daos/gates";
 import type { DAOSProjectState } from "@/lib/daos/core/project-state";
 import type { KnowledgeContext } from "@/lib/design/knowledge-engine";
@@ -234,6 +234,7 @@ function daosDiagnosticSummary(
     finalGateScore?: number;
     finalGateBlocking?: false;
     finalGateReasons?: string[];
+    debugIndexPath?: string;
   },
 ) {
   return {
@@ -2185,6 +2186,28 @@ export async function handleGenerateInfographic(
     }
 
     const meaningLossWarnings = daosDebugBundle.meaningLossReport.warnings;
+
+    const daosIndexWrite = await updateDaosDebugIndex({
+      entry: {
+        projectId: enrichedDaosState.projectId,
+        runId: enrichedDaosState.runId,
+        createdAt: daosDebugBundle.createdAt,
+        generationMode: daosGenerationMode,
+        summaryStatus: daosDebugSummary.status,
+        summaryScore: daosDebugSummary.score,
+        finalGateStatus: daosFinalGate.status,
+        finalGateScore: daosFinalGate.score,
+        bundlePath: daosDebugWrite.ok ? daosDebugWrite.relativePath : undefined,
+        summaryPath: daosSummaryWrite.ok ? daosSummaryWrite.relativeSummaryPath : undefined,
+        markdownPath: daosSummaryWrite.ok ? daosSummaryWrite.relativeMarkdownPath : undefined,
+        warnings: meaningLossWarnings.filter((w) => w.severity === "warning").length,
+        criticals: meaningLossWarnings.filter((w) => w.severity === "critical").length,
+      },
+    });
+    if (!daosIndexWrite.ok) {
+      console.warn(daosIndexWrite.error);
+    }
+
     const daosProjectState = daosDiagnosticSummary(enrichedDaosState, {
       debugBundlePath: daosDebugWrite.ok ? daosDebugWrite.relativePath : undefined,
       meaningLossWarningCount: meaningLossWarnings.filter((w) => w.severity === "warning").length,
@@ -2196,6 +2219,7 @@ export async function handleGenerateInfographic(
       finalGateScore: daosFinalGate.score,
       finalGateBlocking: daosFinalGate.blocking,
       finalGateReasons: daosFinalGate.reasons,
+      debugIndexPath: daosIndexWrite.ok ? daosIndexWrite.relativeIndexPath : undefined,
     });
 
     if (process.env.DAOS_DEBUG === "1") {

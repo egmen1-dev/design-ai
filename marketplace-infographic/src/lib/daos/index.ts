@@ -19,3 +19,10 @@ export {
   type DAOSFinalGateResult,
   type DAOSFinalGateStatus,
 } from "./gates";
+export {
+  readDaosDebugIndex,
+  updateDaosDebugIndex,
+  renderDaosDebugIndexMarkdown,
+  type DAOSDebugIndex,
+  type DAOSDebugIndexEntry,
+} from "./debug";

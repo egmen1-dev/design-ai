@@ -27,3 +27,14 @@ export {
   writeDaosDebugSummary,
   type DaosDebugSummaryWriteResult,
 } from "./daos-debug-summary-writer";
+export {
+  readDaosDebugIndex,
+  updateDaosDebugIndex,
+  resolveDaosDebugIndexDir,
+  resolveDaosDebugIndexJsonPath,
+  resolveDaosDebugIndexMarkdownPath,
+  DAOS_DEBUG_INDEX_MAX_ENTRIES,
+  type DAOSDebugIndex,
+  type DAOSDebugIndexEntry,
+} from "./daos-debug-index";
+export { renderDaosDebugIndexMarkdown } from "./daos-debug-index-markdown";

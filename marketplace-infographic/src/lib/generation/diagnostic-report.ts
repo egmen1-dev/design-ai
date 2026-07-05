@@ -111,6 +111,7 @@ export type GenerationDiagnosticReport = {
     finalGateScore?: number;
     finalGateBlocking?: false;
     finalGateReasons?: string[];
+    debugIndexPath?: string;
   };
 };
 
