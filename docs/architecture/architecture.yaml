@@ -1630,10 +1630,11 @@ directives:
     title: Wave 1 Foundation Implementation Plan (Part 45)
     priority: MAXIMUM
     wave: 1
-    status: ready_for_implementation
+    status: in_progress
     estimated_days: "5-10"
     files:
       create:
+        - src/lib/daos/
         - src/lib/contracts/
         - src/lib/runtime/
       modify:
@@ -1649,6 +1650,7 @@ directives:
       - compile
       - unit
       - integration
+      - daos:spec
     success:
       daos_core_beside_legacy: true
       generation_quality_unchanged: true
@@ -2512,7 +2514,8 @@ fixed_roadmap:
 
 wave_1_foundation:
   part: 45
-  status: ready_for_implementation
+  status: in_progress
+  daos_layer: marketplace-infographic/src/lib/daos/
   priority: maximum
   estimated_duration: 5-10 working days
   goal: introduce DAOS Core without breaking existing functionality
@@ -2546,7 +2549,7 @@ wave_1_foundation:
         - PlatformRegistry
       implementation_status: partial
     step_02:
-      path: src/lib/contracts/
+      path: src/lib/daos/contracts/
       modules:
         - BaseSpecification
         - ResearchSpec
@@ -2557,9 +2560,9 @@ wave_1_foundation:
         - RenderBlueprint
         - VisionReport
         - LearningReport
-      implementation_status: pending
+      implementation_status: partial
     step_03:
-      path: src/lib/runtime/
+      path: src/lib/daos/runtime/
       modules:
         - Runtime
         - ExecutionGraph
@@ -2568,7 +2571,7 @@ wave_1_foundation:
         - TaskResult
         - EventBus
         - ExecutionEvents
-      implementation_status: pending
+      implementation_status: partial
     step_04:
       name: adapters
       flow:

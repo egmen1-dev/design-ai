@@ -69,7 +69,7 @@ Architecture Bible → ADR → RFC → Implementation Directive → Pull Request
 | MSG-001 | DAOS Message Bus (Part 41) | Critical | Completed | — | — | — |
 | CTX-001 | DAOS Execution Context (Part 42) | Critical | Completed | — | — | — |
 | RDM-001 | Fixed Roadmap (Part 44) | Maximum | Completed | — | — | — |
-| W1-001 | Wave 1 Foundation (Part 45) | Maximum | Ready For Implementation | — | RFC-000 | 1 |
+| W1-001 | Wave 1 Foundation (Part 45) | Maximum | In Progress | — | RFC-000 | 1 |
 | DEV-001 | Development Principles (Part 46) | Maximum | Completed | — | — | — |
 | ENG-001 | DAOS Engineering Manifesto (Part 47) | Maximum | Completed | — | — | — |
 | DTO-001 | Base Contract & Specifications | Critical | Blocked | ADR-002 | RFC-001 | 02 |

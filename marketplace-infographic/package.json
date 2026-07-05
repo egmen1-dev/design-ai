@@ -17,6 +17,7 @@
     "architecture:plan": "npx tsx scripts/cursor-task-generator/export-plan.ts",
     "architecture:analyze": "npx tsx scripts/architecture-analyzer/run-analyzer.ts",
     "architecture:dashboard": "npx tsx scripts/architecture-analyzer/run-analyzer.ts",
+    "daos:spec": "npx tsx src/lib/daos/daos.spec.ts",
     "postinstall": "npx prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate deploy"
