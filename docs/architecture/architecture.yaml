@@ -1670,6 +1670,23 @@ directives:
     success:
       development_principles_documented: true
 
+  - id: ENG-001
+    title: DAOS Engineering Manifesto (Part 47)
+    priority: MAXIMUM
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/DAOS_Specification.md
+        - docs/architecture/architecture.yaml
+    requires:
+      - DEV-001
+      - CON-001
+    checks:
+      - validate_yaml
+    success:
+      engineering_manifesto_documented: true
+
   - id: DIR-001
     title: Directive Registry
     priority: HIGH
@@ -1976,6 +1993,7 @@ architecture_index:
   Fixed Roadmap: "Part 44"
   Wave 1 Foundation: "Part 45"
   Development Principles: "Part 46"
+  Engineering Manifesto: "Part 47"
 
 implementation_index:
   prefixes:
@@ -2674,6 +2692,60 @@ development_principles:
       name: Knowledge Accumulation
       rule: success strengthens system; failure teaches; nothing discarded without analysis
   final_rule: DAOS must become better after every release
+
+daos_engineering_manifesto:
+  part: 47
+  version: "1.0"
+  status: canonical
+  priority: maximum
+  mission:
+    purpose: continuously improve commercial design intelligence
+    code: implementation medium only
+    architecture: organizational tool only
+    product: generated commercial result
+  engineering_values:
+    - id: "01"
+      name: Commercial impact over technical elegance
+    - id: "02"
+      name: Evidence over assumptions
+    - id: "03"
+      name: Architecture over improvisation
+    - id: "04"
+      name: Reuse over rewrite
+    - id: "05"
+      name: Automation over manual processes
+    - id: "06"
+      name: Continuous learning over static knowledge
+    - id: "07"
+      name: Small safe improvements over large risky rewrites
+    - id: "08"
+      name: Data-driven decisions over subjective opinions
+    - id: "09"
+      name: Platform independence over vendor lock-in
+    - id: "10"
+      name: Long-term maintainability over short-term speed
+  decision_framework:
+    questions:
+      - improves_commercial_image_quality
+      - existing_code_reusable
+      - architecture_remains_simpler
+      - change_measurable
+      - change_rollbackable
+      - change_testable_automatically
+      - project_easier_to_maintain
+    rule: if any answer is no, reconsider implementation
+  code_review_philosophy:
+    - architecture
+    - responsibilities
+    - correctness
+    - style
+  success_definition:
+    - improves_image_quality
+    - preserves_architecture
+    - passes_validation
+    - reduces_technical_debt
+    - increases_maintainability
+  final_principle: every line of code must justify its existence
 
 volume_1:
   status: complete

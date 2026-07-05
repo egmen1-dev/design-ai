@@ -240,6 +240,9 @@ Version: 1.0 (Complete — Volume I)
 - [Part 46 — Development Principles](#part-46--development-principles)
   - [Principles 01–12](#principle-01--product-first)
   - [Directive DEV-001](#implementation-directive-dev-001)
+- [Part 47 — DAOS Engineering Manifesto](#part-47--daos-engineering-manifesto)
+  - [Engineering Values & Decision Framework](#mission)
+  - [Directive ENG-001](#implementation-directive-eng-001)
 - [Appendix A — Glossary](#appendix-a--glossary)
 - [Appendix B — Architecture Index](#appendix-b--architecture-index)
 - [Appendix C — Implementation Index](#appendix-c--implementation-index)
@@ -11806,6 +11809,113 @@ If a release does not improve the system, it should not exist.
 
 ---
 
+# PART 47 — DAOS ENGINEERING MANIFESTO
+
+# ============================================================================
+# PART 47
+# DAOS ENGINEERING MANIFESTO
+# ============================================================================
+
+| | |
+|---|---|
+| **Version** | 1.0 |
+| **Status** | Canonical |
+| **Priority** | Maximum |
+
+Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `daos_engineering_manifesto`
+
+**Related:** Part 46 (Development Principles) · Part 38 (Constitution) · RFC-000
+
+---
+
+# MISSION
+
+The mission of **DAOS Engineering** is not to write code.
+
+The mission is to continuously improve **commercial design intelligence**.
+
+- Code is only one implementation medium
+- Architecture is only one organizational tool
+- **The generated commercial result is the final product**
+
+---
+
+# ENGINEERING VALUES
+
+| Value | Principle |
+|-------|-----------|
+| **01** | Commercial impact over technical elegance |
+| **02** | Evidence over assumptions |
+| **03** | Architecture over improvisation |
+| **04** | Reuse over rewrite |
+| **05** | Automation over manual processes |
+| **06** | Continuous learning over static knowledge |
+| **07** | Small safe improvements over large risky rewrites |
+| **08** | Data-driven decisions over subjective opinions |
+| **09** | Platform independence over vendor lock-in |
+| **10** | Long-term maintainability over short-term speed |
+
+---
+
+# ENGINEERING DECISION FRAMEWORK
+
+Before implementing any feature, answer:
+
+1. Does it improve **commercial image quality**?
+2. Can **existing code** be reused?
+3. Can the architecture remain **simpler**?
+4. Can the change be **measured**?
+5. Can the change be **rolled back**?
+6. Can the change be **tested automatically**?
+7. Will the project become **easier to maintain**?
+
+**If at least one answer is NO — implementation must be reconsidered.**
+
+---
+
+# CODE REVIEW PHILOSOPHY
+
+1. Review **architecture** first
+2. Review **responsibilities** second
+3. Review **correctness** third
+4. Review **style** last
+
+---
+
+# SUCCESS DEFINITION
+
+A successful implementation is one that:
+
+- improves image quality
+- preserves architecture
+- passes validation
+- reduces technical debt
+- increases maintainability
+
+---
+
+# FINAL PRINCIPLE
+
+**Every line of code must justify its existence.**
+
+---
+
+## IMPLEMENTATION DIRECTIVE ENG-001
+
+| | |
+|---|---|
+| **Priority** | MAXIMUM |
+| **Document** | Part 47 — DAOS Engineering Manifesto |
+| **Machine-readable** | `architecture.yaml` → `daos_engineering_manifesto` |
+| **Depends** | DEV-001 · CON-001 |
+| **Status** | Completed |
+
+---
+
+*END OF PART 47*
+
+---
+
 # APPENDIX A — GLOSSARY
 
 # ============================================================================
@@ -11920,6 +12030,7 @@ Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architect
 | **Fixed Roadmap** | Part 44 |
 | **Wave 1 Foundation** | Part 45 |
 | **Development Principles** | Part 46 |
+| **Engineering Manifesto** | Part 47 |
 
 ---
 

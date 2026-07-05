@@ -71,6 +71,7 @@ Architecture Bible → ADR → RFC → Implementation Directive → Pull Request
 | RDM-001 | Fixed Roadmap (Part 44) | Maximum | Completed | — | — | — |
 | W1-001 | Wave 1 Foundation (Part 45) | Maximum | Ready For Implementation | — | RFC-000 | 1 |
 | DEV-001 | Development Principles (Part 46) | Maximum | Completed | — | — | — |
+| ENG-001 | DAOS Engineering Manifesto (Part 47) | Maximum | Completed | — | — | — |
 | DTO-001 | Base Contract & Specifications | Critical | Blocked | ADR-002 | RFC-001 | 02 |
 | DTO-002 | ProjectState implementation | Critical | Blocked | ADR-002 | RFC-001 | 02 |
 | RUN-001 | Runtime engine skeleton | Critical | Blocked | — | RFC-002 | 01 |
