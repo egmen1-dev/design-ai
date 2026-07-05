@@ -175,6 +175,12 @@ Version: 1.0 (Draft)
   - [Platform Core through Legacy](#platform-core)
   - [Tests, Docs & Configuration](#tests)
   - [REP-002 & Repository Laws](#implementation-directive-rep-002)
+- **Volume II — Code Specification**
+- [Part 28 — Platform Core Specification](#part-28--platform-core-specification)
+  - [Responsibilities & Directory](#responsibilities)
+  - [ProjectState & Registry](#project-state)
+  - [Directives PC-001–005](#implementation-directive-pc-001)
+  - [Tests & Success Criteria](#unit-tests)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -8760,6 +8766,239 @@ Primary DSL remains [`docs/architecture/architecture.yaml`](architecture/archite
 ---
 
 *END OF PART 27*
+
+---
+
+# VOLUME II — CODE SPECIFICATION
+
+> Executable architecture. Implementation chapters begin here.
+
+---
+
+# PART 28 — PLATFORM CORE SPECIFICATION
+
+# ============================================================================
+# VOLUME II — CODE SPECIFICATION
+# PART 28 — PLATFORM CORE SPECIFICATION
+# ============================================================================
+
+| | |
+|---|---|
+| **Status** | CRITICAL |
+| **Architecture Priority** | MAXIMUM |
+| **Implementation Wave** | 1 |
+
+## Purpose
+
+Platform Core is the **foundation** of Design AI OS.
+
+Nothing in the system may execute without Platform Core.
+
+Every platform · every provider · every runtime component · every asset — everything depends on Platform Core.
+
+Platform Core contains **ZERO** business logic.
+
+**Implementation:** `marketplace-infographic/src/lib/platform-core/`
+
+---
+
+# RESPONSIBILITIES
+
+Platform registration · Platform discovery · Project lifecycle · Architecture metadata · Execution context · Configuration · Versioning · Dependency registry · **ProjectState** · **DecisionTrace**
+
+---
+
+# DIRECTORY
+
+```
+src/lib/platform-core/
+├── context/
+├── registry/
+├── project-state/
+├── lifecycle/
+├── contracts/
+├── versioning/
+├── metadata/
+├── validation/
+├── execution/
+├── configuration/
+├── interfaces/
+└── PlatformCore.ts
+```
+
+---
+
+# PROJECT STATE
+
+| | |
+|---|---|
+| **Current** | Multiple objects |
+| **Future** | Single immutable `ProjectState` |
+
+Every platform receives identical state. Nothing else.
+
+### ProjectState structure
+
+`project` · `runtime` · `contracts` · `assets` · `events` · `metrics` · `configuration` · `execution` · `architecture` · `decisionTrace`
+
+---
+
+# PROJECT CONTEXT
+
+Project ID · Run ID · Marketplace · Product · Generation Mode · Architecture Version · Runtime Version · Provider · User Preferences
+
+---
+
+# ARCHITECTURE REGISTRY
+
+Runtime **never** imports platforms. Runtime asks **Registry**. Registry returns implementation.
+
+Supports: Platform · Skill · Plugin · Provider · Validator · Critic
+
+---
+
+# VERSION MANAGER
+
+Every object receives version: Platform · Runtime · Specification · Asset · Blueprint · Knowledge · Genome
+
+---
+
+# CONFIGURATION
+
+Platform Core loads: `architecture.yaml` · `runtime.yaml` · `providers.yaml` · `marketplaces.yaml` · `learning.yaml` · `plugins.yaml`
+
+Nothing hardcoded.
+
+---
+
+# EVENT REGISTRY
+
+Stores: Project Events · Platform Events · Runtime Events · Provider Events · Vision Events · Learning Events
+
+---
+
+# INTERFACES
+
+`IPlatform` · `IProvider` · `ISkill` · `IPlugin` · `IRuntime` · `IRegistry` · `IProjectState`
+
+---
+
+# FILES TO CREATE
+
+`PlatformCore.ts` · `ProjectState.ts` · `ProjectContext.ts` · `ProjectMetadata.ts` · `ArchitectureRegistry.ts` · `PlatformRegistry.ts` · `ProviderRegistry.ts` · `VersionManager.ts` · `ConfigurationManager.ts` · `ExecutionContext.ts`
+
+---
+
+# FILES TO MODIFY
+
+Search project. Replace direct object passing. Use `ProjectState`. (Directive **PC-005** — incremental)
+
+---
+
+# FILES TO DELETE
+
+None.
+
+---
+
+# REFACTOR STRATEGY
+
+| Reuse | Rewrite |
+|-------|---------|
+| 95% | 5% |
+
+---
+
+## IMPLEMENTATION DIRECTIVE PC-001
+
+Create **ProjectState**.
+
+**Status:** Completed
+
+---
+
+## IMPLEMENTATION DIRECTIVE PC-002
+
+Create **Architecture Registry**.
+
+**Status:** Completed
+
+---
+
+## IMPLEMENTATION DIRECTIVE PC-003
+
+Create **Version Manager**.
+
+**Status:** Completed
+
+---
+
+## IMPLEMENTATION DIRECTIVE PC-004
+
+Create **Configuration Manager**.
+
+**Status:** Completed
+
+---
+
+## IMPLEMENTATION DIRECTIVE PC-005
+
+Replace object passing. Use **ProjectState**.
+
+**Status:** In Progress (legacy handler not yet migrated)
+
+---
+
+# UNIT TESTS
+
+- ProjectState immutable
+- Registry registers platform
+- Registry resolves platform
+- Configuration loaded
+- Versions increment
+
+Run: `npx tsx src/lib/platform-core/platform-core.spec.ts`
+
+---
+
+# INTEGRATION TESTS
+
+- Runtime receives ProjectState
+- Platform executes
+- ProjectState updated
+
+---
+
+# ARCHITECTURE TESTS
+
+- No Platform imports Platform
+- No Runtime imports Provider
+- No Legacy imports Runtime
+
+---
+
+# PERFORMANCE
+
+| Operation | Target |
+|-----------|--------|
+| ProjectState creation | < 5 ms |
+| Registry lookup | < 1 ms |
+
+---
+
+# ROLLBACK
+
+Delete Platform Core. Legacy still operational.
+
+---
+
+# SUCCESS CRITERIA
+
+Platform Core becomes the **only architectural foundation**.
+
+---
+
+*END OF PART 28*
 
 ---
 
