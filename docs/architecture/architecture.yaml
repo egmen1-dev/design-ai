@@ -1559,6 +1559,23 @@ directives:
     success:
       execution_model_documented: true
 
+  - id: MSG-001
+    title: DAOS Message Bus (Part 41)
+    priority: Critical
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/Architecture_Bible.md
+        - docs/architecture/architecture.yaml
+    requires:
+      - KNL-001
+      - TSK-001
+    checks:
+      - validate_yaml
+    success:
+      message_bus_documented: true
+
   - id: DIR-001
     title: Directive Registry
     priority: HIGH
@@ -1800,6 +1817,8 @@ glossary:
     Task: Atomic execution unit inside DAOS (Part 40). Contains input, platform, specification, timeout, priority, dependencies, expected output.
     Task Graph: DAG of Tasks representing an entire project execution.
     TaskResult: Outcome of a Task — status, output, metrics, duration, warnings, errors, trace.
+    Message: Unit of inter-platform communication via Message Bus (Part 41). Platforms never communicate directly.
+    Message Bus: Central routing layer for Commands, Events, Queries, Responses, and Notifications.
     Platform: Independent architectural component. Owns one responsibility. Produces one Specification.
     Specification: Immutable DTO exchanged between platforms.
     ProductBrief: Initial project description. Created once.
@@ -1857,6 +1876,7 @@ architecture_index:
   Constitution: "Part 38"
   Microkernel Architecture: "Part 39"
   Execution Model: "Part 40"
+  Message Bus: "Part 41"
 
 implementation_index:
   prefixes:
@@ -2195,6 +2215,42 @@ daos_execution_model:
       - abort
   success_criteria:
     - entire_project_represented_as_task_graph
+
+daos_message_bus:
+  part: 41
+  purpose: platforms never communicate directly; communication through Messages
+  message_types:
+    - command
+    - event
+    - query
+    - response
+    - notification
+  commands:
+    - execute_commercial
+    - execute_creative
+    - execute_render
+  events:
+    - commercial_completed
+    - creative_completed
+    - vision_failed
+    - learning_updated
+  queries:
+    - knowledge_query
+    - genome_query
+    - marketplace_query
+  routing:
+    - platform
+    - message_bus
+    - runtime
+    - target_platform
+  message_store:
+    persisted: true
+    allows:
+      - replay
+      - debugging
+      - analytics
+  success_criteria:
+    - no_direct_platform_communication
 
 volume_1:
   status: complete

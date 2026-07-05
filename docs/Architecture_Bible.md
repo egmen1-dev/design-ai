@@ -224,6 +224,10 @@ Version: 1.0 (Complete — Volume I)
   - [Task Unit & Lifecycle](#execution-unit)
   - [Task Graph & Types](#task-graph)
   - [Directive TSK-001](#implementation-directive-tsk-001)
+- [Part 41 — DAOS Message Bus](#part-41--daos-message-bus)
+  - [Message Types & Routing](#message-types)
+  - [Message Store](#message-store)
+  - [Directive MSG-001](#implementation-directive-msg-001)
 - [Appendix A — Glossary](#appendix-a--glossary)
 - [Appendix B — Architecture Index](#appendix-b--architecture-index)
 - [Appendix C — Implementation Index](#appendix-c--implementation-index)
@@ -10969,6 +10973,116 @@ Entire project represented as **Task Graph**.
 
 ---
 
+# PART 41 — DAOS MESSAGE BUS
+
+# ============================================================================
+# PART 41
+# DAOS MESSAGE BUS
+# ============================================================================
+
+## Purpose
+
+Platforms **never** communicate directly.
+
+Communication occurs through **Messages**.
+
+Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `daos_message_bus`
+
+**Related:** Part 37 (Kernel Events) · Part 40 (Execution Model)
+
+---
+
+# MESSAGE TYPES
+
+| Type | Purpose |
+|------|---------|
+| **Command** | Request platform execution |
+| **Event** | Notify completion or state change |
+| **Query** | Request read-only information |
+| **Response** | Reply to command or query |
+| **Notification** | Broadcast system notification |
+
+---
+
+# COMMAND
+
+Examples:
+
+- Execute Commercial
+- Execute Creative
+- Execute Render
+
+---
+
+# EVENT
+
+Examples:
+
+- Commercial Completed
+- Creative Completed
+- Vision Failed
+- Learning Updated
+
+---
+
+# QUERY
+
+Examples:
+
+- Knowledge Query
+- Genome Query
+- Marketplace Query
+
+---
+
+# MESSAGE ROUTING
+
+```
+Platform
+    ↓
+Message Bus
+    ↓
+Runtime
+    ↓
+Target Platform
+```
+
+---
+
+# MESSAGE STORE
+
+Every message **persisted**.
+
+Allows:
+
+- **Replay**
+- **Debugging**
+- **Analytics**
+
+---
+
+## IMPLEMENTATION DIRECTIVE MSG-001
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Document** | Part 41 — DAOS Message Bus |
+| **Machine-readable** | `architecture.yaml` → `daos_message_bus` |
+| **Depends** | KNL-001 · TSK-001 |
+| **Status** | Completed |
+
+---
+
+# SUCCESS
+
+No direct platform communication.
+
+---
+
+*END OF PART 41*
+
+---
+
 # APPENDIX A — GLOSSARY
 
 # ============================================================================
@@ -11000,6 +11114,8 @@ Machine-readable index: [`docs/architecture/architecture.yaml`](architecture/arc
 | **Task** | Atomic execution unit inside DAOS (Part 40). Contains input, platform, specification, timeout, priority, dependencies, expected output. |
 | **Task Graph** | DAG of Tasks representing an entire project execution. |
 | **TaskResult** | Outcome of a Task — status, output, metrics, duration, warnings, errors, trace. |
+| **Message** | Unit of inter-platform communication via Message Bus (Part 41). Platforms never communicate directly. |
+| **Message Bus** | Central routing layer for Commands, Events, Queries, Responses, and Notifications. |
 | **Platform** | Independent architectural component. Owns one responsibility. Produces one Specification. |
 | **Specification** | Immutable DTO exchanged between platforms. |
 | **ProductBrief** | Initial project description. Created once. |
@@ -11075,6 +11191,7 @@ Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architect
 | **Constitution** | Part 38 |
 | **Microkernel Architecture** | Part 39 |
 | **Execution Model** | Part 40 |
+| **Message Bus** | Part 41 |
 
 ---
 
