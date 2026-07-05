@@ -312,6 +312,137 @@ platform_core:
     reuse: 95
     rewrite: 5
 
+file_specifications:
+  - module: design-process
+    path: src/lib/design-process/
+    status: refactor
+    priority: critical
+    importance: 5
+    wave: 5
+    purpose: creative transformation only
+    remove:
+      - execution control
+      - prompt generation
+      - render preparation
+      - filesystem operations
+      - provider selection
+      - asset loading
+    move:
+      scene_planning: visual-platform
+      prompt_builder: provider-adapter
+      execution_flow: runtime
+      asset_resolution: asset-platform
+      configuration: platform-core
+    keep:
+      - creative scoring
+      - creative memory
+      - concept generator
+      - concept evaluator
+      - creative critic
+    create:
+      - CreativeSpec
+      - CreativeDecision
+      - CreativeAlternative
+      - CreativeMetrics
+      - CreativeConfidence
+    pipeline:
+      - KnowledgeSpec
+      - CommercialSpec
+      - Creative Reasoning
+      - Concept Generation
+      - Creative Critic
+      - CreativeSpec
+    imports_forbidden:
+      - render-engine
+      - provider
+      - prompt
+      - filesystem
+      - legacy
+    imports_allowed:
+      - contracts
+      - runtime
+      - shared
+      - sdk
+    depends_on:
+      - Knowledge
+      - Commercial
+      - Runtime
+    returns: CreativeSpec
+    directives:
+      - DSP-001
+      - DSP-002
+      - DSP-003
+      - DSP-004
+    rollback: restore DesignBrief adapter
+
+  - module: design-governance
+    path: src/lib/design-governance/
+    status: keep
+    priority: critical
+    importance: 5
+    keep:
+      - Constitution
+      - Blueprint Lock
+      - Validators
+      - Resolver
+      - Rules
+      - Architecture Checks
+    remove:
+      - Professional Score
+      - Image Quality
+      - Marketplace Score
+      - Commercial Score
+    move:
+      professional_score: vision-platform
+      marketplace_validation: vision-platform
+      image_validation: vision-platform
+    add:
+      - ProjectState Validation
+      - Specification Validation
+      - Runtime Validation
+      - Execution Validation
+      - Dependency Validation
+    create:
+      - GovernanceRuntime
+      - GovernanceEvents
+      - GovernanceReport
+    directives:
+      - GOV-002
+      - GOV-003
+    success: governance validates architecture only
+
+  - module: render-engine
+    path: src/lib/render-engine/
+    status: keep
+    priority: critical
+    importance: 5
+    wave: 7
+    keep:
+      - background generation
+      - shadow generation
+      - composition
+      - export
+      - provider communication
+    remove:
+      - creative decisions
+      - commercial decisions
+      - knowledge usage
+      - prompt strategy
+    move:
+      prompt: provider-adapter
+      business: commercial
+      creative: creative
+      visual: visual-platform
+    create:
+      - RenderGraph
+      - RenderNode
+      - RetryNode
+      - NodeExecutor
+    directives:
+      - REN-002
+      - REN-003
+    success: rendering executes RenderBlueprint only
+
 runtime:
   id: RuntimeV2
   path: src/lib/runtime/
@@ -1091,6 +1222,80 @@ directives:
     checks:
       - integration
       - architecture
+
+  - id: DSP-001
+    title: Replace DesignBrief with CreativeSpec
+    priority: Critical
+    wave: 5
+    phase: 3
+    status: blocked
+    module: design-process
+    requires:
+      - DTO-001
+      - PC-001
+    checks:
+      - unit
+      - architecture
+
+  - id: DSP-002
+    title: Move Scene Planner to Visual Platform
+    priority: High
+    wave: 6
+    status: blocked
+    module: design-process
+
+  - id: DSP-003
+    title: Move Prompt Builder to Provider Adapter
+    priority: Critical
+    wave: 7
+    status: blocked
+    module: design-process
+    requires:
+      - RFC-004
+
+  - id: DSP-004
+    title: Remove execution orchestration from design-process
+    priority: Critical
+    wave: 5
+    status: blocked
+    module: design-process
+    requires:
+      - RUN-001
+
+  - id: GOV-002
+    title: Split Governance and Vision responsibilities
+    priority: High
+    wave: 8
+    status: blocked
+    module: design-governance
+
+  - id: GOV-003
+    title: Introduce ProjectState validation in governance
+    priority: Critical
+    wave: 2
+    status: blocked
+    module: design-governance
+    requires:
+      - PC-001
+      - DTO-001
+
+  - id: REN-002
+    title: Introduce RenderGraph
+    priority: Critical
+    wave: 7
+    status: blocked
+    module: render-engine
+    requires:
+      - ADR-004
+
+  - id: REN-003
+    title: Remove Prompt ownership from render-engine
+    priority: Critical
+    wave: 7
+    status: blocked
+    module: render-engine
+    requires:
+      - DSP-003
 
   - id: DIR-001
     title: Directive Registry

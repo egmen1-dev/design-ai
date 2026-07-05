@@ -181,6 +181,10 @@ Version: 1.0 (Draft)
   - [ProjectState & Registry](#project-state)
   - [Directives PC-001–005](#implementation-directive-pc-001)
   - [Tests & Success Criteria](#unit-tests)
+- [Part 29 — File Specification (Design Process, Governance, Render Engine)](#part-29--file-specification-design-process)
+  - [Design Process (DSP-001–004)](#module-design-process)
+  - [Design Governance (GOV-002–003)](#module-design-governance)
+  - [Render Engine (REN-002–003)](#module-render-engine)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -8999,6 +9003,226 @@ Platform Core becomes the **only architectural foundation**.
 ---
 
 *END OF PART 28*
+
+---
+
+# PART 29 — FILE SPECIFICATION
+
+# ============================================================================
+# PART 29
+# FILE SPECIFICATION — DESIGN PROCESS · DESIGN GOVERNANCE · RENDER ENGINE
+# ============================================================================
+
+Volume II continues with per-module file specifications.
+
+---
+
+# MODULE — DESIGN PROCESS
+
+| | |
+|---|---|
+| **Module** | `src/lib/design-process/` |
+| **Status** | REFACTOR |
+| **Priority** | CRITICAL |
+| **Architecture Importance** | ★★★★★ |
+
+## Purpose
+
+Design Process becomes the orchestration layer of **Creative Intelligence**.
+
+This module **no longer** owns execution, rendering, or prompt generation.
+
+It owns **creative transformation only**.
+
+---
+
+### Current Responsibilities (Audit)
+
+✓ Product Analysis · ✓ Creative Planning · ✓ Layout Decisions · ✓ Scene Planning · ✓ Prompt Preparation · ✓ Generation Pipeline · ✓ Internal State
+
+### Problems Found
+
+Creative mixed with Rendering · Creative mixed with Runtime · Prompt generated too early · DesignBrief duplicated · Platform boundaries violated · DecisionTrace incomplete · ProjectState absent
+
+### Target Responsibilities
+
+Creative reasoning · Concept generation · Narrative generation · Creative evaluation · Alternative generation · Creative confidence · Creative memory · **Nothing else**
+
+### Remove
+
+Execution control · Prompt generation · Render preparation · Filesystem operations · Provider selection · Asset loading
+
+### Move
+
+| From | To |
+|------|-----|
+| Scene Planning | Visual Platform |
+| Prompt Builder | Provider Adapter |
+| Execution Flow | Runtime |
+| Asset Resolution | Asset Platform |
+| Configuration | Platform Core |
+
+### Keep
+
+Creative scoring · Creative memory · Concept generator · Concept evaluator · Creative critic
+
+### Create
+
+`CreativeSpec` · `CreativeDecision` · `CreativeAlternative` · `CreativeMetrics` · `CreativeConfidence`
+
+### New Pipeline
+
+```
+KnowledgeSpec → CommercialSpec → Creative Reasoning → Concept Generation → Creative Critic → CreativeSpec
+```
+
+### Imports
+
+**Forbidden:** `render-engine` · `provider` · `prompt` · `filesystem` · `legacy`
+
+**Allowed:** `contracts` · `runtime` · `shared` · `sdk`
+
+### Dependencies
+
+| | |
+|---|---|
+| **Depends on** | Knowledge · Commercial · Runtime |
+| **Returns** | `CreativeSpec` |
+
+### Tests
+
+| Suite | Scope |
+|-------|-------|
+| Unit | CreativeSpec generation · Alternative generation · Confidence calculation |
+| Integration | Commercial → Creative |
+| Architecture | No forbidden imports |
+
+### Success
+
+Module contains **creative logic only**.
+
+## IMPLEMENTATION DIRECTIVE DSP-001
+
+Replace **DesignBrief** with **CreativeSpec**.
+
+## IMPLEMENTATION DIRECTIVE DSP-002
+
+Move **Scene Planner** to Visual Platform.
+
+## IMPLEMENTATION DIRECTIVE DSP-003
+
+Move **Prompt Builder** to Provider Adapter.
+
+## IMPLEMENTATION DIRECTIVE DSP-004
+
+Remove **execution orchestration**.
+
+### Rollback
+
+Restore DesignBrief adapter.
+
+---
+
+# MODULE — DESIGN GOVERNANCE
+
+| | |
+|---|---|
+| **Module** | `src/lib/design-governance/` |
+| **Status** | KEEP |
+| **Priority** | CRITICAL |
+| **Architecture Importance** | ★★★★★ |
+
+### Audit Summary
+
+Governance is one of the strongest modules. Reuse preferred. Rewrite only where necessary.
+
+### Keep
+
+Constitution · Blueprint Lock · Validators · Resolver · Rules · Architecture Checks
+
+### Remove
+
+Professional Score · Image Quality · Marketplace Score · Commercial Score
+
+### Move
+
+| From | To |
+|------|-----|
+| Professional Score | Vision Platform |
+| Marketplace Validation | Vision Platform |
+| Image Validation | Vision Platform |
+
+### Add
+
+ProjectState Validation · Specification Validation · Runtime Validation · Execution Validation · Dependency Validation
+
+### Create
+
+`GovernanceRuntime` · `GovernanceEvents` · `GovernanceReport`
+
+### Success
+
+Governance validates **architecture only**.
+
+## IMPLEMENTATION DIRECTIVE GOV-002
+
+Split **Governance** and **Vision** responsibilities.
+
+## IMPLEMENTATION DIRECTIVE GOV-003
+
+Introduce **ProjectState** validation.
+
+---
+
+# MODULE — RENDER ENGINE
+
+| | |
+|---|---|
+| **Module** | `src/lib/render-engine/` |
+| **Status** | KEEP |
+| **Priority** | CRITICAL |
+| **Architecture Importance** | ★★★★★ |
+
+### Audit Summary
+
+Rendering quality is good. Architecture responsibilities mixed. Reuse rendering. Separate responsibilities.
+
+### Keep
+
+Background generation · Shadow generation · Composition · Export · Provider communication
+
+### Remove
+
+Creative decisions · Commercial decisions · Knowledge usage · Prompt strategy
+
+### Move
+
+| From | To |
+|------|-----|
+| Prompt | Provider Adapter |
+| Business | Commercial |
+| Creative | Creative |
+| Visual | Visual Platform |
+
+### Create
+
+`RenderGraph` · `RenderNode` · `RetryNode` · `NodeExecutor`
+
+### Success
+
+Rendering executes **RenderBlueprint**. Nothing else.
+
+## IMPLEMENTATION DIRECTIVE REN-002
+
+Introduce **RenderGraph**.
+
+## IMPLEMENTATION DIRECTIVE REN-003
+
+Remove **Prompt** ownership.
+
+---
+
+*END OF PART 29*
 
 ---
 
