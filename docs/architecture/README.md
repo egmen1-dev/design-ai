@@ -18,6 +18,8 @@ See **Part 20** in [Architecture_Bible.md](../Architecture_Bible.md).
 
 **Glossary:** Appendix A — canonical terms in Bible and `architecture.yaml` → `glossary`.
 
+**Architecture Index:** Appendix B — topic → Part map in `architecture.yaml` → `architecture_index`.
+
 ## Index
 
 | ADR | Title | Status |

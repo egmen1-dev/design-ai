@@ -1640,6 +1640,31 @@ glossary:
     RFC: Request For Comments.
     Directive: Executable migration task.
 
+architecture_index:
+  Architecture: "Part 1-4"
+  Runtime: "Part 5"
+  Design DNA: "Part 6"
+  Reasoning: "Part 7"
+  Migration: "Part 8"
+  AI CEO: "Part 9"
+  SDK: "Part 10"
+  Platform Migration: "Part 11"
+  Runtime Migration: "Part 12"
+  Contracts: "Part 13"
+  Assets: "Part 14"
+  Engineering Standards: "Part 15"
+  Architecture Validation: "Part 16"
+  Knowledge Engine: "Part 17"
+  Implementation: "Part 18-19"
+  ADR: "Part 20"
+  RFC: "Part 21"
+  DSL: "Part 23"
+  Repository: "Part 27"
+  Evolution: "Part 30"
+  Release: "Part 31"
+  Observability: "Part 32"
+  Architecture Laws: "Part 33"
+
 cursor_execution:
   purpose: Cursor executes Architecture DSL; must not redesign architecture
   dsl_path: docs/architecture/architecture.yaml
