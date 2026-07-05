@@ -38,6 +38,12 @@ Version: 1.0 (Draft)
   - [Category K — Rendering Platform](#category-k--rendering-platform)
   - [Category L — Project State](#category-l--project-state)
   - [Category M — Specification Chain](#category-m--specification-chain)
+- [Part 3 — Production Pipeline](#part-3--production-pipeline)
+  - [3.1 Purpose](#31-purpose)
+  - [3.2 Responsibilities](#32-responsibilities)
+  - [3.3 Production Lifecycle](#33-production-lifecycle)
+  - [3.4–3.17 Pipeline Stages](#34-stage-1--project-creation)
+  - [3.18 Pipeline Rules](#318-pipeline-rules)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -1501,6 +1507,411 @@ Prompt
 
 ---
 
+# PART 3 — PRODUCTION PIPELINE
+
+# ============================================================================
+# PART 3
+# PRODUCTION PIPELINE
+# ============================================================================
+
+## 3.1 Purpose
+
+Production Pipeline is the heart of Design AI Operating System.
+
+Every project.
+
+Every image.
+
+Every render.
+
+Every decision.
+
+Must pass through Production Pipeline.
+
+There are no alternative production paths.
+
+No Legacy Pipeline.
+
+No Debug Pipeline.
+
+No Fast Pipeline.
+
+Every production run starts here.
+
+---
+
+## 3.2 Responsibilities
+
+Production Pipeline orchestrates all platforms.
+
+Production Pipeline never makes business decisions.
+
+Production Pipeline never generates prompts.
+
+Production Pipeline coordinates execution.
+
+Responsibilities include:
+
+- lifecycle management
+- state transitions
+- dependency validation
+- platform execution
+- retry strategy
+- error recovery
+- logging
+- metrics
+- final artifact creation
+
+---
+
+## 3.3 Production Lifecycle
+
+```
+Project Created
+  ↓
+Product Brief
+  ↓
+Research Platform
+  ↓
+Knowledge Platform
+  ↓
+Commercial Platform
+  ↓
+Creative Platform
+  ↓
+Visual Platform
+  ↓
+Governance Validation
+  ↓
+Render Blueprint
+  ↓
+Provider Adapter
+  ↓
+Rendering
+  ↓
+Vision Platform
+  ↓
+Learning Platform
+  ↓
+Completed
+```
+
+No stage may be skipped.
+
+---
+
+## 3.4 Stage 1 — Project Creation
+
+| | |
+|---|---|
+| **Input** | User Request |
+| **Output** | ProjectState |
+
+**Responsibilities:**
+
+- create Project ID
+- initialize Decision Trace
+- initialize Events
+- initialize Metrics
+- initialize Debug
+
+Nothing else.
+
+---
+
+## 3.5 Stage 2 — Product Brief
+
+| | |
+|---|---|
+| **Input** | User Request |
+| **Output** | ProductBrief |
+
+**Responsibilities:** Understand Product, Marketplace, Audience, Goal, Restrictions, Brand, Expected Result.
+
+ProductBrief becomes immutable.
+
+---
+
+## 3.6 Stage 3 — Research Platform
+
+| | |
+|---|---|
+| **Input** | ProductBrief |
+| **Output** | ResearchSpec |
+
+**Responsibilities:**
+
+- Research category
+- Research competitors
+- Research marketplace
+- Research buyer
+- Research trends
+- Research references
+- Research psychology
+- Research pricing
+- Research objections
+- Research evidence
+
+Nothing else.
+
+---
+
+## 3.7 Stage 4 — Knowledge Platform
+
+| | |
+|---|---|
+| **Input** | ResearchSpec |
+| **Output** | KnowledgeSpec |
+
+**Responsibilities:**
+
+- Merge Design Genome
+- Merge Historical Knowledge
+- Merge Category Knowledge
+- Merge Marketplace Rules
+- Merge References
+- Merge Trends
+- Assign confidence
+- Store evidence
+- Produce structured knowledge
+
+---
+
+## 3.8 Stage 5 — Commercial Platform
+
+| | |
+|---|---|
+| **Input** | KnowledgeSpec |
+| **Output** | CommercialSpec |
+
+**Responsibilities:**
+
+- Choose commercial strategy
+- Determine buyer psychology
+- Determine information hierarchy
+- Determine trust strategy
+- Determine emotional strategy
+- Determine visual priorities
+
+Commercial Platform defines **WHAT** should sell.
+
+Never **HOW**.
+
+---
+
+## 3.9 Stage 6 — Creative Platform
+
+| | |
+|---|---|
+| **Input** | CommercialSpec |
+| **Output** | CreativeSpec |
+
+**Responsibilities:**
+
+- Generate concepts
+- Evaluate concepts
+- Reject concepts
+- Select concept
+- Generate emotional direction
+- Generate visual hook
+- Generate narrative
+
+Creative Platform answers: **How should people FEEL?**
+
+---
+
+## 3.10 Stage 7 — Visual Platform
+
+| | |
+|---|---|
+| **Input** | CreativeSpec |
+| **Output** | VisualBlueprint |
+
+**Responsibilities:**
+
+- Scene
+- Composition
+- Camera
+- Lighting
+- Materials
+- Negative Space
+- Attention Flow
+- Visual Hierarchy
+- Safe Zones
+
+Visual Platform answers: **How should people SEE?**
+
+---
+
+## 3.11 Stage 8 — Governance
+
+| | |
+|---|---|
+| **Input** | VisualBlueprint |
+| **Output** | Approved Blueprint |
+
+**Responsibilities:**
+
+- Validate consistency
+- Validate Constitution
+- Validate conflicts
+- Validate commercial goals
+- Validate design rules
+- Validate architecture laws
+- Approve
+- Reject
+- Retry
+
+Nothing else.
+
+---
+
+## 3.12 Stage 9 — Rendering
+
+| | |
+|---|---|
+| **Input** | Approved Blueprint |
+| **Output** | RenderBlueprint |
+
+**Responsibilities:**
+
+- Prepare rendering
+- Prepare provider
+- Prepare composition
+- Prepare assets
+- Prepare shadows
+- Prepare overlays
+
+No rendering starts without approved blueprint.
+
+---
+
+## 3.13 Stage 10 — Provider Adapter
+
+| | |
+|---|---|
+| **Input** | RenderBlueprint |
+| **Output** | Provider Request |
+
+**Responsibilities:**
+
+- Compile provider request
+- Compile Prompt
+- Compile negative prompt
+- Compile provider options
+- Compile rendering parameters
+
+**Provider Adapter is the ONLY place where Prompt exists.**
+
+---
+
+## 3.14 Stage 11 — Rendering Engine
+
+| | |
+|---|---|
+| **Input** | Provider Request |
+| **Output** | Rendered Background |
+
+**Responsibilities:**
+
+- Call provider
+- Retry
+- Cache
+- Validate
+- Return image
+
+No business logic.
+
+---
+
+## 3.15 Stage 12 — Composition Engine
+
+| | |
+|---|---|
+| **Input** | Rendered Background, Product Cutout, OverlayBlueprint |
+| **Output** | Candidate PNG |
+
+**Responsibilities:**
+
+- Compose background
+- Compose product
+- Compose shadows
+- Compose overlays
+- Export candidate
+
+Nothing else.
+
+---
+
+## 3.16 Stage 13 — Vision Platform
+
+| | |
+|---|---|
+| **Input** | Candidate PNG |
+| **Output** | Vision Report |
+
+**Responsibilities:**
+
+- Commercial Critic
+- Typography Critic
+- Composition Critic
+- Marketplace Critic
+- Product Integration Critic
+- Quality Critic
+
+Vision Platform determines whether image may exist.
+
+---
+
+## 3.17 Stage 14 — Learning Platform
+
+| | |
+|---|---|
+| **Input** | Vision Report |
+| **Output** | Learning Report |
+
+**Responsibilities:**
+
+- Store success
+- Store failure
+- Update knowledge
+- Update confidence
+- Update genome
+- Update commercial memory
+- Prepare future improvements
+
+---
+
+## 3.18 Pipeline Rules
+
+Every stage has:
+
+```
+Input DTO
+  ↓
+Output DTO
+  ↓
+Validation
+  ↓
+Decision Trace
+  ↓
+Metrics
+  ↓
+Events
+  ↓
+Logs
+  ↓
+Debug Artifacts
+```
+
+No exceptions.
+
+---
+
+*END OF PART 3*
+
+---
+
 # APPENDIX A — REPOSITORY IMPLEMENTATION REFERENCE
 
 > Практическая привязка Part 1 (канон) и Part 2 (аудит) к текущему коду репозитория `design-ai`.  
@@ -1893,4 +2304,4 @@ pm2 logs marketplace-infographic --lines 50
 
 ---
 
-*Architecture Bible — living document. Part 1 is canonical law. Part 2 is the architecture audit. Appendix A tracks repository implementation.*
+*Architecture Bible — living document. Part 1 is canonical law. Part 2 is the architecture audit. Part 3 is the production pipeline. Appendix A tracks repository implementation.*
