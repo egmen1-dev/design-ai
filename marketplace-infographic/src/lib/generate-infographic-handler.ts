@@ -136,6 +136,7 @@ import {
 } from "@/lib/daos/config/generation-mode";
 import { enrichDaosStateFromPipeline } from "@/lib/daos/adapters/pipeline-enrichment";
 import { createDaosDebugBundle, writeDaosDebugBundle, writeDaosDebugSummary, createDaosDebugSummary, extractDaosRenderDebug, updateDaosDebugIndex } from "@/lib/daos/debug";
+import { createDaosPipelineContext } from "@/lib/daos/pipeline";
 import { evaluateDaosFinalGate } from "@/lib/daos/gates";
 import type { DAOSProjectState } from "@/lib/daos/core/project-state";
 import type { KnowledgeContext } from "@/lib/design/knowledge-engine";
@@ -235,6 +236,9 @@ function daosDiagnosticSummary(
     finalGateBlocking?: false;
     finalGateReasons?: string[];
     debugIndexPath?: string;
+    pipelineContextCompleteness?: number;
+    pipelineContextMissingSpecs?: string[];
+    pipelineContextWarnings?: string[];
   },
 ) {
   return {
@@ -2155,6 +2159,7 @@ export async function handleGenerateInfographic(
           }
         : undefined,
     });
+    const daosPipelineContext = createDaosPipelineContext(enrichedDaosState);
     const renderDebug = extractDaosRenderDebug({
       renderEngineResult,
       backgroundSource,
@@ -2220,6 +2225,9 @@ export async function handleGenerateInfographic(
       finalGateBlocking: daosFinalGate.blocking,
       finalGateReasons: daosFinalGate.reasons,
       debugIndexPath: daosIndexWrite.ok ? daosIndexWrite.relativeIndexPath : undefined,
+      pipelineContextCompleteness: daosPipelineContext.completenessScore,
+      pipelineContextMissingSpecs: daosPipelineContext.missingSpecs,
+      pipelineContextWarnings: daosPipelineContext.warnings,
     });
 
     if (process.env.DAOS_DEBUG === "1") {

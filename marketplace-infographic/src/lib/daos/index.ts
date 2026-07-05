@@ -26,3 +26,10 @@ export {
   type DAOSDebugIndex,
   type DAOSDebugIndexEntry,
 } from "./debug";
+export {
+  createDaosPipelineContext,
+  summarizeDaosPipelineContext,
+  computePipelineCompleteness,
+  type DAOSPipelineContext,
+  type DAOSPipelineContextSummary,
+} from "./pipeline";

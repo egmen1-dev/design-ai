@@ -11,6 +11,11 @@ import {
   isPremiumGuardrailMode,
   type DAOSGenerationMode,
 } from "../config/generation-mode";
+import {
+  computePipelineCompleteness,
+  DAOS_PIPELINE_COMPLETENESS_CRITICAL_THRESHOLD,
+  DAOS_PIPELINE_COMPLETENESS_WARNING_THRESHOLD,
+} from "../pipeline/daos-pipeline-context";
 
 export type AnalyzeDaosMeaningLossOptions = {
   renderDebug?: DAOSRenderDebugArtifact;
@@ -35,6 +40,7 @@ export type DaosMeaningLossReport = {
   visualToRenderLoss: DaosMeaningLossWarning[];
   renderPromptRisk: DaosMeaningLossWarning[];
   renderDebugLoss: DaosMeaningLossWarning[];
+  pipelineContextLoss: DaosMeaningLossWarning[];
   warnings: DaosMeaningLossWarning[];
 };
 
@@ -366,6 +372,29 @@ function analyzeRenderDebugLoss(
   return warnings;
 }
 
+function analyzePipelineContextLoss(
+  state: DAOSProjectState,
+  generationMode?: DAOSGenerationMode,
+): DaosMeaningLossWarning[] {
+  const { completenessScore, missingSpecs } = computePipelineCompleteness(state);
+
+  if (completenessScore >= DAOS_PIPELINE_COMPLETENESS_WARNING_THRESHOLD) {
+    return [];
+  }
+
+  const premiumCritical =
+    isPremiumGuardrailMode(generationMode) &&
+    completenessScore < DAOS_PIPELINE_COMPLETENESS_CRITICAL_THRESHOLD;
+
+  return [
+    {
+      code: "PIPELINE_CONTEXT_INCOMPLETE",
+      severity: premiumCritical ? "critical" : "warning",
+      message: `pipeline context completeness ${completenessScore} is below ${DAOS_PIPELINE_COMPLETENESS_WARNING_THRESHOLD}; missing: ${missingSpecs.join(", ") || "none"}`,
+    },
+  ];
+}
+
 /** Deterministic loss-of-meaning checks between DAOS specs (no LLM). */
 export function analyzeDaosMeaningLoss(
   state: DAOSProjectState,
@@ -392,6 +421,7 @@ export function analyzeDaosMeaningLoss(
   );
   const renderPromptRisk = analyzeRenderPromptRisk(state.renderBlueprint);
   const renderDebugLoss = analyzeRenderDebugLoss(state.renderBlueprint, renderDebug, generationMode);
+  const pipelineContextLoss = analyzePipelineContextLoss(state, generationMode);
 
   const warnings = [
     ...lowConfidenceWarnings,
@@ -400,6 +430,7 @@ export function analyzeDaosMeaningLoss(
     ...visualToRenderLoss,
     ...renderPromptRisk,
     ...renderDebugLoss,
+    ...pipelineContextLoss,
   ];
 
   return {
@@ -411,6 +442,7 @@ export function analyzeDaosMeaningLoss(
     visualToRenderLoss,
     renderPromptRisk,
     renderDebugLoss,
+    pipelineContextLoss,
     warnings,
   };
 }

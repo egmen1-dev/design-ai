@@ -112,6 +112,9 @@ export type GenerationDiagnosticReport = {
     finalGateBlocking?: false;
     finalGateReasons?: string[];
     debugIndexPath?: string;
+    pipelineContextCompleteness?: number;
+    pipelineContextMissingSpecs?: string[];
+    pipelineContextWarnings?: string[];
   };
 };
 

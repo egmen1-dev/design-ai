@@ -12,6 +12,8 @@ import {
   isPremiumGuardrailMode,
   summarizeDaosGenerationPolicy,
 } from "../config/generation-mode";
+import type { DAOSPipelineContextSummary } from "../pipeline/daos-pipeline-context";
+import { summarizeDaosPipelineContext, createDaosPipelineContext } from "../pipeline/daos-pipeline-context";
 
 export type DaosDebugBundle = {
   projectId: string;
@@ -55,6 +57,7 @@ export type DaosDebugBundle = {
   generationMode: DAOSGenerationMode;
   generationPolicySummary: ReturnType<typeof summarizeDaosGenerationPolicy>;
   renderDebug?: DAOSRenderDebugArtifact;
+  pipelineContextSummary?: DAOSPipelineContextSummary;
   meaningLossReport: DaosMeaningLossReport;
 };
 
@@ -72,6 +75,7 @@ export function createDaosDebugBundle(
   const generationPolicy =
     options?.generationPolicy ?? getDaosGenerationPolicy(generationMode);
   const generationPolicySummary = summarizeDaosGenerationPolicy(generationPolicy);
+  const pipelineContextSummary = summarizeDaosPipelineContext(createDaosPipelineContext(state));
   const meaningLossReport = analyzeDaosMeaningLoss(state, { renderDebug, generationMode });
   const createdAt = new Date().toISOString();
 
@@ -117,6 +121,7 @@ export function createDaosDebugBundle(
     generationMode,
     generationPolicySummary,
     renderDebug,
+    pipelineContextSummary,
     meaningLossReport,
   };
 }
