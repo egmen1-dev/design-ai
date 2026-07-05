@@ -126,6 +126,11 @@ Version: 1.0 (Draft)
   - [CI Pipeline](#ci-pipeline)
   - [CI-001–CI-003](#implementation-directive-ci-001)
   - [LAW-026–LAW-030](#new-law-2)
+- [Part 17 — Design Knowledge Engine](#part-17--design-knowledge-engine)
+  - [Current Audit & Target](#current-audit-1)
+  - [Knowledge Graph & API](#knowledge-graph-1)
+  - [KNG-001–KNG-002](#implementation-directive-kng-001)
+  - [Success Criteria](#success-criteria-2)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -6535,6 +6540,278 @@ Architecture Score below target blocks production deployment.
 
 ---
 
+# PART 17 — DESIGN KNOWLEDGE ENGINE
+
+# ============================================================================
+# PART 17
+# DESIGN KNOWLEDGE ENGINE
+# ============================================================================
+
+## Purpose
+
+Design Knowledge Engine becomes the unified intelligence layer.
+
+It does not replace existing modules.
+
+It orchestrates them.
+
+Existing implementations remain.
+
+Knowledge Engine becomes their execution layer.
+
+---
+
+# CURRENT AUDIT
+
+### Current Modules
+
+- ✓ Design Genome
+- ✓ Design Memory
+- ✓ Pattern Library
+- ✓ Reference Engine
+- ✓ Registry
+- ✓ Competitor Analysis
+- ✓ Marketplace Knowledge
+- ✓ Learning
+
+### Architecture Assessment
+
+Excellent foundation.
+
+Knowledge exists.
+
+Knowledge management does not.
+
+---
+
+# CURRENT PROBLEMS
+
+- Knowledge duplicated
+- Knowledge scattered
+- No unified query API
+- No knowledge graph
+- No versioning
+- No confidence propagation
+- No conflict resolution
+- No source ranking
+- No freshness validation
+
+---
+
+# TARGET ARCHITECTURE
+
+```
+Design Knowledge Engine
+  ↓
+Knowledge Runtime
+  ↓
+Knowledge Graph
+  ↓
+Knowledge Registry
+  ↓
+Knowledge API
+  ↓
+Platforms
+```
+
+---
+
+# KNOWLEDGE SOURCES
+
+- Design DNA
+- Design Genome
+- Marketplace Intelligence
+- Historical Projects
+- User Feedback
+- Learning Platform
+- Reference Library
+- Competitor Analysis
+- Manual Rules
+- Platform Knowledge
+
+---
+
+# KNOWLEDGE GRAPH
+
+Everything stored as graph.
+
+**Example:**
+
+```
+Garden Sprayer
+  ↓
+Battery → Portable → Outdoor → Gardening → Green → Nature
+  ↓
+Warm Scene → Morning Light → Trust → Marketplace CTR
+```
+
+Instead of keyword search.
+
+---
+
+# KNOWLEDGE OBJECT
+
+**KnowledgeNode** fields:
+
+- id
+- type
+- category
+- confidence
+- priority
+- freshness
+- evidence
+- source
+- relations
+- metadata
+
+---
+
+# KNOWLEDGE RELATIONS
+
+- supports
+- contradicts
+- extends
+- derivedFrom
+- relatedTo
+- recommendedWith
+- alternativeFor
+
+---
+
+# KNOWLEDGE PRIORITY
+
+| Priority | Source |
+|----------|--------|
+| 1 | Verified Marketplace Data |
+| 2 | Successful Historical Projects |
+| 3 | Genome Rules |
+| 4 | Reference Library |
+| 5 | LLM Inference |
+
+Lowest priority never overrides highest priority.
+
+---
+
+# KNOWLEDGE CONFLICTS
+
+**Example:**
+
+```
+Genome      → Blue Background
+Marketplace → White Background
+  ↓
+Conflict
+```
+
+Knowledge Engine resolves using: confidence · freshness · priority · evidence
+
+---
+
+# KNOWLEDGE VERSIONING
+
+```
+Knowledge_v1 → Knowledge_v2 → Knowledge_v3
+```
+
+Never overwritten. Allows: Rollback · Replay · Comparison
+
+---
+
+# KNOWLEDGE QUERY API
+
+Platforms never search filesystem.
+
+Platforms query Knowledge Engine.
+
+**Example:**
+
+```
+Knowledge.query(category, marketplace, product, goal)
+  ↓
+KnowledgeSpec
+```
+
+---
+
+# KNOWLEDGE CACHE
+
+| Type | Storage |
+|------|---------|
+| Frequently used knowledge | Memory |
+| Rare knowledge | Disk |
+| Marketplace snapshots | Monthly refresh |
+
+---
+
+# KNOWLEDGE VALIDATION
+
+Every knowledge object contains:
+
+confidence · source · timestamp · verification · priority · expired
+
+---
+
+# FILES TO MODIFY
+
+**Keep:** Genome · Memory · Registry · Patterns · References · Learning
+
+**Create:**
+
+- `KnowledgeEngine.ts`
+- `KnowledgeGraph.ts`
+- `KnowledgeResolver.ts`
+- `KnowledgeQuery.ts`
+- `KnowledgeVersion.ts`
+- `KnowledgeValidator.ts`
+
+---
+
+# IMPLEMENTATION DIRECTIVE KNG-001
+
+| | |
+|---|---|
+| **Status** | EXTEND |
+| **Reuse** | Existing Genome, Memory, Registry — **Do not rewrite** |
+
+---
+
+# IMPLEMENTATION DIRECTIVE KNG-002
+
+**Create:**
+
+- Knowledge Runtime
+- Knowledge Graph
+- Knowledge Query API
+- Knowledge Validator
+
+---
+
+# MIGRATION SCORE
+
+| | |
+|---|---|
+| Current Coverage | 75% |
+| Reuse | 85% |
+| Rewrite | 15% |
+| Risk | **LOW** |
+
+---
+
+# SUCCESS CRITERIA
+
+- ✓ One Knowledge API
+- ✓ One Knowledge Graph
+- ✓ Existing modules preserved
+- ✓ Unified confidence
+- ✓ Unified querying
+- ✓ Versioned knowledge
+
+---
+
+*END OF PART 17*
+
+---
+
 # APPENDIX A — REPOSITORY IMPLEMENTATION REFERENCE
 
 > Практическая привязка Part 1 (канон) и Part 2 (аудит) к текущему коду репозитория `design-ai`.  
@@ -6927,4 +7204,4 @@ pm2 logs marketplace-infographic --lines 50
 
 ---
 
-*Architecture Bible — living document. Part 1 is canonical law (LAW-001–030). Parts 2–16 define audit, pipeline, platforms, runtime, contracts, assets, engineering standards, CI validation, migration, CEO, SDK, and orchestration. Appendix A tracks repository implementation.*
+*Architecture Bible — living document. Part 1 is canonical law (LAW-001–030). Parts 2–17 define audit, pipeline, platforms, runtime, contracts, assets, engineering standards, CI validation, knowledge engine, migration, CEO, SDK, and orchestration. Appendix A tracks repository implementation.*
