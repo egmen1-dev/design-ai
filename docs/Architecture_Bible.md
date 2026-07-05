@@ -78,6 +78,14 @@ Version: 1.0 (Draft)
   - [Wave 1–5 Platform Core](#wave-1--platform-core)
   - [Existing Files Migration](#existing-files)
   - [Global Acceptance](#global-acceptance)
+- [Part 9 — AI CEO Platform](#part-9--ai-ceo-platform)
+  - [AI CEO Platform](#ai-ceo-platform)
+  - [Provider Orchestrator](#provider-orchestrator)
+  - [Feature Flags & A/B Testing](#feature-flags)
+  - [System Health & Cost Engine](#system-health)
+  - [Architecture Versioning](#architecture-versioning)
+  - [LAW-011–LAW-015](#new-architecture-law)
+  - [Implementation Directives CEO-001–CEO-002](#implementation-directive-ceo-001)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -242,6 +250,40 @@ Provider models are interchangeable.
 Changing Flux to GPT Image must require changing Provider Adapter only.
 
 No other platform may depend on rendering provider.
+
+---
+
+## LAW-011
+
+Platforms never know which rendering provider is used.
+
+Only Provider Adapter knows.
+
+---
+
+## LAW-012
+
+Execution strategy is determined before the first platform starts.
+
+Execution strategy never changes during execution.
+
+---
+
+## LAW-013
+
+Every architectural decision is versioned.
+
+---
+
+## LAW-014
+
+Every platform must be replaceable without changing neighboring platforms.
+
+---
+
+## LAW-015
+
+Every provider must implement the same interface.
 
 ---
 
@@ -4074,6 +4116,338 @@ Modes: `draft` | `balanced` | `premium` | `enterprise`
 
 ---
 
+# PART 9 — AI CEO PLATFORM
+
+# ============================================================================
+# PART 9
+# AI CEO PLATFORM
+# ============================================================================
+
+## Purpose
+
+AI CEO Platform is the highest decision-making layer.
+
+It never designs.
+
+It never renders.
+
+It never researches.
+
+Its responsibility is managing the entire operating system.
+
+AI CEO is responsible for **strategy**.
+
+Runtime is responsible for **execution**.
+
+---
+
+### Responsibilities
+
+- generation strategy
+- provider selection
+- budget management
+- quality policy
+- execution policy
+- feature flags
+- experiment routing
+- architecture version
+- rollback policy
+- platform enable/disable
+- SLA
+- monitoring
+- optimization
+
+---
+
+### Input
+
+- ProjectBrief
+- User Preferences
+- System Configuration
+- Business Configuration
+- Current System Load
+- Provider Availability
+- Project Budget
+
+---
+
+### Output
+
+**ExecutionPlan**
+
+**ExecutionPlan** contains:
+
+- Generation Mode
+- Execution Graph
+- Providers
+- Retry Policy
+- Budget
+- Timeouts
+- Enabled Platforms
+- Disabled Platforms
+- Priority
+
+---
+
+### Example — Premium Product
+
+```
+Premium Product
+  ↓
+ExecutionPlan
+  Generation Mode = Enterprise
+  Provider = GPT Image
+  Vision = Enabled
+  Commercial = Enabled
+  Learning = Enabled
+  Budget = Unlimited
+  Retries = 12
+```
+
+---
+
+### Example — Budget Product
+
+```
+Budget Product
+  ↓
+ExecutionPlan
+  Mode = Balanced
+  Provider = Flux
+  Retries = 3
+  Learning = Enabled
+  Vision = Enabled
+  Commercial = Enabled
+```
+
+---
+
+# PROVIDER ORCHESTRATOR
+
+## Purpose
+
+Manage all rendering providers.
+
+Never render directly.
+
+Only orchestrate.
+
+---
+
+### Supported Providers
+
+- GPT Image
+- Flux
+- Imagen
+- Stable Diffusion
+- ComfyUI
+- Future Providers
+
+---
+
+### Provider Registry
+
+Every provider registers:
+
+- Capabilities
+- Pricing
+- Speed
+- Quality
+- Resolution
+- Features
+- Availability
+- Limits
+
+---
+
+### Provider Selection
+
+Selection based on:
+
+- Quality
+- Budget
+- Latency
+- Marketplace
+- Category
+- Generation Mode
+
+---
+
+### Provider Score
+
+```
+FinalScore = Quality + Availability + Latency + Cost + MarketplaceFit
+```
+
+---
+
+### Provider Fallback
+
+```
+If Provider fails
+  ↓
+Automatic switch
+  ↓
+Retry
+  ↓
+Continue execution
+```
+
+No project fails because one provider failed.
+
+---
+
+# FEATURE FLAGS
+
+Every platform can be enabled independently.
+
+Examples: Research ON · Knowledge ON · Creative ON · Vision ON · Learning OFF · Genome ON
+
+Allows safe rollout.
+
+---
+
+# AB TESTING
+
+Architecture supports experiments.
+
+```
+50% Old Visual Platform
+50% New Visual Platform
+  ↓
+CTR Comparison
+  ↓
+Winner
+  ↓
+Automatic Promotion
+```
+
+---
+
+# SYSTEM HEALTH
+
+Every execution reports:
+
+- CPU
+- RAM
+- GPU
+- VRAM
+- API Errors
+- Queue
+- Provider Status
+- Average Latency
+- Average Cost
+- Quality Score
+- CTR Prediction
+
+**Health Dashboard:** Green · Yellow · Red
+
+---
+
+# COST ENGINE
+
+Every generation estimates cost before execution.
+
+```
+Estimate: LLM + Provider + GPU + Storage + Network → Total
+```
+
+AI CEO decides: Continue · Simplify · Upgrade · Abort
+
+---
+
+# ARCHITECTURE VERSIONING
+
+Every project stores:
+
+- Architecture Version
+- Genome Version
+- DNA Version
+- Platform Version
+- Provider Version
+- Prompt Compiler Version
+- Vision Version
+
+Allows: Replay · Comparison · Rollback · Migration
+
+---
+
+# IMPLEMENTATION DIRECTIVE CEO-001
+
+| | |
+|---|---|
+| **Priority** | HIGH |
+| **Create** | `src/lib/platforms/ceo/` |
+
+**Files:**
+
+- `CEOPlatform.ts`
+- `ExecutionPlanner.ts`
+- `ProviderSelector.ts`
+- `BudgetManager.ts`
+- `FeatureFlags.ts`
+- `ArchitectureVersion.ts`
+- `HealthMonitor.ts`
+- `CostEngine.ts`
+- `ExecutionPlan.ts`
+
+**Acceptance:** Every project starts with ExecutionPlan. Runtime executes ExecutionPlan only.
+
+---
+
+# IMPLEMENTATION DIRECTIVE CEO-002
+
+**Create:**
+
+- `ProviderRegistry.ts`
+- `ProviderHealth.ts`
+- `ProviderCapabilities.ts`
+- `ProviderMetrics.ts`
+
+**Acceptance:** Providers become plugins. No provider-specific logic exists outside Provider Adapter.
+
+---
+
+# NEW ARCHITECTURE LAW
+
+## LAW-011
+
+Platforms never know which rendering provider is used.
+
+Only Provider Adapter knows.
+
+---
+
+## LAW-012
+
+Execution strategy is determined before the first platform starts.
+
+Execution strategy never changes during execution.
+
+---
+
+## LAW-013
+
+Every architectural decision is versioned.
+
+---
+
+## LAW-014
+
+Every platform must be replaceable without changing neighboring platforms.
+
+---
+
+## LAW-015
+
+Every provider must implement the same interface.
+
+---
+
+*END OF PART 9*
+
+---
+
 # APPENDIX A — REPOSITORY IMPLEMENTATION REFERENCE
 
 > Практическая привязка Part 1 (канон) и Part 2 (аудит) к текущему коду репозитория `design-ai`.  
@@ -4466,4 +4840,4 @@ pm2 logs marketplace-infographic --lines 50
 
 ---
 
-*Architecture Bible — living document. Part 1 is canonical law. Part 2 is the architecture audit. Part 3 is the production pipeline. Part 4 is platform specification. Part 5 is runtime architecture. Part 6 is design DNA & knowledge. Part 7 is reasoning engine. Part 8 is file-by-file migration. Appendix A tracks repository implementation.*
+*Architecture Bible — living document. Part 1 is canonical law. Part 2 is the architecture audit. Part 3 is the production pipeline. Part 4 is platform specification. Part 5 is runtime architecture. Part 6 is design DNA & knowledge. Part 7 is reasoning engine. Part 8 is file-by-file migration. Part 9 is AI CEO platform. Appendix A tracks repository implementation.*
