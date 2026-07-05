@@ -114,6 +114,12 @@ Version: 1.0 (Draft)
   - [Asset Graph & Manager](#asset-graph)
   - [AST-001–AST-002](#implementation-directive-ast-001)
   - [Success Criteria](#success-criteria-1)
+- [Part 15 — Engineering Standards](#part-15--engineering-standards)
+  - [Directory & Naming Standards](#directory-standards)
+  - [Import & Dependency Rules](#import-rules)
+  - [Logging, Errors, Events](#logging-standard)
+  - [STD-001–STD-002](#implementation-directive-std-001)
+  - [LAW-023–LAW-025](#new-law-1)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -354,6 +360,24 @@ Reuse before Rewrite.
 ## LAW-022
 
 Architecture migration must preserve working code whenever possible.
+
+---
+
+## LAW-023
+
+Every new file must follow Engineering Standards.
+
+---
+
+## LAW-024
+
+Architecture violations fail CI.
+
+---
+
+## LAW-025
+
+Every merge request must pass Architecture Validation.
 
 ---
 
@@ -5930,6 +5954,253 @@ Create **AssetGraph**.
 
 ---
 
+# PART 15 — ENGINEERING STANDARDS
+
+# ============================================================================
+# PART 15
+# ENGINEERING STANDARDS
+# ============================================================================
+
+## Purpose
+
+This chapter defines mandatory engineering standards.
+
+Every new module must comply.
+
+No exceptions.
+
+---
+
+# DIRECTORY STANDARDS
+
+### Current Audit
+
+The project evolved organically.
+
+Directory structure is inconsistent.
+
+Some folders represent business logic, implementation, or historical architecture.
+
+### Target
+
+Architecture-first folder structure.
+
+```
+src/
+├── app/
+├── components/
+├── lib/
+│
+├── platform-core/
+├── runtime/
+├── contracts/
+├── platforms/
+├── sdk/
+├── assets/
+├── providers/
+├── vision/
+├── learning/
+├── infrastructure/
+├── shared/
+├── utils/
+└── legacy/
+```
+
+### Rules
+
+- Business logic **NEVER** inside `utils`
+- Providers **NEVER** inside `platforms`
+- Runtime **NEVER** inside `providers`
+- Legacy **NEVER** imported by Runtime
+
+---
+
+# FILE NAMING STANDARD
+
+| Kind | Convention | Example |
+|------|------------|---------|
+| Classes | PascalCase | `CommercialPlatform.ts` |
+| Interfaces | Prefix `I` | `IPlatform.ts`, `IRuntime.ts` |
+| Types | Suffix `Type` | `ProjectType.ts` |
+| Enums | Suffix `Enum` | `GenerationModeEnum.ts` |
+| DTO | Suffix `Spec` | `CommercialSpec.ts`, `KnowledgeSpec.ts` |
+| Blueprint | Suffix `Blueprint` | `VisualBlueprint.ts`, `RenderBlueprint.ts` |
+| Reports | Suffix `Report` | `VisionReport.ts`, `LearningReport.ts` |
+
+---
+
+# IMPORT RULES
+
+### Allowed
+
+```
+Platform → Contracts → Shared → SDK
+```
+
+### Forbidden
+
+| From | To |
+|------|-----|
+| Platform | Platform |
+| Runtime | Provider |
+| Provider | Runtime |
+| Legacy | Platform |
+
+---
+
+# DEPENDENCY RULES
+
+Dependencies always point **downward**.
+
+```
+Architecture
+  ↓
+Runtime
+  ↓
+Platform
+  ↓
+SDK
+  ↓
+Infrastructure
+  ↓
+Provider
+```
+
+Never opposite.
+
+---
+
+# CONFIGURATION
+
+No hardcoded values.
+
+Every configurable value belongs to:
+
+- SystemConfiguration
+- PlatformConfiguration
+- ProviderConfiguration
+- GenerationConfiguration
+
+---
+
+# LOGGING STANDARD
+
+Every platform logs:
+
+Start · Finish · Execution Time · Warnings · Errors · Confidence · Retries · Output Size · Decision Count
+
+---
+
+# ERROR STANDARD
+
+Every error contains:
+
+Code · Platform · Severity · Message · Cause · Recommendation · Retryable
+
+**Example:** `VISUAL_001` — Invalid Blueprint — Retry: YES
+
+---
+
+# EVENT STANDARD
+
+Every event contains:
+
+Event ID · Platform · Project ID · Version · Timestamp · Duration · Payload
+
+---
+
+# VERSIONING
+
+| Entity | Standard |
+|--------|----------|
+| Every platform | Semantic Versioning (Major.Minor.Patch) |
+| Every Contract | Versioned |
+| Every Asset | Versioned |
+| Every Blueprint | Versioned |
+
+---
+
+# TESTING STANDARD
+
+Every platform requires:
+
+- Unit Tests
+- Integration Tests
+- Golden Tests
+- Snapshot Tests
+- Performance Tests
+
+---
+
+# DOCUMENTATION STANDARD
+
+Every platform must contain:
+
+- `README.md`
+- `Architecture.md`
+- `API.md`
+- `Examples.md`
+- `Migration.md`
+
+---
+
+# IMPLEMENTATION DIRECTIVE STD-001
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Create** | `src/lib/shared/architecture/` |
+
+**Files:**
+
+- `Standards.ts`
+- `Naming.ts`
+- `Errors.ts`
+- `Events.ts`
+- `Logging.ts`
+
+**Acceptance:** Every platform follows unified standards.
+
+---
+
+# IMPLEMENTATION DIRECTIVE STD-002
+
+| | |
+|---|---|
+| **Priority** | HIGH |
+
+Create ESLint architecture rules:
+
+- Forbidden imports
+- Forbidden dependencies
+- Automatic validation
+
+---
+
+# NEW LAW
+
+## LAW-023
+
+Every new file must follow Engineering Standards.
+
+---
+
+## LAW-024
+
+Architecture violations fail CI.
+
+---
+
+## LAW-025
+
+Every merge request must pass Architecture Validation.
+
+---
+
+*END OF PART 15*
+
+---
+
 # APPENDIX A — REPOSITORY IMPLEMENTATION REFERENCE
 
 > Практическая привязка Part 1 (канон) и Part 2 (аудит) к текущему коду репозитория `design-ai`.  
@@ -6322,4 +6593,4 @@ pm2 logs marketplace-infographic --lines 50
 
 ---
 
-*Architecture Bible — living document. Part 1 is canonical law (LAW-001–022). Parts 2–14 define audit, pipeline, platforms, runtime, contracts, assets, migration, CEO, SDK, and orchestration. Appendix A tracks repository implementation.*
+*Architecture Bible — living document. Part 1 is canonical law (LAW-001–025). Parts 2–15 define audit, pipeline, platforms, runtime, contracts, assets, engineering standards, migration, CEO, SDK, and orchestration. Appendix A tracks repository implementation.*
