@@ -87,6 +87,20 @@ export type GenerationDiagnosticReport = {
     architectureVersion: string;
     briefId?: string;
     decisionTraceCount: number;
+    specsAdapted?: {
+      knowledge: boolean;
+      commercial: boolean;
+      creative: boolean;
+      visual: boolean;
+      render: boolean;
+    };
+    specIds?: {
+      knowledgeSpecId?: string;
+      commercialSpecId?: string;
+      creativeSpecId?: string;
+      visualBlueprintId?: string;
+      renderBlueprintId?: string;
+    };
   };
 };
 

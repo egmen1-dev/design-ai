@@ -130,7 +130,9 @@ import type { CoverConceptId } from "@/lib/cover-concepts";
 import { evaluateFinalQuality } from "@/lib/design/final-quality-validator";
 import { applyPosterRules } from "@/lib/design-process/pipeline";
 import { createLegacyDAOSState } from "@/lib/daos";
+import { enrichDaosStateFromPipeline } from "@/lib/daos/adapters/pipeline-enrichment";
 import type { DAOSProjectState } from "@/lib/daos/core/project-state";
+import type { KnowledgeContext } from "@/lib/design/knowledge-engine";
 
 export type GenerateInfographicInput = {
   userId: string;
@@ -221,6 +223,20 @@ function daosDiagnosticSummary(state: DAOSProjectState) {
     architectureVersion: state.architectureVersion,
     briefId: state.brief?.id,
     decisionTraceCount: state.decisionTrace.length,
+    specsAdapted: {
+      knowledge: Boolean(state.knowledgeSpec),
+      commercial: Boolean(state.commercialSpec),
+      creative: Boolean(state.creativeSpec),
+      visual: Boolean(state.visualBlueprint),
+      render: Boolean(state.renderBlueprint),
+    },
+    specIds: {
+      knowledgeSpecId: state.knowledgeSpec?.id,
+      commercialSpecId: state.commercialSpec?.id,
+      creativeSpecId: state.creativeSpec?.id,
+      visualBlueprintId: state.visualBlueprint?.id,
+      renderBlueprintId: state.renderBlueprint?.id,
+    },
   };
 }
 
@@ -714,10 +730,9 @@ export async function handleGenerateInfographic(
   const daosState = createLegacyDAOSState({
     prompt: input.prompt || "",
   });
-  const daosProjectState = daosDiagnosticSummary(daosState);
 
   if (process.env.DAOS_DEBUG === "1") {
-    console.debug("[daos] Wave 1 state created", daosProjectState);
+    console.debug("[daos] Wave 1 state created", daosDiagnosticSummary(daosState));
   }
 
   try {
@@ -742,6 +757,7 @@ export async function handleGenerateInfographic(
     let conceptRenderQueue: CreativeDirectorResult[] = [];
     let knowledgeCategory: KnowledgeCategory | undefined;
     let knowledgePatternsUsed = 0;
+    let knowledgeContext: KnowledgeContext | undefined;
     let marketIntelligence: MarketIntelligenceContext | undefined;
     let marketNoveltyScore: number | undefined;
     let assetsIntelligence: AssetsIntelligenceContext | undefined;
@@ -819,6 +835,7 @@ export async function handleGenerateInfographic(
       ]);
       knowledgeCategory = knowledge.category;
       knowledgePatternsUsed = knowledge.patterns.length;
+      knowledgeContext = knowledge;
       marketIntelligence = market;
       assetsIntelligence = assets;
       trendIntelligence = trend;
@@ -2073,6 +2090,49 @@ export async function handleGenerateInfographic(
           !!(chiefPlan?.approved && seniorAdReview?.approved && ctrReview?.wouldClick),
         ).catch((e) => console.warn("[design-genome] save failed:", e));
       }
+    }
+
+    const enrichedDaosState = enrichDaosStateFromPipeline(daosState, {
+      knowledge:
+        knowledgeContext || marketIntelligence || genomeIntelligence || assetsIntelligence
+          ? {
+              knowledge: knowledgeContext,
+              market: marketIntelligence,
+              genome: genomeIntelligence,
+              assets: assetsIntelligence,
+            }
+          : undefined,
+      commercial:
+        designBrief || seniorAdReview || ctrReview || marketIntelligence
+          ? {
+              designBrief,
+              seniorAdReview,
+              ctrReview,
+              marketIntelligence,
+            }
+          : undefined,
+      creative: activeCreative ?? undefined,
+      visual:
+        visualBlueprint || compositionResult || scenePlan || sceneDirection
+          ? {
+              visualBlueprint,
+              scenePlan,
+              compositionResult,
+              sceneDirection,
+            }
+          : undefined,
+      render: renderEngineResult
+        ? {
+            request: renderEngineResult.request,
+            renderEngineResult,
+            renderProvider: renderEngineResult.request?.providerId,
+          }
+        : undefined,
+    });
+    const daosProjectState = daosDiagnosticSummary(enrichedDaosState);
+
+    if (process.env.DAOS_DEBUG === "1") {
+      console.debug("[daos] Wave 2 specs adapted", daosProjectState);
     }
 
     const assembleGenerationDiagnostic = (generationId: string) =>
