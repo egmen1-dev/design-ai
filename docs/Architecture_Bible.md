@@ -104,6 +104,11 @@ Version: 1.0 (Draft)
   - [RUN-001–RUN-004](#implementation-directive-run-001)
   - [Project Graph & Failure Recovery](#project-graph)
   - [Success Criteria](#success-criteria)
+- [Part 13 — Data Contracts & Project State](#part-13--data-contracts--project-state)
+  - [Contract Hierarchy](#contract-hierarchy)
+  - [Base Contract & Specifications](#base-contract)
+  - [Contract Rules RULE-001–007](#contract-rules)
+  - [DTO-001–DTO-002](#implementation-directive-dto-001)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -5455,6 +5460,253 @@ Any checkpoint may become rollback target.
 
 ---
 
+# PART 13 — DATA CONTRACTS & PROJECT STATE
+
+# ============================================================================
+# PART 13
+# DATA CONTRACTS & PROJECT STATE
+# ============================================================================
+
+## Purpose
+
+Standardize every object transferred inside Design AI OS.
+
+No platform may exchange arbitrary objects.
+
+Only official Contracts.
+
+---
+
+# CURRENT AUDIT
+
+### Current Situation
+
+The project already contains multiple DTOs.
+
+Most DTOs evolved organically.
+
+Different modules expect different structures.
+
+**Result:**
+
+- duplicate fields
+- duplicated parsing
+- hidden dependencies
+- weak typing
+- difficult migrations
+
+### Target
+
+Every platform communicates through **immutable Contracts**.
+
+Nothing else.
+
+---
+
+# CONTRACT HIERARCHY
+
+```
+ProjectState
+│
+├── ProductBrief
+├── ResearchSpec
+├── KnowledgeSpec
+├── CommercialSpec
+├── CreativeSpec
+├── VisualBlueprint
+├── RenderBlueprint
+├── OverlayBlueprint
+├── VisionReport
+├── LearningReport
+└── DecisionTrace
+```
+
+---
+
+# BASE CONTRACT
+
+Every contract inherits **BaseSpecification**.
+
+**BaseSpecification** fields:
+
+- id
+- version
+- projectId
+- createdAt
+- platform
+- confidence
+- status
+- executionTime
+- traceId
+- parentVersion
+
+---
+
+# PRODUCT BRIEF
+
+| | |
+|---|---|
+| **Owner** | Project Intelligence |
+
+**Contains:** Product · Marketplace · Brand · Audience · Objectives · Restrictions · Assets · Input Images · User Prompt · Generation Mode
+
+---
+
+# RESEARCH SPEC
+
+| | |
+|---|---|
+| **Owner** | Research Platform |
+
+**Contains:** Competitors · Reviews · Marketplace Rules · References · Questions · Trends · Sources · Evidence · Freshness
+
+---
+
+# KNOWLEDGE SPEC
+
+| | |
+|---|---|
+| **Owner** | Knowledge Runtime |
+
+**Contains:** Design DNA · Design Genome · Historical Knowledge · Commercial Patterns · Visual Patterns · Marketplace Knowledge · Merged Confidence
+
+---
+
+# COMMERCIAL SPEC
+
+| | |
+|---|---|
+| **Owner** | Commercial Platform |
+
+**Contains:** USP · Buyer Persona · Price Position · Trust Strategy · Hierarchy · Attention Strategy · Emotional Strategy
+
+---
+
+# CREATIVE SPEC
+
+| | |
+|---|---|
+| **Owner** | Creative Platform |
+
+**Contains:** Concept · Narrative · Hook · Mood · Visual Style · Rejected Concepts · Reasoning
+
+---
+
+# VISUAL BLUEPRINT
+
+| | |
+|---|---|
+| **Owner** | Visual Platform |
+
+**Contains:** Scene · Camera · Composition · Lighting · Materials · Whitespace · Color Tokens · Typography Tokens · Overlay Zones · Attention Flow
+
+---
+
+# RENDER BLUEPRINT
+
+| | |
+|---|---|
+| **Owner** | Rendering Platform |
+
+**Contains:** Provider · Resolution · Quality · Render Nodes · Generation Parameters · Assets · Overlay References
+
+---
+
+# VISION REPORT
+
+| | |
+|---|---|
+| **Owner** | Vision Platform |
+
+**Contains:** Marketplace Score · Commercial Score · Typography Score · Composition Score · Professional Score · Detected Problems · Recommendations · Approval Status
+
+---
+
+# LEARNING REPORT
+
+| | |
+|---|---|
+| **Owner** | Learning Platform |
+
+**Contains:** Genome Updates · Confidence Updates · Successful Decisions · Failed Decisions · Future Improvements
+
+---
+
+# CONTRACT RULES
+
+| Rule | Statement |
+|------|-----------|
+| **RULE-001** | Contracts are immutable |
+| **RULE-002** | Contracts are versioned |
+| **RULE-003** | Contracts cannot contain HTML |
+| **RULE-004** | Contracts cannot contain Prompt |
+| **RULE-005** | Contracts always contain DecisionTrace |
+| **RULE-006** | Contracts are serializable |
+| **RULE-007** | Contracts support replay |
+
+---
+
+# IMPLEMENTATION DIRECTIVE DTO-001
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Create** | `src/lib/contracts/` |
+
+**Files:**
+
+- `BaseSpecification.ts`
+- `ProjectState.ts`
+- `ProductBrief.ts`
+- `ResearchSpec.ts`
+- `KnowledgeSpec.ts`
+- `CommercialSpec.ts`
+- `CreativeSpec.ts`
+- `VisualBlueprint.ts`
+- `RenderBlueprint.ts`
+- `OverlayBlueprint.ts`
+- `VisionReport.ts`
+- `LearningReport.ts`
+
+---
+
+# IMPLEMENTATION DIRECTIVE DTO-002
+
+| | |
+|---|---|
+| **Status** | REFACTOR |
+
+Replace every internal object with official Contracts.
+
+Legacy DTOs become adapters until migration finishes.
+
+---
+
+# MIGRATION SCORE
+
+| | |
+|---|---|
+| Current Coverage | 35% |
+| Reuse | 40% |
+| Rewrite | 60% |
+| Risk | **MEDIUM** |
+
+---
+
+# SUCCESS CRITERIA
+
+- ✓ Every platform exchanges Contracts only
+- ✓ No duplicate DTOs
+- ✓ Immutable Specifications
+- ✓ Versioned ProjectState
+- ✓ Full replay support
+
+---
+
+*END OF PART 13*
+
+---
+
 # APPENDIX A — REPOSITORY IMPLEMENTATION REFERENCE
 
 > Практическая привязка Part 1 (канон) и Part 2 (аудит) к текущему коду репозитория `design-ai`.  
@@ -5847,4 +6099,4 @@ pm2 logs marketplace-infographic --lines 50
 
 ---
 
-*Architecture Bible — living document. Part 1 is canonical law (LAW-001–022). Parts 2–12 define audit, pipeline, platforms, runtime, migration, CEO, SDK, and orchestration. Appendix A tracks repository implementation.*
+*Architecture Bible — living document. Part 1 is canonical law (LAW-001–022). Parts 2–13 define audit, pipeline, platforms, runtime, contracts, migration, CEO, SDK, and orchestration. Appendix A tracks repository implementation.*
