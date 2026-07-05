@@ -17,6 +17,11 @@ architecture:
     - LAW-001  # Prompt is NOT source of truth
     - LAW-021
     - LAW-022
+    - LAW-031  # Every folder has one responsibility
+    - LAW-032  # No business logic outside Platforms
+    - LAW-033  # No platform code inside Providers
+    - LAW-034  # No Runtime code inside Platforms
+    - LAW-035  # Repository structure is architecture
 
 repository:
   root: marketplace-infographic/
@@ -120,6 +125,142 @@ repository:
       - rfc
       - migration
       - api
+
+repository_v2:
+  version: 2
+  root: marketplace-infographic/
+  tree:
+    - app
+    - components
+    - docs
+    - public
+    - prisma
+    - scripts
+    - src
+    - tests
+    - config
+  src:
+    path: src/
+    current_path: src/lib/
+    modules:
+      platform-core:
+        responsibilities:
+          - ProjectState
+          - Architecture Registry
+          - Versioning
+          - Execution Context
+          - Configuration
+          - Platform Registry
+          - Decision Trace
+          - Architecture Metadata
+      runtime:
+        responsibilities:
+          - Execution Graph
+          - Scheduler
+          - Retry
+          - Events
+          - Metrics
+          - Cache
+          - Node Execution
+          - Checkpoint Manager
+      contracts:
+        responsibilities:
+          - immutable Specifications
+        forbidden:
+          - business_logic
+      platforms:
+        responsibilities:
+          - business intelligence only
+        modules:
+          - Research
+          - Knowledge
+          - Commercial
+          - Creative
+          - Visual
+          - Rendering
+          - Vision
+          - Learning
+          - Governance
+      providers:
+        responsibilities:
+          - external integrations
+          - Provider Adapter
+        implementations:
+          - Flux
+          - GPTImage
+          - Imagen
+      sdk:
+        responsibilities:
+          - Platform SDK
+          - Plugin SDK
+          - Skill SDK
+          - Registry SDK
+      assets:
+        responsibilities:
+          - Asset Manager
+          - Asset Graph
+          - Storage
+          - Metadata
+          - Versioning
+          - Cache
+      infrastructure:
+        responsibilities:
+          - Logger
+          - Metrics
+          - Configuration
+          - Database
+          - Storage
+          - Queue
+          - Telemetry
+      shared:
+        responsibilities:
+          - pure reusable utilities
+        forbidden:
+          - business_logic
+      legacy:
+        purpose: compatibility
+        forbidden_imports:
+          - runtime
+          - platforms
+        allowed:
+          - adapters only
+  app:
+    path: app/
+    current_path: src/app/
+    forbidden:
+      - business_logic
+      - knowledge
+      - commercial_logic
+      - rendering
+      - vision
+      - learning
+      - runtime
+  tests:
+    path: tests/
+    suites:
+      - unit
+      - integration
+      - architecture
+      - golden
+      - performance
+      - marketplace
+  config:
+    path: config/
+    files:
+      - architecture.yaml
+      - runtime.yaml
+      - providers.yaml
+      - platforms.yaml
+      - marketplaces.yaml
+      - learning.yaml
+  migration_score:
+    current: 70
+    reuse: 90
+    rewrite: 10
+    risk: LOW
+  success_criteria:
+    - repository communicates architecture
+    - onboarding_under_15_minutes
 
 runtime:
   id: RuntimeV2
@@ -814,6 +955,34 @@ directives:
       - architecture
     success:
       repository_matches_bible: true
+
+  - id: REP-002
+    title: Normalize repository structure (Part 27 v2)
+    priority: HIGH
+    wave: 1
+    phase: 1
+    status: refactor
+    requires:
+      - REP-001
+    rules:
+      - move files only when architecture requires
+      - do not rewrite implementation
+    targets:
+      - src/platform-core/
+      - src/runtime/
+      - src/contracts/
+      - src/platforms/
+      - src/providers/
+      - src/infrastructure/
+      - src/shared/
+      - tests/
+      - config/
+    checks:
+      - compile
+      - unit
+      - architecture
+    success:
+      repository_follows_bible: true
 
   - id: DIR-001
     title: Directive Registry

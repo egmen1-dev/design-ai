@@ -1,0 +1,19 @@
+# Runtime configuration view
+# Canonical DSL: docs/architecture/architecture.yaml
+# Part 27 — config/runtime.yaml
+
+runtime:
+  id: RuntimeV2
+  path: src/runtime/
+  components:
+    - ExecutionGraph
+    - Scheduler
+    - Retry
+    - EventBus
+    - Metrics
+    - Cache
+    - NodeExecution
+    - CheckpointManager
+  rules:
+    sole_orchestrator: true
+    legacy_imports: forbidden

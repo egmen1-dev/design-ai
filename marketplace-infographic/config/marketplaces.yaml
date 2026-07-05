@@ -1,0 +1,8 @@
+# Marketplaces configuration view
+# Part 27 — config/marketplaces.yaml
+
+marketplaces:
+  - id: wildberries
+    formats: ["900x1200"]
+  - id: ozon
+    formats: ["1200x1200"]

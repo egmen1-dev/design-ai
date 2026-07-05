@@ -1,0 +1,10 @@
+# Architecture configuration view
+# Primary source of truth: docs/architecture/architecture.yaml (repo root)
+# Part 27 — config/architecture.yaml
+
+architecture:
+  version: "2.0"
+  bible: docs/Architecture_Bible.md
+  dsl: docs/architecture/architecture.yaml
+  score_target: 98
+  coverage_target: 95

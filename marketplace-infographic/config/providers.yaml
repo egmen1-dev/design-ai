@@ -1,0 +1,15 @@
+# Providers configuration view
+# Canonical DSL: docs/architecture/architecture.yaml
+# Part 27 — config/providers.yaml
+
+providers:
+  adapter_path: src/providers/
+  interface: IProvider
+  prompt_compiler: sole_boundary
+  implementations:
+    - id: Flux
+      capabilities: [image, background]
+    - id: GPTImage
+      capabilities: [image]
+    - id: Imagen
+      capabilities: [image]

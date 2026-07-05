@@ -1,0 +1,19 @@
+# Platforms configuration view
+# Canonical DSL: docs/architecture/architecture.yaml
+# Part 27 — config/platforms.yaml
+
+platforms:
+  path: src/platforms/
+  modules:
+    - Research
+    - Knowledge
+    - Commercial
+    - Creative
+    - Visual
+    - Rendering
+    - Vision
+    - Learning
+    - Governance
+  rules:
+    business_logic_only: true
+    no_runtime_code: true  # LAW-034

@@ -14,7 +14,7 @@ See **Part 20** in [Architecture_Bible.md](../Architecture_Bible.md).
 
 **Implementation Plan:** Part 25 — Phases 1–8 with final acceptance criteria in `architecture.yaml` → `phases`, `final_acceptance`.
 
-**Repository:** Part 26 — canonical structure in `architecture.yaml` → `repository`. Directive REP-001 (blocked until Phase 1).
+**Repository:** Part 26–27 — canonical structure in `architecture.yaml` → `repository`, `repository_v2`. REP-001 (blocked), REP-002 (refactor).
 
 ## Index
 

@@ -126,6 +126,7 @@ Version: 1.0 (Draft)
   - [CI Pipeline](#ci-pipeline)
   - [CI-001–CI-003](#implementation-directive-ci-001)
   - [LAW-026–LAW-030](#new-law-2)
+  - [LAW-031–LAW-035](#law-031)
 - [Part 17 — Design Knowledge Engine](#part-17--design-knowledge-engine)
   - [Current Audit & Target](#current-audit-1)
   - [Knowledge Graph & API](#knowledge-graph-1)
@@ -169,6 +170,11 @@ Version: 1.0 (Draft)
   - [lib/ Platforms & Providers](#lib)
   - [Legacy, Generated & docs/](#legacy)
   - [Directive REP-001](#implementation-directive-rep-001)
+- [Part 27 — Repository Specification (v2)](#part-27--repository-specification-v2)
+  - [Root Structure & src/ Layers](#root-structure)
+  - [Platform Core through Legacy](#platform-core)
+  - [Tests, Docs & Configuration](#tests)
+  - [REP-002 & Repository Laws](#implementation-directive-rep-002)
 - [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
@@ -457,6 +463,36 @@ Every architectural violation receives unique identifier.
 ## LAW-030
 
 Architecture Score below target blocks production deployment.
+
+---
+
+## LAW-031
+
+Every folder has one responsibility.
+
+---
+
+## LAW-032
+
+No business logic outside Platforms.
+
+---
+
+## LAW-033
+
+No platform code inside Providers.
+
+---
+
+## LAW-034
+
+No Runtime code inside Platforms.
+
+---
+
+## LAW-035
+
+Repository structure is architecture.
 
 ---
 
@@ -8474,6 +8510,256 @@ docs/
 ---
 
 *END OF PART 26*
+
+---
+
+# PART 27 — REPOSITORY SPECIFICATION (v2)
+
+# ============================================================================
+# PART 27
+# REPOSITORY SPECIFICATION
+# ============================================================================
+
+## Purpose
+
+This chapter defines the **canonical repository structure** (v2 — supersedes Part 26 layout details).
+
+Every file belongs to one architectural layer.
+
+Every architectural layer has exactly one responsibility.
+
+The repository itself becomes part of the architecture.
+
+Canonical DSL: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `repository_v2`
+
+> **Current codebase:** `src/app/`, `src/lib/` (legacy layout). **Target:** structure below. Normalized by REP-002 without rewriting implementation.
+
+---
+
+# ROOT STRUCTURE
+
+```
+marketplace-infographic/
+├── app/
+├── components/
+├── docs/
+├── public/
+├── prisma/
+├── scripts/
+├── src/
+├── tests/
+├── config/
+├── package.json
+├── tsconfig.json
+└── next.config.js
+```
+
+> **Monorepo note:** `docs/Architecture_Bible.md` lives at repository root `docs/` (design-ai). App-specific docs may mirror under `marketplace-infographic/docs/`.
+
+---
+
+# APP LAYER
+
+| | |
+|---|---|
+| **Purpose** | Application layer |
+| **Path** | `app/` (target) · `src/app/` (current) |
+
+### Responsibilities
+
+Next.js Routing · API Routes · UI Composition · Authentication · Middleware
+
+### Forbidden
+
+Business Logic · Knowledge · Commercial Logic · Rendering · Vision · Learning · Runtime
+
+---
+
+# SRC
+
+| | |
+|---|---|
+| **Purpose** | Entire Design AI Operating System |
+| **Path** | `src/` (target) · `src/lib/` (current, migrating) |
+
+### Target Structure
+
+```
+src/
+├── platform-core/
+├── runtime/
+├── contracts/
+├── platforms/
+├── providers/
+├── sdk/
+├── infrastructure/
+├── assets/
+├── shared/
+└── legacy/
+```
+
+---
+
+# PLATFORM CORE
+
+**Responsibilities:** ProjectState · Architecture Registry · Versioning · Execution Context · Configuration · Platform Registry · Decision Trace · Architecture Metadata
+
+---
+
+# RUNTIME
+
+**Responsibilities:** Execution Graph · Scheduler · Retry · Events · Metrics · Cache · Node Execution · Checkpoint Manager
+
+---
+
+# CONTRACTS
+
+**Responsibilities:** Every immutable Specification. No business logic. DTO only.
+
+---
+
+# PLATFORMS
+
+**Responsibilities:** Business Intelligence only.
+
+Research · Knowledge · Commercial · Creative · Visual · Rendering · Vision · Learning · Governance
+
+---
+
+# PROVIDERS
+
+**Responsibilities:** External integrations only.
+
+Flux · GPT Image · Imagen · Future providers · Provider Adapter
+
+**Nothing else.**
+
+---
+
+# SDK
+
+**Responsibilities:** Platform SDK · Plugin SDK · Skill SDK · Registry SDK
+
+---
+
+# ASSETS
+
+**Responsibilities:** Asset Manager · Asset Graph · Storage · Metadata · Versioning · Cache
+
+---
+
+# INFRASTRUCTURE
+
+**Responsibilities:** Logger · Metrics · Configuration · Database · Storage · Queue · Telemetry
+
+---
+
+# SHARED
+
+**Responsibilities:** Pure reusable utilities
+
+**Forbidden:** Business Logic
+
+---
+
+# LEGACY
+
+| | |
+|---|---|
+| **Purpose** | Compatibility |
+
+- Never imported into Runtime
+- Never imported into Platforms
+- Only adapters allowed
+
+---
+
+# TESTS
+
+```
+tests/
+├── unit/
+├── integration/
+├── architecture/
+├── golden/
+├── performance/
+└── marketplace/
+```
+
+---
+
+# DOCS
+
+```
+docs/
+├── Architecture_Bible.md
+├── architecture/adr/
+├── rfc/
+├── migration/
+├── api/
+└── standards/
+```
+
+---
+
+# CONFIGURATION
+
+```
+config/
+├── architecture.yaml
+├── runtime.yaml
+├── providers.yaml
+├── platforms.yaml
+├── marketplaces.yaml
+└── learning.yaml
+```
+
+Primary DSL remains [`docs/architecture/architecture.yaml`](architecture/architecture.yaml). App `config/` files are runtime deployment views.
+
+---
+
+## IMPLEMENTATION DIRECTIVE REP-002
+
+| | |
+|---|---|
+| **Status** | REFACTOR |
+| **Priority** | HIGH |
+| **Tasks** | Normalize repository structure. Move files only when architecture requires. **Do not rewrite implementation.** |
+| **Acceptance** | Repository follows Architecture Bible |
+
+---
+
+# REPOSITORY LAWS
+
+| Law | Rule |
+|-----|------|
+| **LAW-031** | Every folder has one responsibility |
+| **LAW-032** | No business logic outside Platforms |
+| **LAW-033** | No platform code inside Providers |
+| **LAW-034** | No Runtime code inside Platforms |
+| **LAW-035** | Repository structure is architecture |
+
+---
+
+# MIGRATION SCORE
+
+| | |
+|---|---|
+| **Current** | 70% |
+| **Reuse** | 90% |
+| **Rewrite** | 10% |
+| **Risk** | LOW |
+
+---
+
+# SUCCESS CRITERIA
+
+- Repository immediately communicates architecture
+- New developer understands project structure within **15 minutes**
+
+---
+
+*END OF PART 27*
 
 ---
 

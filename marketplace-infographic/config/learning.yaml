@@ -1,0 +1,14 @@
+# Learning configuration view
+# Part 27 — config/learning.yaml
+
+learning:
+  path: src/platforms/Learning/
+  output: LearningReport
+  merges:
+    - feedback
+    - genome
+    - memory
+  trainers:
+    - GenomeTrainer
+    - ConfidenceTrainer
+    - MarketplaceTrainer

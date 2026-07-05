@@ -32,6 +32,7 @@ Architecture Bible → ADR → RFC → Implementation Directive → Pull Request
 | EXEC-001 | Cursor Execution Protocol (Part 24) | CRITICAL | Completed | — | — | — |
 | PLAN-001 | Implementation Plan (Part 25, Phases 1–8) | CRITICAL | Completed | — | — | — |
 | REP-001 | Canonical repository structure (Part 26) | HIGH | Blocked | — | — | 1 |
+| REP-002 | Normalize repository structure v2 (Part 27) | HIGH | Refactor | — | — | 1 |
 | DTO-001 | Base Contract & Specifications | Critical | Blocked | ADR-002 | RFC-001 | 02 |
 | DTO-002 | ProjectState implementation | Critical | Blocked | ADR-002 | RFC-001 | 02 |
 | RUN-001 | Runtime engine skeleton | Critical | Blocked | — | RFC-002 | 01 |
