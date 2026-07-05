@@ -262,6 +262,56 @@ repository_v2:
     - repository communicates architecture
     - onboarding_under_15_minutes
 
+platform_core:
+  status: CRITICAL
+  priority: MAXIMUM
+  wave: 1
+  path: src/lib/platform-core/
+  business_logic: forbidden
+  responsibilities:
+    - platform registration
+    - platform discovery
+    - project lifecycle
+    - architecture metadata
+    - execution context
+    - configuration
+    - versioning
+    - dependency registry
+    - ProjectState
+    - DecisionTrace
+  interfaces:
+    - IPlatform
+    - IProvider
+    - ISkill
+    - IPlugin
+    - IRuntime
+    - IRegistry
+    - IProjectState
+  files:
+    - PlatformCore.ts
+    - ProjectState.ts
+    - ProjectContext.ts
+    - ProjectMetadata.ts
+    - ArchitectureRegistry.ts
+    - PlatformRegistry.ts
+    - ProviderRegistry.ts
+    - VersionManager.ts
+    - ConfigurationManager.ts
+    - ExecutionContext.ts
+  config_files:
+    - architecture.yaml
+    - runtime.yaml
+    - providers.yaml
+    - marketplaces.yaml
+    - learning.yaml
+    - plugins.yaml
+  performance:
+    project_state_creation_ms: 5
+    registry_lookup_ms: 1
+  refactor:
+    reuse: 95
+    rewrite: 5
+
 runtime:
   id: RuntimeV2
   path: src/lib/runtime/
@@ -983,6 +1033,64 @@ directives:
       - architecture
     success:
       repository_follows_bible: true
+
+  - id: PC-001
+    title: Create ProjectState
+    priority: Critical
+    wave: 1
+    status: completed
+    files:
+      create:
+        - src/lib/platform-core/project-state/ProjectState.ts
+    checks:
+      - unit
+    success:
+      immutable: true
+
+  - id: PC-002
+    title: Create Architecture Registry
+    priority: Critical
+    wave: 1
+    status: completed
+    files:
+      create:
+        - src/lib/platform-core/registry/ArchitectureRegistry.ts
+    checks:
+      - unit
+
+  - id: PC-003
+    title: Create Version Manager
+    priority: Critical
+    wave: 1
+    status: completed
+    files:
+      create:
+        - src/lib/platform-core/versioning/VersionManager.ts
+    checks:
+      - unit
+
+  - id: PC-004
+    title: Create Configuration Manager
+    priority: Critical
+    wave: 1
+    status: completed
+    files:
+      create:
+        - src/lib/platform-core/configuration/ConfigurationManager.ts
+    checks:
+      - unit
+
+  - id: PC-005
+    title: Replace object passing with ProjectState
+    priority: Critical
+    wave: 1
+    status: in_progress
+    requires:
+      - PC-001
+      - RUN-001
+    checks:
+      - integration
+      - architecture
 
   - id: DIR-001
     title: Directive Registry

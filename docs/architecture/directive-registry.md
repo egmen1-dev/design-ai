@@ -33,6 +33,11 @@ Architecture Bible → ADR → RFC → Implementation Directive → Pull Request
 | PLAN-001 | Implementation Plan (Part 25, Phases 1–8) | CRITICAL | Completed | — | — | — |
 | REP-001 | Canonical repository structure (Part 26) | HIGH | Blocked | — | — | 1 |
 | REP-002 | Normalize repository structure v2 (Part 27) | HIGH | Refactor | — | — | 1 |
+| PC-001 | Create ProjectState (Part 28) | Critical | Completed | ADR-002 | RFC-001 | 1 |
+| PC-002 | Create Architecture Registry | Critical | Completed | — | RFC-002 | 1 |
+| PC-003 | Create Version Manager | Critical | Completed | — | — | 1 |
+| PC-004 | Create Configuration Manager | Critical | Completed | — | — | 1 |
+| PC-005 | Replace object passing with ProjectState | Critical | In Progress | ADR-002 | RFC-001 | 1 |
 | DTO-001 | Base Contract & Specifications | Critical | Blocked | ADR-002 | RFC-001 | 02 |
 | DTO-002 | ProjectState implementation | Critical | Blocked | ADR-002 | RFC-001 | 02 |
 | RUN-001 | Runtime engine skeleton | Critical | Blocked | — | RFC-002 | 01 |
