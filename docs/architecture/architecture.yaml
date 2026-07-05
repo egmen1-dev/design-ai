@@ -22,6 +22,22 @@ architecture:
     - LAW-033  # No platform code inside Providers
     - LAW-034  # No Runtime code inside Platforms
     - LAW-035  # Repository structure is architecture
+    - LAW-036  # ProjectState is immutable
+    - LAW-037  # Every platform owns exactly one responsibility
+    - LAW-038  # No platform communicates directly with another platform
+    - LAW-039  # Only Runtime orchestrates execution
+    - LAW-040  # Only Provider Adapter generates prompts
+    - LAW-041  # Only Asset Platform accesses filesystem
+    - LAW-042  # Knowledge queried only through Knowledge Engine
+    - LAW-043  # Rendering executes blueprints only
+    - LAW-044  # Vision is mandatory
+    - LAW-045  # Learning executes after every completed generation
+    - LAW-046  # Every architectural change requires ADR
+    - LAW-047  # Every breaking change requires RFC
+    - LAW-048  # Every implementation requires Directive
+    - LAW-049  # Architecture validation blocks invalid releases
+    - LAW-050  # Architecture Bible is the single source of truth
+  law_count: 50
 
 repository:
   root: marketplace-infographic/
@@ -261,6 +277,187 @@ repository_v2:
   success_criteria:
     - repository communicates architecture
     - onboarding_under_15_minutes
+
+platform_core:
+  status: CRITICAL
+  priority: MAXIMUM
+  wave: 1
+  path: src/lib/platform-core/
+  business_logic: forbidden
+  responsibilities:
+    - platform registration
+    - platform discovery
+    - project lifecycle
+    - architecture metadata
+    - execution context
+    - configuration
+    - versioning
+    - dependency registry
+    - ProjectState
+    - DecisionTrace
+  interfaces:
+    - IPlatform
+    - IProvider
+    - ISkill
+    - IPlugin
+    - IRuntime
+    - IRegistry
+    - IProjectState
+  files:
+    - PlatformCore.ts
+    - ProjectState.ts
+    - ProjectContext.ts
+    - ProjectMetadata.ts
+    - ArchitectureRegistry.ts
+    - PlatformRegistry.ts
+    - ProviderRegistry.ts
+    - VersionManager.ts
+    - ConfigurationManager.ts
+    - ExecutionContext.ts
+  config_files:
+    - architecture.yaml
+    - runtime.yaml
+    - providers.yaml
+    - marketplaces.yaml
+    - learning.yaml
+    - plugins.yaml
+  performance:
+    project_state_creation_ms: 5
+    registry_lookup_ms: 1
+  refactor:
+    reuse: 95
+    rewrite: 5
+
+file_specifications:
+  - module: design-process
+    path: src/lib/design-process/
+    status: refactor
+    priority: critical
+    importance: 5
+    wave: 5
+    purpose: creative transformation only
+    remove:
+      - execution control
+      - prompt generation
+      - render preparation
+      - filesystem operations
+      - provider selection
+      - asset loading
+    move:
+      scene_planning: visual-platform
+      prompt_builder: provider-adapter
+      execution_flow: runtime
+      asset_resolution: asset-platform
+      configuration: platform-core
+    keep:
+      - creative scoring
+      - creative memory
+      - concept generator
+      - concept evaluator
+      - creative critic
+    create:
+      - CreativeSpec
+      - CreativeDecision
+      - CreativeAlternative
+      - CreativeMetrics
+      - CreativeConfidence
+    pipeline:
+      - KnowledgeSpec
+      - CommercialSpec
+      - Creative Reasoning
+      - Concept Generation
+      - Creative Critic
+      - CreativeSpec
+    imports_forbidden:
+      - render-engine
+      - provider
+      - prompt
+      - filesystem
+      - legacy
+    imports_allowed:
+      - contracts
+      - runtime
+      - shared
+      - sdk
+    depends_on:
+      - Knowledge
+      - Commercial
+      - Runtime
+    returns: CreativeSpec
+    directives:
+      - DSP-001
+      - DSP-002
+      - DSP-003
+      - DSP-004
+    rollback: restore DesignBrief adapter
+
+  - module: design-governance
+    path: src/lib/design-governance/
+    status: keep
+    priority: critical
+    importance: 5
+    keep:
+      - Constitution
+      - Blueprint Lock
+      - Validators
+      - Resolver
+      - Rules
+      - Architecture Checks
+    remove:
+      - Professional Score
+      - Image Quality
+      - Marketplace Score
+      - Commercial Score
+    move:
+      professional_score: vision-platform
+      marketplace_validation: vision-platform
+      image_validation: vision-platform
+    add:
+      - ProjectState Validation
+      - Specification Validation
+      - Runtime Validation
+      - Execution Validation
+      - Dependency Validation
+    create:
+      - GovernanceRuntime
+      - GovernanceEvents
+      - GovernanceReport
+    directives:
+      - GOV-002
+      - GOV-003
+    success: governance validates architecture only
+
+  - module: render-engine
+    path: src/lib/render-engine/
+    status: keep
+    priority: critical
+    importance: 5
+    wave: 7
+    keep:
+      - background generation
+      - shadow generation
+      - composition
+      - export
+      - provider communication
+    remove:
+      - creative decisions
+      - commercial decisions
+      - knowledge usage
+      - prompt strategy
+    move:
+      prompt: provider-adapter
+      business: commercial
+      creative: creative
+      visual: visual-platform
+    create:
+      - RenderGraph
+      - RenderNode
+      - RetryNode
+      - NodeExecutor
+    directives:
+      - REN-002
+      - REN-003
+    success: rendering executes RenderBlueprint only
 
 runtime:
   id: RuntimeV2
@@ -984,6 +1181,233 @@ directives:
     success:
       repository_follows_bible: true
 
+  - id: PC-001
+    title: Create ProjectState
+    priority: Critical
+    wave: 1
+    status: completed
+    files:
+      create:
+        - src/lib/platform-core/project-state/ProjectState.ts
+    checks:
+      - unit
+    success:
+      immutable: true
+
+  - id: PC-002
+    title: Create Architecture Registry
+    priority: Critical
+    wave: 1
+    status: completed
+    files:
+      create:
+        - src/lib/platform-core/registry/ArchitectureRegistry.ts
+    checks:
+      - unit
+
+  - id: PC-003
+    title: Create Version Manager
+    priority: Critical
+    wave: 1
+    status: completed
+    files:
+      create:
+        - src/lib/platform-core/versioning/VersionManager.ts
+    checks:
+      - unit
+
+  - id: PC-004
+    title: Create Configuration Manager
+    priority: Critical
+    wave: 1
+    status: completed
+    files:
+      create:
+        - src/lib/platform-core/configuration/ConfigurationManager.ts
+    checks:
+      - unit
+
+  - id: PC-005
+    title: Replace object passing with ProjectState
+    priority: Critical
+    wave: 1
+    status: in_progress
+    requires:
+      - PC-001
+      - RUN-001
+    checks:
+      - integration
+      - architecture
+
+  - id: DSP-001
+    title: Replace DesignBrief with CreativeSpec
+    priority: Critical
+    wave: 5
+    phase: 3
+    status: blocked
+    module: design-process
+    requires:
+      - DTO-001
+      - PC-001
+    checks:
+      - unit
+      - architecture
+
+  - id: DSP-002
+    title: Move Scene Planner to Visual Platform
+    priority: High
+    wave: 6
+    status: blocked
+    module: design-process
+
+  - id: DSP-003
+    title: Move Prompt Builder to Provider Adapter
+    priority: Critical
+    wave: 7
+    status: blocked
+    module: design-process
+    requires:
+      - RFC-004
+
+  - id: DSP-004
+    title: Remove execution orchestration from design-process
+    priority: Critical
+    wave: 5
+    status: blocked
+    module: design-process
+    requires:
+      - RUN-001
+
+  - id: GOV-002
+    title: Split Governance and Vision responsibilities
+    priority: High
+    wave: 8
+    status: blocked
+    module: design-governance
+
+  - id: GOV-003
+    title: Introduce ProjectState validation in governance
+    priority: Critical
+    wave: 2
+    status: blocked
+    module: design-governance
+    requires:
+      - PC-001
+      - DTO-001
+
+  - id: REN-002
+    title: Introduce RenderGraph
+    priority: Critical
+    wave: 7
+    status: blocked
+    module: render-engine
+    requires:
+      - ADR-004
+
+  - id: REN-003
+    title: Remove Prompt ownership from render-engine
+    priority: Critical
+    wave: 7
+    status: blocked
+    module: render-engine
+    requires:
+      - DSP-003
+
+  - id: EVO-001
+    title: Evolution Strategy policy (Part 30)
+    priority: HIGH
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/architecture/architecture.yaml
+    checks:
+      - validate_yaml
+    success:
+      evolution_policy_documented: true
+
+  - id: REL-001
+    title: Release Strategy policy (Part 31)
+    priority: HIGH
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/architecture/architecture.yaml
+    checks:
+      - validate_yaml
+    success:
+      release_policy_documented: true
+
+  - id: OBS-001
+    title: Observability policy (Part 32)
+    priority: HIGH
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/architecture/architecture.yaml
+    checks:
+      - validate_yaml
+    success:
+      observability_policy_documented: true
+
+  - id: LAW-036
+    title: Final Architecture Laws LAW-036–050 (Part 33)
+    priority: CRITICAL
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/Architecture_Bible.md
+        - docs/architecture/architecture.yaml
+    checks:
+      - validate_yaml
+    success:
+      law_count: 50
+
+  - id: GLO-001
+    title: Glossary (Appendix A)
+    priority: HIGH
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/Architecture_Bible.md
+        - docs/architecture/architecture.yaml
+    checks:
+      - validate_yaml
+    success:
+      glossary_documented: true
+
+  - id: IDX-001
+    title: Architecture Index (Appendix B)
+    priority: HIGH
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/Architecture_Bible.md
+        - docs/architecture/architecture.yaml
+    checks:
+      - validate_yaml
+    success:
+      architecture_index_documented: true
+
+  - id: IMP-001
+    title: Implementation Index (Appendix C)
+    priority: HIGH
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/Architecture_Bible.md
+        - docs/architecture/architecture.yaml
+    checks:
+      - validate_yaml
+    success:
+      implementation_index_documented: true
+
   - id: DIR-001
     title: Directive Registry
     priority: HIGH
@@ -1101,6 +1525,214 @@ stop_conditions:
   - runtime_bypassed
   - legacy_imported
   - prompt_outside_provider_adapter
+
+evolution:
+  purpose: continuous evolution without breaking existing functionality
+  principles:
+    - never rewrite when extension is possible
+    - backward compatibility unless RFC approves breaking change
+    - platforms evolve independently
+    - no hidden coupling
+    - new capabilities must be measurable
+  maturity_model:
+    - id: 1
+      name: Working Prototype
+    - id: 2
+      name: Modular Architecture
+    - id: 3
+      name: Platform Architecture
+    - id: 4
+      name: Operating System
+      current_target: true
+    - id: 5
+      name: Self Improving Design Intelligence
+      future_target: true
+  versioning_required:
+    - platform
+    - contract
+    - decision
+    - asset
+    - knowledge_object
+  feature_introduction:
+    - RFC
+    - ADR
+    - architecture_approval
+    - implementation_directive
+    - implementation
+    - architecture_validation
+    - release
+  deprecation_policy:
+    steps:
+      - marked
+      - adapter_created
+      - migration
+      - removal
+    immediate_deletion: forbidden
+  backward_compatibility:
+    adapters_required: true
+    minimum_major_releases: 1
+  success_criteria:
+    - architecture evolves without large rewrites
+
+release:
+  purpose: identical lifecycle for every release
+  lifecycle:
+    - release_candidate
+    - architecture_validation
+    - unit_tests
+    - integration_tests
+    - marketplace_tests
+    - golden_tests
+    - performance_tests
+    - manual_review
+    - release
+  types:
+    - patch
+    - minor
+    - major
+    - architecture
+  architecture_release_requires:
+    - RFC
+    - ADR
+    - migration_guide
+    - architecture_report
+  artifacts:
+    - architecture_report
+    - migration_report
+    - performance_report
+    - compatibility_report
+  rollback:
+    required: true
+    every_release_reversible: true
+  success_criteria:
+    - every release reproducible
+
+observability:
+  purpose: nothing inside Design AI OS is hidden
+  platform_emits:
+    - events
+    - metrics
+    - decision_trace
+    - warnings
+    - errors
+    - artifacts
+  project_stores:
+    - timeline
+    - execution_graph
+    - decision_graph
+    - architecture_version
+    - platform_versions
+    - knowledge_version
+    - genome_version
+  debug_bundle:
+    contains:
+      - logs
+      - specifications
+      - blueprints
+      - reports
+      - assets
+      - metrics
+      - configuration
+  success_criteria:
+    - every project fully reproducible
+
+glossary:
+  purpose: canonical terminology — one meaning per term, no synonyms
+  terms:
+    Architecture Bible: Canonical architecture specification. Single Source of Truth.
+    ProjectState: Immutable object containing the complete project state. Never partially modified.
+    Runtime: Execution engine. Coordinates platforms. Never makes business decisions.
+    Platform: Independent architectural component. Owns one responsibility. Produces one Specification.
+    Specification: Immutable DTO exchanged between platforms.
+    ProductBrief: Initial project description. Created once.
+    ResearchSpec: Research result.
+    KnowledgeSpec: Merged structured knowledge.
+    CommercialSpec: Commercial strategy.
+    CreativeSpec: Creative strategy.
+    VisualBlueprint: Visual implementation.
+    RenderBlueprint: Rendering instructions.
+    OverlayBlueprint: Overlay specification.
+    VisionReport: Image evaluation.
+    LearningReport: Learning result.
+    Design DNA: Universal design principles.
+    Design Genome: Category-specific design knowledge.
+    Knowledge Engine: Unified knowledge layer.
+    Provider Adapter: Only module allowed to generate Prompt.
+    Decision Trace: Complete explanation of every architectural decision.
+    Execution Graph: Runtime dependency graph.
+    Decision Graph: Relationship graph between decisions.
+    RenderGraph: Node-based rendering pipeline.
+    Asset Platform: Single owner of every project asset.
+    Architecture Law: Mandatory architectural rule.
+    ADR: Architecture Decision Record.
+    RFC: Request For Comments.
+    Directive: Executable migration task.
+
+architecture_index:
+  Architecture: "Part 1-4"
+  Runtime: "Part 5"
+  Design DNA: "Part 6"
+  Reasoning: "Part 7"
+  Migration: "Part 8"
+  AI CEO: "Part 9"
+  SDK: "Part 10"
+  Platform Migration: "Part 11"
+  Runtime Migration: "Part 12"
+  Contracts: "Part 13"
+  Assets: "Part 14"
+  Engineering Standards: "Part 15"
+  Architecture Validation: "Part 16"
+  Knowledge Engine: "Part 17"
+  Implementation: "Part 18-19"
+  ADR: "Part 20"
+  RFC: "Part 21"
+  DSL: "Part 23"
+  Repository: "Part 27"
+  Evolution: "Part 30"
+  Release: "Part 31"
+  Observability: "Part 32"
+  Architecture Laws: "Part 33"
+
+implementation_index:
+  prefixes:
+    PC: Platform Core
+    RUN: Runtime
+    DTO: Contracts
+    CRE: Creative
+    VIS: Visual
+    REN: Rendering
+    GOV: Governance
+    KNOW: Knowledge
+    AST: Assets
+    SDK: Platform SDK
+    CEO: Execution Strategy
+    CI: Architecture Validation
+    RFC: Architecture Evolution
+    ADR: Decision Records
+  execution_order:
+    - PC
+    - RUN
+    - DTO
+    - KNOW
+    - COM
+    - CRE
+    - VIS
+    - REN
+    - VISION
+    - LEARN
+    - LEGACY
+
+volume_1:
+  status: complete
+  version: "1.0"
+  architecture_status: stable
+  migration_status: ready
+  cursor_status: not_ready
+  cursor_not_ready_reason: Code Rewrite Bible required
+  next_document: docs/Code_Rewrite_Bible.md
+  expected_pages:
+    architecture_bible: "400-700"
+    code_rewrite_bible: "1000-2000"
 
 cursor_execution:
   purpose: Cursor executes Architecture DSL; must not redesign architecture
