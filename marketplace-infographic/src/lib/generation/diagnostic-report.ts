@@ -121,6 +121,10 @@ export type GenerationDiagnosticReport = {
     daosRenderContextEnabled?: boolean;
     daosRenderContextAttached?: boolean;
     daosRenderContextCompleteness?: number;
+    contextEffectAuditStatus?: string;
+    contextEffectPromptDelta?: number;
+    contextEffectScoreDelta?: number;
+    contextEffectNotes?: string;
   };
 };
 
