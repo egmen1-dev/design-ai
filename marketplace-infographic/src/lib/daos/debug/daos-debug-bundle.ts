@@ -14,6 +14,7 @@ import {
 } from "../config/generation-mode";
 import type { DAOSPipelineContextSummary } from "../pipeline/daos-pipeline-context";
 import { summarizeDaosPipelineContext, createDaosPipelineContext } from "../pipeline/daos-pipeline-context";
+import type { DAOSRenderEngineContextSummary } from "../adapters/render-engine-context-adapter";
 
 export type DaosDebugBundle = {
   projectId: string;
@@ -60,6 +61,8 @@ export type DaosDebugBundle = {
   pipelineContextSummary?: DAOSPipelineContextSummary;
   promptContextBlockPreview?: string;
   promptContextInjected?: boolean;
+  renderContextAttached?: boolean;
+  renderContextSummary?: DAOSRenderEngineContextSummary;
   meaningLossReport: DaosMeaningLossReport;
 };
 
@@ -72,6 +75,10 @@ export function createDaosDebugBundle(
     promptContextBlockPreview?: string;
     promptContextInjected?: boolean;
     promptContextEnabled?: boolean;
+    renderContextAttached?: boolean;
+    renderContextSummary?: DAOSRenderEngineContextSummary;
+    renderContextEnabled?: boolean;
+    useRenderEngineV17?: boolean;
   },
 ): DaosDebugBundle {
   const renderDebug = options?.renderDebug;
@@ -86,6 +93,9 @@ export function createDaosDebugBundle(
     generationMode,
     promptContextEnabled: options?.promptContextEnabled,
     promptContextInjected: options?.promptContextInjected,
+    renderContextEnabled: options?.renderContextEnabled,
+    renderContextAttached: options?.renderContextAttached,
+    useRenderEngineV17: options?.useRenderEngineV17,
   });
   const createdAt = new Date().toISOString();
 
@@ -134,6 +144,8 @@ export function createDaosDebugBundle(
     pipelineContextSummary,
     promptContextBlockPreview: options?.promptContextBlockPreview,
     promptContextInjected: options?.promptContextInjected,
+    renderContextAttached: options?.renderContextAttached,
+    renderContextSummary: options?.renderContextSummary,
     meaningLossReport,
   };
 }

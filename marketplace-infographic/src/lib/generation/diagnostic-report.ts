@@ -118,6 +118,9 @@ export type GenerationDiagnosticReport = {
     daosPromptContextEnabled?: boolean;
     daosPromptContextLength?: number;
     daosPromptContextInjected?: boolean;
+    daosRenderContextEnabled?: boolean;
+    daosRenderContextAttached?: boolean;
+    daosRenderContextCompleteness?: number;
   };
 };
 

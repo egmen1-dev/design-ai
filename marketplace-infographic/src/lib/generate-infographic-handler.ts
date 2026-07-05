@@ -141,6 +141,13 @@ import {
   createDaosPromptContextBlock,
   isDaosPromptContextEnabled,
 } from "@/lib/daos/pipeline/daos-prompt-context";
+import {
+  attachDaosContextToRenderInput,
+  createDaosRenderEngineContext,
+  isDaosRenderContextAttached,
+  isDaosRenderContextEnabled,
+  type DAOSRenderEngineContextSummary,
+} from "@/lib/daos/adapters/render-engine-context-adapter";
 import { evaluateDaosFinalGate } from "@/lib/daos/gates";
 import type { DAOSProjectState } from "@/lib/daos/core/project-state";
 import type { KnowledgeContext } from "@/lib/design/knowledge-engine";
@@ -246,6 +253,9 @@ function daosDiagnosticSummary(
     daosPromptContextEnabled?: boolean;
     daosPromptContextLength?: number;
     daosPromptContextInjected?: boolean;
+    daosRenderContextEnabled?: boolean;
+    daosRenderContextAttached?: boolean;
+    daosRenderContextCompleteness?: number;
   },
 ) {
   return {
@@ -1233,11 +1243,19 @@ export async function handleGenerateInfographic(
     }
 
     const daosPromptContextEnabled = isDaosPromptContextEnabled();
+    const daosRenderContextEnabled = isDaosRenderContextEnabled();
     let daosPromptContextBlock = "";
     let daosPromptContextInjected = false;
     let daosPromptContextLength = 0;
+    let daosRenderInterimContext: ReturnType<typeof createDaosPipelineContext> | undefined;
+    let daosRenderContextSummary: DAOSRenderEngineContextSummary | undefined;
+    let daosRenderContextAttached = false;
+    let daosRenderContextCompleteness = 0;
 
-    if (daosPromptContextEnabled) {
+    if (
+      daosPromptContextEnabled ||
+      (useRenderEngineV17 && daosRenderContextEnabled)
+    ) {
       const interimDaosState = enrichDaosStateFromPipeline(daosState, {
         knowledge:
           knowledgeContext || marketIntelligence || genomeIntelligence || assetsIntelligence
@@ -1269,9 +1287,16 @@ export async function handleGenerateInfographic(
             : undefined,
       });
       const interimContext = createDaosPipelineContext(interimDaosState);
-      daosPromptContextBlock = createDaosPromptContextBlock(interimContext);
-      daosPromptContextLength = daosPromptContextBlock.length;
-      daosPromptContextInjected = daosPromptContextBlock.length > 0;
+      if (daosPromptContextEnabled) {
+        daosPromptContextBlock = createDaosPromptContextBlock(interimContext);
+        daosPromptContextLength = daosPromptContextBlock.length;
+        daosPromptContextInjected = daosPromptContextBlock.length > 0;
+      }
+      if (useRenderEngineV17 && daosRenderContextEnabled) {
+        daosRenderInterimContext = interimContext;
+        daosRenderContextSummary = createDaosRenderEngineContext(interimContext);
+        daosRenderContextCompleteness = interimContext.completenessScore;
+      }
     }
 
     const daosAugmentedPrompt = daosPromptContextInjected
@@ -1355,8 +1380,8 @@ export async function handleGenerateInfographic(
             input.regenerateBackgroundOnly ? productCutoutPath ?? undefined : undefined,
           );
 
-    const regenBackground = (seedSuffix: string, scene: ScenePlan = scenePlan) =>
-      regenerateMarketplaceBackground({
+    const regenBackground = (seedSuffix: string, scene: ScenePlan = scenePlan) => {
+      const baseRenderInput = {
         analysis,
         scenePlan: scene,
         layoutSpec,
@@ -1383,7 +1408,18 @@ export async function handleGenerateInfographic(
         legacyPrompt: sdData.backgroundPrompt,
         legacyStyle: appliedStyle,
         decisionLog: governanceDecisionLog,
-      });
+      };
+      const attachedRenderInput =
+        useRenderEngineV17 && daosRenderInterimContext
+          ? attachDaosContextToRenderInput(baseRenderInput, daosRenderInterimContext)
+          : baseRenderInput;
+      if (useRenderEngineV17 && daosRenderContextEnabled) {
+        daosRenderContextAttached = isDaosRenderContextAttached(attachedRenderInput);
+      }
+      return regenerateMarketplaceBackground(
+        attachedRenderInput as Parameters<typeof regenerateMarketplaceBackground>[0],
+      );
+    };
 
     const bgPromise = (async () => {
       const bg = await regenBackground("primary");
@@ -2227,6 +2263,10 @@ export async function handleGenerateInfographic(
       promptContextBlockPreview: finalPromptContextBlock || undefined,
       promptContextInjected: daosPromptContextInjected,
       promptContextEnabled: daosPromptContextEnabled,
+      renderContextAttached: daosRenderContextAttached,
+      renderContextSummary: daosRenderContextSummary,
+      renderContextEnabled: daosRenderContextEnabled,
+      useRenderEngineV17,
     });
     const daosDebugWrite = await writeDaosDebugBundle(daosDebugBundle);
     if (!daosDebugWrite.ok) {
@@ -2289,6 +2329,9 @@ export async function handleGenerateInfographic(
       daosPromptContextEnabled,
       daosPromptContextLength,
       daosPromptContextInjected,
+      daosRenderContextEnabled,
+      daosRenderContextAttached,
+      daosRenderContextCompleteness,
     });
 
     if (process.env.DAOS_DEBUG === "1") {

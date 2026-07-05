@@ -22,6 +22,9 @@ export type AnalyzeDaosMeaningLossOptions = {
   generationMode?: DAOSGenerationMode;
   promptContextInjected?: boolean;
   promptContextEnabled?: boolean;
+  renderContextEnabled?: boolean;
+  renderContextAttached?: boolean;
+  useRenderEngineV17?: boolean;
 };
 
 export type DaosMeaningLossSeverity = "warning" | "critical";
@@ -44,6 +47,7 @@ export type DaosMeaningLossReport = {
   renderDebugLoss: DaosMeaningLossWarning[];
   pipelineContextLoss: DaosMeaningLossWarning[];
   promptContextLoss: DaosMeaningLossWarning[];
+  renderContextLoss: DaosMeaningLossWarning[];
   warnings: DaosMeaningLossWarning[];
 };
 
@@ -417,6 +421,28 @@ function analyzePromptContextLoss(
   return [];
 }
 
+function analyzeRenderContextLoss(
+  completenessScore: number,
+  options?: AnalyzeDaosMeaningLossOptions,
+): DaosMeaningLossWarning[] {
+  if (!options?.renderContextEnabled || !options.useRenderEngineV17) {
+    return [];
+  }
+  if (
+    completenessScore >= DAOS_PIPELINE_COMPLETENESS_CRITICAL_THRESHOLD &&
+    !options.renderContextAttached
+  ) {
+    return [
+      {
+        code: "DAOS_RENDER_CONTEXT_NOT_ATTACHED",
+        severity: "warning",
+        message: `pipeline context completeness ${completenessScore} is sufficient but DAOS render context was not attached to v17 input`,
+      },
+    ];
+  }
+  return [];
+}
+
 /** Deterministic loss-of-meaning checks between DAOS specs (no LLM). */
 export function analyzeDaosMeaningLoss(
   state: DAOSProjectState,
@@ -450,6 +476,7 @@ export function analyzeDaosMeaningLoss(
     promptContextEnabled: options?.promptContextEnabled,
     promptContextInjected: options?.promptContextInjected,
   });
+  const renderContextLoss = analyzeRenderContextLoss(completenessScore, options);
 
   const warnings = [
     ...lowConfidenceWarnings,
@@ -460,6 +487,7 @@ export function analyzeDaosMeaningLoss(
     ...renderDebugLoss,
     ...pipelineContextLoss,
     ...promptContextLoss,
+    ...renderContextLoss,
   ];
 
   return {
@@ -473,6 +501,7 @@ export function analyzeDaosMeaningLoss(
     renderDebugLoss,
     pipelineContextLoss,
     promptContextLoss,
+    renderContextLoss,
     warnings,
   };
 }
