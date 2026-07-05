@@ -197,7 +197,10 @@ Version: 1.0 (Draft)
 - [Part 32 — Observability](#part-32--observability)
   - [Platform Emissions & Project Storage](#every-platform-emits)
   - [Debug Bundle](#debug-bundle)
-- [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
+- [Part 33 — Final Architecture Laws](#part-33--final-architecture-laws)
+  - [LAW-036–LAW-050](#law-036)
+- [Appendix A — Glossary](#appendix-a--glossary)
+- [Appendix B — Repository Implementation Reference](#appendix-b--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
   - [Future Architecture (code map)](#future-architecture-code-map)
@@ -515,6 +518,96 @@ No Runtime code inside Platforms.
 ## LAW-035
 
 Repository structure is architecture.
+
+---
+
+## LAW-036
+
+ProjectState is immutable.
+
+---
+
+## LAW-037
+
+Every platform owns exactly one responsibility.
+
+---
+
+## LAW-038
+
+No platform communicates directly with another platform.
+
+---
+
+## LAW-039
+
+Only Runtime orchestrates execution.
+
+---
+
+## LAW-040
+
+Only Provider Adapter generates prompts.
+
+---
+
+## LAW-041
+
+Only Asset Platform accesses filesystem.
+
+---
+
+## LAW-042
+
+Knowledge is queried only through Knowledge Engine.
+
+---
+
+## LAW-043
+
+Rendering executes blueprints only.
+
+---
+
+## LAW-044
+
+Vision is mandatory.
+
+---
+
+## LAW-045
+
+Learning executes after every completed generation.
+
+---
+
+## LAW-046
+
+Every architectural change requires ADR.
+
+---
+
+## LAW-047
+
+Every breaking change requires RFC.
+
+---
+
+## LAW-048
+
+Every implementation requires Directive.
+
+---
+
+## LAW-049
+
+Architecture validation blocks invalid releases.
+
+---
+
+## LAW-050
+
+Architecture Bible is the single source of truth.
 
 ---
 
@@ -9578,10 +9671,188 @@ Aligns with Part 30 versioning, Part 31 release artifacts, and Part 25 final acc
 
 ---
 
-# APPENDIX A — REPOSITORY IMPLEMENTATION REFERENCE
+# PART 33 — FINAL ARCHITECTURE LAWS
+
+# ============================================================================
+# PART 33
+# FINAL ARCHITECTURE LAWS
+# ============================================================================
+
+Canonical laws **LAW-036** through **LAW-050** complete the Architecture Law set.
+
+All laws are enforced by Architecture Validation (Part 16) and CI (Part 31).
+
+Machine-readable index: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `architecture.laws`
+
+---
+
+## LAW-036
+
+**ProjectState** is immutable.
+
+---
+
+## LAW-037
+
+Every platform owns **exactly one** responsibility.
+
+---
+
+## LAW-038
+
+No platform communicates **directly** with another platform.
+
+---
+
+## LAW-039
+
+Only **Runtime** orchestrates execution.
+
+---
+
+## LAW-040
+
+Only **Provider Adapter** generates prompts.
+
+---
+
+## LAW-041
+
+Only **Asset Platform** accesses filesystem.
+
+---
+
+## LAW-042
+
+Knowledge is queried only through **Knowledge Engine**.
+
+---
+
+## LAW-043
+
+Rendering executes **blueprints only**.
+
+---
+
+## LAW-044
+
+**Vision** is mandatory.
+
+---
+
+## LAW-045
+
+**Learning** executes after every completed generation.
+
+---
+
+## LAW-046
+
+Every architectural change requires **ADR**.
+
+---
+
+## LAW-047
+
+Every breaking change requires **RFC**.
+
+---
+
+## LAW-048
+
+Every implementation requires **Directive**.
+
+---
+
+## LAW-049
+
+Architecture validation **blocks** invalid releases.
+
+---
+
+## LAW-050
+
+**Architecture Bible** is the single source of truth.
+
+> Machine execution uses [`architecture.yaml`](architecture/architecture.yaml) per Part 23–24; Bible remains canonical human specification.
+
+---
+
+## IMPLEMENTATION DIRECTIVE LAW-036
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Action** | Register LAW-036–LAW-050 in Part 1 and `architecture.yaml` |
+| **Acceptance** | All 50 laws documented and enforceable |
+
+---
+
+*END OF PART 33*
+
+---
+
+# APPENDIX A — GLOSSARY
+
+# ============================================================================
+# APPENDIX A
+# GLOSSARY
+# ============================================================================
+
+## Purpose
+
+This glossary defines the **canonical terminology** of Design AI OS.
+
+Every term has exactly **one meaning**.
+
+**No synonyms are allowed.**
+
+Machine-readable index: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `glossary`
+
+---
+
+| Term | Definition |
+|------|------------|
+| **Architecture Bible** | The canonical architecture specification. Single Source of Truth. |
+| **ProjectState** | Immutable object containing the complete project state. Never partially modified. |
+| **Runtime** | Execution engine. Coordinates platforms. Never makes business decisions. |
+| **Platform** | Independent architectural component. Owns one responsibility. Produces one Specification. |
+| **Specification** | Immutable DTO exchanged between platforms. |
+| **ProductBrief** | Initial project description. Created once. |
+| **ResearchSpec** | Research result. |
+| **KnowledgeSpec** | Merged structured knowledge. |
+| **CommercialSpec** | Commercial strategy. |
+| **CreativeSpec** | Creative strategy. |
+| **VisualBlueprint** | Visual implementation. |
+| **RenderBlueprint** | Rendering instructions. |
+| **OverlayBlueprint** | Overlay specification. |
+| **VisionReport** | Image evaluation. |
+| **LearningReport** | Learning result. |
+| **Design DNA** | Universal design principles. |
+| **Design Genome** | Category-specific design knowledge. |
+| **Knowledge Engine** | Unified knowledge layer. |
+| **Provider Adapter** | Only module allowed to generate Prompt. |
+| **Decision Trace** | Complete explanation of every architectural decision. |
+| **Execution Graph** | Runtime dependency graph. |
+| **Decision Graph** | Relationship graph between decisions. |
+| **RenderGraph** | Node-based rendering pipeline. |
+| **Asset Platform** | Single owner of every project asset. |
+| **Architecture Law** | Mandatory architectural rule. |
+| **ADR** | Architecture Decision Record. |
+| **RFC** | Request For Comments. |
+| **Directive** | Executable migration task. |
+
+---
+
+*END OF APPENDIX A*
+
+---
+
+# APPENDIX B — REPOSITORY IMPLEMENTATION REFERENCE
 
 > Практическая привязка Part 1 (канон) и Part 2 (аудит) к текущему коду репозитория `design-ai`.  
-> Это **не** Part 2 — справочник по реализации, не дублирует аудит.
+> Это **не** Part 2 — справочник по реализации, не дублирует аудит.  
+> Ранее **Appendix A** — переименован после добавления Glossary.
 
 ---
 
@@ -9970,4 +10241,4 @@ pm2 logs marketplace-infographic --lines 50
 
 ---
 
-*Architecture Bible — living document. Part 1 is canonical law (LAW-001–030). Parts 2–18 define audit, pipeline, platforms, runtime, contracts, migration specs, knowledge engine, CEO, SDK, and orchestration. Appendix A tracks repository implementation.*
+*Architecture Bible — living document. Parts 1–33 define canonical law (LAW-001–050), audit, pipeline, platforms, runtime, contracts, migration, and governance. **Appendix A** is the Glossary. **Appendix B** tracks repository implementation.*

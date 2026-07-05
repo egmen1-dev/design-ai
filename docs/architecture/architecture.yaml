@@ -1352,6 +1352,34 @@ directives:
     success:
       observability_policy_documented: true
 
+  - id: LAW-036
+    title: Final Architecture Laws LAW-036–050 (Part 33)
+    priority: CRITICAL
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/Architecture_Bible.md
+        - docs/architecture/architecture.yaml
+    checks:
+      - validate_yaml
+    success:
+      law_count: 50
+
+  - id: GLO-001
+    title: Glossary (Appendix A)
+    priority: HIGH
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/Architecture_Bible.md
+        - docs/architecture/architecture.yaml
+    checks:
+      - validate_yaml
+    success:
+      glossary_documented: true
+
   - id: DIR-001
     title: Directive Registry
     priority: HIGH
@@ -1579,6 +1607,38 @@ observability:
       - configuration
   success_criteria:
     - every project fully reproducible
+
+glossary:
+  purpose: canonical terminology — one meaning per term, no synonyms
+  terms:
+    Architecture Bible: Canonical architecture specification. Single Source of Truth.
+    ProjectState: Immutable object containing the complete project state. Never partially modified.
+    Runtime: Execution engine. Coordinates platforms. Never makes business decisions.
+    Platform: Independent architectural component. Owns one responsibility. Produces one Specification.
+    Specification: Immutable DTO exchanged between platforms.
+    ProductBrief: Initial project description. Created once.
+    ResearchSpec: Research result.
+    KnowledgeSpec: Merged structured knowledge.
+    CommercialSpec: Commercial strategy.
+    CreativeSpec: Creative strategy.
+    VisualBlueprint: Visual implementation.
+    RenderBlueprint: Rendering instructions.
+    OverlayBlueprint: Overlay specification.
+    VisionReport: Image evaluation.
+    LearningReport: Learning result.
+    Design DNA: Universal design principles.
+    Design Genome: Category-specific design knowledge.
+    Knowledge Engine: Unified knowledge layer.
+    Provider Adapter: Only module allowed to generate Prompt.
+    Decision Trace: Complete explanation of every architectural decision.
+    Execution Graph: Runtime dependency graph.
+    Decision Graph: Relationship graph between decisions.
+    RenderGraph: Node-based rendering pipeline.
+    Asset Platform: Single owner of every project asset.
+    Architecture Law: Mandatory architectural rule.
+    ADR: Architecture Decision Record.
+    RFC: Request For Comments.
+    Directive: Executable migration task.
 
 cursor_execution:
   purpose: Cursor executes Architecture DSL; must not redesign architecture
