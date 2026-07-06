@@ -26,6 +26,7 @@ export type AnalyzeDaosMeaningLossOptions = {
   renderContextAttached?: boolean;
   useRenderEngineV17?: boolean;
   daosV17BridgeEnabled?: boolean;
+  daosV17ModulesBridgeEnabled?: boolean;
 };
 
 export type DaosMeaningLossSeverity = "warning" | "critical";
@@ -487,6 +488,40 @@ function analyzeV17BridgeLoss(options?: AnalyzeDaosMeaningLossOptions): DaosMean
   return warnings;
 }
 
+function analyzeV17ModulesBridgeLoss(options?: AnalyzeDaosMeaningLossOptions): DaosMeaningLossWarning[] {
+  if (!options?.daosV17ModulesBridgeEnabled) {
+    return [];
+  }
+
+  const warnings: DaosMeaningLossWarning[] = [];
+  const renderDebug = options.renderDebug;
+  const modulesBridgeApplied = renderDebug?.daosV17ModulesBridgeApplied === true;
+
+  if (options.renderContextAttached && !modulesBridgeApplied) {
+    warnings.push({
+      code: "DAOS_V17_MODULES_BRIDGE_NOT_APPLIED",
+      severity: "warning",
+      message:
+        "DAOS_V17_MODULES_BRIDGE is enabled and render context is attached but v17 modules bridge was not applied to provider prompt",
+      spec: "renderBlueprint",
+    });
+  }
+
+  if (modulesBridgeApplied) {
+    const stillIgnored = renderDebug?.daosV17ModulesStillIgnored ?? [];
+    if (stillIgnored.length > 0) {
+      warnings.push({
+        code: "DAOS_V17_MODULES_STILL_IGNORED",
+        severity: "warning",
+        message: `v17 modules bridge applied but adapter still ignores modules: ${stillIgnored.join(", ")}`,
+        spec: "renderBlueprint",
+      });
+    }
+  }
+
+  return warnings;
+}
+
 /** Deterministic loss-of-meaning checks between DAOS specs (no LLM). */
 export function analyzeDaosMeaningLoss(
   state: DAOSProjectState,
@@ -525,6 +560,10 @@ export function analyzeDaosMeaningLoss(
     ...options,
     renderDebug,
   });
+  const v17ModulesBridgeLoss = analyzeV17ModulesBridgeLoss({
+    ...options,
+    renderDebug,
+  });
 
   const warnings = [
     ...lowConfidenceWarnings,
@@ -537,6 +576,7 @@ export function analyzeDaosMeaningLoss(
     ...promptContextLoss,
     ...renderContextLoss,
     ...v17BridgeLoss,
+    ...v17ModulesBridgeLoss,
   ];
 
   return {

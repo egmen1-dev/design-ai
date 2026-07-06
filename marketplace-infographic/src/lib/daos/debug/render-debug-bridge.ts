@@ -14,6 +14,11 @@ export type DAOSRenderDebugArtifact = {
   daosV17BridgeLength?: number;
   daosV17BridgePreview?: string;
   daosV17BridgeModulesAddressed?: string[];
+  daosV17ModulesBridgeApplied?: boolean;
+  daosV17ModulesBridgeLength?: number;
+  daosV17ModulesBridgePreview?: string;
+  daosV17ModulesCompiled?: string[];
+  daosV17ModulesStillIgnored?: string[];
   createdAt: string;
 };
 
@@ -159,6 +164,24 @@ export function extractDaosRenderDebug(input: unknown): DAOSRenderDebugArtifact 
       const modulesAddressed = asStringArray(daosV17Bridge.modulesAddressed);
       if (modulesAddressed.length > 0) {
         artifact.daosV17BridgeModulesAddressed = modulesAddressed;
+      }
+    }
+
+    const daosV17Modules = asRecord(compiled.daosV17Modules);
+    if (daosV17Modules.applied === true) {
+      artifact.daosV17ModulesBridgeApplied = true;
+      if (typeof daosV17Modules.length === "number") {
+        artifact.daosV17ModulesBridgeLength = daosV17Modules.length;
+      }
+      const modulesPreview = asString(daosV17Modules.preview);
+      if (modulesPreview) artifact.daosV17ModulesBridgePreview = modulesPreview;
+      const modulesCompiled = asStringArray(daosV17Modules.modulesCompiled);
+      if (modulesCompiled.length > 0) artifact.daosV17ModulesCompiled = modulesCompiled;
+      const modulesStillIgnored = asStringArray(daosV17Modules.modulesStillIgnored);
+      if (modulesStillIgnored.length > 0) {
+        artifact.daosV17ModulesStillIgnored = modulesStillIgnored;
+      } else if (modulesCompiled.length > 0) {
+        artifact.daosV17ModulesStillIgnored = [];
       }
     }
 

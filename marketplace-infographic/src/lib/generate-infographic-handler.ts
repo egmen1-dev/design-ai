@@ -149,6 +149,7 @@ import {
   type DAOSRenderEngineContextSummary,
 } from "@/lib/daos/adapters/render-engine-context-adapter";
 import { isDaosV17PromptBridgeEnabled } from "@/lib/daos/adapters/v17-prompt-bridge";
+import { isDaosV17ModulesBridgeEnabled } from "@/lib/daos/adapters/v17-modules-bridge";
 import { evaluateDaosFinalGate } from "@/lib/daos/gates";
 import {
   createDaosContextEffectAudit,
@@ -269,6 +270,11 @@ function daosDiagnosticSummary(
     daosV17BridgeApplied?: boolean;
     daosV17BridgeLength?: number;
     daosV17BridgeModulesAddressed?: string[];
+    daosV17ModulesBridgeEnabled?: boolean;
+    daosV17ModulesBridgeApplied?: boolean;
+    daosV17ModulesBridgeLength?: number;
+    daosV17ModulesCompiled?: string[];
+    daosV17ModulesStillIgnored?: string[];
   },
 ) {
   return {
@@ -1258,6 +1264,7 @@ export async function handleGenerateInfographic(
     const daosPromptContextEnabled = isDaosPromptContextEnabled();
     const daosRenderContextEnabled = isDaosRenderContextEnabled();
     const daosV17BridgeEnabled = isDaosV17PromptBridgeEnabled();
+    const daosV17ModulesBridgeEnabled = isDaosV17ModulesBridgeEnabled();
     let daosPromptContextBlock = "";
     let daosPromptContextInjected = false;
     let daosPromptContextLength = 0;
@@ -2282,6 +2289,7 @@ export async function handleGenerateInfographic(
       renderContextEnabled: daosRenderContextEnabled,
       useRenderEngineV17,
       daosV17BridgeEnabled,
+      daosV17ModulesBridgeEnabled,
     });
     const daosDebugSummary = createDaosDebugSummary(daosDebugBundle);
     const daosFinalGate = evaluateDaosFinalGate({
@@ -2308,6 +2316,7 @@ export async function handleGenerateInfographic(
       renderContextEnabled: false,
       useRenderEngineV17,
       daosV17BridgeEnabled: false,
+      daosV17ModulesBridgeEnabled: false,
     });
     const beforeContextSummary = createDaosDebugSummary(beforeContextBundle);
     const beforeContextGate = evaluateDaosFinalGate({
@@ -2406,6 +2415,11 @@ export async function handleGenerateInfographic(
       daosV17BridgeApplied: renderDebug?.daosV17BridgeApplied,
       daosV17BridgeLength: renderDebug?.daosV17BridgeLength,
       daosV17BridgeModulesAddressed: renderDebug?.daosV17BridgeModulesAddressed,
+      daosV17ModulesBridgeEnabled,
+      daosV17ModulesBridgeApplied: renderDebug?.daosV17ModulesBridgeApplied,
+      daosV17ModulesBridgeLength: renderDebug?.daosV17ModulesBridgeLength,
+      daosV17ModulesCompiled: renderDebug?.daosV17ModulesCompiled,
+      daosV17ModulesStillIgnored: renderDebug?.daosV17ModulesStillIgnored,
     });
 
     if (process.env.DAOS_DEBUG === "1") {

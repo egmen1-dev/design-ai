@@ -153,6 +153,14 @@ export type CompiledRenderPayload = {
     preview: string;
     modulesAddressed: string[];
   };
+  /** DAOS Wave 16 — compiled module sections metadata */
+  daosV17Modules?: {
+    applied: boolean;
+    length: number;
+    preview: string;
+    modulesCompiled: string[];
+    modulesStillIgnored: string[];
+  };
 };
 
 export interface RenderAdapter {

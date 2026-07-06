@@ -129,6 +129,11 @@ export type GenerationDiagnosticReport = {
     daosV17BridgeApplied?: boolean;
     daosV17BridgeLength?: number;
     daosV17BridgeModulesAddressed?: string[];
+    daosV17ModulesBridgeEnabled?: boolean;
+    daosV17ModulesBridgeApplied?: boolean;
+    daosV17ModulesBridgeLength?: number;
+    daosV17ModulesCompiled?: string[];
+    daosV17ModulesStillIgnored?: string[];
   };
 };
 
