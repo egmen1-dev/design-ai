@@ -1,0 +1,6 @@
+# Plugins configuration view
+# Part 28 — Platform Core loads plugins.yaml
+
+plugins:
+  enabled: []
+  registry_path: src/sdk/
