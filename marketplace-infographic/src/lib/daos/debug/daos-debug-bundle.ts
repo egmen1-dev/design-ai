@@ -26,6 +26,7 @@ import type { ContrastOverlapPatch } from "../overlay/contrast-overlap-patch";
 import type { ProductScaleAudit } from "../audit/product-scale-audit";
 import { summarizeProductScaleAudit } from "../audit/product-scale-audit";
 import type { ProductScalePatch } from "../compositor/product-scale-patch";
+import type { AspectRatioPlacementPatch } from "../compositor/aspect-ratio-placement-patch";
 import type { NormalizedCompositePlacement } from "../compositor/composite-result-bridge";
 import type { Law003RecalibrationReport } from "../governance/law003-recalibration";
 import type { Law003GovernanceSource } from "../governance/law003-soft-governance";
@@ -108,6 +109,13 @@ export type DaosDebugBundle = {
     productFillTargetReason?: string;
     productFillV2Target?: number;
     productFillV2Applied?: boolean;
+    aspectRatioPlacementPatchEnabled?: boolean;
+    aspectRatioPlacementPatchApplied?: boolean;
+    productAspectRatio?: number;
+    fitStrategy?: string;
+    targetUnreachable?: boolean;
+    heightOverflowPrevented?: boolean;
+    widthOverflowPrevented?: boolean;
     compositePlacementFound?: boolean;
     compositePlacementSource?: string;
     compositeProductAreaRatio?: number;
@@ -147,6 +155,7 @@ export type DaosDebugBundle = {
   contrastOverlapPatch?: ContrastOverlapPatch;
   productScaleAudit?: ProductScaleAudit;
   productScalePatch?: ProductScalePatch;
+  aspectRatioPlacementPatch?: AspectRatioPlacementPatch;
   compositePlacement?: NormalizedCompositePlacement;
   law003Recalibration?: Law003RecalibrationReport;
   overlayGate?: DAOSOverlayGateResult;
@@ -178,6 +187,7 @@ export function createDaosDebugBundle(
     contrastOverlapPatch?: ContrastOverlapPatch;
     productScaleAudit?: ProductScaleAudit;
     productScalePatch?: ProductScalePatch;
+    aspectRatioPlacementPatch?: AspectRatioPlacementPatch;
     compositePlacement?: NormalizedCompositePlacement;
     extractAreaCorrected?: boolean;
     extractAreaWarnings?: string[];
@@ -216,6 +226,7 @@ export function createDaosDebugBundle(
   const contrastOverlapPatch = options?.contrastOverlapPatch;
   const productScaleAudit = options?.productScaleAudit;
   const productScalePatch = options?.productScalePatch;
+  const aspectRatioPlacementPatch = options?.aspectRatioPlacementPatch;
   const compositePlacement = options?.compositePlacement;
   const extractAreaCorrected = options?.extractAreaCorrected;
   const extractAreaWarnings = options?.extractAreaWarnings;
@@ -340,6 +351,17 @@ export function createDaosDebugBundle(
             productFillV2Applied: productScalePatch.productFillV2Applied,
           }
         : {}),
+      ...(aspectRatioPlacementPatch
+        ? {
+            aspectRatioPlacementPatchEnabled: aspectRatioPlacementPatch.enabled,
+            aspectRatioPlacementPatchApplied: aspectRatioPlacementPatch.patchApplied,
+            productAspectRatio: aspectRatioPlacementPatch.productAspectRatio,
+            fitStrategy: aspectRatioPlacementPatch.fitStrategy,
+            targetUnreachable: aspectRatioPlacementPatch.targetUnreachable,
+            heightOverflowPrevented: aspectRatioPlacementPatch.heightOverflowPrevented,
+            widthOverflowPrevented: aspectRatioPlacementPatch.widthOverflowPrevented,
+          }
+        : {}),
       compositePlacementFound: Boolean(compositePlacement),
       ...(compositePlacement
         ? {
@@ -382,6 +404,7 @@ export function createDaosDebugBundle(
     contrastOverlapPatch,
     productScaleAudit,
     productScalePatch,
+    aspectRatioPlacementPatch,
     compositePlacement,
     law003Recalibration,
     overlayGate,

@@ -160,6 +160,8 @@ export function computeAggregateStats(pairs: BenchmarkProductPair[]): BenchmarkA
     .filter((value): value is number => value != null);
   const overlayGatePassBaseline = pairs.filter((pair) => pair.baseline.overlayGateStatus === "passed").length;
   const overlayGatePassDaos = pairs.filter((pair) => pair.daos.overlayGateStatus === "passed").length;
+  const targetUnreachableBaseline = pairs.filter((pair) => pair.baseline.targetUnreachable).length;
+  const targetUnreachableDaos = pairs.filter((pair) => pair.daos.targetUnreachable).length;
   const successfulBaseline = pairs.filter((pair) => !pair.baseline.error).length;
   const successfulDaos = pairs.filter((pair) => !pair.daos.error).length;
 
@@ -249,6 +251,10 @@ export function computeAggregateStats(pairs: BenchmarkProductPair[]): BenchmarkA
       successfulBaseline > 0 ? overlayGatePassBaseline / successfulBaseline : undefined,
     overlayGatePassRateDaos:
       successfulDaos > 0 ? overlayGatePassDaos / successfulDaos : undefined,
+    targetUnreachableRateBaseline:
+      successfulBaseline > 0 ? targetUnreachableBaseline / successfulBaseline : undefined,
+    targetUnreachableRateDaos:
+      successfulDaos > 0 ? targetUnreachableDaos / successfulDaos : undefined,
     meaningLossImproved,
     modulesCompiledImproved,
   };

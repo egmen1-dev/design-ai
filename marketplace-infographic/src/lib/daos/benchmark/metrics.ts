@@ -155,6 +155,9 @@ export async function extractMetricsFromBundle(
       law003SoftResolved: diagnostics.law003SoftResolved === true,
       overlayGateStatus: asString(diagnostics.overlayGateStatus),
       overlayGateScore: asNumber(diagnostics.overlayGateScore),
+      targetUnreachable: diagnostics.targetUnreachable === true,
+      aspectRatioPlacementPatchApplied: diagnostics.aspectRatioPlacementPatchApplied === true,
+      fitStrategy: asString(diagnostics.fitStrategy),
     };
   } catch {
     return {};

@@ -334,7 +334,7 @@ function renderReport(results: BenchmarkResults): string {
     `- Average pngOverlayFeelRisk (baseline → DAOS): ${results.aggregate.averagePngOverlayFeelRiskBaseline?.toFixed(2) ?? "n/a"} → ${results.aggregate.averagePngOverlayFeelRiskDaos?.toFixed(2) ?? "n/a"}`,
   );
   lines.push(
-    `- LAW_003 violation rate (fill v2 OFF → ON): ${formatRate(results.aggregate.law003ViolationRateBaseline)} → ${formatRate(results.aggregate.law003ViolationRateDaos)}`,
+    `- LAW_003 violation rate (aspect ratio OFF → ON): ${formatRate(results.aggregate.law003ViolationRateBaseline)} → ${formatRate(results.aggregate.law003ViolationRateDaos)}`,
   );
   lines.push(
     `- LAW_014 violation rate (contrast patch OFF → ON): ${formatRate(results.aggregate.law014ViolationRateBaseline)} → ${formatRate(results.aggregate.law014ViolationRateDaos)}`,
@@ -367,7 +367,8 @@ function renderReport(results: BenchmarkResults): string {
     `- LAW_003 stale metric rate (soft OFF → ON): ${formatRate(results.aggregate.law003StaleMetricRateBaseline)} → ${formatRate(results.aggregate.law003StaleMetricRateDaos)}`,
   );
   lines.push(
-    `- LAW_003 soft resolved rate (fill v2 OFF → ON): ${formatRate(results.aggregate.law003SoftResolvedRateBaseline)} → ${formatRate(results.aggregate.law003SoftResolvedRateDaos)}`,
+    `- LAW_003 soft resolved rate (aspect ratio OFF → ON): ${formatRate(results.aggregate.law003SoftResolvedRateBaseline)} → ${formatRate(results.aggregate.law003SoftResolvedRateDaos)}`,
+    `- targetUnreachable rate (aspect ratio OFF → ON): ${formatRate(results.aggregate.targetUnreachableRateBaseline)} → ${formatRate(results.aggregate.targetUnreachableRateDaos)}`,
   );
   lines.push(
     `- Average overlayGateScore (soft OFF → ON): ${results.aggregate.averageOverlayGateScoreBaseline?.toFixed(1) ?? "n/a"} → ${results.aggregate.averageOverlayGateScoreDaos?.toFixed(1) ?? "n/a"}`,
