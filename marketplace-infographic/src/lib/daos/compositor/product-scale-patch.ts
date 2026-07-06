@@ -8,6 +8,21 @@ export const DAOS_PRODUCT_SCALE_TARGET_MIN = 0.42;
 export const DAOS_PRODUCT_SCALE_TARGET_MAX = 0.55;
 export const DAOS_PRODUCT_SCALE_MULTIPLIER_MIN = 1;
 export const DAOS_PRODUCT_SCALE_MULTIPLIER_MAX = 3.5;
+export const DAOS_PRODUCT_FILL_V2_MULTIPLIER_MAX = 4.2;
+export const DAOS_PRODUCT_FILL_V2_LAW003_BOOST = 0.05;
+export const DAOS_PRODUCT_FILL_V2_OVERLAY_DENSITY_SAFE = 0.25;
+export const DAOS_PRODUCT_FILL_V2_LAW014_OVERLAP_PCT = 2;
+
+export type ProductComplexity = "low" | "medium" | "high";
+
+const PRODUCT_FILL_V2_COMPLEXITY_BANDS: Record<
+  ProductComplexity,
+  { min: number; max: number }
+> = {
+  low: { min: 0.38, max: 0.44 },
+  medium: { min: 0.42, max: 0.5 },
+  high: { min: 0.46, max: 0.55 },
+};
 
 export type ProductScaleBounds = {
   left: number;
@@ -33,6 +48,11 @@ export type ProductScalePatchInput = {
   compositionLayout?: CompositionLayout;
   layoutSpec?: LayoutSpec;
   compositeInput?: Partial<SceneCompositeOptions>;
+  productComplexity?: ProductComplexity;
+  overlayDensity?: number;
+  law003AfterStillFailing?: boolean;
+  law014RiskHigh?: boolean;
+  law014ContrastViolation?: boolean;
 };
 
 export type ProductScalePatch = {
@@ -45,6 +65,10 @@ export type ProductScalePatch = {
   placementPatch?: ProductScaleBounds;
   warnings: ProductScalePatchWarning[];
   actions: ProductScalePatchAction[];
+  productFillV2Enabled?: boolean;
+  productFillTargetReason?: string;
+  productFillV2Target?: number;
+  productFillV2Applied?: boolean;
 };
 
 export type ProductScalePatchResult = {
@@ -133,10 +157,97 @@ function resolveTargetProductAreaRatio(actual: number): number {
   );
 }
 
-function computeScaleMultiplier(actual: number, target: number): number {
-  if (actual <= 0) return DAOS_PRODUCT_SCALE_MULTIPLIER_MAX;
+export function isDaosProductFillV2Enabled(): boolean {
+  return process.env.DAOS_PRODUCT_FILL_V2 === "1";
+}
+
+export function inferProductComplexity(category?: string): ProductComplexity {
+  const normalized = category?.toLowerCase() ?? "";
+  if (normalized === "furniture") return "high";
+  if (normalized === "toys" || normalized === "kitchen") return "low";
+  return "medium";
+}
+
+function resolveOverlayDensity(input: ProductScalePatchInput): number {
+  if (typeof input.overlayDensity === "number") return clamp01(input.overlayDensity);
+  const metrics = input.compositionLayout?.metrics;
+  if (!metrics) return 0;
+  return clamp01(
+    (metrics.textAreaPct ?? 0) / 100 +
+      (metrics.plaqueAreaPct ?? 0) / 100 +
+      ((metrics.overlapPct ?? 0) / 100) * 0.5,
+  );
+}
+
+function resolveLaw014RiskHigh(input: ProductScalePatchInput): boolean {
+  if (input.law014RiskHigh != null) return input.law014RiskHigh;
+  if (input.law014ContrastViolation === true) return true;
+  const overlap = input.compositionLayout?.metrics?.overlapPct ?? 0;
+  return overlap > DAOS_PRODUCT_FILL_V2_LAW014_OVERLAP_PCT;
+}
+
+function estimateLaw003AfterStillFailing(
+  input: ProductScalePatchInput,
+  actual: number,
+  target: number,
+): boolean {
+  if (input.law003AfterStillFailing != null) return input.law003AfterStillFailing;
+  const whitespacePct = input.compositionLayout?.metrics?.whitespacePct ?? 28;
+  const overlayDensity = resolveOverlayDensity(input);
+  return (
+    whitespacePct > 35 &&
+    actual < target &&
+    overlayDensity <= DAOS_PRODUCT_FILL_V2_OVERLAY_DENSITY_SAFE
+  );
+}
+
+function resolveV2TargetProductAreaRatio(
+  input: ProductScalePatchInput,
+  actual: number,
+): { target: number; reason: string; applied: boolean } {
+  const complexity = input.productComplexity ?? "medium";
+  const band = PRODUCT_FILL_V2_COMPLEXITY_BANDS[complexity];
+  const deficit = clamp01((band.max - actual) / Math.max(band.max - band.min, 0.01));
+  let target = band.min + deficit * (band.max - band.min);
+  let reason = `v2_${complexity}_band`;
+
+  const overlayDensity = resolveOverlayDensity(input);
+  const law014High = resolveLaw014RiskHigh(input);
+  const law003Still = estimateLaw003AfterStillFailing(input, actual, target);
+
+  if (law003Still && overlayDensity <= DAOS_PRODUCT_FILL_V2_OVERLAY_DENSITY_SAFE && !law014High) {
+    target = Math.min(band.max, target + DAOS_PRODUCT_FILL_V2_LAW003_BOOST);
+    reason += "+law003_boost";
+  } else if (law014High) {
+    target = Math.min(target, band.min);
+    reason += "+law014_cap";
+  }
+
+  target = clamp(target, band.min, band.max);
+  const applied = actual < target - 0.005;
+
+  return { target, reason, applied };
+}
+
+function shouldApplyProductScalePatch(
+  actual: number,
+  target: number,
+  input: ProductScalePatchInput,
+): boolean {
+  if (isDaosProductFillV2Enabled()) {
+    const law003Still = estimateLaw003AfterStillFailing(input, actual, target);
+    if (resolveLaw014RiskHigh(input) && actual >= DAOS_PRODUCT_SCALE_TRIGGER) {
+      return false;
+    }
+    return actual < DAOS_PRODUCT_SCALE_TRIGGER || (law003Still && actual < target);
+  }
+  return actual < DAOS_PRODUCT_SCALE_TRIGGER;
+}
+
+function computeScaleMultiplier(actual: number, target: number, maxMultiplier: number): number {
+  if (actual <= 0) return maxMultiplier;
   const raw = Math.sqrt(target / actual);
-  return clamp(raw, DAOS_PRODUCT_SCALE_MULTIPLIER_MIN, DAOS_PRODUCT_SCALE_MULTIPLIER_MAX);
+  return clamp(raw, DAOS_PRODUCT_SCALE_MULTIPLIER_MIN, maxMultiplier);
 }
 
 function safeInsetPct(layout: CompositionLayout): number {
@@ -193,6 +304,7 @@ export function createProductScalePatch(input: ProductScalePatchInput): ProductS
   const actions: ProductScalePatchAction[] = [];
   const actual = resolveActualProductAreaRatio(input);
   const beforeProductAreaRatio = actual ?? 0;
+  const v2Enabled = isDaosProductFillV2Enabled() && isDaosProductScalePatchEnabled();
 
   if (actual == null) {
     warnings.push({
@@ -201,7 +313,26 @@ export function createProductScalePatch(input: ProductScalePatchInput): ProductS
     });
   }
 
-  if (actual == null || actual >= DAOS_PRODUCT_SCALE_TRIGGER) {
+  let targetProductAreaRatio = beforeProductAreaRatio;
+  let productFillTargetReason: string | undefined;
+  let productFillV2Target: number | undefined;
+  let productFillV2Applied = false;
+
+  if (v2Enabled && actual != null) {
+    const v2Target = resolveV2TargetProductAreaRatio(input, actual);
+    targetProductAreaRatio = v2Target.target;
+    productFillTargetReason = v2Target.reason;
+    productFillV2Target = v2Target.target;
+    productFillV2Applied = v2Target.applied;
+  } else if (actual != null) {
+    targetProductAreaRatio = resolveTargetProductAreaRatio(actual);
+  }
+
+  const multiplierMax = v2Enabled
+    ? DAOS_PRODUCT_FILL_V2_MULTIPLIER_MAX
+    : DAOS_PRODUCT_SCALE_MULTIPLIER_MAX;
+
+  if (actual == null || !shouldApplyProductScalePatch(actual, targetProductAreaRatio, input)) {
     return {
       enabled: isDaosProductScalePatchEnabled(),
       patchApplied: false,
@@ -211,17 +342,26 @@ export function createProductScalePatch(input: ProductScalePatchInput): ProductS
       estimatedAfterProductAreaRatio: beforeProductAreaRatio,
       warnings,
       actions,
+      productFillV2Enabled: v2Enabled,
+      productFillTargetReason,
+      productFillV2Target,
+      productFillV2Applied: false,
     };
   }
 
-  const targetProductAreaRatio = resolveTargetProductAreaRatio(actual);
-  const scaleMultiplier = computeScaleMultiplier(actual, targetProductAreaRatio);
+  const scaleMultiplier = computeScaleMultiplier(actual, targetProductAreaRatio, multiplierMax);
   const estimatedAfterProductAreaRatio = clamp01(actual * scaleMultiplier * scaleMultiplier);
 
   actions.push({
-    code: "BOOST_PRODUCT_SCALE",
+    code: v2Enabled ? "BOOST_PRODUCT_SCALE_V2" : "BOOST_PRODUCT_SCALE",
     message: `Scale product from ${actual.toFixed(2)} toward ${targetProductAreaRatio.toFixed(2)} area ratio`,
   });
+  if (v2Enabled && productFillV2Applied) {
+    actions.push({
+      code: "PRODUCT_FILL_V2_TARGET",
+      message: `Product fill v2 target ${targetProductAreaRatio.toFixed(2)} (${productFillTargetReason})`,
+    });
+  }
   actions.push({
     code: "CENTER_IN_HERO_ZONE",
     message: "Center scaled product inside hero safe zone",
@@ -256,6 +396,10 @@ export function createProductScalePatch(input: ProductScalePatchInput): ProductS
     placementPatch,
     warnings,
     actions,
+    productFillV2Enabled: v2Enabled,
+    productFillTargetReason,
+    productFillV2Target,
+    productFillV2Applied,
   };
 }
 
@@ -338,7 +482,7 @@ export function applyProductScalePatch(input: ProductScalePatchInput): ProductSc
   };
   compositionLayout.adjustments = [
     ...compositionLayout.adjustments,
-    "daos_product_scale_patch",
+    plan.productFillV2Enabled ? "daos_product_fill_v2_patch" : "daos_product_scale_patch",
   ];
 
   const placementPatch = buildPlacementPatch(compositionLayout, widthPct, heightPct);
@@ -363,6 +507,7 @@ export function applyProductScalePatch(input: ProductScalePatchInput): ProductSc
       estimatedAfterProductAreaRatio: clamp01(
         plan.beforeProductAreaRatio * plan.scaleMultiplier * plan.scaleMultiplier,
       ),
+      productFillV2Applied: plan.productFillV2Enabled ? true : plan.productFillV2Applied,
     },
     compositionLayout,
     objectScale: boostedObjectScale,

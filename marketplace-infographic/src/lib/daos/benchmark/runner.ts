@@ -1,8 +1,8 @@
 import type { BenchmarkArm, BenchmarkProduct, BenchmarkProductPair, BenchmarkResults } from "./types";
 import {
   BENCHMARK_BASELINE_ENV,
-  BENCHMARK_DAOS_CONTRAST_PATCHED_ENV,
   BENCHMARK_DAOS_LAW003_SOFT_ENV,
+  BENCHMARK_DAOS_PRODUCT_FILL_V2_ENV,
   loadBenchmarkCatalog,
   productSeed,
 } from "./catalog";
@@ -113,24 +113,24 @@ export async function runDaosBenchmark(phase: number): Promise<BenchmarkResults>
       env: BENCHMARK_BASELINE_ENV,
     });
 
-    console.log("  DAOS (LAW_003 soft governance OFF)…");
+    console.log("  DAOS (product fill v2 OFF)…");
     const daosNoPatch = await runSingleBenchmarkArm({
       arm: "baseline",
       product,
       seed,
       productImage,
       userId,
-      env: BENCHMARK_DAOS_CONTRAST_PATCHED_ENV,
+      env: BENCHMARK_DAOS_LAW003_SOFT_ENV,
     });
 
-    console.log("  DAOS (LAW_003 soft governance ON)…");
+    console.log("  DAOS (product fill v2 ON)…");
     const daos = await runSingleBenchmarkArm({
       arm: "daos",
       product,
       seed,
       productImage,
       userId,
-      env: BENCHMARK_DAOS_LAW003_SOFT_ENV,
+      env: BENCHMARK_DAOS_PRODUCT_FILL_V2_ENV,
     });
 
     const delta = computePairDelta(daosNoPatch, daos);
@@ -156,8 +156,8 @@ export async function runDaosBenchmark(phase: number): Promise<BenchmarkResults>
     },
     envProfiles: {
       baseline: BENCHMARK_BASELINE_ENV,
-      daosNoPatch: BENCHMARK_DAOS_CONTRAST_PATCHED_ENV,
-      daos: BENCHMARK_DAOS_LAW003_SOFT_ENV,
+      daosNoPatch: BENCHMARK_DAOS_LAW003_SOFT_ENV,
+      daos: BENCHMARK_DAOS_PRODUCT_FILL_V2_ENV,
     },
     pairs,
     aggregate,

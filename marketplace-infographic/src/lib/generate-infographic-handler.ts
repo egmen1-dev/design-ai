@@ -181,6 +181,7 @@ import {
 } from "@/lib/daos/overlay/contrast-overlap-patch";
 import {
   applyProductScalePatch,
+  inferProductComplexity,
   type ProductScalePatchResult,
 } from "@/lib/daos/compositor/product-scale-patch";
 import { normalizeCompositePlacement } from "@/lib/daos/compositor/composite-result-bridge";
@@ -196,13 +197,26 @@ function buildDaosSceneCompositeOptions(input: {
   compositionLayout?: CompositionLayout;
   objectScale: number;
   layoutSpec?: LayoutSpec;
+  productCategory?: string;
 }): { options: SceneCompositeOptions; productScalePatch: ProductScalePatchResult } {
+  const metrics = input.compositionLayout?.metrics;
+  const overlayDensity =
+    metrics != null
+      ? (metrics.textAreaPct ?? 0) / 100 +
+        (metrics.plaqueAreaPct ?? 0) / 100 +
+        ((metrics.overlapPct ?? 0) / 100) * 0.5
+      : undefined;
+
   const productScalePatch = applyProductScalePatch({
     canvas: input.compositionLayout?.canvas,
     compositionLayout: input.compositionLayout,
     layoutSpec: input.layoutSpec,
     plannedProductAreaPct: input.compositionLayout?.metrics?.productAreaPct,
     compositeInput: { objectScale: input.objectScale, layout: "marketplace" },
+    productComplexity: inferProductComplexity(input.productCategory),
+    overlayDensity,
+    law014ContrastViolation: (metrics?.overlapPct ?? 0) > 2,
+    law014RiskHigh: (metrics?.overlapPct ?? 0) > 2,
   });
 
   return {
@@ -1673,6 +1687,7 @@ export async function handleGenerateInfographic(
             compositionLayout,
             objectScale,
             layoutSpec,
+            productCategory: analysis.category,
           });
           productScalePatchResult = compositePrep.productScalePatch;
           compositeResult = await compositeProductIntoScene(
@@ -1832,6 +1847,7 @@ export async function handleGenerateInfographic(
               compositionLayout,
               objectScale,
               layoutSpec,
+              productCategory: analysis.category,
             });
             productScalePatchResult = compositePrep.productScalePatch;
             compositeResult = await compositeProductIntoScene(
@@ -2003,6 +2019,7 @@ export async function handleGenerateInfographic(
             compositionLayout,
             objectScale,
             layoutSpec,
+            productCategory: analysis.category,
           });
           productScalePatchResult = compositePrep.productScalePatch;
           compositeResult = await compositeProductIntoScene(
