@@ -1,0 +1,120 @@
+productId,productName,arm,summaryScore,finalGateStatus,finalGateScore,meaningLossCount,meaningLossCodes,modulesIgnored,modulesCompiled,modulesStillIgnored,promptLength,provider,model,latencyMs,generationTimeMs,backgroundHash,finalImageHash,error
+cordless-drill,Cordless Drill,baseline,83,warning,83,1,MODULES_IGNORED,layout_coordinates;hierarchy;typography_zones;ctr_wording,,,584,pollinations,flux,7185,15661,eab03ab7e6908f345390ef8eaf6589b0,,
+cordless-drill,Cordless Drill,daos,73,warning,73,3,VISUAL_TO_RENDER_STRATEGY_MISMATCH;MODULES_IGNORED;DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES,layout_coordinates;hierarchy;typography_zones;ctr_wording,layout_coordinates;hierarchy;typography_zones;ctr_wording,,1389,pollinations,flux,3589,10412,b705e7a6faab69e54dedbc46d16c66cb,,
+cordless-drill,Cordless Drill,delta,-10,,-10,2,,,4,0,805,,,,,true,false,
+electric-kettle,Electric Kettle,baseline,,,,0,,,,,,,,,2039,,,"[
+  {
+    ""code"": ""too_big"",
+    ""maximum"": 80,
+    ""type"": ""string"",
+    ""inclusive"": true,
+    ""exact"": false,
+    ""message"": ""String must contain at most 80 character(s)"",
+    ""path"": [
+      ""oneThought"",
+      ""deferredSpecs"",
+      0
+    ]
+  },
+  {
+    ""code"": ""too_big"",
+    ""maximum"": 80,
+    ""type"": ""string"",
+    ""inclusive"": true,
+    ""exact"": false,
+    ""message"": ""String must contain at most 80 character(s)"",
+    ""path"": [
+      ""deferredBullets"",
+      0
+    ]
+  }
+]"
+electric-kettle,Electric Kettle,daos,,,,0,,,,,,,,,24,,,"[
+  {
+    ""code"": ""too_big"",
+    ""maximum"": 80,
+    ""type"": ""string"",
+    ""inclusive"": true,
+    ""exact"": false,
+    ""message"": ""String must contain at most 80 character(s)"",
+    ""path"": [
+      ""oneThought"",
+      ""deferredSpecs"",
+      0
+    ]
+  },
+  {
+    ""code"": ""too_big"",
+    ""maximum"": 80,
+    ""type"": ""string"",
+    ""inclusive"": true,
+    ""exact"": false,
+    ""message"": ""String must contain at most 80 character(s)"",
+    ""path"": [
+      ""deferredBullets"",
+      0
+    ]
+  }
+]"
+electric-kettle,Electric Kettle,delta,,,,0,,,0,0,,,,,,false,false,
+office-chair,Office Chair,baseline,,,,0,,,,,,,,,161,,,"[
+  {
+    ""code"": ""too_big"",
+    ""maximum"": 80,
+    ""type"": ""string"",
+    ""inclusive"": true,
+    ""exact"": false,
+    ""message"": ""String must contain at most 80 character(s)"",
+    ""path"": [
+      ""oneThought"",
+      ""deferredSpecs"",
+      0
+    ]
+  },
+  {
+    ""code"": ""too_big"",
+    ""maximum"": 80,
+    ""type"": ""string"",
+    ""inclusive"": true,
+    ""exact"": false,
+    ""message"": ""String must contain at most 80 character(s)"",
+    ""path"": [
+      ""deferredBullets"",
+      0
+    ]
+  }
+]"
+office-chair,Office Chair,daos,,,,0,,,,,,,,,17,,,"[
+  {
+    ""code"": ""too_big"",
+    ""maximum"": 80,
+    ""type"": ""string"",
+    ""inclusive"": true,
+    ""exact"": false,
+    ""message"": ""String must contain at most 80 character(s)"",
+    ""path"": [
+      ""oneThought"",
+      ""deferredSpecs"",
+      0
+    ]
+  },
+  {
+    ""code"": ""too_big"",
+    ""maximum"": 80,
+    ""type"": ""string"",
+    ""inclusive"": true,
+    ""exact"": false,
+    ""message"": ""String must contain at most 80 character(s)"",
+    ""path"": [
+      ""deferredBullets"",
+      0
+    ]
+  }
+]"
+office-chair,Office Chair,delta,,,,0,,,0,0,,,,,,false,false,
+mattress,Mattress,baseline,73,warning,73,3,LOW_CONFIDENCE;VISUAL_TO_RENDER_STRATEGY_MISMATCH;MODULES_IGNORED,layout_coordinates;hierarchy;typography_zones;ctr_wording,,,581,pollinations,flux,6572,13977,de5e0c352a58f4435f0f3ec2df698d9c,,
+mattress,Mattress,daos,73,warning,73,3,VISUAL_TO_RENDER_STRATEGY_MISMATCH;MODULES_IGNORED;DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES,layout_coordinates;hierarchy;typography_zones;ctr_wording,layout_coordinates;hierarchy;typography_zones;ctr_wording,,1385,pollinations,flux,4155,11227,8adf8aa219a792909fae56b4cf5c43e5,,
+mattress,Mattress,delta,0,,0,0,,,4,0,804,,,,,true,false,
+childrens-toy,Children's Toy,baseline,73,warning,73,3,LOW_CONFIDENCE;VISUAL_TO_RENDER_STRATEGY_MISMATCH;MODULES_IGNORED,layout_coordinates;hierarchy;typography_zones;ctr_wording,,,562,pollinations,flux,3870,11348,3ae75bf3c564032f6d0fa451911ce2f5,,
+childrens-toy,Children's Toy,daos,73,warning,73,3,VISUAL_TO_RENDER_STRATEGY_MISMATCH;MODULES_IGNORED;DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES,layout_coordinates;hierarchy;typography_zones;ctr_wording,layout_coordinates;hierarchy;typography_zones;ctr_wording,,1362,pollinations,flux,4927,16050,c2a31535382acffc7d0e4d4f9ab0256a,,
+childrens-toy,Children's Toy,delta,0,,0,0,,,4,0,800,,,,,true,false,
