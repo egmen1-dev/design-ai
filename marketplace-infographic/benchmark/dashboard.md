@@ -1,6 +1,6 @@
 # DAOS Benchmark Dashboard — Phase 1
 
-Status: **SUCCESS**
+Status: **STOP**
 
 ## Top Improvements
 
@@ -27,13 +27,13 @@ Status: **SUCCESS**
 
 - Provider: pollinations
 - Model: flux
-- Average provider latency: 646ms
+- Average provider latency: 485ms
 - Fallback runs: 0 / 10
 
 ## Generation statistics
 
 - Total runs: 10
-- Average generation time: 5051ms
+- Average generation time: 4584ms
 - Average prompt delta: 0.0 chars
 
 ## Cost estimation

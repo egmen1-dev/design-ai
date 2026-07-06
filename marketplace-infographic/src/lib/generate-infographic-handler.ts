@@ -181,6 +181,7 @@ import {
 } from "@/lib/daos/overlay/contrast-overlap-patch";
 import {
   applyProductScalePatch,
+  inferProductComplexity,
   type ProductScalePatchResult,
 } from "@/lib/daos/compositor/product-scale-patch";
 import { normalizeCompositePlacement } from "@/lib/daos/compositor/composite-result-bridge";
@@ -196,13 +197,26 @@ function buildDaosSceneCompositeOptions(input: {
   compositionLayout?: CompositionLayout;
   objectScale: number;
   layoutSpec?: LayoutSpec;
+  productCategory?: string;
 }): { options: SceneCompositeOptions; productScalePatch: ProductScalePatchResult } {
+  const metrics = input.compositionLayout?.metrics;
+  const overlayDensity =
+    metrics != null
+      ? (metrics.textAreaPct ?? 0) / 100 +
+        (metrics.plaqueAreaPct ?? 0) / 100 +
+        ((metrics.overlapPct ?? 0) / 100) * 0.5
+      : undefined;
+
   const productScalePatch = applyProductScalePatch({
     canvas: input.compositionLayout?.canvas,
     compositionLayout: input.compositionLayout,
     layoutSpec: input.layoutSpec,
     plannedProductAreaPct: input.compositionLayout?.metrics?.productAreaPct,
     compositeInput: { objectScale: input.objectScale, layout: "marketplace" },
+    productComplexity: inferProductComplexity(input.productCategory),
+    overlayDensity,
+    law014ContrastViolation: (metrics?.overlapPct ?? 0) > 2,
+    law014RiskHigh: (metrics?.overlapPct ?? 0) > 2,
   });
 
   return {
@@ -380,6 +394,10 @@ function daosDiagnosticSummary(
     productAreaTarget?: number;
     productAreaAfterEstimate?: number;
     productScalePatchActions?: string[];
+    productFillV2Enabled?: boolean;
+    productFillTargetReason?: string;
+    productFillV2Target?: number;
+    productFillV2Applied?: boolean;
     compositePlacementFound?: boolean;
     compositePlacementSource?: string;
     compositeProductAreaRatio?: number;
@@ -1673,6 +1691,7 @@ export async function handleGenerateInfographic(
             compositionLayout,
             objectScale,
             layoutSpec,
+            productCategory: analysis.category,
           });
           productScalePatchResult = compositePrep.productScalePatch;
           compositeResult = await compositeProductIntoScene(
@@ -1832,6 +1851,7 @@ export async function handleGenerateInfographic(
               compositionLayout,
               objectScale,
               layoutSpec,
+              productCategory: analysis.category,
             });
             productScalePatchResult = compositePrep.productScalePatch;
             compositeResult = await compositeProductIntoScene(
@@ -2003,6 +2023,7 @@ export async function handleGenerateInfographic(
             compositionLayout,
             objectScale,
             layoutSpec,
+            productCategory: analysis.category,
           });
           productScalePatchResult = compositePrep.productScalePatch;
           compositeResult = await compositeProductIntoScene(
@@ -2863,6 +2884,10 @@ export async function handleGenerateInfographic(
       productAreaTarget: daosDebugBundle.diagnostics.productAreaTarget,
       productAreaAfterEstimate: daosDebugBundle.diagnostics.productAreaAfterEstimate,
       productScalePatchActions: daosDebugBundle.diagnostics.productScalePatchActions,
+      productFillV2Enabled: daosDebugBundle.diagnostics.productFillV2Enabled,
+      productFillTargetReason: daosDebugBundle.diagnostics.productFillTargetReason,
+      productFillV2Target: daosDebugBundle.diagnostics.productFillV2Target,
+      productFillV2Applied: daosDebugBundle.diagnostics.productFillV2Applied,
       compositePlacementFound: daosDebugBundle.diagnostics.compositePlacementFound,
       compositePlacementSource: daosDebugBundle.diagnostics.compositePlacementSource,
       compositeProductAreaRatio: daosDebugBundle.diagnostics.compositeProductAreaRatio,

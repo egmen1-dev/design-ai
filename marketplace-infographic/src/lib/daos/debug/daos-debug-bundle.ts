@@ -104,6 +104,10 @@ export type DaosDebugBundle = {
     productAreaTarget?: number;
     productAreaAfterEstimate?: number;
     productScalePatchActions?: string[];
+    productFillV2Enabled?: boolean;
+    productFillTargetReason?: string;
+    productFillV2Target?: number;
+    productFillV2Applied?: boolean;
     compositePlacementFound?: boolean;
     compositePlacementSource?: string;
     compositeProductAreaRatio?: number;
@@ -330,6 +334,10 @@ export function createDaosDebugBundle(
             productAreaTarget: productScalePatch.targetProductAreaRatio,
             productAreaAfterEstimate: productScalePatch.estimatedAfterProductAreaRatio,
             productScalePatchActions: productScalePatch.actions.map((action) => action.code),
+            productFillV2Enabled: productScalePatch.productFillV2Enabled,
+            productFillTargetReason: productScalePatch.productFillTargetReason,
+            productFillV2Target: productScalePatch.productFillV2Target,
+            productFillV2Applied: productScalePatch.productFillV2Applied,
           }
         : {}),
       compositePlacementFound: Boolean(compositePlacement),
