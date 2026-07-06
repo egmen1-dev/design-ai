@@ -13,9 +13,12 @@ import {
   serializeSceneGraphSnapshots,
   writeSceneGraphSnapshots,
   isDaosSceneGraphV2Enabled,
+  extractProductActualFromSceneGraph,
   type SceneGraph,
   type SceneGraphDriftReport,
   type SceneGraphSnapshotSet,
+  type SceneGraphProductActual,
+  type OverlaySceneGraphDiagnostics,
 } from "@/lib/scene-graph";
 
 export type SceneGraphMirrorContext = {
@@ -46,6 +49,7 @@ export class SceneGraphMirror {
   private afterOverlay?: SceneGraph;
   private final?: SceneGraph;
   private drifts: SceneGraphDriftReport[] = [];
+  private overlayDiagnostics?: OverlaySceneGraphDiagnostics;
 
   constructor(context: SceneGraphMirrorContext) {
     this.enabled = isDaosSceneGraphV2Enabled();
@@ -55,6 +59,21 @@ export class SceneGraphMirror {
 
   isEnabled(): boolean {
     return this.enabled;
+  }
+
+  /** Stage 3 — factual product geometry for overlay patches (from compositor snapshot). */
+  getProductActualForOverlay(): SceneGraphProductActual | undefined {
+    if (!this.enabled) return undefined;
+    return extractProductActualFromSceneGraph(this.afterCompositor);
+  }
+
+  setOverlayDiagnostics(diagnostics: OverlaySceneGraphDiagnostics): void {
+    if (!this.enabled) return;
+    this.overlayDiagnostics = diagnostics;
+  }
+
+  getOverlayDiagnostics(): OverlaySceneGraphDiagnostics | undefined {
+    return this.overlayDiagnostics;
   }
 
   capturePlanner(input: SceneGraphMirrorInput): void {

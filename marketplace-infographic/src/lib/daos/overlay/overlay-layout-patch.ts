@@ -4,6 +4,16 @@ import type { LayoutSpec } from "@/lib/design/layout-spec";
 import type { OverlayQualityAudit } from "../audit/overlay-quality-audit";
 import type { ComposerOverlayElement } from "../audit/composer-quality-audit";
 import { analyzeOverlayQuality, type OverlayQualityAuditInput } from "../audit/overlay-quality-audit";
+import type {
+  SceneGraphProductActual,
+  OverlaySceneGraphDiagnostics,
+} from "@/lib/scene-graph/product-actual-bridge";
+import {
+  isDaosSceneGraphOverlayUsesActual,
+  resolveOverlayProductBbox,
+  moveTextZonesAwayFromProductBbox,
+  countTextZoneOverlapsWithProduct,
+} from "@/lib/scene-graph/product-actual-bridge";
 
 export const DAOS_OVERLAY_PATCH_MAX_VISIBLE_BADGES = 2;
 export const DAOS_OVERLAY_PATCH_MAX_ELEMENTS = 5;
@@ -28,6 +38,8 @@ export type OverlayLayoutPatchInput = {
   overlayDensity?: number;
   contrastRisk?: number;
   pngOverlayFeelRisk?: number;
+  sceneGraphProductActual?: SceneGraphProductActual;
+  overlayDiagnostics?: OverlaySceneGraphDiagnostics;
 };
 
 export type OverlayLayoutPatch = {
@@ -40,6 +52,10 @@ export type OverlayLayoutPatch = {
   elementsAfter: number;
   suppressParametricBadge?: boolean;
   headlineContrastBoost?: number;
+  overlayUsedSceneGraphActual?: boolean;
+  overlayProductActualSource?: string;
+  overlayProductActualAreaRatio?: number;
+  overlayAvoidedActualProductOverlap?: boolean;
 };
 
 export type OverlayLayoutPatchResult = {
@@ -318,7 +334,33 @@ function applyContrastPatch(
   compositionLayout: CompositionLayout | undefined,
   headlineContrastBoost: number | undefined,
   actions: OverlayLayoutPatchAction[],
-): void {
+  sceneGraphProductActual?: SceneGraphProductActual,
+): boolean {
+  let avoidedOverlap = false;
+
+  if (compositionLayout && isDaosSceneGraphOverlayUsesActual() && sceneGraphProductActual) {
+    const productBbox = resolveOverlayProductBbox({
+      canvas: compositionLayout.canvas,
+      sceneGraphProductActual,
+      preferSceneGraphActual: true,
+    });
+    if (productBbox) {
+      const overlapsBefore = countTextZoneOverlapsWithProduct(compositionLayout, productBbox);
+      avoidedOverlap = moveTextZonesAwayFromProductBbox(compositionLayout, productBbox);
+      if (avoidedOverlap || overlapsBefore > 0) {
+        actions.push({
+          code: "SCENE_GRAPH_ACTUAL_SAFE_ZONE",
+          message: "Repositioned text zones using factual compositor product bbox",
+        });
+      }
+      const factualAreaPct = sceneGraphProductActual.areaRatio * 100;
+      compositionLayout.metrics = {
+        ...compositionLayout.metrics,
+        productAreaPct: factualAreaPct,
+      };
+    }
+  }
+
   if (layoutSpec?.hierarchy) {
     layoutSpec.hierarchy.headline = "primary";
     layoutSpec.hierarchy.hero = "primary";
@@ -360,6 +402,8 @@ function applyContrastPatch(
       message: `Headline contrast boost ${headlineContrastBoost.toFixed(2)}`,
     });
   }
+
+  return avoidedOverlap;
 }
 
 function applyPngFeelPatch(
@@ -427,8 +471,15 @@ export function applyOverlayLayoutPatch(
     }
   }
 
+  let avoidedActualOverlap = false;
   if (signals.law014 || signals.contrastRisk > DAOS_OVERLAY_PATCH_CONTRAST_TRIGGER) {
-    applyContrastPatch(layoutSpec, compositionLayout, plan.headlineContrastBoost, appliedActions);
+    avoidedActualOverlap = applyContrastPatch(
+      layoutSpec,
+      compositionLayout,
+      plan.headlineContrastBoost,
+      appliedActions,
+      input.sceneGraphProductActual,
+    );
   }
 
   if (signals.pngRisk > DAOS_OVERLAY_PATCH_PNG_RISK_TRIGGER) {
@@ -448,6 +499,8 @@ export function applyOverlayLayoutPatch(
     );
   }
 
+  const usedActual = isDaosSceneGraphOverlayUsesActual() && Boolean(input.sceneGraphProductActual);
+
   return {
     patch: {
       ...plan,
@@ -456,6 +509,16 @@ export function applyOverlayLayoutPatch(
       actions: appliedActions,
       elementsAfter,
       afterDensity,
+      overlayUsedSceneGraphActual: usedActual,
+      overlayProductActualSource: usedActual
+        ? input.sceneGraphProductActual?.source
+        : input.overlayDiagnostics?.overlayProductActualSource,
+      overlayProductActualAreaRatio: usedActual
+        ? input.sceneGraphProductActual?.areaRatio
+        : input.overlayDiagnostics?.overlayProductActualAreaRatio,
+      overlayAvoidedActualProductOverlap: usedActual
+        ? avoidedActualOverlap
+        : input.overlayDiagnostics?.overlayAvoidedActualProductOverlap,
     },
     infographicData,
     layoutSpec,

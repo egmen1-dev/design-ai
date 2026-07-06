@@ -5,6 +5,16 @@ import { applyLayoutSpecPatch } from "@/lib/design/layout-spec/patches";
 import type { OverlayQualityAudit } from "../audit/overlay-quality-audit";
 import { analyzeOverlayQuality, type OverlayQualityAuditInput } from "../audit/overlay-quality-audit";
 import type { NormalizedCompositePlacement } from "../compositor/composite-result-bridge";
+import type {
+  SceneGraphProductActual,
+  OverlaySceneGraphDiagnostics,
+} from "@/lib/scene-graph/product-actual-bridge";
+import {
+  isDaosSceneGraphOverlayUsesActual,
+  resolveOverlayProductBbox,
+  moveTextZonesAwayFromProductBbox,
+  countTextZoneOverlapsWithProduct,
+} from "@/lib/scene-graph/product-actual-bridge";
 
 export const DAOS_CONTRAST_OVERLAP_PNG_RISK_TRIGGER = 0.75;
 export const DAOS_CONTRAST_OVERLAP_MAX_ACCENT_PLAQUES = 2;
@@ -29,6 +39,8 @@ export type ContrastOverlapPatchInput = {
   overlayDensity?: number;
   pngOverlayFeelRisk?: number;
   compositePlacement?: NormalizedCompositePlacement;
+  sceneGraphProductActual?: SceneGraphProductActual;
+  overlayDiagnostics?: OverlaySceneGraphDiagnostics;
 };
 
 export type ContrastOverlapPatch = {
@@ -41,6 +53,10 @@ export type ContrastOverlapPatch = {
   elementsAfter: number;
   overlayDensityBefore: number;
   overlayDensityAfterEstimate: number;
+  overlayUsedSceneGraphActual?: boolean;
+  overlayProductActualSource?: string;
+  overlayProductActualAreaRatio?: number;
+  overlayAvoidedActualProductOverlap?: boolean;
 };
 
 export type ContrastOverlapPatchResult = {
@@ -153,23 +169,13 @@ function resolveProductBbox(
   input: ContrastOverlapPatchInput,
 ): ProductBbox | undefined {
   const canvas = input.compositionLayout?.canvas;
-  if (input.compositePlacement && canvas?.width && canvas?.height) {
-    return {
-      left: input.compositePlacement.x * canvas.width,
-      top: input.compositePlacement.y * canvas.height,
-      width: input.compositePlacement.width * canvas.width,
-      height: input.compositePlacement.height * canvas.height,
-    };
-  }
-
-  const product = input.compositionLayout?.product;
-  if (!product || product.width <= 0 || product.height <= 0) return undefined;
-  return {
-    left: product.left,
-    top: product.top,
-    width: product.width,
-    height: product.height,
-  };
+  return resolveOverlayProductBbox({
+    canvas,
+    sceneGraphProductActual: input.sceneGraphProductActual,
+    compositePlacement: input.compositePlacement,
+    compositionLayout: input.compositionLayout,
+    preferSceneGraphActual: isDaosSceneGraphOverlayUsesActual(),
+  });
 }
 
 function estimateContrastOverlapScore(metrics?: CompositionLayout["metrics"]): number {
@@ -489,6 +495,10 @@ export function applyContrastOverlapPatch(
   const signals = resolveSignals(input);
   const productBbox = resolveProductBbox(input);
   const appliedActions = [...plan.actions];
+  const overlapsBefore =
+    input.sceneGraphProductActual && input.compositionLayout && productBbox
+      ? countTextZoneOverlapsWithProduct(input.compositionLayout, productBbox)
+      : 0;
 
   const infographicData = input.infographicData
     ? cloneInfographicData(input.infographicData)
@@ -546,6 +556,19 @@ export function applyContrastOverlapPatch(
   const overlayDensityAfterEstimate = estimateOverlayDensity(compositionLayout);
   const contrastOverlapAfterEstimate = estimateContrastOverlapScore(compositionLayout?.metrics);
 
+  const overlapsAfter =
+    input.sceneGraphProductActual && compositionLayout && productBbox
+      ? countTextZoneOverlapsWithProduct(compositionLayout, productBbox)
+      : overlapsBefore;
+  const avoidedOverlap =
+    isDaosSceneGraphOverlayUsesActual() &&
+    Boolean(input.sceneGraphProductActual) &&
+    overlapsBefore > 0 &&
+    overlapsAfter < overlapsBefore;
+
+  const overlayDiag = input.overlayDiagnostics;
+  const usedActual = isDaosSceneGraphOverlayUsesActual() && Boolean(input.sceneGraphProductActual);
+
   return {
     patch: {
       ...plan,
@@ -555,6 +578,16 @@ export function applyContrastOverlapPatch(
       elementsAfter,
       overlayDensityAfterEstimate: Math.min(plan.overlayDensityBefore, overlayDensityAfterEstimate),
       contrastOverlapAfterEstimate,
+      overlayUsedSceneGraphActual: usedActual,
+      overlayProductActualSource: usedActual
+        ? input.sceneGraphProductActual?.source
+        : overlayDiag?.overlayProductActualSource,
+      overlayProductActualAreaRatio: usedActual
+        ? input.sceneGraphProductActual?.areaRatio
+        : overlayDiag?.overlayProductActualAreaRatio,
+      overlayAvoidedActualProductOverlap: usedActual
+        ? avoidedOverlap || (overlapsBefore > 0 && overlapsAfter === 0)
+        : overlayDiag?.overlayAvoidedActualProductOverlap,
     },
     infographicData,
     layoutSpec,

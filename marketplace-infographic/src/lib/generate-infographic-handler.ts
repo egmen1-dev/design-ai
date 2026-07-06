@@ -192,6 +192,7 @@ import { applyAsymmetricLimitsToCompositeOptions, type AsymmetricLimits } from "
 import { applyWideHeroStrategy, type WideHeroStrategy } from "@/lib/daos/compositor/wide-hero-strategy";
 import { normalizeCompositePlacement } from "@/lib/daos/compositor/composite-result-bridge";
 import { createSceneGraphMirror } from "@/lib/daos/scene-graph";
+import { buildOverlaySceneGraphDiagnostics } from "@/lib/scene-graph";
 import { createLaw003RecalibrationReport, extractConstitutionLaw003Whitespace } from "@/lib/daos/governance/law003-recalibration";
 import type { SceneCompositeOptions } from "@/lib/compositing/scene-compositor";
 import type { CompositionLayout } from "@/lib/composition/types";
@@ -2238,10 +2239,18 @@ export async function handleGenerateInfographic(
     let wideProductLayoutPatchResult: WideProductLayoutPatchResult | undefined;
 
     if (sdData.layout === "marketplace") {
+      const sceneGraphProductActual = sceneGraphMirror.getProductActualForOverlay();
+      const overlaySceneGraphDiagnostics = buildOverlaySceneGraphDiagnostics({
+        sceneGraphProductActual,
+        compositionLayout,
+      });
+
       const prePatchAuditInput = {
         canvas: compositionLayout?.canvas,
         overlayElements: overlayElementsFromCompositionLayout(compositionLayout),
         layoutSpec,
+        compositionLayout,
+        sceneGraphProductActual,
         htmlTemplateData: {
           headline: infographicData.headline,
           bullets: infographicData.specBlocks?.map((block) => block.label),
@@ -2273,6 +2282,8 @@ export async function handleGenerateInfographic(
         compositionLayout,
         overlayAudit: prePatchAudit,
         auditInput: prePatchAuditInput,
+        sceneGraphProductActual,
+        overlayDiagnostics: overlaySceneGraphDiagnostics,
       });
       if (overlayLayoutPatchResult.patch.applied) {
         renderInfographicData =
@@ -2322,6 +2333,8 @@ export async function handleGenerateInfographic(
         overlayDensity: prePatchAudit.estimatedOverlayDensity,
         pngOverlayFeelRisk: prePatchAudit.pngOverlayFeelRisk,
         compositePlacement: compositePlacementForPatch,
+        sceneGraphProductActual,
+        overlayDiagnostics: overlaySceneGraphDiagnostics,
       });
       if (contrastOverlapPatchResult.patch.applied) {
         renderInfographicData =
@@ -2346,6 +2359,16 @@ export async function handleGenerateInfographic(
         renderCompositionLayout =
           wideProductLayoutPatchResult.compositionLayout ?? renderCompositionLayout;
       }
+
+      sceneGraphMirror.setOverlayDiagnostics(
+        buildOverlaySceneGraphDiagnostics({
+          sceneGraphProductActual,
+          compositionLayout: renderCompositionLayout,
+          avoidedOverlap:
+            overlayLayoutPatchResult?.patch.overlayAvoidedActualProductOverlap ||
+            contrastOverlapPatchResult?.patch.overlayAvoidedActualProductOverlap,
+        }),
+      );
     }
 
     sceneGraphMirror.captureAfterOverlay({
@@ -2702,10 +2725,13 @@ export async function handleGenerateInfographic(
       hasComposite: !!compositeResult,
       qualityHasShadows: !!compositeResult,
     });
+    const sceneGraphProductActualForAudit = sceneGraphMirror.getProductActualForOverlay();
     const overlayQualityAuditPre = analyzeOverlayQuality({
       canvas: renderCompositionLayout?.canvas,
       overlayElements: overlayElementsFromCompositionLayout(renderCompositionLayout),
       layoutSpec: renderLayoutSpec,
+      compositionLayout: renderCompositionLayout,
+      sceneGraphProductActual: sceneGraphProductActualForAudit,
       htmlTemplateData: {
         headline: renderInfographicData.headline,
         bullets: renderInfographicData.specBlocks?.map((block) => block.label),
@@ -2765,6 +2791,8 @@ export async function handleGenerateInfographic(
       canvas: renderCompositionLayout?.canvas,
       overlayElements: overlayElementsFromCompositionLayout(renderCompositionLayout),
       layoutSpec: renderLayoutSpec,
+      compositionLayout: renderCompositionLayout,
+      sceneGraphProductActual: sceneGraphProductActualForAudit,
       htmlTemplateData: {
         headline: renderInfographicData.headline,
         bullets: renderInfographicData.specBlocks?.map((block) => block.label),

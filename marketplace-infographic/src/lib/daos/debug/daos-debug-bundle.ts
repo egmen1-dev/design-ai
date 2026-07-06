@@ -166,6 +166,10 @@ export type DaosDebugBundle = {
     sceneGraphProductSizeDrift?: number;
     sceneGraphWhitespaceDrift?: number;
     sceneGraphSignificantDrift?: boolean;
+    overlayUsedSceneGraphActual?: boolean;
+    overlayProductActualSource?: string;
+    overlayProductActualAreaRatio?: number;
+    overlayAvoidedActualProductOverlap?: boolean;
   };
   generationMode: DAOSGenerationMode;
   generationPolicySummary: ReturnType<typeof summarizeDaosGenerationPolicy>;
@@ -350,6 +354,15 @@ export function createDaosDebugBundle(
             law003GovernanceSource: overlayQualitySummary.law003GovernanceSource,
             law003SoftResolved: overlayQualitySummary.law003SoftResolved,
             law003StillFailingReason: overlayQualitySummary.law003StillFailingReason,
+          }
+        : {}),
+      ...(options?.overlayQualityAudit?.overlayUsedSceneGraphActual
+        ? {
+            overlayUsedSceneGraphActual: options.overlayQualityAudit.overlayUsedSceneGraphActual,
+            overlayProductActualSource: options.overlayQualityAudit.overlayProductActualSource,
+            overlayProductActualAreaRatio: options.overlayQualityAudit.overlayProductActualAreaRatio,
+            overlayAvoidedActualProductOverlap:
+              options.overlayQualityAudit.overlayAvoidedActualProductOverlap,
           }
         : {}),
       ...(overlayLayoutPatch

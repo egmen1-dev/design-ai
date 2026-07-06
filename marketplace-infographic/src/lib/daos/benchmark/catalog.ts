@@ -118,6 +118,19 @@ export const BENCHMARK_DAOS_WIDE_PRODUCT_LAYOUT_ENV: Record<string, string> = {
   DAOS_WIDE_PRODUCT_LAYOUT: "1",
 };
 
+/** Stage 3 baseline — scene graph on, overlay still uses planned geometry. */
+export const BENCHMARK_DAOS_SCENE_GRAPH_V2_PLANNED_ENV: Record<string, string> = {
+  ...BENCHMARK_DAOS_WIDE_PRODUCT_LAYOUT_ENV,
+  DAOS_SCENE_GRAPH_V2: "1",
+  DAOS_SCENE_GRAPH_OVERLAY_PLANNED: "1",
+};
+
+/** Stage 3 patched — scene graph on, overlay reads ProductNode.actual. */
+export const BENCHMARK_DAOS_SCENE_GRAPH_V2_ACTUAL_ENV: Record<string, string> = {
+  ...BENCHMARK_DAOS_WIDE_PRODUCT_LAYOUT_ENV,
+  DAOS_SCENE_GRAPH_V2: "1",
+};
+
 export function isDaosBenchmarkEnabled(): boolean {
   return (
     process.env.DAOS_RENDER_CONTEXT === "1" ||
@@ -136,6 +149,7 @@ export function isDaosBenchmarkEnabled(): boolean {
     process.env.DAOS_WIDE_HERO_STRATEGY === "1" ||
     process.env.DAOS_WIDE_PRODUCT_LAYOUT === "1" ||
     process.env.DAOS_SCENE_GRAPH_V2 === "1" ||
+    process.env.DAOS_SCENE_GRAPH_OVERLAY_PLANNED === "1" ||
     process.env.DAOS_PROMPT_CONTEXT === "1"
   );
 }

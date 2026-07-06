@@ -10,6 +10,13 @@ import {
   type Law003GovernanceSource,
 } from "../governance/law003-soft-governance";
 import type { ContrastOverlapPatch } from "../overlay/contrast-overlap-patch";
+import type { SceneGraphProductActual } from "@/lib/scene-graph/product-actual-bridge";
+import {
+  isDaosSceneGraphOverlayUsesActual,
+  resolveOverlayProductBbox,
+  countTextZoneOverlapsWithProduct,
+} from "@/lib/scene-graph/product-actual-bridge";
+import type { CompositionLayout } from "@/lib/composition/types";
 
 export const LAW014_CONTRAST_OVERLAP_PASS_THRESHOLD = 0.16;
 
@@ -56,6 +63,8 @@ export type OverlayQualityAuditInput = {
   law003SoftGovernanceEnabled?: boolean;
   factualProductAreaRatio?: number;
   contrastOverlapPatch?: Pick<ContrastOverlapPatch, "applied" | "contrastOverlapAfterEstimate">;
+  sceneGraphProductActual?: SceneGraphProductActual;
+  compositionLayout?: CompositionLayout;
 };
 
 export type OverlayQualityAudit = {
@@ -73,6 +82,10 @@ export type OverlayQualityAudit = {
   law003GovernanceSource: Law003GovernanceSource;
   law003SoftResolved: boolean;
   law003StillFailingReason?: string;
+  overlayUsedSceneGraphActual?: boolean;
+  overlayProductActualSource?: string;
+  overlayProductActualAreaRatio?: number;
+  overlayAvoidedActualProductOverlap?: boolean;
   warnings: OverlayQualityWarning[];
   recommendations: string[];
   score: number;
@@ -225,6 +238,20 @@ function computeContrastRisk(input: OverlayQualityAuditInput): number {
   if (overlap >= 5) risk += 0.35;
   else if (overlap >= 3) risk += 0.2;
 
+  if (isDaosSceneGraphOverlayUsesActual() && input.sceneGraphProductActual && input.compositionLayout) {
+    const productBbox = resolveOverlayProductBbox({
+      canvas: input.canvas ?? input.compositionLayout.canvas,
+      sceneGraphProductActual: input.sceneGraphProductActual,
+      preferSceneGraphActual: true,
+    });
+    const factualOverlaps = countTextZoneOverlapsWithProduct(input.compositionLayout, productBbox);
+    if (factualOverlaps >= 2) risk += 0.35;
+    else if (factualOverlaps === 1) risk += 0.2;
+    else if (factualOverlaps === 0 && overlap >= 3) {
+      risk = Math.max(0.1, risk - 0.15);
+    }
+  }
+
   if (lawViolated(governanceReports(input), "LAW_014")) {
     risk += 0.4;
   }
@@ -264,6 +291,17 @@ function computePngOverlayFeelRisk(input: OverlayQualityAuditInput): number {
     risk += 0.25;
   }
   if (input.hasComposite === false) risk += 0.3;
+
+  if (isDaosSceneGraphOverlayUsesActual() && input.sceneGraphProductActual && input.compositionLayout) {
+    const productBbox = resolveOverlayProductBbox({
+      canvas: input.canvas ?? input.compositionLayout.canvas,
+      sceneGraphProductActual: input.sceneGraphProductActual,
+      preferSceneGraphActual: true,
+    });
+    const factualOverlaps = countTextZoneOverlapsWithProduct(input.compositionLayout, productBbox);
+    if (factualOverlaps > 0) risk += 0.2;
+    else risk = Math.max(0.1, risk - 0.1);
+  }
 
   const composerRisk = input.composerQualityAudit?.finalCompositionRisk ?? 0;
   if (composerRisk > 0.4) {
@@ -313,10 +351,30 @@ export function analyzeOverlayQuality(input: OverlayQualityAuditInput): OverlayQ
   const law003Governance = resolveLaw003Governance(input);
   const law003WhitespaceViolation = law003Governance.softViolation;
   const constitutionLaw014 = lawViolated(governanceReports(input), "LAW_014");
-  const law014ContrastViolation = input.contrastOverlapPatch?.applied
+  let law014ContrastViolation = input.contrastOverlapPatch?.applied
     ? input.contrastOverlapPatch.contrastOverlapAfterEstimate >
       LAW014_CONTRAST_OVERLAP_PASS_THRESHOLD
     : constitutionLaw014;
+
+  if (
+    isDaosSceneGraphOverlayUsesActual() &&
+    input.sceneGraphProductActual &&
+    input.compositionLayout &&
+    constitutionLaw014
+  ) {
+    const productBbox = resolveOverlayProductBbox({
+      canvas: input.canvas ?? input.compositionLayout.canvas,
+      sceneGraphProductActual: input.sceneGraphProductActual,
+      preferSceneGraphActual: true,
+    });
+    const factualOverlaps = countTextZoneOverlapsWithProduct(input.compositionLayout, productBbox);
+    if (factualOverlaps === 0) {
+      law014ContrastViolation = false;
+    }
+  }
+
+  const usedSceneGraphActual =
+    isDaosSceneGraphOverlayUsesActual() && Boolean(input.sceneGraphProductActual);
   const whitespaceRisk = computeWhitespaceRisk(input, law003Governance);
   const contrastRisk = computeContrastRisk(input);
   const hierarchyRisk = computeHierarchyRisk(input);
@@ -369,6 +427,11 @@ export function analyzeOverlayQuality(input: OverlayQualityAuditInput): OverlayQ
     warnings.push({
       code: "LAW_014_PATCH_PASS",
       message: "LAW_014 passed after contrast/overlap patch recalibration",
+    });
+  } else if (constitutionLaw014 && usedSceneGraphActual && !law014ContrastViolation) {
+    warnings.push({
+      code: "LAW_014_SCENE_GRAPH_SOFT_PASS",
+      message: "LAW_014 passed after factual scene-graph product bbox overlap check",
     });
   }
 
@@ -427,6 +490,13 @@ export function analyzeOverlayQuality(input: OverlayQualityAuditInput): OverlayQ
     law003GovernanceSource: law003Governance.law003GovernanceSource,
     law003SoftResolved: law003Governance.law003SoftResolved,
     law003StillFailingReason: law003Governance.law003StillFailingReason,
+    overlayUsedSceneGraphActual: usedSceneGraphActual,
+    overlayProductActualSource: usedSceneGraphActual
+      ? input.sceneGraphProductActual?.source
+      : undefined,
+    overlayProductActualAreaRatio: usedSceneGraphActual
+      ? input.sceneGraphProductActual?.areaRatio
+      : undefined,
     warnings,
     recommendations: [...recommendations],
     score,

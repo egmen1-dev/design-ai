@@ -31,6 +31,19 @@ export {
 } from "./SceneGraphBuilder";
 
 export {
+  isDaosSceneGraphOverlayUsesActual,
+  extractProductActualFromSceneGraph,
+  productActualToOverlayBbox,
+  resolveOverlayProductBbox,
+  countTextZoneOverlapsWithProduct,
+  moveTextZonesAwayFromProductBbox,
+  buildOverlaySceneGraphDiagnostics,
+  type SceneGraphProductActual,
+  type OverlayProductBbox,
+  type OverlaySceneGraphDiagnostics,
+} from "./product-actual-bridge";
+
+export {
   validateSceneGraph,
   computeSceneGraphDrift,
   validateSceneGraphPipeline,
