@@ -10,6 +10,10 @@ export type DAOSRenderDebugArtifact = {
   modulesIgnored?: string[];
   renderRequestSummary?: unknown;
   providerPayloadSummary?: unknown;
+  daosV17BridgeApplied?: boolean;
+  daosV17BridgeLength?: number;
+  daosV17BridgePreview?: string;
+  daosV17BridgeModulesAddressed?: string[];
   createdAt: string;
 };
 
@@ -143,6 +147,20 @@ export function extractDaosRenderDebug(input: unknown): DAOSRenderDebugArtifact 
       if (fallbackReason) artifact.fallbackReason = fallbackReason;
     }
     if (modulesIgnored.length > 0) artifact.modulesIgnored = modulesIgnored;
+
+    const daosV17Bridge = asRecord(compiled.daosV17Bridge);
+    if (daosV17Bridge.applied === true) {
+      artifact.daosV17BridgeApplied = true;
+      if (typeof daosV17Bridge.length === "number") {
+        artifact.daosV17BridgeLength = daosV17Bridge.length;
+      }
+      const preview = asString(daosV17Bridge.preview);
+      if (preview) artifact.daosV17BridgePreview = preview;
+      const modulesAddressed = asStringArray(daosV17Bridge.modulesAddressed);
+      if (modulesAddressed.length > 0) {
+        artifact.daosV17BridgeModulesAddressed = modulesAddressed;
+      }
+    }
 
     const renderRequestSummary = summarizeRequest(request);
     if (renderRequestSummary) artifact.renderRequestSummary = renderRequestSummary;

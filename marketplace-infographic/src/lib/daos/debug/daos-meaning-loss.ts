@@ -25,6 +25,7 @@ export type AnalyzeDaosMeaningLossOptions = {
   renderContextEnabled?: boolean;
   renderContextAttached?: boolean;
   useRenderEngineV17?: boolean;
+  daosV17BridgeEnabled?: boolean;
 };
 
 export type DaosMeaningLossSeverity = "warning" | "critical";
@@ -48,6 +49,7 @@ export type DaosMeaningLossReport = {
   pipelineContextLoss: DaosMeaningLossWarning[];
   promptContextLoss: DaosMeaningLossWarning[];
   renderContextLoss: DaosMeaningLossWarning[];
+  v17BridgeLoss: DaosMeaningLossWarning[];
   warnings: DaosMeaningLossWarning[];
 };
 
@@ -443,6 +445,48 @@ function analyzeRenderContextLoss(
   return [];
 }
 
+const V17_BRIDGE_IGNORED_MODULES = [
+  "layout_coordinates",
+  "hierarchy",
+  "typography_zones",
+  "ctr_wording",
+] as const;
+
+function analyzeV17BridgeLoss(options?: AnalyzeDaosMeaningLossOptions): DaosMeaningLossWarning[] {
+  if (!options?.daosV17BridgeEnabled) {
+    return [];
+  }
+
+  const warnings: DaosMeaningLossWarning[] = [];
+  const renderDebug = options.renderDebug;
+  const bridgeApplied = renderDebug?.daosV17BridgeApplied === true;
+
+  if (options.renderContextAttached && !bridgeApplied) {
+    warnings.push({
+      code: "DAOS_V17_BRIDGE_NOT_APPLIED",
+      severity: "warning",
+      message:
+        "DAOS_V17_PROMPT_BRIDGE is enabled and render context is attached but v17 bridge was not applied to provider prompt",
+      spec: "renderBlueprint",
+    });
+  }
+
+  if (bridgeApplied) {
+    const ignored = new Set(renderDebug?.modulesIgnored ?? []);
+    const stillIgnored = V17_BRIDGE_IGNORED_MODULES.filter((module) => ignored.has(module));
+    if (stillIgnored.length > 0) {
+      warnings.push({
+        code: "DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES",
+        severity: "warning",
+        message: `v17 bridge applied but adapter still ignores modules: ${stillIgnored.join(", ")}`,
+        spec: "renderBlueprint",
+      });
+    }
+  }
+
+  return warnings;
+}
+
 /** Deterministic loss-of-meaning checks between DAOS specs (no LLM). */
 export function analyzeDaosMeaningLoss(
   state: DAOSProjectState,
@@ -477,6 +521,10 @@ export function analyzeDaosMeaningLoss(
     promptContextInjected: options?.promptContextInjected,
   });
   const renderContextLoss = analyzeRenderContextLoss(completenessScore, options);
+  const v17BridgeLoss = analyzeV17BridgeLoss({
+    ...options,
+    renderDebug,
+  });
 
   const warnings = [
     ...lowConfidenceWarnings,
@@ -488,6 +536,7 @@ export function analyzeDaosMeaningLoss(
     ...pipelineContextLoss,
     ...promptContextLoss,
     ...renderContextLoss,
+    ...v17BridgeLoss,
   ];
 
   return {
@@ -502,6 +551,7 @@ export function analyzeDaosMeaningLoss(
     pipelineContextLoss,
     promptContextLoss,
     renderContextLoss,
+    v17BridgeLoss,
     warnings,
   };
 }

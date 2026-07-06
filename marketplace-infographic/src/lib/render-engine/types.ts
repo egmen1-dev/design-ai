@@ -129,6 +129,7 @@ export type RenderRequest = {
     luxuryScore?: number;
     visualBlueprint?: import("@/lib/design/visual-pipeline/types").VisualSceneBlueprint;
     coverConceptId?: import("@/lib/cover-concepts").CoverConceptId;
+    daosContext?: import("@/lib/daos/adapters/render-engine-context-adapter").DAOSRenderEngineContextSummary;
   };
 };
 
@@ -145,6 +146,13 @@ export type CompiledRenderPayload = {
   modulesUsed: string[];
   /** Modules ignored because model doesn't support them */
   modulesIgnored: string[];
+  /** DAOS Wave 15 — advisory bridge metadata (not sent as separate provider field) */
+  daosV17Bridge?: {
+    applied: boolean;
+    length: number;
+    preview: string;
+    modulesAddressed: string[];
+  };
 };
 
 export interface RenderAdapter {

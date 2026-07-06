@@ -125,6 +125,10 @@ export type GenerationDiagnosticReport = {
     contextEffectPromptDelta?: number;
     contextEffectScoreDelta?: number;
     contextEffectNotes?: string;
+    daosV17BridgeEnabled?: boolean;
+    daosV17BridgeApplied?: boolean;
+    daosV17BridgeLength?: number;
+    daosV17BridgeModulesAddressed?: string[];
   };
 };
 
