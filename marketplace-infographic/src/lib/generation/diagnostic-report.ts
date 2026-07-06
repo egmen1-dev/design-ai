@@ -155,6 +155,13 @@ export type GenerationDiagnosticReport = {
     pngOverlayFeelRisk?: number;
     law003WhitespaceViolation?: boolean;
     law014ContrastViolation?: boolean;
+    overlayPatchEnabled?: boolean;
+    overlayPatchApplied?: boolean;
+    overlayPatchActions?: string[];
+    overlayPatchBeforeDensity?: number;
+    overlayPatchAfterDensity?: number;
+    overlayPatchElementsBefore?: number;
+    overlayPatchElementsAfter?: number;
   };
 };
 

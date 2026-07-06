@@ -136,6 +136,7 @@ export type BenchmarkResults = {
   };
   envProfiles: {
     baseline: Record<string, string>;
+    daosNoPatch?: Record<string, string>;
     daos: Record<string, string>;
   };
   pairs: BenchmarkProductPair[];

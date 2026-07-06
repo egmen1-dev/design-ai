@@ -164,6 +164,10 @@ import {
   overlayElementsFromCompositionLayout,
 } from "@/lib/daos/audit/composer-quality-audit";
 import { analyzeOverlayQuality } from "@/lib/daos/audit/overlay-quality-audit";
+import {
+  applyOverlayLayoutPatch,
+  type OverlayLayoutPatchResult,
+} from "@/lib/daos/overlay/overlay-layout-patch";
 import type { DAOSProjectState } from "@/lib/daos/core/project-state";
 import type { KnowledgeContext } from "@/lib/design/knowledge-engine";
 
@@ -305,6 +309,13 @@ function daosDiagnosticSummary(
     pngOverlayFeelRisk?: number;
     law003WhitespaceViolation?: boolean;
     law014ContrastViolation?: boolean;
+    overlayPatchEnabled?: boolean;
+    overlayPatchApplied?: boolean;
+    overlayPatchActions?: string[];
+    overlayPatchBeforeDensity?: number;
+    overlayPatchAfterDensity?: number;
+    overlayPatchElementsBefore?: number;
+    overlayPatchElementsAfter?: number;
   },
 ) {
   return {
@@ -1999,6 +2010,61 @@ export async function handleGenerateInfographic(
         }
       : undefined;
 
+    let renderInfographicData = infographicData;
+    let renderLayoutSpec = layoutSpec;
+    let renderCompositionLayout = compositionLayout;
+    let renderParametricBadgeHtml = parametricBadgeHtml;
+    let overlayLayoutPatchResult: OverlayLayoutPatchResult | undefined;
+
+    if (sdData.layout === "marketplace") {
+      const prePatchAuditInput = {
+        canvas: compositionLayout?.canvas,
+        overlayElements: overlayElementsFromCompositionLayout(compositionLayout),
+        layoutSpec,
+        htmlTemplateData: {
+          headline: infographicData.headline,
+          bullets: infographicData.specBlocks?.map((block) => block.label),
+          badge: Boolean(infographicData.mainBanner?.title ?? parametricBadgeHtml),
+          plaques: infographicData.callouts?.length ?? 0,
+          layout: sdData.layout,
+        },
+        diagnosticReport: {
+          qualityValidation,
+          finalQuality,
+          constitution: constitutionReports,
+        },
+        governanceReport: constitutionReports,
+        composerQualityAudit: undefined,
+        compositionMetrics: compositionLayout?.metrics
+          ? {
+              textAreaPct: compositionLayout.metrics.textAreaPct,
+              plaqueAreaPct: compositionLayout.metrics.plaqueAreaPct,
+              whitespacePct: compositionLayout.metrics.whitespacePct,
+              overlapPct: compositionLayout.metrics.overlapPct,
+            }
+          : undefined,
+        hasComposite: !!compositeResult,
+      };
+      const prePatchAudit = analyzeOverlayQuality(prePatchAuditInput);
+      overlayLayoutPatchResult = applyOverlayLayoutPatch({
+        layoutSpec,
+        infographicData,
+        compositionLayout,
+        overlayAudit: prePatchAudit,
+        auditInput: prePatchAuditInput,
+      });
+      if (overlayLayoutPatchResult.patch.applied) {
+        renderInfographicData =
+          overlayLayoutPatchResult.infographicData ?? renderInfographicData;
+        renderLayoutSpec = overlayLayoutPatchResult.layoutSpec ?? renderLayoutSpec;
+        renderCompositionLayout =
+          overlayLayoutPatchResult.compositionLayout ?? renderCompositionLayout;
+        if (overlayLayoutPatchResult.patch.suppressParametricBadge) {
+          renderParametricBadgeHtml = undefined;
+        }
+      }
+    }
+
     // ── 10. Layout Renderer ───────────────────────────────────────────
     governanceScorecard = buildGovernanceScorecard({
       compositionScore: compositionDirection?.quality.total,
@@ -2051,7 +2117,7 @@ export async function handleGenerateInfographic(
       ]);
     }
 
-    const html = renderInfographicHtml(infographicData, {
+    const html = renderInfographicHtml(renderInfographicData, {
       style: appliedStyle,
       layout: sdData.layout,
       mergedImageDataUrl,
@@ -2061,9 +2127,9 @@ export async function handleGenerateInfographic(
       productImageCutout: productRender?.cutout ?? false,
       libraryFont,
       libraryBadge,
-      parametricBadgeHtml,
+      parametricBadgeHtml: renderParametricBadgeHtml,
       accentHex,
-      compositionLayout,
+      compositionLayout: renderCompositionLayout,
       productPrompt: input.prompt,
     });
 
@@ -2342,14 +2408,14 @@ export async function handleGenerateInfographic(
       qualityHasShadows: !!compositeResult,
     });
     const overlayQualityAudit = analyzeOverlayQuality({
-      canvas: compositionLayout?.canvas,
-      overlayElements: overlayElementsFromCompositionLayout(compositionLayout),
-      layoutSpec,
+      canvas: renderCompositionLayout?.canvas,
+      overlayElements: overlayElementsFromCompositionLayout(renderCompositionLayout),
+      layoutSpec: renderLayoutSpec,
       htmlTemplateData: {
-        headline: infographicData.headline,
-        bullets: infographicData.specBlocks?.map((block) => block.label),
-        badge: Boolean(infographicData.mainBanner?.title ?? parametricBadgeHtml),
-        plaques: infographicData.callouts?.length ?? 0,
+        headline: renderInfographicData.headline,
+        bullets: renderInfographicData.specBlocks?.map((block) => block.label),
+        badge: Boolean(renderInfographicData.mainBanner?.title ?? renderParametricBadgeHtml),
+        plaques: renderInfographicData.callouts?.length ?? 0,
         layout: sdData.layout,
       },
       diagnosticReport: {
@@ -2359,12 +2425,12 @@ export async function handleGenerateInfographic(
       },
       governanceReport: constitutionReports,
       composerQualityAudit,
-      compositionMetrics: compositionLayout?.metrics
+      compositionMetrics: renderCompositionLayout?.metrics
         ? {
-            textAreaPct: compositionLayout.metrics.textAreaPct,
-            plaqueAreaPct: compositionLayout.metrics.plaqueAreaPct,
-            whitespacePct: compositionLayout.metrics.whitespacePct,
-            overlapPct: compositionLayout.metrics.overlapPct,
+            textAreaPct: renderCompositionLayout.metrics.textAreaPct,
+            plaqueAreaPct: renderCompositionLayout.metrics.plaqueAreaPct,
+            whitespacePct: renderCompositionLayout.metrics.whitespacePct,
+            overlapPct: renderCompositionLayout.metrics.overlapPct,
           }
         : undefined,
       hasComposite: !!compositeResult,
@@ -2386,6 +2452,7 @@ export async function handleGenerateInfographic(
       daosV17PromptCompressionEnabled,
       composerQualityAudit,
       overlayQualityAudit,
+      overlayLayoutPatch: overlayLayoutPatchResult?.patch,
     });
     const daosDebugSummary = createDaosDebugSummary(daosDebugBundle);
     const daosFinalGate = evaluateDaosFinalGate({
@@ -2539,6 +2606,13 @@ export async function handleGenerateInfographic(
       pngOverlayFeelRisk: daosDebugBundle.diagnostics.pngOverlayFeelRisk,
       law003WhitespaceViolation: daosDebugBundle.diagnostics.law003WhitespaceViolation,
       law014ContrastViolation: daosDebugBundle.diagnostics.law014ContrastViolation,
+      overlayPatchEnabled: daosDebugBundle.diagnostics.overlayPatchEnabled,
+      overlayPatchApplied: daosDebugBundle.diagnostics.overlayPatchApplied,
+      overlayPatchActions: daosDebugBundle.diagnostics.overlayPatchActions,
+      overlayPatchBeforeDensity: daosDebugBundle.diagnostics.overlayPatchBeforeDensity,
+      overlayPatchAfterDensity: daosDebugBundle.diagnostics.overlayPatchAfterDensity,
+      overlayPatchElementsBefore: daosDebugBundle.diagnostics.overlayPatchElementsBefore,
+      overlayPatchElementsAfter: daosDebugBundle.diagnostics.overlayPatchElementsAfter,
     });
 
     if (process.env.DAOS_DEBUG === "1") {

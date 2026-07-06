@@ -1,7 +1,8 @@
 import type { BenchmarkArm, BenchmarkProduct, BenchmarkProductPair, BenchmarkResults } from "./types";
 import {
   BENCHMARK_BASELINE_ENV,
-  BENCHMARK_DAOS_COMPRESSED_ENV,
+  BENCHMARK_DAOS_NO_PATCH_ENV,
+  BENCHMARK_DAOS_PATCHED_ENV,
   loadBenchmarkCatalog,
   productSeed,
 } from "./catalog";
@@ -112,22 +113,31 @@ export async function runDaosBenchmark(phase: number): Promise<BenchmarkResults>
       env: BENCHMARK_BASELINE_ENV,
     });
 
-    let daos = baseline;
-    console.log("  DAOS (compressed)…");
-    daos = await runSingleBenchmarkArm({
-        arm: "daos",
-        product,
-        seed,
-        productImage,
-        userId,
-        env: BENCHMARK_DAOS_COMPRESSED_ENV,
+    console.log("  DAOS (no patch)…");
+    const daosNoPatch = await runSingleBenchmarkArm({
+      arm: "baseline",
+      product,
+      seed,
+      productImage,
+      userId,
+      env: BENCHMARK_DAOS_NO_PATCH_ENV,
     });
 
-    const delta = computePairDelta(baseline, daos);
-    pairs.push({ product, seed, baseline, daos, delta });
+    console.log("  DAOS (patched)…");
+    const daos = await runSingleBenchmarkArm({
+      arm: "daos",
+      product,
+      seed,
+      productImage,
+      userId,
+      env: BENCHMARK_DAOS_PATCHED_ENV,
+    });
+
+    const delta = computePairDelta(daosNoPatch, daos);
+    pairs.push({ product, seed, baseline: daosNoPatch, daos, delta });
 
     console.log(
-      `  ✓ summary ${baseline.summaryScore ?? "?"} → ${daos.summaryScore ?? "?"} (Δ ${delta.deltaSummaryScore ?? "n/a"})`,
+      `  ✓ summary ${daosNoPatch.summaryScore ?? "?"} → ${daos.summaryScore ?? "?"} (Δ ${delta.deltaSummaryScore ?? "n/a"})`,
     );
   }
 
@@ -146,7 +156,8 @@ export async function runDaosBenchmark(phase: number): Promise<BenchmarkResults>
     },
     envProfiles: {
       baseline: BENCHMARK_BASELINE_ENV,
-      daos: BENCHMARK_DAOS_COMPRESSED_ENV,
+      daosNoPatch: BENCHMARK_DAOS_NO_PATCH_ENV,
+      daos: BENCHMARK_DAOS_PATCHED_ENV,
     },
     pairs,
     aggregate,
