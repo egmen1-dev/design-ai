@@ -94,6 +94,31 @@ export function computeAggregateStats(pairs: BenchmarkProductPair[]): BenchmarkA
   const compositionRiskDaos = pairs
     .map((pair) => pair.daos.finalCompositionRisk)
     .filter((value): value is number => value != null);
+  const overlayScoresBaseline = pairs
+    .map((pair) => pair.baseline.overlayQualityScore)
+    .filter((value): value is number => value != null);
+  const overlayScoresDaos = pairs
+    .map((pair) => pair.daos.overlayQualityScore)
+    .filter((value): value is number => value != null);
+  const overlayDensityBaseline = pairs
+    .map((pair) => pair.baseline.overlayDensity)
+    .filter((value): value is number => value != null);
+  const overlayDensityDaos = pairs
+    .map((pair) => pair.daos.overlayDensity)
+    .filter((value): value is number => value != null);
+  const pngRiskBaseline = pairs
+    .map((pair) => pair.baseline.pngOverlayFeelRisk)
+    .filter((value): value is number => value != null);
+  const pngRiskDaos = pairs
+    .map((pair) => pair.daos.pngOverlayFeelRisk)
+    .filter((value): value is number => value != null);
+
+  const law003BaselineCount = pairs.filter((pair) => pair.baseline.law003WhitespaceViolation).length;
+  const law003DaosCount = pairs.filter((pair) => pair.daos.law003WhitespaceViolation).length;
+  const law014BaselineCount = pairs.filter((pair) => pair.baseline.law014ContrastViolation).length;
+  const law014DaosCount = pairs.filter((pair) => pair.daos.law014ContrastViolation).length;
+  const overlayBaselineCount = overlayScoresBaseline.length || pairs.length;
+  const overlayDaosCount = overlayScoresDaos.length || pairs.length;
 
   const averageSummaryDelta = average(summaryDeltas);
   const averageMeaningLossDelta = average(meaningLossDeltas);
@@ -124,6 +149,20 @@ export function computeAggregateStats(pairs: BenchmarkProductPair[]): BenchmarkA
     averageProductAreaRatioDaos: average(productAreaDaos),
     averageFinalCompositionRiskBaseline: average(compositionRiskBaseline),
     averageFinalCompositionRiskDaos: average(compositionRiskDaos),
+    averageOverlayQualityScoreBaseline: average(overlayScoresBaseline),
+    averageOverlayQualityScoreDaos: average(overlayScoresDaos),
+    averageOverlayDensityBaseline: average(overlayDensityBaseline),
+    averageOverlayDensityDaos: average(overlayDensityDaos),
+    averagePngOverlayFeelRiskBaseline: average(pngRiskBaseline),
+    averagePngOverlayFeelRiskDaos: average(pngRiskDaos),
+    law003ViolationRateBaseline:
+      overlayBaselineCount > 0 ? law003BaselineCount / overlayBaselineCount : undefined,
+    law003ViolationRateDaos:
+      overlayDaosCount > 0 ? law003DaosCount / overlayDaosCount : undefined,
+    law014ViolationRateBaseline:
+      overlayBaselineCount > 0 ? law014BaselineCount / overlayBaselineCount : undefined,
+    law014ViolationRateDaos:
+      overlayDaosCount > 0 ? law014DaosCount / overlayDaosCount : undefined,
     meaningLossImproved,
     modulesCompiledImproved,
   };

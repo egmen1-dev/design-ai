@@ -134,6 +134,11 @@ export async function extractMetricsFromBundle(
       composerQualityScore: asNumber(diagnostics.composerQualityScore),
       productAreaRatio: asNumber(diagnostics.productAreaRatio),
       finalCompositionRisk: asNumber(diagnostics.finalCompositionRisk),
+      overlayQualityScore: asNumber(diagnostics.overlayQualityScore),
+      overlayDensity: asNumber(diagnostics.overlayDensity),
+      pngOverlayFeelRisk: asNumber(diagnostics.pngOverlayFeelRisk),
+      law003WhitespaceViolation: diagnostics.law003WhitespaceViolation === true,
+      law014ContrastViolation: diagnostics.law014ContrastViolation === true,
     };
   } catch {
     return {};

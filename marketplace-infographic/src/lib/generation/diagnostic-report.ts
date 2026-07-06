@@ -149,6 +149,12 @@ export type GenerationDiagnosticReport = {
     composerQualityWarnings?: string[];
     productAreaRatio?: number;
     finalCompositionRisk?: number;
+    overlayQualityScore?: number;
+    overlayDensity?: number;
+    overlayWarnings?: string[];
+    pngOverlayFeelRisk?: number;
+    law003WhitespaceViolation?: boolean;
+    law014ContrastViolation?: boolean;
   };
 };
 

@@ -39,6 +39,11 @@ function formatMetricsRow(
     metrics.composerQualityScore ?? "",
     metrics.productAreaRatio ?? "",
     metrics.finalCompositionRisk ?? "",
+    metrics.overlayQualityScore ?? "",
+    metrics.overlayDensity ?? "",
+    metrics.pngOverlayFeelRisk ?? "",
+    metrics.law003WhitespaceViolation === true ? "true" : "",
+    metrics.law014ContrastViolation === true ? "true" : "",
     metrics.error ?? "",
   ];
 }
@@ -88,6 +93,11 @@ function renderCsv(results: BenchmarkResults): string {
     "composerQualityScore",
     "productAreaRatio",
     "finalCompositionRisk",
+    "overlayQualityScore",
+    "overlayDensity",
+    "pngOverlayFeelRisk",
+    "law003WhitespaceViolation",
+    "law014ContrastViolation",
     "error",
   ].join(",");
 
@@ -201,6 +211,25 @@ function renderReport(results: BenchmarkResults): string {
       `| finalCompositionRisk | ${pair.baseline.finalCompositionRisk?.toFixed(2) ?? "n/a"} | ${pair.daos.finalCompositionRisk?.toFixed(2) ?? "n/a"} | — |`,
     );
     lines.push(
+      `| overlayQualityScore | ${pair.baseline.overlayQualityScore ?? "n/a"} | ${pair.daos.overlayQualityScore ?? "n/a"} | ${
+        pair.baseline.overlayQualityScore != null && pair.daos.overlayQualityScore != null
+          ? pair.daos.overlayQualityScore - pair.baseline.overlayQualityScore
+          : "n/a"
+      } |`,
+    );
+    lines.push(
+      `| overlayDensity | ${pair.baseline.overlayDensity?.toFixed(2) ?? "n/a"} | ${pair.daos.overlayDensity?.toFixed(2) ?? "n/a"} | — |`,
+    );
+    lines.push(
+      `| pngOverlayFeelRisk | ${pair.baseline.pngOverlayFeelRisk?.toFixed(2) ?? "n/a"} | ${pair.daos.pngOverlayFeelRisk?.toFixed(2) ?? "n/a"} | — |`,
+    );
+    lines.push(
+      `| law003WhitespaceViolation | ${pair.baseline.law003WhitespaceViolation ?? "n/a"} | ${pair.daos.law003WhitespaceViolation ?? "n/a"} | — |`,
+    );
+    lines.push(
+      `| law014ContrastViolation | ${pair.baseline.law014ContrastViolation ?? "n/a"} | ${pair.daos.law014ContrastViolation ?? "n/a"} | — |`,
+    );
+    lines.push(
       `| provider latency | ${pair.baseline.latencyMs ?? "n/a"}ms | ${pair.daos.latencyMs ?? "n/a"}ms | — |`,
     );
     lines.push(
@@ -243,8 +272,28 @@ function renderReport(results: BenchmarkResults): string {
   lines.push(
     `- Average finalCompositionRisk (baseline → DAOS): ${results.aggregate.averageFinalCompositionRiskBaseline?.toFixed(2) ?? "n/a"} → ${results.aggregate.averageFinalCompositionRiskDaos?.toFixed(2) ?? "n/a"}`,
   );
+  lines.push(
+    `- Average overlayQualityScore (baseline → DAOS): ${results.aggregate.averageOverlayQualityScoreBaseline?.toFixed(1) ?? "n/a"} → ${results.aggregate.averageOverlayQualityScoreDaos?.toFixed(1) ?? "n/a"}`,
+  );
+  lines.push(
+    `- Average overlayDensity (baseline → DAOS): ${results.aggregate.averageOverlayDensityBaseline?.toFixed(2) ?? "n/a"} → ${results.aggregate.averageOverlayDensityDaos?.toFixed(2) ?? "n/a"}`,
+  );
+  lines.push(
+    `- Average pngOverlayFeelRisk (baseline → DAOS): ${results.aggregate.averagePngOverlayFeelRiskBaseline?.toFixed(2) ?? "n/a"} → ${results.aggregate.averagePngOverlayFeelRiskDaos?.toFixed(2) ?? "n/a"}`,
+  );
+  lines.push(
+    `- LAW_003 violation rate (baseline → DAOS): ${formatRate(results.aggregate.law003ViolationRateBaseline)} → ${formatRate(results.aggregate.law003ViolationRateDaos)}`,
+  );
+  lines.push(
+    `- LAW_014 violation rate (baseline → DAOS): ${formatRate(results.aggregate.law014ViolationRateBaseline)} → ${formatRate(results.aggregate.law014ViolationRateDaos)}`,
+  );
 
   return lines.join("\n");
+}
+
+function formatRate(value?: number): string {
+  if (value == null) return "n/a";
+  return `${(value * 100).toFixed(0)}%`;
 }
 
 function renderDashboard(results: BenchmarkResults): string {

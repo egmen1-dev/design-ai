@@ -18,6 +18,8 @@ import type { DAOSRenderEngineContextSummary } from "../adapters/render-engine-c
 import type { DAOSContextEffectAudit } from "../audit/context-effect-audit";
 import type { ComposerQualityAudit } from "../audit/composer-quality-audit";
 import { summarizeComposerQualityAudit } from "../audit/composer-quality-audit";
+import type { OverlayQualityAudit } from "../audit/overlay-quality-audit";
+import { summarizeOverlayQualityAudit } from "../audit/overlay-quality-audit";
 
 export type DaosDebugBundle = {
   projectId: string;
@@ -61,6 +63,12 @@ export type DaosDebugBundle = {
     composerQualityWarnings?: string[];
     productAreaRatio?: number;
     finalCompositionRisk?: number;
+    overlayQualityScore?: number;
+    overlayDensity?: number;
+    overlayWarnings?: string[];
+    pngOverlayFeelRisk?: number;
+    law003WhitespaceViolation?: boolean;
+    law014ContrastViolation?: boolean;
   };
   generationMode: DAOSGenerationMode;
   generationPolicySummary: ReturnType<typeof summarizeDaosGenerationPolicy>;
@@ -72,6 +80,7 @@ export type DaosDebugBundle = {
   renderContextSummary?: DAOSRenderEngineContextSummary;
   contextEffectAudit?: DAOSContextEffectAudit;
   composerQualityAudit?: ComposerQualityAudit;
+  overlayQualityAudit?: OverlayQualityAudit;
   meaningLossReport: DaosMeaningLossReport;
 };
 
@@ -94,6 +103,7 @@ export function createDaosDebugBundle(
     daosV17CtrBridgeEnabled?: boolean;
     daosV17PromptCompressionEnabled?: boolean;
     composerQualityAudit?: ComposerQualityAudit;
+    overlayQualityAudit?: OverlayQualityAudit;
   },
 ): DaosDebugBundle {
   const renderDebug = options?.renderDebug;
@@ -118,6 +128,9 @@ export function createDaosDebugBundle(
   });
   const composerQualitySummary = options?.composerQualityAudit
     ? summarizeComposerQualityAudit(options.composerQualityAudit)
+    : undefined;
+  const overlayQualitySummary = options?.overlayQualityAudit
+    ? summarizeOverlayQualityAudit(options.overlayQualityAudit)
     : undefined;
   const createdAt = new Date().toISOString();
 
@@ -167,6 +180,16 @@ export function createDaosDebugBundle(
             finalCompositionRisk: composerQualitySummary.finalCompositionRisk,
           }
         : {}),
+      ...(overlayQualitySummary
+        ? {
+            overlayQualityScore: overlayQualitySummary.score,
+            overlayDensity: overlayQualitySummary.overlayDensity,
+            overlayWarnings: overlayQualitySummary.warningCodes,
+            pngOverlayFeelRisk: overlayQualitySummary.pngOverlayFeelRisk,
+            law003WhitespaceViolation: overlayQualitySummary.law003WhitespaceViolation,
+            law014ContrastViolation: overlayQualitySummary.law014ContrastViolation,
+          }
+        : {}),
     },
     generationMode,
     generationPolicySummary,
@@ -178,6 +201,7 @@ export function createDaosDebugBundle(
     renderContextSummary: options?.renderContextSummary,
     contextEffectAudit: options?.contextEffectAudit,
     composerQualityAudit: options?.composerQualityAudit,
+    overlayQualityAudit: options?.overlayQualityAudit,
     meaningLossReport,
   };
 }
