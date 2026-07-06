@@ -134,6 +134,10 @@ export type GenerationDiagnosticReport = {
     daosV17ModulesBridgeLength?: number;
     daosV17ModulesCompiled?: string[];
     daosV17ModulesStillIgnored?: string[];
+    daosV17CtrBridgeEnabled?: boolean;
+    daosV17CtrBridgeApplied?: boolean;
+    daosV17CtrBridgeSource?: string;
+    daosV17CtrBridgeLength?: number;
   };
 };
 

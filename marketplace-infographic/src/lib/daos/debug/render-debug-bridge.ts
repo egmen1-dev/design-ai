@@ -19,6 +19,9 @@ export type DAOSRenderDebugArtifact = {
   daosV17ModulesBridgePreview?: string;
   daosV17ModulesCompiled?: string[];
   daosV17ModulesStillIgnored?: string[];
+  daosV17CtrBridgeApplied?: boolean;
+  daosV17CtrBridgeSource?: string;
+  daosV17CtrBridgeLength?: number;
   createdAt: string;
 };
 
@@ -183,6 +186,16 @@ export function extractDaosRenderDebug(input: unknown): DAOSRenderDebugArtifact 
       } else if (modulesCompiled.length > 0) {
         artifact.daosV17ModulesStillIgnored = [];
       }
+    }
+
+    const daosV17Ctr = asRecord(compiled.daosV17Ctr);
+    if (daosV17Ctr.applied === true) {
+      artifact.daosV17CtrBridgeApplied = true;
+      if (typeof daosV17Ctr.length === "number") {
+        artifact.daosV17CtrBridgeLength = daosV17Ctr.length;
+      }
+      const ctrSource = asString(daosV17Ctr.source);
+      if (ctrSource) artifact.daosV17CtrBridgeSource = ctrSource;
     }
 
     const renderRequestSummary = summarizeRequest(request);

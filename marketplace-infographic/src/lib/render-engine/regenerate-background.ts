@@ -33,6 +33,11 @@ export type RegenerateBackgroundInput = {
   decisionLog?: string[];
   /** DAOS Wave 11 — advisory metadata only (ignored unless DAOS_RENDER_CONTEXT=1) */
   daosContext?: import("@/lib/daos/adapters/render-engine-context-adapter").DAOSRenderEngineContextSummary;
+  /** DAOS Wave 17 — CTR/commercial metadata for modules bridge */
+  marketSnippet?: string;
+  commercialSpec?: import("@/lib/daos/contracts/specs").CommercialSpec;
+  ctrExpert?: import("@/lib/agents/marketplace-ctr-expert/types").MarketplaceCtrReview;
+  seniorArtDirector?: import("@/lib/agents/senior-art-director/types").SeniorArtDirectorReview;
 };
 
 export type RegenerateBackgroundResult = {
@@ -73,6 +78,10 @@ export async function regenerateMarketplaceBackground(
           lockModel: true,
           qualityInput: input.qualityInput,
           ...(input.daosContext ? { daosContext: input.daosContext } : {}),
+          ...(input.marketSnippet ? { marketSnippet: input.marketSnippet } : {}),
+          ...(input.commercialSpec ? { commercialSpec: input.commercialSpec } : {}),
+          ...(input.ctrExpert ? { ctrExpert: input.ctrExpert } : {}),
+          ...(input.seniorArtDirector ? { seniorArtDirector: input.seniorArtDirector } : {}),
         } satisfies RenderWithRetryInput & {
           daosContext?: import("@/lib/daos/adapters/render-engine-context-adapter").DAOSRenderEngineContextSummary;
         });

@@ -27,6 +27,7 @@ export type AnalyzeDaosMeaningLossOptions = {
   useRenderEngineV17?: boolean;
   daosV17BridgeEnabled?: boolean;
   daosV17ModulesBridgeEnabled?: boolean;
+  daosV17CtrBridgeEnabled?: boolean;
 };
 
 export type DaosMeaningLossSeverity = "warning" | "critical";
@@ -522,6 +523,38 @@ function analyzeV17ModulesBridgeLoss(options?: AnalyzeDaosMeaningLossOptions): D
   return warnings;
 }
 
+function analyzeV17CtrBridgeLoss(options?: AnalyzeDaosMeaningLossOptions): DaosMeaningLossWarning[] {
+  if (!options?.daosV17CtrBridgeEnabled) {
+    return [];
+  }
+
+  const warnings: DaosMeaningLossWarning[] = [];
+  const renderDebug = options.renderDebug;
+  const ctrBridgeApplied = renderDebug?.daosV17CtrBridgeApplied === true;
+
+  if (options.renderContextAttached && !ctrBridgeApplied) {
+    warnings.push({
+      code: "DAOS_V17_CTR_BRIDGE_NOT_APPLIED",
+      severity: "warning",
+      message:
+        "DAOS_V17_CTR_BRIDGE is enabled and render context is attached but CTR wording bridge was not applied to provider prompt",
+      spec: "renderBlueprint",
+    });
+  }
+
+  const stillIgnored = renderDebug?.daosV17ModulesStillIgnored ?? [];
+  if (stillIgnored.includes("ctr_wording")) {
+    warnings.push({
+      code: "CTR_WORDING_STILL_IGNORED",
+      severity: "warning",
+      message: "ctr_wording remains in modulesStillIgnored after v17 modules/CTR bridge",
+      spec: "renderBlueprint",
+    });
+  }
+
+  return warnings;
+}
+
 /** Deterministic loss-of-meaning checks between DAOS specs (no LLM). */
 export function analyzeDaosMeaningLoss(
   state: DAOSProjectState,
@@ -564,6 +597,10 @@ export function analyzeDaosMeaningLoss(
     ...options,
     renderDebug,
   });
+  const v17CtrBridgeLoss = analyzeV17CtrBridgeLoss({
+    ...options,
+    renderDebug,
+  });
 
   const warnings = [
     ...lowConfidenceWarnings,
@@ -577,6 +614,7 @@ export function analyzeDaosMeaningLoss(
     ...renderContextLoss,
     ...v17BridgeLoss,
     ...v17ModulesBridgeLoss,
+    ...v17CtrBridgeLoss,
   ];
 
   return {

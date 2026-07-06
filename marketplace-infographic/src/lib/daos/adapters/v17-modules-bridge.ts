@@ -1,3 +1,4 @@
+import type { CommercialSpec } from "../contracts/specs";
 import type { DAOSRenderEngineContextSummary } from "./render-engine-context-adapter";
 import type {
   CompiledRenderPayload,
@@ -5,8 +6,11 @@ import type {
   RenderRequest,
 } from "@/lib/render-engine/types";
 import type { VisualSceneBlueprint } from "@/lib/design/visual-pipeline/types";
+import type { MarketplaceCtrReview } from "@/lib/agents/marketplace-ctr-expert/types";
+import type { SeniorArtDirectorReview } from "@/lib/agents/senior-art-director/types";
 
 export const DAOS_V17_MODULES_BRIDGE_MAX_LENGTH = 700;
+export const DAOS_V17_CTR_SECTION_MAX_LENGTH = 180;
 
 export const DAOS_V17_COMPILER_MODULES = [
   "layout_coordinates",
@@ -25,6 +29,13 @@ export type DaosV17ModulesBridgeDiagnostics = {
   modulesStillIgnored: string[];
 };
 
+export type DaosV17CtrBridgeDiagnostics = {
+  applied: boolean;
+  length: number;
+  source: string;
+  preview: string;
+};
+
 const BRIDGE_HEADER = "DAOS V17 MODULES:";
 
 function cleanLine(value: string | undefined): string | undefined {
@@ -34,6 +45,14 @@ function cleanLine(value: string | undefined): string | undefined {
 
 function roundCoord(value: number): number {
   return Math.round(value * 100);
+}
+
+function firstString(values: Array<string | undefined>): string | undefined {
+  for (const value of values) {
+    const cleaned = cleanLine(value);
+    if (cleaned) return cleaned;
+  }
+  return undefined;
 }
 
 function compileLayoutCoordinatesSection(
@@ -130,7 +149,7 @@ function compileTypographyZonesSection(
   return parts.length ? `[typography_zones] ${parts.join(", ")}` : undefined;
 }
 
-function compileCtrWordingSection(
+function compileCtrWordingSectionBasic(
   daosContext?: DAOSRenderEngineContextSummary,
   providerHints?: RenderRequest["providerHints"],
 ): string | undefined {
@@ -156,19 +175,129 @@ function compileCtrWordingSection(
   return parts.length ? `[ctr_wording] ${parts.join("; ")}` : undefined;
 }
 
+type CtrWordingFields = {
+  mainMessage?: string;
+  clickTrigger?: string;
+  trustDriver?: string;
+  sources: string[];
+};
+
+function extractCtrWordingFields(request: RenderRequest): CtrWordingFields | null {
+  const daosContext = request.metadata?.daosContext;
+  const commercialSpec = request.metadata?.commercialSpec as CommercialSpec | undefined;
+  const ctrExpert = request.metadata?.ctrExpert as MarketplaceCtrReview | undefined;
+  const seniorArtDirector = request.metadata?.seniorArtDirector as SeniorArtDirectorReview | undefined;
+  const providerHints = request.providerHints;
+
+  const sources: string[] = [];
+  const mainMessage = firstString([
+    daosContext?.mainMessage,
+    commercialSpec?.mainMessage,
+  ]);
+  if (mainMessage) {
+    sources.push(daosContext?.mainMessage ? "daosContext.mainMessage" : "commercialSpec.mainMessage");
+  }
+
+  const clickTrigger = firstString([
+    typeof providerHints?.ctrHook === "string" ? providerHints.ctrHook : undefined,
+    ctrExpert?.recommendations?.[0],
+    ctrExpert?.issues?.[0],
+    typeof providerHints?.marketSnippet === "string" ? providerHints.marketSnippet : undefined,
+    request.metadata?.marketSnippet,
+    daosContext?.commercialGoal,
+    commercialSpec?.usp?.[0],
+    daosContext?.warnings?.[0],
+  ]);
+  if (clickTrigger) {
+    if (typeof providerHints?.ctrHook === "string" && cleanLine(providerHints.ctrHook) === clickTrigger) {
+      sources.push("providerHints.ctrHook");
+    } else if (ctrExpert?.recommendations?.[0] === clickTrigger) {
+      sources.push("ctrExpert.recommendations");
+    } else if (ctrExpert?.issues?.[0] === clickTrigger) {
+      sources.push("ctrExpert.issues");
+    } else if (
+      (typeof providerHints?.marketSnippet === "string" &&
+        cleanLine(providerHints.marketSnippet) === clickTrigger) ||
+      request.metadata?.marketSnippet === clickTrigger
+    ) {
+      sources.push("marketSnippet");
+    } else if (daosContext?.commercialGoal === clickTrigger) {
+      sources.push("daosContext.commercialGoal");
+    } else if (commercialSpec?.usp?.[0] === clickTrigger) {
+      sources.push("commercialSpec.usp");
+    } else if (daosContext?.warnings?.[0] === clickTrigger) {
+      sources.push("daosContext.warnings");
+    }
+  }
+
+  const trustDriver = firstString([
+    commercialSpec?.trustDrivers?.[0],
+    seniorArtDirector?.recommendations?.[0],
+    commercialSpec?.hierarchy?.[1],
+    daosContext?.warnings?.find((warning) => warning !== clickTrigger),
+  ]);
+  if (trustDriver) {
+    if (commercialSpec?.trustDrivers?.[0] === trustDriver) {
+      sources.push("commercialSpec.trustDrivers");
+    } else if (seniorArtDirector?.recommendations?.[0] === trustDriver) {
+      sources.push("seniorArtDirector.recommendations");
+    } else {
+      sources.push("daosContext.warnings");
+    }
+  }
+
+  if (!mainMessage && !clickTrigger && !trustDriver) {
+    return null;
+  }
+
+  return { mainMessage, clickTrigger, trustDriver, sources };
+}
+
 export function isDaosV17ModulesBridgeEnabled(): boolean {
   return process.env.DAOS_V17_MODULES_BRIDGE === "1";
+}
+
+export function isDaosV17CtrBridgeEnabled(): boolean {
+  return process.env.DAOS_V17_CTR_BRIDGE === "1";
+}
+
+/** Wave 17 CTR section (max 180 chars) from pipeline commercial/market data. */
+export function compileCtrWordingSectionEnhanced(
+  request: RenderRequest,
+): { section: string; source: string; length: number } | undefined {
+  const fields = extractCtrWordingFields(request);
+  if (!fields) return undefined;
+
+  const lines = ["CTR wording intent:"];
+  if (fields.mainMessage) lines.push(`- main message: ${fields.mainMessage}`);
+  if (fields.clickTrigger) lines.push(`- click trigger: ${fields.clickTrigger}`);
+  if (fields.trustDriver) lines.push(`- trust driver: ${fields.trustDriver}`);
+
+  if (lines.length === 1) return undefined;
+
+  let body = lines.join("\n");
+  if (body.length > DAOS_V17_CTR_SECTION_MAX_LENGTH) {
+    body = `${body.slice(0, DAOS_V17_CTR_SECTION_MAX_LENGTH - 3)}...`;
+  }
+
+  return {
+    section: body,
+    source: [...new Set(fields.sources)].join("+"),
+    length: body.length,
+  };
 }
 
 export function createDaosV17ModulesBridgeBlock(request: RenderRequest): {
   block: string;
   modulesCompiled: DaosV17CompilerModule[];
+  ctrDiagnostics?: DaosV17CtrBridgeDiagnostics;
 } {
   const layout = request.layout;
   const daosContext = request.metadata?.daosContext;
   const visualBlueprint = request.metadata?.visualBlueprint;
 
   const sections: { module: DaosV17CompilerModule; text: string }[] = [];
+  let ctrDiagnostics: DaosV17CtrBridgeDiagnostics | undefined;
 
   const layoutSection = compileLayoutCoordinatesSection(layout, visualBlueprint);
   if (layoutSection) sections.push({ module: "layout_coordinates", text: layoutSection });
@@ -179,8 +308,22 @@ export function createDaosV17ModulesBridgeBlock(request: RenderRequest): {
   const typographySection = compileTypographyZonesSection(layout, visualBlueprint);
   if (typographySection) sections.push({ module: "typography_zones", text: typographySection });
 
-  const ctrSection = compileCtrWordingSection(daosContext, request.providerHints);
-  if (ctrSection) sections.push({ module: "ctr_wording", text: ctrSection });
+  if (isDaosV17CtrBridgeEnabled()) {
+    const ctrEnhanced = compileCtrWordingSectionEnhanced(request);
+    if (ctrEnhanced) {
+      const ctrText = `[ctr_wording] ${ctrEnhanced.section}`;
+      sections.push({ module: "ctr_wording", text: ctrText });
+      ctrDiagnostics = {
+        applied: true,
+        length: ctrEnhanced.length,
+        source: ctrEnhanced.source,
+        preview: ctrEnhanced.section.slice(0, 120),
+      };
+    }
+  } else {
+    const ctrSection = compileCtrWordingSectionBasic(daosContext, request.providerHints);
+    if (ctrSection) sections.push({ module: "ctr_wording", text: ctrSection });
+  }
 
   if (!sections.length) {
     return { block: "", modulesCompiled: [] };
@@ -203,7 +346,11 @@ export function createDaosV17ModulesBridgeBlock(request: RenderRequest): {
     return { block: "", modulesCompiled: [] };
   }
 
-  return { block: lines.join("\n"), modulesCompiled };
+  if (ctrDiagnostics && !modulesCompiled.includes("ctr_wording")) {
+    ctrDiagnostics = undefined;
+  }
+
+  return { block: lines.join("\n"), modulesCompiled, ctrDiagnostics };
 }
 
 /** Clone compiled payload and append DAOS v17 module sections when flag is on. */
@@ -216,13 +363,15 @@ export function attachDaosV17ModulesBridgeToPayload(
       return payload;
     }
 
-    const { block, modulesCompiled } = createDaosV17ModulesBridgeBlock(request);
+    const { block, modulesCompiled, ctrDiagnostics } = createDaosV17ModulesBridgeBlock(request);
     if (!block || !modulesCompiled.length) {
       return payload;
     }
 
     const ignored = new Set(payload.modulesIgnored ?? []);
-    const modulesStillIgnored = [...ignored].filter((module) => !modulesCompiled.includes(module as DaosV17CompilerModule));
+    const modulesStillIgnored = [...ignored].filter(
+      (module) => !modulesCompiled.includes(module as DaosV17CompilerModule),
+    );
 
     return {
       ...payload,
@@ -234,6 +383,7 @@ export function attachDaosV17ModulesBridgeToPayload(
         modulesCompiled: [...modulesCompiled],
         modulesStillIgnored,
       },
+      ...(ctrDiagnostics ? { daosV17Ctr: ctrDiagnostics } : {}),
     };
   } catch {
     return payload;
@@ -244,4 +394,10 @@ export function extractDaosV17ModulesDiagnostics(
   payload: CompiledRenderPayload | undefined,
 ): DaosV17ModulesBridgeDiagnostics | undefined {
   return payload?.daosV17Modules;
+}
+
+export function extractDaosV17CtrDiagnostics(
+  payload: CompiledRenderPayload | undefined,
+): DaosV17CtrBridgeDiagnostics | undefined {
+  return payload?.daosV17Ctr;
 }

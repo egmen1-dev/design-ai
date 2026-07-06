@@ -31,6 +31,10 @@ export type RenderPlannerInput = {
   sceneScore?: number;
   constitutionPassed?: boolean;
   daosContext?: import("@/lib/daos/adapters/render-engine-context-adapter").DAOSRenderEngineContextSummary;
+  marketSnippet?: string;
+  commercialSpec?: import("@/lib/daos/contracts/specs").CommercialSpec;
+  ctrExpert?: import("@/lib/agents/marketplace-ctr-expert/types").MarketplaceCtrReview;
+  seniorArtDirector?: import("@/lib/agents/senior-art-director/types").SeniorArtDirectorReview;
 };
 
 function requestId(input: RenderPlannerInput): string {
@@ -162,6 +166,7 @@ export function planRenderRequest(input: RenderPlannerInput): RenderRequest {
       preferredModel: modelId,
       nologo: true,
       safe: true,
+      ...(input.marketSnippet ? { marketSnippet: input.marketSnippet } : {}),
     },
     metadata: {
       constitutionPassed: input.constitutionPassed,
@@ -171,6 +176,10 @@ export function planRenderRequest(input: RenderPlannerInput): RenderRequest {
       visualBlueprint: input.visualBlueprint,
       coverConceptId: input.scenePlan.coverConceptId,
       daosContext: input.daosContext,
+      marketSnippet: input.marketSnippet,
+      commercialSpec: input.commercialSpec,
+      ctrExpert: input.ctrExpert,
+      seniorArtDirector: input.seniorArtDirector,
     },
   };
 }

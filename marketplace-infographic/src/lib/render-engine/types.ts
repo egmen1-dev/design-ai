@@ -130,6 +130,10 @@ export type RenderRequest = {
     visualBlueprint?: import("@/lib/design/visual-pipeline/types").VisualSceneBlueprint;
     coverConceptId?: import("@/lib/cover-concepts").CoverConceptId;
     daosContext?: import("@/lib/daos/adapters/render-engine-context-adapter").DAOSRenderEngineContextSummary;
+    marketSnippet?: string;
+    commercialSpec?: import("@/lib/daos/contracts/specs").CommercialSpec;
+    ctrExpert?: import("@/lib/agents/marketplace-ctr-expert/types").MarketplaceCtrReview;
+    seniorArtDirector?: import("@/lib/agents/senior-art-director/types").SeniorArtDirectorReview;
   };
 };
 
@@ -160,6 +164,13 @@ export type CompiledRenderPayload = {
     preview: string;
     modulesCompiled: string[];
     modulesStillIgnored: string[];
+  };
+  /** DAOS Wave 17 — CTR wording bridge metadata */
+  daosV17Ctr?: {
+    applied: boolean;
+    length: number;
+    source: string;
+    preview: string;
   };
 };
 

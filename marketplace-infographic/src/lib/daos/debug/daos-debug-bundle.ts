@@ -84,6 +84,7 @@ export function createDaosDebugBundle(
     contextEffectAudit?: DAOSContextEffectAudit;
     daosV17BridgeEnabled?: boolean;
     daosV17ModulesBridgeEnabled?: boolean;
+    daosV17CtrBridgeEnabled?: boolean;
   },
 ): DaosDebugBundle {
   const renderDebug = options?.renderDebug;
@@ -103,6 +104,7 @@ export function createDaosDebugBundle(
     useRenderEngineV17: options?.useRenderEngineV17,
     daosV17BridgeEnabled: options?.daosV17BridgeEnabled,
     daosV17ModulesBridgeEnabled: options?.daosV17ModulesBridgeEnabled,
+    daosV17CtrBridgeEnabled: options?.daosV17CtrBridgeEnabled,
   });
   const createdAt = new Date().toISOString();
 

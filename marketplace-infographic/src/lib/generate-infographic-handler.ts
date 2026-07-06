@@ -149,7 +149,10 @@ import {
   type DAOSRenderEngineContextSummary,
 } from "@/lib/daos/adapters/render-engine-context-adapter";
 import { isDaosV17PromptBridgeEnabled } from "@/lib/daos/adapters/v17-prompt-bridge";
-import { isDaosV17ModulesBridgeEnabled } from "@/lib/daos/adapters/v17-modules-bridge";
+import {
+  isDaosV17CtrBridgeEnabled,
+  isDaosV17ModulesBridgeEnabled,
+} from "@/lib/daos/adapters/v17-modules-bridge";
 import { evaluateDaosFinalGate } from "@/lib/daos/gates";
 import {
   createDaosContextEffectAudit,
@@ -275,6 +278,10 @@ function daosDiagnosticSummary(
     daosV17ModulesBridgeLength?: number;
     daosV17ModulesCompiled?: string[];
     daosV17ModulesStillIgnored?: string[];
+    daosV17CtrBridgeEnabled?: boolean;
+    daosV17CtrBridgeApplied?: boolean;
+    daosV17CtrBridgeSource?: string;
+    daosV17CtrBridgeLength?: number;
   },
 ) {
   return {
@@ -1265,10 +1272,12 @@ export async function handleGenerateInfographic(
     const daosRenderContextEnabled = isDaosRenderContextEnabled();
     const daosV17BridgeEnabled = isDaosV17PromptBridgeEnabled();
     const daosV17ModulesBridgeEnabled = isDaosV17ModulesBridgeEnabled();
+    const daosV17CtrBridgeEnabled = isDaosV17CtrBridgeEnabled();
     let daosPromptContextBlock = "";
     let daosPromptContextInjected = false;
     let daosPromptContextLength = 0;
     let daosRenderInterimContext: ReturnType<typeof createDaosPipelineContext> | undefined;
+    let daosInterimCommercialSpec: import("@/lib/daos/contracts/specs").CommercialSpec | undefined;
     let daosRenderContextSummary: DAOSRenderEngineContextSummary | undefined;
     let daosRenderContextAttached = false;
     let daosRenderContextCompleteness = 0;
@@ -1307,6 +1316,7 @@ export async function handleGenerateInfographic(
               }
             : undefined,
       });
+      daosInterimCommercialSpec = interimDaosState.commercialSpec;
       const interimContext = createDaosPipelineContext(interimDaosState);
       if (daosPromptContextEnabled) {
         daosPromptContextBlock = createDaosPromptContextBlock(interimContext);
@@ -1429,6 +1439,14 @@ export async function handleGenerateInfographic(
         legacyPrompt: sdData.backgroundPrompt,
         legacyStyle: appliedStyle,
         decisionLog: governanceDecisionLog,
+        ...(useRenderEngineV17
+          ? {
+              marketSnippet: marketIntelligence?.agentSnippet,
+              commercialSpec: daosInterimCommercialSpec,
+              ctrExpert: ctrReview,
+              seniorArtDirector: seniorAdReview,
+            }
+          : {}),
       };
       const attachedRenderInput =
         useRenderEngineV17 && daosRenderInterimContext
@@ -2290,6 +2308,7 @@ export async function handleGenerateInfographic(
       useRenderEngineV17,
       daosV17BridgeEnabled,
       daosV17ModulesBridgeEnabled,
+      daosV17CtrBridgeEnabled,
     });
     const daosDebugSummary = createDaosDebugSummary(daosDebugBundle);
     const daosFinalGate = evaluateDaosFinalGate({
@@ -2317,6 +2336,7 @@ export async function handleGenerateInfographic(
       useRenderEngineV17,
       daosV17BridgeEnabled: false,
       daosV17ModulesBridgeEnabled: false,
+      daosV17CtrBridgeEnabled: false,
     });
     const beforeContextSummary = createDaosDebugSummary(beforeContextBundle);
     const beforeContextGate = evaluateDaosFinalGate({
@@ -2420,6 +2440,10 @@ export async function handleGenerateInfographic(
       daosV17ModulesBridgeLength: renderDebug?.daosV17ModulesBridgeLength,
       daosV17ModulesCompiled: renderDebug?.daosV17ModulesCompiled,
       daosV17ModulesStillIgnored: renderDebug?.daosV17ModulesStillIgnored,
+      daosV17CtrBridgeEnabled,
+      daosV17CtrBridgeApplied: renderDebug?.daosV17CtrBridgeApplied,
+      daosV17CtrBridgeSource: renderDebug?.daosV17CtrBridgeSource,
+      daosV17CtrBridgeLength: renderDebug?.daosV17CtrBridgeLength,
     });
 
     if (process.env.DAOS_DEBUG === "1") {
