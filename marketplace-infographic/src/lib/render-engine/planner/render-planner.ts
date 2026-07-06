@@ -30,6 +30,7 @@ export type RenderPlannerInput = {
   compositionScore?: number;
   sceneScore?: number;
   constitutionPassed?: boolean;
+  daosContext?: import("@/lib/daos/adapters/render-engine-context-adapter").DAOSRenderEngineContextSummary;
 };
 
 function requestId(input: RenderPlannerInput): string {
@@ -169,6 +170,7 @@ export function planRenderRequest(input: RenderPlannerInput): RenderRequest {
       luxuryScore: input.luxuryScore,
       visualBlueprint: input.visualBlueprint,
       coverConceptId: input.scenePlan.coverConceptId,
+      daosContext: input.daosContext,
     },
   };
 }

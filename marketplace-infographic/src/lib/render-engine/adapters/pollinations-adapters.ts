@@ -2,6 +2,7 @@ import type { RenderAdapter, RenderRequest, CompiledRenderPayload } from "../typ
 import { joinNegativeTerms } from "./negative";
 import { compilePollinationsPrompt } from "./pollinations-compiler";
 import { sanitizePromptForModeration } from "../providers/pollinations/moderation";
+import { attachDaosV17PromptBridgeToPayload } from "@/lib/daos/adapters/v17-prompt-bridge";
 
 const BACKDROP_ONLY =
   "empty foreground for product compositing, backdrop only, no objects in product zone, no text, no letters, no watermark";
@@ -42,7 +43,7 @@ function compileFromBlueprint(request: RenderRequest, model: string): CompiledRe
   const compiled = compilePollinationsPrompt(bp, request.profileId, {
     coverConceptId: request.metadata?.coverConceptId,
   });
-  return {
+  const payload: CompiledRenderPayload = {
     model,
     prompt: compiled.prompt,
     negativePrompt: compiled.negativePrompt,
@@ -52,6 +53,7 @@ function compileFromBlueprint(request: RenderRequest, model: string): CompiledRe
     modulesIgnored: ["layout_coordinates", "hierarchy", "typography_zones", "ctr_wording"],
     extraParams: model === "gptimage" ? { quality: "high" } : { safe: true },
   };
+  return attachDaosV17PromptBridgeToPayload(payload, request.metadata?.daosContext);
 }
 
 /** Flux adapter — uses PollinationsCompiler when VisualSceneBlueprint present */
