@@ -28,6 +28,8 @@ import { summarizeProductScaleAudit } from "../audit/product-scale-audit";
 import type { ProductScalePatch } from "../compositor/product-scale-patch";
 import type { NormalizedCompositePlacement } from "../compositor/composite-result-bridge";
 import type { Law003RecalibrationReport } from "../governance/law003-recalibration";
+import type { Law003GovernanceSource } from "../governance/law003-soft-governance";
+import type { DAOSOverlayGateResult } from "../gates/overlay-gate";
 
 export type DaosDebugBundle = {
   projectId: string;
@@ -114,6 +116,12 @@ export type DaosDebugBundle = {
     law003Before?: boolean;
     law003After?: boolean;
     law003StaleMetricDetected?: boolean;
+    law003GovernanceSource?: Law003GovernanceSource;
+    law003SoftResolved?: boolean;
+    law003StillFailingReason?: string;
+    overlayGateStatus?: "passed" | "warning" | "failed";
+    overlayGateScore?: number;
+    overlayGateBlocking?: false;
     contrastOverlapPatchApplied?: boolean;
     contrastOverlapPatchActions?: string[];
     contrastOverlapBefore?: number;
@@ -137,6 +145,7 @@ export type DaosDebugBundle = {
   productScalePatch?: ProductScalePatch;
   compositePlacement?: NormalizedCompositePlacement;
   law003Recalibration?: Law003RecalibrationReport;
+  overlayGate?: DAOSOverlayGateResult;
   meaningLossReport: DaosMeaningLossReport;
 };
 
@@ -169,6 +178,7 @@ export function createDaosDebugBundle(
     extractAreaCorrected?: boolean;
     extractAreaWarnings?: string[];
     law003Recalibration?: Law003RecalibrationReport;
+    overlayGate?: DAOSOverlayGateResult;
   },
 ): DaosDebugBundle {
   const renderDebug = options?.renderDebug;
@@ -206,6 +216,7 @@ export function createDaosDebugBundle(
   const extractAreaCorrected = options?.extractAreaCorrected;
   const extractAreaWarnings = options?.extractAreaWarnings;
   const law003Recalibration = options?.law003Recalibration;
+  const overlayGate = options?.overlayGate;
   const productScaleSummary = productScaleAudit
     ? summarizeProductScaleAudit(productScaleAudit)
     : undefined;
@@ -265,6 +276,11 @@ export function createDaosDebugBundle(
             pngOverlayFeelRisk: overlayQualitySummary.pngOverlayFeelRisk,
             law003WhitespaceViolation: overlayQualitySummary.law003WhitespaceViolation,
             law014ContrastViolation: overlayQualitySummary.law014ContrastViolation,
+            law003Before: overlayQualitySummary.law003Before,
+            law003After: overlayQualitySummary.law003After,
+            law003GovernanceSource: overlayQualitySummary.law003GovernanceSource,
+            law003SoftResolved: overlayQualitySummary.law003SoftResolved,
+            law003StillFailingReason: overlayQualitySummary.law003StillFailingReason,
           }
         : {}),
       ...(overlayLayoutPatch
@@ -331,9 +347,14 @@ export function createDaosDebugBundle(
         ? {
             law003OriginalWhitespace: law003Recalibration.originalWhitespace,
             law003RecalibratedWhitespace: law003Recalibration.recalibratedWhitespace,
-            law003Before: law003Recalibration.law003Before,
-            law003After: law003Recalibration.law003After,
             law003StaleMetricDetected: law003Recalibration.staleMetricDetected,
+          }
+        : {}),
+      ...(overlayGate
+        ? {
+            overlayGateStatus: overlayGate.status,
+            overlayGateScore: overlayGate.score,
+            overlayGateBlocking: overlayGate.blocking,
           }
         : {}),
     },
@@ -355,6 +376,7 @@ export function createDaosDebugBundle(
     productScalePatch,
     compositePlacement,
     law003Recalibration,
+    overlayGate,
     meaningLossReport,
   };
 }

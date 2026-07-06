@@ -155,6 +155,8 @@ import {
 } from "@/lib/daos/adapters/v17-modules-bridge";
 import { isDaosV17PromptCompressionEnabled } from "@/lib/daos/adapters/v17-prompt-compressor";
 import { evaluateDaosFinalGate } from "@/lib/daos/gates";
+import { evaluateDaosOverlayGate } from "@/lib/daos/gates/overlay-gate";
+import { isDaosLaw003SoftGovernanceEnabled } from "@/lib/daos/governance/law003-soft-governance";
 import {
   createDaosContextEffectAudit,
   summarizeDaosContextEffectAudit,
@@ -389,6 +391,12 @@ function daosDiagnosticSummary(
     law003RecalibratedWhitespace?: number;
     law003Before?: boolean;
     law003After?: boolean;
+    law003StaleMetricDetected?: boolean;
+    law003GovernanceSource?: "constitution" | "daos_recalibrated";
+    law003SoftResolved?: boolean;
+    law003StillFailingReason?: string;
+    overlayGateStatus?: "passed" | "warning" | "failed";
+    overlayGateScore?: number;
     contrastOverlapPatchApplied?: boolean;
     contrastOverlapPatchActions?: string[];
     contrastOverlapBefore?: number;
@@ -2639,7 +2647,10 @@ export async function handleGenerateInfographic(
       hasComposite: !!compositeResult,
       law003Recalibration,
       contrastOverlapPatch: contrastOverlapPatchResult?.patch,
+      law003SoftGovernanceEnabled: isDaosLaw003SoftGovernanceEnabled(),
+      factualProductAreaRatio: compositePlacement?.areaRatio,
     });
+    const daosOverlayGate = evaluateDaosOverlayGate(overlayQualityAudit);
     const daosDebugBundle = createDaosDebugBundle(enrichedDaosState, {
       renderDebug,
       generationMode: daosGenerationMode,
@@ -2666,6 +2677,7 @@ export async function handleGenerateInfographic(
       extractAreaCorrected: compositeResult?.extractAreaCorrected,
       extractAreaWarnings: compositeResult?.extractAreaWarnings,
       law003Recalibration,
+      overlayGate: daosOverlayGate,
     });
     const daosDebugSummary = createDaosDebugSummary(daosDebugBundle);
     const daosFinalGate = evaluateDaosFinalGate({
@@ -2864,6 +2876,11 @@ export async function handleGenerateInfographic(
       law003Before: daosDebugBundle.diagnostics.law003Before,
       law003After: daosDebugBundle.diagnostics.law003After,
       law003StaleMetricDetected: daosDebugBundle.diagnostics.law003StaleMetricDetected,
+      law003GovernanceSource: daosDebugBundle.diagnostics.law003GovernanceSource,
+      law003SoftResolved: daosDebugBundle.diagnostics.law003SoftResolved,
+      law003StillFailingReason: daosDebugBundle.diagnostics.law003StillFailingReason,
+      overlayGateStatus: daosDebugBundle.diagnostics.overlayGateStatus,
+      overlayGateScore: daosDebugBundle.diagnostics.overlayGateScore,
     });
 
     if (process.env.DAOS_DEBUG === "1") {

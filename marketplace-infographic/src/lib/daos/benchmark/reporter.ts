@@ -334,7 +334,7 @@ function renderReport(results: BenchmarkResults): string {
     `- Average pngOverlayFeelRisk (baseline → DAOS): ${results.aggregate.averagePngOverlayFeelRiskBaseline?.toFixed(2) ?? "n/a"} → ${results.aggregate.averagePngOverlayFeelRiskDaos?.toFixed(2) ?? "n/a"}`,
   );
   lines.push(
-    `- LAW_003 violation rate (baseline → DAOS): ${formatRate(results.aggregate.law003ViolationRateBaseline)} → ${formatRate(results.aggregate.law003ViolationRateDaos)}`,
+    `- LAW_003 violation rate (soft OFF → ON): ${formatRate(results.aggregate.law003ViolationRateBaseline)} → ${formatRate(results.aggregate.law003ViolationRateDaos)}`,
   );
   lines.push(
     `- LAW_014 violation rate (contrast patch OFF → ON): ${formatRate(results.aggregate.law014ViolationRateBaseline)} → ${formatRate(results.aggregate.law014ViolationRateDaos)}`,
@@ -364,7 +364,16 @@ function renderReport(results: BenchmarkResults): string {
     `- LAW_003 violation rate recalibrated (contrast patch OFF → ON): ${formatRate(results.aggregate.law003AfterViolationRateBaseline)} → ${formatRate(results.aggregate.law003AfterViolationRateDaos)}`,
   );
   lines.push(
-    `- LAW_003 stale metric rate (contrast patch OFF → ON): ${formatRate(results.aggregate.law003StaleMetricRateBaseline)} → ${formatRate(results.aggregate.law003StaleMetricRateDaos)}`,
+    `- LAW_003 stale metric rate (soft OFF → ON): ${formatRate(results.aggregate.law003StaleMetricRateBaseline)} → ${formatRate(results.aggregate.law003StaleMetricRateDaos)}`,
+  );
+  lines.push(
+    `- LAW_003 soft resolved rate (soft OFF → ON): ${formatRate(results.aggregate.law003SoftResolvedRateBaseline)} → ${formatRate(results.aggregate.law003SoftResolvedRateDaos)}`,
+  );
+  lines.push(
+    `- Average overlayGateScore (soft OFF → ON): ${results.aggregate.averageOverlayGateScoreBaseline?.toFixed(1) ?? "n/a"} → ${results.aggregate.averageOverlayGateScoreDaos?.toFixed(1) ?? "n/a"}`,
+  );
+  lines.push(
+    `- overlayGate pass rate (soft OFF → ON): ${formatRate(results.aggregate.overlayGatePassRateBaseline)} → ${formatRate(results.aggregate.overlayGatePassRateDaos)}`,
   );
 
   return lines.join("\n");

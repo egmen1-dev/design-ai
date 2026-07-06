@@ -192,6 +192,11 @@ export type GenerationDiagnosticReport = {
     law003Before?: boolean;
     law003After?: boolean;
     law003StaleMetricDetected?: boolean;
+    law003GovernanceSource?: "constitution" | "daos_recalibrated";
+    law003SoftResolved?: boolean;
+    law003StillFailingReason?: string;
+    overlayGateStatus?: "passed" | "warning" | "failed";
+    overlayGateScore?: number;
     contrastOverlapPatchApplied?: boolean;
     contrastOverlapPatchActions?: string[];
     contrastOverlapBefore?: number;

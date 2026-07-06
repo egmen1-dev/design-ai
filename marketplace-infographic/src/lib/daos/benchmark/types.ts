@@ -72,6 +72,10 @@ export type BenchmarkRunMetrics = {
   law003Before?: boolean;
   law003After?: boolean;
   law003StaleMetricDetected?: boolean;
+  law003GovernanceSource?: string;
+  law003SoftResolved?: boolean;
+  overlayGateStatus?: string;
+  overlayGateScore?: number;
 };
 
 export type BenchmarkPairDelta = {
@@ -139,6 +143,12 @@ export type BenchmarkAggregateStats = {
   law003AfterViolationRateDaos?: number;
   law003StaleMetricRateBaseline?: number;
   law003StaleMetricRateDaos?: number;
+  law003SoftResolvedRateBaseline?: number;
+  law003SoftResolvedRateDaos?: number;
+  averageOverlayGateScoreBaseline?: number;
+  averageOverlayGateScoreDaos?: number;
+  overlayGatePassRateBaseline?: number;
+  overlayGatePassRateDaos?: number;
   meaningLossImproved: boolean;
   modulesCompiledImproved: boolean;
 };
@@ -151,6 +161,7 @@ export type BenchmarkDecision = {
     averageSummaryDeltaGte3: boolean;
     meaningLossImproved: boolean;
     modulesCompiledImproved: boolean;
+    law003SoftImproved: boolean;
   };
 };
 

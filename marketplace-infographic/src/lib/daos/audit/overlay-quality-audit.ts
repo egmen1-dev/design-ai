@@ -5,6 +5,10 @@ import type { QualityValidationResult } from "@/lib/design/quality-validator";
 import type { ComposerQualityAudit } from "./composer-quality-audit";
 import type { ComposerOverlayElement } from "./composer-quality-audit";
 import type { Law003RecalibrationReport } from "../governance/law003-recalibration";
+import {
+  resolveLaw003SoftGovernance,
+  type Law003GovernanceSource,
+} from "../governance/law003-soft-governance";
 import type { ContrastOverlapPatch } from "../overlay/contrast-overlap-patch";
 
 export const LAW014_CONTRAST_OVERLAP_PASS_THRESHOLD = 0.16;
@@ -45,7 +49,12 @@ export type OverlayQualityAuditInput = {
     overlapPct?: number;
   };
   hasComposite?: boolean;
-  law003Recalibration?: Pick<Law003RecalibrationReport, "law003After" | "law003Before">;
+  law003Recalibration?: Pick<
+    Law003RecalibrationReport,
+    "law003After" | "law003Before" | "reason" | "warnings" | "staleMetricDetected"
+  >;
+  law003SoftGovernanceEnabled?: boolean;
+  factualProductAreaRatio?: number;
   contrastOverlapPatch?: Pick<ContrastOverlapPatch, "applied" | "contrastOverlapAfterEstimate">;
 };
 
@@ -59,6 +68,11 @@ export type OverlayQualityAudit = {
   pngOverlayFeelRisk: number;
   law003WhitespaceViolation: boolean;
   law014ContrastViolation: boolean;
+  law003Before: boolean;
+  law003After: boolean;
+  law003GovernanceSource: Law003GovernanceSource;
+  law003SoftResolved: boolean;
+  law003StillFailingReason?: string;
   warnings: OverlayQualityWarning[];
   recommendations: string[];
   score: number;
@@ -70,6 +84,11 @@ export type OverlayQualityAuditSummary = {
   pngOverlayFeelRisk: number;
   law003WhitespaceViolation: boolean;
   law014ContrastViolation: boolean;
+  law003Before: boolean;
+  law003After: boolean;
+  law003GovernanceSource: Law003GovernanceSource;
+  law003SoftResolved: boolean;
+  law003StillFailingReason?: string;
   warningCodes: string[];
   notes: string[];
 };
@@ -161,7 +180,23 @@ function estimateOverlayDensity(input: OverlayQualityAuditInput): number {
   return 0;
 }
 
-function computeWhitespaceRisk(input: OverlayQualityAuditInput): number {
+function resolveLaw003Governance(input: OverlayQualityAuditInput) {
+  const constitutionLaw003 = lawViolated(governanceReports(input), "LAW_003");
+  return resolveLaw003SoftGovernance({
+    constitutionViolation: constitutionLaw003,
+    recalibration: input.law003Recalibration,
+    softGovernanceEnabled: input.law003SoftGovernanceEnabled,
+    factualProductAreaRatio: input.factualProductAreaRatio,
+    overlayDensity: input.compositionMetrics
+      ? estimateOverlayDensity(input)
+      : undefined,
+  });
+}
+
+function computeWhitespaceRisk(
+  input: OverlayQualityAuditInput,
+  law003Governance: ReturnType<typeof resolveLaw003Governance>,
+): number {
   let risk = 0.2;
   const whitespacePct = input.compositionMetrics?.whitespacePct;
   const target = input.layoutSpec?.whitespaceTarget ?? WHITESPACE_TARGET_MAX;
@@ -173,11 +208,11 @@ function computeWhitespaceRisk(input: OverlayQualityAuditInput): number {
   }
 
   const constitutionLaw003 = lawViolated(governanceReports(input), "LAW_003");
-  const law003Active = input.law003Recalibration?.law003After ?? constitutionLaw003;
+  const law003Active = law003Governance.softViolation;
 
   if (law003Active) {
     risk += 0.35;
-  } else if (input.law003Recalibration && constitutionLaw003 && !input.law003Recalibration.law003After) {
+  } else if (constitutionLaw003 && law003Governance.law003SoftResolved) {
     risk = Math.max(0.1, risk - 0.2);
   }
 
@@ -275,15 +310,14 @@ export function analyzeOverlayQuality(input: OverlayQualityAuditInput): OverlayQ
   const overlayElementCount = countOverlayElements(input);
   const estimatedOverlayDensity = estimateOverlayDensity(input);
   const constitutionLaw003 = lawViolated(governanceReports(input), "LAW_003");
-  const law003WhitespaceViolation = input.law003Recalibration
-    ? input.law003Recalibration.law003After
-    : constitutionLaw003;
+  const law003Governance = resolveLaw003Governance(input);
+  const law003WhitespaceViolation = law003Governance.softViolation;
   const constitutionLaw014 = lawViolated(governanceReports(input), "LAW_014");
   const law014ContrastViolation = input.contrastOverlapPatch?.applied
     ? input.contrastOverlapPatch.contrastOverlapAfterEstimate >
       LAW014_CONTRAST_OVERLAP_PASS_THRESHOLD
     : constitutionLaw014;
-  const whitespaceRisk = computeWhitespaceRisk(input);
+  const whitespaceRisk = computeWhitespaceRisk(input, law003Governance);
   const contrastRisk = computeContrastRisk(input);
   const hierarchyRisk = computeHierarchyRisk(input);
   const readabilityRisk = computeReadabilityRisk(input);
@@ -311,10 +345,17 @@ export function analyzeOverlayQuality(input: OverlayQualityAuditInput): OverlayQ
       message: "Design governance reported LAW_003 whitespace violation",
     });
     recommendations.add("Apply whitespace patch from constitution critique before shipping.");
-  } else if (constitutionLaw003 && input.law003Recalibration && !input.law003Recalibration.law003After) {
+  } else if (law003Governance.law003SoftResolved) {
     warnings.push({
       code: "LAW_003_RECALIBRATED_PASS",
       message: "LAW_003 passed after factual composite product area recalibration",
+    });
+  }
+
+  if (input.law003Recalibration?.staleMetricDetected) {
+    warnings.push({
+      code: "STALE_WHITESPACE_METRIC",
+      message: "Planned whitespace metric lags factual composite product area",
     });
   }
 
@@ -381,6 +422,11 @@ export function analyzeOverlayQuality(input: OverlayQualityAuditInput): OverlayQ
     pngOverlayFeelRisk,
     law003WhitespaceViolation,
     law014ContrastViolation,
+    law003Before: law003Governance.law003Before,
+    law003After: law003Governance.law003After,
+    law003GovernanceSource: law003Governance.law003GovernanceSource,
+    law003SoftResolved: law003Governance.law003SoftResolved,
+    law003StillFailingReason: law003Governance.law003StillFailingReason,
     warnings,
     recommendations: [...recommendations],
     score,
@@ -397,6 +443,11 @@ export function summarizeOverlayQualityAudit(
     pngOverlayFeelRisk: audit.pngOverlayFeelRisk,
     law003WhitespaceViolation: audit.law003WhitespaceViolation,
     law014ContrastViolation: audit.law014ContrastViolation,
+    law003Before: audit.law003Before,
+    law003After: audit.law003After,
+    law003GovernanceSource: audit.law003GovernanceSource,
+    law003SoftResolved: audit.law003SoftResolved,
+    law003StillFailingReason: audit.law003StillFailingReason,
     warningCodes: audit.warnings.map((warning) => warning.code),
     notes: [
       `overlayElementCount=${audit.overlayElementCount}`,

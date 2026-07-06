@@ -150,6 +150,16 @@ export function computeAggregateStats(pairs: BenchmarkProductPair[]): BenchmarkA
   const law003AfterDaos = pairs.filter((pair) => pair.daos.law003After).length;
   const law003StaleBaseline = pairs.filter((pair) => pair.baseline.law003StaleMetricDetected).length;
   const law003StaleDaos = pairs.filter((pair) => pair.daos.law003StaleMetricDetected).length;
+  const law003SoftResolvedBaseline = pairs.filter((pair) => pair.baseline.law003SoftResolved).length;
+  const law003SoftResolvedDaos = pairs.filter((pair) => pair.daos.law003SoftResolved).length;
+  const overlayGateScoresBaseline = pairs
+    .map((pair) => pair.baseline.overlayGateScore)
+    .filter((value): value is number => value != null);
+  const overlayGateScoresDaos = pairs
+    .map((pair) => pair.daos.overlayGateScore)
+    .filter((value): value is number => value != null);
+  const overlayGatePassBaseline = pairs.filter((pair) => pair.baseline.overlayGateStatus === "passed").length;
+  const overlayGatePassDaos = pairs.filter((pair) => pair.daos.overlayGateStatus === "passed").length;
   const successfulBaseline = pairs.filter((pair) => !pair.baseline.error).length;
   const successfulDaos = pairs.filter((pair) => !pair.daos.error).length;
 
@@ -229,6 +239,16 @@ export function computeAggregateStats(pairs: BenchmarkProductPair[]): BenchmarkA
       successfulBaseline > 0 ? law003StaleBaseline / successfulBaseline : undefined,
     law003StaleMetricRateDaos:
       successfulDaos > 0 ? law003StaleDaos / successfulDaos : undefined,
+    law003SoftResolvedRateBaseline:
+      successfulBaseline > 0 ? law003SoftResolvedBaseline / successfulBaseline : undefined,
+    law003SoftResolvedRateDaos:
+      successfulDaos > 0 ? law003SoftResolvedDaos / successfulDaos : undefined,
+    averageOverlayGateScoreBaseline: average(overlayGateScoresBaseline),
+    averageOverlayGateScoreDaos: average(overlayGateScoresDaos),
+    overlayGatePassRateBaseline:
+      successfulBaseline > 0 ? overlayGatePassBaseline / successfulBaseline : undefined,
+    overlayGatePassRateDaos:
+      successfulDaos > 0 ? overlayGatePassDaos / successfulDaos : undefined,
     meaningLossImproved,
     modulesCompiledImproved,
   };
@@ -238,17 +258,24 @@ export function evaluateBenchmarkDecision(
   aggregate: BenchmarkAggregateStats,
   pairs: BenchmarkProductPair[],
 ): BenchmarkDecision {
+  const law003SoftImproved =
+    aggregate.law003ViolationRateBaseline != null &&
+    aggregate.law003ViolationRateDaos != null &&
+    aggregate.law003ViolationRateDaos < aggregate.law003ViolationRateBaseline;
+
   const criteria = {
     averageSummaryDeltaGte3:
       aggregate.averageSummaryDelta != null && aggregate.averageSummaryDelta >= 3,
     meaningLossImproved: aggregate.meaningLossImproved,
     modulesCompiledImproved: aggregate.modulesCompiledImproved,
+    law003SoftImproved,
   };
 
   const success =
     criteria.averageSummaryDeltaGte3 ||
     criteria.meaningLossImproved ||
-    criteria.modulesCompiledImproved;
+    criteria.modulesCompiledImproved ||
+    criteria.law003SoftImproved;
 
   const bottlenecks: string[] = [];
 
