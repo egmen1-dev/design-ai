@@ -1,8 +1,8 @@
 # DESIGN AI OPERATING SYSTEM
 
-> Architecture Bible
+> DAOS Specification
 
-Version: 1.0 (Draft)
+Version: 1.0 (Complete — Volume I)
 
 Продакшен: **https://design-ai.shop**  
 Обновлено: 2026-07-05
@@ -127,6 +127,7 @@ Version: 1.0 (Draft)
   - [CI-001–CI-003](#implementation-directive-ci-001)
   - [LAW-026–LAW-030](#new-law-2)
   - [LAW-031–LAW-035](#law-031)
+  - [LAW-036–LAW-050](#law-036)
 - [Part 17 — Design Knowledge Engine](#part-17--design-knowledge-engine)
   - [Current Audit & Target](#current-audit-1)
   - [Knowledge Graph & API](#knowledge-graph-1)
@@ -148,7 +149,7 @@ Version: 1.0 (Draft)
   - [ADR Rules & Directive ADR-001](#adr-rules)
 - [Part 21 — Request for Comments (RFC)](#part-21--request-for-comments-rfc)
   - [RFC Lifecycle & Template](#rfc-lifecycle)
-  - [RFC-001–006](#rfc-001--projectstate)
+  - [RFC-000–006](#rfc-000--design-ai-operating-system)
   - [RFC Rules & Directive RFC-001](#rfc-rules)
 - [Part 22 — Implementation Directives](#part-22--implementation-directives)
   - [Directive Template & Relations](#directive-template)
@@ -175,7 +176,78 @@ Version: 1.0 (Draft)
   - [Platform Core through Legacy](#platform-core)
   - [Tests, Docs & Configuration](#tests)
   - [REP-002 & Repository Laws](#implementation-directive-rep-002)
-- [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
+- **Volume II — Code Specification**
+- [Part 28 — Platform Core Specification](#part-28--platform-core-specification)
+  - [Responsibilities & Directory](#responsibilities)
+  - [ProjectState & Registry](#project-state)
+  - [Directives PC-001–005](#implementation-directive-pc-001)
+  - [Tests & Success Criteria](#unit-tests)
+- [Part 29 — File Specification (Design Process, Governance, Render Engine)](#part-29--file-specification-design-process)
+  - [Design Process (DSP-001–004)](#module-design-process)
+  - [Design Governance (GOV-002–003)](#module-design-governance)
+  - [Render Engine (REN-002–003)](#module-render-engine)
+- [Part 30 — Evolution Strategy](#part-30--evolution-strategy)
+  - [Evolution Principles](#evolution-principles)
+  - [Maturity Model & Current Position](#maturity-model)
+  - [Feature Introduction & Deprecation](#feature-introduction)
+- [Part 31 — Release Strategy](#part-31--release-strategy)
+  - [Release Lifecycle](#release-lifecycle)
+  - [Release Types & Architecture Release](#release-types)
+  - [Artifacts & Rollback](#release-artifacts)
+- [Part 32 — Observability](#part-32--observability)
+  - [Platform Emissions & Project Storage](#every-platform-emits)
+  - [Debug Bundle](#debug-bundle)
+- [Part 33 — Final Architecture Laws](#part-33--final-architecture-laws)
+  - [LAW-036–LAW-050](#law-036)
+- **Volume II — Code Rewrite**
+- [Part 34 — Code Rewrite Bible Generator](#part-34--code-rewrite-bible-generator)
+  - [Generator Pipeline](#generator-pipeline)
+  - [Directives CRB-001–003](#implementation-directive-crb-001)
+- [Part 35 — Cursor Task Generator](#part-35--cursor-task-generator)
+  - [Task Format & Waves](#task-format)
+  - [Directives CTG-001–003](#implementation-directive-ctg-001)
+- [Part 36 — Architecture Analyzer](#part-36--architecture-analyzer)
+  - [Analyzer Pipeline & Reports](#architecture-analyzer)
+  - [Directive ANA-001](#implementation-directive-ana-001)
+- [Part 37 — DAOS Kernel](#part-37--daos-kernel)
+  - [Kernel Architecture & Services](#kernel-architecture)
+  - [Kernel API & Lifecycle](#kernel-api)
+  - [Directive KNL-001](#implementation-directive-knl-001)
+- [Part 38 — Design AI Constitution](#part-38--design-ai-constitution)
+  - [Preamble & Articles I–XX](#preamble)
+  - [Directive CON-001](#implementation-directive-con-001)
+- [Part 39 — DAOS Microkernel Architecture](#part-39--daos-microkernel-architecture)
+  - [Microkernel & Extensions](#microkernel)
+  - [Boot, Shutdown & Failure Isolation](#boot-process)
+  - [Directive MKR-001](#implementation-directive-mkr-001)
+- [Part 40 — DAOS Execution Model](#part-40--daos-execution-model)
+  - [Task Unit & Lifecycle](#execution-unit)
+  - [Task Graph & Types](#task-graph)
+  - [Directive TSK-001](#implementation-directive-tsk-001)
+- [Part 41 — DAOS Message Bus](#part-41--daos-message-bus)
+  - [Message Types & Routing](#message-types)
+  - [Message Store](#message-store)
+  - [Directive MSG-001](#implementation-directive-msg-001)
+- [Part 42 — DAOS Execution Context](#part-42--daos-execution-context)
+  - [ExecutionContext](#executioncontext)
+  - [Directive CTX-001](#implementation-directive-ctx-001)
+- [Part 44 — Fixed Roadmap](#part-44--fixed-roadmap)
+  - [Phases A–F](#phase-a--documentation-stabilization)
+  - [Directive RDM-001](#implementation-directive-rdm-001)
+- [Part 45 — Wave 1 Foundation Implementation Plan](#part-45--wave-1--foundation-implementation-plan)
+  - [Implementation Order & Deliverables](#implementation-order)
+  - [Directive W1-001](#implementation-directive-w1-001)
+- [Part 46 — Development Principles](#part-46--development-principles)
+  - [Principles 01–12](#principle-01--product-first)
+  - [Directive DEV-001](#implementation-directive-dev-001)
+- [Part 47 — DAOS Engineering Manifesto](#part-47--daos-engineering-manifesto)
+  - [Engineering Values & Decision Framework](#mission)
+  - [Directive ENG-001](#implementation-directive-eng-001)
+- [Appendix A — Glossary](#appendix-a--glossary)
+- [Appendix B — Architecture Index](#appendix-b--architecture-index)
+- [Appendix C — Implementation Index](#appendix-c--implementation-index)
+- [Appendix D — Volume I Completion](#appendix-d--volume-i-completion)
+- [Appendix E — Repository Implementation Reference](#appendix-e--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
   - [Future Architecture (code map)](#future-architecture-code-map)
@@ -493,6 +565,96 @@ No Runtime code inside Platforms.
 ## LAW-035
 
 Repository structure is architecture.
+
+---
+
+## LAW-036
+
+ProjectState is immutable.
+
+---
+
+## LAW-037
+
+Every platform owns exactly one responsibility.
+
+---
+
+## LAW-038
+
+No platform communicates directly with another platform.
+
+---
+
+## LAW-039
+
+Only Runtime orchestrates execution.
+
+---
+
+## LAW-040
+
+Only Provider Adapter generates prompts.
+
+---
+
+## LAW-041
+
+Only Asset Platform accesses filesystem.
+
+---
+
+## LAW-042
+
+Knowledge is queried only through Knowledge Engine.
+
+---
+
+## LAW-043
+
+Rendering executes blueprints only.
+
+---
+
+## LAW-044
+
+Vision is mandatory.
+
+---
+
+## LAW-045
+
+Learning executes after every completed generation.
+
+---
+
+## LAW-046
+
+Every architectural change requires ADR.
+
+---
+
+## LAW-047
+
+Every breaking change requires RFC.
+
+---
+
+## LAW-048
+
+Every implementation requires Directive.
+
+---
+
+## LAW-049
+
+Architecture validation blocks invalid releases.
+
+---
+
+## LAW-050
+
+Architecture Bible is the single source of truth.
 
 ---
 
@@ -7611,6 +7773,34 @@ Draft → Review → Accepted → Implemented → Released → Archived
 
 ---
 
+# RFC-000 — DESIGN AI OPERATING SYSTEM
+
+Master charter for Design AI OS. See `docs/rfc/RFC-000.md`.
+
+| | |
+|---|---|
+| **Status** | Accepted |
+| **Version** | 1.0 |
+| **Priority** | Maximum |
+
+**Mission:** DAOS is a commercial design intelligence operating system — not an image generator. Purpose is better commercial design decisions that are explainable, reproducible, and continuously improving.
+
+**Vision:** Intelligence separated from implementation · Knowledge from rendering · Commercial from visual · Architecture from code · Prompt from reasoning · Providers interchangeable.
+
+**Primary Goals:** Agency-level marketplace creatives · Continuous knowledge improvement · Provider independence · Architecture driven · Explainable decisions · Scale without degradation.
+
+**Non Goals:** Not a prompt library, template engine, script collection, Flux wrapper, GPT wrapper, or rendering engine.
+
+**Core Principles:** Architecture First · Knowledge First · Commercial First · Specification First · Provider Independent · Runtime Driven · Immutable State · Continuous Learning · Explainable Decisions.
+
+**Architectural Model:** User Request → ProductBrief → Research → Knowledge → Commercial → Creative → Visual → Render Blueprint → Provider → Vision → Learning → Knowledge Update
+
+**Success Metrics:** Commercial Score · CTR Prediction · Marketplace Fit · Professional Score · Readability · Visual Hierarchy · Architecture Score · Learning Quality
+
+**Related:** Part 1 · Part 38 (Constitution) · RFC-001–006
+
+---
+
 # RFC-001 — PROJECTSTATE
 
 Immutable project state container. See `docs/rfc/RFC-001.md`.
@@ -7674,6 +7864,17 @@ Asset graph and versioning. See `docs/rfc/RFC-006.md`.
 | **Priority** | MEDIUM |
 | **Create** | `docs/rfc/` |
 | **Acceptance** | Every breaking architectural change documented |
+
+---
+
+## IMPLEMENTATION DIRECTIVE RFC-000
+
+| | |
+|---|---|
+| **Priority** | MAXIMUM |
+| **Create** | `docs/rfc/RFC-000.md` |
+| **Acceptance** | Master DAOS charter documented (mission, vision, goals, principles) |
+| **Status** | Completed |
 
 ---
 
@@ -8477,7 +8678,7 @@ Temporary assets only. Not source of truth.
 
 ```
 docs/
-  Architecture_Bible.md
+  DAOS_Specification.md
   architecture/
     adr/
     architecture.yaml
@@ -8490,7 +8691,7 @@ docs/
 
 | Path | Content |
 |------|---------|
-| `docs/Architecture_Bible.md` | Canonical human-readable architecture |
+| `docs/DAOS_Specification.md` | Canonical human-readable architecture |
 | `docs/architecture/adr/` | Architecture Decision Records |
 | `docs/rfc/` | Request for Comments |
 | `docs/migration/` | Migration reports and plans |
@@ -8554,7 +8755,7 @@ marketplace-infographic/
 └── next.config.js
 ```
 
-> **Monorepo note:** `docs/Architecture_Bible.md` lives at repository root `docs/` (design-ai). App-specific docs may mirror under `marketplace-infographic/docs/`.
+> **Monorepo note:** `docs/DAOS_Specification.md` lives at repository root `docs/` (design-ai). App-specific docs may mirror under `marketplace-infographic/docs/`.
 
 ---
 
@@ -8692,7 +8893,7 @@ tests/
 
 ```
 docs/
-├── Architecture_Bible.md
+├── DAOS_Specification.md
 ├── architecture/adr/
 ├── rfc/
 ├── migration/
@@ -8763,10 +8964,3203 @@ Primary DSL remains [`docs/architecture/architecture.yaml`](architecture/archite
 
 ---
 
-# APPENDIX A — REPOSITORY IMPLEMENTATION REFERENCE
+# VOLUME II — CODE SPECIFICATION
+
+> Executable architecture. Implementation chapters begin here.
+
+---
+
+# PART 28 — PLATFORM CORE SPECIFICATION
+
+# ============================================================================
+# VOLUME II — CODE SPECIFICATION
+# PART 28 — PLATFORM CORE SPECIFICATION
+# ============================================================================
+
+| | |
+|---|---|
+| **Status** | CRITICAL |
+| **Architecture Priority** | MAXIMUM |
+| **Implementation Wave** | 1 |
+
+## Purpose
+
+Platform Core is the **foundation** of Design AI OS.
+
+Nothing in the system may execute without Platform Core.
+
+Every platform · every provider · every runtime component · every asset — everything depends on Platform Core.
+
+Platform Core contains **ZERO** business logic.
+
+**Implementation:** `marketplace-infographic/src/lib/platform-core/`
+
+---
+
+# RESPONSIBILITIES
+
+Platform registration · Platform discovery · Project lifecycle · Architecture metadata · Execution context · Configuration · Versioning · Dependency registry · **ProjectState** · **DecisionTrace**
+
+---
+
+# DIRECTORY
+
+```
+src/lib/platform-core/
+├── context/
+├── registry/
+├── project-state/
+├── lifecycle/
+├── contracts/
+├── versioning/
+├── metadata/
+├── validation/
+├── execution/
+├── configuration/
+├── interfaces/
+└── PlatformCore.ts
+```
+
+---
+
+# PROJECT STATE
+
+| | |
+|---|---|
+| **Current** | Multiple objects |
+| **Future** | Single immutable `ProjectState` |
+
+Every platform receives identical state. Nothing else.
+
+### ProjectState structure
+
+`project` · `runtime` · `contracts` · `assets` · `events` · `metrics` · `configuration` · `execution` · `architecture` · `decisionTrace`
+
+---
+
+# PROJECT CONTEXT
+
+Project ID · Run ID · Marketplace · Product · Generation Mode · Architecture Version · Runtime Version · Provider · User Preferences
+
+---
+
+# ARCHITECTURE REGISTRY
+
+Runtime **never** imports platforms. Runtime asks **Registry**. Registry returns implementation.
+
+Supports: Platform · Skill · Plugin · Provider · Validator · Critic
+
+---
+
+# VERSION MANAGER
+
+Every object receives version: Platform · Runtime · Specification · Asset · Blueprint · Knowledge · Genome
+
+---
+
+# CONFIGURATION
+
+Platform Core loads: `architecture.yaml` · `runtime.yaml` · `providers.yaml` · `marketplaces.yaml` · `learning.yaml` · `plugins.yaml`
+
+Nothing hardcoded.
+
+---
+
+# EVENT REGISTRY
+
+Stores: Project Events · Platform Events · Runtime Events · Provider Events · Vision Events · Learning Events
+
+---
+
+# INTERFACES
+
+`IPlatform` · `IProvider` · `ISkill` · `IPlugin` · `IRuntime` · `IRegistry` · `IProjectState`
+
+---
+
+# FILES TO CREATE
+
+`PlatformCore.ts` · `ProjectState.ts` · `ProjectContext.ts` · `ProjectMetadata.ts` · `ArchitectureRegistry.ts` · `PlatformRegistry.ts` · `ProviderRegistry.ts` · `VersionManager.ts` · `ConfigurationManager.ts` · `ExecutionContext.ts`
+
+---
+
+# FILES TO MODIFY
+
+Search project. Replace direct object passing. Use `ProjectState`. (Directive **PC-005** — incremental)
+
+---
+
+# FILES TO DELETE
+
+None.
+
+---
+
+# REFACTOR STRATEGY
+
+| Reuse | Rewrite |
+|-------|---------|
+| 95% | 5% |
+
+---
+
+## IMPLEMENTATION DIRECTIVE PC-001
+
+Create **ProjectState**.
+
+**Status:** Completed
+
+---
+
+## IMPLEMENTATION DIRECTIVE PC-002
+
+Create **Architecture Registry**.
+
+**Status:** Completed
+
+---
+
+## IMPLEMENTATION DIRECTIVE PC-003
+
+Create **Version Manager**.
+
+**Status:** Completed
+
+---
+
+## IMPLEMENTATION DIRECTIVE PC-004
+
+Create **Configuration Manager**.
+
+**Status:** Completed
+
+---
+
+## IMPLEMENTATION DIRECTIVE PC-005
+
+Replace object passing. Use **ProjectState**.
+
+**Status:** In Progress (legacy handler not yet migrated)
+
+---
+
+# UNIT TESTS
+
+- ProjectState immutable
+- Registry registers platform
+- Registry resolves platform
+- Configuration loaded
+- Versions increment
+
+Run: `npx tsx src/lib/platform-core/platform-core.spec.ts`
+
+---
+
+# INTEGRATION TESTS
+
+- Runtime receives ProjectState
+- Platform executes
+- ProjectState updated
+
+---
+
+# ARCHITECTURE TESTS
+
+- No Platform imports Platform
+- No Runtime imports Provider
+- No Legacy imports Runtime
+
+---
+
+# PERFORMANCE
+
+| Operation | Target |
+|-----------|--------|
+| ProjectState creation | < 5 ms |
+| Registry lookup | < 1 ms |
+
+---
+
+# ROLLBACK
+
+Delete Platform Core. Legacy still operational.
+
+---
+
+# SUCCESS CRITERIA
+
+Platform Core becomes the **only architectural foundation**.
+
+---
+
+*END OF PART 28*
+
+---
+
+# PART 29 — FILE SPECIFICATION
+
+# ============================================================================
+# PART 29
+# FILE SPECIFICATION — DESIGN PROCESS · DESIGN GOVERNANCE · RENDER ENGINE
+# ============================================================================
+
+Volume II continues with per-module file specifications.
+
+---
+
+# MODULE — DESIGN PROCESS
+
+| | |
+|---|---|
+| **Module** | `src/lib/design-process/` |
+| **Status** | REFACTOR |
+| **Priority** | CRITICAL |
+| **Architecture Importance** | ★★★★★ |
+
+## Purpose
+
+Design Process becomes the orchestration layer of **Creative Intelligence**.
+
+This module **no longer** owns execution, rendering, or prompt generation.
+
+It owns **creative transformation only**.
+
+---
+
+### Current Responsibilities (Audit)
+
+✓ Product Analysis · ✓ Creative Planning · ✓ Layout Decisions · ✓ Scene Planning · ✓ Prompt Preparation · ✓ Generation Pipeline · ✓ Internal State
+
+### Problems Found
+
+Creative mixed with Rendering · Creative mixed with Runtime · Prompt generated too early · DesignBrief duplicated · Platform boundaries violated · DecisionTrace incomplete · ProjectState absent
+
+### Target Responsibilities
+
+Creative reasoning · Concept generation · Narrative generation · Creative evaluation · Alternative generation · Creative confidence · Creative memory · **Nothing else**
+
+### Remove
+
+Execution control · Prompt generation · Render preparation · Filesystem operations · Provider selection · Asset loading
+
+### Move
+
+| From | To |
+|------|-----|
+| Scene Planning | Visual Platform |
+| Prompt Builder | Provider Adapter |
+| Execution Flow | Runtime |
+| Asset Resolution | Asset Platform |
+| Configuration | Platform Core |
+
+### Keep
+
+Creative scoring · Creative memory · Concept generator · Concept evaluator · Creative critic
+
+### Create
+
+`CreativeSpec` · `CreativeDecision` · `CreativeAlternative` · `CreativeMetrics` · `CreativeConfidence`
+
+### New Pipeline
+
+```
+KnowledgeSpec → CommercialSpec → Creative Reasoning → Concept Generation → Creative Critic → CreativeSpec
+```
+
+### Imports
+
+**Forbidden:** `render-engine` · `provider` · `prompt` · `filesystem` · `legacy`
+
+**Allowed:** `contracts` · `runtime` · `shared` · `sdk`
+
+### Dependencies
+
+| | |
+|---|---|
+| **Depends on** | Knowledge · Commercial · Runtime |
+| **Returns** | `CreativeSpec` |
+
+### Tests
+
+| Suite | Scope |
+|-------|-------|
+| Unit | CreativeSpec generation · Alternative generation · Confidence calculation |
+| Integration | Commercial → Creative |
+| Architecture | No forbidden imports |
+
+### Success
+
+Module contains **creative logic only**.
+
+## IMPLEMENTATION DIRECTIVE DSP-001
+
+Replace **DesignBrief** with **CreativeSpec**.
+
+## IMPLEMENTATION DIRECTIVE DSP-002
+
+Move **Scene Planner** to Visual Platform.
+
+## IMPLEMENTATION DIRECTIVE DSP-003
+
+Move **Prompt Builder** to Provider Adapter.
+
+## IMPLEMENTATION DIRECTIVE DSP-004
+
+Remove **execution orchestration**.
+
+### Rollback
+
+Restore DesignBrief adapter.
+
+---
+
+# MODULE — DESIGN GOVERNANCE
+
+| | |
+|---|---|
+| **Module** | `src/lib/design-governance/` |
+| **Status** | KEEP |
+| **Priority** | CRITICAL |
+| **Architecture Importance** | ★★★★★ |
+
+### Audit Summary
+
+Governance is one of the strongest modules. Reuse preferred. Rewrite only where necessary.
+
+### Keep
+
+Constitution · Blueprint Lock · Validators · Resolver · Rules · Architecture Checks
+
+### Remove
+
+Professional Score · Image Quality · Marketplace Score · Commercial Score
+
+### Move
+
+| From | To |
+|------|-----|
+| Professional Score | Vision Platform |
+| Marketplace Validation | Vision Platform |
+| Image Validation | Vision Platform |
+
+### Add
+
+ProjectState Validation · Specification Validation · Runtime Validation · Execution Validation · Dependency Validation
+
+### Create
+
+`GovernanceRuntime` · `GovernanceEvents` · `GovernanceReport`
+
+### Success
+
+Governance validates **architecture only**.
+
+## IMPLEMENTATION DIRECTIVE GOV-002
+
+Split **Governance** and **Vision** responsibilities.
+
+## IMPLEMENTATION DIRECTIVE GOV-003
+
+Introduce **ProjectState** validation.
+
+---
+
+# MODULE — RENDER ENGINE
+
+| | |
+|---|---|
+| **Module** | `src/lib/render-engine/` |
+| **Status** | KEEP |
+| **Priority** | CRITICAL |
+| **Architecture Importance** | ★★★★★ |
+
+### Audit Summary
+
+Rendering quality is good. Architecture responsibilities mixed. Reuse rendering. Separate responsibilities.
+
+### Keep
+
+Background generation · Shadow generation · Composition · Export · Provider communication
+
+### Remove
+
+Creative decisions · Commercial decisions · Knowledge usage · Prompt strategy
+
+### Move
+
+| From | To |
+|------|-----|
+| Prompt | Provider Adapter |
+| Business | Commercial |
+| Creative | Creative |
+| Visual | Visual Platform |
+
+### Create
+
+`RenderGraph` · `RenderNode` · `RetryNode` · `NodeExecutor`
+
+### Success
+
+Rendering executes **RenderBlueprint**. Nothing else.
+
+## IMPLEMENTATION DIRECTIVE REN-002
+
+Introduce **RenderGraph**.
+
+## IMPLEMENTATION DIRECTIVE REN-003
+
+Remove **Prompt** ownership.
+
+---
+
+*END OF PART 29*
+
+---
+
+# PART 30 — EVOLUTION STRATEGY
+
+# ============================================================================
+# PART 30
+# EVOLUTION STRATEGY
+# ============================================================================
+
+## Purpose
+
+Design AI OS is designed to **evolve continuously**.
+
+Architecture must support change **without breaking** existing functionality.
+
+Evolution is a **first-class architectural concern**.
+
+Canonical DSL: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `evolution`
+
+---
+
+# EVOLUTION PRINCIPLES
+
+### Principle 1
+
+Never rewrite when **extension** is possible.
+
+### Principle 2
+
+Every architectural improvement must preserve **backward compatibility** unless explicitly approved by **RFC**.
+
+### Principle 3
+
+Every platform must evolve **independently**.
+
+### Principle 4
+
+No architectural decision may introduce **hidden coupling**.
+
+### Principle 5
+
+Every new capability must be **measurable**.
+
+---
+
+# MATURITY MODEL
+
+```
+Level 1  Working Prototype
+           ↓
+Level 2  Modular Architecture
+           ↓
+Level 3  Platform Architecture
+           ↓
+Level 4  Operating System
+           ↓
+Level 5  Self Improving Design Intelligence
+```
+
+---
+
+# CURRENT POSITION
+
+| | |
+|---|---|
+| **Current Target** | Level 4 — Design AI Operating System |
+| **Future Target** | Level 5 — Self Improving Design Intelligence |
+
+---
+
+# EVOLUTION RULES
+
+Everything versioned:
+
+| Object | Rule |
+|--------|------|
+| Every platform | Versioned |
+| Every contract | Versioned |
+| Every decision | Versioned |
+| Every asset | Versioned |
+| Every knowledge object | Versioned |
+
+---
+
+# FEATURE INTRODUCTION
+
+```
+New Feature
+    ↓
+RFC
+    ↓
+ADR
+    ↓
+Architecture Approval
+    ↓
+Implementation Directive
+    ↓
+Implementation
+    ↓
+Architecture Validation
+    ↓
+Release
+```
+
+Aligns with Part 20–22 (ADR → RFC → Directive → PR → Release).
+
+---
+
+# DEPRECATION POLICY
+
+```
+Deprecated functionality
+    ↓
+Marked
+    ↓
+Adapter created
+    ↓
+Migration
+    ↓
+Removal
+```
+
+**Never immediate deletion.**
+
+---
+
+# BACKWARD COMPATIBILITY
+
+Adapters required. Minimum **one major release** before removal.
+
+---
+
+# SUCCESS CRITERIA
+
+Architecture evolves **without large rewrites**.
+
+---
+
+## IMPLEMENTATION DIRECTIVE EVO-001
+
+| | |
+|---|---|
+| **Priority** | HIGH |
+| **Create** | Evolution policy in `architecture.yaml` |
+| **Acceptance** | Feature introduction and deprecation paths machine-readable |
+
+---
+
+*END OF PART 30*
+
+---
+
+# PART 31 — RELEASE STRATEGY
+
+# ============================================================================
+# PART 31
+# RELEASE STRATEGY
+# ============================================================================
+
+## Purpose
+
+Every release follows an **identical lifecycle**.
+
+Canonical DSL: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `release`
+
+---
+
+# RELEASE LIFECYCLE
+
+```
+Release Candidate
+       ↓
+Architecture Validation
+       ↓
+Unit Tests
+       ↓
+Integration Tests
+       ↓
+Marketplace Tests
+       ↓
+Golden Tests
+       ↓
+Performance Tests
+       ↓
+Manual Review
+       ↓
+Release
+```
+
+No stage may be skipped. Aligns with Part 19 wave gates and Part 24 execution protocol (Step 8–9).
+
+---
+
+# RELEASE TYPES
+
+| Type | Scope |
+|------|-------|
+| **Patch** | Bug fixes, no contract changes |
+| **Minor** | Additive features, backward compatible |
+| **Major** | Breaking changes (RFC required) |
+| **Architecture** | Platform, contract, or runtime structural change |
+
+---
+
+# ARCHITECTURE RELEASE
+
+Architecture releases **require**:
+
+- RFC
+- ADR
+- Migration Guide
+- Architecture Report
+
+Aligns with Part 20–22 and LAW-028 (every release stores Architecture Report).
+
+---
+
+# RELEASE ARTIFACTS
+
+Every release produces:
+
+| Artifact | Purpose |
+|----------|---------|
+| **Architecture Report** | Score, violations, compliance |
+| **Migration Report** | Files changed, remaining tasks (Part 24) |
+| **Performance Report** | Latency, registry lookup, render timings |
+| **Compatibility Report** | Adapter status, deprecated APIs |
+
+---
+
+# ROLLBACK
+
+Every release **must be reversible**.
+
+Rollback procedure documented per Implementation Directive. Legacy adapters remain until deprecation policy completes (Part 30).
+
+---
+
+# SUCCESS
+
+Every release **reproducible**.
+
+---
+
+## IMPLEMENTATION DIRECTIVE REL-001
+
+| | |
+|---|---|
+| **Priority** | HIGH |
+| **Create** | Release policy in `architecture.yaml` |
+| **Acceptance** | Release lifecycle and artifacts machine-readable |
+
+---
+
+*END OF PART 31*
+
+---
+
+# PART 32 — OBSERVABILITY
+
+# ============================================================================
+# PART 32
+# OBSERVABILITY
+# ============================================================================
+
+## Purpose
+
+Nothing inside Design AI OS is **hidden**.
+
+Canonical DSL: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `observability`
+
+---
+
+# EVERY PLATFORM EMITS
+
+| Emission | Description |
+|----------|-------------|
+| **Events** | Lifecycle and completion signals |
+| **Metrics** | Timing, counts, scores |
+| **Decision Trace** | Replayable decisions with confidence |
+| **Warnings** | Non-fatal issues |
+| **Errors** | Failures with context |
+| **Artifacts** | Outputs (specs, blueprints, images) |
+
+Aligns with Part 28 Event Registry and Part 23 platform `emit` definitions.
+
+---
+
+# EVERY PROJECT STORES
+
+| Stored | Description |
+|--------|-------------|
+| **Timeline** | Chronological execution history |
+| **Execution Graph** | DAG of runtime nodes |
+| **Decision Graph** | Platform decision dependencies |
+| **Architecture Version** | Active architecture release |
+| **Platform Versions** | Per-platform version map |
+| **Knowledge Version** | Knowledge graph snapshot |
+| **Genome Version** | Design genome snapshot |
+
+Stored in **ProjectState** and retrievable via Debug Bundle.
+
+---
+
+# DEBUG BUNDLE
+
+Complete project snapshot for reproduction and support:
+
+| Contents | |
+|----------|--|
+| Logs | |
+| Specifications | |
+| Blueprints | |
+| Reports | |
+| Assets | |
+| Metrics | |
+| Configuration | |
+
+---
+
+# SUCCESS
+
+Every project **fully reproducible**.
+
+Aligns with Part 30 versioning, Part 31 release artifacts, and Part 25 final acceptance (replay, rollback, DecisionTrace complete).
+
+---
+
+## IMPLEMENTATION DIRECTIVE OBS-001
+
+| | |
+|---|---|
+| **Priority** | HIGH |
+| **Create** | Observability policy in `architecture.yaml` |
+| **Acceptance** | Platform emissions and Debug Bundle schema machine-readable |
+
+---
+
+*END OF PART 32*
+
+---
+
+# PART 33 — FINAL ARCHITECTURE LAWS
+
+# ============================================================================
+# PART 33
+# FINAL ARCHITECTURE LAWS
+# ============================================================================
+
+Canonical laws **LAW-036** through **LAW-050** complete the Architecture Law set.
+
+All laws are enforced by Architecture Validation (Part 16) and CI (Part 31).
+
+Machine-readable index: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `architecture.laws`
+
+---
+
+## LAW-036
+
+**ProjectState** is immutable.
+
+---
+
+## LAW-037
+
+Every platform owns **exactly one** responsibility.
+
+---
+
+## LAW-038
+
+No platform communicates **directly** with another platform.
+
+---
+
+## LAW-039
+
+Only **Runtime** orchestrates execution.
+
+---
+
+## LAW-040
+
+Only **Provider Adapter** generates prompts.
+
+---
+
+## LAW-041
+
+Only **Asset Platform** accesses filesystem.
+
+---
+
+## LAW-042
+
+Knowledge is queried only through **Knowledge Engine**.
+
+---
+
+## LAW-043
+
+Rendering executes **blueprints only**.
+
+---
+
+## LAW-044
+
+**Vision** is mandatory.
+
+---
+
+## LAW-045
+
+**Learning** executes after every completed generation.
+
+---
+
+## LAW-046
+
+Every architectural change requires **ADR**.
+
+---
+
+## LAW-047
+
+Every breaking change requires **RFC**.
+
+---
+
+## LAW-048
+
+Every implementation requires **Directive**.
+
+---
+
+## LAW-049
+
+Architecture validation **blocks** invalid releases.
+
+---
+
+## LAW-050
+
+**Architecture Bible** is the single source of truth.
+
+> Machine execution uses [`architecture.yaml`](architecture/architecture.yaml) per Part 23–24; Bible remains canonical human specification.
+
+---
+
+## IMPLEMENTATION DIRECTIVE LAW-036
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Action** | Register LAW-036–LAW-050 in Part 1 and `architecture.yaml` |
+| **Acceptance** | All 50 laws documented and enforceable |
+
+---
+
+*END OF PART 33*
+
+---
+
+# PART 34 — CODE REWRITE BIBLE GENERATOR
+
+# ============================================================================
+# VOLUME II — CODE REWRITE
+# PART 34 — CODE REWRITE BIBLE GENERATOR
+# ============================================================================
+
+## Purpose
+
+Code Rewrite Bible must **not** be written manually.
+
+It must be **generated from the real repository**.
+
+| Reason | |
+|--------|--|
+| Repository changes often | |
+| Manual file specifications become outdated | |
+| Cursor needs current file-level instructions | |
+| Architecture must remain synchronized with code | |
+
+---
+
+## Goal
+
+Automatic scanner generates [`docs/Code_Rewrite_Bible.md`](Code_Rewrite_Bible.md) explaining per file:
+
+what it does · architecture layer · Bible violations · keep / move / delete / refactor · directive · required tests
+
+---
+
+# GENERATOR PIPELINE
+
+```
+Repository → File Scanner → Import Analyzer → Responsibility Classifier
+  → Architecture Mapper → Violation Detector → Migration Planner
+  → Markdown Generator → Code_Rewrite_Bible.md
+```
+
+Implementation: `marketplace-infographic/scripts/architecture-scanner/`
+
+---
+
+# FILE SCANNER
+
+**Scans:** `src/` · `app/` · `components/` · `docs/` · `scripts/` · `prisma/`
+
+**Ignores:** `node_modules/` · `.next/` · `dist/` · `build/` · `generated/` · `.cache/`
+
+---
+
+# FILE METADATA
+
+```ts
+type FileMetadata = {
+  path: string
+  extension: string
+  size: number
+  lines: number
+  exports: string[]
+  imports: string[]
+  dependencies: string[]
+  detectedLayer: ArchitectureLayer
+  detectedResponsibility: string[]
+  risk: "low" | "medium" | "high" | "critical"
+}
+```
+
+---
+
+# ARCHITECTURE LAYERS
+
+`app` · `components` · `platform-core` · `runtime` · `contracts` · `platforms` · `providers` · `sdk` · `assets` · `infrastructure` · `shared` · `legacy` · `docs` · `tests`
+
+Unclassified → `unknown` (risk: **high**)
+
+---
+
+# VIOLATION TYPES
+
+`PROMPT_OUTSIDE_PROVIDER` · `LEGACY_IMPORT_IN_RUNTIME` · `PLATFORM_IMPORTS_PLATFORM` · `RUNTIME_IMPORTS_PROVIDER` · `BUSINESS_LOGIC_IN_UTILS` · `FILESYSTEM_ACCESS_OUTSIDE_ASSET_PLATFORM` · `HTML_LAYOUT_OWNS_DESIGN` · `DTO_NOT_REGISTERED` · `MISSING_DECISION_TRACE` · `MISSING_PROJECT_STATE` · `PROVIDER_LOGIC_IN_PLATFORM` · `RENDERING_MAKES_BUSINESS_DECISION`
+
+---
+
+# ARCHITECTURE SCORE
+
+Factors: platform isolation · contract compliance · runtime compliance · prompt isolation · legacy isolation · provider isolation · asset isolation · test coverage · documentation coverage
+
+**Target: ≥ 98**
+
+---
+
+## IMPLEMENTATION DIRECTIVE CRB-001
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Create** | `scripts/architecture-scanner/` |
+| **Acceptance** | `npm run architecture:scan` generates `docs/Code_Rewrite_Bible.md` |
+
+**Status:** Completed
+
+---
+
+## IMPLEMENTATION DIRECTIVE CRB-002
+
+Add package scripts:
+
+```json
+{
+  "architecture:scan": "npx tsx scripts/architecture-scanner/scan-repository.ts",
+  "architecture:report": "npx tsx scripts/architecture-scanner/generate-code-rewrite-bible-cli.ts"
+}
+```
+
+**Status:** Completed
+
+---
+
+## IMPLEMENTATION DIRECTIVE CRB-003
+
+Generator **never modifies source code**. Reads repository; writes reports only.
+
+**Status:** Completed
+
+---
+
+# SUCCESS CRITERIA
+
+- Scanner reads full repository
+- Every file classified
+- Violations detected
+- Migration plan generated
+- `Code_Rewrite_Bible.md` generated
+- Cursor can use generated tasks
+- No manual file-by-file writing required
+
+---
+
+*END OF PART 34*
+
+---
+
+# PART 35 — CURSOR TASK GENERATOR
+
+# ============================================================================
+# PART 35
+# CURSOR TASK GENERATOR
+# ============================================================================
+
+## Purpose
+
+Architecture must automatically produce **implementation tasks**.
+
+Cursor must execute generated tasks.
+
+Cursor must **never interpret architecture** — Cursor executes implementation.
+
+---
+
+## Input
+
+```
+DAOS_Specification.md + Code_Rewrite_Bible.md + Repository Analysis
+                    ↓
+           Cursor Task Generator
+```
+
+Implementation: `marketplace-infographic/scripts/cursor-task-generator/`
+
+---
+
+## Output
+
+```
+docs/cursor/
+  Wave-01.md … Wave-20.md
+  README.md
+  PLAN.md
+```
+
+Regenerate: `npm run architecture:tasks`
+
+---
+
+# TASK FORMAT
+
+| Field | Description |
+|-------|-------------|
+| Task ID | e.g. TASK-001 |
+| Wave | 01–20 |
+| Priority | Critical · High · Medium · Low |
+| Risk | low · medium · high · critical |
+| Estimated Time | Hours |
+| Dependencies | Task IDs |
+| Files | Paths to create/modify |
+| Acceptance | Done criteria |
+| Rollback | Undo procedure |
+| Architecture Reference | Part / Directive |
+| RFC / ADR Reference | When applicable |
+
+---
+
+## TASK EXAMPLE — TASK-001
+
+| | |
+|---|---|
+| **Title** | Introduce ProjectState |
+| **Priority** | Critical |
+| **Wave** | 01 |
+| **Files** | `ProjectState.ts`, `src/lib/contracts/` |
+| **Acceptance** | ProjectState immutable · No compilation errors · Runtime compatible |
+| **Rollback** | Remove ProjectState · Restore adapters |
+
+---
+
+## TASK STATES
+
+`Pending` · `Ready` · `Running` · `Blocked` · `Review` · `Completed` · `Rejected`
+
+Generator builds dependency graph automatically.
+
+---
+
+## TASK GROUPING
+
+Platform · Runtime · Provider · Assets · Vision · Learning · Legacy
+
+---
+
+## IMPLEMENTATION WAVES
+
+| Wave | Name |
+|------|------|
+| 01 | Platform Core |
+| 02 | Contracts |
+| 03 | Runtime |
+| 04 | Knowledge |
+| 05 | Commercial |
+| 06 | Creative |
+| 07 | Visual |
+| 08 | Rendering |
+| 09 | Vision |
+| 10 | Learning |
+| 11 | Providers |
+| 12 | Assets |
+| 13 | SDK |
+| 14 | Architecture Validation |
+| 15 | Legacy Cleanup |
+| 16 | Performance |
+| 17 | Marketplace |
+| 18 | Testing |
+| 19 | Documentation |
+| 20 | Release |
+
+---
+
+## TASK VALIDATION
+
+Every task validated: architecture exists · files exist · dependencies valid · acceptance · rollback
+
+---
+
+## AUTOMATIC CHECKLISTS
+
+Pre-Implementation · Implementation · Post-Implementation (in `docs/cursor/PLAN.md`)
+
+---
+
+## IMPLEMENTATION DIRECTIVE CTG-001
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Create** | `scripts/cursor-task-generator/` |
+| **Status** | Completed |
+
+---
+
+## IMPLEMENTATION DIRECTIVE CTG-002
+
+| | |
+|---|---|
+| **Create** | `docs/cursor/Wave-01.md` … `Wave-20.md` |
+| **Status** | Completed |
+
+---
+
+## IMPLEMENTATION DIRECTIVE CTG-003
+
+```json
+{
+  "architecture:tasks": "npx tsx scripts/cursor-task-generator/generate-tasks.ts",
+  "architecture:waves": "npx tsx scripts/cursor-task-generator/list-waves.ts",
+  "architecture:plan": "npx tsx scripts/cursor-task-generator/export-plan.ts"
+}
+```
+
+**Status:** Completed
+
+---
+
+# SUCCESS CRITERIA
+
+- Every migration becomes executable
+- Cursor receives deterministic tasks
+- No architectural interpretation
+- Automatic wave generation
+
+---
+
+*END OF PART 35*
+
+---
+
+# PART 36 — ARCHITECTURE ANALYZER
+
+# ============================================================================
+# PART 36
+# ARCHITECTURE ANALYZER
+# ============================================================================
+
+## Purpose
+
+Architecture must **continuously audit itself**.
+
+Every commit should update **Architecture Report**.
+
+Implementation: `marketplace-infographic/scripts/architecture-analyzer/`
+
+```bash
+cd marketplace-infographic && npm run architecture:analyze
+```
+
+Output: `docs/architecture/reports/`
+
+---
+
+# ARCHITECTURE ANALYZER
+
+```
+Repository
+    ↓
+AST Scanner (imports/exports)
+    ↓
+Dependency Scanner
+    ↓
+Layer Scanner
+    ↓
+Architecture Validator
+    ↓
+Report Generator
+```
+
+Reuses Part 34 `architecture-scanner` pipeline.
+
+---
+
+# REPORTS
+
+| Report | File |
+|--------|------|
+| Architecture Dashboard | `Dashboard.md` |
+| Architecture Report | `ArchitectureReport.md` |
+| Dependency Report | `DependencyReport.md` |
+| Complexity Report | `ComplexityReport.md` |
+| Technical Debt Report | `TechnicalDebtReport.md` |
+| Migration Progress | `MigrationProgress.md` |
+| Coverage Report | `CoverageReport.md` |
+
+---
+
+# TECHNICAL DEBT
+
+Every violation stored as **TD-NNN** with severity and recommendation.
+
+Example: **TD-001** — Prompt outside Provider Adapter — **Critical** — Move to Provider Adapter
+
+---
+
+# COMPLEXITY
+
+Cyclomatic complexity (estimate) · File size · Dependency count · Coupling · Cohesion · Architecture Score
+
+---
+
+# MIGRATION PROGRESS
+
+Per-platform progress bars (Platform Core, Commercial, Visual, …) derived from repository state.
+
+---
+
+# ARCHITECTURE DASHBOARD
+
+Overall Score · Platform Health · Technical Debt · Migration Status · Critical Violations
+
+---
+
+## IMPLEMENTATION DIRECTIVE ANA-001
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Create** | `scripts/architecture-analyzer/` |
+| **Files** | `Analyzer.ts` · `DebtScanner.ts` · `DependencyScanner.ts` · `ComplexityScanner.ts` · `DashboardGenerator.ts` |
+| **Acceptance** | `npm run architecture:analyze` generates all reports |
+| **Status** | Completed |
+
+---
+
+# SUCCESS
+
+Architecture always **measurable**.
+
+---
+
+*END OF PART 36*
+
+---
+
+# PART 37 — DAOS KERNEL
+
+# ============================================================================
+# PART 37
+# DAOS KERNEL
+# Design AI Operating System Kernel
+# ============================================================================
+
+## Purpose
+
+The Kernel is the **heart of DAOS**.
+
+Every platform · every provider · every runtime component · every execution · every decision — must pass through the Kernel.
+
+The Kernel owns **orchestration**.
+
+The Kernel **never** owns business logic.
+
+**Implementation:** `marketplace-infographic/src/lib/kernel/`
+
+```bash
+cd marketplace-infographic && npx tsx src/lib/kernel/kernel.spec.ts
+```
+
+---
+
+## Responsibilities
+
+Kernel owns:
+
+- Runtime
+- Scheduler
+- ProjectState
+- Execution Graph
+- Platform Registry
+- Provider Registry
+- Event Bus
+- Metrics
+- Cache
+- Version Manager
+- Configuration
+- Security
+
+Nothing else.
+
+---
+
+# KERNEL ARCHITECTURE
+
+```
+                    DAOS Kernel
+                          │
+        ┌─────────────────┼──────────────────┐
+        │                 │                  │
+   Runtime          ProjectState       Registry
+        │                 │                  │
+   Scheduler          Contracts        Platforms
+        │                 │                  │
+   Execution         Specifications     Providers
+```
+
+---
+
+## Kernel Principles
+
+**Kernel never knows:** Commercial · Creative · Visual · Knowledge · Vision · Learning
+
+**Kernel only knows:** Execution.
+
+---
+
+## Kernel Services
+
+| Service | Module |
+|---------|--------|
+| Execution Service | `KernelRuntime.ts` |
+| Registry Service | `KernelRegistry.ts` |
+| Configuration Service | `KernelConfiguration.ts` |
+| Metrics Service | `KernelMetrics.ts` |
+| Logging Service | `KernelEvents.ts` |
+| Version Service | delegated via `PlatformCore` |
+| Cache Service | lifecycle flush on shutdown |
+| Security Service | readiness gate (`assertReady`) |
+| Event Service | `KernelEvents.ts` |
+
+---
+
+# KERNEL API
+
+| Method | Purpose |
+|--------|---------|
+| `initialize()` | Load configuration, start runtime, load registries |
+| `registerPlatform()` | Register platform implementation |
+| `registerProvider()` | Register provider adapter |
+| `registerPlugin()` | Register plugin |
+| `createProject()` | Create immutable `ProjectState` |
+| `execute()` | Run platform against `ProjectState` |
+| `shutdown()` | Stop runtime, flush cache, save metrics/events |
+
+---
+
+## Kernel Startup
+
+```
+Load Configuration
+        ↓
+Initialize Runtime
+        ↓
+Load Registry
+        ↓
+Load Providers
+        ↓
+Load Platforms
+        ↓
+Load Plugins
+        ↓
+Load Runtime Graph
+        ↓
+Ready
+```
+
+---
+
+## Kernel Shutdown
+
+```
+Stop Runtime
+        ↓
+Flush Cache
+        ↓
+Save Metrics
+        ↓
+Save Events
+        ↓
+Release Assets
+        ↓
+Shutdown
+```
+
+---
+
+## Files
+
+```
+src/lib/kernel/
+├── Kernel.ts
+├── KernelRuntime.ts
+├── KernelRegistry.ts
+├── KernelConfiguration.ts
+├── KernelLifecycle.ts
+├── KernelEvents.ts
+├── KernelMetrics.ts
+├── KernelHealth.ts
+├── types.ts
+├── index.ts
+└── kernel.spec.ts
+```
+
+---
+
+## IMPLEMENTATION DIRECTIVE KNL-001
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Create** | `src/lib/kernel/` |
+| **Depends** | PC-001–004 (Platform Core) |
+| **Acceptance** | `npx tsx src/lib/kernel/kernel.spec.ts` passes; every project starts through Kernel |
+| **Status** | Completed |
+
+---
+
+# ACCEPTANCE
+
+- Every project starts through Kernel
+- Nothing bypasses Kernel
+
+---
+
+# SUCCESS
+
+Kernel is the **sole orchestration entry point** for Design AI OS.
+
+---
+
+*END OF PART 37*
+
+---
+
+# PART 38 — DESIGN AI CONSTITUTION
+
+# ============================================================================
+# PART 38
+# DESIGN AI CONSTITUTION
+# ============================================================================
+
+| | |
+|---|---|
+| **Version** | 1.0 |
+| **Status** | Canonical |
+| **Priority** | Maximum |
+
+Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `design_ai_constitution`
+
+---
+
+# PREAMBLE
+
+Design AI Operating System exists to create **commercially successful visual communication**.
+
+The purpose of the system is **not** image generation.
+
+The purpose of the system is **decision generation**.
+
+Rendering is only one implementation detail.
+
+---
+
+# ARTICLE I — ARCHITECTURE
+
+Architecture has priority over implementation.
+
+Implementation may change.
+
+Architecture remains.
+
+---
+
+# ARTICLE II — SINGLE SOURCE OF TRUTH
+
+**Architecture Bible** is **Single Source Of Truth**.
+
+Code must follow Architecture.
+
+Architecture never follows Code.
+
+---
+
+# ARTICLE III — RESPONSIBILITY
+
+Every module owns **one** responsibility.
+
+Responsibilities never overlap.
+
+---
+
+# ARTICLE IV — IMMUTABILITY
+
+Every **Specification** — immutable.
+
+Every **Blueprint** — immutable.
+
+**ProjectState** — immutable.
+
+---
+
+# ARTICLE V — PLATFORM INDEPENDENCE
+
+Platforms communicate only through **Specifications**.
+
+Platforms never know implementation details of other platforms.
+
+---
+
+# ARTICLE VI — RUNTIME
+
+Only **Runtime** controls execution.
+
+Platforms never orchestrate execution.
+
+---
+
+# ARTICLE VII — KNOWLEDGE
+
+Knowledge exists independently of rendering.
+
+Knowledge survives provider replacement.
+
+---
+
+# ARTICLE VIII — PROMPTS
+
+Prompt is implementation detail.
+
+Prompt never becomes architecture.
+
+---
+
+# ARTICLE IX — PROVIDERS
+
+Providers are interchangeable.
+
+Architecture never depends on provider.
+
+---
+
+# ARTICLE X — LEARNING
+
+Every completed project improves the system.
+
+Knowledge continuously evolves.
+
+---
+
+# ARTICLE XI — TRACEABILITY
+
+Every decision must be **explainable**.
+
+Every decision must be **reproducible**.
+
+Every decision must be **versioned**.
+
+---
+
+# ARTICLE XII — REUSE
+
+Reuse before rewrite.
+
+Extension before replacement.
+
+Migration before deletion.
+
+---
+
+# ARTICLE XIII — QUALITY
+
+Commercial quality has priority over implementation elegance.
+
+Architecture exists to improve generated results.
+
+Not to satisfy engineering preferences.
+
+---
+
+# ARTICLE XIV — VALIDATION
+
+Architecture must be **automatically validated**.
+
+Human review is insufficient.
+
+---
+
+# ARTICLE XV — EVOLUTION
+
+Architecture evolves through:
+
+- **RFC**
+- **ADR**
+- **Implementation Directives**
+
+Never through undocumented changes.
+
+---
+
+# ARTICLE XVI — BACKWARD COMPATIBILITY
+
+Breaking changes require migration path.
+
+---
+
+# ARTICLE XVII — SECURITY
+
+Every Platform executes with **minimum required permissions**.
+
+---
+
+# ARTICLE XVIII — OBSERVABILITY
+
+Nothing is hidden.
+
+Every execution produces:
+
+- **Metrics**
+- **Events**
+- **Decision Trace**
+- **Artifacts**
+
+---
+
+# ARTICLE XIX — SIMPLICITY
+
+Prefer fewer concepts.
+
+Prefer fewer abstractions.
+
+Prefer fewer dependencies.
+
+Complexity must always be justified.
+
+---
+
+# ARTICLE XX — MISSION
+
+Design AI OS exists to become the **world's best commercial design intelligence system**.
+
+Every architectural decision must move the system closer to that goal.
+
+---
+
+## IMPLEMENTATION DIRECTIVE CON-001
+
+| | |
+|---|---|
+| **Priority** | MAXIMUM |
+| **Document** | Part 38 — Design AI Constitution |
+| **Machine-readable** | `architecture.yaml` → `design_ai_constitution` |
+| **Status** | Completed |
+
+---
+
+*END OF CONSTITUTION*
+
+---
+
+*END OF PART 38*
+
+---
+
+# PART 39 — DAOS MICROKERNEL ARCHITECTURE
+
+# ============================================================================
+# PART 39
+# DAOS MICROKERNEL ARCHITECTURE
+# ============================================================================
+
+| | |
+|---|---|
+| **Version** | 1.0 |
+| **Priority** | Maximum |
+
+Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `daos_microkernel`
+
+**Related:** Part 37 (DAOS Kernel implementation)
+
+---
+
+## Purpose
+
+DAOS follows **Microkernel Architecture**.
+
+Business intelligence must **never** exist inside the Kernel.
+
+| Layer | Owns |
+|-------|------|
+| **Kernel** | Execution |
+| **Platforms** | Intelligence |
+| **Providers** | Implementation |
+
+---
+
+# MICROKERNEL
+
+Kernel contains **only**:
+
+- Runtime
+- ProjectState
+- Registry
+- Scheduler
+- Execution Graph
+- Cache
+- Metrics
+- Events
+- Configuration
+- Security
+- Version Manager
+
+---
+
+# EXTENSIONS
+
+Everything else is **Extension**:
+
+- Commercial
+- Creative
+- Knowledge
+- Research
+- Vision
+- Learning
+- Marketplace
+- Rendering
+- Providers
+- Assets
+
+---
+
+## MICROKERNEL LAW
+
+**Kernel never imports Extensions.**
+
+Extensions register themselves.
+
+---
+
+# BOOT PROCESS
+
+```
+Load Configuration
+        ↓
+Initialize Kernel
+        ↓
+Load Runtime
+        ↓
+Load Registries
+        ↓
+Load Extensions
+        ↓
+Resolve Dependencies
+        ↓
+Health Check
+        ↓
+Ready
+```
+
+---
+
+# SHUTDOWN
+
+```
+Stop Runtime
+        ↓
+Flush Events
+        ↓
+Flush Metrics
+        ↓
+Persist State
+        ↓
+Unload Extensions
+        ↓
+Shutdown Kernel
+```
+
+---
+
+# FAILURE ISOLATION
+
+```
+Platform Crash
+        ↓
+Unload Platform
+        ↓
+Retry
+        ↓
+Continue Runtime
+```
+
+**Kernel never crashes because Extension crashes.**
+
+---
+
+# HOT RELOAD
+
+Every Platform supports:
+
+- **Unload**
+- **Reload**
+- **Upgrade**
+
+Without restarting Kernel.
+
+---
+
+## IMPLEMENTATION DIRECTIVE MKR-001
+
+| | |
+|---|---|
+| **Priority** | MAXIMUM |
+| **Document** | Part 39 — DAOS Microkernel Architecture |
+| **Machine-readable** | `architecture.yaml` → `daos_microkernel` |
+| **Depends** | KNL-001 (Part 37) |
+| **Status** | Completed |
+
+---
+
+# SUCCESS
+
+Kernel uptime independent from Platform stability.
+
+---
+
+*END OF PART 39*
+
+---
+
+# PART 40 — DAOS EXECUTION MODEL
+
+# ============================================================================
+# PART 40
+# DAOS EXECUTION MODEL
+# ============================================================================
+
+## Purpose
+
+Everything inside DAOS executes as **Tasks**.
+
+Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `daos_execution_model`
+
+**Related:** Part 37 (Kernel) · Part 39 (Microkernel)
+
+---
+
+# EXECUTION UNIT
+
+**Task** is the atomic execution unit.
+
+A Task contains:
+
+| Field | Description |
+|-------|-------------|
+| **Input** | Execution input payload |
+| **Platform** | Target platform |
+| **Specification** | Immutable specification in scope |
+| **Timeout** | Maximum execution time |
+| **Priority** | Scheduling priority |
+| **Dependencies** | Upstream task dependencies |
+| **Expected Output** | Required output specification |
+
+---
+
+# TASK LIFECYCLE
+
+```
+Created
+    ↓
+Queued
+    ↓
+Running
+    ↓
+Validated
+    ↓
+Committed
+    ↓
+Completed
+```
+
+---
+
+# TASK GRAPH
+
+```
+Project
+    ↓
+Task Graph
+    ↓
+Platform Tasks
+    ↓
+Provider Tasks
+    ↓
+Asset Tasks
+```
+
+---
+
+# TASK TYPES
+
+| Type | Domain |
+|------|--------|
+| Research | Research platform |
+| Knowledge | Knowledge platform |
+| Commercial | Commercial platform |
+| Creative | Creative platform |
+| Visual | Visual platform |
+| Render | Rendering platform |
+| Vision | Vision platform |
+| Learning | Learning platform |
+| Asset | Asset platform |
+
+---
+
+# TASK PRIORITY
+
+| Level | Use |
+|-------|-----|
+| **Critical** | Blocking pipeline stages |
+| **High** | Core generation path |
+| **Medium** | Standard work |
+| **Low** | Deferred work |
+| **Background** | Non-blocking maintenance |
+
+---
+
+# TASK RESULT
+
+**TaskResult** contains:
+
+- **Status**
+- **Output**
+- **Metrics**
+- **Duration**
+- **Warnings**
+- **Errors**
+- **Trace**
+
+---
+
+# FAILED TASK
+
+```
+Retry
+    ↓
+Rollback
+    ↓
+Alternative Strategy
+    ↓
+Abort
+```
+
+---
+
+## IMPLEMENTATION DIRECTIVE TSK-001
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Document** | Part 40 — DAOS Execution Model |
+| **Machine-readable** | `architecture.yaml` → `daos_execution_model` |
+| **Depends** | KNL-001 · MKR-001 |
+| **Status** | Completed |
+
+---
+
+# SUCCESS
+
+Entire project represented as **Task Graph**.
+
+---
+
+*END OF PART 40*
+
+---
+
+# PART 41 — DAOS MESSAGE BUS
+
+# ============================================================================
+# PART 41
+# DAOS MESSAGE BUS
+# ============================================================================
+
+## Purpose
+
+Platforms **never** communicate directly.
+
+Communication occurs through **Messages**.
+
+Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `daos_message_bus`
+
+**Related:** Part 37 (Kernel Events) · Part 40 (Execution Model)
+
+---
+
+# MESSAGE TYPES
+
+| Type | Purpose |
+|------|---------|
+| **Command** | Request platform execution |
+| **Event** | Notify completion or state change |
+| **Query** | Request read-only information |
+| **Response** | Reply to command or query |
+| **Notification** | Broadcast system notification |
+
+---
+
+# COMMAND
+
+Examples:
+
+- Execute Commercial
+- Execute Creative
+- Execute Render
+
+---
+
+# EVENT
+
+Examples:
+
+- Commercial Completed
+- Creative Completed
+- Vision Failed
+- Learning Updated
+
+---
+
+# QUERY
+
+Examples:
+
+- Knowledge Query
+- Genome Query
+- Marketplace Query
+
+---
+
+# MESSAGE ROUTING
+
+```
+Platform
+    ↓
+Message Bus
+    ↓
+Runtime
+    ↓
+Target Platform
+```
+
+---
+
+# MESSAGE STORE
+
+Every message **persisted**.
+
+Allows:
+
+- **Replay**
+- **Debugging**
+- **Analytics**
+
+---
+
+## IMPLEMENTATION DIRECTIVE MSG-001
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Document** | Part 41 — DAOS Message Bus |
+| **Machine-readable** | `architecture.yaml` → `daos_message_bus` |
+| **Depends** | KNL-001 · TSK-001 |
+| **Status** | Completed |
+
+---
+
+# SUCCESS
+
+No direct platform communication.
+
+---
+
+*END OF PART 41*
+
+---
+
+# PART 42 — DAOS EXECUTION CONTEXT
+
+# ============================================================================
+# PART 42
+# DAOS EXECUTION CONTEXT
+# ============================================================================
+
+## Purpose
+
+Every execution receives **identical Context**.
+
+Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `daos_execution_context`
+
+**Related:** Part 28 (ProjectState) · Part 40 (Execution Model) · Part 41 (Message Bus)
+
+---
+
+# EXECUTIONCONTEXT
+
+**ExecutionContext** contains:
+
+| Field | Description |
+|-------|-------------|
+| **ProjectState** | Immutable project state |
+| **Configuration** | Runtime configuration |
+| **Architecture Version** | Active architecture version |
+| **ExecutionPlan** | Planned execution graph |
+| **Knowledge Snapshot** | Point-in-time knowledge |
+| **Genome Snapshot** | Point-in-time design genome |
+| **Marketplace Snapshot** | Point-in-time marketplace rules |
+| **Feature Flags** | Enabled feature toggles |
+| **Assets** | Resolved asset references |
+| **Runtime Metadata** | Execution session metadata |
+
+---
+
+## Immutability Rule
+
+**Context is immutable.**
+
+Platform **cannot** modify Context.
+
+---
+
+## IMPLEMENTATION DIRECTIVE CTX-001
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Document** | Part 42 — DAOS Execution Context |
+| **Machine-readable** | `architecture.yaml` → `daos_execution_context` |
+| **Depends** | KNL-001 · TSK-001 · PC-001 |
+| **Status** | Completed |
+
+---
+
+# SUCCESS
+
+```
+Identical Context
+        ↓
+Identical Decision
+```
+
+---
+
+*END OF PART 42*
+
+---
+
+# PART 44 — FIXED ROADMAP
+
+# ============================================================================
+# PART 44
+# FIXED ROADMAP
+# ============================================================================
+
+| | |
+|---|---|
+| **Status** | Accepted |
+| **Primary Goal** | Best marketplace infographic generator |
+
+Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `fixed_roadmap`
+
+**Related:** RFC-000 · Part 25 (Implementation Plan) · Part 38 (Constitution)
+
+---
+
+## Purpose
+
+Prevent endless architecture expansion.
+
+Architecture must serve **product quality**.
+
+**Primary goal remains:** Best marketplace infographic generator.
+
+---
+
+# PHASE A — DOCUMENTATION STABILIZATION
+
+## Goal
+
+Turn current Architecture Bible into **canonical specification**.
+
+## Tasks
+
+- [ ] Remove duplicated concepts
+- [ ] Unify terminology
+- [ ] Create table of contents
+- [ ] Create glossary
+- [ ] Create RFC index
+- [ ] Create ADR index
+- [ ] Create Directive index
+- [ ] Mark speculative ideas as **Future**
+- [ ] Mark mandatory architecture as **Core**
+
+## Acceptance
+
+`DAOS_Specification.md` becomes **stable reference**.
+
+---
+
+# PHASE B — CORE FOUNDATION
+
+## Goal
+
+Implement minimal **DAOS Core**.
+
+Build only what is needed for production migration.
+
+## Create
+
+- ProjectState
+- Contracts
+- Runtime Skeleton
+- Registry
+- EventBus
+- Configuration
+- AssetManager
+
+## Do NOT implement
+
+- Architecture Compiler
+- Plugin Marketplace
+- AI CEO
+- Full SDK
+
+…until core product quality improves.
+
+## Acceptance
+
+- Existing generation still works
+- New core exists beside legacy
+
+---
+
+# PHASE C — ADAPT EXISTING INTELLIGENCE
+
+## Goal
+
+Reuse existing modules. **Do not rewrite from scratch.**
+
+## Adapt
+
+- Design Genome
+- Knowledge Engine
+- Market Intelligence
+- Commercial Intelligence
+- Design Process
+- Visual Pipeline
+- Design Governance
+- Render Engine
+- Feedback
+- Memory
+
+## Acceptance
+
+- Existing intelligence outputs **official Specs**
+- No intelligence module returns **Prompt**
+
+---
+
+# PHASE D — RENDER QUALITY BREAKTHROUGH
+
+## Goal
+
+Fix real **image quality** bottleneck.
+
+## Tasks
+
+- [ ] RenderBlueprint becomes source of truth
+- [ ] OverlayBlueprint replaces old InfographicData
+- [ ] Provider Adapter becomes only Prompt generator
+- [ ] Vision Critic becomes mandatory
+- [ ] Premium mode disables fast shortcuts
+- [ ] Debug artifacts saved for every run
+
+## Acceptance
+
+Generated marketplace images **visibly improve**.
+
+---
+
+# PHASE E — LEGACY QUARANTINE
+
+## Goal
+
+Remove old architecture from main path.
+
+## Tasks
+
+- [ ] Move old prompt/html/sd modules to `legacy`
+- [ ] Block legacy imports inside Runtime
+- [ ] Remove duplicate DTOs
+- [ ] Remove old API generation path or proxy it
+
+## Acceptance
+
+Production generation uses **only DAOS pipeline**.
+
+---
+
+# PHASE F — ARCHITECTURE TOOLING
+
+## Goal
+
+Automate future evolution.
+
+**Only after product quality improves.**
+
+## Implement
+
+- Architecture Validator
+- Architecture Scanner
+- Code Rewrite Bible Generator
+- Cursor Task Generator
+- Architecture Compiler
+
+## Acceptance
+
+Architecture becomes **automatically measurable**.
+
+---
+
+# FINAL RULE
+
+**Do not build infrastructure before it improves generation quality.**
+
+DAOS exists to create **better commercial images**.
+
+Architecture is a **means**.
+
+Not the product.
+
+---
+
+## IMPLEMENTATION DIRECTIVE RDM-001
+
+| | |
+|---|---|
+| **Priority** | MAXIMUM |
+| **Document** | Part 44 — Fixed Roadmap |
+| **Machine-readable** | `architecture.yaml` → `fixed_roadmap` |
+| **Status** | Completed |
+
+---
+
+*END OF PART 44*
+
+---
+
+# PART 45 — WAVE 1 — FOUNDATION IMPLEMENTATION PLAN
+
+# ============================================================================
+# PART 45
+# WAVE 1 — FOUNDATION IMPLEMENTATION PLAN
+# ============================================================================
+
+| | |
+|---|---|
+| **Status** | Ready For Implementation |
+| **Priority** | Maximum |
+| **Estimated Duration** | 5–10 working days |
+
+Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `wave_1_foundation`
+
+**Related:** Part 44 Phase B · RFC-000 · RFC-001 · PC-001–004
+
+---
+
+## Goal
+
+Introduce **DAOS Core** without breaking existing functionality.
+
+## Principle
+
+**Expand first. Replace later.**
+
+Never perform a big-bang rewrite.
+
+---
+
+# OBJECTIVES
+
+Wave 1 introduces the **architectural foundation**.
+
+- Business logic remains unchanged
+- Generation quality must **not** decrease
+- Existing generation pipeline continues while gradually moving to new architecture
+
+---
+
+# SUCCESS CRITERIA
+
+- [x] Project compiles
+- [x] Existing API works
+- [x] Existing rendering works
+- [x] ProjectState introduced
+- [ ] Contracts introduced (`src/lib/contracts/`)
+- [ ] Runtime skeleton introduced (`src/lib/runtime/`)
+- [x] Registry introduced
+- [x] Legacy remains operational
+
+---
+
+# IMPLEMENTATION ORDER
+
+## STEP 01 — Platform Core
+
+**Create** `src/lib/platform-core/`
+
+| Module | Status |
+|--------|--------|
+| ProjectState | ✓ Implemented |
+| ExecutionContext | ✓ Implemented |
+| ArchitectureRegistry | ✓ Implemented |
+| ConfigurationManager | ✓ Implemented |
+| VersionManager | ✓ Implemented |
+| PlatformRegistry | ✓ Implemented |
+
+---
+
+## STEP 02 — Contracts
+
+**Create** `src/lib/contracts/`
+
+- BaseSpecification
+- ResearchSpec
+- KnowledgeSpec
+- CommercialSpec
+- CreativeSpec
+- VisualBlueprint
+- RenderBlueprint
+- VisionReport
+- LearningReport
+
+---
+
+## STEP 03 — Runtime
+
+**Create** `src/lib/runtime/`
+
+- Runtime
+- ExecutionGraph
+- Scheduler
+- Task
+- TaskResult
+- EventBus
+- ExecutionEvents
+
+---
+
+## STEP 04 — Adapters
+
+```
+Current pipeline
+        ↓
+ProjectState
+        ↓
+Legacy Pipeline
+```
+
+Allows **gradual migration**.
+
+**First adapters:**
+
+- LegacyDesignPipelineAdapter
+- LegacyPromptAdapter
+- LegacyRenderAdapter
+- LegacyOverlayAdapter
+
+---
+
+## STEP 05 — Configuration
+
+Move configuration — no hardcoded values.
+
+Everything → **ConfigurationManager**
+
+---
+
+## STEP 06 — Register Platforms
+
+Register every platform:
+
+Research · Knowledge · Commercial · Creative · Visual · Rendering · Vision · Learning · Governance
+
+---
+
+# DO NOT TOUCH
+
+These modules migrate **later**:
+
+- Image Generation
+- Flux Provider
+- Overlay Rendering
+- Current HTML Templates
+- Background Generator
+- Prompt Compiler
+- Commercial Logic
+- Genome
+- Memory
+
+---
+
+# PROJECT STATE (Minimum Version)
+
+**ProjectState** contains:
+
+ProjectId · UserInput · ProductBrief · Configuration · Assets · Events · Metrics · ArchitectureVersion
+
+---
+
+# FIRST CONTRACTS
+
+BaseSpecification · ResearchSpec · KnowledgeSpec · CommercialSpec · CreativeSpec · VisualBlueprint · RenderBlueprint
+
+---
+
+# FIRST TESTS
+
+### Unit
+
+- ProjectState immutable
+- Runtime starts
+- Registry registers Platform
+- Contracts serializable
+- Architecture Validator passes
+
+### Integration
+
+- Legacy pipeline executes through Runtime
+
+---
+
+# ROLLBACK
+
+Disable Runtime → use Legacy Pipeline.
+
+**No business logic lost.**
+
+---
+
+# DELIVERABLES
+
+| Deliverable | Status |
+|-------------|--------|
+| ProjectState | ✓ |
+| Runtime Skeleton | Pending |
+| Contracts | Pending |
+| Registry | ✓ |
+| Configuration | ✓ |
+| EventBus | Pending |
+| Adapters | Pending |
+| Architecture Validation | Partial (scanner/analyzer exist) |
+
+---
+
+## IMPLEMENTATION DIRECTIVE W1-001
+
+| | |
+|---|---|
+| **Priority** | MAXIMUM |
+| **Document** | Part 45 — Wave 1 Foundation |
+| **Machine-readable** | `architecture.yaml` → `wave_1_foundation` |
+| **Depends** | RDM-001 · RFC-000 · PC-001–004 |
+| **Status** | Ready For Implementation |
+
+---
+
+*END OF WAVE 1*
+
+---
+
+*END OF PART 45*
+
+---
+
+# PART 46 — DEVELOPMENT PRINCIPLES
+
+# ============================================================================
+# PART 46
+# DEVELOPMENT PRINCIPLES
+# ============================================================================
+
+| | |
+|---|---|
+| **Status** | Canonical |
+| **Priority** | Maximum |
+
+Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `development_principles`
+
+**Related:** Part 38 (Constitution) · Part 44 (Fixed Roadmap) · RFC-000
+
+---
+
+## Purpose
+
+Define **mandatory development principles** for every future change.
+
+These principles override implementation preferences.
+
+**Every Pull Request must satisfy them.**
+
+---
+
+# PRINCIPLE 01 — PRODUCT FIRST
+
+Every architectural decision must improve the **generated product**.
+
+Architecture is never created for its own sake.
+
+If a change increases complexity without improving image quality, commercial quality, stability, or maintainability — **the change must be rejected**.
+
+---
+
+# PRINCIPLE 02 — REUSE FIRST
+
+Before writing new code:
+
+1. Search existing implementation
+2. Determine reuse percentage
+3. Extend existing module if possible
+4. Rewrite only as a last resort
+
+---
+
+# PRINCIPLE 03 — SMALL MIGRATIONS
+
+Never rewrite large subsystems in one step.
+
+Every migration must:
+
+- compile
+- pass tests
+- preserve production behavior
+
+---
+
+# PRINCIPLE 04 — MEASURABLE IMPROVEMENTS
+
+Every migration must improve at least **one measurable metric**.
+
+Examples:
+
+- Architecture Score
+- Professional Score
+- CTR Prediction
+- Generation Time
+- Memory Usage
+- Test Coverage
+
+---
+
+# PRINCIPLE 05 — NO HIDDEN LOGIC
+
+Business logic must **never** be hidden inside:
+
+- utilities
+- helpers
+- providers
+- templates
+- React components
+
+---
+
+# PRINCIPLE 06 — ONE RESPONSIBILITY
+
+Every module owns **exactly one** responsibility.
+
+If responsibility grows — **extract a new module**.
+
+---
+
+# PRINCIPLE 07 — BACKWARD COMPATIBILITY
+
+Breaking changes require:
+
+- **RFC**
+- **migration strategy**
+- **rollback plan**
+
+---
+
+# PRINCIPLE 08 — DEBUGGABILITY
+
+Every execution must be **reproducible**.
+
+Every generation stores:
+
+- specifications
+- blueprints
+- metrics
+- logs
+- decision trace
+
+---
+
+# PRINCIPLE 09 — PROVIDER INDEPENDENCE
+
+Changing provider must **not** require changes to Commercial, Creative, Visual, Knowledge, or Runtime.
+
+---
+
+# PRINCIPLE 10 — ARCHITECTURE BEFORE OPTIMIZATION
+
+Correct architecture has priority over micro-optimizations.
+
+---
+
+# PRINCIPLE 11 — QUALITY BEFORE SPEED
+
+**Premium mode** always prioritizes quality.
+
+**Fast mode** is allowed to simplify execution.
+
+---
+
+# PRINCIPLE 12 — KNOWLEDGE ACCUMULATION
+
+Every successful generation **strengthens** the system.
+
+Every failed generation **teaches** the system.
+
+Nothing is discarded without analysis.
+
+---
+
+# FINAL DEVELOPMENT RULE
+
+**DAOS must become better after every release.**
+
+If a release does not improve the system, it should not exist.
+
+---
+
+## IMPLEMENTATION DIRECTIVE DEV-001
+
+| | |
+|---|---|
+| **Priority** | MAXIMUM |
+| **Document** | Part 46 — Development Principles |
+| **Machine-readable** | `architecture.yaml` → `development_principles` |
+| **Depends** | CON-001 · RDM-001 |
+| **Status** | Completed |
+
+---
+
+*END OF PART 46*
+
+---
+
+# PART 47 — DAOS ENGINEERING MANIFESTO
+
+# ============================================================================
+# PART 47
+# DAOS ENGINEERING MANIFESTO
+# ============================================================================
+
+| | |
+|---|---|
+| **Version** | 1.0 |
+| **Status** | Canonical |
+| **Priority** | Maximum |
+
+Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `daos_engineering_manifesto`
+
+**Related:** Part 46 (Development Principles) · Part 38 (Constitution) · RFC-000
+
+---
+
+# MISSION
+
+The mission of **DAOS Engineering** is not to write code.
+
+The mission is to continuously improve **commercial design intelligence**.
+
+- Code is only one implementation medium
+- Architecture is only one organizational tool
+- **The generated commercial result is the final product**
+
+---
+
+# ENGINEERING VALUES
+
+| Value | Principle |
+|-------|-----------|
+| **01** | Commercial impact over technical elegance |
+| **02** | Evidence over assumptions |
+| **03** | Architecture over improvisation |
+| **04** | Reuse over rewrite |
+| **05** | Automation over manual processes |
+| **06** | Continuous learning over static knowledge |
+| **07** | Small safe improvements over large risky rewrites |
+| **08** | Data-driven decisions over subjective opinions |
+| **09** | Platform independence over vendor lock-in |
+| **10** | Long-term maintainability over short-term speed |
+
+---
+
+# ENGINEERING DECISION FRAMEWORK
+
+Before implementing any feature, answer:
+
+1. Does it improve **commercial image quality**?
+2. Can **existing code** be reused?
+3. Can the architecture remain **simpler**?
+4. Can the change be **measured**?
+5. Can the change be **rolled back**?
+6. Can the change be **tested automatically**?
+7. Will the project become **easier to maintain**?
+
+**If at least one answer is NO — implementation must be reconsidered.**
+
+---
+
+# CODE REVIEW PHILOSOPHY
+
+1. Review **architecture** first
+2. Review **responsibilities** second
+3. Review **correctness** third
+4. Review **style** last
+
+---
+
+# SUCCESS DEFINITION
+
+A successful implementation is one that:
+
+- improves image quality
+- preserves architecture
+- passes validation
+- reduces technical debt
+- increases maintainability
+
+---
+
+# FINAL PRINCIPLE
+
+**Every line of code must justify its existence.**
+
+---
+
+## IMPLEMENTATION DIRECTIVE ENG-001
+
+| | |
+|---|---|
+| **Priority** | MAXIMUM |
+| **Document** | Part 47 — DAOS Engineering Manifesto |
+| **Machine-readable** | `architecture.yaml` → `daos_engineering_manifesto` |
+| **Depends** | DEV-001 · CON-001 |
+| **Status** | Completed |
+
+---
+
+*END OF PART 47*
+
+---
+
+# APPENDIX A — GLOSSARY
+
+# ============================================================================
+# APPENDIX A
+# GLOSSARY
+# ============================================================================
+
+## Purpose
+
+This glossary defines the **canonical terminology** of Design AI OS.
+
+Every term has exactly **one meaning**.
+
+**No synonyms are allowed.**
+
+Machine-readable index: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `glossary`
+
+---
+
+| Term | Definition |
+|------|------------|
+| **Architecture Bible** | The canonical architecture specification. Single Source of Truth. |
+| **Constitution** | Canonical governing principles (Part 38). Architecture has priority over implementation. |
+| **ProjectState** | Immutable object containing the complete project state. Never partially modified. |
+| **Runtime** | Execution engine. Coordinates platforms. Never makes business decisions. |
+| **Kernel** | Heart of DAOS. Owns orchestration, registries, lifecycle. Never owns business logic. |
+| **Microkernel** | Minimal Kernel core (Part 39). Execution only — no business intelligence. |
+| **Extension** | Platform or provider loaded by Kernel at runtime. Never imported by Kernel. |
+| **Task** | Atomic execution unit inside DAOS (Part 40). Contains input, platform, specification, timeout, priority, dependencies, expected output. |
+| **Task Graph** | DAG of Tasks representing an entire project execution. |
+| **TaskResult** | Outcome of a Task — status, output, metrics, duration, warnings, errors, trace. |
+| **Message** | Unit of inter-platform communication via Message Bus (Part 41). Platforms never communicate directly. |
+| **Message Bus** | Central routing layer for Commands, Events, Queries, Responses, and Notifications. |
+| **ExecutionContext** | Immutable execution envelope (Part 42). Every platform receives identical context. |
+| **Platform** | Independent architectural component. Owns one responsibility. Produces one Specification. |
+| **Specification** | Immutable DTO exchanged between platforms. |
+| **ProductBrief** | Initial project description. Created once. |
+| **ResearchSpec** | Research result. |
+| **KnowledgeSpec** | Merged structured knowledge. |
+| **CommercialSpec** | Commercial strategy. |
+| **CreativeSpec** | Creative strategy. |
+| **VisualBlueprint** | Visual implementation. |
+| **RenderBlueprint** | Rendering instructions. |
+| **OverlayBlueprint** | Overlay specification. |
+| **VisionReport** | Image evaluation. |
+| **LearningReport** | Learning result. |
+| **Design DNA** | Universal design principles. |
+| **Design Genome** | Category-specific design knowledge. |
+| **Knowledge Engine** | Unified knowledge layer. |
+| **Provider Adapter** | Only module allowed to generate Prompt. |
+| **Decision Trace** | Complete explanation of every architectural decision. |
+| **Execution Graph** | Runtime dependency graph. |
+| **Decision Graph** | Relationship graph between decisions. |
+| **RenderGraph** | Node-based rendering pipeline. |
+| **Asset Platform** | Single owner of every project asset. |
+| **Architecture Law** | Mandatory architectural rule. |
+| **ADR** | Architecture Decision Record. |
+| **RFC** | Request For Comments. |
+| **Directive** | Executable migration task. |
+
+---
+
+*END OF APPENDIX A*
+
+---
+
+# APPENDIX B — ARCHITECTURE INDEX
+
+# ============================================================================
+# APPENDIX B
+# ARCHITECTURE INDEX
+# ============================================================================
+
+Quick reference: topic → Part number.
+
+Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `architecture_index`
+
+| Topic | Parts |
+|-------|-------|
+| **Architecture** | Part 1–4 |
+| **Runtime** | Part 5 |
+| **Design DNA** | Part 6 |
+| **Reasoning** | Part 7 |
+| **Migration** | Part 8 |
+| **AI CEO** | Part 9 |
+| **SDK** | Part 10 |
+| **Platform Migration** | Part 11 |
+| **Runtime Migration** | Part 12 |
+| **Contracts** | Part 13 |
+| **Assets** | Part 14 |
+| **Engineering Standards** | Part 15 |
+| **Architecture Validation** | Part 16 |
+| **Knowledge Engine** | Part 17 |
+| **Implementation** | Part 18–19 |
+| **ADR** | Part 20 |
+| **RFC** | Part 21 |
+| **DSL** | Part 23 |
+| **Repository** | Part 27 |
+| **Evolution** | Part 30 |
+| **Release** | Part 31 |
+| **Observability** | Part 32 |
+| **Architecture Laws** | Part 33 |
+| **Code Rewrite** | Part 34 |
+| **Cursor Tasks** | Part 35 |
+| **Architecture Analyzer** | Part 36 |
+| **DAOS Kernel** | Part 37 |
+| **Constitution** | Part 38 |
+| **Microkernel Architecture** | Part 39 |
+| **Execution Model** | Part 40 |
+| **Message Bus** | Part 41 |
+| **Execution Context** | Part 42 |
+| **Fixed Roadmap** | Part 44 |
+| **Wave 1 Foundation** | Part 45 |
+| **Development Principles** | Part 46 |
+| **Engineering Manifesto** | Part 47 |
+
+---
+
+*END OF APPENDIX B*
+
+---
+
+# APPENDIX C — IMPLEMENTATION INDEX
+
+# ============================================================================
+# APPENDIX C
+# IMPLEMENTATION INDEX
+# ============================================================================
+
+Directive prefix reference and execution order.
+
+Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `implementation_index`
+
+---
+
+## Directive Prefixes
+
+| Prefix | Domain |
+|--------|--------|
+| **PC** | Platform Core |
+| **KNL** | DAOS Kernel |
+| **RUN** | Runtime |
+| **DTO** | Contracts |
+| **CRE** | Creative |
+| **VIS** | Visual |
+| **REN** | Rendering |
+| **GOV** | Governance |
+| **KNOW** | Knowledge |
+| **AST** | Assets |
+| **SDK** | Platform SDK |
+| **CEO** | Execution Strategy |
+| **CI** | Architecture Validation |
+| **RFC** | Architecture Evolution |
+| **ADR** | Decision Records |
+
+---
+
+## Execution Order
+
+```
+PC
+ ↓
+KNL
+ ↓
+RUN
+ ↓
+DTO
+ ↓
+KNOW
+ ↓
+COM
+ ↓
+CRE
+ ↓
+VIS
+ ↓
+REN
+ ↓
+VISION
+ ↓
+LEARN
+ ↓
+LEGACY
+```
+
+Aligns with Part 19 Implementation Playbook and Part 25 Implementation Plan.
+
+---
+
+*END OF APPENDIX C*
+
+---
+
+# APPENDIX D — VOLUME I COMPLETION
+
+# ============================================================================
+# APPENDIX D
+# VOLUME I COMPLETION
+# ============================================================================
+
+| | |
+|---|---|
+| **Architecture Bible Version** | 1.0 |
+| **Status** | Complete |
+| **Architecture Status** | Stable |
+| **Migration Status** | Ready |
+| **Cursor Status** | Not Ready |
+
+### Reason
+
+**Code Rewrite Bible** required.
+
+---
+
+## Next Document
+
+| | |
+|---|---|
+| **Document** | [`Code_Rewrite_Bible.md`](Code_Rewrite_Bible.md) |
+| **Purpose** | Describe migration of every important source file. No architectural theory. Implementation only. |
+
+---
+
+## Expected Size
+
+| Document | Pages |
+|----------|-------|
+| Architecture Bible | ≈ 400–700 |
+| Code Rewrite Bible | ≈ 1000–2000 |
+
+---
+
+# END OF VOLUME I
+
+---
+
+*END OF APPENDIX D*
+
+---
+
+# APPENDIX E — REPOSITORY IMPLEMENTATION REFERENCE
 
 > Практическая привязка Part 1 (канон) и Part 2 (аудит) к текущему коду репозитория `design-ai`.  
-> Это **не** Part 2 — справочник по реализации, не дублирует аудит.
+> Это **не** Part 2 — справочник по реализации, не дублирует аудит.  
+> Ранее **Appendix A** → **B** → **C** → **D** — переименован по мере добавления Glossary, Index, Implementation Index, Volume I Completion.
 
 ---
 
@@ -8851,7 +12245,7 @@ design-ai/
 ├── .github/workflows/           # CI + Deploy
 ├── DEPLOY.md
 └── docs/
-    └── Architecture_Bible.md    # ← этот файл
+    └── DAOS_Specification.md    # ← этот файл
 ```
 
 ---
@@ -9155,4 +12549,4 @@ pm2 logs marketplace-infographic --lines 50
 
 ---
 
-*Architecture Bible — living document. Part 1 is canonical law (LAW-001–030). Parts 2–18 define audit, pipeline, platforms, runtime, contracts, migration specs, knowledge engine, CEO, SDK, and orchestration. Appendix A tracks repository implementation.*
+*Architecture Bible — Volume I complete (v1.0). Parts 1–33 (LAW-001–050). **Appendix A** — Glossary. **Appendix B** — Architecture Index. **Appendix C** — Implementation Index. **Appendix D** — Volume I Completion. **Appendix E** — repository implementation reference. Next: [`Code_Rewrite_Bible.md`](Code_Rewrite_Bible.md).*
