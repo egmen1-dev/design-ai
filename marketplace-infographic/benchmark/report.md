@@ -1,6 +1,6 @@
 # DAOS Benchmark Report — Phase 1
 
-Created: 2026-07-06T10:14:17.903Z
+Created: 2026-07-06T11:57:19.400Z
 
 Catalog: DAOS benchmark Phase 1 — five products with varied visual complexity
 
@@ -37,17 +37,17 @@ Seed: `daos-benchmark-phase1-20260706:cordless-drill` | Complexity: medium
 | modulesStillIgnored | 0 | 0 | 0 |
 | promptLength | 895 | 895 | 0 |
 | composerQualityScore | 75 | 75 | 0 |
-| productAreaRatio | 0.46 | 0.43 | — |
+| productAreaRatio | 0.45 | 0.46 | — |
 | finalCompositionRisk | 0.42 | 0.42 | — |
-| overlayQualityScore | 10 | 16 | 6 |
+| overlayQualityScore | 16 | 16 | 0 |
 | overlayDensity | 0.13 | 0.13 | — |
 | pngOverlayFeelRisk | 1.00 | 1.00 | — |
 | law003WhitespaceViolation | true | true | — |
 | law014ContrastViolation | true | true | — |
-| provider latency | 611ms | 410ms | — |
-| generation time | 3656ms | 3482ms | — |
+| provider latency | 413ms | 949ms | — |
+| generation time | 3715ms | 3854ms | — |
 | background hash | `09c7ea087037…` | `09c7ea087037…` | same |
-| final image hash | `ac7fe75fda1e…` | `6a61b12a951a…` | changed |
+| final image hash | `df8fbaa59543…` | `0be118c754ae…` | changed |
 
 ### Electric Kettle (`electric-kettle`)
 
@@ -62,17 +62,17 @@ Seed: `daos-benchmark-phase1-20260706:electric-kettle` | Complexity: low
 | modulesStillIgnored | 0 | 0 | 0 |
 | promptLength | 848 | 848 | 0 |
 | composerQualityScore | 75 | 75 | 0 |
-| productAreaRatio | 0.42 | 0.42 | — |
+| productAreaRatio | 0.47 | 0.47 | — |
 | finalCompositionRisk | 0.42 | 0.42 | — |
-| overlayQualityScore | 39 | 42 | 3 |
-| overlayDensity | 0.05 | 0.12 | — |
+| overlayQualityScore | 16 | 16 | 0 |
+| overlayDensity | 0.14 | 0.13 | — |
 | pngOverlayFeelRisk | 1.00 | 1.00 | — |
 | law003WhitespaceViolation | true | true | — |
-| law014ContrastViolation | false | false | — |
-| provider latency | 425ms | 446ms | — |
-| generation time | 4311ms | 4147ms | — |
+| law014ContrastViolation | true | true | — |
+| provider latency | 542ms | 429ms | — |
+| generation time | 4301ms | 4258ms | — |
 | background hash | `13da5f7cb088…` | `13da5f7cb088…` | same |
-| final image hash | `97086db0de50…` | `39cdee95d4b8…` | changed |
+| final image hash | `121267f702d1…` | `7ebe7976ea4a…` | changed |
 
 ### Office Chair (`office-chair`)
 
@@ -95,7 +95,7 @@ Seed: `daos-benchmark-phase1-20260706:office-chair` | Complexity: high
 | law003WhitespaceViolation | n/a | n/a | — |
 | law014ContrastViolation | n/a | n/a | — |
 | provider latency | n/ams | n/ams | — |
-| generation time | 30ms | 34ms | — |
+| generation time | 29ms | 32ms | — |
 | background hash | `n/a…` | `n/a…` | same |
 | final image hash | `n/a…` | `n/a…` | same |
 
@@ -112,17 +112,17 @@ Seed: `daos-benchmark-phase1-20260706:mattress` | Complexity: medium
 | modulesStillIgnored | 0 | 0 | 0 |
 | promptLength | 892 | 892 | 0 |
 | composerQualityScore | 75 | 75 | 0 |
-| productAreaRatio | 0.43 | 0.42 | — |
+| productAreaRatio | 0.40 | 0.38 | — |
 | finalCompositionRisk | 0.42 | 0.42 | — |
-| overlayQualityScore | 10 | 42 | 32 |
-| overlayDensity | 0.09 | 0.12 | — |
+| overlayQualityScore | 42 | 19 | -23 |
+| overlayDensity | 0.12 | 0.11 | — |
 | pngOverlayFeelRisk | 1.00 | 1.00 | — |
 | law003WhitespaceViolation | true | true | — |
-| law014ContrastViolation | true | false | — |
-| provider latency | 436ms | 424ms | — |
-| generation time | 3428ms | 3503ms | — |
+| law014ContrastViolation | false | true | — |
+| provider latency | 420ms | 511ms | — |
+| generation time | 3491ms | 3212ms | — |
 | background hash | `dc4677839ce8…` | `dc4677839ce8…` | same |
-| final image hash | `fe8f5d5591fb…` | `d140ee79a6ad…` | changed |
+| final image hash | `60d30b72b59d…` | `0aec4cb72880…` | changed |
 
 ### Children's Toy (`childrens-toy`)
 
@@ -137,17 +137,17 @@ Seed: `daos-benchmark-phase1-20260706:childrens-toy` | Complexity: low
 | modulesStillIgnored | 0 | 0 | 0 |
 | promptLength | 869 | 869 | 0 |
 | composerQualityScore | 75 | 75 | 0 |
-| productAreaRatio | 0.43 | 0.40 | — |
+| productAreaRatio | 0.46 | 0.43 | — |
 | finalCompositionRisk | 0.42 | 0.42 | — |
-| overlayQualityScore | 10 | 19 | 9 |
-| overlayDensity | 0.07 | 0.12 | — |
+| overlayQualityScore | 16 | 16 | 0 |
+| overlayDensity | 0.14 | 0.12 | — |
 | pngOverlayFeelRisk | 1.00 | 1.00 | — |
 | law003WhitespaceViolation | true | true | — |
 | law014ContrastViolation | true | true | — |
-| provider latency | 440ms | 464ms | — |
-| generation time | 3553ms | 3571ms | — |
+| provider latency | 729ms | 429ms | — |
+| generation time | 3837ms | 3441ms | — |
 | background hash | `991a1b6b06a9…` | `991a1b6b06a9…` | same |
-| final image hash | `ac06fd835a62…` | `7147f258d721…` | changed |
+| final image hash | `539f8b55566e…` | `2507cafc398e…` | changed |
 
 ## Aggregate statistics
 
@@ -160,10 +160,10 @@ Seed: `daos-benchmark-phase1-20260706:childrens-toy` | Complexity: low
 - Average meaning-loss delta: 0.00
 - Average modulesCompiled (baseline → DAOS): 3.2 → 3.2
 - Average composerQualityScore (baseline → DAOS): 75.0 → 75.0
-- Average productAreaRatio (baseline → DAOS): 0.44 → 0.42
+- Average productAreaRatio (baseline → DAOS): 0.44 → 0.44
 - Average finalCompositionRisk (baseline → DAOS): 0.42 → 0.42
-- Average overlayQualityScore (baseline → DAOS): 17.3 → 29.8
-- Average overlayDensity (baseline → DAOS): 0.09 → 0.12
+- Average overlayQualityScore (baseline → DAOS): 22.5 → 16.8
+- Average overlayDensity (baseline → DAOS): 0.13 → 0.12
 - Average pngOverlayFeelRisk (baseline → DAOS): 1.00 → 1.00
 - LAW_003 violation rate (baseline → DAOS): 100% → 100%
-- LAW_014 violation rate (baseline → DAOS): 75% → 50%
+- LAW_014 violation rate (baseline → DAOS): 75% → 100%
