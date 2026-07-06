@@ -142,6 +142,12 @@ export function computeAggregateStats(pairs: BenchmarkProductPair[]): BenchmarkA
   const compositeAreaDaos = pairs
     .map((pair) => pair.daos.compositeProductAreaRatio)
     .filter((value): value is number => value != null);
+  const placementFoundBaseline = pairs.filter((pair) => pair.baseline.compositePlacementFound).length;
+  const placementFoundDaos = pairs.filter((pair) => pair.daos.compositePlacementFound).length;
+  const extractCorrectedBaseline = pairs.filter((pair) => pair.baseline.extractAreaCorrected).length;
+  const extractCorrectedDaos = pairs.filter((pair) => pair.daos.extractAreaCorrected).length;
+  const successfulBaseline = pairs.filter((pair) => !pair.baseline.error).length;
+  const successfulDaos = pairs.filter((pair) => !pair.daos.error).length;
 
   const law003BaselineCount = pairs.filter((pair) => pair.baseline.law003WhitespaceViolation).length;
   const law003DaosCount = pairs.filter((pair) => pair.daos.law003WhitespaceViolation).length;
@@ -203,6 +209,14 @@ export function computeAggregateStats(pairs: BenchmarkProductPair[]): BenchmarkA
     averageSceneFillRiskDaos: average(sceneFillDaos),
     averageCompositeProductAreaRatioBaseline: average(compositeAreaBaseline),
     averageCompositeProductAreaRatioDaos: average(compositeAreaDaos),
+    compositePlacementFoundRateBaseline:
+      successfulBaseline > 0 ? placementFoundBaseline / successfulBaseline : undefined,
+    compositePlacementFoundRateDaos:
+      successfulDaos > 0 ? placementFoundDaos / successfulDaos : undefined,
+    extractAreaCorrectedRateBaseline:
+      successfulBaseline > 0 ? extractCorrectedBaseline / successfulBaseline : undefined,
+    extractAreaCorrectedRateDaos:
+      successfulDaos > 0 ? extractCorrectedDaos / successfulDaos : undefined,
     meaningLossImproved,
     modulesCompiledImproved,
   };

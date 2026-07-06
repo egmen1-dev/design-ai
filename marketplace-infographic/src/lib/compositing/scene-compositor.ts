@@ -30,6 +30,11 @@ import {
   applyFloorColorSpill,
   fitProductWithSafePlacement,
 } from "./alpha-fit";
+import {
+  createSafeExtractArea,
+  mergeExtractGuard,
+  type ExtractAreaGuard,
+} from "@/lib/daos/compositor/safe-extract-area";
 import { publicDir, resolvePublicAssetPath, writablePublicDir } from "@/lib/runtime-paths";
 
 const CANVAS_W = WB_COVER.width;
@@ -78,6 +83,7 @@ async function resizeBackground(bgBuffer: Buffer): Promise<Buffer> {
 export async function softenBackgroundCenter(
   bgBuffer: Buffer,
   layout: SceneCompositeOptions["layout"] = "marketplace",
+  extractGuard?: ExtractAreaGuard,
 ): Promise<Buffer> {
   const resized = await resizeBackground(bgBuffer);
   if (layout === "marketplace") {
@@ -88,9 +94,14 @@ export async function softenBackgroundCenter(
   const ph = Math.round(CANVAS_H * 0.32);
   const left = Math.round((CANVAS_W - pw) / 2);
   const top = Math.round(CANVAS_H * 0.3);
+  const safeExtract = createSafeExtractArea(
+    { left, top, width: pw, height: ph },
+    { width: CANVAS_W, height: CANVAS_H },
+  );
+  mergeExtractGuard(extractGuard, safeExtract);
 
   const patch = await sharp(resized)
-    .extract({ left, top, width: pw, height: ph })
+    .extract(safeExtract.area)
     .blur(18)
     .modulate({ brightness: 1.03, saturation: 0.94 })
     .toBuffer();
@@ -113,7 +124,7 @@ export async function softenBackgroundCenter(
     .toBuffer();
 
   return sharp(resized)
-    .composite([{ input: feathered, left, top, blend: "over" }])
+    .composite([{ input: feathered, left: safeExtract.area.left, top: safeExtract.area.top, blend: "over" }])
     .png()
     .toBuffer();
 }
@@ -268,6 +279,8 @@ export type SceneCompositeResult = {
   mergedBuffer: Buffer;
   lighting: Awaited<ReturnType<typeof analyzeSceneLighting>>;
   productPlacement: { left: number; top: number; width: number; height: number };
+  extractAreaWarnings?: string[];
+  extractAreaCorrected?: boolean;
 };
 
 export async function compositeProductIntoScene(
@@ -280,6 +293,7 @@ export async function compositeProductIntoScene(
   const objectScale = options.objectScale ?? 0.78;
   const productScaleMultiplier = Math.max(1, options.productScaleMultiplier ?? 1);
   const comp = options.compositionLayout?.product;
+  const extractGuard: ExtractAreaGuard = { warnings: [], corrected: false };
 
   const [bgRaw, productRaw] = await Promise.all([
     loadImageBuffer(backgroundUrl),
@@ -359,7 +373,7 @@ export async function compositeProductIntoScene(
     options.compositionLayout,
   );
 
-  const bgPrepared = await softenBackgroundCenter(bgRaw, layout);
+  const bgPrepared = await softenBackgroundCenter(bgRaw, layout, extractGuard);
   const footCanvasY = productTop + alphaFootBottom;
 
   const floorContact = await renderFloorContactShadow(
@@ -367,6 +381,7 @@ export async function compositeProductIntoScene(
     productLeft,
     footCanvasY,
     floorColor,
+    extractGuard,
   );
   const floorReflection = await renderFloorReflection(
     product.buffer,
@@ -374,6 +389,7 @@ export async function compositeProductIntoScene(
     productTop,
     footCanvasY,
     floorColor,
+    extractGuard,
   );
 
   const shadows = await generateShadows({
@@ -388,6 +404,7 @@ export async function compositeProductIntoScene(
     productBuffer: product.buffer,
     floorColor,
     lightingDirectionOverride: scene.lightingDirection,
+    extractGuard,
   });
 
   const composites: sharp.OverlayOptions[] = shadows.map((s) => ({
@@ -475,6 +492,8 @@ export async function compositeProductIntoScene(
     mergedBuffer,
     lighting,
     productPlacement: finalPlacement,
+    extractAreaWarnings: extractGuard.warnings.length ? [...extractGuard.warnings] : undefined,
+    extractAreaCorrected: extractGuard.corrected || undefined,
   };
 }
 

@@ -185,6 +185,9 @@ export type GenerationDiagnosticReport = {
     compositeProductAreaRatio?: number;
     compositeProductWidthRatio?: number;
     compositeProductHeightRatio?: number;
+    extractAreaCorrected?: boolean;
+    extractAreaWarnings?: string[];
+    compositePlacementFound?: boolean;
   };
 };
 

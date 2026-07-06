@@ -67,6 +67,8 @@ export type BenchmarkRunMetrics = {
   compositeProductAreaRatio?: number;
   compositeProductWidthRatio?: number;
   compositeProductHeightRatio?: number;
+  extractAreaCorrected?: boolean;
+  compositePlacementFound?: boolean;
 };
 
 export type BenchmarkPairDelta = {
@@ -126,6 +128,10 @@ export type BenchmarkAggregateStats = {
   averageSceneFillRiskDaos?: number;
   averageCompositeProductAreaRatioBaseline?: number;
   averageCompositeProductAreaRatioDaos?: number;
+  compositePlacementFoundRateBaseline?: number;
+  compositePlacementFoundRateDaos?: number;
+  extractAreaCorrectedRateBaseline?: number;
+  extractAreaCorrectedRateDaos?: number;
   meaningLossImproved: boolean;
   modulesCompiledImproved: boolean;
 };

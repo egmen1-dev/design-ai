@@ -49,6 +49,8 @@ function formatMetricsRow(
     metrics.emptySpaceEstimate ?? "",
     metrics.sceneFillRisk ?? "",
     metrics.compositeProductAreaRatio ?? "",
+    metrics.compositePlacementFound === true ? "true" : "",
+    metrics.extractAreaCorrected === true ? "true" : "",
     metrics.error ?? "",
   ];
 }
@@ -108,6 +110,8 @@ function renderCsv(results: BenchmarkResults): string {
     "emptySpaceEstimate",
     "sceneFillRisk",
     "compositeProductAreaRatio",
+    "compositePlacementFound",
+    "extractAreaCorrected",
     "error",
   ].join(",");
 
@@ -334,6 +338,12 @@ function renderReport(results: BenchmarkResults): string {
   );
   lines.push(
     `- Average compositeProductAreaRatio (patch OFF → ON): ${results.aggregate.averageCompositeProductAreaRatioBaseline?.toFixed(2) ?? "n/a"} → ${results.aggregate.averageCompositeProductAreaRatioDaos?.toFixed(2) ?? "n/a"}`,
+  );
+  lines.push(
+    `- compositePlacementFound rate (patch OFF → ON): ${formatRate(results.aggregate.compositePlacementFoundRateBaseline)} → ${formatRate(results.aggregate.compositePlacementFoundRateDaos)}`,
+  );
+  lines.push(
+    `- extractAreaCorrected rate (patch OFF → ON): ${formatRate(results.aggregate.extractAreaCorrectedRateBaseline)} → ${formatRate(results.aggregate.extractAreaCorrectedRateDaos)}`,
   );
 
   return lines.join("\n");

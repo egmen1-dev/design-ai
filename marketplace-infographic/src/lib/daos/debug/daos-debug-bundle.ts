@@ -105,6 +105,8 @@ export type DaosDebugBundle = {
     compositeProductAreaRatio?: number;
     compositeProductWidthRatio?: number;
     compositeProductHeightRatio?: number;
+    extractAreaCorrected?: boolean;
+    extractAreaWarnings?: string[];
   };
   generationMode: DAOSGenerationMode;
   generationPolicySummary: ReturnType<typeof summarizeDaosGenerationPolicy>;
@@ -150,6 +152,8 @@ export function createDaosDebugBundle(
     productScaleAudit?: ProductScaleAudit;
     productScalePatch?: ProductScalePatch;
     compositePlacement?: NormalizedCompositePlacement;
+    extractAreaCorrected?: boolean;
+    extractAreaWarnings?: string[];
   },
 ): DaosDebugBundle {
   const renderDebug = options?.renderDebug;
@@ -183,6 +187,8 @@ export function createDaosDebugBundle(
   const productScaleAudit = options?.productScaleAudit;
   const productScalePatch = options?.productScalePatch;
   const compositePlacement = options?.compositePlacement;
+  const extractAreaCorrected = options?.extractAreaCorrected;
+  const extractAreaWarnings = options?.extractAreaWarnings;
   const productScaleSummary = productScaleAudit
     ? summarizeProductScaleAudit(productScaleAudit)
     : undefined;
@@ -294,6 +300,8 @@ export function createDaosDebugBundle(
             compositeProductHeightRatio: compositePlacement.heightRatio,
           }
         : {}),
+      ...(extractAreaCorrected != null ? { extractAreaCorrected } : {}),
+      ...(extractAreaWarnings?.length ? { extractAreaWarnings } : {}),
     },
     generationMode,
     generationPolicySummary,

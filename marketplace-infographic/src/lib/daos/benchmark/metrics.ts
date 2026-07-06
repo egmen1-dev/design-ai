@@ -146,6 +146,8 @@ export async function extractMetricsFromBundle(
       compositeProductAreaRatio: asNumber(diagnostics.compositeProductAreaRatio),
       compositeProductWidthRatio: asNumber(diagnostics.compositeProductWidthRatio),
       compositeProductHeightRatio: asNumber(diagnostics.compositeProductHeightRatio),
+      extractAreaCorrected: diagnostics.extractAreaCorrected === true,
+      compositePlacementFound: diagnostics.compositePlacementFound === true,
     };
   } catch {
     return {};

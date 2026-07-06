@@ -378,6 +378,8 @@ function daosDiagnosticSummary(
     compositeProductAreaRatio?: number;
     compositeProductWidthRatio?: number;
     compositeProductHeightRatio?: number;
+    extractAreaCorrected?: boolean;
+    extractAreaWarnings?: string[];
   },
 ) {
   return {
@@ -2577,6 +2579,8 @@ export async function handleGenerateInfographic(
       productScaleAudit,
       productScalePatch: productScalePatchResult?.patch,
       compositePlacement,
+      extractAreaCorrected: compositeResult?.extractAreaCorrected,
+      extractAreaWarnings: compositeResult?.extractAreaWarnings,
     });
     const daosDebugSummary = createDaosDebugSummary(daosDebugBundle);
     const daosFinalGate = evaluateDaosFinalGate({
@@ -2763,6 +2767,9 @@ export async function handleGenerateInfographic(
       compositeProductAreaRatio: daosDebugBundle.diagnostics.compositeProductAreaRatio,
       compositeProductWidthRatio: daosDebugBundle.diagnostics.compositeProductWidthRatio,
       compositeProductHeightRatio: daosDebugBundle.diagnostics.compositeProductHeightRatio,
+      extractAreaCorrected: daosDebugBundle.diagnostics.extractAreaCorrected,
+      extractAreaWarnings: daosDebugBundle.diagnostics.extractAreaWarnings,
+      compositePlacementFound: daosDebugBundle.diagnostics.compositePlacementFound,
     });
 
     if (process.env.DAOS_DEBUG === "1") {
