@@ -27,13 +27,13 @@ Status: **STOP**
 
 - Provider: pollinations
 - Model: flux
-- Average provider latency: 553ms
+- Average provider latency: 597ms
 - Fallback runs: 0 / 10
 
 ## Generation statistics
 
 - Total runs: 10
-- Average generation time: 3017ms
+- Average generation time: 3128ms
 - Average prompt delta: 0.0 chars
 
 ## Cost estimation
