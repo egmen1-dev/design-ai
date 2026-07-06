@@ -185,6 +185,7 @@ import {
   type ProductScalePatchResult,
 } from "@/lib/daos/compositor/product-scale-patch";
 import { applyAsymmetricLimitsToCompositeOptions, type AsymmetricLimits } from "@/lib/daos/compositor/asymmetric-limits";
+import { applyWideHeroStrategy, type WideHeroStrategy } from "@/lib/daos/compositor/wide-hero-strategy";
 import { normalizeCompositePlacement } from "@/lib/daos/compositor/composite-result-bridge";
 import { createLaw003RecalibrationReport, extractConstitutionLaw003Whitespace } from "@/lib/daos/governance/law003-recalibration";
 import type { SceneCompositeOptions } from "@/lib/compositing/scene-compositor";
@@ -200,7 +201,12 @@ function buildDaosSceneCompositeOptions(input: {
   layoutSpec?: LayoutSpec;
   productCategory?: string;
   productHint?: string;
-}): { options: SceneCompositeOptions; productScalePatch: ProductScalePatchResult; asymmetricLimits?: AsymmetricLimits } {
+}): {
+  options: SceneCompositeOptions;
+  productScalePatch: ProductScalePatchResult;
+  asymmetricLimits?: AsymmetricLimits;
+  wideHeroStrategy?: WideHeroStrategy;
+} {
   const metrics = input.compositionLayout?.metrics;
   const overlayDensity =
     metrics != null
@@ -237,10 +243,28 @@ function buildDaosSceneCompositeOptions(input: {
     },
   );
 
+  const wideHeroPrep = applyWideHeroStrategy(asymmetricPrep.options, {
+    compositionLayout: productScalePatch.compositionLayout ?? input.compositionLayout,
+    aspectRatioPlacementPatch: productScalePatch.aspectRatioPlacementPatch,
+    productCategory: input.productCategory,
+    productHint: input.productHint,
+    law014RiskHigh: (metrics?.overlapPct ?? 0) > 8,
+    law014ContrastViolation: false,
+    overlapPct: metrics?.overlapPct,
+    extractAreaWarnings: productScalePatch.aspectRatioPlacementPatch?.targetUnreachable
+      ? ["HEIGHT_OVERFLOW"]
+      : productScalePatch.aspectRatioPlacementPatch?.heightOverflowPrevented
+        ? ["HEIGHT_OVERFLOW"]
+        : undefined,
+    objectScale: productScalePatch.objectScale ?? input.objectScale,
+    productScaleMultiplier: productScalePatch.productScaleMultiplier,
+  });
+
   return {
-    options: asymmetricPrep.options,
+    options: wideHeroPrep.options,
     productScalePatch,
-    asymmetricLimits: asymmetricPrep.limits,
+    asymmetricLimits: wideHeroPrep.options.asymmetricLimits ?? asymmetricPrep.limits,
+    wideHeroStrategy: wideHeroPrep.strategy,
   };
 }
 
@@ -422,6 +446,12 @@ function daosDiagnosticSummary(
     compositorFitStrategy?: string;
     compositorMaxWidthPct?: number;
     compositorMaxHeightPct?: number;
+    wideHeroStrategyEnabled?: boolean;
+    wideHeroStrategyApplied?: boolean;
+    wideHeroStrategy?: string;
+    wideHeroReason?: string;
+    wideHeroWidthTarget?: number;
+    wideHeroCropSafe?: number;
     compositePlacementFound?: boolean;
     compositePlacementSource?: string;
     compositeProductAreaRatio?: number;
@@ -1556,6 +1586,7 @@ export async function handleGenerateInfographic(
     let compositeResult: Awaited<ReturnType<typeof compositeProductIntoScene>> | undefined;
     let productScalePatchResult: ProductScalePatchResult | undefined;
     let asymmetricLimitsResult: AsymmetricLimits | undefined;
+    let wideHeroStrategyResult: WideHeroStrategy | undefined;
     let qualityValidation: QualityValidationResult | undefined;
     let photoReview: CommercialPhotographerReview | undefined;
     let mergedImageDataUrl: string | undefined;
@@ -1721,6 +1752,7 @@ export async function handleGenerateInfographic(
           });
           productScalePatchResult = compositePrep.productScalePatch;
           asymmetricLimitsResult = compositePrep.asymmetricLimits;
+          wideHeroStrategyResult = compositePrep.wideHeroStrategy;
           compositeResult = await compositeProductIntoScene(
             backgroundUrl,
             productCutoutPath,
@@ -1883,6 +1915,7 @@ export async function handleGenerateInfographic(
             });
             productScalePatchResult = compositePrep.productScalePatch;
           asymmetricLimitsResult = compositePrep.asymmetricLimits;
+          wideHeroStrategyResult = compositePrep.wideHeroStrategy;
             compositeResult = await compositeProductIntoScene(
               bg.url,
               productCutoutPath,
@@ -2057,6 +2090,7 @@ export async function handleGenerateInfographic(
           });
           productScalePatchResult = compositePrep.productScalePatch;
           asymmetricLimitsResult = compositePrep.asymmetricLimits;
+          wideHeroStrategyResult = compositePrep.wideHeroStrategy;
           compositeResult = await compositeProductIntoScene(
             bg.url,
             productCutoutPath,
@@ -2727,6 +2761,7 @@ export async function handleGenerateInfographic(
       productScalePatch: productScalePatchResult?.patch,
       aspectRatioPlacementPatch: productScalePatchResult?.aspectRatioPlacementPatch,
       asymmetricLimits: asymmetricLimitsResult,
+      wideHeroStrategy: wideHeroStrategyResult,
       compositePlacement,
       extractAreaCorrected: compositeResult?.extractAreaCorrected,
       extractAreaWarnings: compositeResult?.extractAreaWarnings,
@@ -2932,6 +2967,12 @@ export async function handleGenerateInfographic(
       compositorFitStrategy: daosDebugBundle.diagnostics.compositorFitStrategy,
       compositorMaxWidthPct: daosDebugBundle.diagnostics.compositorMaxWidthPct,
       compositorMaxHeightPct: daosDebugBundle.diagnostics.compositorMaxHeightPct,
+      wideHeroStrategyEnabled: daosDebugBundle.diagnostics.wideHeroStrategyEnabled,
+      wideHeroStrategyApplied: daosDebugBundle.diagnostics.wideHeroStrategyApplied,
+      wideHeroStrategy: daosDebugBundle.diagnostics.wideHeroStrategy,
+      wideHeroReason: daosDebugBundle.diagnostics.wideHeroReason,
+      wideHeroWidthTarget: daosDebugBundle.diagnostics.wideHeroWidthTarget,
+      wideHeroCropSafe: daosDebugBundle.diagnostics.wideHeroCropSafe,
       compositePlacementFound: daosDebugBundle.diagnostics.compositePlacementFound,
       compositePlacementSource: daosDebugBundle.diagnostics.compositePlacementSource,
       compositeProductAreaRatio: daosDebugBundle.diagnostics.compositeProductAreaRatio,

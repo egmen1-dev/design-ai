@@ -28,6 +28,7 @@ import { summarizeProductScaleAudit } from "../audit/product-scale-audit";
 import type { ProductScalePatch } from "../compositor/product-scale-patch";
 import type { AspectRatioPlacementPatch } from "../compositor/aspect-ratio-placement-patch";
 import type { AsymmetricLimits } from "../compositor/asymmetric-limits";
+import type { WideHeroStrategy } from "../compositor/wide-hero-strategy";
 import type { NormalizedCompositePlacement } from "../compositor/composite-result-bridge";
 import type { Law003RecalibrationReport } from "../governance/law003-recalibration";
 import type { Law003GovernanceSource } from "../governance/law003-soft-governance";
@@ -121,6 +122,12 @@ export type DaosDebugBundle = {
     compositorFitStrategy?: string;
     compositorMaxWidthPct?: number;
     compositorMaxHeightPct?: number;
+    wideHeroStrategyEnabled?: boolean;
+    wideHeroStrategyApplied?: boolean;
+    wideHeroStrategy?: string;
+    wideHeroReason?: string;
+    wideHeroWidthTarget?: number;
+    wideHeroCropSafe?: number;
     compositePlacementFound?: boolean;
     compositePlacementSource?: string;
     compositeProductAreaRatio?: number;
@@ -162,6 +169,7 @@ export type DaosDebugBundle = {
   productScalePatch?: ProductScalePatch;
   aspectRatioPlacementPatch?: AspectRatioPlacementPatch;
   asymmetricLimits?: AsymmetricLimits;
+  wideHeroStrategy?: WideHeroStrategy;
   compositePlacement?: NormalizedCompositePlacement;
   law003Recalibration?: Law003RecalibrationReport;
   overlayGate?: DAOSOverlayGateResult;
@@ -195,6 +203,7 @@ export function createDaosDebugBundle(
     productScalePatch?: ProductScalePatch;
     aspectRatioPlacementPatch?: AspectRatioPlacementPatch;
     asymmetricLimits?: AsymmetricLimits;
+    wideHeroStrategy?: WideHeroStrategy;
     compositePlacement?: NormalizedCompositePlacement;
     extractAreaCorrected?: boolean;
     extractAreaWarnings?: string[];
@@ -235,6 +244,7 @@ export function createDaosDebugBundle(
   const productScalePatch = options?.productScalePatch;
   const aspectRatioPlacementPatch = options?.aspectRatioPlacementPatch;
   const asymmetricLimits = options?.asymmetricLimits;
+  const wideHeroStrategy = options?.wideHeroStrategy;
   const compositePlacement = options?.compositePlacement;
   const extractAreaCorrected = options?.extractAreaCorrected;
   const extractAreaWarnings = options?.extractAreaWarnings;
@@ -378,6 +388,16 @@ export function createDaosDebugBundle(
             compositorMaxHeightPct: asymmetricLimits.maxHeightPct,
           }
         : {}),
+      ...(wideHeroStrategy
+        ? {
+            wideHeroStrategyEnabled: wideHeroStrategy.enabled,
+            wideHeroStrategyApplied: wideHeroStrategy.applied,
+            wideHeroStrategy: wideHeroStrategy.strategy,
+            wideHeroReason: wideHeroStrategy.reason,
+            wideHeroWidthTarget: wideHeroStrategy.widthTargetPct,
+            wideHeroCropSafe: wideHeroStrategy.cropSafeHorizontalPct,
+          }
+        : {}),
       compositePlacementFound: Boolean(compositePlacement),
       ...(compositePlacement
         ? {
@@ -422,6 +442,7 @@ export function createDaosDebugBundle(
     productScalePatch,
     aspectRatioPlacementPatch,
     asymmetricLimits,
+    wideHeroStrategy,
     compositePlacement,
     law003Recalibration,
     overlayGate,
