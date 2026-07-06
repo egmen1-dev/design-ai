@@ -180,6 +180,10 @@ import {
   type ContrastOverlapPatchResult,
 } from "@/lib/daos/overlay/contrast-overlap-patch";
 import {
+  applyWideProductLayoutPatch,
+  type WideProductLayoutPatchResult,
+} from "@/lib/daos/overlay/wide-product-layout";
+import {
   applyProductScalePatch,
   inferProductComplexity,
   type ProductScalePatchResult,
@@ -2207,6 +2211,7 @@ export async function handleGenerateInfographic(
     let overlayLayoutPatchResult: OverlayLayoutPatchResult | undefined;
     let geometryWhitespacePatchResult: GeometryWhitespacePatchResult | undefined;
     let contrastOverlapPatchResult: ContrastOverlapPatchResult | undefined;
+    let wideProductLayoutPatchResult: WideProductLayoutPatchResult | undefined;
 
     if (sdData.layout === "marketplace") {
       const prePatchAuditInput = {
@@ -2300,6 +2305,22 @@ export async function handleGenerateInfographic(
         renderLayoutSpec = contrastOverlapPatchResult.layoutSpec ?? renderLayoutSpec;
         renderCompositionLayout =
           contrastOverlapPatchResult.compositionLayout ?? renderCompositionLayout;
+      }
+
+      wideProductLayoutPatchResult = applyWideProductLayoutPatch({
+        layoutSpec: renderLayoutSpec,
+        infographicData: renderInfographicData,
+        compositionLayout: renderCompositionLayout,
+        productAspectRatio: productScalePatchResult?.aspectRatioPlacementPatch?.productAspectRatio,
+        productCategory: analysis.category,
+        productHint: input.prompt,
+      });
+      if (wideProductLayoutPatchResult.patch.applied) {
+        renderInfographicData =
+          wideProductLayoutPatchResult.infographicData ?? renderInfographicData;
+        renderLayoutSpec = wideProductLayoutPatchResult.layoutSpec ?? renderLayoutSpec;
+        renderCompositionLayout =
+          wideProductLayoutPatchResult.compositionLayout ?? renderCompositionLayout;
       }
     }
 
@@ -2762,6 +2783,7 @@ export async function handleGenerateInfographic(
       aspectRatioPlacementPatch: productScalePatchResult?.aspectRatioPlacementPatch,
       asymmetricLimits: asymmetricLimitsResult,
       wideHeroStrategy: wideHeroStrategyResult,
+      wideProductLayoutPatch: wideProductLayoutPatchResult?.patch,
       compositePlacement,
       extractAreaCorrected: compositeResult?.extractAreaCorrected,
       extractAreaWarnings: compositeResult?.extractAreaWarnings,
