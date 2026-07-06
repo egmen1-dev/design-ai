@@ -1,0 +1,658 @@
+{
+  "version": 1,
+  "phase": 1,
+  "createdAt": "2026-07-06T12:31:45.339Z",
+  "catalogDescription": "DAOS benchmark Phase 1 — five products with varied visual complexity",
+  "sharedRenderSettings": {
+    "provider": "pollinations",
+    "model": "flux",
+    "renderEngine": "v17"
+  },
+  "envProfiles": {
+    "baseline": {
+      "DAOS_PROMPT_CONTEXT": "0",
+      "DAOS_RENDER_CONTEXT": "0",
+      "DAOS_V17_PROMPT_BRIDGE": "0",
+      "DAOS_V17_MODULES_BRIDGE": "0",
+      "DAOS_V17_CTR_BRIDGE": "0",
+      "RENDER_ENGINE_V17": "1",
+      "FAST_GENERATION": "1",
+      "AI_MOCK_MODE": "true",
+      "DISABLE_IMGLY": "1",
+      "USE_FAST_CUTOUT": "1",
+      "DESIGN_GOVERNANCE_V171": "0",
+      "GOVERNANCE_ALLOW_GRADIENT_FALLBACK": "0"
+    },
+    "daosNoPatch": {
+      "DAOS_PROMPT_CONTEXT": "0",
+      "DAOS_RENDER_CONTEXT": "1",
+      "DAOS_V17_PROMPT_BRIDGE": "1",
+      "DAOS_V17_MODULES_BRIDGE": "1",
+      "DAOS_V17_CTR_BRIDGE": "1",
+      "RENDER_ENGINE_V17": "1",
+      "FAST_GENERATION": "1",
+      "AI_MOCK_MODE": "true",
+      "DISABLE_IMGLY": "1",
+      "USE_FAST_CUTOUT": "1",
+      "DESIGN_GOVERNANCE_V171": "0",
+      "GOVERNANCE_ALLOW_GRADIENT_FALLBACK": "0",
+      "DAOS_V17_PROMPT_COMPRESSION": "1",
+      "DAOS_OVERLAY_PATCH": "1",
+      "DAOS_GEOMETRY_WHITESPACE_PATCH": "0"
+    },
+    "daos": {
+      "DAOS_PROMPT_CONTEXT": "0",
+      "DAOS_RENDER_CONTEXT": "1",
+      "DAOS_V17_PROMPT_BRIDGE": "1",
+      "DAOS_V17_MODULES_BRIDGE": "1",
+      "DAOS_V17_CTR_BRIDGE": "1",
+      "RENDER_ENGINE_V17": "1",
+      "FAST_GENERATION": "1",
+      "AI_MOCK_MODE": "true",
+      "DISABLE_IMGLY": "1",
+      "USE_FAST_CUTOUT": "1",
+      "DESIGN_GOVERNANCE_V171": "0",
+      "GOVERNANCE_ALLOW_GRADIENT_FALLBACK": "0",
+      "DAOS_V17_PROMPT_COMPRESSION": "1",
+      "DAOS_OVERLAY_PATCH": "1",
+      "DAOS_GEOMETRY_WHITESPACE_PATCH": "1"
+    }
+  },
+  "pairs": [
+    {
+      "product": {
+        "id": "cordless-drill",
+        "name": "Cordless Drill",
+        "category": "electronics",
+        "complexity": "medium",
+        "prompt": "Профессиональная аккумуляторная дрель 18V для Wildberries: мощный крутящий момент 65 Нм, эргономичная рукоятка, премиальная карточка товара",
+        "image": {
+          "background": "#d2372d",
+          "accent": "#333333",
+          "shape": "drill"
+        }
+      },
+      "seed": "daos-benchmark-phase1-20260706:cordless-drill",
+      "baseline": {
+        "arm": "baseline",
+        "productId": "cordless-drill",
+        "productName": "Cordless Drill",
+        "imageId": "cmr9784o60007jsw7jmyhh6bs",
+        "generationTimeMs": 4500,
+        "meaningLossCount": 2,
+        "meaningLossCodes": [
+          "MODULES_IGNORED",
+          "DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES"
+        ],
+        "modulesIgnored": [
+          "layout_coordinates",
+          "hierarchy",
+          "typography_zones",
+          "ctr_wording"
+        ],
+        "modulesCompiled": [
+          "layout_coordinates",
+          "hierarchy",
+          "typography_zones",
+          "ctr_wording"
+        ],
+        "modulesStillIgnored": [],
+        "backgroundHash": "09c7ea087037fedaeb82d7e03508df1f",
+        "finalImageHash": "db72cafec9754836911f46b62a5da25e",
+        "projectId": "a77b89de-9e34-4341-98a2-aff43d30c5ed",
+        "runId": "3b5cea8d-3cd0-460e-a180-4d2da7ac63ca",
+        "summaryScore": 78,
+        "finalGateStatus": "warning",
+        "finalGateScore": 78,
+        "promptLength": 895,
+        "provider": "pollinations",
+        "model": "flux",
+        "latencyMs": 1282,
+        "fallbackUsed": false,
+        "composerQualityScore": 75,
+        "productAreaRatio": 0.42078960000000004,
+        "finalCompositionRisk": 0.424,
+        "overlayQualityScore": 42,
+        "overlayDensity": 0.12,
+        "pngOverlayFeelRisk": 1,
+        "law003WhitespaceViolation": true,
+        "law014ContrastViolation": false,
+        "productScaleScore": 0,
+        "productDominanceScore": 0,
+        "emptySpaceEstimate": 0.35,
+        "sceneFillRisk": 0.40149342
+      },
+      "daos": {
+        "arm": "daos",
+        "productId": "cordless-drill",
+        "productName": "Cordless Drill",
+        "imageId": "cmr9787mh000bjsw7s8w28eo4",
+        "generationTimeMs": 3822,
+        "meaningLossCount": 2,
+        "meaningLossCodes": [
+          "MODULES_IGNORED",
+          "DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES"
+        ],
+        "modulesIgnored": [
+          "layout_coordinates",
+          "hierarchy",
+          "typography_zones",
+          "ctr_wording"
+        ],
+        "modulesCompiled": [
+          "layout_coordinates",
+          "hierarchy",
+          "typography_zones",
+          "ctr_wording"
+        ],
+        "modulesStillIgnored": [],
+        "backgroundHash": "09c7ea087037fedaeb82d7e03508df1f",
+        "finalImageHash": "15a5133d1ebb748a99910e22462a073f",
+        "projectId": "4d5997c6-7a2a-4536-8037-8d548c5a9dc2",
+        "runId": "bff140f8-ed41-46bd-8a93-e5cbb2e23e06",
+        "summaryScore": 78,
+        "finalGateStatus": "warning",
+        "finalGateScore": 78,
+        "promptLength": 895,
+        "provider": "pollinations",
+        "model": "flux",
+        "latencyMs": 837,
+        "fallbackUsed": false,
+        "composerQualityScore": 75,
+        "productAreaRatio": 0.4336374000000001,
+        "finalCompositionRisk": 0.424,
+        "overlayQualityScore": 16,
+        "overlayDensity": 0.12188,
+        "pngOverlayFeelRisk": 1,
+        "law003WhitespaceViolation": true,
+        "law014ContrastViolation": true,
+        "productScaleScore": 0,
+        "productDominanceScore": 1,
+        "emptySpaceEstimate": 0.29,
+        "sceneFillRisk": 0.400303706958
+      },
+      "delta": {
+        "deltaSummaryScore": 0,
+        "deltaFinalGateScore": 0,
+        "deltaPromptLength": 0,
+        "deltaMeaningLoss": 0,
+        "deltaModulesCompiled": 0,
+        "deltaModulesStillIgnored": 0,
+        "backgroundHashChanged": false,
+        "finalImageHashChanged": true
+      }
+    },
+    {
+      "product": {
+        "id": "electric-kettle",
+        "name": "Electric Kettle",
+        "category": "kitchen",
+        "complexity": "low",
+        "prompt": "Электрический чайник 1.7 л для Wildberries: премиальная кухонная карточка товара",
+        "image": {
+          "background": "#e8f4f8",
+          "accent": "#c0c0c0",
+          "shape": "kettle"
+        }
+      },
+      "seed": "daos-benchmark-phase1-20260706:electric-kettle",
+      "baseline": {
+        "arm": "baseline",
+        "productId": "electric-kettle",
+        "productName": "Electric Kettle",
+        "imageId": "cmr978eai000kjsw76k9jw73r",
+        "generationTimeMs": 4250,
+        "meaningLossCount": 2,
+        "meaningLossCodes": [
+          "MODULES_IGNORED",
+          "DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES"
+        ],
+        "modulesIgnored": [
+          "layout_coordinates",
+          "hierarchy",
+          "typography_zones",
+          "ctr_wording"
+        ],
+        "modulesCompiled": [
+          "layout_coordinates",
+          "hierarchy",
+          "typography_zones",
+          "ctr_wording"
+        ],
+        "modulesStillIgnored": [],
+        "backgroundHash": "13da5f7cb08889f198b638efb9ac7faa",
+        "finalImageHash": "47dbb91f6750addd4a21ba426157fa86",
+        "projectId": "f9f6e5a6-0ff2-4272-8139-0012a6a64da1",
+        "runId": "43aff1a8-3997-468f-acc2-431d986cdf52",
+        "summaryScore": 78,
+        "finalGateStatus": "warning",
+        "finalGateScore": 78,
+        "promptLength": 848,
+        "provider": "pollinations",
+        "model": "flux",
+        "latencyMs": 476,
+        "fallbackUsed": false,
+        "composerQualityScore": 75,
+        "productAreaRatio": 0.3956736,
+        "finalCompositionRisk": 0.424,
+        "overlayQualityScore": 19,
+        "overlayDensity": 0.11599999999999999,
+        "pngOverlayFeelRisk": 1,
+        "law003WhitespaceViolation": true,
+        "law014ContrastViolation": true,
+        "productScaleScore": 0,
+        "productDominanceScore": 0,
+        "emptySpaceEstimate": 0.35,
+        "sceneFillRisk": 0.40170272
+      },
+      "daos": {
+        "arm": "daos",
+        "productId": "electric-kettle",
+        "productName": "Electric Kettle",
+        "imageId": "cmr978hsc000ojsw7oum7lfua",
+        "generationTimeMs": 4515,
+        "meaningLossCount": 2,
+        "meaningLossCodes": [
+          "MODULES_IGNORED",
+          "DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES"
+        ],
+        "modulesIgnored": [
+          "layout_coordinates",
+          "hierarchy",
+          "typography_zones",
+          "ctr_wording"
+        ],
+        "modulesCompiled": [
+          "layout_coordinates",
+          "hierarchy",
+          "typography_zones",
+          "ctr_wording"
+        ],
+        "modulesStillIgnored": [],
+        "backgroundHash": "13da5f7cb08889f198b638efb9ac7faa",
+        "finalImageHash": "a843b5e8fcea54d292f4a86644cab507",
+        "projectId": "69724ac2-1c23-40ee-bb58-e3dc1444c978",
+        "runId": "1963cee4-0b86-4f81-b2b9-6739690453be",
+        "summaryScore": 78,
+        "finalGateStatus": "warning",
+        "finalGateScore": 78,
+        "promptLength": 848,
+        "provider": "pollinations",
+        "model": "flux",
+        "latencyMs": 470,
+        "fallbackUsed": false,
+        "composerQualityScore": 75,
+        "productAreaRatio": 0.42078960000000004,
+        "finalCompositionRisk": 0.424,
+        "overlayQualityScore": 19,
+        "overlayDensity": 0.10688,
+        "pngOverlayFeelRisk": 1,
+        "law003WhitespaceViolation": true,
+        "law014ContrastViolation": true,
+        "productScaleScore": 0,
+        "productDominanceScore": 1,
+        "emptySpaceEstimate": 0.29,
+        "sceneFillRisk": 0.400442848632
+      },
+      "delta": {
+        "deltaSummaryScore": 0,
+        "deltaFinalGateScore": 0,
+        "deltaPromptLength": 0,
+        "deltaMeaningLoss": 0,
+        "deltaModulesCompiled": 0,
+        "deltaModulesStillIgnored": 0,
+        "backgroundHashChanged": false,
+        "finalImageHashChanged": true
+      }
+    },
+    {
+      "product": {
+        "id": "office-chair",
+        "name": "Office Chair",
+        "category": "furniture",
+        "complexity": "high",
+        "prompt": "Эргономичное офисное кресло для Wildberries: регулировка поясницы, дышащая сетка, премиальная карточка мебели",
+        "image": {
+          "background": "#2c3e50",
+          "accent": "#1a252f",
+          "shape": "chair"
+        }
+      },
+      "seed": "daos-benchmark-phase1-20260706:office-chair",
+      "baseline": {
+        "arm": "baseline",
+        "productId": "office-chair",
+        "productName": "Office Chair",
+        "generationTimeMs": 32,
+        "meaningLossCount": 0,
+        "meaningLossCodes": [],
+        "modulesIgnored": [],
+        "modulesCompiled": [],
+        "modulesStillIgnored": [],
+        "error": "[\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"oneThought\",\n      \"deferredSpecs\",\n      0\n    ]\n  },\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"deferredBullets\",\n      0\n    ]\n  }\n]"
+      },
+      "daos": {
+        "arm": "daos",
+        "productId": "office-chair",
+        "productName": "Office Chair",
+        "generationTimeMs": 31,
+        "meaningLossCount": 0,
+        "meaningLossCodes": [],
+        "modulesIgnored": [],
+        "modulesCompiled": [],
+        "modulesStillIgnored": [],
+        "error": "[\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"oneThought\",\n      \"deferredSpecs\",\n      0\n    ]\n  },\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"deferredBullets\",\n      0\n    ]\n  }\n]"
+      },
+      "delta": {
+        "deltaMeaningLoss": 0,
+        "deltaModulesCompiled": 0,
+        "deltaModulesStillIgnored": 0,
+        "backgroundHashChanged": false,
+        "finalImageHashChanged": false
+      }
+    },
+    {
+      "product": {
+        "id": "mattress",
+        "name": "Mattress",
+        "category": "home",
+        "complexity": "medium",
+        "prompt": "Ортопедический матрас 160x200 для Wildberries: независимые пружины, средняя жёсткость, премиальная карточка для сна",
+        "image": {
+          "background": "#f5f0e8",
+          "accent": "#d4c4b0",
+          "shape": "mattress"
+        }
+      },
+      "seed": "daos-benchmark-phase1-20260706:mattress",
+      "baseline": {
+        "arm": "baseline",
+        "productId": "mattress",
+        "productName": "Mattress",
+        "imageId": "cmr978oai000zjsw7orayezkf",
+        "generationTimeMs": 3729,
+        "meaningLossCount": 3,
+        "meaningLossCodes": [
+          "VISUAL_TO_RENDER_STRATEGY_MISMATCH",
+          "MODULES_IGNORED",
+          "DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES"
+        ],
+        "modulesIgnored": [
+          "layout_coordinates",
+          "hierarchy",
+          "typography_zones",
+          "ctr_wording"
+        ],
+        "modulesCompiled": [
+          "layout_coordinates",
+          "hierarchy",
+          "typography_zones",
+          "ctr_wording"
+        ],
+        "modulesStillIgnored": [],
+        "backgroundHash": "dc4677839ce8df0dbe67916ace4d1ed2",
+        "finalImageHash": "825d6d9e3f1eea84496c47dafc67155e",
+        "projectId": "ebc1cd8c-b276-4577-a437-dbd620479763",
+        "runId": "8480bef5-c48b-435e-9f2b-1c379884aa67",
+        "summaryScore": 73,
+        "finalGateStatus": "warning",
+        "finalGateScore": 73,
+        "promptLength": 892,
+        "provider": "pollinations",
+        "model": "flux",
+        "latencyMs": 418,
+        "fallbackUsed": false,
+        "composerQualityScore": 75,
+        "productAreaRatio": 0.4336374000000001,
+        "finalCompositionRisk": 0.424,
+        "overlayQualityScore": 16,
+        "overlayDensity": 0.131,
+        "pngOverlayFeelRisk": 1,
+        "law003WhitespaceViolation": true,
+        "law014ContrastViolation": true,
+        "productScaleScore": 0,
+        "productDominanceScore": 0,
+        "emptySpaceEstimate": 0.35,
+        "sceneFillRisk": 0.40138635500000003
+      },
+      "daos": {
+        "arm": "daos",
+        "productId": "mattress",
+        "productName": "Mattress",
+        "imageId": "cmr978qtq0013jsw7ubb27xis",
+        "generationTimeMs": 3278,
+        "meaningLossCount": 3,
+        "meaningLossCodes": [
+          "VISUAL_TO_RENDER_STRATEGY_MISMATCH",
+          "MODULES_IGNORED",
+          "DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES"
+        ],
+        "modulesIgnored": [
+          "layout_coordinates",
+          "hierarchy",
+          "typography_zones",
+          "ctr_wording"
+        ],
+        "modulesCompiled": [
+          "layout_coordinates",
+          "hierarchy",
+          "typography_zones",
+          "ctr_wording"
+        ],
+        "modulesStillIgnored": [],
+        "backgroundHash": "dc4677839ce8df0dbe67916ace4d1ed2",
+        "finalImageHash": "0aec4cb72880fb26010ff447699652fb",
+        "projectId": "11ae5901-0ac7-4f3a-8225-dc53f0a15b09",
+        "runId": "7ee2c3d2-bb9f-447c-83f7-c6eb9df59367",
+        "summaryScore": 73,
+        "finalGateStatus": "warning",
+        "finalGateScore": 73,
+        "promptLength": 892,
+        "provider": "pollinations",
+        "model": "flux",
+        "latencyMs": 446,
+        "fallbackUsed": false,
+        "composerQualityScore": 75,
+        "productAreaRatio": 0.3956736,
+        "finalCompositionRisk": 0.424,
+        "overlayQualityScore": 42,
+        "overlayDensity": 0.1104,
+        "pngOverlayFeelRisk": 1,
+        "law003WhitespaceViolation": true,
+        "law014ContrastViolation": false,
+        "productScaleScore": 0,
+        "productDominanceScore": 1,
+        "emptySpaceEstimate": 0.29,
+        "sceneFillRisk": 0.400714854912
+      },
+      "delta": {
+        "deltaSummaryScore": 0,
+        "deltaFinalGateScore": 0,
+        "deltaPromptLength": 0,
+        "deltaMeaningLoss": 0,
+        "deltaModulesCompiled": 0,
+        "deltaModulesStillIgnored": 0,
+        "backgroundHashChanged": false,
+        "finalImageHashChanged": true
+      }
+    },
+    {
+      "product": {
+        "id": "childrens-toy",
+        "name": "Children's Toy",
+        "category": "toys",
+        "complexity": "low",
+        "prompt": "Развивающая игрушка для детей 3+ для Wildberries: яркий дизайн, безопасные материалы, привлекательная детская карточка",
+        "image": {
+          "background": "#ffcc00",
+          "accent": "#ff6699",
+          "shape": "toy"
+        }
+      },
+      "seed": "daos-benchmark-phase1-20260706:childrens-toy",
+      "baseline": {
+        "arm": "baseline",
+        "productId": "childrens-toy",
+        "productName": "Children's Toy",
+        "imageId": "cmr978wvl001bjsw7hvkdxzsu",
+        "generationTimeMs": 3745,
+        "meaningLossCount": 3,
+        "meaningLossCodes": [
+          "VISUAL_TO_RENDER_STRATEGY_MISMATCH",
+          "MODULES_IGNORED",
+          "DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES"
+        ],
+        "modulesIgnored": [
+          "layout_coordinates",
+          "hierarchy",
+          "typography_zones",
+          "ctr_wording"
+        ],
+        "modulesCompiled": [
+          "layout_coordinates",
+          "hierarchy",
+          "typography_zones",
+          "ctr_wording"
+        ],
+        "modulesStillIgnored": [],
+        "backgroundHash": "991a1b6b06a97b32a78cb36dfd4c47ea",
+        "finalImageHash": "163c1974c20e33080078a13628bee3ce",
+        "projectId": "8a5df309-3302-4f8f-85f8-78ad6d1558e7",
+        "runId": "8efa770e-5a49-4b1a-a92e-8162b4ad111b",
+        "summaryScore": 73,
+        "finalGateStatus": "warning",
+        "finalGateScore": 73,
+        "promptLength": 869,
+        "provider": "pollinations",
+        "model": "flux",
+        "latencyMs": 420,
+        "fallbackUsed": false,
+        "composerQualityScore": 75,
+        "productAreaRatio": 0.4336374000000001,
+        "finalCompositionRisk": 0.424,
+        "overlayQualityScore": 16,
+        "overlayDensity": 0.131,
+        "pngOverlayFeelRisk": 1,
+        "law003WhitespaceViolation": true,
+        "law014ContrastViolation": true,
+        "productScaleScore": 0,
+        "productDominanceScore": 0,
+        "emptySpaceEstimate": 0.35,
+        "sceneFillRisk": 0.40138635500000003
+      },
+      "daos": {
+        "arm": "daos",
+        "productId": "childrens-toy",
+        "productName": "Children's Toy",
+        "imageId": "cmr978zhk001fjsw7pa3bwz5u",
+        "generationTimeMs": 3378,
+        "meaningLossCount": 3,
+        "meaningLossCodes": [
+          "VISUAL_TO_RENDER_STRATEGY_MISMATCH",
+          "MODULES_IGNORED",
+          "DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES"
+        ],
+        "modulesIgnored": [
+          "layout_coordinates",
+          "hierarchy",
+          "typography_zones",
+          "ctr_wording"
+        ],
+        "modulesCompiled": [
+          "layout_coordinates",
+          "hierarchy",
+          "typography_zones",
+          "ctr_wording"
+        ],
+        "modulesStillIgnored": [],
+        "backgroundHash": "991a1b6b06a97b32a78cb36dfd4c47ea",
+        "finalImageHash": "b06e9f9d194751441bc3375a9021fffd",
+        "projectId": "659d137a-62af-4fa3-84ec-eb7c9d545312",
+        "runId": "aa58a5f0-8c07-46b6-b513-1a8779aea6d2",
+        "summaryScore": 73,
+        "finalGateStatus": "warning",
+        "finalGateScore": 73,
+        "promptLength": 869,
+        "provider": "pollinations",
+        "model": "flux",
+        "latencyMs": 423,
+        "fallbackUsed": false,
+        "composerQualityScore": 75,
+        "productAreaRatio": 0.44667840000000003,
+        "finalCompositionRisk": 0.424,
+        "overlayQualityScore": 16,
+        "overlayDensity": 0.12188,
+        "pngOverlayFeelRisk": 1,
+        "law003WhitespaceViolation": true,
+        "law014ContrastViolation": true,
+        "productScaleScore": 0,
+        "productDominanceScore": 1,
+        "emptySpaceEstimate": 0.29,
+        "sceneFillRisk": 0.400162472928
+      },
+      "delta": {
+        "deltaSummaryScore": 0,
+        "deltaFinalGateScore": 0,
+        "deltaPromptLength": 0,
+        "deltaMeaningLoss": 0,
+        "deltaModulesCompiled": 0,
+        "deltaModulesStillIgnored": 0,
+        "backgroundHashChanged": false,
+        "finalImageHashChanged": true
+      }
+    }
+  ],
+  "aggregate": {
+    "count": 5,
+    "averageSummaryDelta": 0,
+    "medianSummaryDelta": 0,
+    "bestSummaryDelta": 0,
+    "worstSummaryDelta": 0,
+    "averagePromptDelta": 0,
+    "averageMeaningLossDelta": 0,
+    "averageModulesCompiledBaseline": 3.2,
+    "averageModulesCompiledDaos": 3.2,
+    "averageModulesCompiledDelta": 0,
+    "averageComposerQualityScoreBaseline": 75,
+    "averageComposerQualityScoreDaos": 75,
+    "averageComposerQualityDelta": 0,
+    "averageProductAreaRatioBaseline": 0.42093450000000004,
+    "averageProductAreaRatioDaos": 0.42419475000000006,
+    "averageFinalCompositionRiskBaseline": 0.424,
+    "averageFinalCompositionRiskDaos": 0.424,
+    "averageOverlayQualityScoreBaseline": 23.25,
+    "averageOverlayQualityScoreDaos": 23.25,
+    "averageOverlayDensityBaseline": 0.1245,
+    "averageOverlayDensityDaos": 0.11526,
+    "averagePngOverlayFeelRiskBaseline": 1,
+    "averagePngOverlayFeelRiskDaos": 1,
+    "law003ViolationRateBaseline": 1,
+    "law003ViolationRateDaos": 1,
+    "law014ViolationRateBaseline": 0.75,
+    "law014ViolationRateDaos": 0.75,
+    "averageProductScaleScoreBaseline": 0,
+    "averageProductScaleScoreDaos": 0,
+    "averageProductDominanceScoreBaseline": 0,
+    "averageProductDominanceScoreDaos": 1,
+    "averageEmptySpaceEstimateBaseline": 0.35,
+    "averageEmptySpaceEstimateDaos": 0.29,
+    "averageSceneFillRiskBaseline": 0.40149221250000006,
+    "averageSceneFillRiskDaos": 0.4004059708575,
+    "meaningLossImproved": false,
+    "modulesCompiledImproved": false
+  },
+  "decision": {
+    "status": "STOP",
+    "recommendation": "Do NOT benchmark 30 products. Address bottlenecks before scaling.",
+    "bottlenecks": [
+      "average summary delta 0.0 < +3",
+      "meaning-loss not improved (avg delta 0.0)",
+      "modulesCompiled not improved (avg delta 0.0)"
+    ],
+    "criteria": {
+      "averageSummaryDeltaGte3": false,
+      "meaningLossImproved": false,
+      "modulesCompiledImproved": false
+    }
+  }
+}
