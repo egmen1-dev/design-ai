@@ -1,6 +1,6 @@
 # DAOS Benchmark Report — Phase 1
 
-Created: 2026-07-06T15:47:01.730Z
+Created: 2026-07-06T16:37:06.603Z
 
 Catalog: DAOS benchmark Phase 1 — five products with varied visual complexity
 
@@ -12,9 +12,9 @@ Catalog: DAOS benchmark Phase 1 — five products with varied visual complexity
 
 ## Decision
 
-**BenchmarkStatus:** STOP
+**BenchmarkStatus:** SUCCESS
 
-**Recommendation:** Do NOT benchmark 30 products. Address bottlenecks before scaling.
+**Recommendation:** Continue to Phase 2 — run npm run daos:benchmark:30 when ready.
 
 **Bottlenecks:**
 
@@ -37,25 +37,25 @@ Seed: `daos-benchmark-phase1-20260706:cordless-drill` | Complexity: medium
 | modulesStillIgnored | 0 | 0 | 0 |
 | promptLength | 895 | 895 | 0 |
 | composerQualityScore | 93 | 93 | 0 |
-| productAreaRatio | 0.42 | 0.39 | — |
+| productAreaRatio | 0.39 | 0.39 | — |
 | finalCompositionRisk | 0.16 | 0.16 | — |
-| overlayQualityScore | 38 | 53 | 15 |
+| overlayQualityScore | 28 | 48 | 20 |
 | overlayDensity | 0.12 | 0.12 | — |
 | pngOverlayFeelRisk | 0.90 | 0.90 | — |
-| law003WhitespaceViolation | false | false | — |
+| law003WhitespaceViolation | true | false | — |
 | law003Before | true | true | — |
 | law003After | false | false | — |
 | law003StaleMetricDetected | true | true | — |
-| law014ContrastViolation | true | false | — |
-| productScaleScore | 81 | 77 | -4 |
-| productDominanceScore | 96 | 93 | — |
+| law014ContrastViolation | false | false | — |
+| productScaleScore | 77 | 77 | 0 |
+| productDominanceScore | 93 | 93 | — |
 | emptySpaceEstimate | 0.29 | 0.29 | — |
-| sceneFillRisk | 0.03 | 0.05 | — |
-| compositeProductAreaRatio | 0.42 | 0.39 | -0.03 |
-| provider latency | 471ms | 1045ms | — |
-| generation time | 5195ms | 6543ms | — |
+| sceneFillRisk | 0.05 | 0.05 | — |
+| compositeProductAreaRatio | 0.39 | 0.39 | 0.00 |
+| provider latency | 623ms | 597ms | — |
+| generation time | 5414ms | 9551ms | — |
 | background hash | `09c7ea087037…` | `09c7ea087037…` | same |
-| final image hash | `0e974a09eb9b…` | `b8ef489e44cf…` | changed |
+| final image hash | `b8ef489e44cf…` | `b8ef489e44cf…` | same |
 
 ### Electric Kettle (`electric-kettle`)
 
@@ -72,21 +72,21 @@ Seed: `daos-benchmark-phase1-20260706:electric-kettle` | Complexity: low
 | composerQualityScore | 93 | 93 | 0 |
 | productAreaRatio | 0.39 | 0.39 | — |
 | finalCompositionRisk | 0.16 | 0.16 | — |
-| overlayQualityScore | 57 | 72 | 15 |
-| overlayDensity | 0.13 | 0.10 | — |
+| overlayQualityScore | 47 | 67 | 20 |
+| overlayDensity | 0.10 | 0.10 | — |
 | pngOverlayFeelRisk | 0.20 | 0.20 | — |
-| law003WhitespaceViolation | false | false | — |
+| law003WhitespaceViolation | true | false | — |
 | law003Before | true | true | — |
 | law003After | false | false | — |
 | law003StaleMetricDetected | true | true | — |
-| law014ContrastViolation | true | false | — |
+| law014ContrastViolation | false | false | — |
 | productScaleScore | 77 | 77 | 0 |
 | productDominanceScore | 93 | 93 | — |
 | emptySpaceEstimate | 0.29 | 0.29 | — |
 | sceneFillRisk | 0.05 | 0.05 | — |
 | compositeProductAreaRatio | 0.39 | 0.39 | 0.00 |
-| provider latency | 1141ms | 462ms | — |
-| generation time | 7702ms | 6298ms | — |
+| provider latency | 592ms | 562ms | — |
+| generation time | 6223ms | 6220ms | — |
 | background hash | `13da5f7cb088…` | `13da5f7cb088…` | same |
 | final image hash | `009cde4effb8…` | `009cde4effb8…` | same |
 
@@ -119,7 +119,7 @@ Seed: `daos-benchmark-phase1-20260706:office-chair` | Complexity: high
 | sceneFillRisk | n/a | n/a | — |
 | compositeProductAreaRatio | n/a | n/a | n/a |
 | provider latency | n/ams | n/ams | — |
-| generation time | 45ms | 39ms | — |
+| generation time | 46ms | 45ms | — |
 | background hash | `n/a…` | `n/a…` | same |
 | final image hash | `n/a…` | `n/a…` | same |
 
@@ -136,25 +136,25 @@ Seed: `daos-benchmark-phase1-20260706:mattress` | Complexity: medium
 | modulesStillIgnored | 0 | 0 | 0 |
 | promptLength | 892 | 892 | 0 |
 | composerQualityScore | 72 | 72 | 0 |
-| productAreaRatio | 0.13 | 0.13 | — |
+| productAreaRatio | 0.15 | 0.13 | — |
 | finalCompositionRisk | 0.21 | 0.21 | — |
-| overlayQualityScore | 63 | 63 | 0 |
-| overlayDensity | 0.11 | 0.11 | — |
+| overlayQualityScore | 63 | 52 | -11 |
+| overlayDensity | 0.11 | 0.09 | — |
 | pngOverlayFeelRisk | 0.20 | 0.20 | — |
 | law003WhitespaceViolation | true | true | — |
 | law003Before | true | true | — |
 | law003After | true | true | — |
 | law003StaleMetricDetected | false | false | — |
 | law014ContrastViolation | false | false | — |
-| productScaleScore | 1 | 1 | 0 |
-| productDominanceScore | 46 | 46 | — |
+| productScaleScore | 6 | 1 | -5 |
+| productDominanceScore | 50 | 46 | — |
 | emptySpaceEstimate | 0.29 | 0.29 | — |
-| sceneFillRisk | 0.29 | 0.29 | — |
-| compositeProductAreaRatio | 0.13 | 0.13 | 0.00 |
-| provider latency | 436ms | 1061ms | — |
-| generation time | 5177ms | 5950ms | — |
+| sceneFillRisk | 0.27 | 0.29 | — |
+| compositeProductAreaRatio | 0.15 | 0.13 | -0.02 |
+| provider latency | 530ms | 1185ms | — |
+| generation time | 5381ms | 5893ms | — |
 | background hash | `dc4677839ce8…` | `dc4677839ce8…` | same |
-| final image hash | `d60892b1f1eb…` | `d60892b1f1eb…` | same |
+| final image hash | `540feb6fc4a6…` | `37259b4e6edd…` | changed |
 
 ### Children's Toy (`childrens-toy`)
 
@@ -168,26 +168,26 @@ Seed: `daos-benchmark-phase1-20260706:childrens-toy` | Complexity: low
 | modulesCompiled | 4 | 4 | 0 |
 | modulesStillIgnored | 0 | 0 | 0 |
 | promptLength | 869 | 869 | 0 |
-| composerQualityScore | 93 | 75 | -18 |
-| productAreaRatio | 0.38 | 0.35 | — |
+| composerQualityScore | 75 | 75 | 0 |
+| productAreaRatio | 0.35 | 0.35 | — |
 | finalCompositionRisk | 0.16 | 0.16 | — |
-| overlayQualityScore | 60 | 52 | -8 |
-| overlayDensity | 0.11 | 0.09 | — |
+| overlayQualityScore | 47 | 47 | 0 |
+| overlayDensity | 0.09 | 0.09 | — |
 | pngOverlayFeelRisk | 0.20 | 0.20 | — |
-| law003WhitespaceViolation | false | true | — |
+| law003WhitespaceViolation | true | true | — |
 | law003Before | true | true | — |
-| law003After | false | true | — |
+| law003After | true | true | — |
 | law003StaleMetricDetected | true | true | — |
-| law014ContrastViolation | true | false | — |
-| productScaleScore | 76 | 66 | -10 |
-| productDominanceScore | 92 | 88 | — |
+| law014ContrastViolation | false | false | — |
+| productScaleScore | 66 | 66 | 0 |
+| productDominanceScore | 88 | 88 | — |
 | emptySpaceEstimate | 0.29 | 0.29 | — |
-| sceneFillRisk | 0.06 | 0.09 | — |
-| compositeProductAreaRatio | 0.38 | 0.35 | -0.04 |
-| provider latency | 781ms | 468ms | — |
-| generation time | 6126ms | 5958ms | — |
+| sceneFillRisk | 0.09 | 0.09 | — |
+| compositeProductAreaRatio | 0.35 | 0.35 | 0.00 |
+| provider latency | 537ms | 543ms | — |
+| generation time | 5903ms | 5835ms | — |
 | background hash | `991a1b6b06a9…` | `991a1b6b06a9…` | same |
-| final image hash | `31ed829c3622…` | `f733c0caceb5…` | changed |
+| final image hash | `f733c0caceb5…` | `f733c0caceb5…` | same |
 
 ## Aggregate statistics
 
@@ -199,20 +199,23 @@ Seed: `daos-benchmark-phase1-20260706:childrens-toy` | Complexity: low
 - Average prompt delta: 0.0 chars
 - Average meaning-loss delta: 0.00
 - Average modulesCompiled (baseline → DAOS): 3.2 → 3.2
-- Average composerQualityScore (baseline → DAOS): 87.8 → 83.3
-- Average productAreaRatio (baseline → DAOS): 0.33 → 0.32
+- Average composerQualityScore (baseline → DAOS): 83.3 → 83.3
+- Average productAreaRatio (baseline → DAOS): 0.32 → 0.32
 - Average finalCompositionRisk (baseline → DAOS): 0.18 → 0.18
-- Average overlayQualityScore (baseline → DAOS): 54.5 → 60.0
-- Average overlayDensity (baseline → DAOS): 0.12 → 0.11
+- Average overlayQualityScore (baseline → DAOS): 46.3 → 53.5
+- Average overlayDensity (baseline → DAOS): 0.11 → 0.10
 - Average pngOverlayFeelRisk (baseline → DAOS): 0.38 → 0.38
-- LAW_003 violation rate (baseline → DAOS): 25% → 50%
-- LAW_014 violation rate (contrast patch OFF → ON): 75% → 0%
-- Average productScaleScore (baseline → DAOS): 58.8 → 55.3
-- Average productDominanceScore (baseline → DAOS): 81.8 → 80.0
+- LAW_003 violation rate (soft OFF → ON): 100% → 50%
+- LAW_014 violation rate (contrast patch OFF → ON): 0% → 0%
+- Average productScaleScore (baseline → DAOS): 56.5 → 55.3
+- Average productDominanceScore (baseline → DAOS): 81.0 → 80.0
 - Average emptySpaceEstimate (baseline → DAOS): 0.29 → 0.29
-- Average sceneFillRisk (baseline → DAOS): 0.11 → 0.12
-- Average compositeProductAreaRatio (patch OFF → ON): 0.33 → 0.32
+- Average sceneFillRisk (baseline → DAOS): 0.12 → 0.12
+- Average compositeProductAreaRatio (patch OFF → ON): 0.32 → 0.32
 - compositePlacementFound rate (patch OFF → ON): 100% → 100%
 - extractAreaCorrected rate (patch OFF → ON): 100% → 100%
-- LAW_003 violation rate recalibrated (contrast patch OFF → ON): 25% → 50%
-- LAW_003 stale metric rate (contrast patch OFF → ON): 75% → 75%
+- LAW_003 violation rate recalibrated (contrast patch OFF → ON): 50% → 50%
+- LAW_003 stale metric rate (soft OFF → ON): 75% → 75%
+- LAW_003 soft resolved rate (soft OFF → ON): 0% → 50%
+- Average overlayGateScore (soft OFF → ON): 46.3 → 53.5
+- overlayGate pass rate (soft OFF → ON): 0% → 0%
