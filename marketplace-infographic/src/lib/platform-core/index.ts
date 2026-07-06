@@ -1,0 +1,10 @@
+export { PlatformCore, ProjectState, ArchitectureRegistry, ConfigurationManager, VersionManager } from "./PlatformCore";
+export { createProjectContext } from "./context/ProjectContext";
+export { createExecutionContext } from "./execution/ExecutionContext";
+export type { IProjectState } from "./interfaces/IProjectState";
+export type { IPlatform, IProvider, IRuntime, IRegistry, ISkill, IPlugin } from "./interfaces";
+export type { ProjectContext } from "./context/ProjectContext";
+export type { ProjectStateData, DecisionTraceEntry } from "./project-state/types";
+export type { ExecutionContext } from "./execution/ExecutionContext";
+export type { VersionedObjectKind, VersionRecord } from "./versioning/VersionManager";
+export type { ConfigurationName } from "./configuration/ConfigurationManager";
