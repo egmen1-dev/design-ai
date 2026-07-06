@@ -2,6 +2,7 @@ import type { CompositionLayout } from "@/lib/composition/types";
 import type { LayoutSpec } from "@/lib/design/layout-spec";
 import type { ComposerQualityAudit } from "./composer-quality-audit";
 import type { OverlayQualityAudit } from "./overlay-quality-audit";
+import type { NormalizedCompositePlacement } from "../compositor/composite-result-bridge";
 
 export type ProductBounds = {
   left: number;
@@ -16,6 +17,7 @@ export type ProductScaleAuditInput = {
   finalImagePath?: string;
   productBounds?: ProductBounds;
   placement?: ProductBounds;
+  compositePlacement?: NormalizedCompositePlacement;
   compositionLayout?: CompositionLayout;
   layoutSpec?: LayoutSpec;
   composerQualityAudit?: ComposerQualityAudit;
@@ -76,22 +78,18 @@ function resolveCanvas(input: ProductScaleAuditInput): { width: number; height: 
   return undefined;
 }
 
-function boundsFromCompositionProduct(
-  layout?: CompositionLayout,
-): ProductBounds | undefined {
-  if (!layout?.product) return undefined;
-  return {
-    left: layout.product.left,
-    top: layout.product.top,
-    width: layout.product.width,
-    height: layout.product.height,
-  };
-}
-
 function resolvePlacementBounds(input: ProductScaleAuditInput): ProductBounds | undefined {
+  if (input.compositePlacement) {
+    return {
+      left: input.compositePlacement.x,
+      top: input.compositePlacement.y,
+      width: input.compositePlacement.width,
+      height: input.compositePlacement.height,
+    };
+  }
   if (input.placement) return input.placement;
   if (input.productBounds) return input.productBounds;
-  return boundsFromCompositionProduct(input.compositionLayout);
+  return undefined;
 }
 
 function ratioFromBounds(
@@ -115,8 +113,14 @@ function ratioFromBounds(
 }
 
 function resolveProductAreaRatio(input: ProductScaleAuditInput): number | undefined {
+  if (input.compositePlacement) {
+    return clamp01(input.compositePlacement.areaRatio);
+  }
+
   const canvas = resolveCanvas(input);
-  const fromPlacement = ratioFromBounds(resolvePlacementBounds(input), canvas).productAreaRatio;
+  const placementBounds =
+    input.placement ?? (input.productBounds ? input.productBounds : undefined);
+  const fromPlacement = ratioFromBounds(placementBounds, canvas).productAreaRatio;
   if (fromPlacement != null) return fromPlacement;
 
   if (typeof input.composerQualityAudit?.productAreaRatio === "number") {
@@ -136,6 +140,13 @@ function resolveWidthHeightRatios(
   input: ProductScaleAuditInput,
   productAreaRatio?: number,
 ): { productWidthRatio?: number; productHeightRatio?: number } {
+  if (input.compositePlacement) {
+    return {
+      productWidthRatio: clamp01(input.compositePlacement.widthRatio),
+      productHeightRatio: clamp01(input.compositePlacement.heightRatio),
+    };
+  }
+
   const canvas = resolveCanvas(input);
   const fromBounds = ratioFromBounds(resolvePlacementBounds(input), canvas);
   if (fromBounds.productWidthRatio != null && fromBounds.productHeightRatio != null) {
@@ -220,7 +231,7 @@ function computePlacementRisk(
   productAreaRatio?: number,
 ): number {
   let risk = 0;
-  if (!input.placement && !input.productBounds) risk += 0.25;
+  if (!input.compositePlacement && !input.placement && !input.productBounds) risk += 0.25;
   if (!input.productCutoutPath?.trim()) risk += 0.15;
   if (!input.finalImagePath?.trim()) risk += 0.1;
 
@@ -297,7 +308,12 @@ export function analyzeProductScale(input: ProductScaleAuditInput): ProductScale
     });
   }
 
-  if (!input.placement && !input.productBounds && !input.compositionLayout?.product) {
+  if (
+    !input.compositePlacement &&
+    !input.placement &&
+    !input.productBounds &&
+    !input.compositionLayout?.product
+  ) {
     warnings.push({
       code: "PRODUCT_SCALE_PLACEMENT_MISSING",
       message: "No compositor placement or layout product bounds available",
@@ -358,9 +374,11 @@ export function analyzeProductScale(input: ProductScaleAuditInput): ProductScale
     input.compositionLayout?.metrics?.productAreaPct != null
       ? input.compositionLayout.metrics.productAreaPct / 100
       : undefined;
-  const actualFromPlacement = input.placement && canvas
-    ? clamp01((input.placement.width * input.placement.height) / (canvas.width * canvas.height))
-    : undefined;
+  const actualFromPlacement = input.compositePlacement
+    ? input.compositePlacement.areaRatio
+    : input.placement && canvas
+      ? clamp01((input.placement.width * input.placement.height) / (canvas.width * canvas.height))
+      : undefined;
 
   if (
     plannedArea != null &&

@@ -136,6 +136,12 @@ export function computeAggregateStats(pairs: BenchmarkProductPair[]): BenchmarkA
   const sceneFillDaos = pairs
     .map((pair) => pair.daos.sceneFillRisk)
     .filter((value): value is number => value != null);
+  const compositeAreaBaseline = pairs
+    .map((pair) => pair.baseline.compositeProductAreaRatio)
+    .filter((value): value is number => value != null);
+  const compositeAreaDaos = pairs
+    .map((pair) => pair.daos.compositeProductAreaRatio)
+    .filter((value): value is number => value != null);
 
   const law003BaselineCount = pairs.filter((pair) => pair.baseline.law003WhitespaceViolation).length;
   const law003DaosCount = pairs.filter((pair) => pair.daos.law003WhitespaceViolation).length;
@@ -195,6 +201,8 @@ export function computeAggregateStats(pairs: BenchmarkProductPair[]): BenchmarkA
     averageEmptySpaceEstimateDaos: average(emptySpaceDaos),
     averageSceneFillRiskBaseline: average(sceneFillBaseline),
     averageSceneFillRiskDaos: average(sceneFillDaos),
+    averageCompositeProductAreaRatioBaseline: average(compositeAreaBaseline),
+    averageCompositeProductAreaRatioDaos: average(compositeAreaDaos),
     meaningLossImproved,
     modulesCompiledImproved,
   };

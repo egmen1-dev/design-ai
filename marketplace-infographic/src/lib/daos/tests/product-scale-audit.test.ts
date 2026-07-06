@@ -122,4 +122,77 @@ assert.ok(
 );
 console.log("✓ deterministic score");
 
+const compositePreferred = analyzeProductScale({
+  canvas,
+  compositePlacement: {
+    x: 100,
+    y: 150,
+    width: 600,
+    height: 700,
+    areaRatio: (600 * 700) / (900 * 1200),
+    widthRatio: 600 / 900,
+    heightRatio: 700 / 1200,
+    source: "productPlacement",
+    confidence: 0.95,
+  },
+  productBounds: { left: 280, top: 320, width: 340, height: 420 },
+  compositionLayout: {
+    canvas,
+    safeInsetPct: 0.06,
+    product: {
+      left: 280,
+      top: 320,
+      width: 340,
+      height: 420,
+      centerX: 0.55,
+      centerY: 0.5,
+      maxWidthPct: 42,
+      maxHeightPct: 52,
+      areaPct: 62,
+      rotationDeg: 0,
+    },
+    headline: { left: 40, top: 60, width: 280, height: 90, fontSizePct: 8 },
+    subtitle: { left: 40, top: 150, width: 260, height: 50, fontSizePct: 4 },
+    leftPanel: { left: 30, top: 220, width: 300, height: 420 },
+    rightSidebar: { left: 700, top: 220, width: 160, height: 420 },
+    bullets: {
+      left: 40,
+      top: 240,
+      width: 260,
+      height: 180,
+      itemHeightPct: 6,
+      gapPct: 2,
+      maxCount: 2,
+    },
+    plaques: {
+      smallWidthPct: 18,
+      mediumWidthPct: 24,
+      largeWidthPct: 30,
+      heightPct: 8,
+      maxTotalAreaPct: 12,
+    },
+    icon: { sizePct: 4, textGapPct: 2 },
+    textSide: "left",
+    metrics: {
+      productAreaPct: 62,
+      textAreaPct: 10,
+      plaqueAreaPct: 6,
+      whitespacePct: 58,
+      overlapPct: 3,
+      visualCenterX: 0.55,
+      visualCenterY: 0.5,
+      minEdgeInsetPct: 4,
+    },
+    valid: true,
+    issues: [],
+    adjustments: [],
+  },
+  productCutoutPath: "/generated/cutout.png",
+  finalImagePath: "/generated/final.png",
+});
+assert.ok(Math.abs((compositePreferred.productAreaRatio ?? 0) - (600 * 700) / (900 * 1200)) < 0.0001);
+const layoutOnlyRatio = (340 * 420) / (900 * 1200);
+assert.ok(Math.abs((compositePreferred.productAreaRatio ?? 0) - layoutOnlyRatio) > 0.05);
+console.log("✓ compositePlacement preferred over layout bounds");
+
 console.log("\nAll product-scale-audit tests passed.");

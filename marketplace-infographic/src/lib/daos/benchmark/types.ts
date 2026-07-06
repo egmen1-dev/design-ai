@@ -64,6 +64,9 @@ export type BenchmarkRunMetrics = {
   productDominanceScore?: number;
   emptySpaceEstimate?: number;
   sceneFillRisk?: number;
+  compositeProductAreaRatio?: number;
+  compositeProductWidthRatio?: number;
+  compositeProductHeightRatio?: number;
 };
 
 export type BenchmarkPairDelta = {
@@ -121,6 +124,8 @@ export type BenchmarkAggregateStats = {
   averageEmptySpaceEstimateDaos?: number;
   averageSceneFillRiskBaseline?: number;
   averageSceneFillRiskDaos?: number;
+  averageCompositeProductAreaRatioBaseline?: number;
+  averageCompositeProductAreaRatioDaos?: number;
   meaningLossImproved: boolean;
   modulesCompiledImproved: boolean;
 };

@@ -180,6 +180,11 @@ export type GenerationDiagnosticReport = {
     productAreaTarget?: number;
     productAreaAfterEstimate?: number;
     productScalePatchActions?: string[];
+    compositePlacementFound?: boolean;
+    compositePlacementSource?: string;
+    compositeProductAreaRatio?: number;
+    compositeProductWidthRatio?: number;
+    compositeProductHeightRatio?: number;
   };
 };
 

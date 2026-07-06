@@ -48,6 +48,7 @@ function formatMetricsRow(
     metrics.productDominanceScore ?? "",
     metrics.emptySpaceEstimate ?? "",
     metrics.sceneFillRisk ?? "",
+    metrics.compositeProductAreaRatio ?? "",
     metrics.error ?? "",
   ];
 }
@@ -106,6 +107,7 @@ function renderCsv(results: BenchmarkResults): string {
     "productDominanceScore",
     "emptySpaceEstimate",
     "sceneFillRisk",
+    "compositeProductAreaRatio",
     "error",
   ].join(",");
 
@@ -254,6 +256,13 @@ function renderReport(results: BenchmarkResults): string {
       `| sceneFillRisk | ${pair.baseline.sceneFillRisk?.toFixed(2) ?? "n/a"} | ${pair.daos.sceneFillRisk?.toFixed(2) ?? "n/a"} | — |`,
     );
     lines.push(
+      `| compositeProductAreaRatio | ${pair.baseline.compositeProductAreaRatio?.toFixed(2) ?? "n/a"} | ${pair.daos.compositeProductAreaRatio?.toFixed(2) ?? "n/a"} | ${
+        pair.baseline.compositeProductAreaRatio != null && pair.daos.compositeProductAreaRatio != null
+          ? (pair.daos.compositeProductAreaRatio - pair.baseline.compositeProductAreaRatio).toFixed(2)
+          : "n/a"
+      } |`,
+    );
+    lines.push(
       `| provider latency | ${pair.baseline.latencyMs ?? "n/a"}ms | ${pair.daos.latencyMs ?? "n/a"}ms | — |`,
     );
     lines.push(
@@ -322,6 +331,9 @@ function renderReport(results: BenchmarkResults): string {
   );
   lines.push(
     `- Average sceneFillRisk (baseline → DAOS): ${results.aggregate.averageSceneFillRiskBaseline?.toFixed(2) ?? "n/a"} → ${results.aggregate.averageSceneFillRiskDaos?.toFixed(2) ?? "n/a"}`,
+  );
+  lines.push(
+    `- Average compositeProductAreaRatio (patch OFF → ON): ${results.aggregate.averageCompositeProductAreaRatioBaseline?.toFixed(2) ?? "n/a"} → ${results.aggregate.averageCompositeProductAreaRatioDaos?.toFixed(2) ?? "n/a"}`,
   );
 
   return lines.join("\n");

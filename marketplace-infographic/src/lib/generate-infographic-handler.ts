@@ -177,6 +177,7 @@ import {
   applyProductScalePatch,
   type ProductScalePatchResult,
 } from "@/lib/daos/compositor/product-scale-patch";
+import { normalizeCompositePlacement } from "@/lib/daos/compositor/composite-result-bridge";
 import type { SceneCompositeOptions } from "@/lib/compositing/scene-compositor";
 import type { CompositionLayout } from "@/lib/composition/types";
 import type { ScenePlan } from "@/lib/design/scene-planner";
@@ -372,6 +373,11 @@ function daosDiagnosticSummary(
     productAreaTarget?: number;
     productAreaAfterEstimate?: number;
     productScalePatchActions?: string[];
+    compositePlacementFound?: boolean;
+    compositePlacementSource?: string;
+    compositeProductAreaRatio?: number;
+    compositeProductWidthRatio?: number;
+    compositeProductHeightRatio?: number;
   },
 ) {
   return {
@@ -2534,26 +2540,16 @@ export async function handleGenerateInfographic(
         : undefined,
       hasComposite: !!compositeResult,
     });
+    const compositePlacement = normalizeCompositePlacement({
+      compositeResult,
+      canvas: renderCompositionLayout?.canvas ?? compositionLayout?.canvas,
+    });
     const productScaleAudit = analyzeProductScale({
       canvas: renderCompositionLayout?.canvas ?? compositionLayout?.canvas,
       productCutoutPath,
       finalImagePath: imagePath,
       placement: compositeResult?.productPlacement,
-      productBounds: renderCompositionLayout?.product
-        ? {
-            left: renderCompositionLayout.product.left,
-            top: renderCompositionLayout.product.top,
-            width: renderCompositionLayout.product.width,
-            height: renderCompositionLayout.product.height,
-          }
-        : compositionLayout?.product
-          ? {
-              left: compositionLayout.product.left,
-              top: compositionLayout.product.top,
-              width: compositionLayout.product.width,
-              height: compositionLayout.product.height,
-            }
-          : undefined,
+      compositePlacement,
       compositionLayout: renderCompositionLayout ?? compositionLayout,
       layoutSpec: renderLayoutSpec ?? layoutSpec,
       composerQualityAudit,
@@ -2580,6 +2576,7 @@ export async function handleGenerateInfographic(
       geometryWhitespacePatch: geometryWhitespacePatchResult?.patch,
       productScaleAudit,
       productScalePatch: productScalePatchResult?.patch,
+      compositePlacement,
     });
     const daosDebugSummary = createDaosDebugSummary(daosDebugBundle);
     const daosFinalGate = evaluateDaosFinalGate({
@@ -2761,6 +2758,11 @@ export async function handleGenerateInfographic(
       productAreaTarget: daosDebugBundle.diagnostics.productAreaTarget,
       productAreaAfterEstimate: daosDebugBundle.diagnostics.productAreaAfterEstimate,
       productScalePatchActions: daosDebugBundle.diagnostics.productScalePatchActions,
+      compositePlacementFound: daosDebugBundle.diagnostics.compositePlacementFound,
+      compositePlacementSource: daosDebugBundle.diagnostics.compositePlacementSource,
+      compositeProductAreaRatio: daosDebugBundle.diagnostics.compositeProductAreaRatio,
+      compositeProductWidthRatio: daosDebugBundle.diagnostics.compositeProductWidthRatio,
+      compositeProductHeightRatio: daosDebugBundle.diagnostics.compositeProductHeightRatio,
     });
 
     if (process.env.DAOS_DEBUG === "1") {

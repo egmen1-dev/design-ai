@@ -25,6 +25,7 @@ import type { GeometryWhitespacePatch } from "../overlay/geometry-whitespace-pat
 import type { ProductScaleAudit } from "../audit/product-scale-audit";
 import { summarizeProductScaleAudit } from "../audit/product-scale-audit";
 import type { ProductScalePatch } from "../compositor/product-scale-patch";
+import type { NormalizedCompositePlacement } from "../compositor/composite-result-bridge";
 
 export type DaosDebugBundle = {
   projectId: string;
@@ -99,6 +100,11 @@ export type DaosDebugBundle = {
     productAreaTarget?: number;
     productAreaAfterEstimate?: number;
     productScalePatchActions?: string[];
+    compositePlacementFound?: boolean;
+    compositePlacementSource?: string;
+    compositeProductAreaRatio?: number;
+    compositeProductWidthRatio?: number;
+    compositeProductHeightRatio?: number;
   };
   generationMode: DAOSGenerationMode;
   generationPolicySummary: ReturnType<typeof summarizeDaosGenerationPolicy>;
@@ -115,6 +121,7 @@ export type DaosDebugBundle = {
   geometryWhitespacePatch?: GeometryWhitespacePatch;
   productScaleAudit?: ProductScaleAudit;
   productScalePatch?: ProductScalePatch;
+  compositePlacement?: NormalizedCompositePlacement;
   meaningLossReport: DaosMeaningLossReport;
 };
 
@@ -142,6 +149,7 @@ export function createDaosDebugBundle(
     geometryWhitespacePatch?: GeometryWhitespacePatch;
     productScaleAudit?: ProductScaleAudit;
     productScalePatch?: ProductScalePatch;
+    compositePlacement?: NormalizedCompositePlacement;
   },
 ): DaosDebugBundle {
   const renderDebug = options?.renderDebug;
@@ -174,6 +182,7 @@ export function createDaosDebugBundle(
   const geometryWhitespacePatch = options?.geometryWhitespacePatch;
   const productScaleAudit = options?.productScaleAudit;
   const productScalePatch = options?.productScalePatch;
+  const compositePlacement = options?.compositePlacement;
   const productScaleSummary = productScaleAudit
     ? summarizeProductScaleAudit(productScaleAudit)
     : undefined;
@@ -276,6 +285,15 @@ export function createDaosDebugBundle(
             productScalePatchActions: productScalePatch.actions.map((action) => action.code),
           }
         : {}),
+      compositePlacementFound: Boolean(compositePlacement),
+      ...(compositePlacement
+        ? {
+            compositePlacementSource: compositePlacement.source,
+            compositeProductAreaRatio: compositePlacement.areaRatio,
+            compositeProductWidthRatio: compositePlacement.widthRatio,
+            compositeProductHeightRatio: compositePlacement.heightRatio,
+          }
+        : {}),
     },
     generationMode,
     generationPolicySummary,
@@ -292,6 +310,7 @@ export function createDaosDebugBundle(
     geometryWhitespacePatch,
     productScaleAudit,
     productScalePatch,
+    compositePlacement,
     meaningLossReport,
   };
 }

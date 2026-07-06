@@ -143,6 +143,9 @@ export async function extractMetricsFromBundle(
       productDominanceScore: asNumber(diagnostics.productDominanceScore),
       emptySpaceEstimate: asNumber(diagnostics.emptySpaceEstimate),
       sceneFillRisk: asNumber(diagnostics.sceneFillRisk),
+      compositeProductAreaRatio: asNumber(diagnostics.compositeProductAreaRatio),
+      compositeProductWidthRatio: asNumber(diagnostics.compositeProductWidthRatio),
+      compositeProductHeightRatio: asNumber(diagnostics.compositeProductHeightRatio),
     };
   } catch {
     return {};
