@@ -131,6 +131,9 @@ export async function extractMetricsFromBundle(
       model: asString(renderDebug.model),
       latencyMs: asNumber(providerPayload.latencyMs),
       fallbackUsed: renderDebug.fallbackUsed === true,
+      composerQualityScore: asNumber(diagnostics.composerQualityScore),
+      productAreaRatio: asNumber(diagnostics.productAreaRatio),
+      finalCompositionRisk: asNumber(diagnostics.finalCompositionRisk),
     };
   } catch {
     return {};

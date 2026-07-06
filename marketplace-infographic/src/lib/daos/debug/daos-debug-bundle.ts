@@ -16,6 +16,8 @@ import type { DAOSPipelineContextSummary } from "../pipeline/daos-pipeline-conte
 import { summarizeDaosPipelineContext, createDaosPipelineContext } from "../pipeline/daos-pipeline-context";
 import type { DAOSRenderEngineContextSummary } from "../adapters/render-engine-context-adapter";
 import type { DAOSContextEffectAudit } from "../audit/context-effect-audit";
+import type { ComposerQualityAudit } from "../audit/composer-quality-audit";
+import { summarizeComposerQualityAudit } from "../audit/composer-quality-audit";
 
 export type DaosDebugBundle = {
   projectId: string;
@@ -55,6 +57,10 @@ export type DaosDebugBundle = {
     generationMode: DAOSGenerationMode;
     fastShortcutsAllowed: boolean;
     premiumGuardrailsActive: boolean;
+    composerQualityScore?: number;
+    composerQualityWarnings?: string[];
+    productAreaRatio?: number;
+    finalCompositionRisk?: number;
   };
   generationMode: DAOSGenerationMode;
   generationPolicySummary: ReturnType<typeof summarizeDaosGenerationPolicy>;
@@ -65,6 +71,7 @@ export type DaosDebugBundle = {
   renderContextAttached?: boolean;
   renderContextSummary?: DAOSRenderEngineContextSummary;
   contextEffectAudit?: DAOSContextEffectAudit;
+  composerQualityAudit?: ComposerQualityAudit;
   meaningLossReport: DaosMeaningLossReport;
 };
 
@@ -86,6 +93,7 @@ export function createDaosDebugBundle(
     daosV17ModulesBridgeEnabled?: boolean;
     daosV17CtrBridgeEnabled?: boolean;
     daosV17PromptCompressionEnabled?: boolean;
+    composerQualityAudit?: ComposerQualityAudit;
   },
 ): DaosDebugBundle {
   const renderDebug = options?.renderDebug;
@@ -108,6 +116,9 @@ export function createDaosDebugBundle(
     daosV17CtrBridgeEnabled: options?.daosV17CtrBridgeEnabled,
     daosV17PromptCompressionEnabled: options?.daosV17PromptCompressionEnabled,
   });
+  const composerQualitySummary = options?.composerQualityAudit
+    ? summarizeComposerQualityAudit(options.composerQualityAudit)
+    : undefined;
   const createdAt = new Date().toISOString();
 
   return {
@@ -148,6 +159,14 @@ export function createDaosDebugBundle(
       generationMode,
       fastShortcutsAllowed: generationPolicy.allowFastShortcuts,
       premiumGuardrailsActive: isPremiumGuardrailMode(generationMode),
+      ...(composerQualitySummary
+        ? {
+            composerQualityScore: composerQualitySummary.score,
+            composerQualityWarnings: composerQualitySummary.warningCodes,
+            productAreaRatio: composerQualitySummary.productAreaRatio,
+            finalCompositionRisk: composerQualitySummary.finalCompositionRisk,
+          }
+        : {}),
     },
     generationMode,
     generationPolicySummary,
@@ -158,6 +177,7 @@ export function createDaosDebugBundle(
     renderContextAttached: options?.renderContextAttached,
     renderContextSummary: options?.renderContextSummary,
     contextEffectAudit: options?.contextEffectAudit,
+    composerQualityAudit: options?.composerQualityAudit,
     meaningLossReport,
   };
 }

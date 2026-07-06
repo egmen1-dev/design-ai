@@ -145,6 +145,10 @@ export type GenerationDiagnosticReport = {
     daosPromptRelevanceScore?: number;
     daosPromptAdditionsSkipped?: boolean;
     daosPromptRemovedSections?: string[];
+    composerQualityScore?: number;
+    composerQualityWarnings?: string[];
+    productAreaRatio?: number;
+    finalCompositionRisk?: number;
   };
 };
 

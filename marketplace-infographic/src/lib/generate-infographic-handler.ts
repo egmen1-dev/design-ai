@@ -159,6 +159,10 @@ import {
   createDaosContextEffectAudit,
   summarizeDaosContextEffectAudit,
 } from "@/lib/daos/audit/context-effect-audit";
+import {
+  analyzeComposerQuality,
+  overlayElementsFromCompositionLayout,
+} from "@/lib/daos/audit/composer-quality-audit";
 import type { DAOSProjectState } from "@/lib/daos/core/project-state";
 import type { KnowledgeContext } from "@/lib/design/knowledge-engine";
 
@@ -290,6 +294,10 @@ function daosDiagnosticSummary(
     daosPromptRelevanceScore?: number;
     daosPromptAdditionsSkipped?: boolean;
     daosPromptRemovedSections?: string[];
+    composerQualityScore?: number;
+    composerQualityWarnings?: string[];
+    productAreaRatio?: number;
+    finalCompositionRisk?: number;
   },
 ) {
   return {
@@ -2304,6 +2312,28 @@ export async function handleGenerateInfographic(
       backgroundSource,
       compiledBackground,
     });
+    const composerQualityAudit = analyzeComposerQuality({
+      finalImagePath: imagePath,
+      productCutoutPath,
+      backgroundPath: backgroundUrl,
+      canvas: compositionLayout?.canvas,
+      overlayElements: overlayElementsFromCompositionLayout(compositionLayout),
+      renderDebug,
+      debugBundle: {
+        specs: {
+          visualBlueprint: enrichedDaosState.visualBlueprint,
+        },
+      },
+      productPlacement: compositeResult?.productPlacement,
+      plannedProductAreaRatio:
+        compositionLayout?.metrics?.productAreaPct != null
+          ? compositionLayout.metrics.productAreaPct / 100
+          : undefined,
+      compositingHints,
+      sceneShadowProfile: scenePlan?.shadowProfile,
+      hasComposite: !!compositeResult,
+      qualityHasShadows: !!compositeResult,
+    });
     const daosDebugBundle = createDaosDebugBundle(enrichedDaosState, {
       renderDebug,
       generationMode: daosGenerationMode,
@@ -2319,6 +2349,7 @@ export async function handleGenerateInfographic(
       daosV17ModulesBridgeEnabled,
       daosV17CtrBridgeEnabled,
       daosV17PromptCompressionEnabled,
+      composerQualityAudit,
     });
     const daosDebugSummary = createDaosDebugSummary(daosDebugBundle);
     const daosFinalGate = evaluateDaosFinalGate({
@@ -2462,6 +2493,10 @@ export async function handleGenerateInfographic(
       daosPromptRelevanceScore: renderDebug?.daosPromptRelevanceScore,
       daosPromptAdditionsSkipped: renderDebug?.daosPromptAdditionsSkipped,
       daosPromptRemovedSections: renderDebug?.daosPromptRemovedSections,
+      composerQualityScore: daosDebugBundle.diagnostics.composerQualityScore,
+      composerQualityWarnings: daosDebugBundle.diagnostics.composerQualityWarnings,
+      productAreaRatio: daosDebugBundle.diagnostics.productAreaRatio,
+      finalCompositionRisk: daosDebugBundle.diagnostics.finalCompositionRisk,
     });
 
     if (process.env.DAOS_DEBUG === "1") {

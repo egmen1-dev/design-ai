@@ -69,6 +69,31 @@ export function computeAggregateStats(pairs: BenchmarkProductPair[]): BenchmarkA
   const modulesCompiledBaseline = pairs.map((pair) => pair.baseline.modulesCompiled.length);
   const modulesCompiledDaos = pairs.map((pair) => pair.daos.modulesCompiled.length);
   const modulesCompiledDelta = pairs.map((pair) => pair.delta.deltaModulesCompiled);
+  const composerScoresBaseline = pairs
+    .map((pair) => pair.baseline.composerQualityScore)
+    .filter((value): value is number => value != null);
+  const composerScoresDaos = pairs
+    .map((pair) => pair.daos.composerQualityScore)
+    .filter((value): value is number => value != null);
+  const composerScoreDelta = pairs
+    .map((pair) =>
+      pair.baseline.composerQualityScore != null && pair.daos.composerQualityScore != null
+        ? pair.daos.composerQualityScore - pair.baseline.composerQualityScore
+        : undefined,
+    )
+    .filter((value): value is number => value != null);
+  const productAreaBaseline = pairs
+    .map((pair) => pair.baseline.productAreaRatio)
+    .filter((value): value is number => value != null);
+  const productAreaDaos = pairs
+    .map((pair) => pair.daos.productAreaRatio)
+    .filter((value): value is number => value != null);
+  const compositionRiskBaseline = pairs
+    .map((pair) => pair.baseline.finalCompositionRisk)
+    .filter((value): value is number => value != null);
+  const compositionRiskDaos = pairs
+    .map((pair) => pair.daos.finalCompositionRisk)
+    .filter((value): value is number => value != null);
 
   const averageSummaryDelta = average(summaryDeltas);
   const averageMeaningLossDelta = average(meaningLossDeltas);
@@ -92,6 +117,13 @@ export function computeAggregateStats(pairs: BenchmarkProductPair[]): BenchmarkA
     averageModulesCompiledBaseline,
     averageModulesCompiledDaos,
     averageModulesCompiledDelta,
+    averageComposerQualityScoreBaseline: average(composerScoresBaseline),
+    averageComposerQualityScoreDaos: average(composerScoresDaos),
+    averageComposerQualityDelta: average(composerScoreDelta),
+    averageProductAreaRatioBaseline: average(productAreaBaseline),
+    averageProductAreaRatioDaos: average(productAreaDaos),
+    averageFinalCompositionRiskBaseline: average(compositionRiskBaseline),
+    averageFinalCompositionRiskDaos: average(compositionRiskDaos),
     meaningLossImproved,
     modulesCompiledImproved,
   };

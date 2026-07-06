@@ -52,6 +52,9 @@ export type BenchmarkRunMetrics = {
   finalImageHash?: string;
   fallbackUsed?: boolean;
   error?: string;
+  composerQualityScore?: number;
+  productAreaRatio?: number;
+  finalCompositionRisk?: number;
 };
 
 export type BenchmarkPairDelta = {
@@ -84,6 +87,13 @@ export type BenchmarkAggregateStats = {
   averageModulesCompiledBaseline?: number;
   averageModulesCompiledDaos?: number;
   averageModulesCompiledDelta?: number;
+  averageComposerQualityScoreBaseline?: number;
+  averageComposerQualityScoreDaos?: number;
+  averageComposerQualityDelta?: number;
+  averageProductAreaRatioBaseline?: number;
+  averageProductAreaRatioDaos?: number;
+  averageFinalCompositionRiskBaseline?: number;
+  averageFinalCompositionRiskDaos?: number;
   meaningLossImproved: boolean;
   modulesCompiledImproved: boolean;
 };

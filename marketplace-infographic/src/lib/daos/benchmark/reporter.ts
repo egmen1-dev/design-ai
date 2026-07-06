@@ -36,6 +36,9 @@ function formatMetricsRow(
     metrics.generationTimeMs,
     metrics.backgroundHash ?? "",
     metrics.finalImageHash ?? "",
+    metrics.composerQualityScore ?? "",
+    metrics.productAreaRatio ?? "",
+    metrics.finalCompositionRisk ?? "",
     metrics.error ?? "",
   ];
 }
@@ -82,6 +85,9 @@ function renderCsv(results: BenchmarkResults): string {
     "generationTimeMs",
     "backgroundHash",
     "finalImageHash",
+    "composerQualityScore",
+    "productAreaRatio",
+    "finalCompositionRisk",
     "error",
   ].join(",");
 
@@ -182,6 +188,19 @@ function renderReport(results: BenchmarkResults): string {
       `| promptLength | ${pair.baseline.promptLength ?? "n/a"} | ${pair.daos.promptLength ?? "n/a"} | ${pair.delta.deltaPromptLength ?? "n/a"} |`,
     );
     lines.push(
+      `| composerQualityScore | ${pair.baseline.composerQualityScore ?? "n/a"} | ${pair.daos.composerQualityScore ?? "n/a"} | ${
+        pair.baseline.composerQualityScore != null && pair.daos.composerQualityScore != null
+          ? pair.daos.composerQualityScore - pair.baseline.composerQualityScore
+          : "n/a"
+      } |`,
+    );
+    lines.push(
+      `| productAreaRatio | ${pair.baseline.productAreaRatio?.toFixed(2) ?? "n/a"} | ${pair.daos.productAreaRatio?.toFixed(2) ?? "n/a"} | — |`,
+    );
+    lines.push(
+      `| finalCompositionRisk | ${pair.baseline.finalCompositionRisk?.toFixed(2) ?? "n/a"} | ${pair.daos.finalCompositionRisk?.toFixed(2) ?? "n/a"} | — |`,
+    );
+    lines.push(
       `| provider latency | ${pair.baseline.latencyMs ?? "n/a"}ms | ${pair.daos.latencyMs ?? "n/a"}ms | — |`,
     );
     lines.push(
@@ -214,6 +233,15 @@ function renderReport(results: BenchmarkResults): string {
   );
   lines.push(
     `- Average modulesCompiled (baseline → DAOS): ${results.aggregate.averageModulesCompiledBaseline?.toFixed(1) ?? "n/a"} → ${results.aggregate.averageModulesCompiledDaos?.toFixed(1) ?? "n/a"}`,
+  );
+  lines.push(
+    `- Average composerQualityScore (baseline → DAOS): ${results.aggregate.averageComposerQualityScoreBaseline?.toFixed(1) ?? "n/a"} → ${results.aggregate.averageComposerQualityScoreDaos?.toFixed(1) ?? "n/a"}`,
+  );
+  lines.push(
+    `- Average productAreaRatio (baseline → DAOS): ${results.aggregate.averageProductAreaRatioBaseline?.toFixed(2) ?? "n/a"} → ${results.aggregate.averageProductAreaRatioDaos?.toFixed(2) ?? "n/a"}`,
+  );
+  lines.push(
+    `- Average finalCompositionRisk (baseline → DAOS): ${results.aggregate.averageFinalCompositionRiskBaseline?.toFixed(2) ?? "n/a"} → ${results.aggregate.averageFinalCompositionRiskDaos?.toFixed(2) ?? "n/a"}`,
   );
 
   return lines.join("\n");
