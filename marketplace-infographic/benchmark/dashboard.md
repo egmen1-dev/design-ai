@@ -1,6 +1,6 @@
 # DAOS Benchmark Dashboard — Phase 1
 
-Status: **SUCCESS**
+Status: **STOP**
 
 ## Top Improvements
 
@@ -8,34 +8,33 @@ Status: **SUCCESS**
 
 ## Top Failures
 
-- **Cordless Drill**: summary -10, meaning-loss delta 2
+- No negative summary deltas.
 
 ## Common warnings
 
-- `MODULES_IGNORED`: 6
-- `VISUAL_TO_RENDER_STRATEGY_MISMATCH`: 5
-- `DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES`: 3
-- `LOW_CONFIDENCE`: 2
+- `MODULES_IGNORED`: 8
+- `DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES`: 8
+- `VISUAL_TO_RENDER_STRATEGY_MISMATCH`: 4
 
 ## Common ignored modules
 
-- `layout_coordinates`: 6
-- `hierarchy`: 6
-- `typography_zones`: 6
-- `ctr_wording`: 6
+- `layout_coordinates`: 8
+- `hierarchy`: 8
+- `typography_zones`: 8
+- `ctr_wording`: 8
 
 ## Provider statistics
 
 - Provider: pollinations
 - Model: flux
-- Average provider latency: 5050ms
+- Average provider latency: 457ms
 - Fallback runs: 0 / 10
 
 ## Generation statistics
 
 - Total runs: 10
-- Average generation time: 8092ms
-- Average prompt delta: 803.0 chars
+- Average generation time: 2972ms
+- Average prompt delta: 0.0 chars
 
 ## Cost estimation
 
