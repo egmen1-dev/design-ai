@@ -44,6 +44,8 @@ export type SceneCompositeOptions = {
   scene: ScenePlan;
   compositionLayout?: CompositionLayout;
   objectScale?: number;
+  /** DAOS Wave 24 — optional compositor scale boost (only when explicitly passed). */
+  productScaleMultiplier?: number;
 };
 
 async function loadImageBuffer(source: string): Promise<Buffer> {
@@ -119,9 +121,18 @@ export async function softenBackgroundCenter(
 function computeMaxProductSize(
   compositionLayout: CompositionLayout | undefined,
   objectScale: number,
+  productScaleMultiplier = 1,
 ): { maxW: number; maxH: number } {
   const canvasMaxW = Math.min(PRODUCT_MAX_WIDTH_PX, CANVAS_W - SIDE_MARGIN * 2);
   const canvasMaxH = Math.min(PRODUCT_MAX_H, CANVAS_H - HEADER_RESERVE_PX - BOTTOM_PAD);
+  const widthCap = Math.min(
+    CANVAS_W - SIDE_MARGIN * 2,
+    Math.round(PRODUCT_MAX_WIDTH_PX * productScaleMultiplier),
+  );
+  const heightCap = Math.min(
+    CANVAS_H - HEADER_RESERVE_PX - BOTTOM_PAD,
+    Math.round(PRODUCT_MAX_H * productScaleMultiplier),
+  );
 
   const comp = compositionLayout?.product;
   if (comp) {
@@ -129,15 +140,15 @@ function computeMaxProductSize(
     const zoneH = Math.round(yPct(comp.maxHeightPct));
     const scaleBoost = 0.58 + objectScale * 0.05;
     return {
-      maxW: Math.min(canvasMaxW, PRODUCT_MAX_WIDTH_PX, Math.round(zoneW * scaleBoost)),
-      maxH: Math.min(canvasMaxH, PRODUCT_MAX_H, Math.round(zoneH * scaleBoost)),
+      maxW: Math.min(widthCap, PRODUCT_MAX_WIDTH_PX, Math.round(zoneW * scaleBoost * productScaleMultiplier)),
+      maxH: Math.min(heightCap, PRODUCT_MAX_H, Math.round(zoneH * scaleBoost * productScaleMultiplier)),
     };
   }
 
   const scale = 0.55 + objectScale * 0.18;
   return {
-    maxW: Math.min(canvasMaxW, Math.round(canvasMaxW * scale)),
-    maxH: Math.min(canvasMaxH, Math.round(canvasMaxH * scale)),
+    maxW: Math.min(widthCap, Math.round(canvasMaxW * scale * productScaleMultiplier)),
+    maxH: Math.min(heightCap, Math.round(canvasMaxH * scale * productScaleMultiplier)),
   };
 }
 
@@ -267,6 +278,7 @@ export async function compositeProductIntoScene(
   const layout = options.layout ?? "marketplace";
   const scene = options.scene;
   const objectScale = options.objectScale ?? 0.78;
+  const productScaleMultiplier = Math.max(1, options.productScaleMultiplier ?? 1);
   const comp = options.compositionLayout?.product;
 
   const [bgRaw, productRaw] = await Promise.all([
@@ -275,7 +287,11 @@ export async function compositeProductIntoScene(
   ]);
 
   const bgResized = await resizeBackground(bgRaw);
-  const { maxW, maxH } = computeMaxProductSize(options.compositionLayout, objectScale);
+  const { maxW, maxH } = computeMaxProductSize(
+    options.compositionLayout,
+    objectScale,
+    productScaleMultiplier,
+  );
 
   const prePlacement = {
     left: SIDE_MARGIN,
@@ -314,8 +330,14 @@ export async function compositeProductIntoScene(
     prepared.height,
     CANVAS_W,
     SIDE_MARGIN,
-    PRODUCT_ALPHA_MAX_WIDTH_PX,
-    PRODUCT_ALPHA_MAX_HEIGHT_PX,
+    Math.min(
+      CANVAS_W - SIDE_MARGIN * 2,
+      Math.round(PRODUCT_ALPHA_MAX_WIDTH_PX * productScaleMultiplier),
+    ),
+    Math.min(
+      CANVAS_H - HEADER_RESERVE_PX - BOTTOM_PAD,
+      Math.round(PRODUCT_ALPHA_MAX_HEIGHT_PX * productScaleMultiplier),
+    ),
     options.compositionLayout,
   );
 
