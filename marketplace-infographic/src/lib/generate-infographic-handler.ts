@@ -394,6 +394,10 @@ function daosDiagnosticSummary(
     productAreaTarget?: number;
     productAreaAfterEstimate?: number;
     productScalePatchActions?: string[];
+    productFillV2Enabled?: boolean;
+    productFillTargetReason?: string;
+    productFillV2Target?: number;
+    productFillV2Applied?: boolean;
     compositePlacementFound?: boolean;
     compositePlacementSource?: string;
     compositeProductAreaRatio?: number;
@@ -2880,6 +2884,10 @@ export async function handleGenerateInfographic(
       productAreaTarget: daosDebugBundle.diagnostics.productAreaTarget,
       productAreaAfterEstimate: daosDebugBundle.diagnostics.productAreaAfterEstimate,
       productScalePatchActions: daosDebugBundle.diagnostics.productScalePatchActions,
+      productFillV2Enabled: daosDebugBundle.diagnostics.productFillV2Enabled,
+      productFillTargetReason: daosDebugBundle.diagnostics.productFillTargetReason,
+      productFillV2Target: daosDebugBundle.diagnostics.productFillV2Target,
+      productFillV2Applied: daosDebugBundle.diagnostics.productFillV2Applied,
       compositePlacementFound: daosDebugBundle.diagnostics.compositePlacementFound,
       compositePlacementSource: daosDebugBundle.diagnostics.compositePlacementSource,
       compositeProductAreaRatio: daosDebugBundle.diagnostics.compositeProductAreaRatio,
