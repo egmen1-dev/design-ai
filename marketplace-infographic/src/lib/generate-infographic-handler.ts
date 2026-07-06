@@ -129,6 +129,91 @@ import { runQualityGate, applyRefinementPatch, type QualityGateResult } from "@/
 import type { CoverConceptId } from "@/lib/cover-concepts";
 import { evaluateFinalQuality } from "@/lib/design/final-quality-validator";
 import { applyPosterRules } from "@/lib/design-process/pipeline";
+import { createLegacyDAOSState } from "@/lib/daos";
+import {
+  getDaosGenerationPolicy,
+  resolveDaosGenerationMode,
+} from "@/lib/daos/config/generation-mode";
+import { enrichDaosStateFromPipeline } from "@/lib/daos/adapters/pipeline-enrichment";
+import { createDaosDebugBundle, writeDaosDebugBundle, writeDaosDebugSummary, createDaosDebugSummary, extractDaosRenderDebug, updateDaosDebugIndex } from "@/lib/daos/debug";
+import { createDaosPipelineContext } from "@/lib/daos/pipeline";
+import {
+  createDaosPromptContextBlock,
+  isDaosPromptContextEnabled,
+} from "@/lib/daos/pipeline/daos-prompt-context";
+import {
+  attachDaosContextToRenderInput,
+  createDaosRenderEngineContext,
+  isDaosRenderContextAttached,
+  isDaosRenderContextEnabled,
+  type DAOSRenderEngineContextSummary,
+} from "@/lib/daos/adapters/render-engine-context-adapter";
+import { isDaosV17PromptBridgeEnabled } from "@/lib/daos/adapters/v17-prompt-bridge";
+import {
+  isDaosV17CtrBridgeEnabled,
+  isDaosV17ModulesBridgeEnabled,
+} from "@/lib/daos/adapters/v17-modules-bridge";
+import { isDaosV17PromptCompressionEnabled } from "@/lib/daos/adapters/v17-prompt-compressor";
+import { evaluateDaosFinalGate } from "@/lib/daos/gates";
+import {
+  createDaosContextEffectAudit,
+  summarizeDaosContextEffectAudit,
+} from "@/lib/daos/audit/context-effect-audit";
+import {
+  analyzeComposerQuality,
+  overlayElementsFromCompositionLayout,
+} from "@/lib/daos/audit/composer-quality-audit";
+import { analyzeOverlayQuality } from "@/lib/daos/audit/overlay-quality-audit";
+import { analyzeProductScale } from "@/lib/daos/audit/product-scale-audit";
+import {
+  applyOverlayLayoutPatch,
+  type OverlayLayoutPatchResult,
+} from "@/lib/daos/overlay/overlay-layout-patch";
+import {
+  applyGeometryWhitespacePatch,
+  type GeometryWhitespacePatchResult,
+} from "@/lib/daos/overlay/geometry-whitespace-patch";
+import {
+  applyContrastOverlapPatch,
+  type ContrastOverlapPatchResult,
+} from "@/lib/daos/overlay/contrast-overlap-patch";
+import {
+  applyProductScalePatch,
+  type ProductScalePatchResult,
+} from "@/lib/daos/compositor/product-scale-patch";
+import { normalizeCompositePlacement } from "@/lib/daos/compositor/composite-result-bridge";
+import { createLaw003RecalibrationReport, extractConstitutionLaw003Whitespace } from "@/lib/daos/governance/law003-recalibration";
+import type { SceneCompositeOptions } from "@/lib/compositing/scene-compositor";
+import type { CompositionLayout } from "@/lib/composition/types";
+import type { ScenePlan } from "@/lib/design/scene-planner";
+import type { DAOSProjectState } from "@/lib/daos/core/project-state";
+import type { KnowledgeContext } from "@/lib/design/knowledge-engine";
+
+function buildDaosSceneCompositeOptions(input: {
+  scene: ScenePlan;
+  compositionLayout?: CompositionLayout;
+  objectScale: number;
+  layoutSpec?: LayoutSpec;
+}): { options: SceneCompositeOptions; productScalePatch: ProductScalePatchResult } {
+  const productScalePatch = applyProductScalePatch({
+    canvas: input.compositionLayout?.canvas,
+    compositionLayout: input.compositionLayout,
+    layoutSpec: input.layoutSpec,
+    plannedProductAreaPct: input.compositionLayout?.metrics?.productAreaPct,
+    compositeInput: { objectScale: input.objectScale, layout: "marketplace" },
+  });
+
+  return {
+    options: {
+      layout: "marketplace",
+      scene: input.scene,
+      compositionLayout: productScalePatch.compositionLayout ?? input.compositionLayout,
+      objectScale: productScalePatch.objectScale ?? input.objectScale,
+      productScaleMultiplier: productScalePatch.productScaleMultiplier,
+    },
+    productScalePatch,
+  };
+}
 
 export type GenerateInfographicInput = {
   userId: string;
@@ -210,6 +295,130 @@ export type GenerateInfographicResult = {
   diagnosticsUrl?: string;
   diagnosticSteps?: number;
 };
+
+function daosDiagnosticSummary(
+  state: DAOSProjectState,
+  extras?: {
+    debugBundlePath?: string;
+    meaningLossWarningCount?: number;
+    meaningLossCriticalCount?: number;
+    debugSummaryPath?: string;
+    debugSummaryStatus?: "ok" | "warning" | "critical";
+    debugSummaryScore?: number;
+    finalGateStatus?: "passed" | "warning" | "failed";
+    finalGateScore?: number;
+    finalGateBlocking?: false;
+    finalGateReasons?: string[];
+    debugIndexPath?: string;
+    pipelineContextCompleteness?: number;
+    pipelineContextMissingSpecs?: string[];
+    pipelineContextWarnings?: string[];
+    daosPromptContextEnabled?: boolean;
+    daosPromptContextLength?: number;
+    daosPromptContextInjected?: boolean;
+    daosRenderContextEnabled?: boolean;
+    daosRenderContextAttached?: boolean;
+    daosRenderContextCompleteness?: number;
+    contextEffectAuditStatus?: string;
+    contextEffectPromptDelta?: number;
+    contextEffectScoreDelta?: number;
+    contextEffectNotes?: string;
+    daosV17BridgeEnabled?: boolean;
+    daosV17BridgeApplied?: boolean;
+    daosV17BridgeLength?: number;
+    daosV17BridgeModulesAddressed?: string[];
+    daosV17ModulesBridgeEnabled?: boolean;
+    daosV17ModulesBridgeApplied?: boolean;
+    daosV17ModulesBridgeLength?: number;
+    daosV17ModulesCompiled?: string[];
+    daosV17ModulesStillIgnored?: string[];
+    daosV17CtrBridgeEnabled?: boolean;
+    daosV17CtrBridgeApplied?: boolean;
+    daosV17CtrBridgeSource?: string;
+    daosV17CtrBridgeLength?: number;
+    daosPromptCompressionEnabled?: boolean;
+    daosPromptOriginalAdditionLength?: number;
+    daosPromptCompressedAdditionLength?: number;
+    daosPromptCompressionRatio?: number;
+    daosPromptRelevanceScore?: number;
+    daosPromptAdditionsSkipped?: boolean;
+    daosPromptRemovedSections?: string[];
+    composerQualityScore?: number;
+    composerQualityWarnings?: string[];
+    productAreaRatio?: number;
+    finalCompositionRisk?: number;
+    overlayQualityScore?: number;
+    overlayDensity?: number;
+    overlayWarnings?: string[];
+    pngOverlayFeelRisk?: number;
+    law003WhitespaceViolation?: boolean;
+    law014ContrastViolation?: boolean;
+    overlayPatchEnabled?: boolean;
+    overlayPatchApplied?: boolean;
+    overlayPatchActions?: string[];
+    overlayPatchBeforeDensity?: number;
+    overlayPatchAfterDensity?: number;
+    overlayPatchElementsBefore?: number;
+    overlayPatchElementsAfter?: number;
+    geometryWhitespacePatchEnabled?: boolean;
+    geometryWhitespacePatchApplied?: boolean;
+    geometryWhitespaceBefore?: number;
+    geometryWhitespaceAfterEstimate?: number;
+    geometryPatchActions?: string[];
+    productScaleScore?: number;
+    productDominanceScore?: number;
+    productWidthRatio?: number;
+    productHeightRatio?: number;
+    emptySpaceEstimate?: number;
+    sceneFillRisk?: number;
+    productScalePatchEnabled?: boolean;
+    productScalePatchApplied?: boolean;
+    productScaleMultiplier?: number;
+    productAreaBefore?: number;
+    productAreaTarget?: number;
+    productAreaAfterEstimate?: number;
+    productScalePatchActions?: string[];
+    compositePlacementFound?: boolean;
+    compositePlacementSource?: string;
+    compositeProductAreaRatio?: number;
+    compositeProductWidthRatio?: number;
+    compositeProductHeightRatio?: number;
+    extractAreaCorrected?: boolean;
+    extractAreaWarnings?: string[];
+    law003OriginalWhitespace?: number;
+    law003RecalibratedWhitespace?: number;
+    law003Before?: boolean;
+    law003After?: boolean;
+    contrastOverlapPatchApplied?: boolean;
+    contrastOverlapPatchActions?: string[];
+    contrastOverlapBefore?: number;
+    contrastOverlapAfterEstimate?: number;
+  },
+) {
+  return {
+    projectId: state.projectId,
+    runId: state.runId,
+    status: state.status,
+    architectureVersion: state.architectureVersion,
+    briefId: state.brief?.id,
+    decisionTraceCount: state.decisionTrace.length,
+    specsAdapted: {
+      knowledge: Boolean(state.knowledgeSpec),
+      commercial: Boolean(state.commercialSpec),
+      creative: Boolean(state.creativeSpec),
+      visual: Boolean(state.visualBlueprint),
+      render: Boolean(state.renderBlueprint),
+    },
+    specIds: {
+      knowledgeSpecId: state.knowledgeSpec?.id,
+      commercialSpecId: state.commercialSpec?.id,
+      creativeSpecId: state.creativeSpec?.id,
+      visualBlueprintId: state.visualBlueprint?.id,
+      renderBlueprintId: state.renderBlueprint?.id,
+    },
+    ...extras,
+  };
+}
 
 function briefMeta(brief?: DesignBrief) {
   const hook = brief?.designProcess?.visualHook ?? brief?.visualHook;
@@ -698,6 +907,18 @@ export async function handleGenerateInfographic(
   const slot = await consumeGenerationSlot(input.userId);
   const pipelineStartedAt = Date.now();
 
+  const daosGenerationMode = resolveDaosGenerationMode();
+  const daosGenerationPolicy = getDaosGenerationPolicy(daosGenerationMode);
+
+  const daosState = createLegacyDAOSState({
+    prompt: input.prompt || "",
+    generationMode: daosGenerationMode,
+  });
+
+  if (process.env.DAOS_DEBUG === "1") {
+    console.debug("[daos] Wave 1 state created", daosDiagnosticSummary(daosState));
+  }
+
   try {
     await loadDesignMemoryStore().catch((error) => {
       console.warn("[design-memory] preload failed:", error);
@@ -720,6 +941,7 @@ export async function handleGenerateInfographic(
     let conceptRenderQueue: CreativeDirectorResult[] = [];
     let knowledgeCategory: KnowledgeCategory | undefined;
     let knowledgePatternsUsed = 0;
+    let knowledgeContext: KnowledgeContext | undefined;
     let marketIntelligence: MarketIntelligenceContext | undefined;
     let marketNoveltyScore: number | undefined;
     let assetsIntelligence: AssetsIntelligenceContext | undefined;
@@ -797,6 +1019,7 @@ export async function handleGenerateInfographic(
       ]);
       knowledgeCategory = knowledge.category;
       knowledgePatternsUsed = knowledge.patterns.length;
+      knowledgeContext = knowledge;
       marketIntelligence = market;
       assetsIntelligence = assets;
       trendIntelligence = trend;
@@ -1156,10 +1379,77 @@ export async function handleGenerateInfographic(
       });
     }
 
+    const daosPromptContextEnabled = isDaosPromptContextEnabled();
+    const daosRenderContextEnabled = isDaosRenderContextEnabled();
+    const daosV17BridgeEnabled = isDaosV17PromptBridgeEnabled();
+    const daosV17ModulesBridgeEnabled = isDaosV17ModulesBridgeEnabled();
+    const daosV17CtrBridgeEnabled = isDaosV17CtrBridgeEnabled();
+    const daosV17PromptCompressionEnabled = isDaosV17PromptCompressionEnabled();
+    let daosPromptContextBlock = "";
+    let daosPromptContextInjected = false;
+    let daosPromptContextLength = 0;
+    let daosRenderInterimContext: ReturnType<typeof createDaosPipelineContext> | undefined;
+    let daosInterimCommercialSpec: import("@/lib/daos/contracts/specs").CommercialSpec | undefined;
+    let daosRenderContextSummary: DAOSRenderEngineContextSummary | undefined;
+    let daosRenderContextAttached = false;
+    let daosRenderContextCompleteness = 0;
+
+    if (
+      daosPromptContextEnabled ||
+      (useRenderEngineV17 && daosRenderContextEnabled)
+    ) {
+      const interimDaosState = enrichDaosStateFromPipeline(daosState, {
+        knowledge:
+          knowledgeContext || marketIntelligence || genomeIntelligence || assetsIntelligence
+            ? {
+                knowledge: knowledgeContext,
+                market: marketIntelligence,
+                genome: genomeIntelligence,
+                assets: assetsIntelligence,
+              }
+            : undefined,
+        commercial:
+          designBrief || seniorAdReview || ctrReview || marketIntelligence
+            ? {
+                designBrief,
+                seniorAdReview,
+                ctrReview,
+                marketIntelligence,
+              }
+            : undefined,
+        creative: activeCreative ?? undefined,
+        visual:
+          visualBlueprint || compositionResult || scenePlan || sceneDirection
+            ? {
+                visualBlueprint,
+                scenePlan,
+                compositionResult,
+                sceneDirection,
+              }
+            : undefined,
+      });
+      daosInterimCommercialSpec = interimDaosState.commercialSpec;
+      const interimContext = createDaosPipelineContext(interimDaosState);
+      if (daosPromptContextEnabled) {
+        daosPromptContextBlock = createDaosPromptContextBlock(interimContext);
+        daosPromptContextLength = daosPromptContextBlock.length;
+        daosPromptContextInjected = daosPromptContextBlock.length > 0;
+      }
+      if (useRenderEngineV17 && daosRenderContextEnabled) {
+        daosRenderInterimContext = interimContext;
+        daosRenderContextSummary = createDaosRenderEngineContext(interimContext);
+        daosRenderContextCompleteness = interimContext.completenessScore;
+      }
+    }
+
+    const daosAugmentedPrompt = daosPromptContextInjected
+      ? `${input.prompt}\n\n${daosPromptContextBlock}`
+      : input.prompt;
+
     // ── 3. Render Engine v17 OR Prompt Compiler → background ─────────
     if (!useRenderEngineV17) {
       compiledBackground = compileBackgroundPrompt({
-        prompt: input.prompt,
+        prompt: daosAugmentedPrompt,
         analysis,
         scenePlan,
         layoutSpec,
@@ -1214,6 +1504,7 @@ export async function handleGenerateInfographic(
     let backgroundSource: "sd" | "fallback" | "provider" = "sd";
     let backgroundDataUrl: string | undefined;
     let compositeResult: Awaited<ReturnType<typeof compositeProductIntoScene>> | undefined;
+    let productScalePatchResult: ProductScalePatchResult | undefined;
     let qualityValidation: QualityValidationResult | undefined;
     let photoReview: CommercialPhotographerReview | undefined;
     let mergedImageDataUrl: string | undefined;
@@ -1233,8 +1524,8 @@ export async function handleGenerateInfographic(
             input.regenerateBackgroundOnly ? productCutoutPath ?? undefined : undefined,
           );
 
-    const regenBackground = (seedSuffix: string, scene: ScenePlan = scenePlan) =>
-      regenerateMarketplaceBackground({
+    const regenBackground = (seedSuffix: string, scene: ScenePlan = scenePlan) => {
+      const baseRenderInput = {
         analysis,
         scenePlan: scene,
         layoutSpec,
@@ -1261,7 +1552,26 @@ export async function handleGenerateInfographic(
         legacyPrompt: sdData.backgroundPrompt,
         legacyStyle: appliedStyle,
         decisionLog: governanceDecisionLog,
-      });
+        ...(useRenderEngineV17
+          ? {
+              marketSnippet: marketIntelligence?.agentSnippet,
+              commercialSpec: daosInterimCommercialSpec,
+              ctrExpert: ctrReview,
+              seniorArtDirector: seniorAdReview,
+            }
+          : {}),
+      };
+      const attachedRenderInput =
+        useRenderEngineV17 && daosRenderInterimContext
+          ? attachDaosContextToRenderInput(baseRenderInput, daosRenderInterimContext)
+          : baseRenderInput;
+      if (useRenderEngineV17 && daosRenderContextEnabled) {
+        daosRenderContextAttached = isDaosRenderContextAttached(attachedRenderInput);
+      }
+      return regenerateMarketplaceBackground(
+        attachedRenderInput as Parameters<typeof regenerateMarketplaceBackground>[0],
+      );
+    };
 
     const bgPromise = (async () => {
       const bg = await regenBackground("primary");
@@ -1350,12 +1660,18 @@ export async function handleGenerateInfographic(
             if (bg.engine) renderEngineResult = bg.engine as RenderEngineOrchestratorResult;
           }
 
-          compositeResult = await compositeProductIntoScene(backgroundUrl, productCutoutPath, {
-            layout: "marketplace",
+          const compositePrep = buildDaosSceneCompositeOptions({
             scene: scenePlan,
             compositionLayout,
             objectScale,
+            layoutSpec,
           });
+          productScalePatchResult = compositePrep.productScalePatch;
+          compositeResult = await compositeProductIntoScene(
+            backgroundUrl,
+            productCutoutPath,
+            compositePrep.options,
+          );
 
           qualityValidation = validateQuality({
             compositionLayout,
@@ -1503,12 +1819,18 @@ export async function handleGenerateInfographic(
             backgroundDataUrl = bg.dataUrl;
             backgroundSource = bg.source;
             if (bg.engine) renderEngineResult = bg.engine as RenderEngineOrchestratorResult;
-            compositeResult = await compositeProductIntoScene(bg.url, productCutoutPath, {
-              layout: "marketplace",
+            const compositePrep = buildDaosSceneCompositeOptions({
               scene: chiefScenePlan,
               compositionLayout,
               objectScale,
+              layoutSpec,
             });
+            productScalePatchResult = compositePrep.productScalePatch;
+            compositeResult = await compositeProductIntoScene(
+              bg.url,
+              productCutoutPath,
+              compositePrep.options,
+            );
             mergedImageDataUrl = await mergedToDataUrl(compositeResult.mergedPath);
             qualityValidation = validateQuality({
               compositionLayout,
@@ -1668,12 +1990,18 @@ export async function handleGenerateInfographic(
         }
 
         if (productCutoutPath && usePhotorealMerge) {
-          compositeResult = await compositeProductIntoScene(bg.url, productCutoutPath, {
-            layout: "marketplace",
+          const compositePrep = buildDaosSceneCompositeOptions({
             scene: retryScene,
             compositionLayout,
             objectScale,
+            layoutSpec,
           });
+          productScalePatchResult = compositePrep.productScalePatch;
+          compositeResult = await compositeProductIntoScene(
+            bg.url,
+            productCutoutPath,
+            compositePrep.options,
+          );
           mergedImageDataUrl = await mergedToDataUrl(compositeResult.mergedPath);
           qualityValidation = validateQuality({
             compositionLayout,
@@ -1778,6 +2106,109 @@ export async function handleGenerateInfographic(
         }
       : undefined;
 
+    let renderInfographicData = infographicData;
+    let renderLayoutSpec = layoutSpec;
+    let renderCompositionLayout = compositionLayout;
+    let renderParametricBadgeHtml = parametricBadgeHtml;
+    let overlayLayoutPatchResult: OverlayLayoutPatchResult | undefined;
+    let geometryWhitespacePatchResult: GeometryWhitespacePatchResult | undefined;
+    let contrastOverlapPatchResult: ContrastOverlapPatchResult | undefined;
+
+    if (sdData.layout === "marketplace") {
+      const prePatchAuditInput = {
+        canvas: compositionLayout?.canvas,
+        overlayElements: overlayElementsFromCompositionLayout(compositionLayout),
+        layoutSpec,
+        htmlTemplateData: {
+          headline: infographicData.headline,
+          bullets: infographicData.specBlocks?.map((block) => block.label),
+          badge: Boolean(infographicData.mainBanner?.title ?? parametricBadgeHtml),
+          plaques: infographicData.callouts?.length ?? 0,
+          layout: sdData.layout,
+        },
+        diagnosticReport: {
+          qualityValidation,
+          finalQuality,
+          constitution: constitutionReports,
+        },
+        governanceReport: constitutionReports,
+        composerQualityAudit: undefined,
+        compositionMetrics: compositionLayout?.metrics
+          ? {
+              textAreaPct: compositionLayout.metrics.textAreaPct,
+              plaqueAreaPct: compositionLayout.metrics.plaqueAreaPct,
+              whitespacePct: compositionLayout.metrics.whitespacePct,
+              overlapPct: compositionLayout.metrics.overlapPct,
+            }
+          : undefined,
+        hasComposite: !!compositeResult,
+      };
+      const prePatchAudit = analyzeOverlayQuality(prePatchAuditInput);
+      overlayLayoutPatchResult = applyOverlayLayoutPatch({
+        layoutSpec,
+        infographicData,
+        compositionLayout,
+        overlayAudit: prePatchAudit,
+        auditInput: prePatchAuditInput,
+      });
+      if (overlayLayoutPatchResult.patch.applied) {
+        renderInfographicData =
+          overlayLayoutPatchResult.infographicData ?? renderInfographicData;
+        renderLayoutSpec = overlayLayoutPatchResult.layoutSpec ?? renderLayoutSpec;
+        renderCompositionLayout =
+          overlayLayoutPatchResult.compositionLayout ?? renderCompositionLayout;
+        if (overlayLayoutPatchResult.patch.suppressParametricBadge) {
+          renderParametricBadgeHtml = undefined;
+        }
+      }
+
+      geometryWhitespacePatchResult = applyGeometryWhitespacePatch({
+        layoutSpec: renderLayoutSpec,
+        infographicData: renderInfographicData,
+        compositionLayout: renderCompositionLayout,
+        overlayAudit: prePatchAudit,
+        auditInput: prePatchAuditInput,
+        law003WhitespaceViolation: prePatchAudit.law003WhitespaceViolation,
+        whitespace: renderCompositionLayout?.metrics.whitespacePct
+          ? renderCompositionLayout.metrics.whitespacePct / 100
+          : undefined,
+        productAreaRatio: renderCompositionLayout?.metrics.productAreaPct
+          ? renderCompositionLayout.metrics.productAreaPct / 100
+          : undefined,
+        overlayDensity: prePatchAudit.estimatedOverlayDensity,
+      });
+      if (geometryWhitespacePatchResult.patch.applied) {
+        renderInfographicData =
+          geometryWhitespacePatchResult.infographicData ?? renderInfographicData;
+        renderLayoutSpec = geometryWhitespacePatchResult.layoutSpec ?? renderLayoutSpec;
+        renderCompositionLayout =
+          geometryWhitespacePatchResult.compositionLayout ?? renderCompositionLayout;
+      }
+
+      const compositePlacementForPatch = normalizeCompositePlacement({
+        compositeResult,
+        canvas: renderCompositionLayout?.canvas ?? compositionLayout?.canvas,
+      });
+      contrastOverlapPatchResult = applyContrastOverlapPatch({
+        layoutSpec: renderLayoutSpec,
+        infographicData: renderInfographicData,
+        compositionLayout: renderCompositionLayout,
+        overlayAudit: prePatchAudit,
+        auditInput: prePatchAuditInput,
+        law014ContrastViolation: prePatchAudit.law014ContrastViolation,
+        overlayDensity: prePatchAudit.estimatedOverlayDensity,
+        pngOverlayFeelRisk: prePatchAudit.pngOverlayFeelRisk,
+        compositePlacement: compositePlacementForPatch,
+      });
+      if (contrastOverlapPatchResult.patch.applied) {
+        renderInfographicData =
+          contrastOverlapPatchResult.infographicData ?? renderInfographicData;
+        renderLayoutSpec = contrastOverlapPatchResult.layoutSpec ?? renderLayoutSpec;
+        renderCompositionLayout =
+          contrastOverlapPatchResult.compositionLayout ?? renderCompositionLayout;
+      }
+    }
+
     // ── 10. Layout Renderer ───────────────────────────────────────────
     governanceScorecard = buildGovernanceScorecard({
       compositionScore: compositionDirection?.quality.total,
@@ -1830,7 +2261,7 @@ export async function handleGenerateInfographic(
       ]);
     }
 
-    const html = renderInfographicHtml(infographicData, {
+    const html = renderInfographicHtml(renderInfographicData, {
       style: appliedStyle,
       layout: sdData.layout,
       mergedImageDataUrl,
@@ -1840,9 +2271,9 @@ export async function handleGenerateInfographic(
       productImageCutout: productRender?.cutout ?? false,
       libraryFont,
       libraryBadge,
-      parametricBadgeHtml,
+      parametricBadgeHtml: renderParametricBadgeHtml,
       accentHex,
-      compositionLayout,
+      compositionLayout: renderCompositionLayout,
       productPrompt: input.prompt,
     });
 
@@ -2053,6 +2484,395 @@ export async function handleGenerateInfographic(
       }
     }
 
+    const enrichedDaosState = enrichDaosStateFromPipeline(daosState, {
+      knowledge:
+        knowledgeContext || marketIntelligence || genomeIntelligence || assetsIntelligence
+          ? {
+              knowledge: knowledgeContext,
+              market: marketIntelligence,
+              genome: genomeIntelligence,
+              assets: assetsIntelligence,
+            }
+          : undefined,
+      commercial:
+        designBrief || seniorAdReview || ctrReview || marketIntelligence
+          ? {
+              designBrief,
+              seniorAdReview,
+              ctrReview,
+              marketIntelligence,
+            }
+          : undefined,
+      creative: activeCreative ?? undefined,
+      visual:
+        visualBlueprint || compositionResult || scenePlan || sceneDirection
+          ? {
+              visualBlueprint,
+              scenePlan,
+              compositionResult,
+              sceneDirection,
+            }
+          : undefined,
+      render: renderEngineResult
+        ? {
+            request: renderEngineResult.request,
+            renderEngineResult,
+            renderProvider: renderEngineResult.request?.providerId,
+          }
+        : undefined,
+    });
+    const daosPipelineContext = createDaosPipelineContext(enrichedDaosState);
+    const finalPromptContextBlock =
+      createDaosPromptContextBlock(daosPipelineContext) || daosPromptContextBlock;
+    const renderDebug = extractDaosRenderDebug({
+      renderEngineResult,
+      backgroundSource,
+      compiledBackground,
+    });
+    const composerQualityAudit = analyzeComposerQuality({
+      finalImagePath: imagePath,
+      productCutoutPath,
+      backgroundPath: backgroundUrl,
+      canvas: compositionLayout?.canvas,
+      overlayElements: overlayElementsFromCompositionLayout(compositionLayout),
+      renderDebug,
+      debugBundle: {
+        specs: {
+          visualBlueprint: enrichedDaosState.visualBlueprint,
+        },
+      },
+      productPlacement: compositeResult?.productPlacement,
+      plannedProductAreaRatio:
+        compositionLayout?.metrics?.productAreaPct != null
+          ? compositionLayout.metrics.productAreaPct / 100
+          : undefined,
+      compositingHints,
+      sceneShadowProfile: scenePlan?.shadowProfile,
+      hasComposite: !!compositeResult,
+      qualityHasShadows: !!compositeResult,
+    });
+    const overlayQualityAuditPre = analyzeOverlayQuality({
+      canvas: renderCompositionLayout?.canvas,
+      overlayElements: overlayElementsFromCompositionLayout(renderCompositionLayout),
+      layoutSpec: renderLayoutSpec,
+      htmlTemplateData: {
+        headline: renderInfographicData.headline,
+        bullets: renderInfographicData.specBlocks?.map((block) => block.label),
+        badge: Boolean(renderInfographicData.mainBanner?.title ?? renderParametricBadgeHtml),
+        plaques: renderInfographicData.callouts?.length ?? 0,
+        layout: sdData.layout,
+      },
+      diagnosticReport: {
+        qualityValidation,
+        finalQuality,
+        constitution: constitutionReports,
+      },
+      governanceReport: constitutionReports,
+      composerQualityAudit,
+      compositionMetrics: renderCompositionLayout?.metrics
+        ? {
+            textAreaPct: renderCompositionLayout.metrics.textAreaPct,
+            plaqueAreaPct: renderCompositionLayout.metrics.plaqueAreaPct,
+            whitespacePct: renderCompositionLayout.metrics.whitespacePct,
+            overlapPct: renderCompositionLayout.metrics.overlapPct,
+          }
+        : undefined,
+      hasComposite: !!compositeResult,
+    });
+    const compositePlacement = normalizeCompositePlacement({
+      compositeResult,
+      canvas: renderCompositionLayout?.canvas ?? compositionLayout?.canvas,
+    });
+    const productScaleAudit = analyzeProductScale({
+      canvas: renderCompositionLayout?.canvas ?? compositionLayout?.canvas,
+      productCutoutPath,
+      finalImagePath: imagePath,
+      placement: compositeResult?.productPlacement,
+      compositePlacement,
+      compositionLayout: renderCompositionLayout ?? compositionLayout,
+      layoutSpec: renderLayoutSpec ?? layoutSpec,
+      composerQualityAudit,
+      overlayQualityAudit: overlayQualityAuditPre,
+    });
+    const law003Recalibration = createLaw003RecalibrationReport({
+      originalWhitespace: renderCompositionLayout?.metrics?.whitespacePct,
+      constitutionWhitespacePct: extractConstitutionLaw003Whitespace(constitutionReports),
+      plannedProductAreaRatio:
+        renderCompositionLayout?.metrics?.productAreaPct != null
+          ? renderCompositionLayout.metrics.productAreaPct / 100
+          : undefined,
+      productAreaBeforeRatio: productScalePatchResult?.patch?.beforeProductAreaRatio,
+      canvas: renderCompositionLayout?.canvas ?? compositionLayout?.canvas,
+      compositePlacement,
+      productAreaRatio: compositePlacement?.areaRatio,
+      overlayDensity: overlayQualityAuditPre.estimatedOverlayDensity,
+      overlayQualityAudit: overlayQualityAuditPre,
+      productScaleAudit,
+      constitutionLaw003Violation: overlayQualityAuditPre.law003WhitespaceViolation,
+    });
+    const overlayQualityAudit = analyzeOverlayQuality({
+      canvas: renderCompositionLayout?.canvas,
+      overlayElements: overlayElementsFromCompositionLayout(renderCompositionLayout),
+      layoutSpec: renderLayoutSpec,
+      htmlTemplateData: {
+        headline: renderInfographicData.headline,
+        bullets: renderInfographicData.specBlocks?.map((block) => block.label),
+        badge: Boolean(renderInfographicData.mainBanner?.title ?? renderParametricBadgeHtml),
+        plaques: renderInfographicData.callouts?.length ?? 0,
+        layout: sdData.layout,
+      },
+      diagnosticReport: {
+        qualityValidation,
+        finalQuality,
+        constitution: constitutionReports,
+      },
+      governanceReport: constitutionReports,
+      composerQualityAudit,
+      compositionMetrics: renderCompositionLayout?.metrics
+        ? {
+            textAreaPct: renderCompositionLayout.metrics.textAreaPct,
+            plaqueAreaPct: renderCompositionLayout.metrics.plaqueAreaPct,
+            whitespacePct: renderCompositionLayout.metrics.whitespacePct,
+            overlapPct: renderCompositionLayout.metrics.overlapPct,
+          }
+        : undefined,
+      hasComposite: !!compositeResult,
+      law003Recalibration,
+      contrastOverlapPatch: contrastOverlapPatchResult?.patch,
+    });
+    const daosDebugBundle = createDaosDebugBundle(enrichedDaosState, {
+      renderDebug,
+      generationMode: daosGenerationMode,
+      generationPolicy: daosGenerationPolicy,
+      promptContextBlockPreview: finalPromptContextBlock || undefined,
+      promptContextInjected: daosPromptContextInjected,
+      promptContextEnabled: daosPromptContextEnabled,
+      renderContextAttached: daosRenderContextAttached,
+      renderContextSummary: daosRenderContextSummary,
+      renderContextEnabled: daosRenderContextEnabled,
+      useRenderEngineV17,
+      daosV17BridgeEnabled,
+      daosV17ModulesBridgeEnabled,
+      daosV17CtrBridgeEnabled,
+      daosV17PromptCompressionEnabled,
+      composerQualityAudit,
+      overlayQualityAudit,
+      overlayLayoutPatch: overlayLayoutPatchResult?.patch,
+      geometryWhitespacePatch: geometryWhitespacePatchResult?.patch,
+      contrastOverlapPatch: contrastOverlapPatchResult?.patch,
+      productScaleAudit,
+      productScalePatch: productScalePatchResult?.patch,
+      compositePlacement,
+      extractAreaCorrected: compositeResult?.extractAreaCorrected,
+      extractAreaWarnings: compositeResult?.extractAreaWarnings,
+      law003Recalibration,
+    });
+    const daosDebugSummary = createDaosDebugSummary(daosDebugBundle);
+    const daosFinalGate = evaluateDaosFinalGate({
+      summary: daosDebugSummary,
+      generationMode: daosGenerationMode,
+    });
+
+    const baselinePromptLength = daosPromptContextInjected
+      ? Math.max(0, input.prompt.length)
+      : (renderDebug.promptLength ?? compiledBackground?.prompt?.length ?? input.prompt.length);
+    const withContextPromptLength =
+      renderDebug.promptLength ??
+      (daosPromptContextInjected
+        ? input.prompt.length + daosPromptContextLength
+        : compiledBackground?.prompt?.length ?? input.prompt.length);
+
+    const beforeContextBundle = createDaosDebugBundle(enrichedDaosState, {
+      renderDebug,
+      generationMode: daosGenerationMode,
+      generationPolicy: daosGenerationPolicy,
+      promptContextInjected: false,
+      promptContextEnabled: false,
+      renderContextAttached: false,
+      renderContextEnabled: false,
+      useRenderEngineV17,
+      daosV17BridgeEnabled: false,
+      daosV17ModulesBridgeEnabled: false,
+      daosV17CtrBridgeEnabled,
+      daosV17PromptCompressionEnabled: false,
+    });
+    const beforeContextSummary = createDaosDebugSummary(beforeContextBundle);
+    const beforeContextGate = evaluateDaosFinalGate({
+      summary: beforeContextSummary,
+      generationMode: daosGenerationMode,
+    });
+    const contextEffectAudit = createDaosContextEffectAudit(
+      {
+        bundle: beforeContextBundle,
+        summary: beforeContextSummary,
+        finalGate: beforeContextGate,
+        promptLength: baselinePromptLength,
+        containsDaosContextBlock: false,
+        promptContextInjected: false,
+        renderContextAttached: false,
+      },
+      {
+        bundle: daosDebugBundle,
+        summary: daosDebugSummary,
+        finalGate: daosFinalGate,
+        promptLength: withContextPromptLength,
+        containsDaosContextBlock: daosPromptContextInjected,
+        promptContextInjected: daosPromptContextInjected,
+        renderContextAttached: daosRenderContextAttached,
+      },
+    );
+    const contextEffectAuditSummary = summarizeDaosContextEffectAudit(contextEffectAudit);
+    const daosDebugBundleWithAudit = {
+      ...daosDebugBundle,
+      contextEffectAudit,
+    };
+
+    const daosDebugWrite = await writeDaosDebugBundle(daosDebugBundleWithAudit);
+    if (!daosDebugWrite.ok) {
+      console.warn(daosDebugWrite.warning);
+    }
+
+    const daosSummaryWrite = await writeDaosDebugSummary({
+      bundle: daosDebugBundleWithAudit,
+      bundlePath: daosDebugWrite.ok ? daosDebugWrite.path : undefined,
+      finalGate: daosFinalGate,
+    });
+    if (!daosSummaryWrite.ok) {
+      console.warn(daosSummaryWrite.error);
+    }
+
+    const meaningLossWarnings = daosDebugBundle.meaningLossReport.warnings;
+
+    const daosIndexWrite = await updateDaosDebugIndex({
+      entry: {
+        projectId: enrichedDaosState.projectId,
+        runId: enrichedDaosState.runId,
+        createdAt: daosDebugBundle.createdAt,
+        generationMode: daosGenerationMode,
+        summaryStatus: daosDebugSummary.status,
+        summaryScore: daosDebugSummary.score,
+        finalGateStatus: daosFinalGate.status,
+        finalGateScore: daosFinalGate.score,
+        bundlePath: daosDebugWrite.ok ? daosDebugWrite.relativePath : undefined,
+        summaryPath: daosSummaryWrite.ok ? daosSummaryWrite.relativeSummaryPath : undefined,
+        markdownPath: daosSummaryWrite.ok ? daosSummaryWrite.relativeMarkdownPath : undefined,
+        warnings: meaningLossWarnings.filter((w) => w.severity === "warning").length,
+        criticals: meaningLossWarnings.filter((w) => w.severity === "critical").length,
+      },
+    });
+    if (!daosIndexWrite.ok) {
+      console.warn(daosIndexWrite.error);
+    }
+
+    const daosProjectState = daosDiagnosticSummary(enrichedDaosState, {
+      debugBundlePath: daosDebugWrite.ok ? daosDebugWrite.relativePath : undefined,
+      meaningLossWarningCount: meaningLossWarnings.filter((w) => w.severity === "warning").length,
+      meaningLossCriticalCount: meaningLossWarnings.filter((w) => w.severity === "critical").length,
+      debugSummaryPath: daosSummaryWrite.ok ? daosSummaryWrite.relativeSummaryPath : undefined,
+      debugSummaryStatus: daosSummaryWrite.ok ? daosDebugSummary.status : undefined,
+      debugSummaryScore: daosSummaryWrite.ok ? daosDebugSummary.score : undefined,
+      finalGateStatus: daosFinalGate.status,
+      finalGateScore: daosFinalGate.score,
+      finalGateBlocking: daosFinalGate.blocking,
+      finalGateReasons: daosFinalGate.reasons,
+      debugIndexPath: daosIndexWrite.ok ? daosIndexWrite.relativeIndexPath : undefined,
+      pipelineContextCompleteness: daosPipelineContext.completenessScore,
+      pipelineContextMissingSpecs: daosPipelineContext.missingSpecs,
+      pipelineContextWarnings: daosPipelineContext.warnings,
+      daosPromptContextEnabled,
+      daosPromptContextLength,
+      daosPromptContextInjected,
+      daosRenderContextEnabled,
+      daosRenderContextAttached,
+      daosRenderContextCompleteness,
+      contextEffectAuditStatus: contextEffectAuditSummary.status,
+      contextEffectPromptDelta: contextEffectAuditSummary.promptDelta,
+      contextEffectScoreDelta: contextEffectAuditSummary.scoreDelta,
+      contextEffectNotes: contextEffectAuditSummary.notes,
+      daosV17BridgeEnabled,
+      daosV17BridgeApplied: renderDebug?.daosV17BridgeApplied,
+      daosV17BridgeLength: renderDebug?.daosV17BridgeLength,
+      daosV17BridgeModulesAddressed: renderDebug?.daosV17BridgeModulesAddressed,
+      daosV17ModulesBridgeEnabled,
+      daosV17ModulesBridgeApplied: renderDebug?.daosV17ModulesBridgeApplied,
+      daosV17ModulesBridgeLength: renderDebug?.daosV17ModulesBridgeLength,
+      daosV17ModulesCompiled: renderDebug?.daosV17ModulesCompiled,
+      daosV17ModulesStillIgnored: renderDebug?.daosV17ModulesStillIgnored,
+      daosV17CtrBridgeEnabled,
+      daosV17CtrBridgeApplied: renderDebug?.daosV17CtrBridgeApplied,
+      daosV17CtrBridgeSource: renderDebug?.daosV17CtrBridgeSource,
+      daosV17CtrBridgeLength: renderDebug?.daosV17CtrBridgeLength,
+      daosPromptCompressionEnabled: renderDebug?.daosPromptCompressionEnabled,
+      daosPromptOriginalAdditionLength: renderDebug?.daosPromptOriginalAdditionLength,
+      daosPromptCompressedAdditionLength: renderDebug?.daosPromptCompressedAdditionLength,
+      daosPromptCompressionRatio: renderDebug?.daosPromptCompressionRatio,
+      daosPromptRelevanceScore: renderDebug?.daosPromptRelevanceScore,
+      daosPromptAdditionsSkipped: renderDebug?.daosPromptAdditionsSkipped,
+      daosPromptRemovedSections: renderDebug?.daosPromptRemovedSections,
+      composerQualityScore: daosDebugBundle.diagnostics.composerQualityScore,
+      composerQualityWarnings: daosDebugBundle.diagnostics.composerQualityWarnings,
+      productAreaRatio: daosDebugBundle.diagnostics.productAreaRatio,
+      finalCompositionRisk: daosDebugBundle.diagnostics.finalCompositionRisk,
+      overlayQualityScore: daosDebugBundle.diagnostics.overlayQualityScore,
+      overlayDensity: daosDebugBundle.diagnostics.overlayDensity,
+      overlayWarnings: daosDebugBundle.diagnostics.overlayWarnings,
+      pngOverlayFeelRisk: daosDebugBundle.diagnostics.pngOverlayFeelRisk,
+      law003WhitespaceViolation: daosDebugBundle.diagnostics.law003WhitespaceViolation,
+      law014ContrastViolation: daosDebugBundle.diagnostics.law014ContrastViolation,
+      overlayPatchEnabled: daosDebugBundle.diagnostics.overlayPatchEnabled,
+      overlayPatchApplied: daosDebugBundle.diagnostics.overlayPatchApplied,
+      overlayPatchActions: daosDebugBundle.diagnostics.overlayPatchActions,
+      overlayPatchBeforeDensity: daosDebugBundle.diagnostics.overlayPatchBeforeDensity,
+      overlayPatchAfterDensity: daosDebugBundle.diagnostics.overlayPatchAfterDensity,
+      overlayPatchElementsBefore: daosDebugBundle.diagnostics.overlayPatchElementsBefore,
+      overlayPatchElementsAfter: daosDebugBundle.diagnostics.overlayPatchElementsAfter,
+      geometryWhitespacePatchEnabled:
+        daosDebugBundle.diagnostics.geometryWhitespacePatchEnabled,
+      geometryWhitespacePatchApplied:
+        daosDebugBundle.diagnostics.geometryWhitespacePatchApplied,
+      geometryWhitespaceBefore: daosDebugBundle.diagnostics.geometryWhitespaceBefore,
+      geometryWhitespaceAfterEstimate:
+        daosDebugBundle.diagnostics.geometryWhitespaceAfterEstimate,
+      geometryPatchActions: daosDebugBundle.diagnostics.geometryPatchActions,
+      contrastOverlapPatchApplied: daosDebugBundle.diagnostics.contrastOverlapPatchApplied,
+      contrastOverlapPatchActions: daosDebugBundle.diagnostics.contrastOverlapPatchActions,
+      contrastOverlapBefore: daosDebugBundle.diagnostics.contrastOverlapBefore,
+      contrastOverlapAfterEstimate: daosDebugBundle.diagnostics.contrastOverlapAfterEstimate,
+      productScaleScore: daosDebugBundle.diagnostics.productScaleScore,
+      productDominanceScore: daosDebugBundle.diagnostics.productDominanceScore,
+      productWidthRatio: daosDebugBundle.diagnostics.productWidthRatio,
+      productHeightRatio: daosDebugBundle.diagnostics.productHeightRatio,
+      emptySpaceEstimate: daosDebugBundle.diagnostics.emptySpaceEstimate,
+      sceneFillRisk: daosDebugBundle.diagnostics.sceneFillRisk,
+      productScalePatchEnabled: daosDebugBundle.diagnostics.productScalePatchEnabled,
+      productScalePatchApplied: daosDebugBundle.diagnostics.productScalePatchApplied,
+      productScaleMultiplier: daosDebugBundle.diagnostics.productScaleMultiplier,
+      productAreaBefore: daosDebugBundle.diagnostics.productAreaBefore,
+      productAreaTarget: daosDebugBundle.diagnostics.productAreaTarget,
+      productAreaAfterEstimate: daosDebugBundle.diagnostics.productAreaAfterEstimate,
+      productScalePatchActions: daosDebugBundle.diagnostics.productScalePatchActions,
+      compositePlacementFound: daosDebugBundle.diagnostics.compositePlacementFound,
+      compositePlacementSource: daosDebugBundle.diagnostics.compositePlacementSource,
+      compositeProductAreaRatio: daosDebugBundle.diagnostics.compositeProductAreaRatio,
+      compositeProductWidthRatio: daosDebugBundle.diagnostics.compositeProductWidthRatio,
+      compositeProductHeightRatio: daosDebugBundle.diagnostics.compositeProductHeightRatio,
+      extractAreaCorrected: daosDebugBundle.diagnostics.extractAreaCorrected,
+      extractAreaWarnings: daosDebugBundle.diagnostics.extractAreaWarnings,
+      compositePlacementFound: daosDebugBundle.diagnostics.compositePlacementFound,
+      law003OriginalWhitespace: daosDebugBundle.diagnostics.law003OriginalWhitespace,
+      law003RecalibratedWhitespace: daosDebugBundle.diagnostics.law003RecalibratedWhitespace,
+      law003Before: daosDebugBundle.diagnostics.law003Before,
+      law003After: daosDebugBundle.diagnostics.law003After,
+      law003StaleMetricDetected: daosDebugBundle.diagnostics.law003StaleMetricDetected,
+    });
+
+    if (process.env.DAOS_DEBUG === "1") {
+      console.debug("[daos] Wave 2 specs adapted", daosProjectState);
+      if (daosDebugWrite.ok) {
+        console.debug("[daos] Wave 3 debug bundle saved", daosDebugWrite.path);
+      }
+    }
+
     const assembleGenerationDiagnostic = (generationId: string) =>
       buildGenerationDiagnostic({
         generationId,
@@ -2084,6 +2904,7 @@ export async function handleGenerateInfographic(
         finalQuality,
         conceptRetries: conceptRetryIndex,
         feedbackLearning: payloadExtras.feedbackLearning,
+        daosProjectState,
       });
 
     if (input.regenerateBackgroundOnly && input.existingImageId) {
