@@ -1,0 +1,442 @@
+{
+  "version": 1,
+  "phase": 1,
+  "createdAt": "2026-07-06T07:14:19.764Z",
+  "catalogDescription": "DAOS benchmark Phase 1 — five products with varied visual complexity",
+  "sharedRenderSettings": {
+    "provider": "pollinations",
+    "model": "flux",
+    "renderEngine": "v17"
+  },
+  "envProfiles": {
+    "baseline": {
+      "DAOS_PROMPT_CONTEXT": "0",
+      "DAOS_RENDER_CONTEXT": "0",
+      "DAOS_V17_PROMPT_BRIDGE": "0",
+      "DAOS_V17_MODULES_BRIDGE": "0",
+      "DAOS_V17_CTR_BRIDGE": "0",
+      "RENDER_ENGINE_V17": "1",
+      "FAST_GENERATION": "1",
+      "AI_MOCK_MODE": "true",
+      "DISABLE_IMGLY": "1",
+      "USE_FAST_CUTOUT": "1",
+      "DESIGN_GOVERNANCE_V171": "0",
+      "GOVERNANCE_ALLOW_GRADIENT_FALLBACK": "0"
+    },
+    "daos": {
+      "DAOS_PROMPT_CONTEXT": "0",
+      "DAOS_RENDER_CONTEXT": "1",
+      "DAOS_V17_PROMPT_BRIDGE": "1",
+      "DAOS_V17_MODULES_BRIDGE": "1",
+      "DAOS_V17_CTR_BRIDGE": "1",
+      "RENDER_ENGINE_V17": "1",
+      "FAST_GENERATION": "1",
+      "AI_MOCK_MODE": "true",
+      "DISABLE_IMGLY": "1",
+      "USE_FAST_CUTOUT": "1",
+      "DESIGN_GOVERNANCE_V171": "0",
+      "GOVERNANCE_ALLOW_GRADIENT_FALLBACK": "0"
+    }
+  },
+  "pairs": [
+    {
+      "product": {
+        "id": "cordless-drill",
+        "name": "Cordless Drill",
+        "category": "electronics",
+        "complexity": "medium",
+        "prompt": "Профессиональная аккумуляторная дрель 18V для Wildberries: мощный крутящий момент 65 Нм, эргономичная рукоятка, премиальная карточка товара",
+        "image": {
+          "background": "#d2372d",
+          "accent": "#333333",
+          "shape": "drill"
+        }
+      },
+      "seed": "daos-benchmark-phase1-20260706:cordless-drill",
+      "baseline": {
+        "arm": "baseline",
+        "productId": "cordless-drill",
+        "productName": "Cordless Drill",
+        "imageId": "cmr8vvdfd0005jss6ogp3agtv",
+        "generationTimeMs": 15661,
+        "meaningLossCount": 1,
+        "meaningLossCodes": [
+          "MODULES_IGNORED"
+        ],
+        "modulesIgnored": [
+          "layout_coordinates",
+          "hierarchy",
+          "typography_zones",
+          "ctr_wording"
+        ],
+        "modulesCompiled": [],
+        "modulesStillIgnored": [],
+        "backgroundHash": "eab03ab7e6908f345390ef8eaf6589b0",
+        "projectId": "b51b8b3e-2b70-430f-a279-06b93d92a887",
+        "runId": "1b979487-4f7b-41f1-8b67-bbac8b706ac9",
+        "summaryScore": 83,
+        "finalGateStatus": "warning",
+        "finalGateScore": 83,
+        "promptLength": 584,
+        "provider": "pollinations",
+        "model": "flux",
+        "latencyMs": 7185,
+        "fallbackUsed": false
+      },
+      "daos": {
+        "arm": "daos",
+        "productId": "cordless-drill",
+        "productName": "Cordless Drill",
+        "imageId": "cmr8vvlgp0009jss6sjjsx92z",
+        "generationTimeMs": 10412,
+        "meaningLossCount": 3,
+        "meaningLossCodes": [
+          "VISUAL_TO_RENDER_STRATEGY_MISMATCH",
+          "MODULES_IGNORED",
+          "DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES"
+        ],
+        "modulesIgnored": [
+          "layout_coordinates",
+          "hierarchy",
+          "typography_zones",
+          "ctr_wording"
+        ],
+        "modulesCompiled": [
+          "layout_coordinates",
+          "hierarchy",
+          "typography_zones",
+          "ctr_wording"
+        ],
+        "modulesStillIgnored": [],
+        "backgroundHash": "b705e7a6faab69e54dedbc46d16c66cb",
+        "projectId": "3162ce59-eb27-4180-85ba-f68aa5184097",
+        "runId": "e434acc4-eb41-4314-b114-2d8d683e0285",
+        "summaryScore": 73,
+        "finalGateStatus": "warning",
+        "finalGateScore": 73,
+        "promptLength": 1389,
+        "provider": "pollinations",
+        "model": "flux",
+        "latencyMs": 3589,
+        "fallbackUsed": false
+      },
+      "delta": {
+        "deltaSummaryScore": -10,
+        "deltaFinalGateScore": -10,
+        "deltaPromptLength": 805,
+        "deltaMeaningLoss": 2,
+        "deltaModulesCompiled": 4,
+        "deltaModulesStillIgnored": 0,
+        "backgroundHashChanged": true,
+        "finalImageHashChanged": false
+      }
+    },
+    {
+      "product": {
+        "id": "electric-kettle",
+        "name": "Electric Kettle",
+        "category": "kitchen",
+        "complexity": "low",
+        "prompt": "Электрический чайник 1.7 л для Wildberries: стекло и металл, LED подсветка, премиальная кухонная карточка товара",
+        "image": {
+          "background": "#e8f4f8",
+          "accent": "#c0c0c0",
+          "shape": "kettle"
+        }
+      },
+      "seed": "daos-benchmark-phase1-20260706:electric-kettle",
+      "baseline": {
+        "arm": "baseline",
+        "productId": "electric-kettle",
+        "productName": "Electric Kettle",
+        "generationTimeMs": 2039,
+        "meaningLossCount": 0,
+        "meaningLossCodes": [],
+        "modulesIgnored": [],
+        "modulesCompiled": [],
+        "modulesStillIgnored": [],
+        "error": "[\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"oneThought\",\n      \"deferredSpecs\",\n      0\n    ]\n  },\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"deferredBullets\",\n      0\n    ]\n  }\n]"
+      },
+      "daos": {
+        "arm": "daos",
+        "productId": "electric-kettle",
+        "productName": "Electric Kettle",
+        "generationTimeMs": 24,
+        "meaningLossCount": 0,
+        "meaningLossCodes": [],
+        "modulesIgnored": [],
+        "modulesCompiled": [],
+        "modulesStillIgnored": [],
+        "error": "[\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"oneThought\",\n      \"deferredSpecs\",\n      0\n    ]\n  },\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"deferredBullets\",\n      0\n    ]\n  }\n]"
+      },
+      "delta": {
+        "deltaMeaningLoss": 0,
+        "deltaModulesCompiled": 0,
+        "deltaModulesStillIgnored": 0,
+        "backgroundHashChanged": false,
+        "finalImageHashChanged": false
+      }
+    },
+    {
+      "product": {
+        "id": "office-chair",
+        "name": "Office Chair",
+        "category": "furniture",
+        "complexity": "high",
+        "prompt": "Эргономичное офисное кресло для Wildberries: регулировка поясницы, дышащая сетка, премиальная карточка мебели",
+        "image": {
+          "background": "#2c3e50",
+          "accent": "#1a252f",
+          "shape": "chair"
+        }
+      },
+      "seed": "daos-benchmark-phase1-20260706:office-chair",
+      "baseline": {
+        "arm": "baseline",
+        "productId": "office-chair",
+        "productName": "Office Chair",
+        "generationTimeMs": 161,
+        "meaningLossCount": 0,
+        "meaningLossCodes": [],
+        "modulesIgnored": [],
+        "modulesCompiled": [],
+        "modulesStillIgnored": [],
+        "error": "[\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"oneThought\",\n      \"deferredSpecs\",\n      0\n    ]\n  },\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"deferredBullets\",\n      0\n    ]\n  }\n]"
+      },
+      "daos": {
+        "arm": "daos",
+        "productId": "office-chair",
+        "productName": "Office Chair",
+        "generationTimeMs": 17,
+        "meaningLossCount": 0,
+        "meaningLossCodes": [],
+        "modulesIgnored": [],
+        "modulesCompiled": [],
+        "modulesStillIgnored": [],
+        "error": "[\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"oneThought\",\n      \"deferredSpecs\",\n      0\n    ]\n  },\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"deferredBullets\",\n      0\n    ]\n  }\n]"
+      },
+      "delta": {
+        "deltaMeaningLoss": 0,
+        "deltaModulesCompiled": 0,
+        "deltaModulesStillIgnored": 0,
+        "backgroundHashChanged": false,
+        "finalImageHashChanged": false
+      }
+    },
+    {
+      "product": {
+        "id": "mattress",
+        "name": "Mattress",
+        "category": "home",
+        "complexity": "medium",
+        "prompt": "Ортопедический матрас 160x200 для Wildberries: независимые пружины, средняя жёсткость, премиальная карточка для сна",
+        "image": {
+          "background": "#f5f0e8",
+          "accent": "#d4c4b0",
+          "shape": "mattress"
+        }
+      },
+      "seed": "daos-benchmark-phase1-20260706:mattress",
+      "baseline": {
+        "arm": "baseline",
+        "productId": "mattress",
+        "productName": "Mattress",
+        "imageId": "cmr8vvy0k000rjss687z8vboa",
+        "generationTimeMs": 13977,
+        "meaningLossCount": 3,
+        "meaningLossCodes": [
+          "LOW_CONFIDENCE",
+          "VISUAL_TO_RENDER_STRATEGY_MISMATCH",
+          "MODULES_IGNORED"
+        ],
+        "modulesIgnored": [
+          "layout_coordinates",
+          "hierarchy",
+          "typography_zones",
+          "ctr_wording"
+        ],
+        "modulesCompiled": [],
+        "modulesStillIgnored": [],
+        "backgroundHash": "de5e0c352a58f4435f0f3ec2df698d9c",
+        "projectId": "745624dd-c802-460a-8642-8a434c9681f2",
+        "runId": "159e0ff1-c542-4b71-b6ab-6a521093e744",
+        "summaryScore": 73,
+        "finalGateStatus": "warning",
+        "finalGateScore": 73,
+        "promptLength": 581,
+        "provider": "pollinations",
+        "model": "flux",
+        "latencyMs": 6572,
+        "fallbackUsed": false
+      },
+      "daos": {
+        "arm": "daos",
+        "productId": "mattress",
+        "productName": "Mattress",
+        "imageId": "cmr8vw6oh000vjss6zksuvrrc",
+        "generationTimeMs": 11227,
+        "meaningLossCount": 3,
+        "meaningLossCodes": [
+          "VISUAL_TO_RENDER_STRATEGY_MISMATCH",
+          "MODULES_IGNORED",
+          "DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES"
+        ],
+        "modulesIgnored": [
+          "layout_coordinates",
+          "hierarchy",
+          "typography_zones",
+          "ctr_wording"
+        ],
+        "modulesCompiled": [
+          "layout_coordinates",
+          "hierarchy",
+          "typography_zones",
+          "ctr_wording"
+        ],
+        "modulesStillIgnored": [],
+        "backgroundHash": "8adf8aa219a792909fae56b4cf5c43e5",
+        "projectId": "f42b7158-6a4f-4734-8f96-5d15e9b9dd7b",
+        "runId": "4a840ce0-50d8-4163-9325-e6c380002eaf",
+        "summaryScore": 73,
+        "finalGateStatus": "warning",
+        "finalGateScore": 73,
+        "promptLength": 1385,
+        "provider": "pollinations",
+        "model": "flux",
+        "latencyMs": 4155,
+        "fallbackUsed": false
+      },
+      "delta": {
+        "deltaSummaryScore": 0,
+        "deltaFinalGateScore": 0,
+        "deltaPromptLength": 804,
+        "deltaMeaningLoss": 0,
+        "deltaModulesCompiled": 4,
+        "deltaModulesStillIgnored": 0,
+        "backgroundHashChanged": true,
+        "finalImageHashChanged": false
+      }
+    },
+    {
+      "product": {
+        "id": "childrens-toy",
+        "name": "Children's Toy",
+        "category": "toys",
+        "complexity": "low",
+        "prompt": "Развивающая игрушка для детей 3+ для Wildberries: яркий дизайн, безопасные материалы, привлекательная детская карточка",
+        "image": {
+          "background": "#ffcc00",
+          "accent": "#ff6699",
+          "shape": "toy"
+        }
+      },
+      "seed": "daos-benchmark-phase1-20260706:childrens-toy",
+      "baseline": {
+        "arm": "baseline",
+        "productId": "childrens-toy",
+        "productName": "Children's Toy",
+        "imageId": "cmr8vwfg30013jss6kvo3593o",
+        "generationTimeMs": 11348,
+        "meaningLossCount": 3,
+        "meaningLossCodes": [
+          "LOW_CONFIDENCE",
+          "VISUAL_TO_RENDER_STRATEGY_MISMATCH",
+          "MODULES_IGNORED"
+        ],
+        "modulesIgnored": [
+          "layout_coordinates",
+          "hierarchy",
+          "typography_zones",
+          "ctr_wording"
+        ],
+        "modulesCompiled": [],
+        "modulesStillIgnored": [],
+        "backgroundHash": "3ae75bf3c564032f6d0fa451911ce2f5",
+        "projectId": "fe28fadf-eefb-4336-80e1-ee8211b04734",
+        "runId": "dae433ed-ac2d-4427-8818-75106795ee1d",
+        "summaryScore": 73,
+        "finalGateStatus": "warning",
+        "finalGateScore": 73,
+        "promptLength": 562,
+        "provider": "pollinations",
+        "model": "flux",
+        "latencyMs": 3870,
+        "fallbackUsed": false
+      },
+      "daos": {
+        "arm": "daos",
+        "productId": "childrens-toy",
+        "productName": "Children's Toy",
+        "imageId": "cmr8vwrtz0018jss6oyg27xd8",
+        "generationTimeMs": 16050,
+        "meaningLossCount": 3,
+        "meaningLossCodes": [
+          "VISUAL_TO_RENDER_STRATEGY_MISMATCH",
+          "MODULES_IGNORED",
+          "DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES"
+        ],
+        "modulesIgnored": [
+          "layout_coordinates",
+          "hierarchy",
+          "typography_zones",
+          "ctr_wording"
+        ],
+        "modulesCompiled": [
+          "layout_coordinates",
+          "hierarchy",
+          "typography_zones",
+          "ctr_wording"
+        ],
+        "modulesStillIgnored": [],
+        "backgroundHash": "c2a31535382acffc7d0e4d4f9ab0256a",
+        "projectId": "c3e48bc6-9d66-4358-9554-b428d47448b4",
+        "runId": "bf2e5f50-0726-44ac-adcc-a2e7506d30da",
+        "summaryScore": 73,
+        "finalGateStatus": "warning",
+        "finalGateScore": 73,
+        "promptLength": 1362,
+        "provider": "pollinations",
+        "model": "flux",
+        "latencyMs": 4927,
+        "fallbackUsed": false
+      },
+      "delta": {
+        "deltaSummaryScore": 0,
+        "deltaFinalGateScore": 0,
+        "deltaPromptLength": 800,
+        "deltaMeaningLoss": 0,
+        "deltaModulesCompiled": 4,
+        "deltaModulesStillIgnored": 0,
+        "backgroundHashChanged": true,
+        "finalImageHashChanged": false
+      }
+    }
+  ],
+  "aggregate": {
+    "count": 5,
+    "averageSummaryDelta": -3.3333333333333335,
+    "medianSummaryDelta": 0,
+    "bestSummaryDelta": 0,
+    "worstSummaryDelta": -10,
+    "averagePromptDelta": 803,
+    "averageMeaningLossDelta": 0.4,
+    "averageModulesCompiledBaseline": 0,
+    "averageModulesCompiledDaos": 2.4,
+    "averageModulesCompiledDelta": 2.4,
+    "meaningLossImproved": false,
+    "modulesCompiledImproved": true
+  },
+  "decision": {
+    "status": "SUCCESS",
+    "recommendation": "Continue to Phase 2 — run npm run daos:benchmark:30 when ready.",
+    "bottlenecks": [
+      "average summary delta -3.3 < +3",
+      "meaning-loss not improved (avg delta 0.4)"
+    ],
+    "criteria": {
+      "averageSummaryDeltaGte3": false,
+      "meaningLossImproved": false,
+      "modulesCompiledImproved": true
+    }
+  }
+}
