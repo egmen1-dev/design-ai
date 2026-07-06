@@ -137,7 +137,10 @@ export async function extractMetricsFromBundle(
       overlayQualityScore: asNumber(diagnostics.overlayQualityScore),
       overlayDensity: asNumber(diagnostics.overlayDensity),
       pngOverlayFeelRisk: asNumber(diagnostics.pngOverlayFeelRisk),
-      law003WhitespaceViolation: diagnostics.law003WhitespaceViolation === true,
+      law003WhitespaceViolation:
+        diagnostics.law003After != null
+          ? diagnostics.law003After === true
+          : diagnostics.law003WhitespaceViolation === true,
       law014ContrastViolation: diagnostics.law014ContrastViolation === true,
       productScaleScore: asNumber(diagnostics.productScaleScore),
       productDominanceScore: asNumber(diagnostics.productDominanceScore),
@@ -148,6 +151,9 @@ export async function extractMetricsFromBundle(
       compositeProductHeightRatio: asNumber(diagnostics.compositeProductHeightRatio),
       extractAreaCorrected: diagnostics.extractAreaCorrected === true,
       compositePlacementFound: diagnostics.compositePlacementFound === true,
+      law003Before: diagnostics.law003Before === true,
+      law003After: diagnostics.law003After === true,
+      law003StaleMetricDetected: diagnostics.law003StaleMetricDetected === true,
     };
   } catch {
     return {};

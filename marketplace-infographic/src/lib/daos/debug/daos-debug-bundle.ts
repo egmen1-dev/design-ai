@@ -26,6 +26,7 @@ import type { ProductScaleAudit } from "../audit/product-scale-audit";
 import { summarizeProductScaleAudit } from "../audit/product-scale-audit";
 import type { ProductScalePatch } from "../compositor/product-scale-patch";
 import type { NormalizedCompositePlacement } from "../compositor/composite-result-bridge";
+import type { Law003RecalibrationReport } from "../governance/law003-recalibration";
 
 export type DaosDebugBundle = {
   projectId: string;
@@ -107,6 +108,11 @@ export type DaosDebugBundle = {
     compositeProductHeightRatio?: number;
     extractAreaCorrected?: boolean;
     extractAreaWarnings?: string[];
+    law003OriginalWhitespace?: number;
+    law003RecalibratedWhitespace?: number;
+    law003Before?: boolean;
+    law003After?: boolean;
+    law003StaleMetricDetected?: boolean;
   };
   generationMode: DAOSGenerationMode;
   generationPolicySummary: ReturnType<typeof summarizeDaosGenerationPolicy>;
@@ -124,6 +130,7 @@ export type DaosDebugBundle = {
   productScaleAudit?: ProductScaleAudit;
   productScalePatch?: ProductScalePatch;
   compositePlacement?: NormalizedCompositePlacement;
+  law003Recalibration?: Law003RecalibrationReport;
   meaningLossReport: DaosMeaningLossReport;
 };
 
@@ -154,6 +161,7 @@ export function createDaosDebugBundle(
     compositePlacement?: NormalizedCompositePlacement;
     extractAreaCorrected?: boolean;
     extractAreaWarnings?: string[];
+    law003Recalibration?: Law003RecalibrationReport;
   },
 ): DaosDebugBundle {
   const renderDebug = options?.renderDebug;
@@ -189,6 +197,7 @@ export function createDaosDebugBundle(
   const compositePlacement = options?.compositePlacement;
   const extractAreaCorrected = options?.extractAreaCorrected;
   const extractAreaWarnings = options?.extractAreaWarnings;
+  const law003Recalibration = options?.law003Recalibration;
   const productScaleSummary = productScaleAudit
     ? summarizeProductScaleAudit(productScaleAudit)
     : undefined;
@@ -302,6 +311,15 @@ export function createDaosDebugBundle(
         : {}),
       ...(extractAreaCorrected != null ? { extractAreaCorrected } : {}),
       ...(extractAreaWarnings?.length ? { extractAreaWarnings } : {}),
+      ...(law003Recalibration
+        ? {
+            law003OriginalWhitespace: law003Recalibration.originalWhitespace,
+            law003RecalibratedWhitespace: law003Recalibration.recalibratedWhitespace,
+            law003Before: law003Recalibration.law003Before,
+            law003After: law003Recalibration.law003After,
+            law003StaleMetricDetected: law003Recalibration.staleMetricDetected,
+          }
+        : {}),
     },
     generationMode,
     generationPolicySummary,
@@ -319,6 +337,7 @@ export function createDaosDebugBundle(
     productScaleAudit,
     productScalePatch,
     compositePlacement,
+    law003Recalibration,
     meaningLossReport,
   };
 }

@@ -187,7 +187,11 @@ export type GenerationDiagnosticReport = {
     compositeProductHeightRatio?: number;
     extractAreaCorrected?: boolean;
     extractAreaWarnings?: string[];
-    compositePlacementFound?: boolean;
+    law003OriginalWhitespace?: number;
+    law003RecalibratedWhitespace?: number;
+    law003Before?: boolean;
+    law003After?: boolean;
+    law003StaleMetricDetected?: boolean;
   };
 };
 

@@ -69,6 +69,9 @@ export type BenchmarkRunMetrics = {
   compositeProductHeightRatio?: number;
   extractAreaCorrected?: boolean;
   compositePlacementFound?: boolean;
+  law003Before?: boolean;
+  law003After?: boolean;
+  law003StaleMetricDetected?: boolean;
 };
 
 export type BenchmarkPairDelta = {
@@ -132,6 +135,10 @@ export type BenchmarkAggregateStats = {
   compositePlacementFoundRateDaos?: number;
   extractAreaCorrectedRateBaseline?: number;
   extractAreaCorrectedRateDaos?: number;
+  law003AfterViolationRateBaseline?: number;
+  law003AfterViolationRateDaos?: number;
+  law003StaleMetricRateBaseline?: number;
+  law003StaleMetricRateDaos?: number;
   meaningLossImproved: boolean;
   modulesCompiledImproved: boolean;
 };

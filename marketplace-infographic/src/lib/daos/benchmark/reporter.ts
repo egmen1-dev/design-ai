@@ -43,6 +43,9 @@ function formatMetricsRow(
     metrics.overlayDensity ?? "",
     metrics.pngOverlayFeelRisk ?? "",
     metrics.law003WhitespaceViolation === true ? "true" : "",
+    metrics.law003Before === true ? "true" : "",
+    metrics.law003After === true ? "true" : "",
+    metrics.law003StaleMetricDetected === true ? "true" : "",
     metrics.law014ContrastViolation === true ? "true" : "",
     metrics.productScaleScore ?? "",
     metrics.productDominanceScore ?? "",
@@ -104,6 +107,9 @@ function renderCsv(results: BenchmarkResults): string {
     "overlayDensity",
     "pngOverlayFeelRisk",
     "law003WhitespaceViolation",
+    "law003Before",
+    "law003After",
+    "law003StaleMetricDetected",
     "law014ContrastViolation",
     "productScaleScore",
     "productDominanceScore",
@@ -241,6 +247,15 @@ function renderReport(results: BenchmarkResults): string {
       `| law003WhitespaceViolation | ${pair.baseline.law003WhitespaceViolation ?? "n/a"} | ${pair.daos.law003WhitespaceViolation ?? "n/a"} | — |`,
     );
     lines.push(
+      `| law003Before | ${pair.baseline.law003Before ?? "n/a"} | ${pair.daos.law003Before ?? "n/a"} | — |`,
+    );
+    lines.push(
+      `| law003After | ${pair.baseline.law003After ?? "n/a"} | ${pair.daos.law003After ?? "n/a"} | — |`,
+    );
+    lines.push(
+      `| law003StaleMetricDetected | ${pair.baseline.law003StaleMetricDetected ?? "n/a"} | ${pair.daos.law003StaleMetricDetected ?? "n/a"} | — |`,
+    );
+    lines.push(
       `| law014ContrastViolation | ${pair.baseline.law014ContrastViolation ?? "n/a"} | ${pair.daos.law014ContrastViolation ?? "n/a"} | — |`,
     );
     lines.push(
@@ -344,6 +359,12 @@ function renderReport(results: BenchmarkResults): string {
   );
   lines.push(
     `- extractAreaCorrected rate (patch OFF → ON): ${formatRate(results.aggregate.extractAreaCorrectedRateBaseline)} → ${formatRate(results.aggregate.extractAreaCorrectedRateDaos)}`,
+  );
+  lines.push(
+    `- LAW_003 violation rate recalibrated (patch OFF → ON): ${formatRate(results.aggregate.law003AfterViolationRateBaseline)} → ${formatRate(results.aggregate.law003AfterViolationRateDaos)}`,
+  );
+  lines.push(
+    `- LAW_003 stale metric rate (patch OFF → ON): ${formatRate(results.aggregate.law003StaleMetricRateBaseline)} → ${formatRate(results.aggregate.law003StaleMetricRateDaos)}`,
   );
 
   return lines.join("\n");

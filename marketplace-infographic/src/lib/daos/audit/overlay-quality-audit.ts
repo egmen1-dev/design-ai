@@ -4,6 +4,7 @@ import type { FinalQualityScore } from "@/lib/design/final-quality-validator";
 import type { QualityValidationResult } from "@/lib/design/quality-validator";
 import type { ComposerQualityAudit } from "./composer-quality-audit";
 import type { ComposerOverlayElement } from "./composer-quality-audit";
+import type { Law003RecalibrationReport } from "../governance/law003-recalibration";
 
 export type OverlayQualityWarning = {
   code: string;
@@ -41,6 +42,7 @@ export type OverlayQualityAuditInput = {
     overlapPct?: number;
   };
   hasComposite?: boolean;
+  law003Recalibration?: Pick<Law003RecalibrationReport, "law003After" | "law003Before">;
 };
 
 export type OverlayQualityAudit = {
@@ -166,8 +168,13 @@ function computeWhitespaceRisk(input: OverlayQualityAuditInput): number {
     else if (whitespacePct < 18) risk += 0.15;
   }
 
-  if (lawViolated(governanceReports(input), "LAW_003")) {
+  const constitutionLaw003 = lawViolated(governanceReports(input), "LAW_003");
+  const law003Active = input.law003Recalibration?.law003After ?? constitutionLaw003;
+
+  if (law003Active) {
     risk += 0.35;
+  } else if (input.law003Recalibration && constitutionLaw003 && !input.law003Recalibration.law003After) {
+    risk = Math.max(0.1, risk - 0.2);
   }
 
   return clamp01(risk);
@@ -263,7 +270,10 @@ export function analyzeOverlayQuality(input: OverlayQualityAuditInput): OverlayQ
 
   const overlayElementCount = countOverlayElements(input);
   const estimatedOverlayDensity = estimateOverlayDensity(input);
-  const law003WhitespaceViolation = lawViolated(governanceReports(input), "LAW_003");
+  const constitutionLaw003 = lawViolated(governanceReports(input), "LAW_003");
+  const law003WhitespaceViolation = input.law003Recalibration
+    ? input.law003Recalibration.law003After
+    : constitutionLaw003;
   const law014ContrastViolation = lawViolated(governanceReports(input), "LAW_014");
   const whitespaceRisk = computeWhitespaceRisk(input);
   const contrastRisk = computeContrastRisk(input);
@@ -293,6 +303,11 @@ export function analyzeOverlayQuality(input: OverlayQualityAuditInput): OverlayQ
       message: "Design governance reported LAW_003 whitespace violation",
     });
     recommendations.add("Apply whitespace patch from constitution critique before shipping.");
+  } else if (constitutionLaw003 && input.law003Recalibration && !input.law003Recalibration.law003After) {
+    warnings.push({
+      code: "LAW_003_RECALIBRATED_PASS",
+      message: "LAW_003 passed after factual composite product area recalibration",
+    });
   }
 
   if (law014ContrastViolation) {

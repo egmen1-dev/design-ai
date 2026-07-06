@@ -146,6 +146,10 @@ export function computeAggregateStats(pairs: BenchmarkProductPair[]): BenchmarkA
   const placementFoundDaos = pairs.filter((pair) => pair.daos.compositePlacementFound).length;
   const extractCorrectedBaseline = pairs.filter((pair) => pair.baseline.extractAreaCorrected).length;
   const extractCorrectedDaos = pairs.filter((pair) => pair.daos.extractAreaCorrected).length;
+  const law003AfterBaseline = pairs.filter((pair) => pair.baseline.law003After).length;
+  const law003AfterDaos = pairs.filter((pair) => pair.daos.law003After).length;
+  const law003StaleBaseline = pairs.filter((pair) => pair.baseline.law003StaleMetricDetected).length;
+  const law003StaleDaos = pairs.filter((pair) => pair.daos.law003StaleMetricDetected).length;
   const successfulBaseline = pairs.filter((pair) => !pair.baseline.error).length;
   const successfulDaos = pairs.filter((pair) => !pair.daos.error).length;
 
@@ -217,6 +221,14 @@ export function computeAggregateStats(pairs: BenchmarkProductPair[]): BenchmarkA
       successfulBaseline > 0 ? extractCorrectedBaseline / successfulBaseline : undefined,
     extractAreaCorrectedRateDaos:
       successfulDaos > 0 ? extractCorrectedDaos / successfulDaos : undefined,
+    law003AfterViolationRateBaseline:
+      successfulBaseline > 0 ? law003AfterBaseline / successfulBaseline : undefined,
+    law003AfterViolationRateDaos:
+      successfulDaos > 0 ? law003AfterDaos / successfulDaos : undefined,
+    law003StaleMetricRateBaseline:
+      successfulBaseline > 0 ? law003StaleBaseline / successfulBaseline : undefined,
+    law003StaleMetricRateDaos:
+      successfulDaos > 0 ? law003StaleDaos / successfulDaos : undefined,
     meaningLossImproved,
     modulesCompiledImproved,
   };

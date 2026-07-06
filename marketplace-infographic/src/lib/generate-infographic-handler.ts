@@ -178,6 +178,7 @@ import {
   type ProductScalePatchResult,
 } from "@/lib/daos/compositor/product-scale-patch";
 import { normalizeCompositePlacement } from "@/lib/daos/compositor/composite-result-bridge";
+import { createLaw003RecalibrationReport, extractConstitutionLaw003Whitespace } from "@/lib/daos/governance/law003-recalibration";
 import type { SceneCompositeOptions } from "@/lib/compositing/scene-compositor";
 import type { CompositionLayout } from "@/lib/composition/types";
 import type { ScenePlan } from "@/lib/design/scene-planner";
@@ -380,6 +381,11 @@ function daosDiagnosticSummary(
     compositeProductHeightRatio?: number;
     extractAreaCorrected?: boolean;
     extractAreaWarnings?: string[];
+    law003OriginalWhitespace?: number;
+    law003RecalibratedWhitespace?: number;
+    law003Before?: boolean;
+    law003After?: boolean;
+    law003StaleMetricDetected?: boolean;
   },
 ) {
   return {
@@ -2514,7 +2520,7 @@ export async function handleGenerateInfographic(
       hasComposite: !!compositeResult,
       qualityHasShadows: !!compositeResult,
     });
-    const overlayQualityAudit = analyzeOverlayQuality({
+    const overlayQualityAuditPre = analyzeOverlayQuality({
       canvas: renderCompositionLayout?.canvas,
       overlayElements: overlayElementsFromCompositionLayout(renderCompositionLayout),
       layoutSpec: renderLayoutSpec,
@@ -2555,7 +2561,52 @@ export async function handleGenerateInfographic(
       compositionLayout: renderCompositionLayout ?? compositionLayout,
       layoutSpec: renderLayoutSpec ?? layoutSpec,
       composerQualityAudit,
-      overlayQualityAudit,
+      overlayQualityAudit: overlayQualityAuditPre,
+    });
+    const law003Recalibration = createLaw003RecalibrationReport({
+      originalWhitespace: renderCompositionLayout?.metrics?.whitespacePct,
+      constitutionWhitespacePct: extractConstitutionLaw003Whitespace(constitutionReports),
+      plannedProductAreaRatio:
+        renderCompositionLayout?.metrics?.productAreaPct != null
+          ? renderCompositionLayout.metrics.productAreaPct / 100
+          : undefined,
+      productAreaBeforeRatio: productScalePatchResult?.patch?.beforeProductAreaRatio,
+      canvas: renderCompositionLayout?.canvas ?? compositionLayout?.canvas,
+      compositePlacement,
+      productAreaRatio: compositePlacement?.areaRatio,
+      overlayDensity: overlayQualityAuditPre.estimatedOverlayDensity,
+      overlayQualityAudit: overlayQualityAuditPre,
+      productScaleAudit,
+      constitutionLaw003Violation: overlayQualityAuditPre.law003WhitespaceViolation,
+    });
+    const overlayQualityAudit = analyzeOverlayQuality({
+      canvas: renderCompositionLayout?.canvas,
+      overlayElements: overlayElementsFromCompositionLayout(renderCompositionLayout),
+      layoutSpec: renderLayoutSpec,
+      htmlTemplateData: {
+        headline: renderInfographicData.headline,
+        bullets: renderInfographicData.specBlocks?.map((block) => block.label),
+        badge: Boolean(renderInfographicData.mainBanner?.title ?? renderParametricBadgeHtml),
+        plaques: renderInfographicData.callouts?.length ?? 0,
+        layout: sdData.layout,
+      },
+      diagnosticReport: {
+        qualityValidation,
+        finalQuality,
+        constitution: constitutionReports,
+      },
+      governanceReport: constitutionReports,
+      composerQualityAudit,
+      compositionMetrics: renderCompositionLayout?.metrics
+        ? {
+            textAreaPct: renderCompositionLayout.metrics.textAreaPct,
+            plaqueAreaPct: renderCompositionLayout.metrics.plaqueAreaPct,
+            whitespacePct: renderCompositionLayout.metrics.whitespacePct,
+            overlapPct: renderCompositionLayout.metrics.overlapPct,
+          }
+        : undefined,
+      hasComposite: !!compositeResult,
+      law003Recalibration,
     });
     const daosDebugBundle = createDaosDebugBundle(enrichedDaosState, {
       renderDebug,
@@ -2581,6 +2632,7 @@ export async function handleGenerateInfographic(
       compositePlacement,
       extractAreaCorrected: compositeResult?.extractAreaCorrected,
       extractAreaWarnings: compositeResult?.extractAreaWarnings,
+      law003Recalibration,
     });
     const daosDebugSummary = createDaosDebugSummary(daosDebugBundle);
     const daosFinalGate = evaluateDaosFinalGate({
@@ -2770,6 +2822,11 @@ export async function handleGenerateInfographic(
       extractAreaCorrected: daosDebugBundle.diagnostics.extractAreaCorrected,
       extractAreaWarnings: daosDebugBundle.diagnostics.extractAreaWarnings,
       compositePlacementFound: daosDebugBundle.diagnostics.compositePlacementFound,
+      law003OriginalWhitespace: daosDebugBundle.diagnostics.law003OriginalWhitespace,
+      law003RecalibratedWhitespace: daosDebugBundle.diagnostics.law003RecalibratedWhitespace,
+      law003Before: daosDebugBundle.diagnostics.law003Before,
+      law003After: daosDebugBundle.diagnostics.law003After,
+      law003StaleMetricDetected: daosDebugBundle.diagnostics.law003StaleMetricDetected,
     });
 
     if (process.env.DAOS_DEBUG === "1") {
