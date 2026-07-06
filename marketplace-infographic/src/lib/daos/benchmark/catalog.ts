@@ -66,12 +66,14 @@ export const BENCHMARK_DAOS_COMPRESSED_ENV: Record<string, string> = {
 
 export const BENCHMARK_DAOS_NO_PATCH_ENV: Record<string, string> = {
   ...BENCHMARK_DAOS_COMPRESSED_ENV,
-  DAOS_OVERLAY_PATCH: "0",
+  DAOS_OVERLAY_PATCH: "1",
+  DAOS_GEOMETRY_WHITESPACE_PATCH: "0",
 };
 
 export const BENCHMARK_DAOS_PATCHED_ENV: Record<string, string> = {
   ...BENCHMARK_DAOS_COMPRESSED_ENV,
   DAOS_OVERLAY_PATCH: "1",
+  DAOS_GEOMETRY_WHITESPACE_PATCH: "1",
 };
 
 export function isDaosBenchmarkEnabled(): boolean {
@@ -82,6 +84,7 @@ export function isDaosBenchmarkEnabled(): boolean {
     process.env.DAOS_V17_CTR_BRIDGE === "1" ||
     process.env.DAOS_V17_PROMPT_COMPRESSION === "1" ||
     process.env.DAOS_OVERLAY_PATCH === "1" ||
+    process.env.DAOS_GEOMETRY_WHITESPACE_PATCH === "1" ||
     process.env.DAOS_PROMPT_CONTEXT === "1"
   );
 }

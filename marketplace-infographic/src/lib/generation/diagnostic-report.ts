@@ -162,6 +162,11 @@ export type GenerationDiagnosticReport = {
     overlayPatchAfterDensity?: number;
     overlayPatchElementsBefore?: number;
     overlayPatchElementsAfter?: number;
+    geometryWhitespacePatchEnabled?: boolean;
+    geometryWhitespacePatchApplied?: boolean;
+    geometryWhitespaceBefore?: number;
+    geometryWhitespaceAfterEstimate?: number;
+    geometryPatchActions?: string[];
   };
 };
 

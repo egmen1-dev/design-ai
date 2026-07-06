@@ -168,6 +168,10 @@ import {
   applyOverlayLayoutPatch,
   type OverlayLayoutPatchResult,
 } from "@/lib/daos/overlay/overlay-layout-patch";
+import {
+  applyGeometryWhitespacePatch,
+  type GeometryWhitespacePatchResult,
+} from "@/lib/daos/overlay/geometry-whitespace-patch";
 import type { DAOSProjectState } from "@/lib/daos/core/project-state";
 import type { KnowledgeContext } from "@/lib/design/knowledge-engine";
 
@@ -316,6 +320,11 @@ function daosDiagnosticSummary(
     overlayPatchAfterDensity?: number;
     overlayPatchElementsBefore?: number;
     overlayPatchElementsAfter?: number;
+    geometryWhitespacePatchEnabled?: boolean;
+    geometryWhitespacePatchApplied?: boolean;
+    geometryWhitespaceBefore?: number;
+    geometryWhitespaceAfterEstimate?: number;
+    geometryPatchActions?: string[];
   },
 ) {
   return {
@@ -2015,6 +2024,7 @@ export async function handleGenerateInfographic(
     let renderCompositionLayout = compositionLayout;
     let renderParametricBadgeHtml = parametricBadgeHtml;
     let overlayLayoutPatchResult: OverlayLayoutPatchResult | undefined;
+    let geometryWhitespacePatchResult: GeometryWhitespacePatchResult | undefined;
 
     if (sdData.layout === "marketplace") {
       const prePatchAuditInput = {
@@ -2062,6 +2072,29 @@ export async function handleGenerateInfographic(
         if (overlayLayoutPatchResult.patch.suppressParametricBadge) {
           renderParametricBadgeHtml = undefined;
         }
+      }
+
+      geometryWhitespacePatchResult = applyGeometryWhitespacePatch({
+        layoutSpec: renderLayoutSpec,
+        infographicData: renderInfographicData,
+        compositionLayout: renderCompositionLayout,
+        overlayAudit: prePatchAudit,
+        auditInput: prePatchAuditInput,
+        law003WhitespaceViolation: prePatchAudit.law003WhitespaceViolation,
+        whitespace: renderCompositionLayout?.metrics.whitespacePct
+          ? renderCompositionLayout.metrics.whitespacePct / 100
+          : undefined,
+        productAreaRatio: renderCompositionLayout?.metrics.productAreaPct
+          ? renderCompositionLayout.metrics.productAreaPct / 100
+          : undefined,
+        overlayDensity: prePatchAudit.estimatedOverlayDensity,
+      });
+      if (geometryWhitespacePatchResult.patch.applied) {
+        renderInfographicData =
+          geometryWhitespacePatchResult.infographicData ?? renderInfographicData;
+        renderLayoutSpec = geometryWhitespacePatchResult.layoutSpec ?? renderLayoutSpec;
+        renderCompositionLayout =
+          geometryWhitespacePatchResult.compositionLayout ?? renderCompositionLayout;
       }
     }
 
@@ -2453,6 +2486,7 @@ export async function handleGenerateInfographic(
       composerQualityAudit,
       overlayQualityAudit,
       overlayLayoutPatch: overlayLayoutPatchResult?.patch,
+      geometryWhitespacePatch: geometryWhitespacePatchResult?.patch,
     });
     const daosDebugSummary = createDaosDebugSummary(daosDebugBundle);
     const daosFinalGate = evaluateDaosFinalGate({
@@ -2613,6 +2647,14 @@ export async function handleGenerateInfographic(
       overlayPatchAfterDensity: daosDebugBundle.diagnostics.overlayPatchAfterDensity,
       overlayPatchElementsBefore: daosDebugBundle.diagnostics.overlayPatchElementsBefore,
       overlayPatchElementsAfter: daosDebugBundle.diagnostics.overlayPatchElementsAfter,
+      geometryWhitespacePatchEnabled:
+        daosDebugBundle.diagnostics.geometryWhitespacePatchEnabled,
+      geometryWhitespacePatchApplied:
+        daosDebugBundle.diagnostics.geometryWhitespacePatchApplied,
+      geometryWhitespaceBefore: daosDebugBundle.diagnostics.geometryWhitespaceBefore,
+      geometryWhitespaceAfterEstimate:
+        daosDebugBundle.diagnostics.geometryWhitespaceAfterEstimate,
+      geometryPatchActions: daosDebugBundle.diagnostics.geometryPatchActions,
     });
 
     if (process.env.DAOS_DEBUG === "1") {

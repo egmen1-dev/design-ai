@@ -21,6 +21,7 @@ import { summarizeComposerQualityAudit } from "../audit/composer-quality-audit";
 import type { OverlayQualityAudit } from "../audit/overlay-quality-audit";
 import { summarizeOverlayQualityAudit } from "../audit/overlay-quality-audit";
 import type { OverlayLayoutPatch } from "../overlay/overlay-layout-patch";
+import type { GeometryWhitespacePatch } from "../overlay/geometry-whitespace-patch";
 
 export type DaosDebugBundle = {
   projectId: string;
@@ -77,6 +78,11 @@ export type DaosDebugBundle = {
     overlayPatchAfterDensity?: number;
     overlayPatchElementsBefore?: number;
     overlayPatchElementsAfter?: number;
+    geometryWhitespacePatchEnabled?: boolean;
+    geometryWhitespacePatchApplied?: boolean;
+    geometryWhitespaceBefore?: number;
+    geometryWhitespaceAfterEstimate?: number;
+    geometryPatchActions?: string[];
   };
   generationMode: DAOSGenerationMode;
   generationPolicySummary: ReturnType<typeof summarizeDaosGenerationPolicy>;
@@ -90,6 +96,7 @@ export type DaosDebugBundle = {
   composerQualityAudit?: ComposerQualityAudit;
   overlayQualityAudit?: OverlayQualityAudit;
   overlayLayoutPatch?: OverlayLayoutPatch;
+  geometryWhitespacePatch?: GeometryWhitespacePatch;
   meaningLossReport: DaosMeaningLossReport;
 };
 
@@ -114,6 +121,7 @@ export function createDaosDebugBundle(
     composerQualityAudit?: ComposerQualityAudit;
     overlayQualityAudit?: OverlayQualityAudit;
     overlayLayoutPatch?: OverlayLayoutPatch;
+    geometryWhitespacePatch?: GeometryWhitespacePatch;
   },
 ): DaosDebugBundle {
   const renderDebug = options?.renderDebug;
@@ -143,6 +151,7 @@ export function createDaosDebugBundle(
     ? summarizeOverlayQualityAudit(options.overlayQualityAudit)
     : undefined;
   const overlayLayoutPatch = options?.overlayLayoutPatch;
+  const geometryWhitespacePatch = options?.geometryWhitespacePatch;
   const createdAt = new Date().toISOString();
 
   return {
@@ -212,6 +221,15 @@ export function createDaosDebugBundle(
             overlayPatchElementsAfter: overlayLayoutPatch.elementsAfter,
           }
         : {}),
+      ...(geometryWhitespacePatch
+        ? {
+            geometryWhitespacePatchEnabled: geometryWhitespacePatch.enabled,
+            geometryWhitespacePatchApplied: geometryWhitespacePatch.applied,
+            geometryWhitespaceBefore: geometryWhitespacePatch.whitespaceBefore,
+            geometryWhitespaceAfterEstimate: geometryWhitespacePatch.whitespaceAfterEstimate,
+            geometryPatchActions: geometryWhitespacePatch.actions.map((action) => action.code),
+          }
+        : {}),
     },
     generationMode,
     generationPolicySummary,
@@ -225,6 +243,7 @@ export function createDaosDebugBundle(
     composerQualityAudit: options?.composerQualityAudit,
     overlayQualityAudit: options?.overlayQualityAudit,
     overlayLayoutPatch,
+    geometryWhitespacePatch,
     meaningLossReport,
   };
 }
