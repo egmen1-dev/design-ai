@@ -2,6 +2,7 @@ export {
   createSceneNode,
   appendNodeHistory,
   mergeActual,
+  mergeCompositorActual,
   type SceneNode,
   type SceneGeometry,
   type SceneGeometryActual,
@@ -25,6 +26,7 @@ export {
 export {
   buildSceneGraph,
   advanceSceneGraph,
+  writeCompositorProductActual,
   type SceneGraphBuildInput,
 } from "./SceneGraphBuilder";
 

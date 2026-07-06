@@ -162,6 +162,8 @@ export type DaosDebugBundle = {
     sceneGraphMirrorMode?: boolean;
     sceneGraphFiles?: string[];
     sceneGraphProductAreaDrift?: number;
+    sceneGraphProductPositionDrift?: number;
+    sceneGraphProductSizeDrift?: number;
     sceneGraphWhitespaceDrift?: number;
     sceneGraphSignificantDrift?: boolean;
   };
@@ -231,6 +233,8 @@ export function createDaosDebugBundle(
     sceneGraphFiles?: string[];
     sceneGraphDriftSummary?: {
       productAreaDrift: number;
+      productPositionDrift: number;
+      productSizeDrift: number;
       whitespaceDrift: number;
       hasSignificantDrift: boolean;
     };
@@ -472,6 +476,8 @@ export function createDaosDebugBundle(
             sceneGraphMirrorMode: true,
             sceneGraphFiles,
             sceneGraphProductAreaDrift: sceneGraphDriftSummary?.productAreaDrift,
+            sceneGraphProductPositionDrift: sceneGraphDriftSummary?.productPositionDrift,
+            sceneGraphProductSizeDrift: sceneGraphDriftSummary?.productSizeDrift,
             sceneGraphWhitespaceDrift: sceneGraphDriftSummary?.whitespaceDrift,
             sceneGraphSignificantDrift: sceneGraphDriftSummary?.hasSignificantDrift,
           }

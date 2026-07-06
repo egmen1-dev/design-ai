@@ -1810,6 +1810,7 @@ export async function handleGenerateInfographic(
       sceneGraphMirror.captureAfterCompositor({
         compositionLayout: productScalePatchResult?.compositionLayout ?? compositionLayout,
         layoutSpec,
+        productPlacement: compositeResult?.productPlacement,
         compositePlacement: normalizeCompositePlacement({
           compositeResult,
           canvas: compositionLayout?.canvas,

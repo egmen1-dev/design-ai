@@ -2,11 +2,14 @@ import type { CompositionLayout } from "@/lib/composition/types";
 import type { InfographicData } from "@/lib/infographic-template";
 import type { LayoutSpec } from "@/lib/design/layout-spec";
 import { WB_COVER, xPct, yPct } from "@/lib/composition/canvas";
-import type { NormalizedCompositePlacement } from "@/lib/daos/compositor/composite-result-bridge";
+import type {
+  CompositePlacementBounds,
+  NormalizedCompositePlacement,
+} from "@/lib/daos/compositor/composite-result-bridge";
 import type { OverlayQualityAudit } from "@/lib/daos/audit/overlay-quality-audit";
 import type { Law003RecalibrationReport } from "@/lib/daos/governance/law003-recalibration";
-import { createSceneNode, mergeActual } from "./SceneNode";
-import type { SceneGraph, SceneGraphStage } from "./SceneGraph";
+import { createSceneNode, mergeActual, mergeCompositorActual } from "./SceneNode";
+import type { ProductNode, SceneGraph, SceneGraphStage } from "./SceneGraph";
 
 export type SceneGraphBuildInput = {
   id: string;
@@ -14,6 +17,8 @@ export type SceneGraphBuildInput = {
   compositionLayout?: CompositionLayout;
   layoutSpec?: LayoutSpec;
   infographicData?: InfographicData;
+  /** Stage 2 — raw compositor productPlacement (source of truth). */
+  productPlacement?: CompositePlacementBounds;
   compositePlacement?: NormalizedCompositePlacement;
   overlayAudit?: OverlayQualityAudit;
   law003Recalibration?: Law003RecalibrationReport;
@@ -60,6 +65,46 @@ function countBadges(data?: InfographicData): number {
   );
 }
 
+function compositorActualFromPlacement(
+  placement: CompositePlacementBounds,
+  canvas: { width: number; height: number },
+) {
+  const canvasArea = canvas.width * canvas.height;
+  const visibleArea = placement.width * placement.height;
+  const areaRatio = canvasArea > 0 ? visibleArea / canvasArea : 0;
+  return {
+    x: placement.left,
+    y: placement.top,
+    width: placement.width,
+    height: placement.height,
+    visibleArea,
+    visibleAreaRatio: areaRatio,
+    areaRatio,
+    widthRatio: canvas.width > 0 ? placement.width / canvas.width : 0,
+    heightRatio: canvas.height > 0 ? placement.height / canvas.height : 0,
+  };
+}
+
+/** Stage 2 — write compositor factual geometry into ProductNode.actual. */
+export function writeCompositorProductActual(
+  graph: SceneGraph,
+  productPlacement: CompositePlacementBounds,
+  stage: SceneGraphStage = "after_compositor",
+): SceneGraph {
+  const canvas = graph.canvas.actual ?? graph.canvas.planned;
+  const actual = compositorActualFromPlacement(productPlacement, canvas);
+  const productNode = mergeCompositorActual(graph.product, actual, stage) as ProductNode;
+  return {
+    ...graph,
+    stage,
+    product: { ...productNode, type: "product" },
+    metadata: {
+      ...graph.metadata,
+      sources: [...new Set([...graph.metadata.sources, stage])],
+    },
+  };
+}
+
 /** Build SceneGraph snapshot from pipeline state (mirror mode — non-destructive). */
 export function buildSceneGraph(input: SceneGraphBuildInput): SceneGraph {
   const stage = input.stage ?? "planner";
@@ -103,7 +148,10 @@ export function buildSceneGraph(input: SceneGraphBuildInput): SceneGraph {
     type: "product" as const,
   };
 
-  if (input.compositePlacement) {
+  if (input.productPlacement) {
+    const actual = compositorActualFromPlacement(input.productPlacement, canvasSize);
+    productNode = mergeCompositorActual(productNode, actual, stage) as typeof productNode;
+  } else if (input.compositePlacement) {
     const cp = input.compositePlacement;
     productNode = mergeActual(
       productNode,
@@ -293,6 +341,7 @@ export function advanceSceneGraph(
     layoutSpec: input.layoutSpec,
     infographicData: input.infographicData,
     compositePlacement: input.compositePlacement ?? extractPlacementFromGraph(previous),
+    productPlacement: input.productPlacement,
     overlayAudit: input.overlayAudit,
     law003Recalibration: input.law003Recalibration,
     productCategory: input.productCategory ?? previous.metadata.productCategory,

@@ -84,10 +84,37 @@ export function validateSceneGraph(graph: SceneGraph): SceneGraphValidationResul
 function computeProductArea(graph: SceneGraph, mode: "planned" | "actual"): number {
   const geom = mode === "actual" ? graph.product.actual : graph.product.planned;
   if (!geom) return 0;
+  const actual = graph.product.actual;
+  if (mode === "actual" && actual?.areaRatio != null) return actual.areaRatio;
   if (geom.visibleAreaRatio != null) return geom.visibleAreaRatio;
   const canvas = graph.canvas.actual ?? graph.canvas.planned;
   const area = geom.width * geom.height;
   return canvas.width * canvas.height > 0 ? area / (canvas.width * canvas.height) : 0;
+}
+
+function computePositionDrift(
+  planned: { x: number; y: number; width: number; height: number } | undefined,
+  actual: { x: number; y: number; width: number; height: number } | undefined,
+  canvas: { width: number; height: number },
+): number {
+  if (!planned || !actual || canvas.width <= 0 || canvas.height <= 0) return 0;
+  const plannedCx = planned.x + planned.width / 2;
+  const plannedCy = planned.y + planned.height / 2;
+  const actualCx = actual.x + actual.width / 2;
+  const actualCy = actual.y + actual.height / 2;
+  const dx = (actualCx - plannedCx) / canvas.width;
+  const dy = (actualCy - plannedCy) / canvas.height;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+function computeSizeDrift(
+  planned: { width: number; height: number } | undefined,
+  actual: { width: number; height: number } | undefined,
+): number {
+  if (!planned || !actual) return 0;
+  const dw = planned.width > 0 ? (actual.width - planned.width) / planned.width : 0;
+  const dh = planned.height > 0 ? (actual.height - planned.height) / planned.height : 0;
+  return Math.sqrt(dw * dw + dh * dh);
 }
 
 /** Compare planned vs actual metrics between two graph stages. */
@@ -101,9 +128,16 @@ export function computeSceneGraphDrift(
   const actualWidth = after.product.actual?.width ?? 0;
   const plannedHeight = before.product.planned?.height ?? 0;
   const actualHeight = after.product.actual?.height ?? 0;
+  const canvas = after.canvas.actual ?? after.canvas.planned;
 
   const drift: SceneGraphDrift = {
     productAreaDrift: actualArea - plannedArea,
+    productPositionDrift: computePositionDrift(
+      before.product.planned,
+      after.product.actual,
+      canvas,
+    ),
+    productSizeDrift: computeSizeDrift(before.product.planned, after.product.actual),
     productWidthDrift:
       plannedWidth > 0 ? (actualWidth - plannedWidth) / plannedWidth : 0,
     productHeightDrift:
@@ -122,6 +156,8 @@ export function computeSceneGraphDrift(
 
   const hasSignificantDrift =
     Math.abs(drift.productAreaDrift) >= DRIFT_THRESHOLD ||
+    Math.abs(drift.productPositionDrift) >= DRIFT_THRESHOLD ||
+    Math.abs(drift.productSizeDrift) >= DRIFT_THRESHOLD ||
     Math.abs(drift.productWidthDrift) >= DRIFT_THRESHOLD ||
     Math.abs(drift.whitespaceDrift) >= 10;
 

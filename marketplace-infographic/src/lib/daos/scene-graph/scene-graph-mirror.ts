@@ -1,6 +1,7 @@
 import type { CompositionLayout } from "@/lib/composition/types";
 import type { InfographicData } from "@/lib/infographic-template";
 import type { LayoutSpec } from "@/lib/design/layout-spec";
+import type { CompositePlacementBounds } from "@/lib/daos/compositor/composite-result-bridge";
 import type { NormalizedCompositePlacement } from "@/lib/daos/compositor/composite-result-bridge";
 import type { OverlayQualityAudit } from "@/lib/daos/audit/overlay-quality-audit";
 import type { Law003RecalibrationReport } from "@/lib/daos/governance/law003-recalibration";
@@ -26,6 +27,8 @@ export type SceneGraphMirrorInput = {
   compositionLayout?: CompositionLayout;
   layoutSpec?: LayoutSpec;
   infographicData?: InfographicData;
+  /** Stage 2 — raw compositor productPlacement from compositeResult. */
+  productPlacement?: CompositePlacementBounds;
   compositePlacement?: NormalizedCompositePlacement;
   overlayAudit?: OverlayQualityAudit;
   law003Recalibration?: Law003RecalibrationReport;
@@ -68,6 +71,7 @@ export class SceneGraphMirror {
     this.afterCompositor = advanceSceneGraph(this.before, {
       stage: "after_compositor",
       ...input,
+      productPlacement: input.productPlacement,
     });
     this.drifts.push(computeSceneGraphDrift(this.before, this.afterCompositor));
   }
@@ -121,6 +125,8 @@ export class SceneGraphMirror {
 
   getDriftSummary(): {
     productAreaDrift: number;
+    productPositionDrift: number;
+    productSizeDrift: number;
     whitespaceDrift: number;
     hasSignificantDrift: boolean;
   } | undefined {
@@ -128,10 +134,18 @@ export class SceneGraphMirror {
     const total = this.drifts.reduce(
       (acc, report) => ({
         productAreaDrift: acc.productAreaDrift + report.drift.productAreaDrift,
+        productPositionDrift: acc.productPositionDrift + report.drift.productPositionDrift,
+        productSizeDrift: acc.productSizeDrift + report.drift.productSizeDrift,
         whitespaceDrift: acc.whitespaceDrift + report.drift.whitespaceDrift,
         hasSignificantDrift: acc.hasSignificantDrift || report.hasSignificantDrift,
       }),
-      { productAreaDrift: 0, whitespaceDrift: 0, hasSignificantDrift: false },
+      {
+        productAreaDrift: 0,
+        productPositionDrift: 0,
+        productSizeDrift: 0,
+        whitespaceDrift: 0,
+        hasSignificantDrift: false,
+      },
     );
     return total;
   }

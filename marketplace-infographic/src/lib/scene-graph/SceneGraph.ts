@@ -20,6 +20,7 @@ export type WhitespaceNode = SceneNode & {
 export type ProductNode = SceneNode & {
   type: "product";
   actual?: SceneGeometryActual & {
+    areaRatio?: number;
     widthRatio?: number;
     heightRatio?: number;
   };
@@ -106,6 +107,8 @@ export type SceneGraph = {
 
 export type SceneGraphDrift = {
   productAreaDrift: number;
+  productPositionDrift: number;
+  productSizeDrift: number;
   productWidthDrift: number;
   productHeightDrift: number;
   whitespaceDrift: number;
