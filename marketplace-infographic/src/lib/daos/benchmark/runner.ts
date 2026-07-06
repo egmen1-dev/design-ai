@@ -1,8 +1,8 @@
 import type { BenchmarkArm, BenchmarkProduct, BenchmarkProductPair, BenchmarkResults } from "./types";
 import {
   BENCHMARK_BASELINE_ENV,
-  BENCHMARK_DAOS_LAW003_SOFT_ENV,
   BENCHMARK_DAOS_ASPECT_RATIO_PLACEMENT_ENV,
+  BENCHMARK_DAOS_COMPOSITOR_ASYMMETRIC_LIMITS_ENV,
   loadBenchmarkCatalog,
   productSeed,
 } from "./catalog";
@@ -113,24 +113,24 @@ export async function runDaosBenchmark(phase: number): Promise<BenchmarkResults>
       env: BENCHMARK_BASELINE_ENV,
     });
 
-    console.log("  DAOS (aspect ratio placement OFF)…");
+    console.log("  DAOS (compositor asymmetric OFF)…");
     const daosNoPatch = await runSingleBenchmarkArm({
       arm: "baseline",
       product,
       seed,
       productImage,
       userId,
-      env: BENCHMARK_DAOS_LAW003_SOFT_ENV,
+      env: BENCHMARK_DAOS_ASPECT_RATIO_PLACEMENT_ENV,
     });
 
-    console.log("  DAOS (aspect ratio placement ON)…");
+    console.log("  DAOS (compositor asymmetric ON)…");
     const daos = await runSingleBenchmarkArm({
       arm: "daos",
       product,
       seed,
       productImage,
       userId,
-      env: BENCHMARK_DAOS_ASPECT_RATIO_PLACEMENT_ENV,
+      env: BENCHMARK_DAOS_COMPOSITOR_ASYMMETRIC_LIMITS_ENV,
     });
 
     const delta = computePairDelta(daosNoPatch, daos);
@@ -156,8 +156,8 @@ export async function runDaosBenchmark(phase: number): Promise<BenchmarkResults>
     },
     envProfiles: {
       baseline: BENCHMARK_BASELINE_ENV,
-      daosNoPatch: BENCHMARK_DAOS_LAW003_SOFT_ENV,
-      daos: BENCHMARK_DAOS_ASPECT_RATIO_PLACEMENT_ENV,
+      daosNoPatch: BENCHMARK_DAOS_ASPECT_RATIO_PLACEMENT_ENV,
+      daos: BENCHMARK_DAOS_COMPOSITOR_ASYMMETRIC_LIMITS_ENV,
     },
     pairs,
     aggregate,

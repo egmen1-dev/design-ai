@@ -98,6 +98,12 @@ export const BENCHMARK_DAOS_PRODUCT_FILL_V2_ENV: Record<string, string> = {
 export const BENCHMARK_DAOS_ASPECT_RATIO_PLACEMENT_ENV: Record<string, string> = {
   ...BENCHMARK_DAOS_LAW003_SOFT_ENV,
   DAOS_ASPECT_RATIO_PLACEMENT_PATCH: "1",
+  DAOS_COMPOSITOR_ASYMMETRIC_LIMITS: "0",
+};
+
+export const BENCHMARK_DAOS_COMPOSITOR_ASYMMETRIC_LIMITS_ENV: Record<string, string> = {
+  ...BENCHMARK_DAOS_ASPECT_RATIO_PLACEMENT_ENV,
+  DAOS_COMPOSITOR_ASYMMETRIC_LIMITS: "1",
 };
 
 export function isDaosBenchmarkEnabled(): boolean {
@@ -114,6 +120,7 @@ export function isDaosBenchmarkEnabled(): boolean {
     process.env.DAOS_LAW003_SOFT_GOVERNANCE === "1" ||
     process.env.DAOS_PRODUCT_FILL_V2 === "1" ||
     process.env.DAOS_ASPECT_RATIO_PLACEMENT_PATCH === "1" ||
+    process.env.DAOS_COMPOSITOR_ASYMMETRIC_LIMITS === "1" ||
     process.env.DAOS_PROMPT_CONTEXT === "1"
   );
 }

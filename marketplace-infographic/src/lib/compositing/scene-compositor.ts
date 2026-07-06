@@ -35,6 +35,7 @@ import {
   mergeExtractGuard,
   type ExtractAreaGuard,
 } from "@/lib/daos/compositor/safe-extract-area";
+import type { AsymmetricLimits } from "@/lib/daos/compositor/asymmetric-limits";
 import { publicDir, resolvePublicAssetPath, writablePublicDir } from "@/lib/runtime-paths";
 
 const CANVAS_W = WB_COVER.width;
@@ -51,6 +52,8 @@ export type SceneCompositeOptions = {
   objectScale?: number;
   /** DAOS Wave 24 — optional compositor scale boost (only when explicitly passed). */
   productScaleMultiplier?: number;
+  /** DAOS Wave 32 — asymmetric compositor limits from aspect-ratio placement patch. */
+  asymmetricLimits?: AsymmetricLimits;
 };
 
 async function loadImageBuffer(source: string): Promise<Buffer> {
@@ -133,7 +136,15 @@ function computeMaxProductSize(
   compositionLayout: CompositionLayout | undefined,
   objectScale: number,
   productScaleMultiplier = 1,
+  asymmetricLimits?: AsymmetricLimits,
 ): { maxW: number; maxH: number } {
+  if (asymmetricLimits?.applied) {
+    return {
+      maxW: asymmetricLimits.maxWidthPx,
+      maxH: asymmetricLimits.maxHeightPx,
+    };
+  }
+
   const canvasMaxW = Math.min(PRODUCT_MAX_WIDTH_PX, CANVAS_W - SIDE_MARGIN * 2);
   const canvasMaxH = Math.min(PRODUCT_MAX_H, CANVAS_H - HEADER_RESERVE_PX - BOTTOM_PAD);
   const widthCap = Math.min(
@@ -226,9 +237,11 @@ async function prepareProductLayer(
 
   const canvasMaxW = CANVAS_W - SIDE_MARGIN * 2;
   const canvasMaxH = CANVAS_H - HEADER_RESERVE_PX - BOTTOM_PAD;
-  if (info.width > canvasMaxW || info.height > canvasMaxH) {
+  const clampMaxW = canvasMaxW;
+  const clampMaxH = canvasMaxH;
+  if (info.width > clampMaxW || info.height > clampMaxH) {
     const fitted = await sharp(buffer)
-      .resize(canvasMaxW, canvasMaxH, { fit: "inside", withoutEnlargement: true })
+      .resize(clampMaxW, clampMaxH, { fit: "inside", withoutEnlargement: true })
       .png()
       .toBuffer({ resolveWithObject: true });
     buffer = fitted.data;
@@ -292,6 +305,7 @@ export async function compositeProductIntoScene(
   const scene = options.scene;
   const objectScale = options.objectScale ?? 0.78;
   const productScaleMultiplier = Math.max(1, options.productScaleMultiplier ?? 1);
+  const asymmetricLimits = options.asymmetricLimits;
   const comp = options.compositionLayout?.product;
   const extractGuard: ExtractAreaGuard = { warnings: [], corrected: false };
 
@@ -305,6 +319,7 @@ export async function compositeProductIntoScene(
     options.compositionLayout,
     objectScale,
     productScaleMultiplier,
+    asymmetricLimits,
   );
 
   const prePlacement = {
@@ -338,20 +353,28 @@ export async function compositeProductIntoScene(
     maxW,
     maxH,
   );
+  const maxAlphaW =
+    asymmetricLimits?.applied
+      ? asymmetricLimits.maxAlphaWidthPx
+      : Math.min(
+          CANVAS_W - SIDE_MARGIN * 2,
+          Math.round(PRODUCT_ALPHA_MAX_WIDTH_PX * productScaleMultiplier),
+        );
+  const maxAlphaH =
+    asymmetricLimits?.applied
+      ? asymmetricLimits.maxAlphaHeightPx
+      : Math.min(
+          CANVAS_H - HEADER_RESERVE_PX - BOTTOM_PAD,
+          Math.round(PRODUCT_ALPHA_MAX_HEIGHT_PX * productScaleMultiplier),
+        );
   const placement = await fitProductWithSafePlacement(
     prepared.buffer,
     prepared.width,
     prepared.height,
     CANVAS_W,
     SIDE_MARGIN,
-    Math.min(
-      CANVAS_W - SIDE_MARGIN * 2,
-      Math.round(PRODUCT_ALPHA_MAX_WIDTH_PX * productScaleMultiplier),
-    ),
-    Math.min(
-      CANVAS_H - HEADER_RESERVE_PX - BOTTOM_PAD,
-      Math.round(PRODUCT_ALPHA_MAX_HEIGHT_PX * productScaleMultiplier),
-    ),
+    maxAlphaW,
+    maxAlphaH,
     options.compositionLayout,
   );
 
