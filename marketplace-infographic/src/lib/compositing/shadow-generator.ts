@@ -2,6 +2,11 @@ import sharp from "sharp";
 import type { SceneLightingProfile } from "./scene-analysis";
 import type { Rgb } from "./scene-analysis";
 import { getAlphaBounds } from "./ground-detector";
+import {
+  createSafeExtractArea,
+  mergeExtractGuard,
+  type ExtractAreaGuard,
+} from "@/lib/daos/compositor/safe-extract-area";
 
 export type ShadowType = "contact" | "ambient" | "directional" | "alpha-contact" | "ambient-occlusion";
 
@@ -28,6 +33,7 @@ export type ShadowGeneratorInput = {
   productBuffer?: Buffer;
   floorColor?: Rgb;
   lightingDirectionOverride?: string;
+  extractGuard?: ExtractAreaGuard;
 };
 
 function normalizeDirection(
@@ -95,6 +101,7 @@ async function renderAlphaContactShadow(
   blur: number,
   skewX: number,
   floorColor?: Rgb,
+  extractGuard?: ExtractAreaGuard,
 ): Promise<{ buffer: Buffer; width: number; height: number } | null> {
   const bounds = await getAlphaBounds(productBuffer);
   if (!bounds) return null;
@@ -105,15 +112,15 @@ async function renderAlphaContactShadow(
 
   const footTop = bounds.top + Math.round(bounds.height * 0.72);
   const footHeight = Math.max(8, bounds.bottom - footTop + 2);
+  const safeExtract = createSafeExtractArea(
+    { left: bounds.left, top: footTop, width: bounds.width, height: footHeight },
+    { width: w, height: h },
+  );
+  mergeExtractGuard(extractGuard, safeExtract);
 
   const alphaSlice = await sharp(productBuffer)
     .ensureAlpha()
-    .extract({
-      left: bounds.left,
-      top: footTop,
-      width: bounds.width,
-      height: footHeight,
-    })
+    .extract(safeExtract.area)
     .resize(Math.round(bounds.width * 1.05), Math.max(12, Math.round(footHeight * 1.8)), {
       fit: "fill",
     })
@@ -196,6 +203,7 @@ export async function generateShadows(input: ShadowGeneratorInput): Promise<Shad
     productBuffer,
     floorColor,
     lightingDirectionOverride,
+    extractGuard,
   } = input;
 
   const direction = normalizeDirection(lightingDirectionOverride, lighting.direction);
@@ -210,6 +218,7 @@ export async function generateShadows(input: ShadowGeneratorInput): Promise<Shad
       8,
       offset.x,
       floorColor,
+      extractGuard,
     );
     if (alphaShadow) {
       const left =
