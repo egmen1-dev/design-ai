@@ -426,6 +426,7 @@ function applySimplePlaqueMode(
   layoutSpec: LayoutSpec | undefined,
   compositionLayout: CompositionLayout,
   actions: ContrastOverlapPatchAction[],
+  law014: boolean,
 ): void {
   const maxPlaques = DAOS_CONTRAST_OVERLAP_MAX_ACCENT_PLAQUES;
 
@@ -437,7 +438,7 @@ function applySimplePlaqueMode(
     });
   }
 
-  if (data.specBlocks.length > maxPlaques) {
+  if (law014 && data.specBlocks.length > maxPlaques) {
     data.specBlocks = data.specBlocks.slice(0, maxPlaques);
   }
 
@@ -445,17 +446,22 @@ function applySimplePlaqueMode(
     layoutSpec.maxIcons = Math.min(layoutSpec.maxIcons, maxPlaques);
     layoutSpec.maxSecondaryObjects = 0;
     layoutSpec.maxDecorativeObjects = 0;
-    layoutSpec.backgroundStyle = layoutSpec.backgroundStyle === "soft_gradient" ? "clean_studio" : layoutSpec.backgroundStyle;
+    if (layoutSpec.backgroundStyle === "soft_gradient") {
+      layoutSpec.backgroundStyle = "clean_studio";
+    }
   }
 
-  compositionLayout.plaques.maxTotalAreaPct = Math.min(
-    compositionLayout.plaques.maxTotalAreaPct,
-    10,
-  );
-  compositionLayout.metrics = {
-    ...compositionLayout.metrics,
-    plaqueAreaPct: Math.max(5, compositionLayout.metrics.plaqueAreaPct * 0.88),
-  };
+  if (law014) {
+    compositionLayout.plaques.maxTotalAreaPct = Math.min(
+      compositionLayout.plaques.maxTotalAreaPct,
+      10,
+    );
+    compositionLayout.metrics = {
+      ...compositionLayout.metrics,
+      plaqueAreaPct: Math.max(5, compositionLayout.metrics.plaqueAreaPct * 0.92),
+    };
+  }
+
   compositionLayout.adjustments = [
     ...compositionLayout.adjustments,
     "daos_contrast_overlap_patch:simple_plaques",
@@ -523,7 +529,13 @@ export function applyContrastOverlapPatch(
   }
 
   if (signals.pngRisk > DAOS_CONTRAST_OVERLAP_PNG_RISK_TRIGGER && infographicData && compositionLayout) {
-    applySimplePlaqueMode(infographicData, layoutSpec, compositionLayout, appliedActions);
+    applySimplePlaqueMode(
+      infographicData,
+      layoutSpec,
+      compositionLayout,
+      appliedActions,
+      signals.law014,
+    );
   }
 
   if (compositionLayout) {

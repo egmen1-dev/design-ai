@@ -2638,6 +2638,7 @@ export async function handleGenerateInfographic(
         : undefined,
       hasComposite: !!compositeResult,
       law003Recalibration,
+      contrastOverlapPatch: contrastOverlapPatchResult?.patch,
     });
     const daosDebugBundle = createDaosDebugBundle(enrichedDaosState, {
       renderDebug,

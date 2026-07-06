@@ -5,6 +5,9 @@ import type { QualityValidationResult } from "@/lib/design/quality-validator";
 import type { ComposerQualityAudit } from "./composer-quality-audit";
 import type { ComposerOverlayElement } from "./composer-quality-audit";
 import type { Law003RecalibrationReport } from "../governance/law003-recalibration";
+import type { ContrastOverlapPatch } from "../overlay/contrast-overlap-patch";
+
+export const LAW014_CONTRAST_OVERLAP_PASS_THRESHOLD = 0.16;
 
 export type OverlayQualityWarning = {
   code: string;
@@ -43,6 +46,7 @@ export type OverlayQualityAuditInput = {
   };
   hasComposite?: boolean;
   law003Recalibration?: Pick<Law003RecalibrationReport, "law003After" | "law003Before">;
+  contrastOverlapPatch?: Pick<ContrastOverlapPatch, "applied" | "contrastOverlapAfterEstimate">;
 };
 
 export type OverlayQualityAudit = {
@@ -274,7 +278,11 @@ export function analyzeOverlayQuality(input: OverlayQualityAuditInput): OverlayQ
   const law003WhitespaceViolation = input.law003Recalibration
     ? input.law003Recalibration.law003After
     : constitutionLaw003;
-  const law014ContrastViolation = lawViolated(governanceReports(input), "LAW_014");
+  const constitutionLaw014 = lawViolated(governanceReports(input), "LAW_014");
+  const law014ContrastViolation = input.contrastOverlapPatch?.applied
+    ? input.contrastOverlapPatch.contrastOverlapAfterEstimate >
+      LAW014_CONTRAST_OVERLAP_PASS_THRESHOLD
+    : constitutionLaw014;
   const whitespaceRisk = computeWhitespaceRisk(input);
   const contrastRisk = computeContrastRisk(input);
   const hierarchyRisk = computeHierarchyRisk(input);
@@ -316,6 +324,11 @@ export function analyzeOverlayQuality(input: OverlayQualityAuditInput): OverlayQ
       message: "Design governance reported LAW_014 contrast violation",
     });
     recommendations.add("Reduce text/product overlap and improve headline contrast.");
+  } else if (constitutionLaw014 && input.contrastOverlapPatch?.applied) {
+    warnings.push({
+      code: "LAW_014_PATCH_PASS",
+      message: "LAW_014 passed after contrast/overlap patch recalibration",
+    });
   }
 
   if (!input.layoutSpec?.hierarchy) {
