@@ -139,6 +139,10 @@ export async function extractMetricsFromBundle(
       pngOverlayFeelRisk: asNumber(diagnostics.pngOverlayFeelRisk),
       law003WhitespaceViolation: diagnostics.law003WhitespaceViolation === true,
       law014ContrastViolation: diagnostics.law014ContrastViolation === true,
+      productScaleScore: asNumber(diagnostics.productScaleScore),
+      productDominanceScore: asNumber(diagnostics.productDominanceScore),
+      emptySpaceEstimate: asNumber(diagnostics.emptySpaceEstimate),
+      sceneFillRisk: asNumber(diagnostics.sceneFillRisk),
     };
   } catch {
     return {};

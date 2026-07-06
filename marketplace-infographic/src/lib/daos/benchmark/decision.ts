@@ -112,6 +112,30 @@ export function computeAggregateStats(pairs: BenchmarkProductPair[]): BenchmarkA
   const pngRiskDaos = pairs
     .map((pair) => pair.daos.pngOverlayFeelRisk)
     .filter((value): value is number => value != null);
+  const productScaleBaseline = pairs
+    .map((pair) => pair.baseline.productScaleScore)
+    .filter((value): value is number => value != null);
+  const productScaleDaos = pairs
+    .map((pair) => pair.daos.productScaleScore)
+    .filter((value): value is number => value != null);
+  const dominanceBaseline = pairs
+    .map((pair) => pair.baseline.productDominanceScore)
+    .filter((value): value is number => value != null);
+  const dominanceDaos = pairs
+    .map((pair) => pair.daos.productDominanceScore)
+    .filter((value): value is number => value != null);
+  const emptySpaceBaseline = pairs
+    .map((pair) => pair.baseline.emptySpaceEstimate)
+    .filter((value): value is number => value != null);
+  const emptySpaceDaos = pairs
+    .map((pair) => pair.daos.emptySpaceEstimate)
+    .filter((value): value is number => value != null);
+  const sceneFillBaseline = pairs
+    .map((pair) => pair.baseline.sceneFillRisk)
+    .filter((value): value is number => value != null);
+  const sceneFillDaos = pairs
+    .map((pair) => pair.daos.sceneFillRisk)
+    .filter((value): value is number => value != null);
 
   const law003BaselineCount = pairs.filter((pair) => pair.baseline.law003WhitespaceViolation).length;
   const law003DaosCount = pairs.filter((pair) => pair.daos.law003WhitespaceViolation).length;
@@ -163,6 +187,14 @@ export function computeAggregateStats(pairs: BenchmarkProductPair[]): BenchmarkA
       overlayBaselineCount > 0 ? law014BaselineCount / overlayBaselineCount : undefined,
     law014ViolationRateDaos:
       overlayDaosCount > 0 ? law014DaosCount / overlayDaosCount : undefined,
+    averageProductScaleScoreBaseline: average(productScaleBaseline),
+    averageProductScaleScoreDaos: average(productScaleDaos),
+    averageProductDominanceScoreBaseline: average(dominanceBaseline),
+    averageProductDominanceScoreDaos: average(dominanceDaos),
+    averageEmptySpaceEstimateBaseline: average(emptySpaceBaseline),
+    averageEmptySpaceEstimateDaos: average(emptySpaceDaos),
+    averageSceneFillRiskBaseline: average(sceneFillBaseline),
+    averageSceneFillRiskDaos: average(sceneFillDaos),
     meaningLossImproved,
     modulesCompiledImproved,
   };

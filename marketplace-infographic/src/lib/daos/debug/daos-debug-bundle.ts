@@ -22,6 +22,8 @@ import type { OverlayQualityAudit } from "../audit/overlay-quality-audit";
 import { summarizeOverlayQualityAudit } from "../audit/overlay-quality-audit";
 import type { OverlayLayoutPatch } from "../overlay/overlay-layout-patch";
 import type { GeometryWhitespacePatch } from "../overlay/geometry-whitespace-patch";
+import type { ProductScaleAudit } from "../audit/product-scale-audit";
+import { summarizeProductScaleAudit } from "../audit/product-scale-audit";
 
 export type DaosDebugBundle = {
   projectId: string;
@@ -83,6 +85,12 @@ export type DaosDebugBundle = {
     geometryWhitespaceBefore?: number;
     geometryWhitespaceAfterEstimate?: number;
     geometryPatchActions?: string[];
+    productScaleScore?: number;
+    productDominanceScore?: number;
+    productWidthRatio?: number;
+    productHeightRatio?: number;
+    emptySpaceEstimate?: number;
+    sceneFillRisk?: number;
   };
   generationMode: DAOSGenerationMode;
   generationPolicySummary: ReturnType<typeof summarizeDaosGenerationPolicy>;
@@ -97,6 +105,7 @@ export type DaosDebugBundle = {
   overlayQualityAudit?: OverlayQualityAudit;
   overlayLayoutPatch?: OverlayLayoutPatch;
   geometryWhitespacePatch?: GeometryWhitespacePatch;
+  productScaleAudit?: ProductScaleAudit;
   meaningLossReport: DaosMeaningLossReport;
 };
 
@@ -122,6 +131,7 @@ export function createDaosDebugBundle(
     overlayQualityAudit?: OverlayQualityAudit;
     overlayLayoutPatch?: OverlayLayoutPatch;
     geometryWhitespacePatch?: GeometryWhitespacePatch;
+    productScaleAudit?: ProductScaleAudit;
   },
 ): DaosDebugBundle {
   const renderDebug = options?.renderDebug;
@@ -152,6 +162,10 @@ export function createDaosDebugBundle(
     : undefined;
   const overlayLayoutPatch = options?.overlayLayoutPatch;
   const geometryWhitespacePatch = options?.geometryWhitespacePatch;
+  const productScaleAudit = options?.productScaleAudit;
+  const productScaleSummary = productScaleAudit
+    ? summarizeProductScaleAudit(productScaleAudit)
+    : undefined;
   const createdAt = new Date().toISOString();
 
   return {
@@ -230,6 +244,16 @@ export function createDaosDebugBundle(
             geometryPatchActions: geometryWhitespacePatch.actions.map((action) => action.code),
           }
         : {}),
+      ...(productScaleSummary
+        ? {
+            productScaleScore: productScaleSummary.score,
+            productDominanceScore: productScaleSummary.productDominanceScore,
+            productWidthRatio: productScaleSummary.productWidthRatio,
+            productHeightRatio: productScaleSummary.productHeightRatio,
+            emptySpaceEstimate: productScaleSummary.emptySpaceEstimate,
+            sceneFillRisk: productScaleSummary.sceneFillRisk,
+          }
+        : {}),
     },
     generationMode,
     generationPolicySummary,
@@ -244,6 +268,7 @@ export function createDaosDebugBundle(
     overlayQualityAudit: options?.overlayQualityAudit,
     overlayLayoutPatch,
     geometryWhitespacePatch,
+    productScaleAudit,
     meaningLossReport,
   };
 }

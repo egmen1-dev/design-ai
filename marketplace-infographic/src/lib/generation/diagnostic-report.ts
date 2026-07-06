@@ -167,6 +167,12 @@ export type GenerationDiagnosticReport = {
     geometryWhitespaceBefore?: number;
     geometryWhitespaceAfterEstimate?: number;
     geometryPatchActions?: string[];
+    productScaleScore?: number;
+    productDominanceScore?: number;
+    productWidthRatio?: number;
+    productHeightRatio?: number;
+    emptySpaceEstimate?: number;
+    sceneFillRisk?: number;
   };
 };
 

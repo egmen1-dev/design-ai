@@ -44,6 +44,10 @@ function formatMetricsRow(
     metrics.pngOverlayFeelRisk ?? "",
     metrics.law003WhitespaceViolation === true ? "true" : "",
     metrics.law014ContrastViolation === true ? "true" : "",
+    metrics.productScaleScore ?? "",
+    metrics.productDominanceScore ?? "",
+    metrics.emptySpaceEstimate ?? "",
+    metrics.sceneFillRisk ?? "",
     metrics.error ?? "",
   ];
 }
@@ -98,6 +102,10 @@ function renderCsv(results: BenchmarkResults): string {
     "pngOverlayFeelRisk",
     "law003WhitespaceViolation",
     "law014ContrastViolation",
+    "productScaleScore",
+    "productDominanceScore",
+    "emptySpaceEstimate",
+    "sceneFillRisk",
     "error",
   ].join(",");
 
@@ -230,6 +238,22 @@ function renderReport(results: BenchmarkResults): string {
       `| law014ContrastViolation | ${pair.baseline.law014ContrastViolation ?? "n/a"} | ${pair.daos.law014ContrastViolation ?? "n/a"} | — |`,
     );
     lines.push(
+      `| productScaleScore | ${pair.baseline.productScaleScore ?? "n/a"} | ${pair.daos.productScaleScore ?? "n/a"} | ${
+        pair.baseline.productScaleScore != null && pair.daos.productScaleScore != null
+          ? pair.daos.productScaleScore - pair.baseline.productScaleScore
+          : "n/a"
+      } |`,
+    );
+    lines.push(
+      `| productDominanceScore | ${pair.baseline.productDominanceScore ?? "n/a"} | ${pair.daos.productDominanceScore ?? "n/a"} | — |`,
+    );
+    lines.push(
+      `| emptySpaceEstimate | ${pair.baseline.emptySpaceEstimate?.toFixed(2) ?? "n/a"} | ${pair.daos.emptySpaceEstimate?.toFixed(2) ?? "n/a"} | — |`,
+    );
+    lines.push(
+      `| sceneFillRisk | ${pair.baseline.sceneFillRisk?.toFixed(2) ?? "n/a"} | ${pair.daos.sceneFillRisk?.toFixed(2) ?? "n/a"} | — |`,
+    );
+    lines.push(
       `| provider latency | ${pair.baseline.latencyMs ?? "n/a"}ms | ${pair.daos.latencyMs ?? "n/a"}ms | — |`,
     );
     lines.push(
@@ -286,6 +310,18 @@ function renderReport(results: BenchmarkResults): string {
   );
   lines.push(
     `- LAW_014 violation rate (baseline → DAOS): ${formatRate(results.aggregate.law014ViolationRateBaseline)} → ${formatRate(results.aggregate.law014ViolationRateDaos)}`,
+  );
+  lines.push(
+    `- Average productScaleScore (baseline → DAOS): ${results.aggregate.averageProductScaleScoreBaseline?.toFixed(1) ?? "n/a"} → ${results.aggregate.averageProductScaleScoreDaos?.toFixed(1) ?? "n/a"}`,
+  );
+  lines.push(
+    `- Average productDominanceScore (baseline → DAOS): ${results.aggregate.averageProductDominanceScoreBaseline?.toFixed(1) ?? "n/a"} → ${results.aggregate.averageProductDominanceScoreDaos?.toFixed(1) ?? "n/a"}`,
+  );
+  lines.push(
+    `- Average emptySpaceEstimate (baseline → DAOS): ${results.aggregate.averageEmptySpaceEstimateBaseline?.toFixed(2) ?? "n/a"} → ${results.aggregate.averageEmptySpaceEstimateDaos?.toFixed(2) ?? "n/a"}`,
+  );
+  lines.push(
+    `- Average sceneFillRisk (baseline → DAOS): ${results.aggregate.averageSceneFillRiskBaseline?.toFixed(2) ?? "n/a"} → ${results.aggregate.averageSceneFillRiskDaos?.toFixed(2) ?? "n/a"}`,
   );
 
   return lines.join("\n");

@@ -164,6 +164,7 @@ import {
   overlayElementsFromCompositionLayout,
 } from "@/lib/daos/audit/composer-quality-audit";
 import { analyzeOverlayQuality } from "@/lib/daos/audit/overlay-quality-audit";
+import { analyzeProductScale } from "@/lib/daos/audit/product-scale-audit";
 import {
   applyOverlayLayoutPatch,
   type OverlayLayoutPatchResult,
@@ -325,6 +326,12 @@ function daosDiagnosticSummary(
     geometryWhitespaceBefore?: number;
     geometryWhitespaceAfterEstimate?: number;
     geometryPatchActions?: string[];
+    productScaleScore?: number;
+    productDominanceScore?: number;
+    productWidthRatio?: number;
+    productHeightRatio?: number;
+    emptySpaceEstimate?: number;
+    sceneFillRisk?: number;
   },
 ) {
   return {
@@ -2468,6 +2475,31 @@ export async function handleGenerateInfographic(
         : undefined,
       hasComposite: !!compositeResult,
     });
+    const productScaleAudit = analyzeProductScale({
+      canvas: renderCompositionLayout?.canvas ?? compositionLayout?.canvas,
+      productCutoutPath,
+      finalImagePath: imagePath,
+      placement: compositeResult?.productPlacement,
+      productBounds: renderCompositionLayout?.product
+        ? {
+            left: renderCompositionLayout.product.left,
+            top: renderCompositionLayout.product.top,
+            width: renderCompositionLayout.product.width,
+            height: renderCompositionLayout.product.height,
+          }
+        : compositionLayout?.product
+          ? {
+              left: compositionLayout.product.left,
+              top: compositionLayout.product.top,
+              width: compositionLayout.product.width,
+              height: compositionLayout.product.height,
+            }
+          : undefined,
+      compositionLayout: renderCompositionLayout ?? compositionLayout,
+      layoutSpec: renderLayoutSpec ?? layoutSpec,
+      composerQualityAudit,
+      overlayQualityAudit,
+    });
     const daosDebugBundle = createDaosDebugBundle(enrichedDaosState, {
       renderDebug,
       generationMode: daosGenerationMode,
@@ -2487,6 +2519,7 @@ export async function handleGenerateInfographic(
       overlayQualityAudit,
       overlayLayoutPatch: overlayLayoutPatchResult?.patch,
       geometryWhitespacePatch: geometryWhitespacePatchResult?.patch,
+      productScaleAudit,
     });
     const daosDebugSummary = createDaosDebugSummary(daosDebugBundle);
     const daosFinalGate = evaluateDaosFinalGate({
@@ -2655,6 +2688,12 @@ export async function handleGenerateInfographic(
       geometryWhitespaceAfterEstimate:
         daosDebugBundle.diagnostics.geometryWhitespaceAfterEstimate,
       geometryPatchActions: daosDebugBundle.diagnostics.geometryPatchActions,
+      productScaleScore: daosDebugBundle.diagnostics.productScaleScore,
+      productDominanceScore: daosDebugBundle.diagnostics.productDominanceScore,
+      productWidthRatio: daosDebugBundle.diagnostics.productWidthRatio,
+      productHeightRatio: daosDebugBundle.diagnostics.productHeightRatio,
+      emptySpaceEstimate: daosDebugBundle.diagnostics.emptySpaceEstimate,
+      sceneFillRisk: daosDebugBundle.diagnostics.sceneFillRisk,
     });
 
     if (process.env.DAOS_DEBUG === "1") {

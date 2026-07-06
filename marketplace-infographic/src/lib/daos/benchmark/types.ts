@@ -60,6 +60,10 @@ export type BenchmarkRunMetrics = {
   pngOverlayFeelRisk?: number;
   law003WhitespaceViolation?: boolean;
   law014ContrastViolation?: boolean;
+  productScaleScore?: number;
+  productDominanceScore?: number;
+  emptySpaceEstimate?: number;
+  sceneFillRisk?: number;
 };
 
 export type BenchmarkPairDelta = {
@@ -109,6 +113,14 @@ export type BenchmarkAggregateStats = {
   law003ViolationRateDaos?: number;
   law014ViolationRateBaseline?: number;
   law014ViolationRateDaos?: number;
+  averageProductScaleScoreBaseline?: number;
+  averageProductScaleScoreDaos?: number;
+  averageProductDominanceScoreBaseline?: number;
+  averageProductDominanceScoreDaos?: number;
+  averageEmptySpaceEstimateBaseline?: number;
+  averageEmptySpaceEstimateDaos?: number;
+  averageSceneFillRiskBaseline?: number;
+  averageSceneFillRiskDaos?: number;
   meaningLossImproved: boolean;
   modulesCompiledImproved: boolean;
 };
