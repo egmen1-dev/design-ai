@@ -24,6 +24,7 @@ import type { OverlayLayoutPatch } from "../overlay/overlay-layout-patch";
 import type { GeometryWhitespacePatch } from "../overlay/geometry-whitespace-patch";
 import type { ProductScaleAudit } from "../audit/product-scale-audit";
 import { summarizeProductScaleAudit } from "../audit/product-scale-audit";
+import type { ProductScalePatch } from "../compositor/product-scale-patch";
 
 export type DaosDebugBundle = {
   projectId: string;
@@ -91,6 +92,13 @@ export type DaosDebugBundle = {
     productHeightRatio?: number;
     emptySpaceEstimate?: number;
     sceneFillRisk?: number;
+    productScalePatchEnabled?: boolean;
+    productScalePatchApplied?: boolean;
+    productScaleMultiplier?: number;
+    productAreaBefore?: number;
+    productAreaTarget?: number;
+    productAreaAfterEstimate?: number;
+    productScalePatchActions?: string[];
   };
   generationMode: DAOSGenerationMode;
   generationPolicySummary: ReturnType<typeof summarizeDaosGenerationPolicy>;
@@ -106,6 +114,7 @@ export type DaosDebugBundle = {
   overlayLayoutPatch?: OverlayLayoutPatch;
   geometryWhitespacePatch?: GeometryWhitespacePatch;
   productScaleAudit?: ProductScaleAudit;
+  productScalePatch?: ProductScalePatch;
   meaningLossReport: DaosMeaningLossReport;
 };
 
@@ -132,6 +141,7 @@ export function createDaosDebugBundle(
     overlayLayoutPatch?: OverlayLayoutPatch;
     geometryWhitespacePatch?: GeometryWhitespacePatch;
     productScaleAudit?: ProductScaleAudit;
+    productScalePatch?: ProductScalePatch;
   },
 ): DaosDebugBundle {
   const renderDebug = options?.renderDebug;
@@ -163,6 +173,7 @@ export function createDaosDebugBundle(
   const overlayLayoutPatch = options?.overlayLayoutPatch;
   const geometryWhitespacePatch = options?.geometryWhitespacePatch;
   const productScaleAudit = options?.productScaleAudit;
+  const productScalePatch = options?.productScalePatch;
   const productScaleSummary = productScaleAudit
     ? summarizeProductScaleAudit(productScaleAudit)
     : undefined;
@@ -254,6 +265,17 @@ export function createDaosDebugBundle(
             sceneFillRisk: productScaleSummary.sceneFillRisk,
           }
         : {}),
+      ...(productScalePatch
+        ? {
+            productScalePatchEnabled: productScalePatch.enabled,
+            productScalePatchApplied: productScalePatch.patchApplied,
+            productScaleMultiplier: productScalePatch.scaleMultiplier,
+            productAreaBefore: productScalePatch.beforeProductAreaRatio,
+            productAreaTarget: productScalePatch.targetProductAreaRatio,
+            productAreaAfterEstimate: productScalePatch.estimatedAfterProductAreaRatio,
+            productScalePatchActions: productScalePatch.actions.map((action) => action.code),
+          }
+        : {}),
     },
     generationMode,
     generationPolicySummary,
@@ -269,6 +291,7 @@ export function createDaosDebugBundle(
     overlayLayoutPatch,
     geometryWhitespacePatch,
     productScaleAudit,
+    productScalePatch,
     meaningLossReport,
   };
 }

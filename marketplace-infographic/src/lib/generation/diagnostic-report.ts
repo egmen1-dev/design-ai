@@ -173,6 +173,13 @@ export type GenerationDiagnosticReport = {
     productHeightRatio?: number;
     emptySpaceEstimate?: number;
     sceneFillRisk?: number;
+    productScalePatchEnabled?: boolean;
+    productScalePatchApplied?: boolean;
+    productScaleMultiplier?: number;
+    productAreaBefore?: number;
+    productAreaTarget?: number;
+    productAreaAfterEstimate?: number;
+    productScalePatchActions?: string[];
   };
 };
 

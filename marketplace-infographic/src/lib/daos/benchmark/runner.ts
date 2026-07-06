@@ -113,7 +113,7 @@ export async function runDaosBenchmark(phase: number): Promise<BenchmarkResults>
       env: BENCHMARK_BASELINE_ENV,
     });
 
-    console.log("  DAOS (overlay only)…");
+    console.log("  DAOS (no product scale patch)…");
     const daosNoPatch = await runSingleBenchmarkArm({
       arm: "baseline",
       product,
@@ -123,7 +123,7 @@ export async function runDaosBenchmark(phase: number): Promise<BenchmarkResults>
       env: BENCHMARK_DAOS_NO_PATCH_ENV,
     });
 
-    console.log("  DAOS (geometry patched)…");
+    console.log("  DAOS (product scale patched)…");
     const daos = await runSingleBenchmarkArm({
       arm: "daos",
       product,

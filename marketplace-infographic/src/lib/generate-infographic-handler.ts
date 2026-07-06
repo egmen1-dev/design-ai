@@ -173,8 +173,41 @@ import {
   applyGeometryWhitespacePatch,
   type GeometryWhitespacePatchResult,
 } from "@/lib/daos/overlay/geometry-whitespace-patch";
+import {
+  applyProductScalePatch,
+  type ProductScalePatchResult,
+} from "@/lib/daos/compositor/product-scale-patch";
+import type { SceneCompositeOptions } from "@/lib/compositing/scene-compositor";
+import type { CompositionLayout } from "@/lib/composition/types";
+import type { ScenePlan } from "@/lib/design/scene-planner";
 import type { DAOSProjectState } from "@/lib/daos/core/project-state";
 import type { KnowledgeContext } from "@/lib/design/knowledge-engine";
+
+function buildDaosSceneCompositeOptions(input: {
+  scene: ScenePlan;
+  compositionLayout?: CompositionLayout;
+  objectScale: number;
+  layoutSpec?: LayoutSpec;
+}): { options: SceneCompositeOptions; productScalePatch: ProductScalePatchResult } {
+  const productScalePatch = applyProductScalePatch({
+    canvas: input.compositionLayout?.canvas,
+    compositionLayout: input.compositionLayout,
+    layoutSpec: input.layoutSpec,
+    plannedProductAreaPct: input.compositionLayout?.metrics?.productAreaPct,
+    compositeInput: { objectScale: input.objectScale, layout: "marketplace" },
+  });
+
+  return {
+    options: {
+      layout: "marketplace",
+      scene: input.scene,
+      compositionLayout: productScalePatch.compositionLayout ?? input.compositionLayout,
+      objectScale: productScalePatch.objectScale ?? input.objectScale,
+      productScaleMultiplier: productScalePatch.productScaleMultiplier,
+    },
+    productScalePatch,
+  };
+}
 
 export type GenerateInfographicInput = {
   userId: string;
@@ -332,6 +365,13 @@ function daosDiagnosticSummary(
     productHeightRatio?: number;
     emptySpaceEstimate?: number;
     sceneFillRisk?: number;
+    productScalePatchEnabled?: boolean;
+    productScalePatchApplied?: boolean;
+    productScaleMultiplier?: number;
+    productAreaBefore?: number;
+    productAreaTarget?: number;
+    productAreaAfterEstimate?: number;
+    productScalePatchActions?: string[];
   },
 ) {
   return {
@@ -1443,6 +1483,7 @@ export async function handleGenerateInfographic(
     let backgroundSource: "sd" | "fallback" | "provider" = "sd";
     let backgroundDataUrl: string | undefined;
     let compositeResult: Awaited<ReturnType<typeof compositeProductIntoScene>> | undefined;
+    let productScalePatchResult: ProductScalePatchResult | undefined;
     let qualityValidation: QualityValidationResult | undefined;
     let photoReview: CommercialPhotographerReview | undefined;
     let mergedImageDataUrl: string | undefined;
@@ -1598,12 +1639,18 @@ export async function handleGenerateInfographic(
             if (bg.engine) renderEngineResult = bg.engine as RenderEngineOrchestratorResult;
           }
 
-          compositeResult = await compositeProductIntoScene(backgroundUrl, productCutoutPath, {
-            layout: "marketplace",
+          const compositePrep = buildDaosSceneCompositeOptions({
             scene: scenePlan,
             compositionLayout,
             objectScale,
+            layoutSpec,
           });
+          productScalePatchResult = compositePrep.productScalePatch;
+          compositeResult = await compositeProductIntoScene(
+            backgroundUrl,
+            productCutoutPath,
+            compositePrep.options,
+          );
 
           qualityValidation = validateQuality({
             compositionLayout,
@@ -1751,12 +1798,18 @@ export async function handleGenerateInfographic(
             backgroundDataUrl = bg.dataUrl;
             backgroundSource = bg.source;
             if (bg.engine) renderEngineResult = bg.engine as RenderEngineOrchestratorResult;
-            compositeResult = await compositeProductIntoScene(bg.url, productCutoutPath, {
-              layout: "marketplace",
+            const compositePrep = buildDaosSceneCompositeOptions({
               scene: chiefScenePlan,
               compositionLayout,
               objectScale,
+              layoutSpec,
             });
+            productScalePatchResult = compositePrep.productScalePatch;
+            compositeResult = await compositeProductIntoScene(
+              bg.url,
+              productCutoutPath,
+              compositePrep.options,
+            );
             mergedImageDataUrl = await mergedToDataUrl(compositeResult.mergedPath);
             qualityValidation = validateQuality({
               compositionLayout,
@@ -1916,12 +1969,18 @@ export async function handleGenerateInfographic(
         }
 
         if (productCutoutPath && usePhotorealMerge) {
-          compositeResult = await compositeProductIntoScene(bg.url, productCutoutPath, {
-            layout: "marketplace",
+          const compositePrep = buildDaosSceneCompositeOptions({
             scene: retryScene,
             compositionLayout,
             objectScale,
+            layoutSpec,
           });
+          productScalePatchResult = compositePrep.productScalePatch;
+          compositeResult = await compositeProductIntoScene(
+            bg.url,
+            productCutoutPath,
+            compositePrep.options,
+          );
           mergedImageDataUrl = await mergedToDataUrl(compositeResult.mergedPath);
           qualityValidation = validateQuality({
             compositionLayout,
@@ -2520,6 +2579,7 @@ export async function handleGenerateInfographic(
       overlayLayoutPatch: overlayLayoutPatchResult?.patch,
       geometryWhitespacePatch: geometryWhitespacePatchResult?.patch,
       productScaleAudit,
+      productScalePatch: productScalePatchResult?.patch,
     });
     const daosDebugSummary = createDaosDebugSummary(daosDebugBundle);
     const daosFinalGate = evaluateDaosFinalGate({
@@ -2694,6 +2754,13 @@ export async function handleGenerateInfographic(
       productHeightRatio: daosDebugBundle.diagnostics.productHeightRatio,
       emptySpaceEstimate: daosDebugBundle.diagnostics.emptySpaceEstimate,
       sceneFillRisk: daosDebugBundle.diagnostics.sceneFillRisk,
+      productScalePatchEnabled: daosDebugBundle.diagnostics.productScalePatchEnabled,
+      productScalePatchApplied: daosDebugBundle.diagnostics.productScalePatchApplied,
+      productScaleMultiplier: daosDebugBundle.diagnostics.productScaleMultiplier,
+      productAreaBefore: daosDebugBundle.diagnostics.productAreaBefore,
+      productAreaTarget: daosDebugBundle.diagnostics.productAreaTarget,
+      productAreaAfterEstimate: daosDebugBundle.diagnostics.productAreaAfterEstimate,
+      productScalePatchActions: daosDebugBundle.diagnostics.productScalePatchActions,
     });
 
     if (process.env.DAOS_DEBUG === "1") {
