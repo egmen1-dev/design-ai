@@ -132,19 +132,19 @@ function countFromTemplateData(
 }
 
 function estimateOverlayDensity(input: OverlayQualityAuditInput): number {
-  if (input.overlayElements !== "unknown" && Array.isArray(input.overlayElements)) {
-    const total = input.overlayElements
-      .map((element) => element.areaPct ?? 0)
-      .reduce((sum, value) => sum + value, 0);
-    if (total > 0) return clamp01(total);
-  }
-
   const metrics = input.compositionMetrics;
   if (metrics) {
     const text = (metrics.textAreaPct ?? 0) / 100;
     const plaques = (metrics.plaqueAreaPct ?? 0) / 100;
     const overlap = (metrics.overlapPct ?? 0) / 100;
     return clamp01(text + plaques + overlap * 0.5);
+  }
+
+  if (input.overlayElements !== "unknown" && Array.isArray(input.overlayElements)) {
+    const total = input.overlayElements
+      .map((element) => element.areaPct ?? 0)
+      .reduce((sum, value) => sum + value, 0);
+    if (total > 0) return clamp01(total);
   }
 
   if (input.layoutSpec?.visualWeightMap) {

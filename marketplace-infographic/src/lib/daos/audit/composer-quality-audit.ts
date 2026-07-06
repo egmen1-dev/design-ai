@@ -393,13 +393,10 @@ export function overlayElementsFromCompositionLayout(
   if (subtitleArea != null) elements.push({ kind: "subtitle", areaPct: subtitleArea });
   const bulletsArea = zoneAreaPct(layout.bullets);
   if (bulletsArea != null) {
-    elements.push({
-      kind: "bullets",
-      areaPct: bulletsArea * Math.max(1, layout.bullets?.maxCount ?? 1),
-    });
+    elements.push({ kind: "bullets", areaPct: bulletsArea });
   }
   if (layout.plaques?.maxTotalAreaPct != null) {
-    elements.push({ kind: "plaques", areaPct: layout.plaques.maxTotalAreaPct });
+    elements.push({ kind: "plaques", areaPct: layout.plaques.maxTotalAreaPct / 100 });
   }
   const leftPanelArea = zoneAreaPct(layout.leftPanel);
   if (leftPanelArea != null) elements.push({ kind: "leftPanel", areaPct: leftPanelArea });
