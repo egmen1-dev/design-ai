@@ -1,8 +1,8 @@
 import type { BenchmarkArm, BenchmarkProduct, BenchmarkProductPair, BenchmarkResults } from "./types";
 import {
   BENCHMARK_BASELINE_ENV,
-  BENCHMARK_DAOS_COMPOSITOR_ASYMMETRIC_LIMITS_ENV,
   BENCHMARK_DAOS_WIDE_HERO_STRATEGY_ENV,
+  BENCHMARK_DAOS_WIDE_PRODUCT_LAYOUT_ENV,
   loadBenchmarkCatalog,
   productSeed,
 } from "./catalog";
@@ -113,24 +113,24 @@ export async function runDaosBenchmark(phase: number): Promise<BenchmarkResults>
       env: BENCHMARK_BASELINE_ENV,
     });
 
-    console.log("  DAOS (wide hero OFF)…");
+    console.log("  DAOS (wide layout OFF)…");
     const daosNoPatch = await runSingleBenchmarkArm({
       arm: "baseline",
       product,
       seed,
       productImage,
       userId,
-      env: BENCHMARK_DAOS_COMPOSITOR_ASYMMETRIC_LIMITS_ENV,
+      env: BENCHMARK_DAOS_WIDE_HERO_STRATEGY_ENV,
     });
 
-    console.log("  DAOS (wide hero ON)…");
+    console.log("  DAOS (wide layout ON)…");
     const daos = await runSingleBenchmarkArm({
       arm: "daos",
       product,
       seed,
       productImage,
       userId,
-      env: BENCHMARK_DAOS_WIDE_HERO_STRATEGY_ENV,
+      env: BENCHMARK_DAOS_WIDE_PRODUCT_LAYOUT_ENV,
     });
 
     const delta = computePairDelta(daosNoPatch, daos);
@@ -156,8 +156,8 @@ export async function runDaosBenchmark(phase: number): Promise<BenchmarkResults>
     },
     envProfiles: {
       baseline: BENCHMARK_BASELINE_ENV,
-      daosNoPatch: BENCHMARK_DAOS_COMPOSITOR_ASYMMETRIC_LIMITS_ENV,
-      daos: BENCHMARK_DAOS_WIDE_HERO_STRATEGY_ENV,
+      daosNoPatch: BENCHMARK_DAOS_WIDE_HERO_STRATEGY_ENV,
+      daos: BENCHMARK_DAOS_WIDE_PRODUCT_LAYOUT_ENV,
     },
     pairs,
     aggregate,

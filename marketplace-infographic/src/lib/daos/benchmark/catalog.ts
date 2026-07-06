@@ -110,6 +110,12 @@ export const BENCHMARK_DAOS_COMPOSITOR_ASYMMETRIC_LIMITS_ENV: Record<string, str
 export const BENCHMARK_DAOS_WIDE_HERO_STRATEGY_ENV: Record<string, string> = {
   ...BENCHMARK_DAOS_COMPOSITOR_ASYMMETRIC_LIMITS_ENV,
   DAOS_WIDE_HERO_STRATEGY: "1",
+  DAOS_WIDE_PRODUCT_LAYOUT: "0",
+};
+
+export const BENCHMARK_DAOS_WIDE_PRODUCT_LAYOUT_ENV: Record<string, string> = {
+  ...BENCHMARK_DAOS_WIDE_HERO_STRATEGY_ENV,
+  DAOS_WIDE_PRODUCT_LAYOUT: "1",
 };
 
 export function isDaosBenchmarkEnabled(): boolean {
@@ -128,6 +134,7 @@ export function isDaosBenchmarkEnabled(): boolean {
     process.env.DAOS_ASPECT_RATIO_PLACEMENT_PATCH === "1" ||
     process.env.DAOS_COMPOSITOR_ASYMMETRIC_LIMITS === "1" ||
     process.env.DAOS_WIDE_HERO_STRATEGY === "1" ||
+    process.env.DAOS_WIDE_PRODUCT_LAYOUT === "1" ||
     process.env.DAOS_PROMPT_CONTEXT === "1"
   );
 }
