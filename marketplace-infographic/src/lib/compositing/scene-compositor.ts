@@ -36,6 +36,7 @@ import {
   type ExtractAreaGuard,
 } from "@/lib/daos/compositor/safe-extract-area";
 import type { AsymmetricLimits } from "@/lib/daos/compositor/asymmetric-limits";
+import type { WideHeroStrategy } from "@/lib/daos/compositor/wide-hero-strategy";
 import { publicDir, resolvePublicAssetPath, writablePublicDir } from "@/lib/runtime-paths";
 
 const CANVAS_W = WB_COVER.width;
@@ -54,6 +55,8 @@ export type SceneCompositeOptions = {
   productScaleMultiplier?: number;
   /** DAOS Wave 32 — asymmetric compositor limits from aspect-ratio placement patch. */
   asymmetricLimits?: AsymmetricLimits;
+  /** DAOS Wave 33 — wide product hero placement (full-bleed / crop-safe / diagonal). */
+  wideHeroStrategy?: WideHeroStrategy;
 };
 
 async function loadImageBuffer(source: string): Promise<Buffer> {
@@ -137,7 +140,15 @@ function computeMaxProductSize(
   objectScale: number,
   productScaleMultiplier = 1,
   asymmetricLimits?: AsymmetricLimits,
+  wideHeroStrategy?: WideHeroStrategy,
 ): { maxW: number; maxH: number } {
+  if (wideHeroStrategy?.applied) {
+    return {
+      maxW: wideHeroStrategy.maxWidthPx,
+      maxH: wideHeroStrategy.maxHeightPx,
+    };
+  }
+
   if (asymmetricLimits?.applied) {
     return {
       maxW: asymmetricLimits.maxWidthPx,
@@ -306,6 +317,10 @@ export async function compositeProductIntoScene(
   const objectScale = options.objectScale ?? 0.78;
   const productScaleMultiplier = Math.max(1, options.productScaleMultiplier ?? 1);
   const asymmetricLimits = options.asymmetricLimits;
+  const wideHeroStrategy = options.wideHeroStrategy;
+  const placementSideMargin = wideHeroStrategy?.applied
+    ? wideHeroStrategy.sideMarginPx
+    : SIDE_MARGIN;
   const comp = options.compositionLayout?.product;
   const extractGuard: ExtractAreaGuard = { warnings: [], corrected: false };
 
@@ -320,10 +335,11 @@ export async function compositeProductIntoScene(
     objectScale,
     productScaleMultiplier,
     asymmetricLimits,
+    wideHeroStrategy,
   );
 
   const prePlacement = {
-    left: SIDE_MARGIN,
+    left: placementSideMargin,
     top: HEADER_RESERVE_PX,
     width: maxW,
     height: maxH,
@@ -354,14 +370,18 @@ export async function compositeProductIntoScene(
     maxH,
   );
   const maxAlphaW =
-    asymmetricLimits?.applied
+    wideHeroStrategy?.applied
+      ? wideHeroStrategy.maxAlphaWidthPx
+      : asymmetricLimits?.applied
       ? asymmetricLimits.maxAlphaWidthPx
       : Math.min(
           CANVAS_W - SIDE_MARGIN * 2,
           Math.round(PRODUCT_ALPHA_MAX_WIDTH_PX * productScaleMultiplier),
         );
   const maxAlphaH =
-    asymmetricLimits?.applied
+    wideHeroStrategy?.applied
+      ? wideHeroStrategy.maxAlphaHeightPx
+      : asymmetricLimits?.applied
       ? asymmetricLimits.maxAlphaHeightPx
       : Math.min(
           CANVAS_H - HEADER_RESERVE_PX - BOTTOM_PAD,
@@ -372,7 +392,7 @@ export async function compositeProductIntoScene(
     prepared.width,
     prepared.height,
     CANVAS_W,
-    SIDE_MARGIN,
+    placementSideMargin,
     maxAlphaW,
     maxAlphaH,
     options.compositionLayout,
