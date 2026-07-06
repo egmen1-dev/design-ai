@@ -138,6 +138,13 @@ export type GenerationDiagnosticReport = {
     daosV17CtrBridgeApplied?: boolean;
     daosV17CtrBridgeSource?: string;
     daosV17CtrBridgeLength?: number;
+    daosPromptCompressionEnabled?: boolean;
+    daosPromptOriginalAdditionLength?: number;
+    daosPromptCompressedAdditionLength?: number;
+    daosPromptCompressionRatio?: number;
+    daosPromptRelevanceScore?: number;
+    daosPromptAdditionsSkipped?: boolean;
+    daosPromptRemovedSections?: string[];
   };
 };
 

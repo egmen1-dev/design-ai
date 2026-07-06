@@ -1,7 +1,7 @@
 import type { BenchmarkArm, BenchmarkProduct, BenchmarkProductPair, BenchmarkResults } from "./types";
 import {
   BENCHMARK_BASELINE_ENV,
-  BENCHMARK_DAOS_ENV,
+  BENCHMARK_DAOS_COMPRESSED_ENV,
   loadBenchmarkCatalog,
   productSeed,
 } from "./catalog";
@@ -113,14 +113,14 @@ export async function runDaosBenchmark(phase: number): Promise<BenchmarkResults>
     });
 
     let daos = baseline;
-    console.log("  DAOS…");
+    console.log("  DAOS (compressed)…");
     daos = await runSingleBenchmarkArm({
         arm: "daos",
         product,
         seed,
         productImage,
         userId,
-        env: BENCHMARK_DAOS_ENV,
+        env: BENCHMARK_DAOS_COMPRESSED_ENV,
     });
 
     const delta = computePairDelta(baseline, daos);
@@ -146,7 +146,7 @@ export async function runDaosBenchmark(phase: number): Promise<BenchmarkResults>
     },
     envProfiles: {
       baseline: BENCHMARK_BASELINE_ENV,
-      daos: BENCHMARK_DAOS_ENV,
+      daos: BENCHMARK_DAOS_COMPRESSED_ENV,
     },
     pairs,
     aggregate,

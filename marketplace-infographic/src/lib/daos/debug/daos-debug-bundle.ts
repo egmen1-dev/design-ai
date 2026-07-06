@@ -85,6 +85,7 @@ export function createDaosDebugBundle(
     daosV17BridgeEnabled?: boolean;
     daosV17ModulesBridgeEnabled?: boolean;
     daosV17CtrBridgeEnabled?: boolean;
+    daosV17PromptCompressionEnabled?: boolean;
   },
 ): DaosDebugBundle {
   const renderDebug = options?.renderDebug;
@@ -105,6 +106,7 @@ export function createDaosDebugBundle(
     daosV17BridgeEnabled: options?.daosV17BridgeEnabled,
     daosV17ModulesBridgeEnabled: options?.daosV17ModulesBridgeEnabled,
     daosV17CtrBridgeEnabled: options?.daosV17CtrBridgeEnabled,
+    daosV17PromptCompressionEnabled: options?.daosV17PromptCompressionEnabled,
   });
   const createdAt = new Date().toISOString();
 

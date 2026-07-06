@@ -153,6 +153,7 @@ import {
   isDaosV17CtrBridgeEnabled,
   isDaosV17ModulesBridgeEnabled,
 } from "@/lib/daos/adapters/v17-modules-bridge";
+import { isDaosV17PromptCompressionEnabled } from "@/lib/daos/adapters/v17-prompt-compressor";
 import { evaluateDaosFinalGate } from "@/lib/daos/gates";
 import {
   createDaosContextEffectAudit,
@@ -282,6 +283,13 @@ function daosDiagnosticSummary(
     daosV17CtrBridgeApplied?: boolean;
     daosV17CtrBridgeSource?: string;
     daosV17CtrBridgeLength?: number;
+    daosPromptCompressionEnabled?: boolean;
+    daosPromptOriginalAdditionLength?: number;
+    daosPromptCompressedAdditionLength?: number;
+    daosPromptCompressionRatio?: number;
+    daosPromptRelevanceScore?: number;
+    daosPromptAdditionsSkipped?: boolean;
+    daosPromptRemovedSections?: string[];
   },
 ) {
   return {
@@ -1273,6 +1281,7 @@ export async function handleGenerateInfographic(
     const daosV17BridgeEnabled = isDaosV17PromptBridgeEnabled();
     const daosV17ModulesBridgeEnabled = isDaosV17ModulesBridgeEnabled();
     const daosV17CtrBridgeEnabled = isDaosV17CtrBridgeEnabled();
+    const daosV17PromptCompressionEnabled = isDaosV17PromptCompressionEnabled();
     let daosPromptContextBlock = "";
     let daosPromptContextInjected = false;
     let daosPromptContextLength = 0;
@@ -2309,6 +2318,7 @@ export async function handleGenerateInfographic(
       daosV17BridgeEnabled,
       daosV17ModulesBridgeEnabled,
       daosV17CtrBridgeEnabled,
+      daosV17PromptCompressionEnabled,
     });
     const daosDebugSummary = createDaosDebugSummary(daosDebugBundle);
     const daosFinalGate = evaluateDaosFinalGate({
@@ -2336,7 +2346,8 @@ export async function handleGenerateInfographic(
       useRenderEngineV17,
       daosV17BridgeEnabled: false,
       daosV17ModulesBridgeEnabled: false,
-      daosV17CtrBridgeEnabled: false,
+      daosV17CtrBridgeEnabled,
+      daosV17PromptCompressionEnabled: false,
     });
     const beforeContextSummary = createDaosDebugSummary(beforeContextBundle);
     const beforeContextGate = evaluateDaosFinalGate({
@@ -2444,6 +2455,13 @@ export async function handleGenerateInfographic(
       daosV17CtrBridgeApplied: renderDebug?.daosV17CtrBridgeApplied,
       daosV17CtrBridgeSource: renderDebug?.daosV17CtrBridgeSource,
       daosV17CtrBridgeLength: renderDebug?.daosV17CtrBridgeLength,
+      daosPromptCompressionEnabled: renderDebug?.daosPromptCompressionEnabled,
+      daosPromptOriginalAdditionLength: renderDebug?.daosPromptOriginalAdditionLength,
+      daosPromptCompressedAdditionLength: renderDebug?.daosPromptCompressedAdditionLength,
+      daosPromptCompressionRatio: renderDebug?.daosPromptCompressionRatio,
+      daosPromptRelevanceScore: renderDebug?.daosPromptRelevanceScore,
+      daosPromptAdditionsSkipped: renderDebug?.daosPromptAdditionsSkipped,
+      daosPromptRemovedSections: renderDebug?.daosPromptRemovedSections,
     });
 
     if (process.env.DAOS_DEBUG === "1") {

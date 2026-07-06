@@ -28,6 +28,7 @@ export type AnalyzeDaosMeaningLossOptions = {
   daosV17BridgeEnabled?: boolean;
   daosV17ModulesBridgeEnabled?: boolean;
   daosV17CtrBridgeEnabled?: boolean;
+  daosV17PromptCompressionEnabled?: boolean;
 };
 
 export type DaosMeaningLossSeverity = "warning" | "critical";
@@ -555,6 +556,43 @@ function analyzeV17CtrBridgeLoss(options?: AnalyzeDaosMeaningLossOptions): DaosM
   return warnings;
 }
 
+function analyzeV17PromptCompressionLoss(options?: AnalyzeDaosMeaningLossOptions): DaosMeaningLossWarning[] {
+  if (!options?.daosV17PromptCompressionEnabled) {
+    return [];
+  }
+
+  const warnings: DaosMeaningLossWarning[] = [];
+  const renderDebug = options.renderDebug;
+
+  if (renderDebug?.daosPromptAdditionsSkipped === true) {
+    warnings.push({
+      code: "DAOS_PROMPT_ADDITIONS_SKIPPED_LOW_RELEVANCE",
+      severity: "warning",
+      message:
+        "DAOS v17 prompt additions were skipped because relevance score fell below the compression gate threshold",
+      spec: "renderBlueprint",
+    });
+  }
+
+  const originalLength = renderDebug?.daosPromptOriginalAdditionLength ?? 0;
+  const compressedLength = renderDebug?.daosPromptCompressedAdditionLength ?? 0;
+  if (
+    renderDebug?.daosPromptCompressionEnabled === true &&
+    !renderDebug?.daosPromptAdditionsSkipped &&
+    originalLength > 450 &&
+    compressedLength > 450
+  ) {
+    warnings.push({
+      code: "DAOS_PROMPT_ADDITIONS_TOO_LONG",
+      severity: "warning",
+      message: `DAOS v17 prompt additions remain ${compressedLength} chars after compression (budget 450)`,
+      spec: "renderBlueprint",
+    });
+  }
+
+  return warnings;
+}
+
 /** Deterministic loss-of-meaning checks between DAOS specs (no LLM). */
 export function analyzeDaosMeaningLoss(
   state: DAOSProjectState,
@@ -601,6 +639,10 @@ export function analyzeDaosMeaningLoss(
     ...options,
     renderDebug,
   });
+  const v17PromptCompressionLoss = analyzeV17PromptCompressionLoss({
+    ...options,
+    renderDebug,
+  });
 
   const warnings = [
     ...lowConfidenceWarnings,
@@ -615,6 +657,7 @@ export function analyzeDaosMeaningLoss(
     ...v17BridgeLoss,
     ...v17ModulesBridgeLoss,
     ...v17CtrBridgeLoss,
+    ...v17PromptCompressionLoss,
   ];
 
   return {

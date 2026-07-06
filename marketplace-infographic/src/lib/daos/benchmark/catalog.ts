@@ -59,12 +59,18 @@ export const BENCHMARK_DAOS_ENV: Record<string, string> = {
   DAOS_V17_CTR_BRIDGE: "1",
 };
 
+export const BENCHMARK_DAOS_COMPRESSED_ENV: Record<string, string> = {
+  ...BENCHMARK_DAOS_ENV,
+  DAOS_V17_PROMPT_COMPRESSION: "1",
+};
+
 export function isDaosBenchmarkEnabled(): boolean {
   return (
     process.env.DAOS_RENDER_CONTEXT === "1" ||
     process.env.DAOS_V17_PROMPT_BRIDGE === "1" ||
     process.env.DAOS_V17_MODULES_BRIDGE === "1" ||
     process.env.DAOS_V17_CTR_BRIDGE === "1" ||
+    process.env.DAOS_V17_PROMPT_COMPRESSION === "1" ||
     process.env.DAOS_PROMPT_CONTEXT === "1"
   );
 }

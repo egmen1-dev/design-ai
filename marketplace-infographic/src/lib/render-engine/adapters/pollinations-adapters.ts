@@ -4,6 +4,10 @@ import { compilePollinationsPrompt } from "./pollinations-compiler";
 import { sanitizePromptForModeration } from "../providers/pollinations/moderation";
 import { attachDaosV17PromptBridgeToPayload } from "@/lib/daos/adapters/v17-prompt-bridge";
 import { attachDaosV17ModulesBridgeToPayload } from "@/lib/daos/adapters/v17-modules-bridge";
+import {
+  applyDaosV17PromptCompressionToPayload,
+  compressionFieldsFromDaosContext,
+} from "@/lib/daos/adapters/v17-prompt-compressor";
 
 const BACKDROP_ONLY =
   "empty foreground for product compositing, backdrop only, no objects in product zone, no text, no letters, no watermark";
@@ -54,8 +58,13 @@ function compileFromBlueprint(request: RenderRequest, model: string): CompiledRe
     modulesIgnored: ["layout_coordinates", "hierarchy", "typography_zones", "ctr_wording"],
     extraParams: model === "gptimage" ? { quality: "high" } : { safe: true },
   };
+  const basePrompt = payload.prompt;
   const withPromptBridge = attachDaosV17PromptBridgeToPayload(payload, request.metadata?.daosContext);
-  return attachDaosV17ModulesBridgeToPayload(withPromptBridge, request);
+  const withModulesBridge = attachDaosV17ModulesBridgeToPayload(withPromptBridge, request);
+  return applyDaosV17PromptCompressionToPayload(withModulesBridge, {
+    basePrompt,
+    ...compressionFieldsFromDaosContext(request.metadata?.daosContext),
+  });
 }
 
 /** Flux adapter — uses PollinationsCompiler when VisualSceneBlueprint present */

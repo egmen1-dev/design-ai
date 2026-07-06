@@ -172,6 +172,17 @@ export type CompiledRenderPayload = {
     source: string;
     preview: string;
   };
+  /** DAOS Wave 18 — prompt compression / relevance gate metadata */
+  daosV17Compression?: {
+    enabled: boolean;
+    originalAdditionLength: number;
+    compressedAdditionLength: number;
+    compressionRatio: number;
+    relevanceScore: number;
+    additionsSkipped: boolean;
+    skipReason?: string;
+    removedSections: string[];
+  };
 };
 
 export interface RenderAdapter {

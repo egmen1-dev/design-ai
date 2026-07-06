@@ -22,6 +22,13 @@ export type DAOSRenderDebugArtifact = {
   daosV17CtrBridgeApplied?: boolean;
   daosV17CtrBridgeSource?: string;
   daosV17CtrBridgeLength?: number;
+  daosPromptCompressionEnabled?: boolean;
+  daosPromptOriginalAdditionLength?: number;
+  daosPromptCompressedAdditionLength?: number;
+  daosPromptCompressionRatio?: number;
+  daosPromptRelevanceScore?: number;
+  daosPromptAdditionsSkipped?: boolean;
+  daosPromptRemovedSections?: string[];
   createdAt: string;
 };
 
@@ -196,6 +203,30 @@ export function extractDaosRenderDebug(input: unknown): DAOSRenderDebugArtifact 
       }
       const ctrSource = asString(daosV17Ctr.source);
       if (ctrSource) artifact.daosV17CtrBridgeSource = ctrSource;
+    }
+
+    const daosV17Compression = asRecord(compiled.daosV17Compression);
+    if (daosV17Compression.enabled === true) {
+      artifact.daosPromptCompressionEnabled = true;
+      if (typeof daosV17Compression.originalAdditionLength === "number") {
+        artifact.daosPromptOriginalAdditionLength = daosV17Compression.originalAdditionLength;
+      }
+      if (typeof daosV17Compression.compressedAdditionLength === "number") {
+        artifact.daosPromptCompressedAdditionLength = daosV17Compression.compressedAdditionLength;
+      }
+      if (typeof daosV17Compression.compressionRatio === "number") {
+        artifact.daosPromptCompressionRatio = daosV17Compression.compressionRatio;
+      }
+      if (typeof daosV17Compression.relevanceScore === "number") {
+        artifact.daosPromptRelevanceScore = daosV17Compression.relevanceScore;
+      }
+      if (daosV17Compression.additionsSkipped === true) {
+        artifact.daosPromptAdditionsSkipped = true;
+      }
+      const removedSections = asStringArray(daosV17Compression.removedSections);
+      if (removedSections.length > 0) {
+        artifact.daosPromptRemovedSections = removedSections;
+      }
     }
 
     const renderRequestSummary = summarizeRequest(request);
