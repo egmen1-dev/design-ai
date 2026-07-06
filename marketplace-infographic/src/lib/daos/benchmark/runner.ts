@@ -1,8 +1,8 @@
 import type { BenchmarkArm, BenchmarkProduct, BenchmarkProductPair, BenchmarkResults } from "./types";
 import {
   BENCHMARK_BASELINE_ENV,
-  BENCHMARK_DAOS_NO_PATCH_ENV,
   BENCHMARK_DAOS_PATCHED_ENV,
+  BENCHMARK_DAOS_CONTRAST_PATCHED_ENV,
   loadBenchmarkCatalog,
   productSeed,
 } from "./catalog";
@@ -113,24 +113,24 @@ export async function runDaosBenchmark(phase: number): Promise<BenchmarkResults>
       env: BENCHMARK_BASELINE_ENV,
     });
 
-    console.log("  DAOS (no product scale patch)…");
+    console.log("  DAOS (contrast overlap patch OFF)…");
     const daosNoPatch = await runSingleBenchmarkArm({
       arm: "baseline",
       product,
       seed,
       productImage,
       userId,
-      env: BENCHMARK_DAOS_NO_PATCH_ENV,
+      env: BENCHMARK_DAOS_PATCHED_ENV,
     });
 
-    console.log("  DAOS (product scale patched)…");
+    console.log("  DAOS (contrast overlap patch ON)…");
     const daos = await runSingleBenchmarkArm({
       arm: "daos",
       product,
       seed,
       productImage,
       userId,
-      env: BENCHMARK_DAOS_PATCHED_ENV,
+      env: BENCHMARK_DAOS_CONTRAST_PATCHED_ENV,
     });
 
     const delta = computePairDelta(daosNoPatch, daos);
@@ -156,8 +156,8 @@ export async function runDaosBenchmark(phase: number): Promise<BenchmarkResults>
     },
     envProfiles: {
       baseline: BENCHMARK_BASELINE_ENV,
-      daosNoPatch: BENCHMARK_DAOS_NO_PATCH_ENV,
-      daos: BENCHMARK_DAOS_PATCHED_ENV,
+      daosNoPatch: BENCHMARK_DAOS_PATCHED_ENV,
+      daos: BENCHMARK_DAOS_CONTRAST_PATCHED_ENV,
     },
     pairs,
     aggregate,

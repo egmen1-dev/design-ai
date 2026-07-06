@@ -174,6 +174,10 @@ import {
   type GeometryWhitespacePatchResult,
 } from "@/lib/daos/overlay/geometry-whitespace-patch";
 import {
+  applyContrastOverlapPatch,
+  type ContrastOverlapPatchResult,
+} from "@/lib/daos/overlay/contrast-overlap-patch";
+import {
   applyProductScalePatch,
   type ProductScalePatchResult,
 } from "@/lib/daos/compositor/product-scale-patch";
@@ -385,7 +389,10 @@ function daosDiagnosticSummary(
     law003RecalibratedWhitespace?: number;
     law003Before?: boolean;
     law003After?: boolean;
-    law003StaleMetricDetected?: boolean;
+    contrastOverlapPatchApplied?: boolean;
+    contrastOverlapPatchActions?: string[];
+    contrastOverlapBefore?: number;
+    contrastOverlapAfterEstimate?: number;
   },
 ) {
   return {
@@ -2105,6 +2112,7 @@ export async function handleGenerateInfographic(
     let renderParametricBadgeHtml = parametricBadgeHtml;
     let overlayLayoutPatchResult: OverlayLayoutPatchResult | undefined;
     let geometryWhitespacePatchResult: GeometryWhitespacePatchResult | undefined;
+    let contrastOverlapPatchResult: ContrastOverlapPatchResult | undefined;
 
     if (sdData.layout === "marketplace") {
       const prePatchAuditInput = {
@@ -2175,6 +2183,29 @@ export async function handleGenerateInfographic(
         renderLayoutSpec = geometryWhitespacePatchResult.layoutSpec ?? renderLayoutSpec;
         renderCompositionLayout =
           geometryWhitespacePatchResult.compositionLayout ?? renderCompositionLayout;
+      }
+
+      const compositePlacementForPatch = normalizeCompositePlacement({
+        compositeResult,
+        canvas: renderCompositionLayout?.canvas ?? compositionLayout?.canvas,
+      });
+      contrastOverlapPatchResult = applyContrastOverlapPatch({
+        layoutSpec: renderLayoutSpec,
+        infographicData: renderInfographicData,
+        compositionLayout: renderCompositionLayout,
+        overlayAudit: prePatchAudit,
+        auditInput: prePatchAuditInput,
+        law014ContrastViolation: prePatchAudit.law014ContrastViolation,
+        overlayDensity: prePatchAudit.estimatedOverlayDensity,
+        pngOverlayFeelRisk: prePatchAudit.pngOverlayFeelRisk,
+        compositePlacement: compositePlacementForPatch,
+      });
+      if (contrastOverlapPatchResult.patch.applied) {
+        renderInfographicData =
+          contrastOverlapPatchResult.infographicData ?? renderInfographicData;
+        renderLayoutSpec = contrastOverlapPatchResult.layoutSpec ?? renderLayoutSpec;
+        renderCompositionLayout =
+          contrastOverlapPatchResult.compositionLayout ?? renderCompositionLayout;
       }
     }
 
@@ -2627,6 +2658,7 @@ export async function handleGenerateInfographic(
       overlayQualityAudit,
       overlayLayoutPatch: overlayLayoutPatchResult?.patch,
       geometryWhitespacePatch: geometryWhitespacePatchResult?.patch,
+      contrastOverlapPatch: contrastOverlapPatchResult?.patch,
       productScaleAudit,
       productScalePatch: productScalePatchResult?.patch,
       compositePlacement,
@@ -2801,6 +2833,10 @@ export async function handleGenerateInfographic(
       geometryWhitespaceAfterEstimate:
         daosDebugBundle.diagnostics.geometryWhitespaceAfterEstimate,
       geometryPatchActions: daosDebugBundle.diagnostics.geometryPatchActions,
+      contrastOverlapPatchApplied: daosDebugBundle.diagnostics.contrastOverlapPatchApplied,
+      contrastOverlapPatchActions: daosDebugBundle.diagnostics.contrastOverlapPatchActions,
+      contrastOverlapBefore: daosDebugBundle.diagnostics.contrastOverlapBefore,
+      contrastOverlapAfterEstimate: daosDebugBundle.diagnostics.contrastOverlapAfterEstimate,
       productScaleScore: daosDebugBundle.diagnostics.productScaleScore,
       productDominanceScore: daosDebugBundle.diagnostics.productDominanceScore,
       productWidthRatio: daosDebugBundle.diagnostics.productWidthRatio,

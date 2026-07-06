@@ -74,6 +74,12 @@ export const BENCHMARK_DAOS_NO_PATCH_ENV: Record<string, string> = {
 export const BENCHMARK_DAOS_PATCHED_ENV: Record<string, string> = {
   ...BENCHMARK_DAOS_NO_PATCH_ENV,
   DAOS_PRODUCT_SCALE_PATCH: "1",
+  DAOS_CONTRAST_OVERLAP_PATCH: "0",
+};
+
+export const BENCHMARK_DAOS_CONTRAST_PATCHED_ENV: Record<string, string> = {
+  ...BENCHMARK_DAOS_PATCHED_ENV,
+  DAOS_CONTRAST_OVERLAP_PATCH: "1",
 };
 
 export function isDaosBenchmarkEnabled(): boolean {
@@ -86,6 +92,7 @@ export function isDaosBenchmarkEnabled(): boolean {
     process.env.DAOS_OVERLAY_PATCH === "1" ||
     process.env.DAOS_GEOMETRY_WHITESPACE_PATCH === "1" ||
     process.env.DAOS_PRODUCT_SCALE_PATCH === "1" ||
+    process.env.DAOS_CONTRAST_OVERLAP_PATCH === "1" ||
     process.env.DAOS_PROMPT_CONTEXT === "1"
   );
 }

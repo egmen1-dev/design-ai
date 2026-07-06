@@ -337,7 +337,7 @@ function renderReport(results: BenchmarkResults): string {
     `- LAW_003 violation rate (baseline → DAOS): ${formatRate(results.aggregate.law003ViolationRateBaseline)} → ${formatRate(results.aggregate.law003ViolationRateDaos)}`,
   );
   lines.push(
-    `- LAW_014 violation rate (baseline → DAOS): ${formatRate(results.aggregate.law014ViolationRateBaseline)} → ${formatRate(results.aggregate.law014ViolationRateDaos)}`,
+    `- LAW_014 violation rate (contrast patch OFF → ON): ${formatRate(results.aggregate.law014ViolationRateBaseline)} → ${formatRate(results.aggregate.law014ViolationRateDaos)}`,
   );
   lines.push(
     `- Average productScaleScore (baseline → DAOS): ${results.aggregate.averageProductScaleScoreBaseline?.toFixed(1) ?? "n/a"} → ${results.aggregate.averageProductScaleScoreDaos?.toFixed(1) ?? "n/a"}`,
@@ -361,10 +361,10 @@ function renderReport(results: BenchmarkResults): string {
     `- extractAreaCorrected rate (patch OFF → ON): ${formatRate(results.aggregate.extractAreaCorrectedRateBaseline)} → ${formatRate(results.aggregate.extractAreaCorrectedRateDaos)}`,
   );
   lines.push(
-    `- LAW_003 violation rate recalibrated (patch OFF → ON): ${formatRate(results.aggregate.law003AfterViolationRateBaseline)} → ${formatRate(results.aggregate.law003AfterViolationRateDaos)}`,
+    `- LAW_003 violation rate recalibrated (contrast patch OFF → ON): ${formatRate(results.aggregate.law003AfterViolationRateBaseline)} → ${formatRate(results.aggregate.law003AfterViolationRateDaos)}`,
   );
   lines.push(
-    `- LAW_003 stale metric rate (patch OFF → ON): ${formatRate(results.aggregate.law003StaleMetricRateBaseline)} → ${formatRate(results.aggregate.law003StaleMetricRateDaos)}`,
+    `- LAW_003 stale metric rate (contrast patch OFF → ON): ${formatRate(results.aggregate.law003StaleMetricRateBaseline)} → ${formatRate(results.aggregate.law003StaleMetricRateDaos)}`,
   );
 
   return lines.join("\n");

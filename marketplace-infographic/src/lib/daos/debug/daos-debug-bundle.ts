@@ -22,6 +22,7 @@ import type { OverlayQualityAudit } from "../audit/overlay-quality-audit";
 import { summarizeOverlayQualityAudit } from "../audit/overlay-quality-audit";
 import type { OverlayLayoutPatch } from "../overlay/overlay-layout-patch";
 import type { GeometryWhitespacePatch } from "../overlay/geometry-whitespace-patch";
+import type { ContrastOverlapPatch } from "../overlay/contrast-overlap-patch";
 import type { ProductScaleAudit } from "../audit/product-scale-audit";
 import { summarizeProductScaleAudit } from "../audit/product-scale-audit";
 import type { ProductScalePatch } from "../compositor/product-scale-patch";
@@ -113,6 +114,10 @@ export type DaosDebugBundle = {
     law003Before?: boolean;
     law003After?: boolean;
     law003StaleMetricDetected?: boolean;
+    contrastOverlapPatchApplied?: boolean;
+    contrastOverlapPatchActions?: string[];
+    contrastOverlapBefore?: number;
+    contrastOverlapAfterEstimate?: number;
   };
   generationMode: DAOSGenerationMode;
   generationPolicySummary: ReturnType<typeof summarizeDaosGenerationPolicy>;
@@ -127,6 +132,7 @@ export type DaosDebugBundle = {
   overlayQualityAudit?: OverlayQualityAudit;
   overlayLayoutPatch?: OverlayLayoutPatch;
   geometryWhitespacePatch?: GeometryWhitespacePatch;
+  contrastOverlapPatch?: ContrastOverlapPatch;
   productScaleAudit?: ProductScaleAudit;
   productScalePatch?: ProductScalePatch;
   compositePlacement?: NormalizedCompositePlacement;
@@ -156,6 +162,7 @@ export function createDaosDebugBundle(
     overlayQualityAudit?: OverlayQualityAudit;
     overlayLayoutPatch?: OverlayLayoutPatch;
     geometryWhitespacePatch?: GeometryWhitespacePatch;
+    contrastOverlapPatch?: ContrastOverlapPatch;
     productScaleAudit?: ProductScaleAudit;
     productScalePatch?: ProductScalePatch;
     compositePlacement?: NormalizedCompositePlacement;
@@ -192,6 +199,7 @@ export function createDaosDebugBundle(
     : undefined;
   const overlayLayoutPatch = options?.overlayLayoutPatch;
   const geometryWhitespacePatch = options?.geometryWhitespacePatch;
+  const contrastOverlapPatch = options?.contrastOverlapPatch;
   const productScaleAudit = options?.productScaleAudit;
   const productScalePatch = options?.productScalePatch;
   const compositePlacement = options?.compositePlacement;
@@ -279,6 +287,14 @@ export function createDaosDebugBundle(
             geometryPatchActions: geometryWhitespacePatch.actions.map((action) => action.code),
           }
         : {}),
+      ...(contrastOverlapPatch
+        ? {
+            contrastOverlapPatchApplied: contrastOverlapPatch.applied,
+            contrastOverlapPatchActions: contrastOverlapPatch.actions.map((action) => action.code),
+            contrastOverlapBefore: contrastOverlapPatch.contrastOverlapBefore,
+            contrastOverlapAfterEstimate: contrastOverlapPatch.contrastOverlapAfterEstimate,
+          }
+        : {}),
       ...(productScaleSummary
         ? {
             productScaleScore: productScaleSummary.score,
@@ -334,6 +350,7 @@ export function createDaosDebugBundle(
     overlayQualityAudit: options?.overlayQualityAudit,
     overlayLayoutPatch,
     geometryWhitespacePatch,
+    contrastOverlapPatch,
     productScaleAudit,
     productScalePatch,
     compositePlacement,

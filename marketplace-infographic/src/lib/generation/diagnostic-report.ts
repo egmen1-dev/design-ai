@@ -192,6 +192,10 @@ export type GenerationDiagnosticReport = {
     law003Before?: boolean;
     law003After?: boolean;
     law003StaleMetricDetected?: boolean;
+    contrastOverlapPatchApplied?: boolean;
+    contrastOverlapPatchActions?: string[];
+    contrastOverlapBefore?: number;
+    contrastOverlapAfterEstimate?: number;
   };
 };
 
