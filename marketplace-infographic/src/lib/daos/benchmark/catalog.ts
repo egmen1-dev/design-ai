@@ -135,6 +135,7 @@ export function isDaosBenchmarkEnabled(): boolean {
     process.env.DAOS_COMPOSITOR_ASYMMETRIC_LIMITS === "1" ||
     process.env.DAOS_WIDE_HERO_STRATEGY === "1" ||
     process.env.DAOS_WIDE_PRODUCT_LAYOUT === "1" ||
+    process.env.DAOS_SCENE_GRAPH_V2 === "1" ||
     process.env.DAOS_PROMPT_CONTEXT === "1"
   );
 }

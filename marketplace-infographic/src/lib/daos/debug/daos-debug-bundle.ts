@@ -35,6 +35,8 @@ import type { NormalizedCompositePlacement } from "../compositor/composite-resul
 import type { Law003RecalibrationReport } from "../governance/law003-recalibration";
 import type { Law003GovernanceSource } from "../governance/law003-soft-governance";
 import type { DAOSOverlayGateResult } from "../gates/overlay-gate";
+import type { SceneGraphDriftReport } from "@/lib/scene-graph";
+import { serializeSceneGraphSnapshots, type SceneGraphSnapshotSet } from "@/lib/scene-graph";
 
 export type DaosDebugBundle = {
   projectId: string;
@@ -156,6 +158,12 @@ export type DaosDebugBundle = {
     wideProductLayoutStrategy?: string;
     wideProductTextZone?: string;
     wideProductHeroZone?: string;
+    sceneGraphV2Enabled?: boolean;
+    sceneGraphMirrorMode?: boolean;
+    sceneGraphFiles?: string[];
+    sceneGraphProductAreaDrift?: number;
+    sceneGraphWhitespaceDrift?: number;
+    sceneGraphSignificantDrift?: boolean;
   };
   generationMode: DAOSGenerationMode;
   generationPolicySummary: ReturnType<typeof summarizeDaosGenerationPolicy>;
@@ -180,6 +188,8 @@ export type DaosDebugBundle = {
   compositePlacement?: NormalizedCompositePlacement;
   law003Recalibration?: Law003RecalibrationReport;
   overlayGate?: DAOSOverlayGateResult;
+  sceneGraphSnapshots?: ReturnType<typeof serializeSceneGraphSnapshots>;
+  sceneGraphDrifts?: SceneGraphDriftReport[];
   meaningLossReport: DaosMeaningLossReport;
 };
 
@@ -217,6 +227,13 @@ export function createDaosDebugBundle(
     extractAreaWarnings?: string[];
     law003Recalibration?: Law003RecalibrationReport;
     overlayGate?: DAOSOverlayGateResult;
+    sceneGraphSnapshots?: SceneGraphSnapshotSet;
+    sceneGraphFiles?: string[];
+    sceneGraphDriftSummary?: {
+      productAreaDrift: number;
+      whitespaceDrift: number;
+      hasSignificantDrift: boolean;
+    };
   },
 ): DaosDebugBundle {
   const renderDebug = options?.renderDebug;
@@ -259,6 +276,12 @@ export function createDaosDebugBundle(
   const extractAreaWarnings = options?.extractAreaWarnings;
   const law003Recalibration = options?.law003Recalibration;
   const overlayGate = options?.overlayGate;
+  const sceneGraphSnapshots = options?.sceneGraphSnapshots;
+  const sceneGraphFiles = options?.sceneGraphFiles;
+  const sceneGraphDriftSummary = options?.sceneGraphDriftSummary;
+  const sceneGraphSerialized = sceneGraphSnapshots
+    ? serializeSceneGraphSnapshots(sceneGraphSnapshots)
+    : undefined;
   const productScaleSummary = productScaleAudit
     ? summarizeProductScaleAudit(productScaleAudit)
     : undefined;
@@ -443,6 +466,16 @@ export function createDaosDebugBundle(
             overlayGateBlocking: overlayGate.blocking,
           }
         : {}),
+      ...(sceneGraphSnapshots
+        ? {
+            sceneGraphV2Enabled: true,
+            sceneGraphMirrorMode: true,
+            sceneGraphFiles,
+            sceneGraphProductAreaDrift: sceneGraphDriftSummary?.productAreaDrift,
+            sceneGraphWhitespaceDrift: sceneGraphDriftSummary?.whitespaceDrift,
+            sceneGraphSignificantDrift: sceneGraphDriftSummary?.hasSignificantDrift,
+          }
+        : {}),
     },
     generationMode,
     generationPolicySummary,
@@ -467,6 +500,8 @@ export function createDaosDebugBundle(
     compositePlacement,
     law003Recalibration,
     overlayGate,
+    sceneGraphSnapshots: sceneGraphSerialized,
+    sceneGraphDrifts: sceneGraphSnapshots?.drifts,
     meaningLossReport,
   };
 }

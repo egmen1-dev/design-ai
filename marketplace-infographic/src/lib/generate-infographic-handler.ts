@@ -191,6 +191,7 @@ import {
 import { applyAsymmetricLimitsToCompositeOptions, type AsymmetricLimits } from "@/lib/daos/compositor/asymmetric-limits";
 import { applyWideHeroStrategy, type WideHeroStrategy } from "@/lib/daos/compositor/wide-hero-strategy";
 import { normalizeCompositePlacement } from "@/lib/daos/compositor/composite-result-bridge";
+import { createSceneGraphMirror } from "@/lib/daos/scene-graph";
 import { createLaw003RecalibrationReport, extractConstitutionLaw003Whitespace } from "@/lib/daos/governance/law003-recalibration";
 import type { SceneCompositeOptions } from "@/lib/compositing/scene-compositor";
 import type { CompositionLayout } from "@/lib/composition/types";
@@ -998,6 +999,10 @@ export async function handleGenerateInfographic(
     prompt: input.prompt || "",
     generationMode: daosGenerationMode,
   });
+  const sceneGraphMirror = createSceneGraphMirror({
+    projectId: daosState.projectId,
+    runId: daosState.runId,
+  });
 
   if (process.env.DAOS_DEBUG === "1") {
     console.debug("[daos] Wave 1 state created", daosDiagnosticSummary(daosState));
@@ -1449,6 +1454,13 @@ export async function handleGenerateInfographic(
     let objectScale = layoutObjectScale(compositionLayout?.metrics?.productAreaPct);
     compositingHints = sceneToCompositingHints(scenePlan, objectScale);
 
+    sceneGraphMirror.capturePlanner({
+      compositionLayout,
+      layoutSpec,
+      productCategory: analysis.category,
+      layoutMode: sdData.layout,
+    });
+
     if (useDesignGovernance && governanceBlueprint) {
       assertRenderAllowed({
         blueprint: governanceBlueprint,
@@ -1794,6 +1806,17 @@ export async function handleGenerateInfographic(
           break;
         }
       }
+
+      sceneGraphMirror.captureAfterCompositor({
+        compositionLayout: productScalePatchResult?.compositionLayout ?? compositionLayout,
+        layoutSpec,
+        compositePlacement: normalizeCompositePlacement({
+          compositeResult,
+          canvas: compositionLayout?.canvas,
+        }),
+        productCategory: analysis.category,
+        layoutMode: sdData.layout,
+      });
 
       if (qualityValidation && !qualityValidation.passed) {
         console.warn(
@@ -2324,6 +2347,18 @@ export async function handleGenerateInfographic(
       }
     }
 
+    sceneGraphMirror.captureAfterOverlay({
+      compositionLayout: renderCompositionLayout,
+      layoutSpec: renderLayoutSpec ?? layoutSpec,
+      infographicData: renderInfographicData,
+      compositePlacement: normalizeCompositePlacement({
+        compositeResult,
+        canvas: renderCompositionLayout?.canvas ?? compositionLayout?.canvas,
+      }),
+      productCategory: analysis.category,
+      layoutMode: sdData.layout,
+    });
+
     // ── 10. Layout Renderer ───────────────────────────────────────────
     governanceScorecard = buildGovernanceScorecard({
       compositionScore: compositionDirection?.quality.total,
@@ -2758,6 +2793,24 @@ export async function handleGenerateInfographic(
       factualProductAreaRatio: compositePlacement?.areaRatio,
     });
     const daosOverlayGate = evaluateDaosOverlayGate(overlayQualityAudit);
+
+    sceneGraphMirror.captureFinal({
+      compositionLayout: renderCompositionLayout ?? compositionLayout,
+      layoutSpec: renderLayoutSpec ?? layoutSpec,
+      infographicData: renderInfographicData,
+      compositePlacement,
+      overlayAudit: overlayQualityAudit,
+      law003Recalibration,
+      productCategory: analysis.category,
+      layoutMode: sdData.layout,
+    });
+    const sceneGraphWrite = sceneGraphMirror.isEnabled()
+      ? await sceneGraphMirror.writeSnapshots()
+      : { written: [], errors: [] };
+    if (sceneGraphWrite.errors.length > 0) {
+      console.warn("[scene-graph] snapshot write errors:", sceneGraphWrite.errors);
+    }
+
     const daosDebugBundle = createDaosDebugBundle(enrichedDaosState, {
       renderDebug,
       generationMode: daosGenerationMode,
@@ -2789,6 +2842,11 @@ export async function handleGenerateInfographic(
       extractAreaWarnings: compositeResult?.extractAreaWarnings,
       law003Recalibration,
       overlayGate: daosOverlayGate,
+      sceneGraphSnapshots: sceneGraphMirror.isEnabled()
+        ? sceneGraphMirror.getSnapshots()
+        : undefined,
+      sceneGraphFiles: sceneGraphWrite.written,
+      sceneGraphDriftSummary: sceneGraphMirror.getDriftSummary(),
     });
     const daosDebugSummary = createDaosDebugSummary(daosDebugBundle);
     const daosFinalGate = evaluateDaosFinalGate({
