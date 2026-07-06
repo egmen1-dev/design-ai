@@ -76,6 +76,9 @@ export type BenchmarkRunMetrics = {
   law003SoftResolved?: boolean;
   overlayGateStatus?: string;
   overlayGateScore?: number;
+  targetUnreachable?: boolean;
+  aspectRatioPlacementPatchApplied?: boolean;
+  fitStrategy?: string;
 };
 
 export type BenchmarkPairDelta = {
@@ -149,6 +152,8 @@ export type BenchmarkAggregateStats = {
   averageOverlayGateScoreDaos?: number;
   overlayGatePassRateBaseline?: number;
   overlayGatePassRateDaos?: number;
+  targetUnreachableRateBaseline?: number;
+  targetUnreachableRateDaos?: number;
   meaningLossImproved: boolean;
   modulesCompiledImproved: boolean;
 };

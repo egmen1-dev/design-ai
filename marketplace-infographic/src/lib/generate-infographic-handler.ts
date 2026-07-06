@@ -198,6 +198,7 @@ function buildDaosSceneCompositeOptions(input: {
   objectScale: number;
   layoutSpec?: LayoutSpec;
   productCategory?: string;
+  productHint?: string;
 }): { options: SceneCompositeOptions; productScalePatch: ProductScalePatchResult } {
   const metrics = input.compositionLayout?.metrics;
   const overlayDensity =
@@ -214,6 +215,8 @@ function buildDaosSceneCompositeOptions(input: {
     plannedProductAreaPct: input.compositionLayout?.metrics?.productAreaPct,
     compositeInput: { objectScale: input.objectScale, layout: "marketplace" },
     productComplexity: inferProductComplexity(input.productCategory),
+    productCategory: input.productCategory,
+    productHint: input.productHint,
     overlayDensity,
     law014ContrastViolation: (metrics?.overlapPct ?? 0) > 2,
     law014RiskHigh: (metrics?.overlapPct ?? 0) > 2,
@@ -398,6 +401,13 @@ function daosDiagnosticSummary(
     productFillTargetReason?: string;
     productFillV2Target?: number;
     productFillV2Applied?: boolean;
+    aspectRatioPlacementPatchEnabled?: boolean;
+    aspectRatioPlacementPatchApplied?: boolean;
+    productAspectRatio?: number;
+    fitStrategy?: string;
+    targetUnreachable?: boolean;
+    heightOverflowPrevented?: boolean;
+    widthOverflowPrevented?: boolean;
     compositePlacementFound?: boolean;
     compositePlacementSource?: string;
     compositeProductAreaRatio?: number;
@@ -1692,6 +1702,7 @@ export async function handleGenerateInfographic(
             objectScale,
             layoutSpec,
             productCategory: analysis.category,
+            productHint: input.prompt,
           });
           productScalePatchResult = compositePrep.productScalePatch;
           compositeResult = await compositeProductIntoScene(
@@ -1852,6 +1863,7 @@ export async function handleGenerateInfographic(
               objectScale,
               layoutSpec,
               productCategory: analysis.category,
+            productHint: input.prompt,
             });
             productScalePatchResult = compositePrep.productScalePatch;
             compositeResult = await compositeProductIntoScene(
@@ -2024,6 +2036,7 @@ export async function handleGenerateInfographic(
             objectScale,
             layoutSpec,
             productCategory: analysis.category,
+            productHint: input.prompt,
           });
           productScalePatchResult = compositePrep.productScalePatch;
           compositeResult = await compositeProductIntoScene(
@@ -2694,6 +2707,7 @@ export async function handleGenerateInfographic(
       contrastOverlapPatch: contrastOverlapPatchResult?.patch,
       productScaleAudit,
       productScalePatch: productScalePatchResult?.patch,
+      aspectRatioPlacementPatch: productScalePatchResult?.aspectRatioPlacementPatch,
       compositePlacement,
       extractAreaCorrected: compositeResult?.extractAreaCorrected,
       extractAreaWarnings: compositeResult?.extractAreaWarnings,
@@ -2888,6 +2902,13 @@ export async function handleGenerateInfographic(
       productFillTargetReason: daosDebugBundle.diagnostics.productFillTargetReason,
       productFillV2Target: daosDebugBundle.diagnostics.productFillV2Target,
       productFillV2Applied: daosDebugBundle.diagnostics.productFillV2Applied,
+      aspectRatioPlacementPatchEnabled: daosDebugBundle.diagnostics.aspectRatioPlacementPatchEnabled,
+      aspectRatioPlacementPatchApplied: daosDebugBundle.diagnostics.aspectRatioPlacementPatchApplied,
+      productAspectRatio: daosDebugBundle.diagnostics.productAspectRatio,
+      fitStrategy: daosDebugBundle.diagnostics.fitStrategy,
+      targetUnreachable: daosDebugBundle.diagnostics.targetUnreachable,
+      heightOverflowPrevented: daosDebugBundle.diagnostics.heightOverflowPrevented,
+      widthOverflowPrevented: daosDebugBundle.diagnostics.widthOverflowPrevented,
       compositePlacementFound: daosDebugBundle.diagnostics.compositePlacementFound,
       compositePlacementSource: daosDebugBundle.diagnostics.compositePlacementSource,
       compositeProductAreaRatio: daosDebugBundle.diagnostics.compositeProductAreaRatio,

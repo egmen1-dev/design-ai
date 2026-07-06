@@ -2,6 +2,10 @@ import type { CompositionLayout } from "@/lib/composition/types";
 import type { LayoutSpec } from "@/lib/design/layout-spec";
 import type { SceneCompositeOptions } from "@/lib/compositing/scene-compositor";
 import { zoneAreaPct } from "@/lib/composition/canvas";
+import {
+  applyAspectRatioPlacementPatch,
+  type AspectRatioPlacementPatch,
+} from "./aspect-ratio-placement-patch";
 
 export const DAOS_PRODUCT_SCALE_TRIGGER = 0.35;
 export const DAOS_PRODUCT_SCALE_TARGET_MIN = 0.42;
@@ -53,6 +57,10 @@ export type ProductScalePatchInput = {
   law003AfterStillFailing?: boolean;
   law014RiskHigh?: boolean;
   law014ContrastViolation?: boolean;
+  productCategory?: string;
+  productHint?: string;
+  extractAreaWarnings?: string[];
+  heightOverflowDetected?: boolean;
 };
 
 export type ProductScalePatch = {
@@ -76,6 +84,7 @@ export type ProductScalePatchResult = {
   compositionLayout?: CompositionLayout;
   objectScale?: number;
   productScaleMultiplier?: number;
+  aspectRatioPlacementPatch?: AspectRatioPlacementPatch;
 };
 
 function clamp(n: number, min: number, max: number): number {
@@ -408,7 +417,27 @@ export function applyProductScalePatch(input: ProductScalePatchInput): ProductSc
   const plan = createProductScalePatch(input);
 
   if (!isDaosProductScalePatchEnabled() || !plan.actions.length) {
-    return { patch: { ...plan, enabled: isDaosProductScalePatchEnabled(), patchApplied: false } };
+    const aspectRatioPlacement = applyAspectRatioPlacementPatch({
+      canvas: input.compositionLayout?.canvas,
+      compositionLayout: input.compositionLayout
+        ? cloneCompositionLayout(input.compositionLayout)
+        : undefined,
+      targetProductAreaRatio: plan.targetProductAreaRatio,
+      currentProductAreaRatio: plan.beforeProductAreaRatio,
+      productBounds: input.productBounds,
+      productCategory: input.productCategory,
+      productHint: input.productHint,
+      extractAreaWarnings: input.extractAreaWarnings,
+      heightOverflowDetected: input.heightOverflowDetected,
+      objectScale: input.compositeInput?.objectScale ?? 0.78,
+    });
+
+    return {
+      patch: { ...plan, enabled: isDaosProductScalePatchEnabled(), patchApplied: false },
+      compositionLayout: aspectRatioPlacement.compositionLayout ?? input.compositionLayout,
+      objectScale: input.compositeInput?.objectScale,
+      aspectRatioPlacementPatch: aspectRatioPlacement.patch,
+    };
   }
 
   const appliedActions = [...plan.actions];
@@ -497,20 +526,50 @@ export function applyProductScalePatch(input: ProductScalePatchInput): ProductSc
     message: `objectScale ${boostedObjectScale.toFixed(2)}, multiplier ${plan.scaleMultiplier.toFixed(2)}`,
   });
 
+  const aspectRatioPlacement = applyAspectRatioPlacementPatch({
+    canvas: compositionLayout.canvas,
+    compositionLayout,
+    targetProductAreaRatio: plan.targetProductAreaRatio,
+    currentProductAreaRatio: plan.beforeProductAreaRatio,
+    productBounds: input.productBounds,
+    productCategory: input.productCategory,
+    productHint: input.productHint,
+    extractAreaWarnings: input.extractAreaWarnings,
+    heightOverflowDetected: input.heightOverflowDetected,
+    objectScale: boostedObjectScale,
+  });
+
+  const finalLayout = aspectRatioPlacement.compositionLayout ?? compositionLayout;
+  const estimatedAfterProductAreaRatio = aspectRatioPlacement.patch.patchApplied
+    ? aspectRatioPlacement.patch.estimatedVisibleAreaRatio
+    : clamp01(plan.beforeProductAreaRatio * plan.scaleMultiplier * plan.scaleMultiplier);
+
+  if (aspectRatioPlacement.patch.patchApplied) {
+    appliedActions.push({
+      code: "ASPECT_RATIO_PLACEMENT_PATCH",
+      message: `${aspectRatioPlacement.patch.fitStrategy} → ${aspectRatioPlacement.patch.afterMaxWidthPct.toFixed(1)}×${aspectRatioPlacement.patch.afterMaxHeightPct.toFixed(1)}%`,
+    });
+  }
+
   return {
     patch: {
       ...plan,
       enabled: true,
       patchApplied: true,
       actions: appliedActions,
-      placementPatch,
-      estimatedAfterProductAreaRatio: clamp01(
-        plan.beforeProductAreaRatio * plan.scaleMultiplier * plan.scaleMultiplier,
-      ),
+      placementPatch: aspectRatioPlacement.patch.patchApplied
+        ? buildPlacementPatch(
+            finalLayout,
+            aspectRatioPlacement.patch.afterMaxWidthPct,
+            aspectRatioPlacement.patch.afterMaxHeightPct,
+          )
+        : placementPatch,
+      estimatedAfterProductAreaRatio,
       productFillV2Applied: plan.productFillV2Enabled ? true : plan.productFillV2Applied,
     },
-    compositionLayout,
+    compositionLayout: finalLayout,
     objectScale: boostedObjectScale,
     productScaleMultiplier: plan.scaleMultiplier,
+    aspectRatioPlacementPatch: aspectRatioPlacement.patch,
   };
 }
