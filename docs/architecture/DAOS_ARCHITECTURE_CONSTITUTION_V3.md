@@ -31,13 +31,14 @@
 | 10 | Canonical Data Contracts | [volume-10-canonical-data-contracts](./constitution-v3/volume-10-canonical-data-contracts/) | Part 1 canonical |
 | 11 | State Machine Specification | [volume-11-state-machine-specification](./constitution-v3/volume-11-state-machine-specification/) | canonical |
 | 12 | Event Protocol Specification | [volume-12-event-protocol-specification](./constitution-v3/volume-12-event-protocol-specification/) | canonical |
-| 13 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
-| 14 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
-| — | Agent Communication Protocol | [volume-11-agent-communication-protocol](./constitution-v3/volume-11-agent-communication-protocol/) | superseded → Vol 7 |
-| 15 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
-| 16 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
-| 17 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
-| 18 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
+| 13 | DAOS Protocol Language (DPL) | [volume-13-daos-protocol-language](./constitution-v3/volume-13-daos-protocol-language/) | canonical |
+| 14 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
+| 15 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
+| — | Agent Communication Protocol | [volume-11-agent-communication-protocol](./constitution-v3/volume-11-agent-communication-protocol/) | superseded → Vol 7 / 13 |
+| 16 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
+| 17 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
+| 18 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
+| 19 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
 
 ## Appendices
 
@@ -518,3 +519,43 @@ Deterministic generation lifecycle FSM: canonical states, transitions, ownership
 | RFC-1105 | Canonical Lifecycle |
 
 **END OF VOLUME 11** (content in [part-01/](./constitution-v3/volume-11-state-machine-specification/part-01/))
+
+---
+
+# Volume 12 — Event Protocol Specification
+
+**Architecture status:** Canonical · **Protocol version:** 3.0 · **Communication model:** Event Driven · **Normative:** Mandatory
+
+All state mutations via immutable Protocol Events; event bus, categories, ordering, replay, and canonical mutation rule.
+
+→ Full text: [constitution-v3/volume-12-event-protocol-specification/part-01/](./constitution-v3/volume-12-event-protocol-specification/part-01/)
+
+| Spec / RFC | Title |
+|------------|-------|
+| RFC-1200 | Event Driven Architecture |
+| RFC-1201 | Event Bus |
+| SPEC-1200 | Event Structure |
+| SPEC-1201 | Event Metadata |
+| SPEC-1202 | Event Categories |
+| SPEC-1203 | Research Events |
+| SPEC-1204 | Knowledge Events |
+| SPEC-1205 | Decision Events |
+| SPEC-1206 | SceneGraph Events |
+| SPEC-1207 | Execution Events |
+| SPEC-1208 | Governance Events |
+| SPEC-1209 | Benchmark Events |
+| SPEC-1210 | Learning Events |
+| RFC-1202 | Event Ordering |
+| SPEC-1211 | Event Ownership |
+| RFC-1203 | Event Immutability |
+| SPEC-1212 | Event Replay |
+| SPEC-1213 | Event Correlation |
+| RFC-1204 | Event Validation |
+| SPEC-1214 | Event Versioning |
+| RFC-1205 | Event Idempotency |
+| SPEC-1215 | Event Subscription |
+| RFC-1206 | Event Security |
+| SPEC-1216 | Event Audit |
+| RFC-1207 | Canonical Mutation Rule |
+
+**END OF VOLUME 12** (content in [part-01/](./constitution-v3/volume-12-event-protocol-specification/part-01/))

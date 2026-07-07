@@ -78,5 +78,12 @@ Constitution RFCs:
 | RFC-1205 | 12 | [../volume-12-event-protocol-specification/part-01/RFC-1205.md](../volume-12-event-protocol-specification/part-01/RFC-1205.md) |
 | RFC-1206 | 12 | [../volume-12-event-protocol-specification/part-01/RFC-1206.md](../volume-12-event-protocol-specification/part-01/RFC-1206.md) |
 | RFC-1207 | 12 | [../volume-12-event-protocol-specification/part-01/RFC-1207.md](../volume-12-event-protocol-specification/part-01/RFC-1207.md) |
+| RFC-1300 | 13 | [../volume-13-daos-protocol-language/part-01/RFC-1300.md](../volume-13-daos-protocol-language/part-01/RFC-1300.md) |
+| RFC-1301 | 13 | [../volume-13-daos-protocol-language/part-01/RFC-1301.md](../volume-13-daos-protocol-language/part-01/RFC-1301.md) |
+| RFC-1302 | 13 | [../volume-13-daos-protocol-language/part-01/RFC-1302.md](../volume-13-daos-protocol-language/part-01/RFC-1302.md) |
+| RFC-1303 | 13 | [../volume-13-daos-protocol-language/part-01/RFC-1303.md](../volume-13-daos-protocol-language/part-01/RFC-1303.md) |
+| RFC-1304 | 13 | [../volume-13-daos-protocol-language/part-01/RFC-1304.md](../volume-13-daos-protocol-language/part-01/RFC-1304.md) |
+| RFC-1305 | 13 | [../volume-13-daos-protocol-language/part-01/RFC-1305.md](../volume-13-daos-protocol-language/part-01/RFC-1305.md) |
+| RFC-1306 | 13 | [../volume-13-daos-protocol-language/part-01/RFC-1306.md](../volume-13-daos-protocol-language/part-01/RFC-1306.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)

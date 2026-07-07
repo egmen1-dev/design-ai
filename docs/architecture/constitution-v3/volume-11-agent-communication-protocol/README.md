@@ -2,9 +2,11 @@
 
 **Status:** superseded
 
-Agent protocol objects and reasoning are defined in **Volume 7 — Agent Reasoning Protocol**.
+Agent protocol objects and native language are defined in:
 
-→ [RFC-702](../volume-07-agent-reasoning-protocol/part-01/RFC-702.md) — Native Communication Language
+→ [Volume 7 — Agent Reasoning Protocol](../volume-07-agent-reasoning-protocol/) (RFC-702)
+
+→ [Volume 13 — DAOS Protocol Language (DPL)](../volume-13-daos-protocol-language/)
 
 → [Volume 0 Part 2 — DAOS Protocol](../volume-00-language-specification/part-02/)
 
