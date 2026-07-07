@@ -30,13 +30,14 @@
 | 9 | Execution Architecture Specification | [volume-09-execution-architecture](./constitution-v3/volume-09-execution-architecture/) | Part 1 canonical |
 | 10 | Canonical Data Contracts | [volume-10-canonical-data-contracts](./constitution-v3/volume-10-canonical-data-contracts/) | Part 1 canonical |
 | 11 | State Machine Specification | [volume-11-state-machine-specification](./constitution-v3/volume-11-state-machine-specification/) | canonical |
-| 12 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
-| 13 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
+| 12 | Event Protocol Specification | [volume-12-event-protocol-specification](./constitution-v3/volume-12-event-protocol-specification/) | canonical |
+| 13 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
+| 14 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
 | — | Agent Communication Protocol | [volume-11-agent-communication-protocol](./constitution-v3/volume-11-agent-communication-protocol/) | superseded → Vol 7 |
-| 14 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
-| 15 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
-| 16 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
-| 17 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
+| 15 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
+| 16 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
+| 17 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
+| 18 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
 
 ## Appendices
 
@@ -477,3 +478,43 @@ Universal metadata, canonical schemas for DecisionGraph, SceneGraph, protocol ob
 | SPEC-1019 | Legacy Compatibility |
 
 **END OF VOLUME 10 — PART 1** (content in [part-01/](./constitution-v3/volume-10-canonical-data-contracts/part-01/))
+
+---
+
+# Volume 11 — State Machine Specification
+
+**Architecture status:** Canonical · **Specification type:** Finite State Machine · **Normative:** Mandatory
+
+Deterministic generation lifecycle FSM: canonical states, transitions, ownership, rollback, and audit trail.
+
+→ Full text: [constitution-v3/volume-11-state-machine-specification/part-01/](./constitution-v3/volume-11-state-machine-specification/part-01/)
+
+| Spec / RFC | Title |
+|------------|-------|
+| RFC-1100 | System State Machine |
+| RFC-1101 | Canonical States |
+| SPEC-1100 | INITIALIZED |
+| SPEC-1101 | RESEARCH_READY |
+| SPEC-1102 | KNOWLEDGE_READY |
+| SPEC-1103 | DECISION_READY |
+| SPEC-1104 | DECISION_FINALIZED |
+| SPEC-1105 | SCENE_READY |
+| SPEC-1106 | EXECUTION_READY |
+| SPEC-1107 | COMPOSITING |
+| SPEC-1108 | OVERLAY_RENDERING |
+| SPEC-1109 | RENDER_COMPLETED |
+| SPEC-1110 | GOVERNANCE_RUNNING |
+| SPEC-1111 | BENCHMARK_RUNNING |
+| SPEC-1112 | LEARNING_RUNNING |
+| SPEC-1113 | COMPLETED |
+| RFC-1102 | State Transition Rules |
+| SPEC-1114 | Forbidden Transitions |
+| SPEC-1115 | State Ownership |
+| RFC-1103 | Rollback |
+| SPEC-1116 | Failure State |
+| RFC-1104 | State Determinism |
+| SPEC-1117 | Event Model |
+| SPEC-1118 | State Audit Trail |
+| RFC-1105 | Canonical Lifecycle |
+
+**END OF VOLUME 11** (content in [part-01/](./constitution-v3/volume-11-state-machine-specification/part-01/))

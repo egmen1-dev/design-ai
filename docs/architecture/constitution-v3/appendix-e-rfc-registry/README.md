@@ -70,5 +70,13 @@ Constitution RFCs:
 | RFC-1103 | 11 | [../volume-11-state-machine-specification/part-01/RFC-1103.md](../volume-11-state-machine-specification/part-01/RFC-1103.md) |
 | RFC-1104 | 11 | [../volume-11-state-machine-specification/part-01/RFC-1104.md](../volume-11-state-machine-specification/part-01/RFC-1104.md) |
 | RFC-1105 | 11 | [../volume-11-state-machine-specification/part-01/RFC-1105.md](../volume-11-state-machine-specification/part-01/RFC-1105.md) |
+| RFC-1200 | 12 | [../volume-12-event-protocol-specification/part-01/RFC-1200.md](../volume-12-event-protocol-specification/part-01/RFC-1200.md) |
+| RFC-1201 | 12 | [../volume-12-event-protocol-specification/part-01/RFC-1201.md](../volume-12-event-protocol-specification/part-01/RFC-1201.md) |
+| RFC-1202 | 12 | [../volume-12-event-protocol-specification/part-01/RFC-1202.md](../volume-12-event-protocol-specification/part-01/RFC-1202.md) |
+| RFC-1203 | 12 | [../volume-12-event-protocol-specification/part-01/RFC-1203.md](../volume-12-event-protocol-specification/part-01/RFC-1203.md) |
+| RFC-1204 | 12 | [../volume-12-event-protocol-specification/part-01/RFC-1204.md](../volume-12-event-protocol-specification/part-01/RFC-1204.md) |
+| RFC-1205 | 12 | [../volume-12-event-protocol-specification/part-01/RFC-1205.md](../volume-12-event-protocol-specification/part-01/RFC-1205.md) |
+| RFC-1206 | 12 | [../volume-12-event-protocol-specification/part-01/RFC-1206.md](../volume-12-event-protocol-specification/part-01/RFC-1206.md) |
+| RFC-1207 | 12 | [../volume-12-event-protocol-specification/part-01/RFC-1207.md](../volume-12-event-protocol-specification/part-01/RFC-1207.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)
