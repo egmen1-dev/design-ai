@@ -20,7 +20,7 @@
 |--------|-------|------|--------|
 | 0 | DAOS Language Specification | [volume-00-language-specification](./constitution-v3/volume-00-language-specification/) | Part 1–2 draft |
 | 1 | Core Architecture | [volume-01-core-architecture](./constitution-v3/volume-01-core-architecture/) | Part 1 draft |
-| 2 | Research System | [volume-02-research-system](./constitution-v3/volume-02-research-system/) | pending |
+| 2 | Research System | [volume-02-research-system](./constitution-v3/volume-02-research-system/) | Part 1 draft |
 | 3 | Commercial Knowledge Engine | [volume-03-commercial-knowledge-engine](./constitution-v3/volume-03-commercial-knowledge-engine/) | pending |
 | 4 | Decision Engine | [volume-04-decision-engine](./constitution-v3/volume-04-decision-engine/) | pending |
 | 5 | SceneGraph | [volume-05-scenegraph](./constitution-v3/volume-05-scenegraph/) | pending |
@@ -127,3 +127,33 @@ Engine topology, ownership, lifecycle, isolation, dependencies, execution layer,
 | SPEC-111 | Engine Health Contract |
 
 **END OF VOLUME 1 — PART 1** (content in [part-01/](./constitution-v3/volume-01-core-architecture/part-01/))
+
+---
+
+# Volume 2 — Research Engine (Part 1)
+
+Research philosophy, object model, evidence, validation, promotion pipeline, and experimental knowledge base.
+
+→ Full text: [constitution-v3/volume-02-research-system/part-01/](./constitution-v3/volume-02-research-system/part-01/)
+
+| Spec / RFC | Title |
+|------------|-------|
+| RFC-200 | Research Philosophy |
+| SPEC-200 | Research Responsibilities |
+| SPEC-201 | Research Object Model |
+| SPEC-202 | Research Project |
+| SPEC-203 | Hypothesis |
+| SPEC-204 | Experiment |
+| SPEC-205 | Experiment Series |
+| SPEC-206 | Evidence |
+| SPEC-207 | Validation |
+| SPEC-208 | Candidate Knowledge |
+| SPEC-209 | Promotion Pipeline |
+| RFC-201 | Research Never Touches Production |
+| SPEC-210 | Experimental Knowledge Base |
+| SPEC-211 | Human Research |
+| SPEC-212 | Experiment Confidence |
+| SPEC-213 | Rule Promotion Policy |
+| RFC-202 | Experimental Knowledge Priority |
+
+**END OF VOLUME 2 — PART 1** (content in [part-01/](./constitution-v3/volume-02-research-system/part-01/))

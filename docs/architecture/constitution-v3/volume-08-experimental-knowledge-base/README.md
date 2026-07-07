@@ -2,7 +2,9 @@
 
 **Status:** pending (integration spec)
 
-Runtime experimental rules live outside this tree until promoted:
+Constitution spec: [SPEC-210](../volume-02-research-system/part-01/SPEC-210.md) (Volume 2)
+
+Runtime experimental rules:
 
 - [DAOS_EXPERIMENTAL_KNOWLEDGE_BASE.md](../../DAOS_EXPERIMENTAL_KNOWLEDGE_BASE.md)
 - [DAOS_EXPERIMENTAL_KNOWLEDGE_BASE/](../../DAOS_EXPERIMENTAL_KNOWLEDGE_BASE/)

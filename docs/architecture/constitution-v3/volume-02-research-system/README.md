@@ -1,8 +1,9 @@
-# volume 02 research system
+# Volume 2 — Research Engine
 
-**Status:** pending
+**Status:** Part 1 draft
 
-Content for this section of DAOS Architecture Constitution v3 is not yet written.
+| Part | Content | Path |
+|------|---------|------|
+| Part 1 | Research philosophy, experiments, evidence, promotion | [part-01/](./part-01/) |
 
-Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)
-
+Related runtime artifact: [DAOS_EXPERIMENTAL_KNOWLEDGE_BASE.md](../../DAOS_EXPERIMENTAL_KNOWLEDGE_BASE.md)
