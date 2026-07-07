@@ -236,5 +236,21 @@ Constitution RFCs:
 | RFC-2708 | 27 | [../volume-27-canonical-object-registry/part-01/RFC-2708.md](../volume-27-canonical-object-registry/part-01/RFC-2708.md) |
 | RFC-2709 | 27 | [../volume-27-canonical-object-registry/part-01/RFC-2709.md](../volume-27-canonical-object-registry/part-01/RFC-2709.md) |
 | RFC-2710 | 27 | [../volume-27-canonical-object-registry/part-01/RFC-2710.md](../volume-27-canonical-object-registry/part-01/RFC-2710.md) |
+| RFC-2800 | 28 | [../volume-28-feature-flag-governance/part-01/RFC-2800.md](../volume-28-feature-flag-governance/part-01/RFC-2800.md) |
+| RFC-2801 | 28 | [../volume-28-feature-flag-governance/part-01/RFC-2801.md](../volume-28-feature-flag-governance/part-01/RFC-2801.md) |
+| RFC-2802 | 28 | [../volume-28-feature-flag-governance/part-01/RFC-2802.md](../volume-28-feature-flag-governance/part-01/RFC-2802.md) |
+| RFC-2803 | 28 | [../volume-28-feature-flag-governance/part-01/RFC-2803.md](../volume-28-feature-flag-governance/part-01/RFC-2803.md) |
+| RFC-2804 | 28 | [../volume-28-feature-flag-governance/part-01/RFC-2804.md](../volume-28-feature-flag-governance/part-01/RFC-2804.md) |
+| RFC-2805 | 28 | [../volume-28-feature-flag-governance/part-01/RFC-2805.md](../volume-28-feature-flag-governance/part-01/RFC-2805.md) |
+| RFC-2806 | 28 | [../volume-28-feature-flag-governance/part-01/RFC-2806.md](../volume-28-feature-flag-governance/part-01/RFC-2806.md) |
+| RFC-2807 | 28 | [../volume-28-feature-flag-governance/part-01/RFC-2807.md](../volume-28-feature-flag-governance/part-01/RFC-2807.md) |
+| RFC-2808 | 28 | [../volume-28-feature-flag-governance/part-01/RFC-2808.md](../volume-28-feature-flag-governance/part-01/RFC-2808.md) |
+| RFC-2809 | 28 | [../volume-28-feature-flag-governance/part-01/RFC-2809.md](../volume-28-feature-flag-governance/part-01/RFC-2809.md) |
+| RFC-2810 | 28 | [../volume-28-feature-flag-governance/part-01/RFC-2810.md](../volume-28-feature-flag-governance/part-01/RFC-2810.md) |
+| RFC-2811 | 28 | [../volume-28-feature-flag-governance/part-01/RFC-2811.md](../volume-28-feature-flag-governance/part-01/RFC-2811.md) |
+| RFC-2812 | 28 | [../volume-28-feature-flag-governance/part-01/RFC-2812.md](../volume-28-feature-flag-governance/part-01/RFC-2812.md) |
+| RFC-2813 | 28 | [../volume-28-feature-flag-governance/part-01/RFC-2813.md](../volume-28-feature-flag-governance/part-01/RFC-2813.md) |
+| RFC-2814 | 28 | [../volume-28-feature-flag-governance/part-01/RFC-2814.md](../volume-28-feature-flag-governance/part-01/RFC-2814.md) |
+| RFC-2815 | 28 | [../volume-28-feature-flag-governance/part-01/RFC-2815.md](../volume-28-feature-flag-governance/part-01/RFC-2815.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)

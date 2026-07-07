@@ -46,13 +46,14 @@
 | 25 | Generation Context Model | [volume-25-generation-context-model](./constitution-v3/volume-25-generation-context-model/) | canonical |
 | 26 | Metric Registry | [volume-26-metric-registry](./constitution-v3/volume-26-metric-registry/) | canonical |
 | 27 | Canonical Object Registry | [volume-27-canonical-object-registry](./constitution-v3/volume-27-canonical-object-registry/) | canonical |
-| 28 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
-| 29 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
+| 28 | Feature Flag Governance | [volume-28-feature-flag-governance](./constitution-v3/volume-28-feature-flag-governance/) | canonical |
+| 29 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
+| 30 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
 | — | Agent Communication Protocol | [volume-11-agent-communication-protocol](./constitution-v3/volume-11-agent-communication-protocol/) | superseded → Vol 7 / 13 |
-| 30 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
-| 31 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
-| 32 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
-| 33 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
+| 31 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
+| 32 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
+| 33 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
+| 34 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
 
 ## Appendices
 
@@ -60,7 +61,7 @@
 |----------|-------|------|--------|
 | A | Vocabulary | [appendix-a-vocabulary](./constitution-v3/appendix-a-vocabulary/) | pending |
 | B | Message Contracts | [appendix-b-message-contracts](./constitution-v3/appendix-b-message-contracts/) | pending |
-| C | Feature Flags | [appendix-c-feature-flags](./constitution-v3/appendix-c-feature-flags/) | pending |
+| C | Feature Flags | [appendix-c-feature-flags](./constitution-v3/appendix-c-feature-flags/) | → [Volume 28](./constitution-v3/volume-28-feature-flag-governance/) |
 | D | ADR Registry | [appendix-d-adr-registry](./constitution-v3/appendix-d-adr-registry/) | pending |
 | E | RFC Registry | [appendix-e-rfc-registry](./constitution-v3/appendix-e-rfc-registry/) | pending |
 
@@ -1130,3 +1131,34 @@ Authoritative catalog of all platform architectural objects: identity, single ow
 | RFC-2710 | Registry Principle |
 
 **END OF VOLUME 27** (content in [part-01/](./constitution-v3/volume-27-canonical-object-registry/part-01/))
+
+---
+
+# Volume 28 — Feature Flag Governance
+
+**Architecture status:** Canonical · **Layer:** Experiment Governance · **Normative:** Mandatory · **Audit source:** DAOS Architecture Audit 2026
+
+Governed feature flags as architectural objects: lifecycle, mandatory metadata, ownership, budget, expiration, promotion/removal gates, registry, audit, and experimental isolation.
+
+→ Full text: [constitution-v3/volume-28-feature-flag-governance/part-01/](./constitution-v3/volume-28-feature-flag-governance/part-01/)
+
+| RFC | Title |
+|-----|-------|
+| RFC-2800 | Purpose |
+| RFC-2801 | Canonical Feature Flag |
+| RFC-2802 | Feature Flag Lifecycle |
+| RFC-2803 | Mandatory Metadata |
+| RFC-2804 | Feature Flag Categories |
+| RFC-2805 | Default Policy |
+| RFC-2806 | Ownership |
+| RFC-2807 | Flag Budget |
+| RFC-2808 | Flag Expiration |
+| RFC-2809 | Promotion |
+| RFC-2810 | Removal |
+| RFC-2811 | Diagnostics |
+| RFC-2812 | Registry |
+| RFC-2813 | Feature Flag Audit |
+| RFC-2814 | Experimental Isolation |
+| RFC-2815 | Feature Flag Principle |
+
+**END OF VOLUME 28** (content in [part-01/](./constitution-v3/volume-28-feature-flag-governance/part-01/))
