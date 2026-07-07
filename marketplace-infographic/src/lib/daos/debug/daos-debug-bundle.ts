@@ -36,6 +36,7 @@ import type { Law003RecalibrationReport } from "../governance/law003-recalibrati
 import type { Law003GovernanceSource } from "../governance/law003-soft-governance";
 import type { DAOSOverlayGateResult } from "../gates/overlay-gate";
 import type { SceneGraphDriftReport } from "@/lib/scene-graph";
+import type { SceneGraphConstitutionMirrorResult } from "@/lib/scene-graph/SceneGraphConstitutionMirror";
 import { serializeSceneGraphSnapshots, type SceneGraphSnapshotSet } from "@/lib/scene-graph";
 
 export type DaosDebugBundle = {
@@ -173,6 +174,9 @@ export type DaosDebugBundle = {
     overlayActualGateDecision?: "actual" | "planned";
     overlayActualGateReasons?: string[];
     overlayActualGateConfidence?: number;
+    sceneGraphLaw003Passed?: boolean;
+    sceneGraphLaw014Passed?: boolean;
+    sceneGraphConstitutionSource?: "actual" | "planned" | "mixed";
   };
   generationMode: DAOSGenerationMode;
   generationPolicySummary: ReturnType<typeof summarizeDaosGenerationPolicy>;
@@ -199,6 +203,7 @@ export type DaosDebugBundle = {
   overlayGate?: DAOSOverlayGateResult;
   sceneGraphSnapshots?: ReturnType<typeof serializeSceneGraphSnapshots>;
   sceneGraphDrifts?: SceneGraphDriftReport[];
+  sceneGraphConstitutionMirror?: SceneGraphConstitutionMirrorResult;
   meaningLossReport: DaosMeaningLossReport;
 };
 
@@ -288,6 +293,8 @@ export function createDaosDebugBundle(
   const law003Recalibration = options?.law003Recalibration;
   const overlayGate = options?.overlayGate;
   const sceneGraphSnapshots = options?.sceneGraphSnapshots;
+  const sceneGraphConstitutionMirror =
+    options?.sceneGraphConstitutionMirror ?? sceneGraphSnapshots?.constitutionMirror;
   const sceneGraphFiles = options?.sceneGraphFiles;
   const sceneGraphDriftSummary = options?.sceneGraphDriftSummary;
   const sceneGraphSerialized = sceneGraphSnapshots
@@ -523,6 +530,13 @@ export function createDaosDebugBundle(
             sceneGraphSignificantDrift: sceneGraphDriftSummary?.hasSignificantDrift,
           }
         : {}),
+      ...(sceneGraphConstitutionMirror
+        ? {
+            sceneGraphLaw003Passed: sceneGraphConstitutionMirror.law003.passed,
+            sceneGraphLaw014Passed: sceneGraphConstitutionMirror.law014.passed,
+            sceneGraphConstitutionSource: sceneGraphConstitutionMirror.sceneGraphConstitutionSource,
+          }
+        : {}),
     },
     generationMode,
     generationPolicySummary,
@@ -549,6 +563,7 @@ export function createDaosDebugBundle(
     overlayGate,
     sceneGraphSnapshots: sceneGraphSerialized,
     sceneGraphDrifts: sceneGraphSnapshots?.drifts,
+    sceneGraphConstitutionMirror,
     meaningLossReport,
   };
 }

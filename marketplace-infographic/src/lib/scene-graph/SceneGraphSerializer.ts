@@ -8,6 +8,7 @@ export type SceneGraphSnapshotSet = {
   afterOverlay?: SceneGraph;
   final?: SceneGraph;
   drifts?: SceneGraphDriftReport[];
+  constitutionMirror?: import("./SceneGraphConstitutionMirror").SceneGraphConstitutionMirrorResult;
 };
 
 export type SceneGraphSerializeOptions = {
@@ -45,6 +46,7 @@ const SNAPSHOT_FILES = {
   afterOverlay: "sceneGraphAfterOverlay.json",
   final: "sceneGraphFinal.json",
   drifts: "sceneGraphDrifts.json",
+  constitutionMirror: "sceneGraphConstitutionMirror.json",
 } as const;
 
 /** Write scene graph JSON files alongside daos-debug-bundle. */
@@ -66,14 +68,16 @@ export async function writeSceneGraphSnapshots(
 
   await mkdir(dir, { recursive: true });
 
-  const entries: Array<[keyof typeof SNAPSHOT_FILES, SceneGraph | SceneGraphDriftReport[] | undefined]> =
-    [
-      ["before", snapshots.before],
-      ["afterCompositor", snapshots.afterCompositor],
-      ["afterOverlay", snapshots.afterOverlay],
-      ["final", snapshots.final],
-      ["drifts", snapshots.drifts],
-    ];
+  const entries: Array<
+    [keyof typeof SNAPSHOT_FILES, SceneGraph | SceneGraphDriftReport[] | Record<string, unknown> | undefined]
+  > = [
+    ["before", snapshots.before],
+    ["afterCompositor", snapshots.afterCompositor],
+    ["afterOverlay", snapshots.afterOverlay],
+    ["final", snapshots.final],
+    ["drifts", snapshots.drifts],
+    ["constitutionMirror", snapshots.constitutionMirror],
+  ];
 
   for (const [key, payload] of entries) {
     if (!payload) continue;

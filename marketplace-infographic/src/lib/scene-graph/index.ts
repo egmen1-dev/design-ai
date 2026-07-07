@@ -71,6 +71,16 @@ export {
   type SceneGraphSnapshotSet,
 } from "./SceneGraphSerializer";
 
+export {
+  evaluateSceneGraphLaw003,
+  evaluateSceneGraphLaw014,
+  evaluateSceneGraphConstitutionMirror,
+  type SceneGraphConstitutionMirrorResult,
+  type SceneGraphLaw003MirrorResult,
+  type SceneGraphLaw014MirrorResult,
+  type SceneGraphConstitutionSource,
+} from "./SceneGraphConstitutionMirror";
+
 /** Feature flag: DAOS_SCENE_GRAPH_V2=1 (default OFF). Phase 1 mirror mode only. */
 export function isDaosSceneGraphV2Enabled(): boolean {
   return process.env.DAOS_SCENE_GRAPH_V2 === "1";
