@@ -198,5 +198,11 @@ Constitution RFCs:
 | RFC-2304 | 23 | [../volume-23-commercial-knowledge-ontology/part-01/RFC-2304.md](../volume-23-commercial-knowledge-ontology/part-01/RFC-2304.md) |
 | RFC-2305 | 23 | [../volume-23-commercial-knowledge-ontology/part-01/RFC-2305.md](../volume-23-commercial-knowledge-ontology/part-01/RFC-2305.md) |
 | RFC-2306 | 23 | [../volume-23-commercial-knowledge-ontology/part-01/RFC-2306.md](../volume-23-commercial-knowledge-ontology/part-01/RFC-2306.md) |
+| RFC-2400 | 24 | [../volume-24-knowledge-resolution-engine/part-01/RFC-2400.md](../volume-24-knowledge-resolution-engine/part-01/RFC-2400.md) |
+| RFC-2401 | 24 | [../volume-24-knowledge-resolution-engine/part-01/RFC-2401.md](../volume-24-knowledge-resolution-engine/part-01/RFC-2401.md) |
+| RFC-2402 | 24 | [../volume-24-knowledge-resolution-engine/part-01/RFC-2402.md](../volume-24-knowledge-resolution-engine/part-01/RFC-2402.md) |
+| RFC-2403 | 24 | [../volume-24-knowledge-resolution-engine/part-01/RFC-2403.md](../volume-24-knowledge-resolution-engine/part-01/RFC-2403.md) |
+| RFC-2404 | 24 | [../volume-24-knowledge-resolution-engine/part-01/RFC-2404.md](../volume-24-knowledge-resolution-engine/part-01/RFC-2404.md) |
+| RFC-2405 | 24 | [../volume-24-knowledge-resolution-engine/part-01/RFC-2405.md](../volume-24-knowledge-resolution-engine/part-01/RFC-2405.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)
