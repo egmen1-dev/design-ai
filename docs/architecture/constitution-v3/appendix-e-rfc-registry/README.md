@@ -104,5 +104,14 @@ Constitution RFCs:
 | RFC-1508 | 15 | [../volume-15-commercial-scheduler/part-01/RFC-1508.md](../volume-15-commercial-scheduler/part-01/RFC-1508.md) |
 | RFC-1509 | 15 | [../volume-15-commercial-scheduler/part-01/RFC-1509.md](../volume-15-commercial-scheduler/part-01/RFC-1509.md) |
 | RFC-1510 | 15 | [../volume-15-commercial-scheduler/part-01/RFC-1510.md](../volume-15-commercial-scheduler/part-01/RFC-1510.md) |
+| RFC-1600 | 16 | [../volume-16-daos-kernel-specification/part-01/RFC-1600.md](../volume-16-daos-kernel-specification/part-01/RFC-1600.md) |
+| RFC-1601 | 16 | [../volume-16-daos-kernel-specification/part-01/RFC-1601.md](../volume-16-daos-kernel-specification/part-01/RFC-1601.md) |
+| RFC-1602 | 16 | [../volume-16-daos-kernel-specification/part-01/RFC-1602.md](../volume-16-daos-kernel-specification/part-01/RFC-1602.md) |
+| RFC-1603 | 16 | [../volume-16-daos-kernel-specification/part-01/RFC-1603.md](../volume-16-daos-kernel-specification/part-01/RFC-1603.md) |
+| RFC-1604 | 16 | [../volume-16-daos-kernel-specification/part-01/RFC-1604.md](../volume-16-daos-kernel-specification/part-01/RFC-1604.md) |
+| RFC-1605 | 16 | [../volume-16-daos-kernel-specification/part-01/RFC-1605.md](../volume-16-daos-kernel-specification/part-01/RFC-1605.md) |
+| RFC-1606 | 16 | [../volume-16-daos-kernel-specification/part-01/RFC-1606.md](../volume-16-daos-kernel-specification/part-01/RFC-1606.md) |
+| RFC-1607 | 16 | [../volume-16-daos-kernel-specification/part-01/RFC-1607.md](../volume-16-daos-kernel-specification/part-01/RFC-1607.md) |
+| RFC-1608 | 16 | [../volume-16-daos-kernel-specification/part-01/RFC-1608.md](../volume-16-daos-kernel-specification/part-01/RFC-1608.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)

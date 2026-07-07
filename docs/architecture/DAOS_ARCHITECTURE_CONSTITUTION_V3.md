@@ -34,13 +34,14 @@
 | 13 | DAOS Protocol Language (DPL) | [volume-13-daos-protocol-language](./constitution-v3/volume-13-daos-protocol-language/) | canonical |
 | 14 | Commercial Instruction Set Architecture (CISA) | [volume-14-commercial-instruction-set-architecture](./constitution-v3/volume-14-commercial-instruction-set-architecture/) | canonical |
 | 15 | Commercial Scheduler | [volume-15-commercial-scheduler](./constitution-v3/volume-15-commercial-scheduler/) | canonical |
-| 16 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
-| 17 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
+| 16 | DAOS Kernel Specification | [volume-16-daos-kernel-specification](./constitution-v3/volume-16-daos-kernel-specification/) | canonical |
+| 17 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
+| 18 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
 | — | Agent Communication Protocol | [volume-11-agent-communication-protocol](./constitution-v3/volume-11-agent-communication-protocol/) | superseded → Vol 7 / 13 |
-| 18 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
-| 19 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
-| 20 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
-| 21 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
+| 19 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
+| 20 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
+| 21 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
+| 22 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
 
 ## Appendices
 
@@ -679,3 +680,41 @@ Dependency-driven pipeline coordination: DAG execution, cache reuse, invalidatio
 | RFC-1510 | Commercial Integrity |
 
 **END OF VOLUME 15** (content in [part-01/](./constitution-v3/volume-15-commercial-scheduler/part-01/))
+
+---
+
+# Volume 16 — DAOS Kernel Specification
+
+**Architecture status:** Canonical · **Layer:** Kernel · **Kernel version:** 1.0 · **Normative:** Mandatory
+
+Immutable execution core: lifecycle, protocol validation, scheduling, event bus, security, API, boot/shutdown, and determinism.
+
+→ Full text: [constitution-v3/volume-16-daos-kernel-specification/part-01/](./constitution-v3/volume-16-daos-kernel-specification/part-01/)
+
+| Spec / RFC | Title |
+|------------|-------|
+| RFC-1600 | DAOS Kernel |
+| RFC-1601 | Kernel Responsibilities |
+| SPEC-1600 | Kernel Layers |
+| SPEC-1601 | Kernel Components |
+| RFC-1602 | Kernel Ownership |
+| SPEC-1602 | Lifecycle Manager |
+| SPEC-1603 | Protocol Validator |
+| SPEC-1604 | State Manager |
+| SPEC-1605 | Dependency Engine |
+| SPEC-1606 | Scheduler |
+| SPEC-1607 | Event Bus |
+| RFC-1603 | Security Model |
+| SPEC-1608 | Object Registry |
+| SPEC-1609 | Compatibility Manager |
+| RFC-1604 | Runtime Isolation |
+| SPEC-1610 | Diagnostics Manager |
+| RFC-1605 | Kernel API |
+| SPEC-1611 | Kernel Invariants |
+| RFC-1606 | Kernel Extension Policy |
+| SPEC-1612 | Kernel Boot Sequence |
+| RFC-1607 | Kernel Shutdown |
+| SPEC-1613 | Kernel Audit |
+| RFC-1608 | Kernel Determinism |
+
+**END OF VOLUME 16** (content in [part-01/](./constitution-v3/volume-16-daos-kernel-specification/part-01/))
