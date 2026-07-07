@@ -44,13 +44,14 @@
 | 23 | Commercial Knowledge Ontology | [volume-23-commercial-knowledge-ontology](./constitution-v3/volume-23-commercial-knowledge-ontology/) | canonical |
 | 24 | Knowledge Resolution Engine | [volume-24-knowledge-resolution-engine](./constitution-v3/volume-24-knowledge-resolution-engine/) | canonical |
 | 25 | Generation Context Model | [volume-25-generation-context-model](./constitution-v3/volume-25-generation-context-model/) | canonical |
-| 26 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
-| 27 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
+| 26 | Metric Registry | [volume-26-metric-registry](./constitution-v3/volume-26-metric-registry/) | canonical |
+| 27 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
+| 28 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
 | — | Agent Communication Protocol | [volume-11-agent-communication-protocol](./constitution-v3/volume-11-agent-communication-protocol/) | superseded → Vol 7 / 13 |
-| 28 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
-| 29 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
-| 30 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
-| 31 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
+| 29 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
+| 30 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
+| 31 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
+| 32 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
 
 ## Appendices
 
@@ -1063,3 +1064,36 @@ Canonical immutable GenerationContext as SSOT for one commercial generation: pro
 | RFC-2508 | Context Principle |
 
 **END OF VOLUME 25** (content in [part-01/](./constitution-v3/volume-25-generation-context-model/part-01/))
+
+---
+
+# Volume 26 — Metric Registry
+
+**Architecture status:** Canonical · **Layer:** Metric Governance · **Normative:** Mandatory · **Audit source:** DAOS Architecture Audit 2026
+
+Canonical source of truth for every measurable value: one metric, one formula, one owner, many consumers. Global registration, provenance, lifecycle, versioning, resolution by MetricID, and audit before benchmark certification.
+
+→ Full text: [constitution-v3/volume-26-metric-registry/part-01/](./constitution-v3/volume-26-metric-registry/part-01/)
+
+| Spec / RFC | Title |
+|------------|-------|
+| RFC-2600 | Purpose |
+| RFC-2601 | Canonical Metric Registry |
+| RFC-2602 | Metric Ownership |
+| RFC-2603 | Metric Identity |
+| SPEC-2600 | Metric Formula |
+| SPEC-2601 | Metric Unit |
+| SPEC-2602 | Metric Dependencies |
+| SPEC-2603 | Metric Consumers |
+| SPEC-2604 | Metric Lifecycle |
+| SPEC-2605 | Metric Versioning |
+| RFC-2604 | Metric Calculation |
+| RFC-2605 | Metric Provenance |
+| RFC-2606 | Metric Mutability |
+| RFC-2607 | Metric Validation |
+| RFC-2608 | Metric Resolution |
+| RFC-2609 | Metric Audit |
+| RFC-2610 | Metric Integrity |
+| RFC-2611 | Metric Principle |
+
+**END OF VOLUME 26** (content in [part-01/](./constitution-v3/volume-26-metric-registry/part-01/))

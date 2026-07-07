@@ -213,5 +213,17 @@ Constitution RFCs:
 | RFC-2506 | 25 | [../volume-25-generation-context-model/part-01/RFC-2506.md](../volume-25-generation-context-model/part-01/RFC-2506.md) |
 | RFC-2507 | 25 | [../volume-25-generation-context-model/part-01/RFC-2507.md](../volume-25-generation-context-model/part-01/RFC-2507.md) |
 | RFC-2508 | 25 | [../volume-25-generation-context-model/part-01/RFC-2508.md](../volume-25-generation-context-model/part-01/RFC-2508.md) |
+| RFC-2600 | 26 | [../volume-26-metric-registry/part-01/RFC-2600.md](../volume-26-metric-registry/part-01/RFC-2600.md) |
+| RFC-2601 | 26 | [../volume-26-metric-registry/part-01/RFC-2601.md](../volume-26-metric-registry/part-01/RFC-2601.md) |
+| RFC-2602 | 26 | [../volume-26-metric-registry/part-01/RFC-2602.md](../volume-26-metric-registry/part-01/RFC-2602.md) |
+| RFC-2603 | 26 | [../volume-26-metric-registry/part-01/RFC-2603.md](../volume-26-metric-registry/part-01/RFC-2603.md) |
+| RFC-2604 | 26 | [../volume-26-metric-registry/part-01/RFC-2604.md](../volume-26-metric-registry/part-01/RFC-2604.md) |
+| RFC-2605 | 26 | [../volume-26-metric-registry/part-01/RFC-2605.md](../volume-26-metric-registry/part-01/RFC-2605.md) |
+| RFC-2606 | 26 | [../volume-26-metric-registry/part-01/RFC-2606.md](../volume-26-metric-registry/part-01/RFC-2606.md) |
+| RFC-2607 | 26 | [../volume-26-metric-registry/part-01/RFC-2607.md](../volume-26-metric-registry/part-01/RFC-2607.md) |
+| RFC-2608 | 26 | [../volume-26-metric-registry/part-01/RFC-2608.md](../volume-26-metric-registry/part-01/RFC-2608.md) |
+| RFC-2609 | 26 | [../volume-26-metric-registry/part-01/RFC-2609.md](../volume-26-metric-registry/part-01/RFC-2609.md) |
+| RFC-2610 | 26 | [../volume-26-metric-registry/part-01/RFC-2610.md](../volume-26-metric-registry/part-01/RFC-2610.md) |
+| RFC-2611 | 26 | [../volume-26-metric-registry/part-01/RFC-2611.md](../volume-26-metric-registry/part-01/RFC-2611.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)
