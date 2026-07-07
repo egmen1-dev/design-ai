@@ -1,0 +1,11 @@
+id: KB_HERO_DOMINANCE
+type: KnowledgeRule
+status: experimental
+confidence: 0.88
+domain: geometry
+statement: "Commercial hero product area ratio should be >= 0.32 for marketplace wide products."
+evidence_refs:
+  - STAGE_4_2_LAW003_V2
+vocabulary_actions:
+  - increase_product_target_area
+  - apply_wide_product_template
