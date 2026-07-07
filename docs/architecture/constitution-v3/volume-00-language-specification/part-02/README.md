@@ -1,7 +1,7 @@
-# Volume 0 — Part 2 (pending)
+# Volume 0 — Part 2 — DAOS Protocol
 
-Message envelope, Finding, Proposal, Decision, vocabulary, agent rules, core contracts.
+RFC-001, SPEC-005 through SPEC-018, RFC-002.
 
-Draft fragments from earlier constitution iteration may land in [appendix-b-message-contracts](../../appendix-b-message-contracts/).
+**Status:** Draft
 
-**Status:** pending
+**END OF VOLUME 0 — PART 2**

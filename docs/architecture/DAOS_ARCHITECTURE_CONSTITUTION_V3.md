@@ -18,7 +18,7 @@
 
 | Volume | Title | Path | Status |
 |--------|-------|------|--------|
-| 0 | DAOS Language Specification | [volume-00-language-specification](./constitution-v3/volume-00-language-specification/) | Part 1 draft |
+| 0 | DAOS Language Specification | [volume-00-language-specification](./constitution-v3/volume-00-language-specification/) | Part 1–2 draft |
 | 1 | Core Architecture | [volume-01-core-architecture](./constitution-v3/volume-01-core-architecture/) | pending |
 | 2 | Research System | [volume-02-research-system](./constitution-v3/volume-02-research-system/) | pending |
 | 3 | Commercial Knowledge Engine | [volume-03-commercial-knowledge-engine](./constitution-v3/volume-03-commercial-knowledge-engine/) | pending |
@@ -68,4 +68,33 @@ Part 1 defines system identity, architectural philosophy, core layers, sources o
 | SPEC-003 | Single Sources Of Truth |
 | SPEC-004 | Layer Responsibilities |
 
-**END OF VOLUME 0 — PART 1** (content in part-01 folder)
+**END OF VOLUME 0 — PART 1** (content in [part-01/](./constitution-v3/volume-00-language-specification/part-01/))
+
+---
+
+# Volume 0 — DAOS Protocol (Part 2)
+
+Part 2 defines DAOS Protocol: communication principles, flow, message envelope, object types, Finding through LearningEvent, and protocol restrictions.
+
+→ Full text: [constitution-v3/volume-00-language-specification/part-02/](./constitution-v3/volume-00-language-specification/part-02/)
+
+| Spec / RFC | Title |
+|------------|-------|
+| RFC-001 | DAOS Protocol |
+| SPEC-005 | Communication Principles |
+| SPEC-006 | Communication Flow |
+| SPEC-007 | Message Envelope |
+| SPEC-008 | Supported Object Types |
+| SPEC-009 | Finding |
+| SPEC-010 | Proposal |
+| SPEC-011 | Decision |
+| SPEC-012 | Constraint |
+| SPEC-013 | Scene Mutation |
+| SPEC-014 | Evidence |
+| SPEC-015 | Experiment |
+| SPEC-016 | Knowledge Rule |
+| SPEC-017 | Learning Event |
+| SPEC-018 | Protocol Restrictions |
+| RFC-002 | Agent Communication Contract |
+
+**END OF VOLUME 0 — PART 2** (content in [part-02/](./constitution-v3/volume-00-language-specification/part-02/))
