@@ -268,5 +268,23 @@ Constitution RFCs:
 | RFC-2913 | 29 | [../volume-29-platform-quality-governance/part-01/RFC-2913.md](../volume-29-platform-quality-governance/part-01/RFC-2913.md) |
 | RFC-2914 | 29 | [../volume-29-platform-quality-governance/part-01/RFC-2914.md](../volume-29-platform-quality-governance/part-01/RFC-2914.md) |
 | RFC-2915 | 29 | [../volume-29-platform-quality-governance/part-01/RFC-2915.md](../volume-29-platform-quality-governance/part-01/RFC-2915.md) |
+| RFC-3000 | 30 | [../volume-30-research-governance/part-01/RFC-3000.md](../volume-30-research-governance/part-01/RFC-3000.md) |
+| RFC-3001 | 30 | [../volume-30-research-governance/part-01/RFC-3001.md](../volume-30-research-governance/part-01/RFC-3001.md) |
+| RFC-3002 | 30 | [../volume-30-research-governance/part-01/RFC-3002.md](../volume-30-research-governance/part-01/RFC-3002.md) |
+| RFC-3003 | 30 | [../volume-30-research-governance/part-01/RFC-3003.md](../volume-30-research-governance/part-01/RFC-3003.md) |
+| RFC-3004 | 30 | [../volume-30-research-governance/part-01/RFC-3004.md](../volume-30-research-governance/part-01/RFC-3004.md) |
+| RFC-3005 | 30 | [../volume-30-research-governance/part-01/RFC-3005.md](../volume-30-research-governance/part-01/RFC-3005.md) |
+| RFC-3006 | 30 | [../volume-30-research-governance/part-01/RFC-3006.md](../volume-30-research-governance/part-01/RFC-3006.md) |
+| RFC-3007 | 30 | [../volume-30-research-governance/part-01/RFC-3007.md](../volume-30-research-governance/part-01/RFC-3007.md) |
+| RFC-3008 | 30 | [../volume-30-research-governance/part-01/RFC-3008.md](../volume-30-research-governance/part-01/RFC-3008.md) |
+| RFC-3009 | 30 | [../volume-30-research-governance/part-01/RFC-3009.md](../volume-30-research-governance/part-01/RFC-3009.md) |
+| RFC-3010 | 30 | [../volume-30-research-governance/part-01/RFC-3010.md](../volume-30-research-governance/part-01/RFC-3010.md) |
+| RFC-3011 | 30 | [../volume-30-research-governance/part-01/RFC-3011.md](../volume-30-research-governance/part-01/RFC-3011.md) |
+| RFC-3012 | 30 | [../volume-30-research-governance/part-01/RFC-3012.md](../volume-30-research-governance/part-01/RFC-3012.md) |
+| RFC-3013 | 30 | [../volume-30-research-governance/part-01/RFC-3013.md](../volume-30-research-governance/part-01/RFC-3013.md) |
+| RFC-3014 | 30 | [../volume-30-research-governance/part-01/RFC-3014.md](../volume-30-research-governance/part-01/RFC-3014.md) |
+| RFC-3015 | 30 | [../volume-30-research-governance/part-01/RFC-3015.md](../volume-30-research-governance/part-01/RFC-3015.md) |
+| RFC-3016 | 30 | [../volume-30-research-governance/part-01/RFC-3016.md](../volume-30-research-governance/part-01/RFC-3016.md) |
+| RFC-3017 | 30 | [../volume-30-research-governance/part-01/RFC-3017.md](../volume-30-research-governance/part-01/RFC-3017.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)

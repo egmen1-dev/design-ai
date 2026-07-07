@@ -48,13 +48,14 @@
 | 27 | Canonical Object Registry | [volume-27-canonical-object-registry](./constitution-v3/volume-27-canonical-object-registry/) | canonical |
 | 28 | Feature Flag Governance | [volume-28-feature-flag-governance](./constitution-v3/volume-28-feature-flag-governance/) | canonical |
 | 29 | Platform Quality Governance | [volume-29-platform-quality-governance](./constitution-v3/volume-29-platform-quality-governance/) | canonical |
-| 30 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
-| 31 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
+| 30 | Research Governance | [volume-30-research-governance](./constitution-v3/volume-30-research-governance/) | canonical |
+| 31 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
+| 32 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
 | — | Agent Communication Protocol | [volume-11-agent-communication-protocol](./constitution-v3/volume-11-agent-communication-protocol/) | superseded → Vol 7 / 13 |
-| 32 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
-| 33 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
-| 34 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
-| 35 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
+| 33 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
+| 34 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
+| 35 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
+| 36 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
 
 ## Appendices
 
@@ -1194,3 +1195,36 @@ Unified deterministic quality pipeline: implementation → tests → architectur
 | RFC-2915 | Quality Principle |
 
 **END OF VOLUME 29** (content in [part-01/](./constitution-v3/volume-29-platform-quality-governance/part-01/))
+
+---
+
+# Volume 30 — Research Governance
+
+**Architecture status:** Canonical · **Layer:** Research Governance · **Normative:** Mandatory · **Audit source:** DAOS Architecture Audit 2026
+
+Canonical process for producing trusted commercial knowledge: observation → hypothesis → experiment → evidence → replication → cross-category validation → Knowledge Candidate → benchmark → Commercial Genome promotion. Failed research yields AntiRule candidates.
+
+→ Full text: [constitution-v3/volume-30-research-governance/part-01/](./constitution-v3/volume-30-research-governance/part-01/)
+
+| RFC | Title |
+|-----|-------|
+| RFC-3000 | Purpose |
+| RFC-3001 | Research Pipeline |
+| RFC-3002 | Observation |
+| RFC-3003 | Hypothesis |
+| RFC-3004 | Experiment Design |
+| RFC-3005 | Execution |
+| RFC-3006 | Evidence Collection |
+| RFC-3007 | Replication |
+| RFC-3008 | Cross-category Validation |
+| RFC-3009 | Knowledge Candidate |
+| RFC-3010 | Benchmark Validation |
+| RFC-3011 | Promotion Decision |
+| RFC-3012 | Research Traceability |
+| RFC-3013 | Research Versioning |
+| RFC-3014 | Research Integrity |
+| RFC-3015 | Research Diagnostics |
+| RFC-3016 | Failed Research |
+| RFC-3017 | Research Principle |
+
+**END OF VOLUME 30** (content in [part-01/](./constitution-v3/volume-30-research-governance/part-01/))
