@@ -1,0 +1,388 @@
+{
+  "createdAt": "2026-07-07T10:50:09.980Z",
+  "results": [
+    {
+      "product": {
+        "id": "cordless-drill",
+        "name": "Cordless Drill",
+        "category": "electronics",
+        "complexity": "medium",
+        "prompt": "Профессиональная аккумуляторная дрель 18V для Wildberries: мощный крутящий момент 65 Нм, эргономичная рукоятка, премиальная карточка товара",
+        "image": {
+          "background": "#d2372d",
+          "accent": "#333333",
+          "shape": "drill"
+        }
+      },
+      "seed": "daos-benchmark-phase1-20260706:cordless-drill",
+      "arm": "daos",
+      "productId": "cordless-drill",
+      "productName": "Cordless Drill",
+      "imageId": "cmraj1t6m0003js44jcdqjuo8",
+      "generationTimeMs": 6447,
+      "meaningLossCount": 2,
+      "meaningLossCodes": [
+        "MODULES_IGNORED",
+        "DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES"
+      ],
+      "modulesIgnored": [
+        "layout_coordinates",
+        "hierarchy",
+        "typography_zones",
+        "ctr_wording"
+      ],
+      "modulesCompiled": [
+        "layout_coordinates",
+        "hierarchy",
+        "typography_zones",
+        "ctr_wording"
+      ],
+      "modulesStillIgnored": [],
+      "backgroundHash": "09c7ea087037fedaeb82d7e03508df1f",
+      "finalImageHash": "b8ef489e44cf307c3b8a5a408d5b48e5",
+      "projectId": "7a77aad1-f07b-448a-99d0-76d85c04d833",
+      "runId": "b5fd2f4f-a6c1-43d0-bd3f-b495bf41f30c",
+      "summaryScore": 78,
+      "finalGateStatus": "warning",
+      "finalGateScore": 78,
+      "promptLength": 895,
+      "provider": "pollinations",
+      "model": "flux",
+      "latencyMs": 452,
+      "fallbackUsed": false,
+      "composerQualityScore": 93,
+      "productAreaRatio": 0.3924666666666667,
+      "finalCompositionRisk": 0.16499999999999998,
+      "overlayQualityScore": 48,
+      "overlayDensity": 0.12164331130879999,
+      "pngOverlayFeelRisk": 0.9,
+      "law003WhitespaceViolation": false,
+      "law014ContrastViolation": false,
+      "productScaleScore": 77,
+      "productDominanceScore": 93,
+      "emptySpaceEstimate": 0.29,
+      "sceneFillRisk": 0.05177999999999999,
+      "compositeProductAreaRatio": 0.3924666666666667,
+      "compositeProductWidthRatio": 0.6766666666666666,
+      "compositeProductHeightRatio": 0.58,
+      "extractAreaCorrected": true,
+      "compositePlacementFound": true,
+      "law003Before": true,
+      "law003After": false,
+      "law003StaleMetricDetected": true,
+      "law003GovernanceSource": "daos_recalibrated",
+      "law003SoftResolved": true,
+      "overlayGateStatus": "failed",
+      "overlayGateScore": 48,
+      "targetUnreachable": true,
+      "aspectRatioPlacementPatchApplied": false,
+      "fitStrategy": "fit-height",
+      "whitespacePrimaryCause": "metric_mismatch",
+      "whitespaceSecondaryCauses": [
+        "background_too_empty"
+      ],
+      "whitespaceRecommendations": [
+        "Review LAW_003 whitespace formula — product and overlay look adequate but estimated whitespace still fails",
+        "Reduce background empty area with tighter crop, content fill, or scene props"
+      ],
+      "heroTextRatio": 7.536120122544953,
+      "estimatedWhitespace": 48.58533983038888,
+      "whitespaceConfidence": 0.95
+    },
+    {
+      "product": {
+        "id": "electric-kettle",
+        "name": "Electric Kettle",
+        "category": "kitchen",
+        "complexity": "low",
+        "prompt": "Электрический чайник 1.7 л для Wildberries: премиальная кухонная карточка товара",
+        "image": {
+          "background": "#e8f4f8",
+          "accent": "#c0c0c0",
+          "shape": "kettle"
+        }
+      },
+      "seed": "daos-benchmark-phase1-20260706:electric-kettle",
+      "arm": "daos",
+      "productId": "electric-kettle",
+      "productName": "Electric Kettle",
+      "imageId": "cmraj1xxl0007js44q0mtblj7",
+      "generationTimeMs": 6132,
+      "meaningLossCount": 2,
+      "meaningLossCodes": [
+        "MODULES_IGNORED",
+        "DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES"
+      ],
+      "modulesIgnored": [
+        "layout_coordinates",
+        "hierarchy",
+        "typography_zones",
+        "ctr_wording"
+      ],
+      "modulesCompiled": [
+        "layout_coordinates",
+        "hierarchy",
+        "typography_zones",
+        "ctr_wording"
+      ],
+      "modulesStillIgnored": [],
+      "backgroundHash": "13da5f7cb08889f198b638efb9ac7faa",
+      "finalImageHash": "70c4bb0268f2bbf343d12ab3db322e52",
+      "projectId": "18baa55d-cf3f-4b36-9674-0b7cb2689a0b",
+      "runId": "d0710048-9c4b-455c-9ebd-22b92be446df",
+      "summaryScore": 78,
+      "finalGateStatus": "warning",
+      "finalGateScore": 78,
+      "promptLength": 848,
+      "provider": "pollinations",
+      "model": "flux",
+      "latencyMs": 422,
+      "fallbackUsed": false,
+      "composerQualityScore": 93,
+      "productAreaRatio": 0.4348537037037037,
+      "finalCompositionRisk": 0.16499999999999998,
+      "overlayQualityScore": 78,
+      "overlayDensity": 0.1104,
+      "pngOverlayFeelRisk": 0.2,
+      "law003WhitespaceViolation": false,
+      "law014ContrastViolation": false,
+      "productScaleScore": 89,
+      "productDominanceScore": 98,
+      "emptySpaceEstimate": 0.29,
+      "sceneFillRisk": 0.013631666666666693,
+      "compositeProductAreaRatio": 0.4348537037037037,
+      "compositeProductWidthRatio": 0.7177777777777777,
+      "compositeProductHeightRatio": 0.6058333333333333,
+      "extractAreaCorrected": true,
+      "compositePlacementFound": true,
+      "law003Before": true,
+      "law003After": false,
+      "law003StaleMetricDetected": true,
+      "law003GovernanceSource": "daos_recalibrated",
+      "law003SoftResolved": true,
+      "overlayGateStatus": "warning",
+      "overlayGateScore": 78,
+      "targetUnreachable": true,
+      "aspectRatioPlacementPatchApplied": false,
+      "fitStrategy": "fit-height",
+      "whitespacePrimaryCause": "metric_mismatch",
+      "whitespaceSecondaryCauses": [],
+      "whitespaceRecommendations": [
+        "Review LAW_003 whitespace formula — product and overlay look adequate but estimated whitespace still fails"
+      ],
+      "heroTextRatio": 6.933735795454546,
+      "estimatedWhitespace": 36.56765022638889,
+      "whitespaceConfidence": 0.95
+    },
+    {
+      "product": {
+        "id": "office-chair",
+        "name": "Office Chair",
+        "category": "furniture",
+        "complexity": "high",
+        "prompt": "Эргономичное офисное кресло для Wildberries: регулировка поясницы, дышащая сетка, премиальная карточка мебели",
+        "image": {
+          "background": "#2c3e50",
+          "accent": "#1a252f",
+          "shape": "chair"
+        }
+      },
+      "seed": "daos-benchmark-phase1-20260706:office-chair",
+      "productId": "office-chair",
+      "productName": "Office Chair",
+      "error": "["
+    },
+    {
+      "product": {
+        "id": "mattress",
+        "name": "Mattress",
+        "category": "home",
+        "complexity": "medium",
+        "prompt": "Ортопедический матрас 160x200 для Wildberries: независимые пружины, средняя жёсткость, премиальная карточка для сна",
+        "image": {
+          "background": "#f5f0e8",
+          "accent": "#d4c4b0",
+          "shape": "mattress"
+        }
+      },
+      "seed": "daos-benchmark-phase1-20260706:mattress",
+      "arm": "daos",
+      "productId": "mattress",
+      "productName": "Mattress",
+      "imageId": "cmraj22fv000cjs44j6o79b45",
+      "generationTimeMs": 5724,
+      "meaningLossCount": 3,
+      "meaningLossCodes": [
+        "VISUAL_TO_RENDER_STRATEGY_MISMATCH",
+        "MODULES_IGNORED",
+        "DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES"
+      ],
+      "modulesIgnored": [
+        "layout_coordinates",
+        "hierarchy",
+        "typography_zones",
+        "ctr_wording"
+      ],
+      "modulesCompiled": [
+        "layout_coordinates",
+        "hierarchy",
+        "typography_zones",
+        "ctr_wording"
+      ],
+      "modulesStillIgnored": [],
+      "backgroundHash": "dc4677839ce8df0dbe67916ace4d1ed2",
+      "finalImageHash": "907ffc9e474796b2228b1611ca65869c",
+      "projectId": "2a976d3c-26e2-45b0-8646-e857a668f199",
+      "runId": "a06b7161-4f54-435c-9f10-c9a195274bac",
+      "summaryScore": 73,
+      "finalGateStatus": "warning",
+      "finalGateScore": 73,
+      "promptLength": 892,
+      "provider": "pollinations",
+      "model": "flux",
+      "latencyMs": 524,
+      "fallbackUsed": false,
+      "composerQualityScore": 72,
+      "productAreaRatio": 0.19466666666666665,
+      "finalCompositionRisk": 0.21300000000000002,
+      "overlayQualityScore": 57,
+      "overlayDensity": 0.3896,
+      "pngOverlayFeelRisk": 0.1,
+      "law003WhitespaceViolation": true,
+      "law014ContrastViolation": false,
+      "productScaleScore": 17,
+      "productDominanceScore": 57,
+      "emptySpaceEstimate": 0.223848,
+      "sceneFillRisk": 0.22980000000000003,
+      "compositeProductAreaRatio": 0.19466666666666665,
+      "compositeProductWidthRatio": 0.8,
+      "compositeProductHeightRatio": 0.24333333333333335,
+      "extractAreaCorrected": true,
+      "compositePlacementFound": true,
+      "law003Before": true,
+      "law003After": true,
+      "law003StaleMetricDetected": false,
+      "law003GovernanceSource": "daos_recalibrated",
+      "law003SoftResolved": false,
+      "overlayGateStatus": "failed",
+      "overlayGateScore": 57,
+      "targetUnreachable": true,
+      "aspectRatioPlacementPatchApplied": true,
+      "fitStrategy": "fit-width",
+      "whitespacePrimaryCause": "wide_product_geometry_limit",
+      "whitespaceSecondaryCauses": [
+        "hero_text_ratio_low",
+        "background_too_empty"
+      ],
+      "whitespaceRecommendations": [
+        "Use wide-product layout template; avoid hero scale patch for wide geometry",
+        "Reduce background empty area with tighter crop, content fill, or scene props",
+        "Apply wide-product typography band; do not compensate with hero scale patch"
+      ],
+      "heroTextRatio": 1.1056979405034324,
+      "estimatedWhitespace": 61.28077313341667,
+      "whitespaceConfidence": 0.95
+    },
+    {
+      "product": {
+        "id": "childrens-toy",
+        "name": "Children's Toy",
+        "category": "toys",
+        "complexity": "low",
+        "prompt": "Развивающая игрушка для детей 3+ для Wildberries: яркий дизайн, безопасные материалы, привлекательная детская карточка",
+        "image": {
+          "background": "#ffcc00",
+          "accent": "#ff6699",
+          "shape": "toy"
+        }
+      },
+      "seed": "daos-benchmark-phase1-20260706:childrens-toy",
+      "arm": "daos",
+      "productId": "childrens-toy",
+      "productName": "Children's Toy",
+      "imageId": "cmraj26xx000gjs44kr5i87g3",
+      "generationTimeMs": 5811,
+      "meaningLossCount": 3,
+      "meaningLossCodes": [
+        "VISUAL_TO_RENDER_STRATEGY_MISMATCH",
+        "MODULES_IGNORED",
+        "DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES"
+      ],
+      "modulesIgnored": [
+        "layout_coordinates",
+        "hierarchy",
+        "typography_zones",
+        "ctr_wording"
+      ],
+      "modulesCompiled": [
+        "layout_coordinates",
+        "hierarchy",
+        "typography_zones",
+        "ctr_wording"
+      ],
+      "modulesStillIgnored": [],
+      "backgroundHash": "991a1b6b06a97b32a78cb36dfd4c47ea",
+      "finalImageHash": "f733c0caceb50eee9eb367f0aad6cb23",
+      "projectId": "40059710-1191-44d8-ae22-bce941dd1bdd",
+      "runId": "ae1f8574-2061-4f65-9b75-c3e9e17ba9f6",
+      "summaryScore": 73,
+      "finalGateStatus": "warning",
+      "finalGateScore": 73,
+      "promptLength": 869,
+      "provider": "pollinations",
+      "model": "flux",
+      "latencyMs": 456,
+      "fallbackUsed": false,
+      "composerQualityScore": 75,
+      "productAreaRatio": 0.3468,
+      "finalCompositionRisk": 0.16499999999999998,
+      "overlayQualityScore": 47,
+      "overlayDensity": 0.09309695999999999,
+      "pngOverlayFeelRisk": 0.2,
+      "law003WhitespaceViolation": true,
+      "law014ContrastViolation": false,
+      "productScaleScore": 66,
+      "productDominanceScore": 88,
+      "emptySpaceEstimate": 0.29,
+      "sceneFillRisk": 0.09288000000000002,
+      "compositeProductAreaRatio": 0.3468,
+      "compositeProductWidthRatio": 0.68,
+      "compositeProductHeightRatio": 0.51,
+      "extractAreaCorrected": true,
+      "compositePlacementFound": true,
+      "law003Before": true,
+      "law003After": true,
+      "law003StaleMetricDetected": true,
+      "law003GovernanceSource": "daos_recalibrated",
+      "law003SoftResolved": false,
+      "overlayGateStatus": "failed",
+      "overlayGateScore": 47,
+      "targetUnreachable": true,
+      "aspectRatioPlacementPatchApplied": false,
+      "fitStrategy": "fit-height",
+      "whitespacePrimaryCause": "metric_mismatch",
+      "whitespaceSecondaryCauses": [
+        "overlay_too_small",
+        "background_too_empty"
+      ],
+      "whitespaceRecommendations": [
+        "Review LAW_003 whitespace formula — product and overlay look adequate but estimated whitespace still fails",
+        "Add overlay elements or increase typography/badge footprint to reduce empty canvas",
+        "Reduce background empty area with tighter crop, content fill, or scene props"
+      ],
+      "heroTextRatio": 8.203100079744818,
+      "estimatedWhitespace": 62.866768358222224,
+      "whitespaceConfidence": 0.95
+    }
+  ],
+  "aggregate": {
+    "sampleCount": 4,
+    "primaryCauseCounts": {
+      "metric_mismatch": 3,
+      "wide_product_geometry_limit": 1
+    },
+    "avgProductAreaRatio": 0.3421967592592593,
+    "avgOverlayDensity": 0.1786850678272,
+    "avgHeroTextRatio": 5.9446634845619375
+  }
+}
