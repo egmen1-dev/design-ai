@@ -191,5 +191,12 @@ Constitution RFCs:
 | RFC-2203 | 22 | [../volume-22-commercial-genome-lifecycle/part-01/RFC-2203.md](../volume-22-commercial-genome-lifecycle/part-01/RFC-2203.md) |
 | RFC-2204 | 22 | [../volume-22-commercial-genome-lifecycle/part-01/RFC-2204.md](../volume-22-commercial-genome-lifecycle/part-01/RFC-2204.md) |
 | RFC-2205 | 22 | [../volume-22-commercial-genome-lifecycle/part-01/RFC-2205.md](../volume-22-commercial-genome-lifecycle/part-01/RFC-2205.md) |
+| RFC-2300 | 23 | [../volume-23-commercial-knowledge-ontology/part-01/RFC-2300.md](../volume-23-commercial-knowledge-ontology/part-01/RFC-2300.md) |
+| RFC-2301 | 23 | [../volume-23-commercial-knowledge-ontology/part-01/RFC-2301.md](../volume-23-commercial-knowledge-ontology/part-01/RFC-2301.md) |
+| RFC-2302 | 23 | [../volume-23-commercial-knowledge-ontology/part-01/RFC-2302.md](../volume-23-commercial-knowledge-ontology/part-01/RFC-2302.md) |
+| RFC-2303 | 23 | [../volume-23-commercial-knowledge-ontology/part-01/RFC-2303.md](../volume-23-commercial-knowledge-ontology/part-01/RFC-2303.md) |
+| RFC-2304 | 23 | [../volume-23-commercial-knowledge-ontology/part-01/RFC-2304.md](../volume-23-commercial-knowledge-ontology/part-01/RFC-2304.md) |
+| RFC-2305 | 23 | [../volume-23-commercial-knowledge-ontology/part-01/RFC-2305.md](../volume-23-commercial-knowledge-ontology/part-01/RFC-2305.md) |
+| RFC-2306 | 23 | [../volume-23-commercial-knowledge-ontology/part-01/RFC-2306.md](../volume-23-commercial-knowledge-ontology/part-01/RFC-2306.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)

@@ -41,13 +41,14 @@
 | 20 | Platform Evolution Model | [volume-20-platform-evolution-model](./constitution-v3/volume-20-platform-evolution-model/) | canonical |
 | 21 | Architectural Debt Prevention | [volume-21-architectural-debt-prevention](./constitution-v3/volume-21-architectural-debt-prevention/) | canonical |
 | 22 | Commercial Genome Lifecycle | [volume-22-commercial-genome-lifecycle](./constitution-v3/volume-22-commercial-genome-lifecycle/) | canonical |
-| 23 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
-| 24 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
+| 23 | Commercial Knowledge Ontology | [volume-23-commercial-knowledge-ontology](./constitution-v3/volume-23-commercial-knowledge-ontology/) | canonical |
+| 24 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
+| 25 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
 | — | Agent Communication Protocol | [volume-11-agent-communication-protocol](./constitution-v3/volume-11-agent-communication-protocol/) | superseded → Vol 7 / 13 |
-| 25 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
-| 26 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
-| 27 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
-| 28 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
+| 26 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
+| 27 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
+| 28 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
+| 29 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
 
 ## Appendices
 
@@ -947,3 +948,43 @@ Lifecycle-managed Commercial Genome: object types, states, promotion, confidence
 | RFC-2205 | Commercial Genome Principle |
 
 **END OF VOLUME 22** (content in [part-01/](./constitution-v3/volume-22-commercial-genome-lifecycle/part-01/))
+
+---
+
+# Volume 23 — Commercial Knowledge Ontology
+
+**Architecture status:** Canonical · **Layer:** Commercial Knowledge Model · **Normative:** Mandatory · **Audit source:** DAOS Architecture Audit 2026
+
+Typed commercial knowledge ontology: canonical object hierarchy, semantics per type, explicit relationships, knowledge graph, priority resolution, and EKB integration.
+
+→ Full text: [constitution-v3/volume-23-commercial-knowledge-ontology/part-01/](./constitution-v3/volume-23-commercial-knowledge-ontology/part-01/)
+
+| Spec / RFC | Title |
+|------------|-------|
+| RFC-2300 | Purpose |
+| RFC-2301 | Canonical Ontology |
+| SPEC-2300 | Commercial Law |
+| SPEC-2301 | Commercial Rule |
+| SPEC-2302 | Category Rule |
+| SPEC-2303 | Pattern |
+| SPEC-2304 | Strategy |
+| SPEC-2305 | Heuristic |
+| SPEC-2306 | Experiment |
+| SPEC-2307 | Evidence |
+| SPEC-2308 | AntiRule |
+| SPEC-2309 | Benchmark Result |
+| SPEC-2310 | Marketplace Knowledge |
+| SPEC-2311 | Category Knowledge |
+| SPEC-2312 | Audience Knowledge |
+| SPEC-2313 | Brand Knowledge |
+| SPEC-2314 | Visual Style Knowledge |
+| SPEC-2315 | Provider Knowledge |
+| SPEC-2316 | Research Report |
+| RFC-2302 | Knowledge Relationships |
+| SPEC-2317 | Knowledge Graph |
+| RFC-2303 | Ontology Integrity |
+| RFC-2304 | Knowledge Priority |
+| RFC-2305 | Experimental Knowledge Integration |
+| RFC-2306 | Ontology Principle |
+
+**END OF VOLUME 23** (content in [part-01/](./constitution-v3/volume-23-commercial-knowledge-ontology/part-01/))
