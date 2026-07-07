@@ -6,6 +6,8 @@
 
 **Applies to:** All DAOS contributors · Cursor · AI Agents · Human Engineers
 
+> **Agents:** Read [CURSOR_ENGINEERING_KERNEL.md](./CURSOR_ENGINEERING_KERNEL.md) first before any implementation task.
+
 ---
 
 # 1. Purpose
