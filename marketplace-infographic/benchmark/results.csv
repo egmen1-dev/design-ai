@@ -1,0 +1,68 @@
+productId,productName,arm,summaryScore,finalGateStatus,finalGateScore,meaningLossCount,meaningLossCodes,modulesIgnored,modulesCompiled,modulesStillIgnored,promptLength,provider,model,latencyMs,generationTimeMs,backgroundHash,finalImageHash,composerQualityScore,productAreaRatio,finalCompositionRisk,overlayQualityScore,overlayDensity,pngOverlayFeelRisk,law003WhitespaceViolation,law003Before,law003After,law003StaleMetricDetected,law014ContrastViolation,productScaleScore,productDominanceScore,emptySpaceEstimate,sceneFillRisk,compositeProductAreaRatio,compositePlacementFound,extractAreaCorrected,error
+cordless-drill,Cordless Drill,baseline,78,warning,78,2,MODULES_IGNORED;DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES,layout_coordinates;hierarchy;typography_zones;ctr_wording,layout_coordinates;hierarchy;typography_zones;ctr_wording,,895,pollinations,flux,456,5351,09c7ea087037fedaeb82d7e03508df1f,f1c126ae52f1763029f9c1e1627a5a86,93,0.43418055555555557,0.16499999999999998,59,0.1104,0.9,,true,,true,,89,98,0.29,0.014237499999999998,0.43418055555555557,true,true,
+cordless-drill,Cordless Drill,daos,78,warning,78,2,MODULES_IGNORED;DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES,layout_coordinates;hierarchy;typography_zones;ctr_wording,layout_coordinates;hierarchy;typography_zones;ctr_wording,,895,pollinations,flux,622,5375,09c7ea087037fedaeb82d7e03508df1f,0e974a09eb9b43847d21dbef466690fc,93,0.4202416666666667,0.16499999999999998,48,0.1142048,0.9,,true,,true,,81,96,0.29,0.026782499999999997,0.4202416666666667,true,true,
+cordless-drill,Cordless Drill,delta,0,,0,0,,,0,0,0,,,,,false,true,
+electric-kettle,Electric Kettle,baseline,78,warning,78,2,MODULES_IGNORED;DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES,layout_coordinates;hierarchy;typography_zones;ctr_wording,layout_coordinates;hierarchy;typography_zones;ctr_wording,,848,pollinations,flux,499,6104,13da5f7cb08889f198b638efb9ac7faa,009cde4effb8a463a9cf7082ef02e9bb,93,0.39311111111111113,0.16499999999999998,67,0.10099716802559999,0.2,,true,,true,,77,93,0.29,0.05119999999999999,0.39311111111111113,true,true,
+electric-kettle,Electric Kettle,daos,78,warning,78,2,MODULES_IGNORED;DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES,layout_coordinates;hierarchy;typography_zones;ctr_wording,layout_coordinates;hierarchy;typography_zones;ctr_wording,,848,pollinations,flux,553,6000,13da5f7cb08889f198b638efb9ac7faa,009cde4effb8a463a9cf7082ef02e9bb,93,0.39311111111111113,0.16499999999999998,67,0.10099716802559999,0.2,,true,,true,,77,93,0.29,0.05119999999999999,0.39311111111111113,true,true,
+electric-kettle,Electric Kettle,delta,0,,0,0,,,0,0,0,,,,,false,false,
+office-chair,Office Chair,baseline,,,,0,,,,,,,,,60,,,,,,,,,,,,,,,,,,,,,"[
+  {
+    ""code"": ""too_big"",
+    ""maximum"": 80,
+    ""type"": ""string"",
+    ""inclusive"": true,
+    ""exact"": false,
+    ""message"": ""String must contain at most 80 character(s)"",
+    ""path"": [
+      ""oneThought"",
+      ""deferredSpecs"",
+      0
+    ]
+  },
+  {
+    ""code"": ""too_big"",
+    ""maximum"": 80,
+    ""type"": ""string"",
+    ""inclusive"": true,
+    ""exact"": false,
+    ""message"": ""String must contain at most 80 character(s)"",
+    ""path"": [
+      ""deferredBullets"",
+      0
+    ]
+  }
+]"
+office-chair,Office Chair,daos,,,,0,,,,,,,,,54,,,,,,,,,,,,,,,,,,,,,"[
+  {
+    ""code"": ""too_big"",
+    ""maximum"": 80,
+    ""type"": ""string"",
+    ""inclusive"": true,
+    ""exact"": false,
+    ""message"": ""String must contain at most 80 character(s)"",
+    ""path"": [
+      ""oneThought"",
+      ""deferredSpecs"",
+      0
+    ]
+  },
+  {
+    ""code"": ""too_big"",
+    ""maximum"": 80,
+    ""type"": ""string"",
+    ""inclusive"": true,
+    ""exact"": false,
+    ""message"": ""String must contain at most 80 character(s)"",
+    ""path"": [
+      ""deferredBullets"",
+      0
+    ]
+  }
+]"
+office-chair,Office Chair,delta,,,,0,,,0,0,,,,,,false,false,
+mattress,Mattress,baseline,73,warning,73,3,VISUAL_TO_RENDER_STRATEGY_MISMATCH;MODULES_IGNORED;DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES,layout_coordinates;hierarchy;typography_zones;ctr_wording,layout_coordinates;hierarchy;typography_zones;ctr_wording,,892,pollinations,flux,773,5627,dc4677839ce8df0dbe67916ace4d1ed2,9057600feb2b28fe2945191782a782a7,72,0.18,0.21300000000000002,52,0.09309695999999999,0.2,true,true,true,,,12,54,0.29,0.24300000000000002,0.18,true,true,
+mattress,Mattress,daos,73,warning,73,3,VISUAL_TO_RENDER_STRATEGY_MISMATCH;MODULES_IGNORED;DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES,layout_coordinates;hierarchy;typography_zones;ctr_wording,layout_coordinates;hierarchy;typography_zones;ctr_wording,,892,pollinations,flux,444,6359,dc4677839ce8df0dbe67916ace4d1ed2,907ffc9e474796b2228b1611ca65869c,72,0.19466666666666665,0.21300000000000002,55,0.37849216,0.2,true,true,true,,,17,57,0.23495583999999997,0.22980000000000003,0.19466666666666665,true,true,
+mattress,Mattress,delta,0,,0,0,,,0,0,0,,,,,false,true,
+childrens-toy,Children's Toy,baseline,73,warning,73,3,VISUAL_TO_RENDER_STRATEGY_MISMATCH;MODULES_IGNORED;DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES,layout_coordinates;hierarchy;typography_zones;ctr_wording,layout_coordinates;hierarchy;typography_zones;ctr_wording,,869,pollinations,flux,533,5906,991a1b6b06a97b32a78cb36dfd4c47ea,31ed829c36222a185c08d3625cabbeb3,93,0.38282314814814816,0.16499999999999998,67,0.09309695999999999,0.2,,true,,true,,76,92,0.29,0.06045916666666667,0.38282314814814816,true,true,
+childrens-toy,Children's Toy,daos,73,warning,73,3,VISUAL_TO_RENDER_STRATEGY_MISMATCH;MODULES_IGNORED;DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES,layout_coordinates;hierarchy;typography_zones;ctr_wording,layout_coordinates;hierarchy;typography_zones;ctr_wording,,869,pollinations,flux,454,5581,991a1b6b06a97b32a78cb36dfd4c47ea,f733c0caceb50eee9eb367f0aad6cb23,75,0.3468,0.16499999999999998,47,0.09309695999999999,0.2,true,true,true,true,,66,88,0.29,0.09288000000000002,0.3468,true,true,
+childrens-toy,Children's Toy,delta,0,,0,0,,,0,0,0,,,,,false,true,

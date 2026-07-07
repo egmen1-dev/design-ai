@@ -1,6 +1,6 @@
 # Design AI Architecture DSL
 # Source of truth — see Architecture Bible Part 23
-# Human-readable docs: docs/Architecture_Bible.md (secondary)
+# Human-readable docs: docs/DAOS_Specification.md (secondary)
 
 version: "1.0"
 
@@ -22,6 +22,22 @@ architecture:
     - LAW-033  # No platform code inside Providers
     - LAW-034  # No Runtime code inside Platforms
     - LAW-035  # Repository structure is architecture
+    - LAW-036  # ProjectState is immutable
+    - LAW-037  # Every platform owns exactly one responsibility
+    - LAW-038  # No platform communicates directly with another platform
+    - LAW-039  # Only Runtime orchestrates execution
+    - LAW-040  # Only Provider Adapter generates prompts
+    - LAW-041  # Only Asset Platform accesses filesystem
+    - LAW-042  # Knowledge queried only through Knowledge Engine
+    - LAW-043  # Rendering executes blueprints only
+    - LAW-044  # Vision is mandatory
+    - LAW-045  # Learning executes after every completed generation
+    - LAW-046  # Every architectural change requires ADR
+    - LAW-047  # Every breaking change requires RFC
+    - LAW-048  # Every implementation requires Directive
+    - LAW-049  # Architecture validation blocks invalid releases
+    - LAW-050  # Architecture Bible is the single source of truth
+  law_count: 50
 
 repository:
   root: marketplace-infographic/
@@ -118,7 +134,7 @@ repository:
   documentation:
     path: docs/
     files:
-      - Architecture_Bible.md
+      - DAOS_Specification.md
     subdirectories:
       - architecture/adr
       - architecture/migration-logs
@@ -261,6 +277,187 @@ repository_v2:
   success_criteria:
     - repository communicates architecture
     - onboarding_under_15_minutes
+
+platform_core:
+  status: CRITICAL
+  priority: MAXIMUM
+  wave: 1
+  path: src/lib/platform-core/
+  business_logic: forbidden
+  responsibilities:
+    - platform registration
+    - platform discovery
+    - project lifecycle
+    - architecture metadata
+    - execution context
+    - configuration
+    - versioning
+    - dependency registry
+    - ProjectState
+    - DecisionTrace
+  interfaces:
+    - IPlatform
+    - IProvider
+    - ISkill
+    - IPlugin
+    - IRuntime
+    - IRegistry
+    - IProjectState
+  files:
+    - PlatformCore.ts
+    - ProjectState.ts
+    - ProjectContext.ts
+    - ProjectMetadata.ts
+    - ArchitectureRegistry.ts
+    - PlatformRegistry.ts
+    - ProviderRegistry.ts
+    - VersionManager.ts
+    - ConfigurationManager.ts
+    - ExecutionContext.ts
+  config_files:
+    - architecture.yaml
+    - runtime.yaml
+    - providers.yaml
+    - marketplaces.yaml
+    - learning.yaml
+    - plugins.yaml
+  performance:
+    project_state_creation_ms: 5
+    registry_lookup_ms: 1
+  refactor:
+    reuse: 95
+    rewrite: 5
+
+file_specifications:
+  - module: design-process
+    path: src/lib/design-process/
+    status: refactor
+    priority: critical
+    importance: 5
+    wave: 5
+    purpose: creative transformation only
+    remove:
+      - execution control
+      - prompt generation
+      - render preparation
+      - filesystem operations
+      - provider selection
+      - asset loading
+    move:
+      scene_planning: visual-platform
+      prompt_builder: provider-adapter
+      execution_flow: runtime
+      asset_resolution: asset-platform
+      configuration: platform-core
+    keep:
+      - creative scoring
+      - creative memory
+      - concept generator
+      - concept evaluator
+      - creative critic
+    create:
+      - CreativeSpec
+      - CreativeDecision
+      - CreativeAlternative
+      - CreativeMetrics
+      - CreativeConfidence
+    pipeline:
+      - KnowledgeSpec
+      - CommercialSpec
+      - Creative Reasoning
+      - Concept Generation
+      - Creative Critic
+      - CreativeSpec
+    imports_forbidden:
+      - render-engine
+      - provider
+      - prompt
+      - filesystem
+      - legacy
+    imports_allowed:
+      - contracts
+      - runtime
+      - shared
+      - sdk
+    depends_on:
+      - Knowledge
+      - Commercial
+      - Runtime
+    returns: CreativeSpec
+    directives:
+      - DSP-001
+      - DSP-002
+      - DSP-003
+      - DSP-004
+    rollback: restore DesignBrief adapter
+
+  - module: design-governance
+    path: src/lib/design-governance/
+    status: keep
+    priority: critical
+    importance: 5
+    keep:
+      - Constitution
+      - Blueprint Lock
+      - Validators
+      - Resolver
+      - Rules
+      - Architecture Checks
+    remove:
+      - Professional Score
+      - Image Quality
+      - Marketplace Score
+      - Commercial Score
+    move:
+      professional_score: vision-platform
+      marketplace_validation: vision-platform
+      image_validation: vision-platform
+    add:
+      - ProjectState Validation
+      - Specification Validation
+      - Runtime Validation
+      - Execution Validation
+      - Dependency Validation
+    create:
+      - GovernanceRuntime
+      - GovernanceEvents
+      - GovernanceReport
+    directives:
+      - GOV-002
+      - GOV-003
+    success: governance validates architecture only
+
+  - module: render-engine
+    path: src/lib/render-engine/
+    status: keep
+    priority: critical
+    importance: 5
+    wave: 7
+    keep:
+      - background generation
+      - shadow generation
+      - composition
+      - export
+      - provider communication
+    remove:
+      - creative decisions
+      - commercial decisions
+      - knowledge usage
+      - prompt strategy
+    move:
+      prompt: provider-adapter
+      business: commercial
+      creative: creative
+      visual: visual-platform
+    create:
+      - RenderGraph
+      - RenderNode
+      - RetryNode
+      - NodeExecutor
+    directives:
+      - REN-002
+      - REN-003
+    success: rendering executes RenderBlueprint only
 
 runtime:
   id: RuntimeV2
@@ -984,6 +1181,514 @@ directives:
     success:
       repository_follows_bible: true
 
+  - id: PC-001
+    title: Create ProjectState
+    priority: Critical
+    wave: 1
+    status: completed
+    files:
+      create:
+        - src/lib/platform-core/project-state/ProjectState.ts
+    checks:
+      - unit
+    success:
+      immutable: true
+
+  - id: PC-002
+    title: Create Architecture Registry
+    priority: Critical
+    wave: 1
+    status: completed
+    files:
+      create:
+        - src/lib/platform-core/registry/ArchitectureRegistry.ts
+    checks:
+      - unit
+
+  - id: PC-003
+    title: Create Version Manager
+    priority: Critical
+    wave: 1
+    status: completed
+    files:
+      create:
+        - src/lib/platform-core/versioning/VersionManager.ts
+    checks:
+      - unit
+
+  - id: PC-004
+    title: Create Configuration Manager
+    priority: Critical
+    wave: 1
+    status: completed
+    files:
+      create:
+        - src/lib/platform-core/configuration/ConfigurationManager.ts
+    checks:
+      - unit
+
+  - id: PC-005
+    title: Replace object passing with ProjectState
+    priority: Critical
+    wave: 1
+    status: in_progress
+    requires:
+      - PC-001
+      - RUN-001
+    checks:
+      - integration
+      - architecture
+
+  - id: DSP-001
+    title: Replace DesignBrief with CreativeSpec
+    priority: Critical
+    wave: 5
+    phase: 3
+    status: blocked
+    module: design-process
+    requires:
+      - DTO-001
+      - PC-001
+    checks:
+      - unit
+      - architecture
+
+  - id: DSP-002
+    title: Move Scene Planner to Visual Platform
+    priority: High
+    wave: 6
+    status: blocked
+    module: design-process
+
+  - id: DSP-003
+    title: Move Prompt Builder to Provider Adapter
+    priority: Critical
+    wave: 7
+    status: blocked
+    module: design-process
+    requires:
+      - RFC-004
+
+  - id: DSP-004
+    title: Remove execution orchestration from design-process
+    priority: Critical
+    wave: 5
+    status: blocked
+    module: design-process
+    requires:
+      - RUN-001
+
+  - id: GOV-002
+    title: Split Governance and Vision responsibilities
+    priority: High
+    wave: 8
+    status: blocked
+    module: design-governance
+
+  - id: GOV-003
+    title: Introduce ProjectState validation in governance
+    priority: Critical
+    wave: 2
+    status: blocked
+    module: design-governance
+    requires:
+      - PC-001
+      - DTO-001
+
+  - id: REN-002
+    title: Introduce RenderGraph
+    priority: Critical
+    wave: 7
+    status: blocked
+    module: render-engine
+    requires:
+      - ADR-004
+
+  - id: REN-003
+    title: Remove Prompt ownership from render-engine
+    priority: Critical
+    wave: 7
+    status: blocked
+    module: render-engine
+    requires:
+      - DSP-003
+
+  - id: EVO-001
+    title: Evolution Strategy policy (Part 30)
+    priority: HIGH
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/architecture/architecture.yaml
+    checks:
+      - validate_yaml
+    success:
+      evolution_policy_documented: true
+
+  - id: REL-001
+    title: Release Strategy policy (Part 31)
+    priority: HIGH
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/architecture/architecture.yaml
+    checks:
+      - validate_yaml
+    success:
+      release_policy_documented: true
+
+  - id: OBS-001
+    title: Observability policy (Part 32)
+    priority: HIGH
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/architecture/architecture.yaml
+    checks:
+      - validate_yaml
+    success:
+      observability_policy_documented: true
+
+  - id: LAW-036
+    title: Final Architecture Laws LAW-036–050 (Part 33)
+    priority: CRITICAL
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/DAOS_Specification.md
+        - docs/architecture/architecture.yaml
+    checks:
+      - validate_yaml
+    success:
+      law_count: 50
+
+  - id: GLO-001
+    title: Glossary (Appendix A)
+    priority: HIGH
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/DAOS_Specification.md
+        - docs/architecture/architecture.yaml
+    checks:
+      - validate_yaml
+    success:
+      glossary_documented: true
+
+  - id: IDX-001
+    title: Architecture Index (Appendix B)
+    priority: HIGH
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/DAOS_Specification.md
+        - docs/architecture/architecture.yaml
+    checks:
+      - validate_yaml
+    success:
+      architecture_index_documented: true
+
+  - id: IMP-001
+    title: Implementation Index (Appendix C)
+    priority: HIGH
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/DAOS_Specification.md
+        - docs/architecture/architecture.yaml
+    checks:
+      - validate_yaml
+    success:
+      implementation_index_documented: true
+
+  - id: VOL-001
+    title: Volume I Completion (Appendix D)
+    priority: CRITICAL
+    wave: 0
+    status: completed
+    files:
+      create:
+        - docs/Code_Rewrite_Bible.md
+      modify:
+        - docs/DAOS_Specification.md
+    success:
+      volume_1_complete: true
+
+  - id: CRB-001
+    title: Architecture scanner (Part 34)
+    priority: Critical
+    wave: 0
+    status: completed
+    files:
+      create:
+        - scripts/architecture-scanner/
+    checks:
+      - architecture:scan
+    success:
+      generates_code_rewrite_bible: true
+
+  - id: CRB-002
+    title: Architecture scan npm scripts
+    priority: Critical
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - package.json
+
+  - id: CRB-003
+    title: Scanner read-only policy
+    priority: Critical
+    wave: 0
+    status: completed
+    rules:
+      - never modify source code
+
+  - id: CTG-001
+    title: Cursor Task Generator (Part 35)
+    priority: Critical
+    wave: 0
+    status: completed
+    files:
+      create:
+        - scripts/cursor-task-generator/
+    requires:
+      - CRB-001
+
+  - id: CTG-002
+    title: Generate docs/cursor Wave-01..20
+    priority: Critical
+    wave: 0
+    status: completed
+    files:
+      create:
+        - docs/cursor/
+
+  - id: CTG-003
+    title: architecture:tasks waves plan scripts
+    priority: Critical
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - package.json
+
+  - id: ANA-001
+    title: Architecture Analyzer (Part 36)
+    priority: Critical
+    wave: 0
+    status: completed
+    files:
+      create:
+        - scripts/architecture-analyzer/
+        - docs/architecture/reports/
+    requires:
+      - CRB-001
+    checks:
+      - architecture:analyze
+
+  - id: KNL-001
+    title: DAOS Kernel (Part 37)
+    priority: Critical
+    wave: 1
+    status: completed
+    files:
+      create:
+        - src/lib/kernel/
+    requires:
+      - PC-001
+      - PC-002
+      - PC-003
+      - PC-004
+    checks:
+      - unit
+    success:
+      every_project_through_kernel: true
+
+  - id: CON-001
+    title: Design AI Constitution (Part 38)
+    priority: MAXIMUM
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/DAOS_Specification.md
+        - docs/architecture/architecture.yaml
+    checks:
+      - validate_yaml
+    success:
+      constitution_documented: true
+
+  - id: MKR-001
+    title: DAOS Microkernel Architecture (Part 39)
+    priority: MAXIMUM
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/DAOS_Specification.md
+        - docs/architecture/architecture.yaml
+    requires:
+      - KNL-001
+    checks:
+      - validate_yaml
+    success:
+      microkernel_architecture_documented: true
+
+  - id: TSK-001
+    title: DAOS Execution Model (Part 40)
+    priority: Critical
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/DAOS_Specification.md
+        - docs/architecture/architecture.yaml
+    requires:
+      - KNL-001
+      - MKR-001
+    checks:
+      - validate_yaml
+    success:
+      execution_model_documented: true
+
+  - id: MSG-001
+    title: DAOS Message Bus (Part 41)
+    priority: Critical
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/DAOS_Specification.md
+        - docs/architecture/architecture.yaml
+    requires:
+      - KNL-001
+      - TSK-001
+    checks:
+      - validate_yaml
+    success:
+      message_bus_documented: true
+
+  - id: CTX-001
+    title: DAOS Execution Context (Part 42)
+    priority: Critical
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/DAOS_Specification.md
+        - docs/architecture/architecture.yaml
+    requires:
+      - KNL-001
+      - TSK-001
+      - PC-001
+    checks:
+      - validate_yaml
+    success:
+      execution_context_documented: true
+
+  - id: RFC-000
+    title: Design AI Operating System (RFC-000)
+    priority: MAXIMUM
+    wave: 0
+    status: completed
+    files:
+      create:
+        - docs/rfc/RFC-000.md
+      modify:
+        - docs/DAOS_Specification.md
+        - docs/rfc/README.md
+    checks:
+      - validate_yaml
+    success:
+      daos_charter_documented: true
+
+  - id: RDM-001
+    title: Fixed Roadmap (Part 44)
+    priority: MAXIMUM
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/DAOS_Specification.md
+        - docs/architecture/architecture.yaml
+    requires:
+      - RFC-000
+    checks:
+      - validate_yaml
+    success:
+      fixed_roadmap_documented: true
+
+  - id: W1-001
+    title: Wave 1 Foundation Implementation Plan (Part 45)
+    priority: MAXIMUM
+    wave: 1
+    status: in_progress
+    estimated_days: "5-10"
+    files:
+      create:
+        - src/lib/daos/
+        - src/lib/contracts/
+        - src/lib/runtime/
+      modify:
+        - docs/DAOS_Specification.md
+        - docs/architecture/architecture.yaml
+    requires:
+      - RDM-001
+      - PC-001
+      - PC-002
+      - PC-003
+      - PC-004
+    checks:
+      - compile
+      - unit
+      - integration
+      - daos:spec
+    success:
+      daos_core_beside_legacy: true
+      generation_quality_unchanged: true
+
+  - id: DEV-001
+    title: Development Principles (Part 46)
+    priority: MAXIMUM
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/DAOS_Specification.md
+        - docs/architecture/architecture.yaml
+    requires:
+      - CON-001
+      - RDM-001
+    checks:
+      - validate_yaml
+    success:
+      development_principles_documented: true
+
+  - id: ENG-001
+    title: DAOS Engineering Manifesto (Part 47)
+    priority: MAXIMUM
+    wave: 0
+    status: completed
+    files:
+      modify:
+        - docs/DAOS_Specification.md
+        - docs/architecture/architecture.yaml
+    requires:
+      - DEV-001
+      - CON-001
+    checks:
+      - validate_yaml
+    success:
+      engineering_manifesto_documented: true
+
   - id: DIR-001
     title: Directive Registry
     priority: HIGH
@@ -1102,10 +1807,965 @@ stop_conditions:
   - legacy_imported
   - prompt_outside_provider_adapter
 
+evolution:
+  purpose: continuous evolution without breaking existing functionality
+  principles:
+    - never rewrite when extension is possible
+    - backward compatibility unless RFC approves breaking change
+    - platforms evolve independently
+    - no hidden coupling
+    - new capabilities must be measurable
+  maturity_model:
+    - id: 1
+      name: Working Prototype
+    - id: 2
+      name: Modular Architecture
+    - id: 3
+      name: Platform Architecture
+    - id: 4
+      name: Operating System
+      current_target: true
+    - id: 5
+      name: Self Improving Design Intelligence
+      future_target: true
+  versioning_required:
+    - platform
+    - contract
+    - decision
+    - asset
+    - knowledge_object
+  feature_introduction:
+    - RFC
+    - ADR
+    - architecture_approval
+    - implementation_directive
+    - implementation
+    - architecture_validation
+    - release
+  deprecation_policy:
+    steps:
+      - marked
+      - adapter_created
+      - migration
+      - removal
+    immediate_deletion: forbidden
+  backward_compatibility:
+    adapters_required: true
+    minimum_major_releases: 1
+  success_criteria:
+    - architecture evolves without large rewrites
+
+release:
+  purpose: identical lifecycle for every release
+  lifecycle:
+    - release_candidate
+    - architecture_validation
+    - unit_tests
+    - integration_tests
+    - marketplace_tests
+    - golden_tests
+    - performance_tests
+    - manual_review
+    - release
+  types:
+    - patch
+    - minor
+    - major
+    - architecture
+  architecture_release_requires:
+    - RFC
+    - ADR
+    - migration_guide
+    - architecture_report
+  artifacts:
+    - architecture_report
+    - migration_report
+    - performance_report
+    - compatibility_report
+  rollback:
+    required: true
+    every_release_reversible: true
+  success_criteria:
+    - every release reproducible
+
+observability:
+  purpose: nothing inside Design AI OS is hidden
+  platform_emits:
+    - events
+    - metrics
+    - decision_trace
+    - warnings
+    - errors
+    - artifacts
+  project_stores:
+    - timeline
+    - execution_graph
+    - decision_graph
+    - architecture_version
+    - platform_versions
+    - knowledge_version
+    - genome_version
+  debug_bundle:
+    contains:
+      - logs
+      - specifications
+      - blueprints
+      - reports
+      - assets
+      - metrics
+      - configuration
+  success_criteria:
+    - every project fully reproducible
+
+glossary:
+  purpose: canonical terminology — one meaning per term, no synonyms
+  terms:
+    Architecture Bible: Canonical architecture specification. Single Source of Truth.
+    Constitution: Canonical governing principles (Part 38). Architecture has priority over implementation.
+    ProjectState: Immutable object containing the complete project state. Never partially modified.
+    Runtime: Execution engine. Coordinates platforms. Never makes business decisions.
+    Kernel: Heart of DAOS. Owns orchestration, registries, lifecycle. Never owns business logic.
+    Microkernel: Minimal Kernel core (Part 39). Execution only — no business intelligence.
+    Extension: Platform or provider loaded by Kernel at runtime. Never imported by Kernel.
+    Task: Atomic execution unit inside DAOS (Part 40). Contains input, platform, specification, timeout, priority, dependencies, expected output.
+    Task Graph: DAG of Tasks representing an entire project execution.
+    TaskResult: Outcome of a Task — status, output, metrics, duration, warnings, errors, trace.
+    Message: Unit of inter-platform communication via Message Bus (Part 41). Platforms never communicate directly.
+    Message Bus: Central routing layer for Commands, Events, Queries, Responses, and Notifications.
+    ExecutionContext: Immutable execution envelope (Part 42). Every platform receives identical context.
+    Platform: Independent architectural component. Owns one responsibility. Produces one Specification.
+    Specification: Immutable DTO exchanged between platforms.
+    ProductBrief: Initial project description. Created once.
+    ResearchSpec: Research result.
+    KnowledgeSpec: Merged structured knowledge.
+    CommercialSpec: Commercial strategy.
+    CreativeSpec: Creative strategy.
+    VisualBlueprint: Visual implementation.
+    RenderBlueprint: Rendering instructions.
+    OverlayBlueprint: Overlay specification.
+    VisionReport: Image evaluation.
+    LearningReport: Learning result.
+    Design DNA: Universal design principles.
+    Design Genome: Category-specific design knowledge.
+    Knowledge Engine: Unified knowledge layer.
+    Provider Adapter: Only module allowed to generate Prompt.
+    Decision Trace: Complete explanation of every architectural decision.
+    Execution Graph: Runtime dependency graph.
+    Decision Graph: Relationship graph between decisions.
+    RenderGraph: Node-based rendering pipeline.
+    Asset Platform: Single owner of every project asset.
+    Architecture Law: Mandatory architectural rule.
+    ADR: Architecture Decision Record.
+    RFC: Request For Comments.
+    Directive: Executable migration task.
+
+architecture_index:
+  Architecture: "Part 1-4"
+  Runtime: "Part 5"
+  Design DNA: "Part 6"
+  Reasoning: "Part 7"
+  Migration: "Part 8"
+  AI CEO: "Part 9"
+  SDK: "Part 10"
+  Platform Migration: "Part 11"
+  Runtime Migration: "Part 12"
+  Contracts: "Part 13"
+  Assets: "Part 14"
+  Engineering Standards: "Part 15"
+  Architecture Validation: "Part 16"
+  Knowledge Engine: "Part 17"
+  Implementation: "Part 18-19"
+  ADR: "Part 20"
+  RFC: "Part 21"
+  DSL: "Part 23"
+  Repository: "Part 27"
+  Evolution: "Part 30"
+  Release: "Part 31"
+  Observability: "Part 32"
+  Architecture Laws: "Part 33"
+  Code Rewrite: "Part 34"
+  Cursor Tasks: "Part 35"
+  Architecture Analyzer: "Part 36"
+  DAOS Kernel: "Part 37"
+  Constitution: "Part 38"
+  Microkernel Architecture: "Part 39"
+  Execution Model: "Part 40"
+  Message Bus: "Part 41"
+  Execution Context: "Part 42"
+  Fixed Roadmap: "Part 44"
+  Wave 1 Foundation: "Part 45"
+  Development Principles: "Part 46"
+  Engineering Manifesto: "Part 47"
+
+implementation_index:
+  prefixes:
+    PC: Platform Core
+    KNL: DAOS Kernel
+    RUN: Runtime
+    DTO: Contracts
+    CRE: Creative
+    VIS: Visual
+    REN: Rendering
+    GOV: Governance
+    KNOW: Knowledge
+    AST: Assets
+    SDK: Platform SDK
+    CEO: Execution Strategy
+    CI: Architecture Validation
+    RFC: Architecture Evolution
+    ADR: Decision Records
+  execution_order:
+    - PC
+    - KNL
+    - RUN
+    - DTO
+    - KNOW
+    - COM
+    - CRE
+    - VIS
+    - REN
+    - VISION
+    - LEARN
+    - LEGACY
+
+code_rewrite_bible_generator:
+  part: 34
+  path: marketplace-infographic/scripts/architecture-scanner/
+  output: docs/Code_Rewrite_Bible.md
+  commands:
+    scan: npm run architecture:scan
+    report: npm run architecture:report
+  read_only: true
+  violation_types:
+    - PROMPT_OUTSIDE_PROVIDER
+    - LEGACY_IMPORT_IN_RUNTIME
+    - PLATFORM_IMPORTS_PLATFORM
+    - RUNTIME_IMPORTS_PROVIDER
+    - BUSINESS_LOGIC_IN_UTILS
+    - FILESYSTEM_ACCESS_OUTSIDE_ASSET_PLATFORM
+    - HTML_LAYOUT_OWNS_DESIGN
+    - DTO_NOT_REGISTERED
+    - MISSING_DECISION_TRACE
+    - MISSING_PROJECT_STATE
+    - PROVIDER_LOGIC_IN_PLATFORM
+    - RENDERING_MAKES_BUSINESS_DECISION
+
+cursor_task_generator:
+  part: 35
+  path: marketplace-infographic/scripts/cursor-task-generator/
+  output_dir: docs/cursor/
+  waves: 20
+  commands:
+    tasks: npm run architecture:tasks
+    waves: npm run architecture:waves
+    plan: npm run architecture:plan
+  read_only: true
+  task_states:
+    - Pending
+    - Ready
+    - Running
+    - Blocked
+    - Review
+    - Completed
+    - Rejected
+
+architecture_analyzer:
+  part: 36
+  path: marketplace-infographic/scripts/architecture-analyzer/
+  output_dir: docs/architecture/reports/
+  commands:
+    analyze: npm run architecture:analyze
+    dashboard: npm run architecture:dashboard
+  reports:
+    - Dashboard.md
+    - ArchitectureReport.md
+    - DependencyReport.md
+    - ComplexityReport.md
+    - TechnicalDebtReport.md
+    - MigrationProgress.md
+    - CoverageReport.md
+  read_only: true
+  target_score: 98
+
+daos_kernel:
+  part: 37
+  path: marketplace-infographic/src/lib/kernel/
+  business_logic: forbidden
+  responsibilities:
+    - runtime
+    - scheduler
+    - project_state
+    - execution_graph
+    - platform_registry
+    - provider_registry
+    - event_bus
+    - metrics
+    - cache
+    - version_manager
+    - configuration
+    - security
+  api:
+    - initialize
+    - registerPlatform
+    - registerProvider
+    - registerPlugin
+    - createProject
+    - execute
+    - shutdown
+  files:
+    - Kernel.ts
+    - KernelRuntime.ts
+    - KernelRegistry.ts
+    - KernelConfiguration.ts
+    - KernelLifecycle.ts
+    - KernelEvents.ts
+    - KernelMetrics.ts
+    - KernelHealth.ts
+  startup:
+    - load_configuration
+    - initialize_runtime
+    - load_registry
+    - load_providers
+    - load_platforms
+    - load_plugins
+    - load_runtime_graph
+    - ready
+  shutdown:
+    - stop_runtime
+    - flush_cache
+    - save_metrics
+    - save_events
+    - release_assets
+    - shutdown
+  acceptance:
+    - every_project_starts_through_kernel
+    - nothing_bypasses_kernel
+
+design_ai_constitution:
+  part: 38
+  version: "1.0"
+  status: canonical
+  priority: maximum
+  preamble:
+    purpose: commercially successful visual communication
+    system_purpose: decision generation
+    rendering: implementation detail only
+  articles:
+    - id: I
+      title: Architecture
+      principle: Architecture has priority over implementation
+    - id: II
+      title: Single Source Of Truth
+      principle: Architecture Bible is SSOT; code follows architecture
+    - id: III
+      title: Responsibility
+      principle: Every module owns one responsibility; no overlap
+    - id: IV
+      title: Immutability
+      principle: Specifications, Blueprints, and ProjectState are immutable
+    - id: V
+      title: Platform Independence
+      principle: Platforms communicate only through Specifications
+    - id: VI
+      title: Runtime
+      principle: Only Runtime controls execution
+    - id: VII
+      title: Knowledge
+      principle: Knowledge independent of rendering; survives provider replacement
+    - id: VIII
+      title: Prompts
+      principle: Prompt is implementation detail, never architecture
+    - id: IX
+      title: Providers
+      principle: Providers interchangeable; architecture never depends on provider
+    - id: X
+      title: Learning
+      principle: Every completed project improves the system
+    - id: XI
+      title: Traceability
+      principle: Decisions explainable, reproducible, versioned
+    - id: XII
+      title: Reuse
+      principle: Reuse before rewrite; extension before replacement; migration before deletion
+    - id: XIII
+      title: Quality
+      principle: Commercial quality over implementation elegance
+    - id: XIV
+      title: Validation
+      principle: Architecture automatically validated
+    - id: XV
+      title: Evolution
+      principle: Evolve through RFC, ADR, Implementation Directives only
+    - id: XVI
+      title: Backward Compatibility
+      principle: Breaking changes require migration path
+    - id: XVII
+      title: Security
+      principle: Minimum required permissions per platform
+    - id: XVIII
+      title: Observability
+      principle: Metrics, Events, Decision Trace, Artifacts on every execution
+    - id: XIX
+      title: Simplicity
+      principle: Fewer concepts, abstractions, dependencies; justify complexity
+    - id: XX
+      title: Mission
+      principle: World's best commercial design intelligence system
+
+daos_microkernel:
+  part: 39
+  version: "1.0"
+  priority: maximum
+  model: microkernel
+  separation:
+    kernel: execution
+    platforms: intelligence
+    providers: implementation
+  microkernel_contains:
+    - runtime
+    - project_state
+    - registry
+    - scheduler
+    - execution_graph
+    - cache
+    - metrics
+    - events
+    - configuration
+    - security
+    - version_manager
+  extensions:
+    - commercial
+    - creative
+    - knowledge
+    - research
+    - vision
+    - learning
+    - marketplace
+    - rendering
+    - providers
+    - assets
+  microkernel_law: kernel never imports extensions; extensions register themselves
+  boot_process:
+    - load_configuration
+    - initialize_kernel
+    - load_runtime
+    - load_registries
+    - load_extensions
+    - resolve_dependencies
+    - health_check
+    - ready
+  shutdown:
+    - stop_runtime
+    - flush_events
+    - flush_metrics
+    - persist_state
+    - unload_extensions
+    - shutdown_kernel
+  failure_isolation:
+    steps:
+      - platform_crash
+      - unload_platform
+      - retry
+      - continue_runtime
+    rule: kernel never crashes because extension crashes
+  hot_reload:
+    platform_supports:
+      - unload
+      - reload
+      - upgrade
+    without_kernel_restart: true
+  success_criteria:
+    - kernel_uptime_independent_from_platform_stability
+
+daos_execution_model:
+  part: 40
+  purpose: everything inside DAOS executes as Tasks
+  execution_unit: Task
+  task_contains:
+    - input
+    - platform
+    - specification
+    - timeout
+    - priority
+    - dependencies
+    - expected_output
+  lifecycle:
+    - created
+    - queued
+    - running
+    - validated
+    - committed
+    - completed
+  task_graph:
+    - project
+    - task_graph
+    - platform_tasks
+    - provider_tasks
+    - asset_tasks
+  task_types:
+    - research
+    - knowledge
+    - commercial
+    - creative
+    - visual
+    - render
+    - vision
+    - learning
+    - asset
+  task_priority:
+    - critical
+    - high
+    - medium
+    - low
+    - background
+  task_result:
+    - status
+    - output
+    - metrics
+    - duration
+    - warnings
+    - errors
+    - trace
+  failed_task:
+    steps:
+      - retry
+      - rollback
+      - alternative_strategy
+      - abort
+  success_criteria:
+    - entire_project_represented_as_task_graph
+
+daos_message_bus:
+  part: 41
+  purpose: platforms never communicate directly; communication through Messages
+  message_types:
+    - command
+    - event
+    - query
+    - response
+    - notification
+  commands:
+    - execute_commercial
+    - execute_creative
+    - execute_render
+  events:
+    - commercial_completed
+    - creative_completed
+    - vision_failed
+    - learning_updated
+  queries:
+    - knowledge_query
+    - genome_query
+    - marketplace_query
+  routing:
+    - platform
+    - message_bus
+    - runtime
+    - target_platform
+  message_store:
+    persisted: true
+    allows:
+      - replay
+      - debugging
+      - analytics
+  success_criteria:
+    - no_direct_platform_communication
+
+daos_execution_context:
+  part: 42
+  purpose: every execution receives identical Context
+  execution_context_contains:
+    - project_state
+    - configuration
+    - architecture_version
+    - execution_plan
+    - knowledge_snapshot
+    - genome_snapshot
+    - marketplace_snapshot
+    - feature_flags
+    - assets
+    - runtime_metadata
+  immutability:
+    context_immutable: true
+    platform_cannot_modify_context: true
+  success_criteria:
+    - identical_context_implies_identical_decision
+
+rfc_index:
+  RFC-000:
+    title: Design AI Operating System
+    path: docs/rfc/RFC-000.md
+    status: accepted
+    version: "1.0"
+    priority: maximum
+    purpose: master charter for DAOS
+  RFC-001:
+    title: ProjectState
+    path: docs/rfc/RFC-001.md
+    status: accepted
+  RFC-002:
+    title: Runtime
+    path: docs/rfc/RFC-002.md
+    status: accepted
+  RFC-003:
+    title: Knowledge Engine
+    path: docs/rfc/RFC-003.md
+    status: accepted
+  RFC-004:
+    title: Provider Adapter
+    path: docs/rfc/RFC-004.md
+    status: accepted
+  RFC-005:
+    title: RenderGraph
+    path: docs/rfc/RFC-005.md
+    status: accepted
+  RFC-006:
+    title: Asset Platform
+    path: docs/rfc/RFC-006.md
+    status: accepted
+
+fixed_roadmap:
+  part: 44
+  status: accepted
+  primary_goal: best marketplace infographic generator
+  purpose: prevent endless architecture expansion; architecture serves product quality
+  final_rule: do not build infrastructure before it improves generation quality
+  phases:
+    A:
+      name: Documentation Stabilization
+      goal: Architecture Bible becomes canonical specification
+      tasks:
+        - remove_duplicated_concepts
+        - unify_terminology
+        - create_table_of_contents
+        - create_glossary
+        - create_rfc_index
+        - create_adr_index
+        - create_directive_index
+        - mark_speculative_as_future
+        - mark_mandatory_as_core
+      acceptance: DAOS_Specification.md becomes stable reference
+    B:
+      name: Core Foundation
+      goal: minimal DAOS Core for production migration
+      create:
+        - ProjectState
+        - Contracts
+        - Runtime Skeleton
+        - Registry
+        - EventBus
+        - Configuration
+        - AssetManager
+      defer_until_quality_improves:
+        - Architecture Compiler
+        - Plugin Marketplace
+        - AI CEO
+        - Full SDK
+      acceptance:
+        - existing_generation_still_works
+        - new_core_exists_beside_legacy
+    C:
+      name: Adapt Existing Intelligence
+      goal: reuse existing modules without rewrite from scratch
+      adapt:
+        - Design Genome
+        - Knowledge Engine
+        - Market Intelligence
+        - Commercial Intelligence
+        - Design Process
+        - Visual Pipeline
+        - Design Governance
+        - Render Engine
+        - Feedback
+        - Memory
+      acceptance:
+        - intelligence_outputs_official_specs
+        - no_intelligence_module_returns_prompt
+    D:
+      name: Render Quality Breakthrough
+      goal: fix real image quality bottleneck
+      tasks:
+        - render_blueprint_source_of_truth
+        - overlay_blueprint_replaces_infographic_data
+        - provider_adapter_only_prompt_generator
+        - vision_critic_mandatory
+        - premium_mode_disables_fast_shortcuts
+        - debug_artifacts_every_run
+      acceptance: generated_marketplace_images_visibly_improve
+    E:
+      name: Legacy Quarantine
+      goal: remove old architecture from main path
+      tasks:
+        - move_old_modules_to_legacy
+        - block_legacy_imports_in_runtime
+        - remove_duplicate_dtos
+        - remove_or_proxy_old_api_generation_path
+      acceptance: production_uses_only_daos_pipeline
+    F:
+      name: Architecture Tooling
+      goal: automate future evolution after product quality improves
+      implement:
+        - Architecture Validator
+        - Architecture Scanner
+        - Code Rewrite Bible Generator
+        - Cursor Task Generator
+        - Architecture Compiler
+      acceptance: architecture_automatically_measurable
+
+wave_1_foundation:
+  part: 45
+  status: in_progress
+  daos_layer: marketplace-infographic/src/lib/daos/
+  priority: maximum
+  estimated_duration: 5-10 working days
+  goal: introduce DAOS Core without breaking existing functionality
+  principle:
+    - expand_first
+    - replace_later
+    - no_big_bang_rewrite
+  objectives:
+    - introduce_architectural_foundation
+    - business_logic_unchanged
+    - generation_quality_must_not_decrease
+    - existing_pipeline_continues_during_migration
+  success_criteria:
+    - project_compiles
+    - existing_api_works
+    - existing_rendering_works
+    - project_state_introduced
+    - contracts_introduced
+    - runtime_skeleton_introduced
+    - registry_introduced
+    - legacy_remains_operational
+  implementation_order:
+    step_01:
+      path: src/lib/platform-core/
+      modules:
+        - ProjectState
+        - ExecutionContext
+        - ArchitectureRegistry
+        - ConfigurationManager
+        - VersionManager
+        - PlatformRegistry
+      implementation_status: partial
+    step_02:
+      path: src/lib/daos/contracts/
+      modules:
+        - BaseSpecification
+        - ResearchSpec
+        - KnowledgeSpec
+        - CommercialSpec
+        - CreativeSpec
+        - VisualBlueprint
+        - RenderBlueprint
+        - VisionReport
+        - LearningReport
+      implementation_status: partial
+    step_03:
+      path: src/lib/daos/runtime/
+      modules:
+        - Runtime
+        - ExecutionGraph
+        - Scheduler
+        - Task
+        - TaskResult
+        - EventBus
+        - ExecutionEvents
+      implementation_status: partial
+    step_04:
+      name: adapters
+      flow:
+        - current_pipeline
+        - project_state
+        - legacy_pipeline
+      adapters:
+        - LegacyDesignPipelineAdapter
+        - LegacyPromptAdapter
+        - LegacyRenderAdapter
+        - LegacyOverlayAdapter
+      implementation_status: pending
+    step_05:
+      name: configuration_migration
+      target: ConfigurationManager
+      implementation_status: partial
+    step_06:
+      name: register_platforms
+      platforms:
+        - Research
+        - Knowledge
+        - Commercial
+        - Creative
+        - Visual
+        - Rendering
+        - Vision
+        - Learning
+        - Governance
+      implementation_status: pending
+  do_not_touch:
+    - Image Generation
+    - Flux Provider
+    - Overlay Rendering
+    - Current HTML Templates
+    - Background Generator
+    - Prompt Compiler
+    - Commercial Logic
+    - Genome
+    - Memory
+  project_state_minimum:
+    - ProjectId
+    - UserInput
+    - ProductBrief
+    - Configuration
+    - Assets
+    - Events
+    - Metrics
+    - ArchitectureVersion
+  first_tests:
+    unit:
+      - project_state_immutable
+      - runtime_starts
+      - registry_registers_platform
+      - contracts_serializable
+      - architecture_validator_passes
+    integration:
+      - legacy_pipeline_executes_through_runtime
+  rollback:
+    steps:
+      - disable_runtime
+      - use_legacy_pipeline
+    rule: no_business_logic_lost
+  deliverables:
+    - ProjectState
+    - Runtime Skeleton
+    - Contracts
+    - Registry
+    - Configuration
+    - EventBus
+    - Adapters
+    - Architecture Validation
+
+development_principles:
+  part: 46
+  status: canonical
+  priority: maximum
+  purpose: mandatory development principles for every future change; override implementation preferences
+  applies_to: every_pull_request
+  principles:
+    - id: "01"
+      name: Product First
+      rule: architecture must improve generated product; reject complexity without quality gain
+    - id: "02"
+      name: Reuse First
+      rule: search, measure reuse, extend before rewrite
+    - id: "03"
+      name: Small Migrations
+      rule: never big-bang rewrite; compile, test, preserve production behavior
+    - id: "04"
+      name: Measurable Improvements
+      rule: every migration improves at least one metric
+      metrics:
+        - Architecture Score
+        - Professional Score
+        - CTR Prediction
+        - Generation Time
+        - Memory Usage
+        - Test Coverage
+    - id: "05"
+      name: No Hidden Logic
+      rule: business logic never in utilities, helpers, providers, templates, React components
+    - id: "06"
+      name: One Responsibility
+      rule: one responsibility per module; extract when responsibility grows
+    - id: "07"
+      name: Backward Compatibility
+      rule: breaking changes require RFC, migration strategy, rollback plan
+    - id: "08"
+      name: Debuggability
+      rule: reproducible execution; store specs, blueprints, metrics, logs, decision trace
+    - id: "09"
+      name: Provider Independence
+      rule: provider change must not affect Commercial, Creative, Visual, Knowledge, Runtime
+    - id: "10"
+      name: Architecture Before Optimization
+      rule: correct architecture over micro-optimizations
+    - id: "11"
+      name: Quality Before Speed
+      rule: premium prioritizes quality; fast mode may simplify
+    - id: "12"
+      name: Knowledge Accumulation
+      rule: success strengthens system; failure teaches; nothing discarded without analysis
+  final_rule: DAOS must become better after every release
+
+daos_engineering_manifesto:
+  part: 47
+  version: "1.0"
+  status: canonical
+  priority: maximum
+  mission:
+    purpose: continuously improve commercial design intelligence
+    code: implementation medium only
+    architecture: organizational tool only
+    product: generated commercial result
+  engineering_values:
+    - id: "01"
+      name: Commercial impact over technical elegance
+    - id: "02"
+      name: Evidence over assumptions
+    - id: "03"
+      name: Architecture over improvisation
+    - id: "04"
+      name: Reuse over rewrite
+    - id: "05"
+      name: Automation over manual processes
+    - id: "06"
+      name: Continuous learning over static knowledge
+    - id: "07"
+      name: Small safe improvements over large risky rewrites
+    - id: "08"
+      name: Data-driven decisions over subjective opinions
+    - id: "09"
+      name: Platform independence over vendor lock-in
+    - id: "10"
+      name: Long-term maintainability over short-term speed
+  decision_framework:
+    questions:
+      - improves_commercial_image_quality
+      - existing_code_reusable
+      - architecture_remains_simpler
+      - change_measurable
+      - change_rollbackable
+      - change_testable_automatically
+      - project_easier_to_maintain
+    rule: if any answer is no, reconsider implementation
+  code_review_philosophy:
+    - architecture
+    - responsibilities
+    - correctness
+    - style
+  success_definition:
+    - improves_image_quality
+    - preserves_architecture
+    - passes_validation
+    - reduces_technical_debt
+    - increases_maintainability
+  final_principle: every line of code must justify its existence
+
+volume_1:
+  status: complete
+  version: "1.0"
+  architecture_status: stable
+  migration_status: ready
+  cursor_status: ready_for_tasks
+  cursor_not_ready_reason: Execute tasks from docs/cursor/Wave-*.md per Part 24 protocol
+  next_document: docs/Code_Rewrite_Bible.md
+  expected_pages:
+    architecture_bible: "400-700"
+    code_rewrite_bible: "1000-2000"
+
 cursor_execution:
   purpose: Cursor executes Architecture DSL; must not redesign architecture
   dsl_path: docs/architecture/architecture.yaml
-  bible_path: docs/Architecture_Bible.md
+  bible_path: docs/DAOS_Specification.md
   directive_registry: docs/architecture/directive-registry.md
   migration_report_template: docs/architecture/migration-report-template.md
   migration_logs_dir: docs/architecture/migration-logs/
