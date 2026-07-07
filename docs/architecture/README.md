@@ -8,6 +8,8 @@ See **Part 20** in [DAOS_Specification.md](../DAOS_Specification.md).
 
 **Primary:** [`architecture.yaml`](architecture.yaml) — machine-readable DSL (Part 23)
 
+**Constitution v3:** [`DAOS_ARCHITECTURE_CONSTITUTION_V3.md`](DAOS_ARCHITECTURE_CONSTITUTION_V3.md) — canonical agent/runtime language (SPEC-000+)
+
 **Secondary:** Architecture Bible, ADRs, RFCs (human-readable)
 
 **Execution:** Part 24 Cursor Execution Protocol — Cursor executes DSL, does not redesign architecture.
