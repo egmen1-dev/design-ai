@@ -38,13 +38,14 @@
 | 17 | Module System & Plugin ABI | [volume-17-module-system-plugin-abi](./constitution-v3/volume-17-module-system-plugin-abi/) | canonical |
 | 18 | Platform Operating Modes | [volume-18-platform-operating-modes](./constitution-v3/volume-18-platform-operating-modes/) | canonical |
 | 19 | System Invariants | [volume-19-system-invariants](./constitution-v3/volume-19-system-invariants/) | canonical |
-| 20 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
-| 21 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
+| 20 | Platform Evolution Model | [volume-20-platform-evolution-model](./constitution-v3/volume-20-platform-evolution-model/) | canonical |
+| 21 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
+| 22 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
 | — | Agent Communication Protocol | [volume-11-agent-communication-protocol](./constitution-v3/volume-11-agent-communication-protocol/) | superseded → Vol 7 / 13 |
-| 22 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
-| 23 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
-| 24 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
-| 25 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
+| 23 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
+| 24 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
+| 25 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
+| 26 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
 
 ## Appendices
 
@@ -835,3 +836,39 @@ Properties that SHALL remain true for every generation lifecycle: commercial goa
 | RFC-1920 | Fundamental Principle |
 
 **END OF VOLUME 19** (content in [part-01/](./constitution-v3/volume-19-system-invariants/part-01/))
+
+---
+
+# Volume 20 — Platform Evolution Model
+
+**Architecture status:** Canonical · **Layer:** Platform Evolution · **Normative:** Mandatory · **Version:** 1.0
+
+Controlled architectural evolution through the Canonical Evolution Pipeline: Idea → Research → Experiment → Evidence → Knowledge Candidate → ADR → RFC → Implementation → Benchmark → Certification → Production → Learning → Commercial Genome.
+
+→ Full text: [constitution-v3/volume-20-platform-evolution-model/part-01/](./constitution-v3/volume-20-platform-evolution-model/part-01/)
+
+| Spec / RFC | Title |
+|------------|-------|
+| RFC-2000 | Platform Evolution |
+| RFC-2001 | Canonical Evolution Pipeline |
+| SPEC-2000 | Idea Stage |
+| SPEC-2001 | Research Stage |
+| SPEC-2002 | Experiment Stage |
+| SPEC-2003 | Evidence Stage |
+| SPEC-2004 | Knowledge Candidate |
+| RFC-2002 | Architecture Decision Record |
+| RFC-2003 | Request For Comments |
+| SPEC-2005 | Implementation |
+| SPEC-2006 | Benchmark |
+| SPEC-2007 | Certification |
+| RFC-2004 | Production Promotion |
+| SPEC-2008 | Learning |
+| RFC-2005 | Commercial Genome Update |
+| SPEC-2009 | Deprecation |
+| RFC-2006 | Architectural Stability |
+| RFC-2007 | Knowledge Evolution |
+| SPEC-2010 | Evolution Metrics |
+| RFC-2008 | Engineering Discipline |
+| RFC-2009 | Platform Philosophy |
+
+**END OF VOLUME 20** (content in [part-01/](./constitution-v3/volume-20-platform-evolution-model/part-01/))

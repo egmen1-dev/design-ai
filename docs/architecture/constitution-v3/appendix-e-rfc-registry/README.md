@@ -156,5 +156,15 @@ Constitution RFCs:
 | RFC-1918 | 19 | [../volume-19-system-invariants/part-01/RFC-1918.md](../volume-19-system-invariants/part-01/RFC-1918.md) |
 | RFC-1919 | 19 | [../volume-19-system-invariants/part-01/RFC-1919.md](../volume-19-system-invariants/part-01/RFC-1919.md) |
 | RFC-1920 | 19 | [../volume-19-system-invariants/part-01/RFC-1920.md](../volume-19-system-invariants/part-01/RFC-1920.md) |
+| RFC-2000 | 20 | [../volume-20-platform-evolution-model/part-01/RFC-2000.md](../volume-20-platform-evolution-model/part-01/RFC-2000.md) |
+| RFC-2001 | 20 | [../volume-20-platform-evolution-model/part-01/RFC-2001.md](../volume-20-platform-evolution-model/part-01/RFC-2001.md) |
+| RFC-2002 | 20 | [../volume-20-platform-evolution-model/part-01/RFC-2002.md](../volume-20-platform-evolution-model/part-01/RFC-2002.md) |
+| RFC-2003 | 20 | [../volume-20-platform-evolution-model/part-01/RFC-2003.md](../volume-20-platform-evolution-model/part-01/RFC-2003.md) |
+| RFC-2004 | 20 | [../volume-20-platform-evolution-model/part-01/RFC-2004.md](../volume-20-platform-evolution-model/part-01/RFC-2004.md) |
+| RFC-2005 | 20 | [../volume-20-platform-evolution-model/part-01/RFC-2005.md](../volume-20-platform-evolution-model/part-01/RFC-2005.md) |
+| RFC-2006 | 20 | [../volume-20-platform-evolution-model/part-01/RFC-2006.md](../volume-20-platform-evolution-model/part-01/RFC-2006.md) |
+| RFC-2007 | 20 | [../volume-20-platform-evolution-model/part-01/RFC-2007.md](../volume-20-platform-evolution-model/part-01/RFC-2007.md) |
+| RFC-2008 | 20 | [../volume-20-platform-evolution-model/part-01/RFC-2008.md](../volume-20-platform-evolution-model/part-01/RFC-2008.md) |
+| RFC-2009 | 20 | [../volume-20-platform-evolution-model/part-01/RFC-2009.md](../volume-20-platform-evolution-model/part-01/RFC-2009.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)
