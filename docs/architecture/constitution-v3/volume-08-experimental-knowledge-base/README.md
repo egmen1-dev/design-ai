@@ -1,14 +1,14 @@
-# volume 08 experimental knowledge base
+# Volume 8 — Experimental Knowledge Base Integration
 
-**Status:** pending (integration spec)
+**Status:** superseded (integration spec)
 
-Constitution spec: [SPEC-210](../volume-02-research-system/part-01/SPEC-210.md) (Volume 2)
+Constitution spec: [RFC-504](../volume-05-commercial-knowledge-system/part-01/RFC-504.md), [SPEC-511](../volume-05-commercial-knowledge-system/part-01/SPEC-511.md)
+
+Research system: [SPEC-210](../volume-02-research-system/part-01/SPEC-210.md) (Volume 2)
 
 Runtime experimental rules:
 
 - [DAOS_EXPERIMENTAL_KNOWLEDGE_BASE.md](../../DAOS_EXPERIMENTAL_KNOWLEDGE_BASE.md)
 - [DAOS_EXPERIMENTAL_KNOWLEDGE_BASE/](../../DAOS_EXPERIMENTAL_KNOWLEDGE_BASE/)
-
-This volume will define how experimental knowledge integrates with Commercial Knowledge Engine and Decision Engine.
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)

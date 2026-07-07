@@ -23,10 +23,9 @@
 | 2 | Research System | [volume-02-research-system](./constitution-v3/volume-02-research-system/) | Part 1 draft |
 | 3 | Core Domain Model | [volume-03-core-domain-model](./constitution-v3/volume-03-core-domain-model/) | Part 1–2 draft |
 | 4 | SceneGraph | [volume-04-scenegraph](./constitution-v3/volume-04-scenegraph/) | Part 1 draft |
-| 5 | Decision Engine | [volume-05-decision-engine](./constitution-v3/volume-05-decision-engine/) | pending |
-| 6 | Rendering System | [volume-06-rendering-system](./constitution-v3/volume-06-rendering-system/) | pending |
-| 7 | Commercial Genome | [volume-07-commercial-genome](./constitution-v3/volume-07-commercial-genome/) | pending |
-| 8 | Experimental Knowledge Base Integration | [volume-08-experimental-knowledge-base](./constitution-v3/volume-08-experimental-knowledge-base/) | pending |
+| 5 | Commercial Knowledge System | [volume-05-commercial-knowledge-system](./constitution-v3/volume-05-commercial-knowledge-system/) | Part 1 draft |
+| 6 | Decision Engine | [volume-06-decision-engine](./constitution-v3/volume-06-decision-engine/) | pending |
+| 7 | Rendering System | [volume-07-rendering-system](./constitution-v3/volume-07-rendering-system/) | pending |
 | 9 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
 | 10 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
 | 11 | Agent Communication Protocol | [volume-11-agent-communication-protocol](./constitution-v3/volume-11-agent-communication-protocol/) | pending |
@@ -245,3 +244,35 @@ SceneGraph as single source of truth: planned vs actual states, node ownership, 
 | RFC-406 | Future Migration |
 
 **END OF VOLUME 4 — PART 1** (content in [part-01/](./constitution-v3/volume-04-scenegraph/part-01/))
+
+---
+
+# Volume 5 — Commercial Knowledge System (Part 1)
+
+Commercial Knowledge layers, genome graph, rule lifecycle, experimental KB staging, and consumption boundaries.
+
+→ Full text: [constitution-v3/volume-05-commercial-knowledge-system/part-01/](./constitution-v3/volume-05-commercial-knowledge-system/part-01/)
+
+| Spec / RFC | Title |
+|------------|-------|
+| RFC-500 | Commercial Knowledge |
+| RFC-501 | Knowledge First Architecture |
+| SPEC-500 | Commercial Knowledge Layers |
+| SPEC-501 | Commercial Law |
+| SPEC-502 | Commercial Rule |
+| SPEC-503 | Category Knowledge |
+| SPEC-504 | Brand Knowledge |
+| SPEC-505 | Adaptive Parameters |
+| RFC-502 | Commercial Genome |
+| SPEC-506 | Commercial Genome Structure |
+| SPEC-507 | Knowledge Relationships |
+| SPEC-508 | Rule Lifecycle |
+| RFC-503 | Rule Confidence |
+| SPEC-509 | Knowledge Versioning |
+| SPEC-510 | Knowledge Sources |
+| RFC-504 | Experimental Knowledge Base |
+| SPEC-511 | Promotion Requirements |
+| RFC-505 | Research Priority |
+| SPEC-512 | Knowledge Consumption |
+
+**END OF VOLUME 5 — PART 1** (content in [part-01/](./constitution-v3/volume-05-commercial-knowledge-system/part-01/))

@@ -31,5 +31,11 @@ Constitution RFCs:
 | RFC-404 | 4 Part 1 | [../volume-04-scenegraph/part-01/RFC-404.md](../volume-04-scenegraph/part-01/RFC-404.md) |
 | RFC-405 | 4 Part 1 | [../volume-04-scenegraph/part-01/RFC-405.md](../volume-04-scenegraph/part-01/RFC-405.md) |
 | RFC-406 | 4 Part 1 | [../volume-04-scenegraph/part-01/RFC-406.md](../volume-04-scenegraph/part-01/RFC-406.md) |
+| RFC-500 | 5 Part 1 | [../volume-05-commercial-knowledge-system/part-01/RFC-500.md](../volume-05-commercial-knowledge-system/part-01/RFC-500.md) |
+| RFC-501 | 5 Part 1 | [../volume-05-commercial-knowledge-system/part-01/RFC-501.md](../volume-05-commercial-knowledge-system/part-01/RFC-501.md) |
+| RFC-502 | 5 Part 1 | [../volume-05-commercial-knowledge-system/part-01/RFC-502.md](../volume-05-commercial-knowledge-system/part-01/RFC-502.md) |
+| RFC-503 | 5 Part 1 | [../volume-05-commercial-knowledge-system/part-01/RFC-503.md](../volume-05-commercial-knowledge-system/part-01/RFC-503.md) |
+| RFC-504 | 5 Part 1 | [../volume-05-commercial-knowledge-system/part-01/RFC-504.md](../volume-05-commercial-knowledge-system/part-01/RFC-504.md) |
+| RFC-505 | 5 Part 1 | [../volume-05-commercial-knowledge-system/part-01/RFC-505.md](../volume-05-commercial-knowledge-system/part-01/RFC-505.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)
