@@ -7,10 +7,12 @@ import type { CompositionLayout } from "@/lib/composition/types";
 import {
   applyWideProductTemplate,
   buildWideTemplateCompositorHook,
+  buildWideTemplateCompositorHookExperimentalWarning,
   computeWideTemplateHeroLimits,
   createWideProductTemplate,
   heroZoneToPx,
   isDaosWideTemplateCompositorHookEnabled,
+  WIDE_TEMPLATE_COMPOSITOR_HOOK_EXPERIMENTAL_CODE,
 } from "../templates/wide-product-template";
 
 function withEnv(vars: Record<string, string | undefined>, fn: () => void): void {
@@ -122,6 +124,18 @@ withEnv({ DAOS_WIDE_PRODUCT_TEMPLATE: "1", DAOS_WIDE_TEMPLATE_COMPOSITOR_HOOK: "
   assert.equal(applied.template.applied, true);
   assert.equal(applied.compositorHook, undefined);
   console.log("✓ hook off does not attach compositorHook");
+});
+
+withEnv({}, () => {
+  assert.equal(isDaosWideTemplateCompositorHookEnabled(), false);
+  console.log("✓ hook default OFF when env unset");
+});
+
+withEnv({ DAOS_WIDE_TEMPLATE_COMPOSITOR_HOOK: "1" }, () => {
+  const warning = buildWideTemplateCompositorHookExperimentalWarning();
+  assert.equal(warning.code, WIDE_TEMPLATE_COMPOSITOR_HOOK_EXPERIMENTAL_CODE);
+  assert.equal(warning.severity, "warning");
+  console.log("✓ experimental hook warning defined");
 });
 
 withEnv(templateEnv, () => {

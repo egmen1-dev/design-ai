@@ -33,6 +33,7 @@ import type { WideProductLayoutPatch } from "../overlay/wide-product-layout";
 import type { WideProductTemplate } from "../templates/wide-product-template";
 import {
   describeWideProductTemplateZones,
+  buildWideTemplateCompositorHookExperimentalWarning,
   isDaosWideTemplateCompositorHookEnabled,
   type WideTemplateCompositorHookDiagnostics,
 } from "../templates/wide-product-template";
@@ -173,6 +174,7 @@ export type DaosDebugBundle = {
     wideTemplateHeroZoneUsed?: string;
     wideTemplateCompositeAreaBefore?: number;
     wideTemplateCompositeAreaAfter?: number;
+    wideTemplateCompositorHookWarnings?: string[];
     sceneGraphV2Enabled?: boolean;
     sceneGraphMirrorMode?: boolean;
     sceneGraphFiles?: string[];
@@ -334,6 +336,15 @@ export function createDaosDebugBundle(
   const productScaleSummary = productScaleAudit
     ? summarizeProductScaleAudit(productScaleAudit)
     : undefined;
+  const wideTemplateCompositorHookWarnings = isDaosWideTemplateCompositorHookEnabled()
+    ? [buildWideTemplateCompositorHookExperimentalWarning().code]
+    : undefined;
+  const diagnosticsWarnings = [
+    ...meaningLossReport.warnings,
+    ...(wideTemplateCompositorHookWarnings
+      ? [buildWideTemplateCompositorHookExperimentalWarning()]
+      : []),
+  ];
   const createdAt = new Date().toISOString();
 
   return {
@@ -367,7 +378,7 @@ export function createDaosDebugBundle(
       decisionTraceCount: state.decisionTrace.length,
       missingSpecs: meaningLossReport.missingSpecs,
       confidenceBySpec: confidenceBySpec(state),
-      warnings: meaningLossReport.warnings,
+      warnings: diagnosticsWarnings,
       promptCaptured: Boolean(renderDebug?.finalPrompt),
       modulesIgnoredCount: renderDebug?.modulesIgnored?.length ?? 0,
       fallbackUsed: Boolean(renderDebug?.fallbackUsed),
@@ -490,6 +501,9 @@ export function createDaosDebugBundle(
           })()
         : {}),
       wideTemplateCompositorHookEnabled: isDaosWideTemplateCompositorHookEnabled(),
+      ...(wideTemplateCompositorHookWarnings
+        ? { wideTemplateCompositorHookWarnings }
+        : {}),
       ...(wideTemplateCompositorHookDiagnostics
         ? {
             wideTemplateCompositorHookApplied: wideTemplateCompositorHookDiagnostics.hookApplied,

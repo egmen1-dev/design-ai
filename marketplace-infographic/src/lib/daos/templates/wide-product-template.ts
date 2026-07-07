@@ -133,12 +133,30 @@ function cloneCompositionLayout(layout: CompositionLayout): CompositionLayout {
   };
 }
 
+export const DAOS_WIDE_TEMPLATE_COMPOSITOR_HOOK_ENV_KEY = "DAOS_WIDE_TEMPLATE_COMPOSITOR_HOOK";
+export const WIDE_TEMPLATE_COMPOSITOR_HOOK_EXPERIMENTAL_CODE =
+  "WIDE_TEMPLATE_COMPOSITOR_HOOK_EXPERIMENTAL";
+
 export function isDaosWideProductTemplateEnabled(): boolean {
   return process.env.DAOS_WIDE_PRODUCT_TEMPLATE === "1";
 }
 
+/** Default OFF — only active when explicitly set to `1`. */
 export function isDaosWideTemplateCompositorHookEnabled(): boolean {
   return process.env.DAOS_WIDE_TEMPLATE_COMPOSITOR_HOOK === "1";
+}
+
+export function buildWideTemplateCompositorHookExperimentalWarning(): {
+  code: typeof WIDE_TEMPLATE_COMPOSITOR_HOOK_EXPERIMENTAL_CODE;
+  severity: "warning";
+  message: string;
+} {
+  return {
+    code: WIDE_TEMPLATE_COMPOSITOR_HOOK_EXPERIMENTAL_CODE,
+    severity: "warning",
+    message:
+      "DAOS_WIDE_TEMPLATE_COMPOSITOR_HOOK is experimental and not recommended: Stage 5.1 reduced factual compositeProductAreaRatio while LAW_003 V2 still passes on planned template geometry.",
+  };
 }
 
 export function heroZoneToPx(
