@@ -1,8 +1,7 @@
-# volume 01 core architecture
+# Volume 1 — Core Architecture
 
-**Status:** pending
+**Status:** Part 1 draft
 
-Content for this section of DAOS Architecture Constitution v3 is not yet written.
-
-Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)
-
+| Part | Content | Path |
+|------|---------|------|
+| Part 1 | Engine topology, ownership, lifecycle, dependencies | [part-01/](./part-01/) |

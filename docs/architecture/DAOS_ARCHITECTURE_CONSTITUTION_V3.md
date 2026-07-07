@@ -19,7 +19,7 @@
 | Volume | Title | Path | Status |
 |--------|-------|------|--------|
 | 0 | DAOS Language Specification | [volume-00-language-specification](./constitution-v3/volume-00-language-specification/) | Part 1–2 draft |
-| 1 | Core Architecture | [volume-01-core-architecture](./constitution-v3/volume-01-core-architecture/) | pending |
+| 1 | Core Architecture | [volume-01-core-architecture](./constitution-v3/volume-01-core-architecture/) | Part 1 draft |
 | 2 | Research System | [volume-02-research-system](./constitution-v3/volume-02-research-system/) | pending |
 | 3 | Commercial Knowledge Engine | [volume-03-commercial-knowledge-engine](./constitution-v3/volume-03-commercial-knowledge-engine/) | pending |
 | 4 | Decision Engine | [volume-04-decision-engine](./constitution-v3/volume-04-decision-engine/) | pending |
@@ -98,3 +98,32 @@ Part 2 defines DAOS Protocol: communication principles, flow, message envelope, 
 | RFC-002 | Agent Communication Contract |
 
 **END OF VOLUME 0 — PART 2** (content in [part-02/](./constitution-v3/volume-00-language-specification/part-02/))
+
+---
+
+# Volume 1 — Core Architecture (Part 1)
+
+Engine topology, ownership, lifecycle, isolation, dependencies, execution layer, and evolution loop.
+
+→ Full text: [constitution-v3/volume-01-core-architecture/part-01/](./constitution-v3/volume-01-core-architecture/part-01/)
+
+| Spec / RFC | Title |
+|------------|-------|
+| RFC-100 | Core Architecture |
+| SPEC-100 | Engine Topology |
+| SPEC-101 | Global Ownership |
+| SPEC-102 | Engine Lifecycle |
+| SPEC-103 | Engine Isolation |
+| SPEC-104 | Dependency Rules |
+| SPEC-105 | Forbidden Dependencies |
+| RFC-101 | Single Decision Principle |
+| SPEC-106 | Immutable Commercial Intent |
+| RFC-102 | Execution Layer |
+| SPEC-107 | Renderer Contract |
+| SPEC-108 | Provider Contract |
+| SPEC-109 | Benchmark Position |
+| SPEC-110 | Learning Position |
+| RFC-103 | Evolution Loop |
+| SPEC-111 | Engine Health Contract |
+
+**END OF VOLUME 1 — PART 1** (content in [part-01/](./constitution-v3/volume-01-core-architecture/part-01/))
