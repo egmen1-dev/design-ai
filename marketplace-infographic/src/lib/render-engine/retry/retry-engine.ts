@@ -19,6 +19,7 @@ export type RenderWithRetryInput = RenderPlannerInput & {
   /** When user picks a model in the form — no fallback chain */
   lockModel?: boolean;
   debugRequestId?: string;
+  daosContext?: import("@/lib/daos/adapters/render-engine-context-adapter").DAOSRenderEngineContextSummary;
 };
 
 /**

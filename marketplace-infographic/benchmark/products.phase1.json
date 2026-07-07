@@ -1,0 +1,47 @@
+{
+  "phase": 1,
+  "description": "DAOS benchmark Phase 1 — five products with varied visual complexity",
+  "sharedSeed": "daos-benchmark-phase1-20260706",
+  "products": [
+    {
+      "id": "cordless-drill",
+      "name": "Cordless Drill",
+      "category": "electronics",
+      "complexity": "medium",
+      "prompt": "Профессиональная аккумуляторная дрель 18V для Wildberries: мощный крутящий момент 65 Нм, эргономичная рукоятка, премиальная карточка товара",
+      "image": { "background": "#d2372d", "accent": "#333333", "shape": "drill" }
+    },
+    {
+      "id": "electric-kettle",
+      "name": "Electric Kettle",
+      "category": "kitchen",
+      "complexity": "low",
+      "prompt": "Электрический чайник 1.7 л для Wildberries: премиальная кухонная карточка товара",
+      "image": { "background": "#e8f4f8", "accent": "#c0c0c0", "shape": "kettle" }
+    },
+    {
+      "id": "office-chair",
+      "name": "Office Chair",
+      "category": "furniture",
+      "complexity": "high",
+      "prompt": "Эргономичное офисное кресло для Wildberries: регулировка поясницы, дышащая сетка, премиальная карточка мебели",
+      "image": { "background": "#2c3e50", "accent": "#1a252f", "shape": "chair" }
+    },
+    {
+      "id": "mattress",
+      "name": "Mattress",
+      "category": "home",
+      "complexity": "medium",
+      "prompt": "Ортопедический матрас 160x200 для Wildberries: независимые пружины, средняя жёсткость, премиальная карточка для сна",
+      "image": { "background": "#f5f0e8", "accent": "#d4c4b0", "shape": "mattress" }
+    },
+    {
+      "id": "childrens-toy",
+      "name": "Children's Toy",
+      "category": "toys",
+      "complexity": "low",
+      "prompt": "Развивающая игрушка для детей 3+ для Wildberries: яркий дизайн, безопасные материалы, привлекательная детская карточка",
+      "image": { "background": "#ffcc00", "accent": "#ff6699", "shape": "toy" }
+    }
+  ]
+}
