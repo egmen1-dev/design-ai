@@ -85,5 +85,13 @@ Constitution RFCs:
 | RFC-1304 | 13 | [../volume-13-daos-protocol-language/part-01/RFC-1304.md](../volume-13-daos-protocol-language/part-01/RFC-1304.md) |
 | RFC-1305 | 13 | [../volume-13-daos-protocol-language/part-01/RFC-1305.md](../volume-13-daos-protocol-language/part-01/RFC-1305.md) |
 | RFC-1306 | 13 | [../volume-13-daos-protocol-language/part-01/RFC-1306.md](../volume-13-daos-protocol-language/part-01/RFC-1306.md) |
+| RFC-1400 | 14 | [../volume-14-commercial-instruction-set-architecture/part-01/RFC-1400.md](../volume-14-commercial-instruction-set-architecture/part-01/RFC-1400.md) |
+| RFC-1401 | 14 | [../volume-14-commercial-instruction-set-architecture/part-01/RFC-1401.md](../volume-14-commercial-instruction-set-architecture/part-01/RFC-1401.md) |
+| RFC-1402 | 14 | [../volume-14-commercial-instruction-set-architecture/part-01/RFC-1402.md](../volume-14-commercial-instruction-set-architecture/part-01/RFC-1402.md) |
+| RFC-1403 | 14 | [../volume-14-commercial-instruction-set-architecture/part-01/RFC-1403.md](../volume-14-commercial-instruction-set-architecture/part-01/RFC-1403.md) |
+| RFC-1404 | 14 | [../volume-14-commercial-instruction-set-architecture/part-01/RFC-1404.md](../volume-14-commercial-instruction-set-architecture/part-01/RFC-1404.md) |
+| RFC-1405 | 14 | [../volume-14-commercial-instruction-set-architecture/part-01/RFC-1405.md](../volume-14-commercial-instruction-set-architecture/part-01/RFC-1405.md) |
+| RFC-1406 | 14 | [../volume-14-commercial-instruction-set-architecture/part-01/RFC-1406.md](../volume-14-commercial-instruction-set-architecture/part-01/RFC-1406.md) |
+| RFC-1407 | 14 | [../volume-14-commercial-instruction-set-architecture/part-01/RFC-1407.md](../volume-14-commercial-instruction-set-architecture/part-01/RFC-1407.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)

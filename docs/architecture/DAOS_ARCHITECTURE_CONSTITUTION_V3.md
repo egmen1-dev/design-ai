@@ -32,13 +32,14 @@
 | 11 | State Machine Specification | [volume-11-state-machine-specification](./constitution-v3/volume-11-state-machine-specification/) | canonical |
 | 12 | Event Protocol Specification | [volume-12-event-protocol-specification](./constitution-v3/volume-12-event-protocol-specification/) | canonical |
 | 13 | DAOS Protocol Language (DPL) | [volume-13-daos-protocol-language](./constitution-v3/volume-13-daos-protocol-language/) | canonical |
-| 14 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
-| 15 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
+| 14 | Commercial Instruction Set Architecture (CISA) | [volume-14-commercial-instruction-set-architecture](./constitution-v3/volume-14-commercial-instruction-set-architecture/) | canonical |
+| 15 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
+| 16 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
 | — | Agent Communication Protocol | [volume-11-agent-communication-protocol](./constitution-v3/volume-11-agent-communication-protocol/) | superseded → Vol 7 / 13 |
-| 16 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
-| 17 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
-| 18 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
-| 19 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
+| 17 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
+| 18 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
+| 19 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
+| 20 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
 
 ## Appendices
 
@@ -559,3 +560,82 @@ All state mutations via immutable Protocol Events; event bus, categories, orderi
 | RFC-1207 | Canonical Mutation Rule |
 
 **END OF VOLUME 12** (content in [part-01/](./constitution-v3/volume-12-event-protocol-specification/part-01/))
+
+---
+
+# Volume 13 — DAOS Protocol Language (DPL)
+
+**Architecture status:** Canonical · **Protocol:** DAOS Protocol Language · **Version:** 1.0 · **Normative:** Mandatory
+
+Native protocol primitives, canonical reasoning chain, grammar, determinism, and provider isolation.
+
+→ Full text: [constitution-v3/volume-13-daos-protocol-language/part-01/](./constitution-v3/volume-13-daos-protocol-language/part-01/)
+
+| Spec / RFC | Title |
+|------------|-------|
+| RFC-1300 | Purpose |
+| RFC-1301 | Protocol Layers |
+| SPEC-1300 | Primitive Objects |
+| SPEC-1301 | FACT |
+| SPEC-1302 | RULE |
+| SPEC-1303 | LAW |
+| SPEC-1304 | CONSTRAINT |
+| SPEC-1305 | METRIC |
+| SPEC-1306 | FINDING |
+| SPEC-1307 | EVIDENCE |
+| SPEC-1308 | PROPOSAL |
+| SPEC-1309 | DECISION |
+| SPEC-1310 | COMMAND |
+| SPEC-1311 | EVENT |
+| SPEC-1312 | STATE |
+| RFC-1302 | Canonical Reasoning Chain |
+| SPEC-1313 | Protocol Grammar |
+| RFC-1303 | Protocol Determinism |
+| SPEC-1314 | Protocol Validation |
+| SPEC-1315 | Protocol Compatibility |
+| RFC-1304 | Canonical Internal Language |
+| SPEC-1316 | Provider Isolation |
+| RFC-1305 | Explainability |
+| RFC-1306 | Commercial Integrity |
+
+**END OF VOLUME 13** (content in [part-01/](./constitution-v3/volume-13-daos-protocol-language/part-01/))
+
+---
+
+# Volume 14 — Commercial Instruction Set Architecture (CISA)
+
+**Architecture status:** Canonical · **Execution model:** Instruction Based · **Instruction version:** 1.0 · **Normative:** Mandatory
+
+Standardized commercial instructions, scheduler, dependency graph, atomicity, and directed instruction graph execution model.
+
+→ Full text: [constitution-v3/volume-14-commercial-instruction-set-architecture/part-01/](./constitution-v3/volume-14-commercial-instruction-set-architecture/part-01/)
+
+| Spec / RFC | Title |
+|------------|-------|
+| RFC-1400 | Purpose |
+| RFC-1401 | Instruction Lifecycle |
+| SPEC-1400 | Instruction Structure |
+| SPEC-1401 | Instruction Metadata |
+| RFC-1402 | Instruction Categories |
+| SPEC-1402 | Knowledge Instructions |
+| SPEC-1403 | Decision Instructions |
+| SPEC-1404 | Scene Instructions |
+| SPEC-1405 | Geometry Instructions |
+| SPEC-1406 | Overlay Instructions |
+| SPEC-1407 | Typography Instructions |
+| SPEC-1408 | Lighting Instructions |
+| SPEC-1409 | Camera Instructions |
+| SPEC-1410 | Governance Instructions |
+| SPEC-1411 | Benchmark Instructions |
+| SPEC-1412 | Learning Instructions |
+| RFC-1403 | Instruction Scheduler |
+| SPEC-1413 | Dependency Graph |
+| RFC-1404 | Instruction Atomicity |
+| SPEC-1414 | Instruction Validation |
+| RFC-1405 | Instruction Idempotency |
+| SPEC-1415 | Instruction Trace |
+| RFC-1406 | Execution Priority |
+| SPEC-1416 | Instruction Invariants |
+| RFC-1407 | Canonical Execution Model |
+
+**END OF VOLUME 14** (content in [part-01/](./constitution-v3/volume-14-commercial-instruction-set-architecture/part-01/))
