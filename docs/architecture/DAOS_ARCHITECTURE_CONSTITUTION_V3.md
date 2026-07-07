@@ -35,13 +35,14 @@
 | 14 | Commercial Instruction Set Architecture (CISA) | [volume-14-commercial-instruction-set-architecture](./constitution-v3/volume-14-commercial-instruction-set-architecture/) | canonical |
 | 15 | Commercial Scheduler | [volume-15-commercial-scheduler](./constitution-v3/volume-15-commercial-scheduler/) | canonical |
 | 16 | DAOS Kernel Specification | [volume-16-daos-kernel-specification](./constitution-v3/volume-16-daos-kernel-specification/) | canonical |
-| 17 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
-| 18 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
+| 17 | Module System & Plugin ABI | [volume-17-module-system-plugin-abi](./constitution-v3/volume-17-module-system-plugin-abi/) | canonical |
+| 18 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
+| 19 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
 | — | Agent Communication Protocol | [volume-11-agent-communication-protocol](./constitution-v3/volume-11-agent-communication-protocol/) | superseded → Vol 7 / 13 |
-| 19 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
-| 20 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
-| 21 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
-| 22 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
+| 20 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
+| 21 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
+| 22 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
+| 23 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
 
 ## Appendices
 
@@ -718,3 +719,44 @@ Immutable execution core: lifecycle, protocol validation, scheduling, event bus,
 | RFC-1608 | Kernel Determinism |
 
 **END OF VOLUME 16** (content in [part-01/](./constitution-v3/volume-16-daos-kernel-specification/part-01/))
+
+---
+
+# Volume 17 — Module System & Plugin ABI
+
+**Architecture status:** Canonical · **Extension model:** Plugin Based · **Compatibility:** ABI Stable · **Normative:** Mandatory
+
+Plugin manifest, capabilities, permissions, ABI, isolation, provider/marketplace independence, and certification.
+
+→ Full text: [constitution-v3/volume-17-module-system-plugin-abi/part-01/](./constitution-v3/volume-17-module-system-plugin-abi/part-01/)
+
+| Spec / RFC | Title |
+|------------|-------|
+| RFC-1700 | DAOS Module System |
+| RFC-1701 | Kernel Independence |
+| SPEC-1700 | Plugin Categories |
+| SPEC-1701 | Plugin Manifest |
+| RFC-1702 | Plugin Lifecycle |
+| SPEC-1702 | Plugin Initialization |
+| SPEC-1703 | Plugin Capabilities |
+| RFC-1703 | Read / Write Permissions |
+| SPEC-1704 | Read Matrix |
+| SPEC-1705 | Write Matrix |
+| RFC-1704 | Ownership Rules |
+| SPEC-1706 | Plugin ABI |
+| RFC-1705 | ABI Compatibility |
+| SPEC-1707 | Plugin Dependencies |
+| RFC-1706 | Plugin Isolation |
+| SPEC-1708 | Event Subscription |
+| SPEC-1709 | Diagnostics Contract |
+| RFC-1707 | Provider Independence |
+| SPEC-1710 | Marketplace Independence |
+| RFC-1708 | Research Independence |
+| SPEC-1711 | Commercial Critic Plugins |
+| RFC-1709 | Plugin Certification |
+| SPEC-1712 | Plugin Registry |
+| RFC-1710 | Experimental Plugins |
+| SPEC-1713 | Hot Swapping |
+| RFC-1711 | Long-Term Stability |
+
+**END OF VOLUME 17** (content in [part-01/](./constitution-v3/volume-17-module-system-plugin-abi/part-01/))

@@ -113,5 +113,17 @@ Constitution RFCs:
 | RFC-1606 | 16 | [../volume-16-daos-kernel-specification/part-01/RFC-1606.md](../volume-16-daos-kernel-specification/part-01/RFC-1606.md) |
 | RFC-1607 | 16 | [../volume-16-daos-kernel-specification/part-01/RFC-1607.md](../volume-16-daos-kernel-specification/part-01/RFC-1607.md) |
 | RFC-1608 | 16 | [../volume-16-daos-kernel-specification/part-01/RFC-1608.md](../volume-16-daos-kernel-specification/part-01/RFC-1608.md) |
+| RFC-1700 | 17 | [../volume-17-module-system-plugin-abi/part-01/RFC-1700.md](../volume-17-module-system-plugin-abi/part-01/RFC-1700.md) |
+| RFC-1701 | 17 | [../volume-17-module-system-plugin-abi/part-01/RFC-1701.md](../volume-17-module-system-plugin-abi/part-01/RFC-1701.md) |
+| RFC-1702 | 17 | [../volume-17-module-system-plugin-abi/part-01/RFC-1702.md](../volume-17-module-system-plugin-abi/part-01/RFC-1702.md) |
+| RFC-1703 | 17 | [../volume-17-module-system-plugin-abi/part-01/RFC-1703.md](../volume-17-module-system-plugin-abi/part-01/RFC-1703.md) |
+| RFC-1704 | 17 | [../volume-17-module-system-plugin-abi/part-01/RFC-1704.md](../volume-17-module-system-plugin-abi/part-01/RFC-1704.md) |
+| RFC-1705 | 17 | [../volume-17-module-system-plugin-abi/part-01/RFC-1705.md](../volume-17-module-system-plugin-abi/part-01/RFC-1705.md) |
+| RFC-1706 | 17 | [../volume-17-module-system-plugin-abi/part-01/RFC-1706.md](../volume-17-module-system-plugin-abi/part-01/RFC-1706.md) |
+| RFC-1707 | 17 | [../volume-17-module-system-plugin-abi/part-01/RFC-1707.md](../volume-17-module-system-plugin-abi/part-01/RFC-1707.md) |
+| RFC-1708 | 17 | [../volume-17-module-system-plugin-abi/part-01/RFC-1708.md](../volume-17-module-system-plugin-abi/part-01/RFC-1708.md) |
+| RFC-1709 | 17 | [../volume-17-module-system-plugin-abi/part-01/RFC-1709.md](../volume-17-module-system-plugin-abi/part-01/RFC-1709.md) |
+| RFC-1710 | 17 | [../volume-17-module-system-plugin-abi/part-01/RFC-1710.md](../volume-17-module-system-plugin-abi/part-01/RFC-1710.md) |
+| RFC-1711 | 17 | [../volume-17-module-system-plugin-abi/part-01/RFC-1711.md](../volume-17-module-system-plugin-abi/part-01/RFC-1711.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)
