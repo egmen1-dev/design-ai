@@ -2237,12 +2237,29 @@ export async function handleGenerateInfographic(
     let geometryWhitespacePatchResult: GeometryWhitespacePatchResult | undefined;
     let contrastOverlapPatchResult: ContrastOverlapPatchResult | undefined;
     let wideProductLayoutPatchResult: WideProductLayoutPatchResult | undefined;
+    let overlayGateContext:
+      | {
+          productPrompt?: string;
+          productCategory?: string;
+          aspectRatio?: number;
+          wideHeroStrategyApplied?: boolean;
+          productAreaDrift?: number;
+        }
+      | undefined;
 
     if (sdData.layout === "marketplace") {
       const sceneGraphProductActual = sceneGraphMirror.getProductActualForOverlay();
+      overlayGateContext = {
+        productPrompt: input.prompt,
+        productCategory: analysis.category,
+        aspectRatio: productScalePatchResult?.aspectRatioPlacementPatch?.productAspectRatio,
+        wideHeroStrategyApplied: wideHeroStrategyResult?.applied,
+        productAreaDrift: sceneGraphMirror.getSnapshots().drifts?.[0]?.drift.productAreaDrift,
+      };
       const overlaySceneGraphDiagnostics = buildOverlaySceneGraphDiagnostics({
         sceneGraphProductActual,
         compositionLayout,
+        gateContext: overlayGateContext,
       });
 
       const prePatchAuditInput = {
@@ -2251,6 +2268,7 @@ export async function handleGenerateInfographic(
         layoutSpec,
         compositionLayout,
         sceneGraphProductActual,
+        overlayGateContext,
         htmlTemplateData: {
           headline: infographicData.headline,
           bullets: infographicData.specBlocks?.map((block) => block.label),
@@ -2284,6 +2302,7 @@ export async function handleGenerateInfographic(
         auditInput: prePatchAuditInput,
         sceneGraphProductActual,
         overlayDiagnostics: overlaySceneGraphDiagnostics,
+        overlayGateContext,
       });
       if (overlayLayoutPatchResult.patch.applied) {
         renderInfographicData =
@@ -2335,6 +2354,7 @@ export async function handleGenerateInfographic(
         compositePlacement: compositePlacementForPatch,
         sceneGraphProductActual,
         overlayDiagnostics: overlaySceneGraphDiagnostics,
+        overlayGateContext,
       });
       if (contrastOverlapPatchResult.patch.applied) {
         renderInfographicData =
@@ -2367,6 +2387,7 @@ export async function handleGenerateInfographic(
           avoidedOverlap:
             overlayLayoutPatchResult?.patch.overlayAvoidedActualProductOverlap ||
             contrastOverlapPatchResult?.patch.overlayAvoidedActualProductOverlap,
+          gateContext: overlayGateContext,
         }),
       );
     }
@@ -2732,6 +2753,7 @@ export async function handleGenerateInfographic(
       layoutSpec: renderLayoutSpec,
       compositionLayout: renderCompositionLayout,
       sceneGraphProductActual: sceneGraphProductActualForAudit,
+      overlayGateContext,
       htmlTemplateData: {
         headline: renderInfographicData.headline,
         bullets: renderInfographicData.specBlocks?.map((block) => block.label),
@@ -2793,6 +2815,7 @@ export async function handleGenerateInfographic(
       layoutSpec: renderLayoutSpec,
       compositionLayout: renderCompositionLayout,
       sceneGraphProductActual: sceneGraphProductActualForAudit,
+      overlayGateContext,
       htmlTemplateData: {
         headline: renderInfographicData.headline,
         bullets: renderInfographicData.specBlocks?.map((block) => block.label),

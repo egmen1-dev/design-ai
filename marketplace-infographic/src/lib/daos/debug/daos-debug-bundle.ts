@@ -170,6 +170,9 @@ export type DaosDebugBundle = {
     overlayProductActualSource?: string;
     overlayProductActualAreaRatio?: number;
     overlayAvoidedActualProductOverlap?: boolean;
+    overlayActualGateDecision?: "actual" | "planned";
+    overlayActualGateReasons?: string[];
+    overlayActualGateConfidence?: number;
   };
   generationMode: DAOSGenerationMode;
   generationPolicySummary: ReturnType<typeof summarizeDaosGenerationPolicy>;
@@ -356,15 +359,40 @@ export function createDaosDebugBundle(
             law003StillFailingReason: overlayQualitySummary.law003StillFailingReason,
           }
         : {}),
-      ...(options?.overlayQualityAudit?.overlayUsedSceneGraphActual
+      ...(options?.overlayLayoutPatch?.overlayActualGateDecision ||
+      options?.overlayQualityAudit?.overlayActualGateDecision
         ? {
-            overlayUsedSceneGraphActual: options.overlayQualityAudit.overlayUsedSceneGraphActual,
-            overlayProductActualSource: options.overlayQualityAudit.overlayProductActualSource,
-            overlayProductActualAreaRatio: options.overlayQualityAudit.overlayProductActualAreaRatio,
+            overlayUsedSceneGraphActual:
+              options.overlayLayoutPatch?.overlayUsedSceneGraphActual ??
+              options.overlayQualityAudit?.overlayUsedSceneGraphActual,
+            overlayProductActualSource:
+              options.overlayLayoutPatch?.overlayProductActualSource ??
+              options.overlayQualityAudit?.overlayProductActualSource,
+            overlayProductActualAreaRatio:
+              options.overlayLayoutPatch?.overlayProductActualAreaRatio ??
+              options.overlayQualityAudit?.overlayProductActualAreaRatio,
             overlayAvoidedActualProductOverlap:
-              options.overlayQualityAudit.overlayAvoidedActualProductOverlap,
+              options.overlayLayoutPatch?.overlayAvoidedActualProductOverlap ??
+              options.overlayQualityAudit?.overlayAvoidedActualProductOverlap,
+            overlayActualGateDecision:
+              options.overlayLayoutPatch?.overlayActualGateDecision ??
+              options.overlayQualityAudit?.overlayActualGateDecision,
+            overlayActualGateReasons:
+              options.overlayLayoutPatch?.overlayActualGateReasons ??
+              options.overlayQualityAudit?.overlayActualGateReasons,
+            overlayActualGateConfidence:
+              options.overlayLayoutPatch?.overlayActualGateConfidence ??
+              options.overlayQualityAudit?.overlayActualGateConfidence,
           }
-        : {}),
+        : options?.overlayQualityAudit?.overlayUsedSceneGraphActual
+          ? {
+              overlayUsedSceneGraphActual: options.overlayQualityAudit.overlayUsedSceneGraphActual,
+              overlayProductActualSource: options.overlayQualityAudit.overlayProductActualSource,
+              overlayProductActualAreaRatio: options.overlayQualityAudit.overlayProductActualAreaRatio,
+              overlayAvoidedActualProductOverlap:
+                options.overlayQualityAudit.overlayAvoidedActualProductOverlap,
+            }
+          : {}),
       ...(overlayLayoutPatch
         ? {
             overlayPatchEnabled: overlayLayoutPatch.enabled,

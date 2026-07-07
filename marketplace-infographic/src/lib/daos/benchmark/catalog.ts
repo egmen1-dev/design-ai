@@ -131,6 +131,12 @@ export const BENCHMARK_DAOS_SCENE_GRAPH_V2_ACTUAL_ENV: Record<string, string> = 
   DAOS_SCENE_GRAPH_V2: "1",
 };
 
+/** Stage 3.2 gated — scene graph on, category/aspect gate selects actual overlay. */
+export const BENCHMARK_DAOS_SCENE_GRAPH_V2_GATED_ENV: Record<string, string> = {
+  ...BENCHMARK_DAOS_WIDE_PRODUCT_LAYOUT_ENV,
+  DAOS_SCENE_GRAPH_V2: "1",
+};
+
 export function isDaosBenchmarkEnabled(): boolean {
   return (
     process.env.DAOS_RENDER_CONTEXT === "1" ||
@@ -150,6 +156,7 @@ export function isDaosBenchmarkEnabled(): boolean {
     process.env.DAOS_WIDE_PRODUCT_LAYOUT === "1" ||
     process.env.DAOS_SCENE_GRAPH_V2 === "1" ||
     process.env.DAOS_SCENE_GRAPH_OVERLAY_PLANNED === "1" ||
+    process.env.DAOS_SCENE_GRAPH_OVERLAY_FORCE_ACTUAL === "1" ||
     process.env.DAOS_PROMPT_CONTEXT === "1"
   );
 }

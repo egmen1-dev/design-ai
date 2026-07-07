@@ -7,9 +7,10 @@ import { analyzeOverlayQuality, type OverlayQualityAuditInput } from "../audit/o
 import type {
   SceneGraphProductActual,
   OverlaySceneGraphDiagnostics,
+  OverlaySceneGraphGateContext,
 } from "@/lib/scene-graph/product-actual-bridge";
 import {
-  isDaosSceneGraphOverlayUsesActual,
+  resolveOverlayActualGateDecision,
   resolveOverlayProductBbox,
   moveTextZonesAwayFromProductBbox,
   countTextZoneOverlapsWithProduct,
@@ -40,6 +41,7 @@ export type OverlayLayoutPatchInput = {
   pngOverlayFeelRisk?: number;
   sceneGraphProductActual?: SceneGraphProductActual;
   overlayDiagnostics?: OverlaySceneGraphDiagnostics;
+  overlayGateContext?: OverlaySceneGraphGateContext;
 };
 
 export type OverlayLayoutPatch = {
@@ -56,6 +58,9 @@ export type OverlayLayoutPatch = {
   overlayProductActualSource?: string;
   overlayProductActualAreaRatio?: number;
   overlayAvoidedActualProductOverlap?: boolean;
+  overlayActualGateDecision?: "actual" | "planned";
+  overlayActualGateReasons?: string[];
+  overlayActualGateConfidence?: number;
 };
 
 export type OverlayLayoutPatchResult = {
@@ -335,29 +340,38 @@ function applyContrastPatch(
   headlineContrastBoost: number | undefined,
   actions: OverlayLayoutPatchAction[],
   sceneGraphProductActual?: SceneGraphProductActual,
+  overlayGateContext?: OverlaySceneGraphGateContext,
 ): boolean {
   let avoidedOverlap = false;
 
-  if (compositionLayout && isDaosSceneGraphOverlayUsesActual() && sceneGraphProductActual) {
-    const productBbox = resolveOverlayProductBbox({
-      canvas: compositionLayout.canvas,
+  if (compositionLayout && sceneGraphProductActual) {
+    const gate = resolveOverlayActualGateDecision({
       sceneGraphProductActual,
-      preferSceneGraphActual: true,
+      compositionLayout,
+      gateContext: overlayGateContext,
     });
-    if (productBbox) {
-      const overlapsBefore = countTextZoneOverlapsWithProduct(compositionLayout, productBbox);
-      avoidedOverlap = moveTextZonesAwayFromProductBbox(compositionLayout, productBbox);
-      if (avoidedOverlap || overlapsBefore > 0) {
-        actions.push({
-          code: "SCENE_GRAPH_ACTUAL_SAFE_ZONE",
-          message: "Repositioned text zones using factual compositor product bbox",
-        });
+    if (gate.decision === "actual") {
+      const productBbox = resolveOverlayProductBbox({
+        canvas: compositionLayout.canvas,
+        sceneGraphProductActual,
+        compositionLayout,
+        gateDecision: gate,
+      });
+      if (productBbox) {
+        const overlapsBefore = countTextZoneOverlapsWithProduct(compositionLayout, productBbox);
+        avoidedOverlap = moveTextZonesAwayFromProductBbox(compositionLayout, productBbox);
+        if (avoidedOverlap || overlapsBefore > 0) {
+          actions.push({
+            code: "SCENE_GRAPH_ACTUAL_SAFE_ZONE",
+            message: "Repositioned text zones using factual compositor product bbox",
+          });
+        }
+        const factualAreaPct = sceneGraphProductActual.areaRatio * 100;
+        compositionLayout.metrics = {
+          ...compositionLayout.metrics,
+          productAreaPct: factualAreaPct,
+        };
       }
-      const factualAreaPct = sceneGraphProductActual.areaRatio * 100;
-      compositionLayout.metrics = {
-        ...compositionLayout.metrics,
-        productAreaPct: factualAreaPct,
-      };
     }
   }
 
@@ -479,6 +493,7 @@ export function applyOverlayLayoutPatch(
       plan.headlineContrastBoost,
       appliedActions,
       input.sceneGraphProductActual,
+      input.overlayGateContext,
     );
   }
 
@@ -499,7 +514,12 @@ export function applyOverlayLayoutPatch(
     );
   }
 
-  const usedActual = isDaosSceneGraphOverlayUsesActual() && Boolean(input.sceneGraphProductActual);
+  const gate = resolveOverlayActualGateDecision({
+    sceneGraphProductActual: input.sceneGraphProductActual,
+    compositionLayout,
+    gateContext: input.overlayGateContext,
+  });
+  const usedActual = gate.decision === "actual" && Boolean(input.sceneGraphProductActual);
 
   return {
     patch: {
@@ -519,6 +539,9 @@ export function applyOverlayLayoutPatch(
       overlayAvoidedActualProductOverlap: usedActual
         ? avoidedActualOverlap
         : input.overlayDiagnostics?.overlayAvoidedActualProductOverlap,
+      overlayActualGateDecision: gate.decision,
+      overlayActualGateReasons: gate.reasons,
+      overlayActualGateConfidence: gate.confidence,
     },
     infographicData,
     layoutSpec,

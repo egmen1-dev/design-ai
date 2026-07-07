@@ -163,6 +163,13 @@ withEnv({ DAOS_SCENE_GRAPH_V2: "1", DAOS_OVERLAY_PATCH: "1" }, () => {
     law014ContrastViolation: true,
     contrastRisk: 0.8,
     sceneGraphProductActual,
+    overlayGateContext: {
+      productPrompt: "Ортопедический матрас 160x200",
+      productCategory: "home",
+      aspectRatio: 2.6,
+      wideHeroStrategyApplied: true,
+      productAreaDrift: -0.22,
+    },
   });
   assert.equal(overlayResult.patch.overlayUsedSceneGraphActual, true);
   assert.equal(overlayResult.patch.overlayProductActualSource, "scene-compositor");
@@ -181,6 +188,13 @@ withEnv({ DAOS_SCENE_GRAPH_V2: "1", DAOS_CONTRAST_OVERLAP_PATCH: "1" }, () => {
     compositionLayout,
     law014ContrastViolation: true,
     sceneGraphProductActual,
+    overlayGateContext: {
+      productPrompt: "Ортопедический матрас 160x200",
+      productCategory: "home",
+      aspectRatio: 2.6,
+      wideHeroStrategyApplied: true,
+      productAreaDrift: -0.22,
+    },
   });
   assert.equal(contrastResult.patch.overlayUsedSceneGraphActual, true);
   assert.equal(contrastResult.patch.overlayProductActualSource, "scene-compositor");
@@ -188,11 +202,19 @@ withEnv({ DAOS_SCENE_GRAPH_V2: "1", DAOS_CONTRAST_OVERLAP_PATCH: "1" }, () => {
 console.log("✓ contrast-overlap-patch uses ProductNode.actual");
 
 withEnv({ DAOS_SCENE_GRAPH_V2: "1" }, () => {
+  const gateContext = {
+    productPrompt: "Ортопедический матрас 160x200",
+    productCategory: "home",
+    aspectRatio: 2.6,
+    wideHeroStrategyApplied: true,
+    productAreaDrift: -0.22,
+  };
   const auditWithActual = analyzeOverlayQuality({
     canvas: compositionLayout.canvas,
     layoutSpec,
     compositionLayout,
     sceneGraphProductActual,
+    overlayGateContext: gateContext,
     compositionMetrics: compositionLayout.metrics,
     governanceReport: [
       {
@@ -224,6 +246,7 @@ withEnv({ DAOS_SCENE_GRAPH_V2: "1" }, () => {
     sceneGraphProductActual,
     compositionLayout,
     avoidedOverlap: true,
+    gateContext,
   });
   assert.equal(diagnostics.overlayUsedSceneGraphActual, true);
   assert.equal(diagnostics.overlayAvoidedActualProductOverlap, true);

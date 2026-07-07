@@ -8,9 +8,10 @@ import type { NormalizedCompositePlacement } from "../compositor/composite-resul
 import type {
   SceneGraphProductActual,
   OverlaySceneGraphDiagnostics,
+  OverlaySceneGraphGateContext,
 } from "@/lib/scene-graph/product-actual-bridge";
 import {
-  isDaosSceneGraphOverlayUsesActual,
+  resolveOverlayActualGateDecision,
   resolveOverlayProductBbox,
   moveTextZonesAwayFromProductBbox,
   countTextZoneOverlapsWithProduct,
@@ -41,6 +42,7 @@ export type ContrastOverlapPatchInput = {
   compositePlacement?: NormalizedCompositePlacement;
   sceneGraphProductActual?: SceneGraphProductActual;
   overlayDiagnostics?: OverlaySceneGraphDiagnostics;
+  overlayGateContext?: OverlaySceneGraphGateContext;
 };
 
 export type ContrastOverlapPatch = {
@@ -57,6 +59,9 @@ export type ContrastOverlapPatch = {
   overlayProductActualSource?: string;
   overlayProductActualAreaRatio?: number;
   overlayAvoidedActualProductOverlap?: boolean;
+  overlayActualGateDecision?: "actual" | "planned";
+  overlayActualGateReasons?: string[];
+  overlayActualGateConfidence?: number;
 };
 
 export type ContrastOverlapPatchResult = {
@@ -169,12 +174,17 @@ function resolveProductBbox(
   input: ContrastOverlapPatchInput,
 ): ProductBbox | undefined {
   const canvas = input.compositionLayout?.canvas;
+  const gate = resolveOverlayActualGateDecision({
+    sceneGraphProductActual: input.sceneGraphProductActual,
+    compositionLayout: input.compositionLayout,
+    gateContext: input.overlayGateContext,
+  });
   return resolveOverlayProductBbox({
     canvas,
     sceneGraphProductActual: input.sceneGraphProductActual,
     compositePlacement: input.compositePlacement,
     compositionLayout: input.compositionLayout,
-    preferSceneGraphActual: isDaosSceneGraphOverlayUsesActual(),
+    gateDecision: gate,
   });
 }
 
@@ -560,14 +570,19 @@ export function applyContrastOverlapPatch(
     input.sceneGraphProductActual && compositionLayout && productBbox
       ? countTextZoneOverlapsWithProduct(compositionLayout, productBbox)
       : overlapsBefore;
+  const gate = resolveOverlayActualGateDecision({
+    sceneGraphProductActual: input.sceneGraphProductActual,
+    compositionLayout,
+    gateContext: input.overlayGateContext,
+  });
   const avoidedOverlap =
-    isDaosSceneGraphOverlayUsesActual() &&
+    gate.decision === "actual" &&
     Boolean(input.sceneGraphProductActual) &&
     overlapsBefore > 0 &&
     overlapsAfter < overlapsBefore;
 
   const overlayDiag = input.overlayDiagnostics;
-  const usedActual = isDaosSceneGraphOverlayUsesActual() && Boolean(input.sceneGraphProductActual);
+  const usedActual = gate.decision === "actual" && Boolean(input.sceneGraphProductActual);
 
   return {
     patch: {
@@ -588,6 +603,9 @@ export function applyContrastOverlapPatch(
       overlayAvoidedActualProductOverlap: usedActual
         ? avoidedOverlap || (overlapsBefore > 0 && overlapsAfter === 0)
         : overlayDiag?.overlayAvoidedActualProductOverlap,
+      overlayActualGateDecision: gate.decision,
+      overlayActualGateReasons: gate.reasons,
+      overlayActualGateConfidence: gate.confidence,
     },
     infographicData,
     layoutSpec,

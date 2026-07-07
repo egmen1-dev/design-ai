@@ -3,6 +3,11 @@ import { xPct, yPct } from "@/lib/composition/canvas";
 import type { NormalizedCompositePlacement } from "@/lib/daos/compositor/composite-result-bridge";
 import type { SceneGraph } from "./SceneGraph";
 import { isDaosSceneGraphV2Enabled } from "./index";
+import {
+  explainSceneGraphActualOverlayDecision,
+  type OverlayActualGateInput,
+  type OverlayActualGateResult,
+} from "./overlay-actual-gate";
 
 export type SceneGraphProductActual = {
   x: number;
@@ -24,16 +29,62 @@ export type OverlayProductBbox = {
   height: number;
 };
 
+export type OverlaySceneGraphGateContext = Omit<
+  OverlayActualGateInput,
+  "sceneGraphProductActual" | "compositionLayout"
+>;
+
 export type OverlaySceneGraphDiagnostics = {
   overlayUsedSceneGraphActual: boolean;
   overlayProductActualSource?: string;
   overlayProductActualAreaRatio?: number;
   overlayAvoidedActualProductOverlap?: boolean;
+  overlayActualGateDecision?: "actual" | "planned";
+  overlayActualGateReasons?: string[];
+  overlayActualGateConfidence?: number;
 };
 
-/** Stage 3 — overlay reads ProductNode.actual when V2 is on (unless forced planned). */
+/** Stage 3.2 — gated actual overlay is enabled when V2 is on (unless forced planned). */
 export function isDaosSceneGraphOverlayUsesActual(): boolean {
   return isDaosSceneGraphV2Enabled() && process.env.DAOS_SCENE_GRAPH_OVERLAY_PLANNED !== "1";
+}
+
+export function isDaosSceneGraphOverlayForceActual(): boolean {
+  return process.env.DAOS_SCENE_GRAPH_OVERLAY_FORCE_ACTUAL === "1";
+}
+
+export function isDaosSceneGraphOverlayForcePlanned(): boolean {
+  return process.env.DAOS_SCENE_GRAPH_OVERLAY_PLANNED === "1";
+}
+
+export function resolveOverlayActualGateDecision(input: {
+  sceneGraphProductActual?: SceneGraphProductActual;
+  compositionLayout?: CompositionLayout;
+  gateContext?: OverlaySceneGraphGateContext;
+}): OverlayActualGateResult {
+  if (!isDaosSceneGraphV2Enabled() || !input.sceneGraphProductActual) {
+    return { decision: "planned", reasons: ["scene_graph_v2_off"], confidence: 1 };
+  }
+  if (isDaosSceneGraphOverlayForceActual()) {
+    return { decision: "actual", reasons: ["force_actual"], confidence: 1 };
+  }
+  if (isDaosSceneGraphOverlayForcePlanned()) {
+    return { decision: "planned", reasons: ["force_planned"], confidence: 1 };
+  }
+
+  return explainSceneGraphActualOverlayDecision({
+    ...input.gateContext,
+    sceneGraphProductActual: input.sceneGraphProductActual,
+    compositionLayout: input.compositionLayout,
+  });
+}
+
+export function shouldOverlayUseSceneGraphActual(input: {
+  sceneGraphProductActual?: SceneGraphProductActual;
+  compositionLayout?: CompositionLayout;
+  gateContext?: OverlaySceneGraphGateContext;
+}): boolean {
+  return resolveOverlayActualGateDecision(input).decision === "actual";
 }
 
 export function extractProductActualFromSceneGraph(
@@ -100,12 +151,35 @@ export function resolveOverlayProductBbox(input: {
   sceneGraphProductActual?: SceneGraphProductActual;
   compositePlacement?: NormalizedCompositePlacement;
   compositionLayout?: CompositionLayout;
+  /** Explicit override for tests/benchmark arms. */
   preferSceneGraphActual?: boolean;
+  gateContext?: OverlaySceneGraphGateContext;
+  gateDecision?: OverlayActualGateResult;
 }): OverlayProductBbox | undefined {
   const canvas = input.canvas ?? input.compositionLayout?.canvas;
   if (!canvas?.width || !canvas.height) return undefined;
 
-  if (input.preferSceneGraphActual && input.sceneGraphProductActual) {
+  let useActual = input.preferSceneGraphActual;
+  if (useActual == null && input.sceneGraphProductActual) {
+    if (isDaosSceneGraphOverlayForceActual()) {
+      useActual = true;
+    } else if (isDaosSceneGraphOverlayForcePlanned()) {
+      useActual = false;
+    } else if (isDaosSceneGraphV2Enabled()) {
+      const gate =
+        input.gateDecision ??
+        resolveOverlayActualGateDecision({
+          sceneGraphProductActual: input.sceneGraphProductActual,
+          compositionLayout: input.compositionLayout,
+          gateContext: input.gateContext,
+        });
+      useActual = gate.decision === "actual";
+    } else {
+      useActual = false;
+    }
+  }
+
+  if (useActual && input.sceneGraphProductActual) {
     return productActualToOverlayBbox(input.sceneGraphProductActual);
   }
 
@@ -225,12 +299,24 @@ export function buildOverlaySceneGraphDiagnostics(input: {
   sceneGraphProductActual?: SceneGraphProductActual;
   compositionLayout?: CompositionLayout;
   avoidedOverlap?: boolean;
+  gateContext?: OverlaySceneGraphGateContext;
+  gateDecision?: OverlayActualGateResult;
 }): OverlaySceneGraphDiagnostics {
-  const used = isDaosSceneGraphOverlayUsesActual() && Boolean(input.sceneGraphProductActual);
+  const gate =
+    input.gateDecision ??
+    resolveOverlayActualGateDecision({
+      sceneGraphProductActual: input.sceneGraphProductActual,
+      compositionLayout: input.compositionLayout,
+      gateContext: input.gateContext,
+    });
+  const used = gate.decision === "actual" && Boolean(input.sceneGraphProductActual);
   return {
     overlayUsedSceneGraphActual: used,
     overlayProductActualSource: used ? input.sceneGraphProductActual?.source : undefined,
     overlayProductActualAreaRatio: used ? input.sceneGraphProductActual?.areaRatio : undefined,
     overlayAvoidedActualProductOverlap: used ? Boolean(input.avoidedOverlap) : undefined,
+    overlayActualGateDecision: gate.decision,
+    overlayActualGateReasons: gate.reasons,
+    overlayActualGateConfidence: gate.confidence,
   };
 }

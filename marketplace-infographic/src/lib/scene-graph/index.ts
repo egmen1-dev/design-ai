@@ -32,6 +32,8 @@ export {
 
 export {
   isDaosSceneGraphOverlayUsesActual,
+  shouldOverlayUseSceneGraphActual,
+  resolveOverlayActualGateDecision,
   extractProductActualFromSceneGraph,
   productActualToOverlayBbox,
   resolveOverlayProductBbox,
@@ -41,7 +43,18 @@ export {
   type SceneGraphProductActual,
   type OverlayProductBbox,
   type OverlaySceneGraphDiagnostics,
+  type OverlaySceneGraphGateContext,
 } from "./product-actual-bridge";
+
+export {
+  shouldUseSceneGraphActualForOverlay,
+  explainSceneGraphActualOverlayDecision,
+  estimateOverlayOverlapRisk,
+  estimateLaw003RegressionWithActual,
+  type OverlayActualGateInput,
+  type OverlayActualGateResult,
+  type OverlayActualGateDecision,
+} from "./overlay-actual-gate";
 
 export {
   validateSceneGraph,

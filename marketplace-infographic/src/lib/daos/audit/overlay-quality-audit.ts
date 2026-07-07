@@ -10,9 +10,9 @@ import {
   type Law003GovernanceSource,
 } from "../governance/law003-soft-governance";
 import type { ContrastOverlapPatch } from "../overlay/contrast-overlap-patch";
-import type { SceneGraphProductActual } from "@/lib/scene-graph/product-actual-bridge";
+import type { SceneGraphProductActual, OverlaySceneGraphGateContext } from "@/lib/scene-graph/product-actual-bridge";
 import {
-  isDaosSceneGraphOverlayUsesActual,
+  resolveOverlayActualGateDecision,
   resolveOverlayProductBbox,
   countTextZoneOverlapsWithProduct,
 } from "@/lib/scene-graph/product-actual-bridge";
@@ -65,6 +65,7 @@ export type OverlayQualityAuditInput = {
   contrastOverlapPatch?: Pick<ContrastOverlapPatch, "applied" | "contrastOverlapAfterEstimate">;
   sceneGraphProductActual?: SceneGraphProductActual;
   compositionLayout?: CompositionLayout;
+  overlayGateContext?: OverlaySceneGraphGateContext;
 };
 
 export type OverlayQualityAudit = {
@@ -86,6 +87,9 @@ export type OverlayQualityAudit = {
   overlayProductActualSource?: string;
   overlayProductActualAreaRatio?: number;
   overlayAvoidedActualProductOverlap?: boolean;
+  overlayActualGateDecision?: "actual" | "planned";
+  overlayActualGateReasons?: string[];
+  overlayActualGateConfidence?: number;
   warnings: OverlayQualityWarning[];
   recommendations: string[];
   score: number;
@@ -232,17 +236,27 @@ function computeWhitespaceRisk(
   return clamp01(risk);
 }
 
+function resolveOverlayGate(input: OverlayQualityAuditInput) {
+  return resolveOverlayActualGateDecision({
+    sceneGraphProductActual: input.sceneGraphProductActual,
+    compositionLayout: input.compositionLayout,
+    gateContext: input.overlayGateContext,
+  });
+}
+
 function computeContrastRisk(input: OverlayQualityAuditInput): number {
   let risk = 0.2;
   const overlap = input.compositionMetrics?.overlapPct ?? 0;
   if (overlap >= 5) risk += 0.35;
   else if (overlap >= 3) risk += 0.2;
 
-  if (isDaosSceneGraphOverlayUsesActual() && input.sceneGraphProductActual && input.compositionLayout) {
+  const gate = resolveOverlayGate(input);
+  if (gate.decision === "actual" && input.sceneGraphProductActual && input.compositionLayout) {
     const productBbox = resolveOverlayProductBbox({
       canvas: input.canvas ?? input.compositionLayout.canvas,
       sceneGraphProductActual: input.sceneGraphProductActual,
-      preferSceneGraphActual: true,
+      compositionLayout: input.compositionLayout,
+      gateDecision: gate,
     });
     const factualOverlaps = countTextZoneOverlapsWithProduct(input.compositionLayout, productBbox);
     if (factualOverlaps >= 2) risk += 0.35;
@@ -292,11 +306,13 @@ function computePngOverlayFeelRisk(input: OverlayQualityAuditInput): number {
   }
   if (input.hasComposite === false) risk += 0.3;
 
-  if (isDaosSceneGraphOverlayUsesActual() && input.sceneGraphProductActual && input.compositionLayout) {
+  const gate = resolveOverlayGate(input);
+  if (gate.decision === "actual" && input.sceneGraphProductActual && input.compositionLayout) {
     const productBbox = resolveOverlayProductBbox({
       canvas: input.canvas ?? input.compositionLayout.canvas,
       sceneGraphProductActual: input.sceneGraphProductActual,
-      preferSceneGraphActual: true,
+      compositionLayout: input.compositionLayout,
+      gateDecision: gate,
     });
     const factualOverlaps = countTextZoneOverlapsWithProduct(input.compositionLayout, productBbox);
     if (factualOverlaps > 0) risk += 0.2;
@@ -356,8 +372,9 @@ export function analyzeOverlayQuality(input: OverlayQualityAuditInput): OverlayQ
       LAW014_CONTRAST_OVERLAP_PASS_THRESHOLD
     : constitutionLaw014;
 
+  const gate = resolveOverlayGate(input);
   if (
-    isDaosSceneGraphOverlayUsesActual() &&
+    gate.decision === "actual" &&
     input.sceneGraphProductActual &&
     input.compositionLayout &&
     constitutionLaw014
@@ -365,7 +382,8 @@ export function analyzeOverlayQuality(input: OverlayQualityAuditInput): OverlayQ
     const productBbox = resolveOverlayProductBbox({
       canvas: input.canvas ?? input.compositionLayout.canvas,
       sceneGraphProductActual: input.sceneGraphProductActual,
-      preferSceneGraphActual: true,
+      compositionLayout: input.compositionLayout,
+      gateDecision: gate,
     });
     const factualOverlaps = countTextZoneOverlapsWithProduct(input.compositionLayout, productBbox);
     if (factualOverlaps === 0) {
@@ -373,8 +391,7 @@ export function analyzeOverlayQuality(input: OverlayQualityAuditInput): OverlayQ
     }
   }
 
-  const usedSceneGraphActual =
-    isDaosSceneGraphOverlayUsesActual() && Boolean(input.sceneGraphProductActual);
+  const usedSceneGraphActual = gate.decision === "actual" && Boolean(input.sceneGraphProductActual);
   const whitespaceRisk = computeWhitespaceRisk(input, law003Governance);
   const contrastRisk = computeContrastRisk(input);
   const hierarchyRisk = computeHierarchyRisk(input);
@@ -497,6 +514,9 @@ export function analyzeOverlayQuality(input: OverlayQualityAuditInput): OverlayQ
     overlayProductActualAreaRatio: usedSceneGraphActual
       ? input.sceneGraphProductActual?.areaRatio
       : undefined,
+    overlayActualGateDecision: gate.decision,
+    overlayActualGateReasons: gate.reasons,
+    overlayActualGateConfidence: gate.confidence,
     warnings,
     recommendations: [...recommendations],
     score,
