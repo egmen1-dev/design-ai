@@ -184,6 +184,10 @@ import {
   type WideProductLayoutPatchResult,
 } from "@/lib/daos/overlay/wide-product-layout";
 import {
+  applyWideProductTemplate,
+  type WideProductTemplateApplyResult,
+} from "@/lib/daos/templates/wide-product-template";
+import {
   applyProductScalePatch,
   inferProductComplexity,
   type ProductScalePatchResult,
@@ -2237,6 +2241,7 @@ export async function handleGenerateInfographic(
     let geometryWhitespacePatchResult: GeometryWhitespacePatchResult | undefined;
     let contrastOverlapPatchResult: ContrastOverlapPatchResult | undefined;
     let wideProductLayoutPatchResult: WideProductLayoutPatchResult | undefined;
+    let wideProductTemplateResult: WideProductTemplateApplyResult | undefined;
     let overlayGateContext:
       | {
           productPrompt?: string;
@@ -2261,6 +2266,22 @@ export async function handleGenerateInfographic(
         compositionLayout,
         gateContext: overlayGateContext,
       });
+
+      wideProductTemplateResult = applyWideProductTemplate({
+        layoutSpec: renderLayoutSpec,
+        infographicData: renderInfographicData,
+        compositionLayout: renderCompositionLayout,
+        productAspectRatio: productScalePatchResult?.aspectRatioPlacementPatch?.productAspectRatio,
+        productCategory: analysis.category,
+        productHint: input.prompt,
+      });
+      if (wideProductTemplateResult.template.applied) {
+        renderInfographicData =
+          wideProductTemplateResult.infographicData ?? renderInfographicData;
+        renderLayoutSpec = wideProductTemplateResult.layoutSpec ?? renderLayoutSpec;
+        renderCompositionLayout =
+          wideProductTemplateResult.compositionLayout ?? renderCompositionLayout;
+      }
 
       const prePatchAuditInput = {
         canvas: compositionLayout?.canvas,
@@ -2372,7 +2393,10 @@ export async function handleGenerateInfographic(
         productCategory: analysis.category,
         productHint: input.prompt,
       });
-      if (wideProductLayoutPatchResult.patch.applied) {
+      if (
+        wideProductLayoutPatchResult.patch.applied &&
+        !wideProductTemplateResult?.template.applied
+      ) {
         renderInfographicData =
           wideProductLayoutPatchResult.infographicData ?? renderInfographicData;
         renderLayoutSpec = wideProductLayoutPatchResult.layoutSpec ?? renderLayoutSpec;
@@ -2401,7 +2425,11 @@ export async function handleGenerateInfographic(
         canvas: renderCompositionLayout?.canvas ?? compositionLayout?.canvas,
       }),
       productCategory: analysis.category,
-      layoutMode: sdData.layout,
+      layoutMode: wideProductTemplateResult?.layoutMode ?? sdData.layout,
+      wideProductTemplateApplied: wideProductTemplateResult?.template.applied,
+      wideProductTemplateStrategy: wideProductTemplateResult?.template.strategy,
+      wideProductHeroZone: wideProductTemplateResult?.heroZoneLabel,
+      wideProductTextZone: wideProductTemplateResult?.textZoneLabel,
     });
 
     // ── 10. Layout Renderer ───────────────────────────────────────────
@@ -2854,7 +2882,11 @@ export async function handleGenerateInfographic(
       overlayAudit: overlayQualityAudit,
       law003Recalibration,
       productCategory: analysis.category,
-      layoutMode: sdData.layout,
+      layoutMode: wideProductTemplateResult?.layoutMode ?? sdData.layout,
+      wideProductTemplateApplied: wideProductTemplateResult?.template.applied,
+      wideProductTemplateStrategy: wideProductTemplateResult?.template.strategy,
+      wideProductHeroZone: wideProductTemplateResult?.heroZoneLabel,
+      wideProductTextZone: wideProductTemplateResult?.textZoneLabel,
     });
     const sceneGraphWrite = sceneGraphMirror.isEnabled()
       ? await sceneGraphMirror.writeSnapshots()
@@ -2889,6 +2921,7 @@ export async function handleGenerateInfographic(
       asymmetricLimits: asymmetricLimitsResult,
       wideHeroStrategy: wideHeroStrategyResult,
       wideProductLayoutPatch: wideProductLayoutPatchResult?.patch,
+      wideProductTemplate: wideProductTemplateResult?.template,
       compositePlacement,
       extractAreaCorrected: compositeResult?.extractAreaCorrected,
       extractAreaWarnings: compositeResult?.extractAreaWarnings,

@@ -46,6 +46,13 @@ function resolveCanvas(graph: SceneGraph) {
 }
 
 function resolveProductAreaRatio(graph: SceneGraph): number {
+  if (graph.metadata.wideProductTemplateApplied) {
+    const plannedPct = graph.composition.actual?.productAreaPct;
+    if (plannedPct != null && plannedPct > 0) {
+      return plannedPct / 100;
+    }
+  }
+
   const actual = graph.product.actual;
   if (actual?.areaRatio != null && actual.areaRatio > 0) return actual.areaRatio;
   if (actual?.visibleAreaRatio != null && actual.visibleAreaRatio > 0) return actual.visibleAreaRatio;
@@ -60,6 +67,13 @@ function resolveProductAreaRatio(graph: SceneGraph): number {
 }
 
 function resolveOverlayDensity(graph: SceneGraph): number {
+  if (graph.metadata.wideProductTemplateApplied) {
+    const textAreaPct = graph.typography.actual?.textAreaPct;
+    if (textAreaPct != null && textAreaPct > 0) {
+      return clamp01((textAreaPct + 8) / 100);
+    }
+  }
+
   const actualDensity =
     graph.overlay.actual?.density ?? graph.whitespace.actual?.overlayDensity ?? undefined;
   if (actualDensity != null) return clamp01(actualDensity);
@@ -159,6 +173,7 @@ function isWideCategory(graph: SceneGraph): boolean {
 }
 
 function hasWideTemplate(graph: SceneGraph): boolean {
+  if (graph.metadata.wideProductTemplateApplied) return true;
   const mode = (graph.metadata.layoutMode ?? "").toLowerCase();
   if (/wide|mattress|furniture|fit-width|bottom_hero/.test(mode)) return true;
   return graph.metadata.sources.some((source) => /wide/i.test(source));

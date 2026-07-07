@@ -41,6 +41,10 @@ export type SceneGraphMirrorInput = {
   law003Recalibration?: Law003RecalibrationReport;
   productCategory?: string;
   layoutMode?: string;
+  wideProductTemplateApplied?: boolean;
+  wideProductTemplateStrategy?: string;
+  wideProductHeroZone?: string;
+  wideProductTextZone?: string;
 };
 
 /** Phase 1 mirror — records pipeline state into SceneGraph without changing behavior. */

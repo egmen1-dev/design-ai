@@ -102,6 +102,10 @@ export type SceneGraph = {
     sources: string[];
     productCategory?: string;
     layoutMode?: string;
+    wideProductTemplateApplied?: boolean;
+    wideProductTemplateStrategy?: string;
+    wideProductHeroZone?: string;
+    wideProductTextZone?: string;
   };
 };
 

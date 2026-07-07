@@ -137,6 +137,20 @@ export const BENCHMARK_DAOS_SCENE_GRAPH_V2_GATED_ENV: Record<string, string> = {
   DAOS_SCENE_GRAPH_V2: "1",
 };
 
+/** Stage 5 — wide product template baseline (template off, layout off). */
+export const BENCHMARK_DAOS_WIDE_PRODUCT_TEMPLATE_BASELINE_ENV: Record<string, string> = {
+  ...BENCHMARK_DAOS_SCENE_GRAPH_V2_GATED_ENV,
+  DAOS_WIDE_PRODUCT_TEMPLATE: "0",
+  DAOS_WIDE_PRODUCT_LAYOUT: "0",
+};
+
+/** Stage 5 — wide product template on. */
+export const BENCHMARK_DAOS_WIDE_PRODUCT_TEMPLATE_ENV: Record<string, string> = {
+  ...BENCHMARK_DAOS_SCENE_GRAPH_V2_GATED_ENV,
+  DAOS_WIDE_PRODUCT_TEMPLATE: "1",
+  DAOS_WIDE_PRODUCT_LAYOUT: "0",
+};
+
 export function isDaosBenchmarkEnabled(): boolean {
   return (
     process.env.DAOS_RENDER_CONTEXT === "1" ||
@@ -154,6 +168,7 @@ export function isDaosBenchmarkEnabled(): boolean {
     process.env.DAOS_COMPOSITOR_ASYMMETRIC_LIMITS === "1" ||
     process.env.DAOS_WIDE_HERO_STRATEGY === "1" ||
     process.env.DAOS_WIDE_PRODUCT_LAYOUT === "1" ||
+    process.env.DAOS_WIDE_PRODUCT_TEMPLATE === "1" ||
     process.env.DAOS_SCENE_GRAPH_V2 === "1" ||
     process.env.DAOS_SCENE_GRAPH_OVERLAY_PLANNED === "1" ||
     process.env.DAOS_SCENE_GRAPH_OVERLAY_FORCE_ACTUAL === "1" ||

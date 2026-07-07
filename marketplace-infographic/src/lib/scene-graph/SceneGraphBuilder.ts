@@ -24,6 +24,10 @@ export type SceneGraphBuildInput = {
   law003Recalibration?: Law003RecalibrationReport;
   productCategory?: string;
   layoutMode?: string;
+  wideProductTemplateApplied?: boolean;
+  wideProductTemplateStrategy?: string;
+  wideProductHeroZone?: string;
+  wideProductTextZone?: string;
 };
 
 function pctToPx(
@@ -323,6 +327,10 @@ export function buildSceneGraph(input: SceneGraphBuildInput): SceneGraph {
       sources: [stage],
       productCategory: input.productCategory,
       layoutMode: input.layoutMode,
+      wideProductTemplateApplied: input.wideProductTemplateApplied,
+      wideProductTemplateStrategy: input.wideProductTemplateStrategy,
+      wideProductHeroZone: input.wideProductHeroZone,
+      wideProductTextZone: input.wideProductTextZone,
     },
   };
 
@@ -346,6 +354,12 @@ export function advanceSceneGraph(
     law003Recalibration: input.law003Recalibration,
     productCategory: input.productCategory ?? previous.metadata.productCategory,
     layoutMode: input.layoutMode ?? previous.metadata.layoutMode,
+    wideProductTemplateApplied:
+      input.wideProductTemplateApplied ?? previous.metadata.wideProductTemplateApplied,
+    wideProductTemplateStrategy:
+      input.wideProductTemplateStrategy ?? previous.metadata.wideProductTemplateStrategy,
+    wideProductHeroZone: input.wideProductHeroZone ?? previous.metadata.wideProductHeroZone,
+    wideProductTextZone: input.wideProductTextZone ?? previous.metadata.wideProductTextZone,
   });
 }
 
