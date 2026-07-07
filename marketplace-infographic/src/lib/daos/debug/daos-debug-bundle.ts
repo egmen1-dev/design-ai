@@ -37,6 +37,7 @@ import type { Law003GovernanceSource } from "../governance/law003-soft-governanc
 import type { DAOSOverlayGateResult } from "../gates/overlay-gate";
 import type { SceneGraphDriftReport } from "@/lib/scene-graph";
 import type { SceneGraphConstitutionMirrorResult } from "@/lib/scene-graph/SceneGraphConstitutionMirror";
+import type { SceneGraphWhitespaceAttributionResult } from "@/lib/scene-graph/SceneGraphWhitespaceAttribution";
 import { serializeSceneGraphSnapshots, type SceneGraphSnapshotSet } from "@/lib/scene-graph";
 
 export type DaosDebugBundle = {
@@ -177,6 +178,9 @@ export type DaosDebugBundle = {
     sceneGraphLaw003Passed?: boolean;
     sceneGraphLaw014Passed?: boolean;
     sceneGraphConstitutionSource?: "actual" | "planned" | "mixed";
+    whitespacePrimaryCause?: string;
+    whitespaceSecondaryCauses?: string[];
+    whitespaceRecommendations?: string[];
   };
   generationMode: DAOSGenerationMode;
   generationPolicySummary: ReturnType<typeof summarizeDaosGenerationPolicy>;
@@ -204,6 +208,7 @@ export type DaosDebugBundle = {
   sceneGraphSnapshots?: ReturnType<typeof serializeSceneGraphSnapshots>;
   sceneGraphDrifts?: SceneGraphDriftReport[];
   sceneGraphConstitutionMirror?: SceneGraphConstitutionMirrorResult;
+  sceneGraphWhitespaceAttribution?: SceneGraphWhitespaceAttributionResult;
   meaningLossReport: DaosMeaningLossReport;
 };
 
@@ -250,6 +255,7 @@ export function createDaosDebugBundle(
       whitespaceDrift: number;
       hasSignificantDrift: boolean;
     };
+    sceneGraphWhitespaceAttribution?: SceneGraphWhitespaceAttributionResult;
   },
 ): DaosDebugBundle {
   const renderDebug = options?.renderDebug;
@@ -295,6 +301,8 @@ export function createDaosDebugBundle(
   const sceneGraphSnapshots = options?.sceneGraphSnapshots;
   const sceneGraphConstitutionMirror =
     options?.sceneGraphConstitutionMirror ?? sceneGraphSnapshots?.constitutionMirror;
+  const sceneGraphWhitespaceAttribution =
+    options?.sceneGraphWhitespaceAttribution ?? sceneGraphSnapshots?.whitespaceAttribution;
   const sceneGraphFiles = options?.sceneGraphFiles;
   const sceneGraphDriftSummary = options?.sceneGraphDriftSummary;
   const sceneGraphSerialized = sceneGraphSnapshots
@@ -537,6 +545,13 @@ export function createDaosDebugBundle(
             sceneGraphConstitutionSource: sceneGraphConstitutionMirror.sceneGraphConstitutionSource,
           }
         : {}),
+      ...(sceneGraphWhitespaceAttribution
+        ? {
+            whitespacePrimaryCause: sceneGraphWhitespaceAttribution.primaryCause,
+            whitespaceSecondaryCauses: sceneGraphWhitespaceAttribution.secondaryCauses,
+            whitespaceRecommendations: sceneGraphWhitespaceAttribution.recommendations,
+          }
+        : {}),
     },
     generationMode,
     generationPolicySummary,
@@ -564,6 +579,7 @@ export function createDaosDebugBundle(
     sceneGraphSnapshots: sceneGraphSerialized,
     sceneGraphDrifts: sceneGraphSnapshots?.drifts,
     sceneGraphConstitutionMirror,
+    sceneGraphWhitespaceAttribution,
     meaningLossReport,
   };
 }

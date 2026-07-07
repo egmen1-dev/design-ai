@@ -9,6 +9,7 @@ export type SceneGraphSnapshotSet = {
   final?: SceneGraph;
   drifts?: SceneGraphDriftReport[];
   constitutionMirror?: import("./SceneGraphConstitutionMirror").SceneGraphConstitutionMirrorResult;
+  whitespaceAttribution?: import("./SceneGraphWhitespaceAttribution").SceneGraphWhitespaceAttributionResult;
 };
 
 export type SceneGraphSerializeOptions = {
@@ -47,6 +48,7 @@ const SNAPSHOT_FILES = {
   final: "sceneGraphFinal.json",
   drifts: "sceneGraphDrifts.json",
   constitutionMirror: "sceneGraphConstitutionMirror.json",
+  whitespaceAttribution: "sceneGraphWhitespaceAttribution.json",
 } as const;
 
 /** Write scene graph JSON files alongside daos-debug-bundle. */
@@ -77,6 +79,7 @@ export async function writeSceneGraphSnapshots(
     ["final", snapshots.final],
     ["drifts", snapshots.drifts],
     ["constitutionMirror", snapshots.constitutionMirror],
+    ["whitespaceAttribution", snapshots.whitespaceAttribution],
   ];
 
   for (const [key, payload] of entries) {

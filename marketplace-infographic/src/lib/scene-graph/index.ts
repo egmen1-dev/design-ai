@@ -81,6 +81,14 @@ export {
   type SceneGraphConstitutionSource,
 } from "./SceneGraphConstitutionMirror";
 
+export {
+  analyzeSceneGraphWhitespaceAttribution,
+  summarizeSceneGraphWhitespaceAttribution,
+  type SceneGraphWhitespaceAttributionResult,
+  type SceneGraphWhitespaceAttributionSummary,
+  type WhitespacePrimaryCause,
+} from "./SceneGraphWhitespaceAttribution";
+
 /** Feature flag: DAOS_SCENE_GRAPH_V2=1 (default OFF). Phase 1 mirror mode only. */
 export function isDaosSceneGraphV2Enabled(): boolean {
   return process.env.DAOS_SCENE_GRAPH_V2 === "1";

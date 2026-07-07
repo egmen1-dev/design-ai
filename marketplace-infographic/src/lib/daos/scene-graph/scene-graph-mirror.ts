@@ -20,7 +20,9 @@ import {
   type SceneGraphProductActual,
   type OverlaySceneGraphDiagnostics,
   evaluateSceneGraphConstitutionMirror,
+  analyzeSceneGraphWhitespaceAttribution,
   type SceneGraphConstitutionMirrorResult,
+  type SceneGraphWhitespaceAttributionResult,
 } from "@/lib/scene-graph";
 
 export type SceneGraphMirrorContext = {
@@ -53,6 +55,7 @@ export class SceneGraphMirror {
   private drifts: SceneGraphDriftReport[] = [];
   private overlayDiagnostics?: OverlaySceneGraphDiagnostics;
   private constitutionMirror?: SceneGraphConstitutionMirrorResult;
+  private whitespaceAttribution?: SceneGraphWhitespaceAttributionResult;
 
   constructor(context: SceneGraphMirrorContext) {
     this.enabled = isDaosSceneGraphV2Enabled();
@@ -119,10 +122,15 @@ export class SceneGraphMirror {
     });
     this.drifts.push(computeSceneGraphDrift(base, this.final));
     this.constitutionMirror = evaluateSceneGraphConstitutionMirror(this.final);
+    this.whitespaceAttribution = analyzeSceneGraphWhitespaceAttribution(this.final);
   }
 
   getConstitutionMirror(): SceneGraphConstitutionMirrorResult | undefined {
     return this.constitutionMirror;
+  }
+
+  getWhitespaceAttribution(): SceneGraphWhitespaceAttributionResult | undefined {
+    return this.whitespaceAttribution;
   }
 
   getSnapshots(): SceneGraphSnapshotSet {
@@ -133,6 +141,7 @@ export class SceneGraphMirror {
       final: this.final,
       drifts: this.drifts.length > 0 ? this.drifts : undefined,
       constitutionMirror: this.constitutionMirror,
+      whitespaceAttribution: this.whitespaceAttribution,
     };
   }
 
