@@ -26,8 +26,9 @@
 | 5 | Commercial Knowledge System | [volume-05-commercial-knowledge-system](./constitution-v3/volume-05-commercial-knowledge-system/) | Part 1 draft |
 | 6 | Decision Engine | [volume-06-decision-engine](./constitution-v3/volume-06-decision-engine/) | Part 1–2 draft |
 | 7 | Agent Reasoning Protocol | [volume-07-agent-reasoning-protocol](./constitution-v3/volume-07-agent-reasoning-protocol/) | Part 1 draft |
-| 8 | Rendering System | [volume-08-rendering-system](./constitution-v3/volume-08-rendering-system/) | pending |
-| 9 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
+| 8 | Commercial Reasoning System | [volume-08-commercial-reasoning-system](./constitution-v3/volume-08-commercial-reasoning-system/) | Part 1 draft |
+| 9 | Rendering System | [volume-09-rendering-system](./constitution-v3/volume-09-rendering-system/) | pending |
+| 10 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
 | 10 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
 | 11 | Agent Communication Protocol | [volume-11-agent-communication-protocol](./constitution-v3/volume-11-agent-communication-protocol/) | superseded → Vol 7 |
 | 12 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
@@ -372,3 +373,34 @@ Unified expert reasoning pipeline, protocol objects, determinism, and commercial
 | RFC-703 | Commercial Thinking |
 
 **END OF VOLUME 7 — PART 1** (content in [part-01/](./constitution-v3/volume-07-agent-reasoning-protocol/part-01/))
+
+---
+
+# Volume 8 — Commercial Reasoning System (Part 1)
+
+Highest intelligence layer: commercial objective, evidence-weighted reasoning, scoring, minimal complexity, and commercial-first optimization.
+
+→ Full text: [constitution-v3/volume-08-commercial-reasoning-system/part-01/](./constitution-v3/volume-08-commercial-reasoning-system/part-01/)
+
+| Spec / RFC | Title |
+|------------|-------|
+| RFC-800 | Commercial Reasoning |
+| RFC-801 | Commercial Thinking Hierarchy |
+| SPEC-800 | Commercial Objective |
+| SPEC-801 | Commercial Context |
+| SPEC-802 | Reasoning Domains |
+| RFC-802 | Evidence Weighted Reasoning |
+| SPEC-803 | Commercial Hypothesis |
+| SPEC-804 | Commercial Impact Estimation |
+| SPEC-805 | Commercial Cost |
+| RFC-803 | Rule Of Minimal Complexity |
+| SPEC-806 | Commercial Score |
+| SPEC-807 | Proposal Comparison |
+| RFC-804 | Explainable Commercial Reasoning |
+| SPEC-808 | Commercial Consistency |
+| RFC-805 | Human Research Priority |
+| SPEC-809 | Commercial Memory |
+| SPEC-810 | Reasoning Output |
+| RFC-806 | Commercial First Principle |
+
+**END OF VOLUME 8 — PART 1** (content in [part-01/](./constitution-v3/volume-08-commercial-reasoning-system/part-01/))

@@ -51,5 +51,12 @@ Constitution RFCs:
 | RFC-701 | 7 Part 1 | [../volume-07-agent-reasoning-protocol/part-01/RFC-701.md](../volume-07-agent-reasoning-protocol/part-01/RFC-701.md) |
 | RFC-702 | 7 Part 1 | [../volume-07-agent-reasoning-protocol/part-01/RFC-702.md](../volume-07-agent-reasoning-protocol/part-01/RFC-702.md) |
 | RFC-703 | 7 Part 1 | [../volume-07-agent-reasoning-protocol/part-01/RFC-703.md](../volume-07-agent-reasoning-protocol/part-01/RFC-703.md) |
+| RFC-800 | 8 Part 1 | [../volume-08-commercial-reasoning-system/part-01/RFC-800.md](../volume-08-commercial-reasoning-system/part-01/RFC-800.md) |
+| RFC-801 | 8 Part 1 | [../volume-08-commercial-reasoning-system/part-01/RFC-801.md](../volume-08-commercial-reasoning-system/part-01/RFC-801.md) |
+| RFC-802 | 8 Part 1 | [../volume-08-commercial-reasoning-system/part-01/RFC-802.md](../volume-08-commercial-reasoning-system/part-01/RFC-802.md) |
+| RFC-803 | 8 Part 1 | [../volume-08-commercial-reasoning-system/part-01/RFC-803.md](../volume-08-commercial-reasoning-system/part-01/RFC-803.md) |
+| RFC-804 | 8 Part 1 | [../volume-08-commercial-reasoning-system/part-01/RFC-804.md](../volume-08-commercial-reasoning-system/part-01/RFC-804.md) |
+| RFC-805 | 8 Part 1 | [../volume-08-commercial-reasoning-system/part-01/RFC-805.md](../volume-08-commercial-reasoning-system/part-01/RFC-805.md) |
+| RFC-806 | 8 Part 1 | [../volume-08-commercial-reasoning-system/part-01/RFC-806.md](../volume-08-commercial-reasoning-system/part-01/RFC-806.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)
