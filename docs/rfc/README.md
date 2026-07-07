@@ -2,7 +2,7 @@
 
 RFCs document large architectural changes **before** implementation.
 
-See **Part 21** in [Architecture_Bible.md](../Architecture_Bible.md).
+See **Part 21** in [DAOS_Specification.md](../DAOS_Specification.md).
 
 ## Lifecycle
 
@@ -14,6 +14,7 @@ Draft → Review → Accepted → Implemented → Released → Archived
 
 | RFC | Title | Status |
 |-----|-------|--------|
+| [RFC-000](RFC-000.md) | Design AI Operating System | Accepted |
 | [RFC-001](RFC-001.md) | ProjectState | Accepted |
 | [RFC-002](RFC-002.md) | Runtime | Accepted |
 | [RFC-003](RFC-003.md) | Knowledge Engine | Accepted |
