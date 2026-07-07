@@ -43,5 +43,9 @@ Constitution RFCs:
 | RFC-603 | 6 Part 1 | [../volume-06-decision-engine/part-01/RFC-603.md](../volume-06-decision-engine/part-01/RFC-603.md) |
 | RFC-604 | 6 Part 1 | [../volume-06-decision-engine/part-01/RFC-604.md](../volume-06-decision-engine/part-01/RFC-604.md) |
 | RFC-605 | 6 Part 1 | [../volume-06-decision-engine/part-01/RFC-605.md](../volume-06-decision-engine/part-01/RFC-605.md) |
+| RFC-606 | 6 Part 2 | [../volume-06-decision-engine/part-02/RFC-606.md](../volume-06-decision-engine/part-02/RFC-606.md) |
+| RFC-607 | 6 Part 2 | [../volume-06-decision-engine/part-02/RFC-607.md](../volume-06-decision-engine/part-02/RFC-607.md) |
+| RFC-608 | 6 Part 2 | [../volume-06-decision-engine/part-02/RFC-608.md](../volume-06-decision-engine/part-02/RFC-608.md) |
+| RFC-609 | 6 Part 2 | [../volume-06-decision-engine/part-02/RFC-609.md](../volume-06-decision-engine/part-02/RFC-609.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)

@@ -24,7 +24,7 @@
 | 3 | Core Domain Model | [volume-03-core-domain-model](./constitution-v3/volume-03-core-domain-model/) | Part 1–2 draft |
 | 4 | SceneGraph | [volume-04-scenegraph](./constitution-v3/volume-04-scenegraph/) | Part 1 draft |
 | 5 | Commercial Knowledge System | [volume-05-commercial-knowledge-system](./constitution-v3/volume-05-commercial-knowledge-system/) | Part 1 draft |
-| 6 | Decision Engine | [volume-06-decision-engine](./constitution-v3/volume-06-decision-engine/) | Part 1 draft |
+| 6 | Decision Engine | [volume-06-decision-engine](./constitution-v3/volume-06-decision-engine/) | Part 1–2 draft |
 | 7 | Rendering System | [volume-07-rendering-system](./constitution-v3/volume-07-rendering-system/) | pending |
 | 9 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
 | 10 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
@@ -305,3 +305,36 @@ Multi-agent expert proposals, conflict resolution, decision validation, and Deci
 | SPEC-609 | Decision Output Contract |
 
 **END OF VOLUME 6 — PART 1** (content in [part-01/](./constitution-v3/volume-06-decision-engine/part-01/))
+
+---
+
+# Volume 6 — Decision Lifecycle (Part 2)
+
+Deterministic 13-stage commercial generation lifecycle, retry strategy, failure recovery, and commercial invariants.
+
+→ Full text: [constitution-v3/volume-06-decision-engine/part-02/](./constitution-v3/volume-06-decision-engine/part-02/)
+
+| Spec / RFC | Title |
+|------------|-------|
+| RFC-606 | Commercial Decision Lifecycle |
+| SPEC-610 | Decision Lifecycle |
+| SPEC-611 | Stage 1 — Context Initialization |
+| SPEC-612 | Stage 2 — Knowledge Retrieval |
+| SPEC-613 | Stage 3 — Product Understanding |
+| SPEC-614 | Stage 4 — Marketplace Understanding |
+| SPEC-615 | Stage 5 — Proposal Generation |
+| SPEC-616 | Stage 6 — Proposal Validation |
+| RFC-607 | Proposal Independence |
+| SPEC-617 | Stage 7 — Conflict Resolution |
+| SPEC-618 | Stage 8 — DecisionGraph Assembly |
+| SPEC-619 | Stage 9 — SceneGraph Assembly |
+| SPEC-620 | Stage 10 — Execution |
+| SPEC-621 | Stage 11 — Governance |
+| SPEC-622 | Stage 12 — Benchmark |
+| SPEC-623 | Stage 13 — Learning |
+| RFC-608 | Retry Strategy |
+| SPEC-624 | Failure Recovery |
+| SPEC-625 | Deterministic Execution |
+| RFC-609 | Commercial Invariants |
+
+**END OF VOLUME 6 — PART 2** (content in [part-02/](./constitution-v3/volume-06-decision-engine/part-02/))

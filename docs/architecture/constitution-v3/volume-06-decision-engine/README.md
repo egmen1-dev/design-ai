@@ -1,10 +1,11 @@
 # Volume 6 — Decision Engine
 
-**Status:** Part 1 draft
+**Status:** Part 1–2 draft
 
 | Part | Content | Path |
 |------|---------|------|
 | Part 1 | Multi-agent proposals, conflict resolution, DecisionGraph output | [part-01/](./part-01/) |
+| Part 2 | Decision lifecycle, stages, retry, invariants | [part-02/](./part-02/) |
 
 Domain model: [Volume 3 Part 2 — Decision Domain Model](../volume-03-core-domain-model/part-02/)
 
