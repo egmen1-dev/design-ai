@@ -4,7 +4,7 @@
 
 architecture:
   version: "2.0"
-  bible: docs/Architecture_Bible.md
+  bible: docs/DAOS_Specification.md
   dsl: docs/architecture/architecture.yaml
   score_target: 98
   coverage_target: 95
