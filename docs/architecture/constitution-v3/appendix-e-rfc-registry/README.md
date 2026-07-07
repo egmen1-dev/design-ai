@@ -61,5 +61,8 @@ Constitution RFCs:
 | RFC-900 | 9 Part 1 | [../volume-09-execution-architecture/part-01/RFC-900.md](../volume-09-execution-architecture/part-01/RFC-900.md) |
 | RFC-901 | 9 Part 1 | [../volume-09-execution-architecture/part-01/RFC-901.md](../volume-09-execution-architecture/part-01/RFC-901.md) |
 | RFC-902 | 9 Part 1 | [../volume-09-execution-architecture/part-01/RFC-902.md](../volume-09-execution-architecture/part-01/RFC-902.md) |
+| RFC-1000 | 10 Part 1 | [../volume-10-canonical-data-contracts/part-01/RFC-1000.md](../volume-10-canonical-data-contracts/part-01/RFC-1000.md) |
+| RFC-1001 | 10 Part 1 | [../volume-10-canonical-data-contracts/part-01/RFC-1001.md](../volume-10-canonical-data-contracts/part-01/RFC-1001.md) |
+| RFC-1002 | 10 Part 1 | [../volume-10-canonical-data-contracts/part-01/RFC-1002.md](../volume-10-canonical-data-contracts/part-01/RFC-1002.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)

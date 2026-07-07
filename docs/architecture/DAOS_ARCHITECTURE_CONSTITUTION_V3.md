@@ -28,13 +28,14 @@
 | 7 | Agent Reasoning Protocol | [volume-07-agent-reasoning-protocol](./constitution-v3/volume-07-agent-reasoning-protocol/) | Part 1 draft |
 | 8 | Commercial Reasoning System | [volume-08-commercial-reasoning-system](./constitution-v3/volume-08-commercial-reasoning-system/) | Part 1 draft |
 | 9 | Execution Architecture Specification | [volume-09-execution-architecture](./constitution-v3/volume-09-execution-architecture/) | Part 1 canonical |
-| 10 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
-| 11 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
-| 11 | Agent Communication Protocol | [volume-11-agent-communication-protocol](./constitution-v3/volume-11-agent-communication-protocol/) | superseded → Vol 7 |
-| 12 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
-| 13 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
-| 14 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
-| 15 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
+| 10 | Canonical Data Contracts | [volume-10-canonical-data-contracts](./constitution-v3/volume-10-canonical-data-contracts/) | Part 1 canonical |
+| 11 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
+| 12 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
+| — | Agent Communication Protocol | [volume-11-agent-communication-protocol](./constitution-v3/volume-11-agent-communication-protocol/) | superseded → Vol 7 |
+| 13 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
+| 14 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
+| 15 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
+| 16 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
 
 ## Appendices
 
@@ -437,3 +438,41 @@ Execution topology, module contracts, actual-state priority, and provider indepe
 | RFC-902 | Rendering Independence |
 
 **END OF VOLUME 9 — PART 1** (content in [part-01/](./constitution-v3/volume-09-execution-architecture/part-01/))
+
+---
+
+# Volume 10 — Canonical Data Contracts (Part 1)
+
+**Architecture status:** Canonical · **Schema version:** 3.0 · **Serialization:** JSON · **Validation:** Strict
+
+Universal metadata, canonical schemas for DecisionGraph, SceneGraph, protocol objects, and legacy projection rules.
+
+→ Full text: [constitution-v3/volume-10-canonical-data-contracts/part-01/](./constitution-v3/volume-10-canonical-data-contracts/part-01/)
+
+| Spec / RFC | Title |
+|------------|-------|
+| RFC-1000 | Canonical Data Model |
+| RFC-1001 | Serialization Rules |
+| SPEC-1000 | Universal Metadata |
+| SPEC-1001 | Object Identity |
+| SPEC-1002 | DecisionGraph Schema |
+| SPEC-1003 | SceneGraph Schema |
+| SPEC-1004 | Scene Node Schema |
+| SPEC-1005 | Product Node |
+| SPEC-1006 | Overlay Node |
+| SPEC-1007 | Typography Node |
+| SPEC-1008 | Finding Schema |
+| SPEC-1009 | Proposal Schema |
+| SPEC-1010 | Constraint Schema |
+| SPEC-1011 | Evidence Schema |
+| SPEC-1012 | Experiment Schema |
+| SPEC-1013 | Commercial Law Schema |
+| SPEC-1014 | Commercial Rule Schema |
+| SPEC-1015 | Knowledge Rule Schema |
+| SPEC-1016 | Benchmark Result |
+| SPEC-1017 | Learning Event |
+| SPEC-1018 | Compatibility Rules |
+| RFC-1002 | Canonical Object Rule |
+| SPEC-1019 | Legacy Compatibility |
+
+**END OF VOLUME 10 — PART 1** (content in [part-01/](./constitution-v3/volume-10-canonical-data-contracts/part-01/))
