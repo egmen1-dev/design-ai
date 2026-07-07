@@ -33,13 +33,14 @@
 | 12 | Event Protocol Specification | [volume-12-event-protocol-specification](./constitution-v3/volume-12-event-protocol-specification/) | canonical |
 | 13 | DAOS Protocol Language (DPL) | [volume-13-daos-protocol-language](./constitution-v3/volume-13-daos-protocol-language/) | canonical |
 | 14 | Commercial Instruction Set Architecture (CISA) | [volume-14-commercial-instruction-set-architecture](./constitution-v3/volume-14-commercial-instruction-set-architecture/) | canonical |
-| 15 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
-| 16 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
+| 15 | Commercial Scheduler | [volume-15-commercial-scheduler](./constitution-v3/volume-15-commercial-scheduler/) | canonical |
+| 16 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
+| 17 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
 | — | Agent Communication Protocol | [volume-11-agent-communication-protocol](./constitution-v3/volume-11-agent-communication-protocol/) | superseded → Vol 7 / 13 |
-| 17 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
-| 18 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
-| 19 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
-| 20 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
+| 18 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
+| 19 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
+| 20 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
+| 21 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
 
 ## Appendices
 
@@ -639,3 +640,42 @@ Standardized commercial instructions, scheduler, dependency graph, atomicity, an
 | RFC-1407 | Canonical Execution Model |
 
 **END OF VOLUME 14** (content in [part-01/](./constitution-v3/volume-14-commercial-instruction-set-architecture/part-01/))
+
+---
+
+# Volume 15 — Commercial Scheduler
+
+**Architecture status:** Canonical · **Execution model:** Dependency Driven · **Normative:** Mandatory
+
+Dependency-driven pipeline coordination: DAG execution, cache reuse, invalidation, incremental recomputation, and deterministic scheduling.
+
+→ Full text: [constitution-v3/volume-15-commercial-scheduler/part-01/](./constitution-v3/volume-15-commercial-scheduler/part-01/)
+
+| Spec / RFC | Title |
+|------------|-------|
+| RFC-1500 | Commercial Scheduler |
+| RFC-1501 | Scheduler Responsibilities |
+| SPEC-1500 | Scheduler Input |
+| SPEC-1501 | Scheduler Output |
+| RFC-1502 | Dependency Graph |
+| SPEC-1502 | Dependency Types |
+| SPEC-1503 | Execution Graph |
+| RFC-1503 | Topological Ordering |
+| SPEC-1504 | Parallel Execution |
+| SPEC-1505 | Synchronization Barrier |
+| RFC-1504 | Cache Reuse |
+| SPEC-1506 | Incremental Execution |
+| RFC-1505 | Invalidation Engine |
+| SPEC-1507 | Invalidation Rules |
+| SPEC-1508 | Dirty Nodes |
+| RFC-1506 | Retry Policy |
+| SPEC-1509 | Cancellation |
+| RFC-1507 | Priority Queue |
+| SPEC-1510 | Execution Budget |
+| RFC-1508 | Deterministic Scheduling |
+| SPEC-1511 | Scheduler Diagnostics |
+| RFC-1509 | Scheduler Events |
+| SPEC-1512 | Critical Path |
+| RFC-1510 | Commercial Integrity |
+
+**END OF VOLUME 15** (content in [part-01/](./constitution-v3/volume-15-commercial-scheduler/part-01/))

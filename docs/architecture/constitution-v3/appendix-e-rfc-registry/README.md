@@ -93,5 +93,16 @@ Constitution RFCs:
 | RFC-1405 | 14 | [../volume-14-commercial-instruction-set-architecture/part-01/RFC-1405.md](../volume-14-commercial-instruction-set-architecture/part-01/RFC-1405.md) |
 | RFC-1406 | 14 | [../volume-14-commercial-instruction-set-architecture/part-01/RFC-1406.md](../volume-14-commercial-instruction-set-architecture/part-01/RFC-1406.md) |
 | RFC-1407 | 14 | [../volume-14-commercial-instruction-set-architecture/part-01/RFC-1407.md](../volume-14-commercial-instruction-set-architecture/part-01/RFC-1407.md) |
+| RFC-1500 | 15 | [../volume-15-commercial-scheduler/part-01/RFC-1500.md](../volume-15-commercial-scheduler/part-01/RFC-1500.md) |
+| RFC-1501 | 15 | [../volume-15-commercial-scheduler/part-01/RFC-1501.md](../volume-15-commercial-scheduler/part-01/RFC-1501.md) |
+| RFC-1502 | 15 | [../volume-15-commercial-scheduler/part-01/RFC-1502.md](../volume-15-commercial-scheduler/part-01/RFC-1502.md) |
+| RFC-1503 | 15 | [../volume-15-commercial-scheduler/part-01/RFC-1503.md](../volume-15-commercial-scheduler/part-01/RFC-1503.md) |
+| RFC-1504 | 15 | [../volume-15-commercial-scheduler/part-01/RFC-1504.md](../volume-15-commercial-scheduler/part-01/RFC-1504.md) |
+| RFC-1505 | 15 | [../volume-15-commercial-scheduler/part-01/RFC-1505.md](../volume-15-commercial-scheduler/part-01/RFC-1505.md) |
+| RFC-1506 | 15 | [../volume-15-commercial-scheduler/part-01/RFC-1506.md](../volume-15-commercial-scheduler/part-01/RFC-1506.md) |
+| RFC-1507 | 15 | [../volume-15-commercial-scheduler/part-01/RFC-1507.md](../volume-15-commercial-scheduler/part-01/RFC-1507.md) |
+| RFC-1508 | 15 | [../volume-15-commercial-scheduler/part-01/RFC-1508.md](../volume-15-commercial-scheduler/part-01/RFC-1508.md) |
+| RFC-1509 | 15 | [../volume-15-commercial-scheduler/part-01/RFC-1509.md](../volume-15-commercial-scheduler/part-01/RFC-1509.md) |
+| RFC-1510 | 15 | [../volume-15-commercial-scheduler/part-01/RFC-1510.md](../volume-15-commercial-scheduler/part-01/RFC-1510.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)
