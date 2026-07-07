@@ -125,5 +125,15 @@ Constitution RFCs:
 | RFC-1709 | 17 | [../volume-17-module-system-plugin-abi/part-01/RFC-1709.md](../volume-17-module-system-plugin-abi/part-01/RFC-1709.md) |
 | RFC-1710 | 17 | [../volume-17-module-system-plugin-abi/part-01/RFC-1710.md](../volume-17-module-system-plugin-abi/part-01/RFC-1710.md) |
 | RFC-1711 | 17 | [../volume-17-module-system-plugin-abi/part-01/RFC-1711.md](../volume-17-module-system-plugin-abi/part-01/RFC-1711.md) |
+| RFC-1800 | 18 | [../volume-18-platform-operating-modes/part-01/RFC-1800.md](../volume-18-platform-operating-modes/part-01/RFC-1800.md) |
+| RFC-1801 | 18 | [../volume-18-platform-operating-modes/part-01/RFC-1801.md](../volume-18-platform-operating-modes/part-01/RFC-1801.md) |
+| RFC-1802 | 18 | [../volume-18-platform-operating-modes/part-01/RFC-1802.md](../volume-18-platform-operating-modes/part-01/RFC-1802.md) |
+| RFC-1803 | 18 | [../volume-18-platform-operating-modes/part-01/RFC-1803.md](../volume-18-platform-operating-modes/part-01/RFC-1803.md) |
+| RFC-1804 | 18 | [../volume-18-platform-operating-modes/part-01/RFC-1804.md](../volume-18-platform-operating-modes/part-01/RFC-1804.md) |
+| RFC-1805 | 18 | [../volume-18-platform-operating-modes/part-01/RFC-1805.md](../volume-18-platform-operating-modes/part-01/RFC-1805.md) |
+| RFC-1806 | 18 | [../volume-18-platform-operating-modes/part-01/RFC-1806.md](../volume-18-platform-operating-modes/part-01/RFC-1806.md) |
+| RFC-1807 | 18 | [../volume-18-platform-operating-modes/part-01/RFC-1807.md](../volume-18-platform-operating-modes/part-01/RFC-1807.md) |
+| RFC-1808 | 18 | [../volume-18-platform-operating-modes/part-01/RFC-1808.md](../volume-18-platform-operating-modes/part-01/RFC-1808.md) |
+| RFC-1809 | 18 | [../volume-18-platform-operating-modes/part-01/RFC-1809.md](../volume-18-platform-operating-modes/part-01/RFC-1809.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)

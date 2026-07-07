@@ -36,13 +36,14 @@
 | 15 | Commercial Scheduler | [volume-15-commercial-scheduler](./constitution-v3/volume-15-commercial-scheduler/) | canonical |
 | 16 | DAOS Kernel Specification | [volume-16-daos-kernel-specification](./constitution-v3/volume-16-daos-kernel-specification/) | canonical |
 | 17 | Module System & Plugin ABI | [volume-17-module-system-plugin-abi](./constitution-v3/volume-17-module-system-plugin-abi/) | canonical |
-| 18 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
-| 19 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
+| 18 | Platform Operating Modes | [volume-18-platform-operating-modes](./constitution-v3/volume-18-platform-operating-modes/) | canonical |
+| 19 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
+| 20 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
 | — | Agent Communication Protocol | [volume-11-agent-communication-protocol](./constitution-v3/volume-11-agent-communication-protocol/) | superseded → Vol 7 / 13 |
-| 20 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
-| 21 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
-| 22 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
-| 23 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
+| 21 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
+| 22 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
+| 23 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
+| 24 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
 
 ## Appendices
 
@@ -760,3 +761,40 @@ Plugin manifest, capabilities, permissions, ABI, isolation, provider/marketplace
 | RFC-1711 | Long-Term Stability |
 
 **END OF VOLUME 17** (content in [part-01/](./constitution-v3/volume-17-module-system-plugin-abi/part-01/))
+
+---
+
+# Volume 18 — Platform Operating Modes
+
+**Architecture status:** Canonical · **Platform layer:** Operating Modes · **Normative:** Mandatory · **Version:** 1.0
+
+Explicit execution modes (Research → Exploration → Refinement → Production → Learning) with isolation, transitions, knowledge promotion, and mode diagnostics.
+
+→ Full text: [constitution-v3/volume-18-platform-operating-modes/part-01/](./constitution-v3/volume-18-platform-operating-modes/part-01/)
+
+| Spec / RFC | Title |
+|------------|-------|
+| RFC-1800 | Platform Operating Modes |
+| RFC-1801 | Canonical Modes |
+| SPEC-1800 | Research Mode |
+| SPEC-1801 | Exploration Mode |
+| SPEC-1802 | Refinement Mode |
+| SPEC-1803 | Production Mode |
+| SPEC-1804 | Learning Mode |
+| RFC-1802 | Mode Isolation |
+| SPEC-1805 | Transition Matrix |
+| RFC-1803 | Knowledge Promotion |
+| SPEC-1806 | Experimental Knowledge |
+| RFC-1804 | Production Integrity |
+| SPEC-1807 | Exploration Diversity |
+| SPEC-1808 | Refinement Strategy |
+| RFC-1805 | Rule Of One Change |
+| SPEC-1809 | Best Version Registry |
+| RFC-1806 | Experiment Integration |
+| SPEC-1810 | Human Validation |
+| RFC-1807 | Commercial Objective Preservation |
+| SPEC-1811 | Mode Diagnostics |
+| RFC-1808 | Long-Term Evolution |
+| RFC-1809 | Fundamental Principle |
+
+**END OF VOLUME 18** (content in [part-01/](./constitution-v3/volume-18-platform-operating-modes/part-01/))
