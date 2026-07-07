@@ -21,5 +21,8 @@ Constitution RFCs:
 | RFC-300 | 3 Part 1 | [../volume-03-core-domain-model/part-01/RFC-300.md](../volume-03-core-domain-model/part-01/RFC-300.md) |
 | RFC-301 | 3 Part 1 | [../volume-03-core-domain-model/part-01/RFC-301.md](../volume-03-core-domain-model/part-01/RFC-301.md) |
 | RFC-302 | 3 Part 1 | [../volume-03-core-domain-model/part-01/RFC-302.md](../volume-03-core-domain-model/part-01/RFC-302.md) |
+| RFC-303 | 3 Part 2 | [../volume-03-core-domain-model/part-02/RFC-303.md](../volume-03-core-domain-model/part-02/RFC-303.md) |
+| RFC-304 | 3 Part 2 | [../volume-03-core-domain-model/part-02/RFC-304.md](../volume-03-core-domain-model/part-02/RFC-304.md) |
+| RFC-305 | 3 Part 2 | [../volume-03-core-domain-model/part-02/RFC-305.md](../volume-03-core-domain-model/part-02/RFC-305.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)

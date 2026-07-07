@@ -21,7 +21,7 @@
 | 0 | DAOS Language Specification | [volume-00-language-specification](./constitution-v3/volume-00-language-specification/) | Part 1–2 draft |
 | 1 | Core Architecture | [volume-01-core-architecture](./constitution-v3/volume-01-core-architecture/) | Part 1 draft |
 | 2 | Research System | [volume-02-research-system](./constitution-v3/volume-02-research-system/) | Part 1 draft |
-| 3 | Core Domain Model | [volume-03-core-domain-model](./constitution-v3/volume-03-core-domain-model/) | Part 1 draft |
+| 3 | Core Domain Model | [volume-03-core-domain-model](./constitution-v3/volume-03-core-domain-model/) | Part 1–2 draft |
 | 4 | Decision Engine | [volume-04-decision-engine](./constitution-v3/volume-04-decision-engine/) | pending |
 | 5 | SceneGraph | [volume-05-scenegraph](./constitution-v3/volume-05-scenegraph/) | pending |
 | 6 | Rendering System | [volume-06-rendering-system](./constitution-v3/volume-06-rendering-system/) | pending |
@@ -182,3 +182,34 @@ Persistent business entities: commercial knowledge hierarchy, domain objects, ge
 | SPEC-308 | Domain Stability |
 
 **END OF VOLUME 3 — PART 1** (content in [part-01/](./constitution-v3/volume-03-core-domain-model/part-01/))
+
+---
+
+# Volume 3 — Decision Domain Model (Part 2)
+
+DecisionGraph, commercial goals, decision nodes, traceability, confidence, and completeness rules.
+
+→ Full text: [constitution-v3/volume-03-core-domain-model/part-02/](./constitution-v3/volume-03-core-domain-model/part-02/)
+
+| Spec / RFC | Title |
+|------------|-------|
+| RFC-303 | Decision Model |
+| SPEC-309 | DecisionGraph |
+| SPEC-310 | Commercial Goal |
+| SPEC-311 | Customer Intent |
+| SPEC-312 | Commercial Concept |
+| SPEC-313 | Decision Categories |
+| SPEC-314 | Hero Decision |
+| SPEC-315 | Environment Decision |
+| SPEC-316 | Composition Decision |
+| SPEC-317 | Typography Decision |
+| SPEC-318 | Lighting Decision |
+| SPEC-319 | Camera Decision |
+| SPEC-320 | Color Decision |
+| SPEC-321 | Overlay Decision |
+| RFC-304 | Rule of One Decision |
+| SPEC-322 | Decision Traceability |
+| SPEC-323 | Decision Confidence |
+| RFC-305 | Decision Completeness |
+
+**END OF VOLUME 3 — PART 2** (content in [part-02/](./constitution-v3/volume-03-core-domain-model/part-02/))
