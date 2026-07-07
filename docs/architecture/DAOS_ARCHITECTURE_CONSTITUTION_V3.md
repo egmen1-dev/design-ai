@@ -40,13 +40,14 @@
 | 19 | System Invariants | [volume-19-system-invariants](./constitution-v3/volume-19-system-invariants/) | canonical |
 | 20 | Platform Evolution Model | [volume-20-platform-evolution-model](./constitution-v3/volume-20-platform-evolution-model/) | canonical |
 | 21 | Architectural Debt Prevention | [volume-21-architectural-debt-prevention](./constitution-v3/volume-21-architectural-debt-prevention/) | canonical |
-| 22 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
-| 23 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
+| 22 | Commercial Genome Lifecycle | [volume-22-commercial-genome-lifecycle](./constitution-v3/volume-22-commercial-genome-lifecycle/) | canonical |
+| 23 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
+| 24 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
 | — | Agent Communication Protocol | [volume-11-agent-communication-protocol](./constitution-v3/volume-11-agent-communication-protocol/) | superseded → Vol 7 / 13 |
-| 24 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
-| 25 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
-| 26 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
-| 27 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
+| 25 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
+| 26 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
+| 27 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
+| 28 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
 
 ## Appendices
 
@@ -910,3 +911,39 @@ Rules to prevent architectural debt: temporary solution governance, SSOT enforce
 | RFC-2118 | Fundamental Principle |
 
 **END OF VOLUME 21** (content in [part-01/](./constitution-v3/volume-21-architectural-debt-prevention/part-01/))
+
+---
+
+# Volume 22 — Commercial Genome Lifecycle
+
+**Architecture status:** Canonical · **Layer:** Commercial Knowledge Lifecycle · **Normative:** Mandatory · **Audit source:** DAOS Architecture Audit 2026
+
+Lifecycle-managed Commercial Genome: object types, states, promotion, confidence, applicability, conflicts, AntiRule, versioning, audit, rollback, and mode-specific consumption.
+
+→ Full text: [constitution-v3/volume-22-commercial-genome-lifecycle/part-01/](./constitution-v3/volume-22-commercial-genome-lifecycle/part-01/)
+
+| Spec / RFC | Title |
+|------------|-------|
+| RFC-2200 | Purpose |
+| RFC-2201 | Genome Object Types |
+| SPEC-2200 | Genome Lifecycle States |
+| SPEC-2201 | Lifecycle Transition Graph |
+| SPEC-2202 | Promotion Requirements |
+| SPEC-2203 | Confidence Model |
+| SPEC-2204 | Confidence Update Rules |
+| SPEC-2205 | Applicability |
+| SPEC-2206 | Conflict Model |
+| SPEC-2207 | AntiRule |
+| SPEC-2208 | Versioning |
+| RFC-2202 | Genome Mutation Policy |
+| SPEC-2209 | Human Approval |
+| SPEC-2210 | Production Consumption |
+| SPEC-2211 | Experimental Consumption |
+| SPEC-2212 | Refinement Consumption |
+| RFC-2203 | Genome Integrity |
+| SPEC-2213 | Genome Audit |
+| RFC-2204 | Genome Rollback |
+| SPEC-2214 | Genome Diagnostics |
+| RFC-2205 | Commercial Genome Principle |
+
+**END OF VOLUME 22** (content in [part-01/](./constitution-v3/volume-22-commercial-genome-lifecycle/part-01/))

@@ -185,5 +185,11 @@ Constitution RFCs:
 | RFC-2116 | 21 | [../volume-21-architectural-debt-prevention/part-01/RFC-2116.md](../volume-21-architectural-debt-prevention/part-01/RFC-2116.md) |
 | RFC-2117 | 21 | [../volume-21-architectural-debt-prevention/part-01/RFC-2117.md](../volume-21-architectural-debt-prevention/part-01/RFC-2117.md) |
 | RFC-2118 | 21 | [../volume-21-architectural-debt-prevention/part-01/RFC-2118.md](../volume-21-architectural-debt-prevention/part-01/RFC-2118.md) |
+| RFC-2200 | 22 | [../volume-22-commercial-genome-lifecycle/part-01/RFC-2200.md](../volume-22-commercial-genome-lifecycle/part-01/RFC-2200.md) |
+| RFC-2201 | 22 | [../volume-22-commercial-genome-lifecycle/part-01/RFC-2201.md](../volume-22-commercial-genome-lifecycle/part-01/RFC-2201.md) |
+| RFC-2202 | 22 | [../volume-22-commercial-genome-lifecycle/part-01/RFC-2202.md](../volume-22-commercial-genome-lifecycle/part-01/RFC-2202.md) |
+| RFC-2203 | 22 | [../volume-22-commercial-genome-lifecycle/part-01/RFC-2203.md](../volume-22-commercial-genome-lifecycle/part-01/RFC-2203.md) |
+| RFC-2204 | 22 | [../volume-22-commercial-genome-lifecycle/part-01/RFC-2204.md](../volume-22-commercial-genome-lifecycle/part-01/RFC-2204.md) |
+| RFC-2205 | 22 | [../volume-22-commercial-genome-lifecycle/part-01/RFC-2205.md](../volume-22-commercial-genome-lifecycle/part-01/RFC-2205.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)
