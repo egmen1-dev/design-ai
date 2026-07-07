@@ -24,7 +24,7 @@
 | 3 | Core Domain Model | [volume-03-core-domain-model](./constitution-v3/volume-03-core-domain-model/) | Part 1–2 draft |
 | 4 | SceneGraph | [volume-04-scenegraph](./constitution-v3/volume-04-scenegraph/) | Part 1 draft |
 | 5 | Commercial Knowledge System | [volume-05-commercial-knowledge-system](./constitution-v3/volume-05-commercial-knowledge-system/) | Part 1 draft |
-| 6 | Decision Engine | [volume-06-decision-engine](./constitution-v3/volume-06-decision-engine/) | pending |
+| 6 | Decision Engine | [volume-06-decision-engine](./constitution-v3/volume-06-decision-engine/) | Part 1 draft |
 | 7 | Rendering System | [volume-07-rendering-system](./constitution-v3/volume-07-rendering-system/) | pending |
 | 9 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
 | 10 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
@@ -276,3 +276,32 @@ Commercial Knowledge layers, genome graph, rule lifecycle, experimental KB stagi
 | SPEC-512 | Knowledge Consumption |
 
 **END OF VOLUME 5 — PART 1** (content in [part-01/](./constitution-v3/volume-05-commercial-knowledge-system/part-01/))
+
+---
+
+# Volume 6 — Decision Engine (Part 1)
+
+Multi-agent expert proposals, conflict resolution, decision validation, and DecisionGraph output contract.
+
+→ Full text: [constitution-v3/volume-06-decision-engine/part-01/](./constitution-v3/volume-06-decision-engine/part-01/)
+
+| Spec / RFC | Title |
+|------------|-------|
+| RFC-600 | Decision Engine |
+| RFC-601 | Multi-Agent Decision Model |
+| SPEC-600 | Expert Categories |
+| SPEC-601 | Expert Responsibilities |
+| SPEC-602 | Proposal Generation |
+| SPEC-603 | Proposal Evaluation |
+| RFC-602 | Conflict Resolution |
+| SPEC-604 | Decision Priority |
+| SPEC-605 | Decision Objects |
+| RFC-603 | Rule of One Decision |
+| SPEC-606 | Decision Trace |
+| SPEC-607 | Decision Confidence |
+| RFC-604 | Decision Consistency |
+| SPEC-608 | Decision Validation |
+| RFC-605 | Decision Finality |
+| SPEC-609 | Decision Output Contract |
+
+**END OF VOLUME 6 — PART 1** (content in [part-01/](./constitution-v3/volume-06-decision-engine/part-01/))

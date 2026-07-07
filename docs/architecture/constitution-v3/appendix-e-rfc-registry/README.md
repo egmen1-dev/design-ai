@@ -37,5 +37,11 @@ Constitution RFCs:
 | RFC-503 | 5 Part 1 | [../volume-05-commercial-knowledge-system/part-01/RFC-503.md](../volume-05-commercial-knowledge-system/part-01/RFC-503.md) |
 | RFC-504 | 5 Part 1 | [../volume-05-commercial-knowledge-system/part-01/RFC-504.md](../volume-05-commercial-knowledge-system/part-01/RFC-504.md) |
 | RFC-505 | 5 Part 1 | [../volume-05-commercial-knowledge-system/part-01/RFC-505.md](../volume-05-commercial-knowledge-system/part-01/RFC-505.md) |
+| RFC-600 | 6 Part 1 | [../volume-06-decision-engine/part-01/RFC-600.md](../volume-06-decision-engine/part-01/RFC-600.md) |
+| RFC-601 | 6 Part 1 | [../volume-06-decision-engine/part-01/RFC-601.md](../volume-06-decision-engine/part-01/RFC-601.md) |
+| RFC-602 | 6 Part 1 | [../volume-06-decision-engine/part-01/RFC-602.md](../volume-06-decision-engine/part-01/RFC-602.md) |
+| RFC-603 | 6 Part 1 | [../volume-06-decision-engine/part-01/RFC-603.md](../volume-06-decision-engine/part-01/RFC-603.md) |
+| RFC-604 | 6 Part 1 | [../volume-06-decision-engine/part-01/RFC-604.md](../volume-06-decision-engine/part-01/RFC-604.md) |
+| RFC-605 | 6 Part 1 | [../volume-06-decision-engine/part-01/RFC-605.md](../volume-06-decision-engine/part-01/RFC-605.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)
