@@ -21,6 +21,7 @@ Draft → Review → Accepted → Implemented → Released → Archived
 | [RFC-004](RFC-004.md) | Provider Adapter | Accepted |
 | [RFC-005](RFC-005.md) | RenderGraph | Accepted |
 | [RFC-006](RFC-006.md) | Asset Platform | Accepted |
+| [RFC-010](../architecture/RFC-010_ARCHITECTURE_COUNCIL.md) | Architecture Council Protocol | Draft |
 
 ## Rules
 

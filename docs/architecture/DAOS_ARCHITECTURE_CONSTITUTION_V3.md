@@ -62,6 +62,7 @@
 
 - [DAOS Engineering Kernel](../engineering/CURSOR_ENGINEERING_KERNEL.md) — read first before implementation (Cursor / agents)
 - [DAOS Engineering Playbook](../engineering/DAOS_ENGINEERING_PLAYBOOK.md) — mandatory engineering process (derived from this constitution)
+- [RFC-010 — Architecture Council Protocol](./RFC-010_ARCHITECTURE_COUNCIL.md) — deterministic review pipeline before implementation (draft)
 - [DAOS_EXPERIMENTAL_KNOWLEDGE_BASE.md](./DAOS_EXPERIMENTAL_KNOWLEDGE_BASE.md) — stage evidence (feeds Volume 8)
 - [architecture.yaml](./architecture.yaml) — legacy DSL (migrate per Volume 15)
 - [DAOS_Specification.md](../DAOS_Specification.md) — v1.0 narrative (superseded by this constitution)

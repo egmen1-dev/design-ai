@@ -12,7 +12,7 @@ This document overrides implementation convenience.
 
 Implementation speed SHALL NEVER have higher priority than architectural correctness.
 
-Related: [DAOS Engineering Playbook](./DAOS_ENGINEERING_PLAYBOOK.md) · [DAOS Constitution V3](../architecture/DAOS_ARCHITECTURE_CONSTITUTION_V3.md)
+Related: [DAOS Engineering Playbook](./DAOS_ENGINEERING_PLAYBOOK.md) · [DAOS Constitution V3](../architecture/DAOS_ARCHITECTURE_CONSTITUTION_V3.md) · [RFC-010 — Architecture Council](../architecture/RFC-010_ARCHITECTURE_COUNCIL.md)
 
 ---
 
