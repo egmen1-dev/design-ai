@@ -24,5 +24,12 @@ Constitution RFCs:
 | RFC-303 | 3 Part 2 | [../volume-03-core-domain-model/part-02/RFC-303.md](../volume-03-core-domain-model/part-02/RFC-303.md) |
 | RFC-304 | 3 Part 2 | [../volume-03-core-domain-model/part-02/RFC-304.md](../volume-03-core-domain-model/part-02/RFC-304.md) |
 | RFC-305 | 3 Part 2 | [../volume-03-core-domain-model/part-02/RFC-305.md](../volume-03-core-domain-model/part-02/RFC-305.md) |
+| RFC-400 | 4 Part 1 | [../volume-04-scenegraph/part-01/RFC-400.md](../volume-04-scenegraph/part-01/RFC-400.md) |
+| RFC-401 | 4 Part 1 | [../volume-04-scenegraph/part-01/RFC-401.md](../volume-04-scenegraph/part-01/RFC-401.md) |
+| RFC-402 | 4 Part 1 | [../volume-04-scenegraph/part-01/RFC-402.md](../volume-04-scenegraph/part-01/RFC-402.md) |
+| RFC-403 | 4 Part 1 | [../volume-04-scenegraph/part-01/RFC-403.md](../volume-04-scenegraph/part-01/RFC-403.md) |
+| RFC-404 | 4 Part 1 | [../volume-04-scenegraph/part-01/RFC-404.md](../volume-04-scenegraph/part-01/RFC-404.md) |
+| RFC-405 | 4 Part 1 | [../volume-04-scenegraph/part-01/RFC-405.md](../volume-04-scenegraph/part-01/RFC-405.md) |
+| RFC-406 | 4 Part 1 | [../volume-04-scenegraph/part-01/RFC-406.md](../volume-04-scenegraph/part-01/RFC-406.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)

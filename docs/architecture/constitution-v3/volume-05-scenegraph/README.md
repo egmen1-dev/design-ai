@@ -1,8 +1,9 @@
 # volume 05 scenegraph
 
-**Status:** pending
+**Status:** superseded
 
-Content for this section of DAOS Architecture Constitution v3 is not yet written.
+SceneGraph is **Volume 4** in the constitution.
+
+→ [../volume-04-scenegraph/](../volume-04-scenegraph/)
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)
-

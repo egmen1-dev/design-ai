@@ -22,8 +22,8 @@
 | 1 | Core Architecture | [volume-01-core-architecture](./constitution-v3/volume-01-core-architecture/) | Part 1 draft |
 | 2 | Research System | [volume-02-research-system](./constitution-v3/volume-02-research-system/) | Part 1 draft |
 | 3 | Core Domain Model | [volume-03-core-domain-model](./constitution-v3/volume-03-core-domain-model/) | Part 1–2 draft |
-| 4 | Decision Engine | [volume-04-decision-engine](./constitution-v3/volume-04-decision-engine/) | pending |
-| 5 | SceneGraph | [volume-05-scenegraph](./constitution-v3/volume-05-scenegraph/) | pending |
+| 4 | SceneGraph | [volume-04-scenegraph](./constitution-v3/volume-04-scenegraph/) | Part 1 draft |
+| 5 | Decision Engine | [volume-05-decision-engine](./constitution-v3/volume-05-decision-engine/) | pending |
 | 6 | Rendering System | [volume-06-rendering-system](./constitution-v3/volume-06-rendering-system/) | pending |
 | 7 | Commercial Genome | [volume-07-commercial-genome](./constitution-v3/volume-07-commercial-genome/) | pending |
 | 8 | Experimental Knowledge Base Integration | [volume-08-experimental-knowledge-base](./constitution-v3/volume-08-experimental-knowledge-base/) | pending |
@@ -213,3 +213,35 @@ DecisionGraph, commercial goals, decision nodes, traceability, confidence, and c
 | RFC-305 | Decision Completeness |
 
 **END OF VOLUME 3 — PART 2** (content in [part-02/](./constitution-v3/volume-03-core-domain-model/part-02/))
+
+---
+
+# Volume 4 — SceneGraph (Part 1)
+
+SceneGraph as single source of truth: planned vs actual states, node ownership, drift, lifecycle, and invariants.
+
+→ Full text: [constitution-v3/volume-04-scenegraph/part-01/](./constitution-v3/volume-04-scenegraph/part-01/)
+
+| Spec / RFC | Title |
+|------------|-------|
+| RFC-400 | SceneGraph |
+| RFC-401 | Single Source Of Truth |
+| SPEC-400 | SceneGraph Structure |
+| SPEC-401 | Planned State |
+| SPEC-402 | Actual State |
+| RFC-402 | Planned Never Overwrites Actual |
+| SPEC-403 | Product Node |
+| SPEC-404 | Overlay Node |
+| SPEC-405 | Typography Node |
+| SPEC-406 | Composition Node |
+| SPEC-407 | Governance Node |
+| RFC-403 | Node Ownership |
+| SPEC-408 | SceneGraph History |
+| SPEC-409 | Mutation Protocol |
+| RFC-404 | Drift |
+| SPEC-410 | SceneGraph Lifecycle |
+| RFC-405 | Legacy Objects |
+| SPEC-411 | SceneGraph Invariants |
+| RFC-406 | Future Migration |
+
+**END OF VOLUME 4 — PART 1** (content in [part-01/](./constitution-v3/volume-04-scenegraph/part-01/))
