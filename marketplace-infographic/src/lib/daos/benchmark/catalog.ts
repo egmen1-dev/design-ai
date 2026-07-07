@@ -151,6 +151,18 @@ export const BENCHMARK_DAOS_WIDE_PRODUCT_TEMPLATE_ENV: Record<string, string> = 
   DAOS_WIDE_PRODUCT_LAYOUT: "0",
 };
 
+/** Stage 5.1 — wide template compositor hook baseline (template on, hook off). */
+export const BENCHMARK_DAOS_WIDE_TEMPLATE_COMPOSITOR_HOOK_BASELINE_ENV: Record<string, string> = {
+  ...BENCHMARK_DAOS_WIDE_PRODUCT_TEMPLATE_ENV,
+  DAOS_WIDE_TEMPLATE_COMPOSITOR_HOOK: "0",
+};
+
+/** Stage 5.1 — wide template compositor hook on. */
+export const BENCHMARK_DAOS_WIDE_TEMPLATE_COMPOSITOR_HOOK_ENV: Record<string, string> = {
+  ...BENCHMARK_DAOS_WIDE_PRODUCT_TEMPLATE_ENV,
+  DAOS_WIDE_TEMPLATE_COMPOSITOR_HOOK: "1",
+};
+
 export function isDaosBenchmarkEnabled(): boolean {
   return (
     process.env.DAOS_RENDER_CONTEXT === "1" ||

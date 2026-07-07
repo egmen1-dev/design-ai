@@ -185,7 +185,10 @@ import {
 } from "@/lib/daos/overlay/wide-product-layout";
 import {
   applyWideProductTemplate,
+  applyWideProductInfographicOnly,
+  isWideProductTemplateAlreadyApplied,
   type WideProductTemplateApplyResult,
+  type WideTemplateCompositorHook,
 } from "@/lib/daos/templates/wide-product-template";
 import {
   applyProductScalePatch,
@@ -211,11 +214,13 @@ function buildDaosSceneCompositeOptions(input: {
   layoutSpec?: LayoutSpec;
   productCategory?: string;
   productHint?: string;
+  wideTemplateCompositorHook?: WideTemplateCompositorHook;
 }): {
   options: SceneCompositeOptions;
   productScalePatch: ProductScalePatchResult;
   asymmetricLimits?: AsymmetricLimits;
   wideHeroStrategy?: WideHeroStrategy;
+  wideTemplateCompositorHook?: WideTemplateCompositorHook;
 } {
   const metrics = input.compositionLayout?.metrics;
   const overlayDensity =
@@ -270,11 +275,17 @@ function buildDaosSceneCompositeOptions(input: {
     productScaleMultiplier: productScalePatch.productScaleMultiplier,
   });
 
+  const compositorHook = input.wideTemplateCompositorHook;
+  const options: SceneCompositeOptions = compositorHook?.applied
+    ? { ...wideHeroPrep.options, wideTemplateCompositorHook: compositorHook }
+    : wideHeroPrep.options;
+
   return {
-    options: wideHeroPrep.options,
+    options,
     productScalePatch,
     asymmetricLimits: wideHeroPrep.options.asymmetricLimits ?? asymmetricPrep.limits,
     wideHeroStrategy: wideHeroPrep.strategy,
+    wideTemplateCompositorHook: compositorHook,
   };
 }
 
@@ -1459,6 +1470,23 @@ export async function handleGenerateInfographic(
     let objectScale = layoutObjectScale(compositionLayout?.metrics?.productAreaPct);
     compositingHints = sceneToCompositingHints(scenePlan, objectScale);
 
+    let wideProductTemplateResult: WideProductTemplateApplyResult | undefined;
+    if (sdData.layout === "marketplace" && compositionLayout) {
+      wideProductTemplateResult = applyWideProductTemplate({
+        layoutSpec,
+        compositionLayout,
+        productCategory: analysis.category,
+        productHint: input.prompt,
+      });
+      if (wideProductTemplateResult.template.applied) {
+        compositionLayout =
+          wideProductTemplateResult.compositionLayout ?? compositionLayout;
+        layoutSpec = wideProductTemplateResult.layoutSpec ?? layoutSpec;
+        objectScale = layoutObjectScale(compositionLayout?.metrics?.productAreaPct);
+        compositingHints = sceneToCompositingHints(scenePlan, objectScale);
+      }
+    }
+
     sceneGraphMirror.capturePlanner({
       compositionLayout,
       layoutSpec,
@@ -1770,6 +1798,7 @@ export async function handleGenerateInfographic(
             layoutSpec,
             productCategory: analysis.category,
             productHint: input.prompt,
+            wideTemplateCompositorHook: wideProductTemplateResult?.compositorHook,
           });
           productScalePatchResult = compositePrep.productScalePatch;
           asymmetricLimitsResult = compositePrep.asymmetricLimits;
@@ -1944,7 +1973,8 @@ export async function handleGenerateInfographic(
               objectScale,
               layoutSpec,
               productCategory: analysis.category,
-            productHint: input.prompt,
+              productHint: input.prompt,
+              wideTemplateCompositorHook: wideProductTemplateResult?.compositorHook,
             });
             productScalePatchResult = compositePrep.productScalePatch;
           asymmetricLimitsResult = compositePrep.asymmetricLimits;
@@ -2120,6 +2150,7 @@ export async function handleGenerateInfographic(
             layoutSpec,
             productCategory: analysis.category,
             productHint: input.prompt,
+            wideTemplateCompositorHook: wideProductTemplateResult?.compositorHook,
           });
           productScalePatchResult = compositePrep.productScalePatch;
           asymmetricLimitsResult = compositePrep.asymmetricLimits;
@@ -2241,7 +2272,6 @@ export async function handleGenerateInfographic(
     let geometryWhitespacePatchResult: GeometryWhitespacePatchResult | undefined;
     let contrastOverlapPatchResult: ContrastOverlapPatchResult | undefined;
     let wideProductLayoutPatchResult: WideProductLayoutPatchResult | undefined;
-    let wideProductTemplateResult: WideProductTemplateApplyResult | undefined;
     let overlayGateContext:
       | {
           productPrompt?: string;
@@ -2267,15 +2297,23 @@ export async function handleGenerateInfographic(
         gateContext: overlayGateContext,
       });
 
-      wideProductTemplateResult = applyWideProductTemplate({
-        layoutSpec: renderLayoutSpec,
-        infographicData: renderInfographicData,
-        compositionLayout: renderCompositionLayout,
-        productAspectRatio: productScalePatchResult?.aspectRatioPlacementPatch?.productAspectRatio,
-        productCategory: analysis.category,
-        productHint: input.prompt,
-      });
-      if (wideProductTemplateResult.template.applied) {
+      if (!isWideProductTemplateAlreadyApplied(renderCompositionLayout)) {
+        wideProductTemplateResult = applyWideProductTemplate({
+          layoutSpec: renderLayoutSpec,
+          infographicData: renderInfographicData,
+          compositionLayout: renderCompositionLayout,
+          productAspectRatio: productScalePatchResult?.aspectRatioPlacementPatch?.productAspectRatio,
+          productCategory: analysis.category,
+          productHint: input.prompt,
+        });
+      } else if (wideProductTemplateResult?.template.applied) {
+        renderInfographicData = applyWideProductInfographicOnly(
+          renderInfographicData,
+          wideProductTemplateResult.template.maxBadges,
+        );
+        renderLayoutSpec = wideProductTemplateResult.layoutSpec ?? renderLayoutSpec;
+      }
+      if (wideProductTemplateResult?.template.applied) {
         renderInfographicData =
           wideProductTemplateResult.infographicData ?? renderInfographicData;
         renderLayoutSpec = wideProductTemplateResult.layoutSpec ?? renderLayoutSpec;
@@ -2922,6 +2960,7 @@ export async function handleGenerateInfographic(
       wideHeroStrategy: wideHeroStrategyResult,
       wideProductLayoutPatch: wideProductLayoutPatchResult?.patch,
       wideProductTemplate: wideProductTemplateResult?.template,
+      wideTemplateCompositorHookDiagnostics: compositeResult?.wideTemplateCompositorHookDiagnostics,
       compositePlacement,
       extractAreaCorrected: compositeResult?.extractAreaCorrected,
       extractAreaWarnings: compositeResult?.extractAreaWarnings,

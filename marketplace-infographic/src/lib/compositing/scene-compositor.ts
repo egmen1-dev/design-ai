@@ -37,6 +37,14 @@ import {
 } from "@/lib/daos/compositor/safe-extract-area";
 import type { AsymmetricLimits } from "@/lib/daos/compositor/asymmetric-limits";
 import type { WideHeroStrategy } from "@/lib/daos/compositor/wide-hero-strategy";
+import type {
+  WideTemplateCompositorHook,
+  WideTemplateCompositorHookDiagnostics,
+} from "@/lib/daos/templates/wide-product-template";
+import {
+  computeWideTemplateHeroLimits,
+  wideTemplateCompositeAreaRatio,
+} from "@/lib/daos/templates/wide-product-template";
 import { publicDir, resolvePublicAssetPath, writablePublicDir } from "@/lib/runtime-paths";
 
 const CANVAS_W = WB_COVER.width;
@@ -57,6 +65,8 @@ export type SceneCompositeOptions = {
   asymmetricLimits?: AsymmetricLimits;
   /** DAOS Wave 33 — wide product hero placement (full-bleed / crop-safe / diagonal). */
   wideHeroStrategy?: WideHeroStrategy;
+  /** DAOS v2 Stage 5.1 — wide product template hero zone for compositor placement. */
+  wideTemplateCompositorHook?: WideTemplateCompositorHook;
 };
 
 async function loadImageBuffer(source: string): Promise<Buffer> {
@@ -141,7 +151,21 @@ function computeMaxProductSize(
   productScaleMultiplier = 1,
   asymmetricLimits?: AsymmetricLimits,
   wideHeroStrategy?: WideHeroStrategy,
+  wideTemplateCompositorHook?: WideTemplateCompositorHook,
+  productAspectRatio?: number,
 ): { maxW: number; maxH: number } {
+  if (wideTemplateCompositorHook?.applied) {
+    const limits = computeWideTemplateHeroLimits(
+      wideTemplateCompositorHook,
+      compositionLayout?.canvas,
+      productAspectRatio,
+    );
+    return {
+      maxW: limits.maxWidthPx,
+      maxH: limits.maxHeightPx,
+    };
+  }
+
   if (wideHeroStrategy?.applied) {
     return {
       maxW: wideHeroStrategy.maxWidthPx,
@@ -284,6 +308,7 @@ function resolveVerticalTop(
   alphaFootBottom: number,
   floorY: number,
   compositionLayout?: CompositionLayout,
+  wideTemplateCompositorHook?: WideTemplateCompositorHook,
 ): number {
   const safeInsetPx = compositionLayout
     ? Math.round(yPct(compositionLayout.safeInsetPct))
@@ -295,6 +320,21 @@ function resolveVerticalTop(
   top = Math.max(HEADER_RESERVE_PX, top);
   top = Math.min(top, CANVAS_H - BOTTOM_PAD - productHeight);
 
+  if (wideTemplateCompositorHook?.applied) {
+    const limits = computeWideTemplateHeroLimits(
+      wideTemplateCompositorHook,
+      compositionLayout?.canvas,
+    );
+    const heroBottom = limits.heroZonePx.top + limits.heroZonePx.height;
+    const heroTop = limits.heroZonePx.top;
+    const footY = Math.min(floorY, heroBottom);
+    top = footY - alphaFootBottom;
+    top = Math.min(top, heroBottom - productHeight);
+    top = Math.max(heroTop, top);
+    top = Math.max(HEADER_RESERVE_PX, top);
+    top = Math.min(top, CANVAS_H - BOTTOM_PAD - productHeight);
+  }
+
   return Math.round(top);
 }
 
@@ -305,6 +345,7 @@ export type SceneCompositeResult = {
   productPlacement: { left: number; top: number; width: number; height: number };
   extractAreaWarnings?: string[];
   extractAreaCorrected?: boolean;
+  wideTemplateCompositorHookDiagnostics?: WideTemplateCompositorHookDiagnostics;
 };
 
 export async function compositeProductIntoScene(
@@ -318,10 +359,15 @@ export async function compositeProductIntoScene(
   const productScaleMultiplier = Math.max(1, options.productScaleMultiplier ?? 1);
   const asymmetricLimits = options.asymmetricLimits;
   const wideHeroStrategy = options.wideHeroStrategy;
-  const placementSideMargin = wideHeroStrategy?.applied
-    ? wideHeroStrategy.sideMarginPx
-    : SIDE_MARGIN;
+  const wideTemplateCompositorHook = options.wideTemplateCompositorHook;
   const comp = options.compositionLayout?.product;
+  const productAspectRatio =
+    comp && comp.maxHeightPct > 0 ? comp.maxWidthPct / comp.maxHeightPct : undefined;
+  const placementSideMargin = wideTemplateCompositorHook?.applied
+    ? wideTemplateCompositorHook.sideMarginPx
+    : wideHeroStrategy?.applied
+      ? wideHeroStrategy.sideMarginPx
+      : SIDE_MARGIN;
   const extractGuard: ExtractAreaGuard = { warnings: [], corrected: false };
 
   const [bgRaw, productRaw] = await Promise.all([
@@ -330,12 +376,23 @@ export async function compositeProductIntoScene(
   ]);
 
   const bgResized = await resizeBackground(bgRaw);
+  const baselineMax = computeMaxProductSize(
+    options.compositionLayout,
+    objectScale,
+    productScaleMultiplier,
+    asymmetricLimits,
+    wideHeroStrategy,
+    undefined,
+    productAspectRatio,
+  );
   const { maxW, maxH } = computeMaxProductSize(
     options.compositionLayout,
     objectScale,
     productScaleMultiplier,
     asymmetricLimits,
     wideHeroStrategy,
+    wideTemplateCompositorHook,
+    productAspectRatio,
   );
 
   const prePlacement = {
@@ -369,24 +426,34 @@ export async function compositeProductIntoScene(
     maxW,
     maxH,
   );
-  const maxAlphaW =
-    wideHeroStrategy?.applied
+  const maxAlphaW = wideTemplateCompositorHook?.applied
+    ? computeWideTemplateHeroLimits(
+        wideTemplateCompositorHook,
+        options.compositionLayout?.canvas,
+        productAspectRatio,
+      ).maxAlphaWidthPx
+    : wideHeroStrategy?.applied
       ? wideHeroStrategy.maxAlphaWidthPx
       : asymmetricLimits?.applied
-      ? asymmetricLimits.maxAlphaWidthPx
-      : Math.min(
-          CANVAS_W - SIDE_MARGIN * 2,
-          Math.round(PRODUCT_ALPHA_MAX_WIDTH_PX * productScaleMultiplier),
-        );
-  const maxAlphaH =
-    wideHeroStrategy?.applied
+        ? asymmetricLimits.maxAlphaWidthPx
+        : Math.min(
+            CANVAS_W - SIDE_MARGIN * 2,
+            Math.round(PRODUCT_ALPHA_MAX_WIDTH_PX * productScaleMultiplier),
+          );
+  const maxAlphaH = wideTemplateCompositorHook?.applied
+    ? computeWideTemplateHeroLimits(
+        wideTemplateCompositorHook,
+        options.compositionLayout?.canvas,
+        productAspectRatio,
+      ).maxAlphaHeightPx
+    : wideHeroStrategy?.applied
       ? wideHeroStrategy.maxAlphaHeightPx
       : asymmetricLimits?.applied
-      ? asymmetricLimits.maxAlphaHeightPx
-      : Math.min(
-          CANVAS_H - HEADER_RESERVE_PX - BOTTOM_PAD,
-          Math.round(PRODUCT_ALPHA_MAX_HEIGHT_PX * productScaleMultiplier),
-        );
+        ? asymmetricLimits.maxAlphaHeightPx
+        : Math.min(
+            CANVAS_H - HEADER_RESERVE_PX - BOTTOM_PAD,
+            Math.round(PRODUCT_ALPHA_MAX_HEIGHT_PX * productScaleMultiplier),
+          );
   const placement = await fitProductWithSafePlacement(
     prepared.buffer,
     prepared.width,
@@ -414,6 +481,7 @@ export async function compositeProductIntoScene(
     alphaFootBottom,
     floorY,
     options.compositionLayout,
+    wideTemplateCompositorHook,
   );
 
   const bgPrepared = await softenBackgroundCenter(bgRaw, layout, extractGuard);
@@ -530,6 +598,26 @@ export async function compositeProductIntoScene(
   const absPath = path.join(dir, filename);
   await writeFile(absPath, mergedBuffer);
 
+  const canvas = options.compositionLayout?.canvas ?? { width: CANVAS_W, height: CANVAS_H };
+  const wideTemplateCompositorHookDiagnostics: WideTemplateCompositorHookDiagnostics | undefined =
+    wideTemplateCompositorHook
+      ? {
+          hookEnabled: wideTemplateCompositorHook.enabled,
+          hookApplied: wideTemplateCompositorHook.applied,
+          heroZoneUsed: wideTemplateCompositorHook.heroZoneLabel,
+          compositeAreaBefore: wideTemplateCompositeAreaRatio(
+            baselineMax.maxW,
+            baselineMax.maxH,
+            canvas,
+          ),
+          compositeAreaAfter: wideTemplateCompositeAreaRatio(
+            finalPlacement.width,
+            finalPlacement.height,
+            canvas,
+          ),
+        }
+      : undefined;
+
   return {
     mergedPath: `/merged/${filename}`,
     mergedBuffer,
@@ -537,6 +625,7 @@ export async function compositeProductIntoScene(
     productPlacement: finalPlacement,
     extractAreaWarnings: extractGuard.warnings.length ? [...extractGuard.warnings] : undefined,
     extractAreaCorrected: extractGuard.corrected || undefined,
+    wideTemplateCompositorHookDiagnostics,
   };
 }
 

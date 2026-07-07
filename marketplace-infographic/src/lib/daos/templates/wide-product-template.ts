@@ -1,7 +1,7 @@
 import type { InfographicData } from "@/lib/infographic-template";
 import type { CompositionLayout } from "@/lib/composition/types";
 import type { LayoutSpec } from "@/lib/design/layout-spec";
-import { zoneAreaPct } from "@/lib/composition/canvas";
+import { WB_COVER, zoneAreaPct, xPct, yPct } from "@/lib/composition/canvas";
 
 export const DAOS_WIDE_TEMPLATE_MIN_ASPECT = 2.0;
 export const DAOS_WIDE_TEMPLATE_HERO_HEIGHT_MIN_PCT = 38;
@@ -67,6 +67,25 @@ export type WideProductTemplateApplyResult = {
   layoutMode?: string;
   heroZoneLabel?: string;
   textZoneLabel?: string;
+  compositorHook?: WideTemplateCompositorHook;
+};
+
+export type WideTemplateCompositorHook = {
+  enabled: boolean;
+  applied: boolean;
+  heroZone: WideProductTemplateZone;
+  heroZoneLabel: string;
+  horizontalBleedMaxPct: number;
+  noVerticalCrop: boolean;
+  sideMarginPx: number;
+};
+
+export type WideTemplateCompositorHookDiagnostics = {
+  hookEnabled: boolean;
+  hookApplied: boolean;
+  heroZoneUsed: string;
+  compositeAreaBefore: number;
+  compositeAreaAfter: number;
 };
 
 function clamp(n: number, min: number, max: number): number {
@@ -118,6 +137,102 @@ export function isDaosWideProductTemplateEnabled(): boolean {
   return process.env.DAOS_WIDE_PRODUCT_TEMPLATE === "1";
 }
 
+export function isDaosWideTemplateCompositorHookEnabled(): boolean {
+  return process.env.DAOS_WIDE_TEMPLATE_COMPOSITOR_HOOK === "1";
+}
+
+export function heroZoneToPx(
+  zone: WideProductTemplateZone,
+  canvas: { width: number; height: number } = WB_COVER,
+): { left: number; top: number; width: number; height: number } {
+  return {
+    left: Math.round(xPct(zone.leftPct, canvas)),
+    top: Math.round(yPct(zone.topPct, canvas)),
+    width: Math.round(xPct(zone.widthPct, canvas)),
+    height: Math.round(yPct(zone.heightPct, canvas)),
+  };
+}
+
+const HERO_HEADER_RESERVE_PX = Math.round(WB_COVER.height * 0.2);
+const HERO_BOTTOM_PAD_PX = 24;
+
+export type WideTemplateHeroCompositorLimits = {
+  maxWidthPx: number;
+  maxHeightPx: number;
+  maxAlphaWidthPx: number;
+  maxAlphaHeightPx: number;
+  heroZonePx: { left: number; top: number; width: number; height: number };
+};
+
+/** Derive compositor sizing limits from wide template hero zone (vertical-safe, horizontal bleed). */
+export function computeWideTemplateHeroLimits(
+  hook: WideTemplateCompositorHook,
+  canvas: { width: number; height: number } = WB_COVER,
+  productAspectRatio?: number,
+): WideTemplateHeroCompositorLimits {
+  const heroZonePx = heroZoneToPx(hook.heroZone, canvas);
+  const bleedExpandPx = Math.round(canvas.width * (hook.horizontalBleedMaxPct / 100));
+  const sideMarginPx = hook.sideMarginPx;
+  const maxWidthPx = Math.min(
+    heroZonePx.width + bleedExpandPx,
+    canvas.width - sideMarginPx * 2,
+  );
+  const verticalCap = Math.min(
+    heroZonePx.height,
+    canvas.height - HERO_HEADER_RESERVE_PX - HERO_BOTTOM_PAD_PX,
+  );
+  let maxHeightPx = verticalCap;
+  if (productAspectRatio != null && productAspectRatio > 0) {
+    maxHeightPx = Math.min(Math.round(maxWidthPx / productAspectRatio), verticalCap);
+  }
+  maxHeightPx = Math.max(80, maxHeightPx);
+
+  return {
+    maxWidthPx: Math.max(80, maxWidthPx),
+    maxHeightPx,
+    maxAlphaWidthPx: Math.max(80, maxWidthPx),
+    maxAlphaHeightPx: maxHeightPx,
+    heroZonePx,
+  };
+}
+
+export function wideTemplateCompositeAreaRatio(
+  widthPx: number,
+  heightPx: number,
+  canvas: { width: number; height: number } = WB_COVER,
+): number {
+  return (widthPx * heightPx) / (canvas.width * canvas.height);
+}
+
+/** Build compositor hook from applied wide product template. */
+export function buildWideTemplateCompositorHook(
+  template: WideProductTemplate,
+  heroZoneLabel?: string,
+): WideTemplateCompositorHook | undefined {
+  if (!isDaosWideTemplateCompositorHookEnabled() || !template.applied) {
+    return undefined;
+  }
+
+  const bleedPx = Math.round(WB_COVER.width * (template.cropSafeHorizontalPct / 100) / 2);
+  return {
+    enabled: true,
+    applied: true,
+    heroZone: template.heroZone,
+    heroZoneLabel: heroZoneLabel ?? formatZone(template.heroZone),
+    horizontalBleedMaxPct: template.cropSafeHorizontalPct,
+    noVerticalCrop: true,
+    sideMarginPx: Math.max(0, bleedPx),
+  };
+}
+
+export function isWideProductTemplateAlreadyApplied(compositionLayout?: CompositionLayout): boolean {
+  return (
+    compositionLayout?.adjustments.some((entry) =>
+      entry.includes("daos_wide_product_template"),
+    ) ?? false
+  );
+}
+
 const WIDE_PRODUCT_SIGNAL =
   /матрас|mattress|диван|sofa|кровать|bed|ковёр|ковер|carpet|стол|table|\b160x200\b|\b200x160\b/i;
 
@@ -131,6 +246,7 @@ function resolveAspectRatio(input: WideProductTemplateCandidateInput): number {
   if (input.productAspectRatio != null && input.productAspectRatio > 0) {
     return input.productAspectRatio;
   }
+  if (isWideProductSignal(input)) return 2.6;
   const product = input.compositionLayout?.product;
   if (product && product.maxHeightPct > 0) {
     return product.maxWidthPct / product.maxHeightPct;
@@ -258,6 +374,16 @@ function applyInfographicPatch(data: InfographicData, maxBadges: number): void {
   data.marketplaceGift = undefined;
   data.marketplaceFooter = undefined;
   data.marketplaceBottom = undefined;
+}
+
+/** Patch infographic overlay elements for wide template (badges cap, strip footer). */
+export function applyWideProductInfographicOnly(
+  infographicData: InfographicData,
+  maxBadges: number,
+): InfographicData {
+  const clone = cloneInfographicData(infographicData);
+  applyInfographicPatch(clone, maxBadges);
+  return clone;
 }
 
 function applyLayoutSpecPatch(layoutSpec: LayoutSpec, template: WideProductTemplate): void {
@@ -443,20 +569,22 @@ export function applyWideProductTemplate(
 
   const heroZoneLabel = formatZone(plan.heroZone);
   const textZoneLabel = formatZone(plan.textZone);
+  const appliedTemplate: WideProductTemplate = {
+    ...plan,
+    applied: true,
+    reason: `wide_template_${plan.strategy}`,
+    actions: [...plan.actions],
+  };
 
   return {
-    template: {
-      ...plan,
-      applied: true,
-      reason: `wide_template_${plan.strategy}`,
-      actions: [...plan.actions],
-    },
+    template: appliedTemplate,
     layoutSpec,
     infographicData,
     compositionLayout,
     layoutMode: "wide_bottom_hero",
     heroZoneLabel,
     textZoneLabel,
+    compositorHook: buildWideTemplateCompositorHook(appliedTemplate, heroZoneLabel),
   };
 }
 

@@ -31,7 +31,11 @@ import type { AsymmetricLimits } from "../compositor/asymmetric-limits";
 import type { WideHeroStrategy } from "../compositor/wide-hero-strategy";
 import type { WideProductLayoutPatch } from "../overlay/wide-product-layout";
 import type { WideProductTemplate } from "../templates/wide-product-template";
-import { describeWideProductTemplateZones } from "../templates/wide-product-template";
+import {
+  describeWideProductTemplateZones,
+  isDaosWideTemplateCompositorHookEnabled,
+  type WideTemplateCompositorHookDiagnostics,
+} from "../templates/wide-product-template";
 import { describeWideProductLayoutZones } from "../overlay/wide-product-layout";
 import type { NormalizedCompositePlacement } from "../compositor/composite-result-bridge";
 import type { Law003RecalibrationReport } from "../governance/law003-recalibration";
@@ -164,6 +168,11 @@ export type DaosDebugBundle = {
     wideProductHeroZone?: string;
     wideProductTemplateApplied?: boolean;
     wideProductTemplateStrategy?: string;
+    wideTemplateCompositorHookEnabled?: boolean;
+    wideTemplateCompositorHookApplied?: boolean;
+    wideTemplateHeroZoneUsed?: string;
+    wideTemplateCompositeAreaBefore?: number;
+    wideTemplateCompositeAreaAfter?: number;
     sceneGraphV2Enabled?: boolean;
     sceneGraphMirrorMode?: boolean;
     sceneGraphFiles?: string[];
@@ -211,6 +220,7 @@ export type DaosDebugBundle = {
   wideHeroStrategy?: WideHeroStrategy;
   wideProductLayoutPatch?: WideProductLayoutPatch;
   wideProductTemplate?: WideProductTemplate;
+  wideTemplateCompositorHookDiagnostics?: WideTemplateCompositorHookDiagnostics;
   compositePlacement?: NormalizedCompositePlacement;
   law003Recalibration?: Law003RecalibrationReport;
   overlayGate?: DAOSOverlayGateResult;
@@ -251,6 +261,7 @@ export function createDaosDebugBundle(
     wideHeroStrategy?: WideHeroStrategy;
     wideProductLayoutPatch?: WideProductLayoutPatch;
     wideProductTemplate?: WideProductTemplate;
+    wideTemplateCompositorHookDiagnostics?: WideTemplateCompositorHookDiagnostics;
     compositePlacement?: NormalizedCompositePlacement;
     extractAreaCorrected?: boolean;
     extractAreaWarnings?: string[];
@@ -304,6 +315,7 @@ export function createDaosDebugBundle(
   const wideHeroStrategy = options?.wideHeroStrategy;
   const wideProductLayoutPatch = options?.wideProductLayoutPatch;
   const wideProductTemplate = options?.wideProductTemplate;
+  const wideTemplateCompositorHookDiagnostics = options?.wideTemplateCompositorHookDiagnostics;
   const compositePlacement = options?.compositePlacement;
   const extractAreaCorrected = options?.extractAreaCorrected;
   const extractAreaWarnings = options?.extractAreaWarnings;
@@ -477,6 +489,15 @@ export function createDaosDebugBundle(
             };
           })()
         : {}),
+      wideTemplateCompositorHookEnabled: isDaosWideTemplateCompositorHookEnabled(),
+      ...(wideTemplateCompositorHookDiagnostics
+        ? {
+            wideTemplateCompositorHookApplied: wideTemplateCompositorHookDiagnostics.hookApplied,
+            wideTemplateHeroZoneUsed: wideTemplateCompositorHookDiagnostics.heroZoneUsed,
+            wideTemplateCompositeAreaBefore: wideTemplateCompositorHookDiagnostics.compositeAreaBefore,
+            wideTemplateCompositeAreaAfter: wideTemplateCompositorHookDiagnostics.compositeAreaAfter,
+          }
+        : {}),
       ...(productScaleSummary
         ? {
             productScaleScore: productScaleSummary.score,
@@ -608,6 +629,7 @@ export function createDaosDebugBundle(
     wideHeroStrategy,
     wideProductLayoutPatch,
     wideProductTemplate,
+    wideTemplateCompositorHookDiagnostics,
     compositePlacement,
     law003Recalibration,
     overlayGate,
