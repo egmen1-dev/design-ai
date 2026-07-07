@@ -27,9 +27,9 @@
 | 6 | Decision Engine | [volume-06-decision-engine](./constitution-v3/volume-06-decision-engine/) | Part 1–2 draft |
 | 7 | Agent Reasoning Protocol | [volume-07-agent-reasoning-protocol](./constitution-v3/volume-07-agent-reasoning-protocol/) | Part 1 draft |
 | 8 | Commercial Reasoning System | [volume-08-commercial-reasoning-system](./constitution-v3/volume-08-commercial-reasoning-system/) | Part 1 draft |
-| 9 | Rendering System | [volume-09-rendering-system](./constitution-v3/volume-09-rendering-system/) | pending |
+| 9 | Execution Architecture Specification | [volume-09-execution-architecture](./constitution-v3/volume-09-execution-architecture/) | Part 1 canonical |
 | 10 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
-| 10 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
+| 11 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
 | 11 | Agent Communication Protocol | [volume-11-agent-communication-protocol](./constitution-v3/volume-11-agent-communication-protocol/) | superseded → Vol 7 |
 | 12 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
 | 13 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
@@ -404,3 +404,36 @@ Highest intelligence layer: commercial objective, evidence-weighted reasoning, s
 | RFC-806 | Commercial First Principle |
 
 **END OF VOLUME 8 — PART 1** (content in [part-01/](./constitution-v3/volume-08-commercial-reasoning-system/part-01/))
+
+---
+
+# Volume 9 — Execution Architecture Specification (Part 1)
+
+**Architecture status:** Canonical · **Normative language:** RFC 2119
+
+Execution topology, module contracts, actual-state priority, and provider independence.
+
+→ Full text: [constitution-v3/volume-09-execution-architecture/part-01/](./constitution-v3/volume-09-execution-architecture/part-01/)
+
+| Spec / RFC | Title |
+|------------|-------|
+| RFC-900 | Execution Layer |
+| SPEC-900 | Execution Topology |
+| SPEC-901 | Execution Contract |
+| SPEC-902 | Geometry Resolver |
+| SPEC-903 | Scene Composer |
+| SPEC-904 | Product Composer |
+| SPEC-905 | Typography Renderer |
+| SPEC-906 | Overlay Renderer |
+| SPEC-907 | HTML Renderer |
+| SPEC-908 | Provider Adapter |
+| SPEC-909 | Bitmap Renderer |
+| SPEC-910 | Execution Diagnostics |
+| SPEC-911 | Execution Constraints |
+| RFC-901 | Execution Invariants |
+| SPEC-912 | Actual State Update |
+| SPEC-913 | Actual Geometry Priority |
+| SPEC-914 | Execution Failures |
+| RFC-902 | Rendering Independence |
+
+**END OF VOLUME 9 — PART 1** (content in [part-01/](./constitution-v3/volume-09-execution-architecture/part-01/))

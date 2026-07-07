@@ -58,5 +58,8 @@ Constitution RFCs:
 | RFC-804 | 8 Part 1 | [../volume-08-commercial-reasoning-system/part-01/RFC-804.md](../volume-08-commercial-reasoning-system/part-01/RFC-804.md) |
 | RFC-805 | 8 Part 1 | [../volume-08-commercial-reasoning-system/part-01/RFC-805.md](../volume-08-commercial-reasoning-system/part-01/RFC-805.md) |
 | RFC-806 | 8 Part 1 | [../volume-08-commercial-reasoning-system/part-01/RFC-806.md](../volume-08-commercial-reasoning-system/part-01/RFC-806.md) |
+| RFC-900 | 9 Part 1 | [../volume-09-execution-architecture/part-01/RFC-900.md](../volume-09-execution-architecture/part-01/RFC-900.md) |
+| RFC-901 | 9 Part 1 | [../volume-09-execution-architecture/part-01/RFC-901.md](../volume-09-execution-architecture/part-01/RFC-901.md) |
+| RFC-902 | 9 Part 1 | [../volume-09-execution-architecture/part-01/RFC-902.md](../volume-09-execution-architecture/part-01/RFC-902.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)
