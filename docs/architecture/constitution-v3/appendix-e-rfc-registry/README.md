@@ -252,5 +252,21 @@ Constitution RFCs:
 | RFC-2813 | 28 | [../volume-28-feature-flag-governance/part-01/RFC-2813.md](../volume-28-feature-flag-governance/part-01/RFC-2813.md) |
 | RFC-2814 | 28 | [../volume-28-feature-flag-governance/part-01/RFC-2814.md](../volume-28-feature-flag-governance/part-01/RFC-2814.md) |
 | RFC-2815 | 28 | [../volume-28-feature-flag-governance/part-01/RFC-2815.md](../volume-28-feature-flag-governance/part-01/RFC-2815.md) |
+| RFC-2900 | 29 | [../volume-29-platform-quality-governance/part-01/RFC-2900.md](../volume-29-platform-quality-governance/part-01/RFC-2900.md) |
+| RFC-2901 | 29 | [../volume-29-platform-quality-governance/part-01/RFC-2901.md](../volume-29-platform-quality-governance/part-01/RFC-2901.md) |
+| RFC-2902 | 29 | [../volume-29-platform-quality-governance/part-01/RFC-2902.md](../volume-29-platform-quality-governance/part-01/RFC-2902.md) |
+| RFC-2903 | 29 | [../volume-29-platform-quality-governance/part-01/RFC-2903.md](../volume-29-platform-quality-governance/part-01/RFC-2903.md) |
+| RFC-2904 | 29 | [../volume-29-platform-quality-governance/part-01/RFC-2904.md](../volume-29-platform-quality-governance/part-01/RFC-2904.md) |
+| RFC-2905 | 29 | [../volume-29-platform-quality-governance/part-01/RFC-2905.md](../volume-29-platform-quality-governance/part-01/RFC-2905.md) |
+| RFC-2906 | 29 | [../volume-29-platform-quality-governance/part-01/RFC-2906.md](../volume-29-platform-quality-governance/part-01/RFC-2906.md) |
+| RFC-2907 | 29 | [../volume-29-platform-quality-governance/part-01/RFC-2907.md](../volume-29-platform-quality-governance/part-01/RFC-2907.md) |
+| RFC-2908 | 29 | [../volume-29-platform-quality-governance/part-01/RFC-2908.md](../volume-29-platform-quality-governance/part-01/RFC-2908.md) |
+| RFC-2909 | 29 | [../volume-29-platform-quality-governance/part-01/RFC-2909.md](../volume-29-platform-quality-governance/part-01/RFC-2909.md) |
+| RFC-2910 | 29 | [../volume-29-platform-quality-governance/part-01/RFC-2910.md](../volume-29-platform-quality-governance/part-01/RFC-2910.md) |
+| RFC-2911 | 29 | [../volume-29-platform-quality-governance/part-01/RFC-2911.md](../volume-29-platform-quality-governance/part-01/RFC-2911.md) |
+| RFC-2912 | 29 | [../volume-29-platform-quality-governance/part-01/RFC-2912.md](../volume-29-platform-quality-governance/part-01/RFC-2912.md) |
+| RFC-2913 | 29 | [../volume-29-platform-quality-governance/part-01/RFC-2913.md](../volume-29-platform-quality-governance/part-01/RFC-2913.md) |
+| RFC-2914 | 29 | [../volume-29-platform-quality-governance/part-01/RFC-2914.md](../volume-29-platform-quality-governance/part-01/RFC-2914.md) |
+| RFC-2915 | 29 | [../volume-29-platform-quality-governance/part-01/RFC-2915.md](../volume-29-platform-quality-governance/part-01/RFC-2915.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)

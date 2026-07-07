@@ -47,13 +47,14 @@
 | 26 | Metric Registry | [volume-26-metric-registry](./constitution-v3/volume-26-metric-registry/) | canonical |
 | 27 | Canonical Object Registry | [volume-27-canonical-object-registry](./constitution-v3/volume-27-canonical-object-registry/) | canonical |
 | 28 | Feature Flag Governance | [volume-28-feature-flag-governance](./constitution-v3/volume-28-feature-flag-governance/) | canonical |
-| 29 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
-| 30 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
+| 29 | Platform Quality Governance | [volume-29-platform-quality-governance](./constitution-v3/volume-29-platform-quality-governance/) | canonical |
+| 30 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
+| 31 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
 | — | Agent Communication Protocol | [volume-11-agent-communication-protocol](./constitution-v3/volume-11-agent-communication-protocol/) | superseded → Vol 7 / 13 |
-| 31 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
-| 32 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
-| 33 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
-| 34 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
+| 32 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
+| 33 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
+| 34 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
+| 35 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
 
 ## Appendices
 
@@ -1162,3 +1163,34 @@ Governed feature flags as architectural objects: lifecycle, mandatory metadata, 
 | RFC-2815 | Feature Flag Principle |
 
 **END OF VOLUME 28** (content in [part-01/](./constitution-v3/volume-28-feature-flag-governance/part-01/))
+
+---
+
+# Volume 29 — Platform Quality Governance
+
+**Architecture status:** Canonical · **Layer:** Platform Quality · **Normative:** Mandatory · **Audit source:** DAOS Architecture Audit 2026
+
+Unified deterministic quality pipeline: implementation → tests → architecture validation → benchmark → regression → quality review → release → production. Benchmark certification, regression severity, quality gates, and release states.
+
+→ Full text: [constitution-v3/volume-29-platform-quality-governance/part-01/](./constitution-v3/volume-29-platform-quality-governance/part-01/)
+
+| RFC | Title |
+|-----|-------|
+| RFC-2900 | Purpose |
+| RFC-2901 | Quality Pipeline |
+| RFC-2902 | Benchmark Governance |
+| RFC-2903 | Benchmark Categories |
+| RFC-2904 | Benchmark Integrity |
+| RFC-2905 | Benchmark Certification |
+| RFC-2906 | Regression Governance |
+| RFC-2907 | Regression Severity |
+| RFC-2908 | Regression Report |
+| RFC-2909 | Release Readiness |
+| RFC-2910 | Quality Gates |
+| RFC-2911 | Architecture Readiness |
+| RFC-2912 | Release States |
+| RFC-2913 | Release Decision |
+| RFC-2914 | Continuous Quality |
+| RFC-2915 | Quality Principle |
+
+**END OF VOLUME 29** (content in [part-01/](./constitution-v3/volume-29-platform-quality-governance/part-01/))
