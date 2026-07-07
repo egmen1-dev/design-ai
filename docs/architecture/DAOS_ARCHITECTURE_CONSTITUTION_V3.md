@@ -43,13 +43,14 @@
 | 22 | Commercial Genome Lifecycle | [volume-22-commercial-genome-lifecycle](./constitution-v3/volume-22-commercial-genome-lifecycle/) | canonical |
 | 23 | Commercial Knowledge Ontology | [volume-23-commercial-knowledge-ontology](./constitution-v3/volume-23-commercial-knowledge-ontology/) | canonical |
 | 24 | Knowledge Resolution Engine | [volume-24-knowledge-resolution-engine](./constitution-v3/volume-24-knowledge-resolution-engine/) | canonical |
-| 25 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
-| 26 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
+| 25 | Generation Context Model | [volume-25-generation-context-model](./constitution-v3/volume-25-generation-context-model/) | canonical |
+| 26 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
+| 27 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
 | — | Agent Communication Protocol | [volume-11-agent-communication-protocol](./constitution-v3/volume-11-agent-communication-protocol/) | superseded → Vol 7 / 13 |
-| 27 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
-| 28 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
-| 29 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
-| 30 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
+| 28 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
+| 29 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
+| 30 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
+| 31 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
 
 ## Appendices
 
@@ -1023,3 +1024,42 @@ Canonical algorithm transforming Commercial Genome into Resolved Knowledge Set: 
 | RFC-2405 | Knowledge Resolution Principle |
 
 **END OF VOLUME 24** (content in [part-01/](./constitution-v3/volume-24-knowledge-resolution-engine/part-01/))
+
+---
+
+# Volume 25 — Generation Context Model
+
+**Architecture status:** Canonical · **Layer:** Generation Context · **Normative:** Mandatory · **Audit source:** DAOS Architecture Audit 2026
+
+Canonical immutable GenerationContext as SSOT for one commercial generation: product, marketplace, audience, brand, commercial goal, design intent, constraints, assets, provider/rendering/benchmark/learning contexts. All subsystems consume identical context.
+
+→ Full text: [constitution-v3/volume-25-generation-context-model/part-01/](./constitution-v3/volume-25-generation-context-model/part-01/)
+
+| Spec / RFC | Title |
+|------------|-------|
+| RFC-2500 | Purpose |
+| RFC-2501 | Ownership |
+| RFC-2502 | Context Lifecycle |
+| SPEC-2500 | Canonical Structure |
+| SPEC-2501 | Metadata |
+| SPEC-2502 | Product Context |
+| SPEC-2503 | Marketplace Context |
+| SPEC-2504 | Category Context |
+| SPEC-2505 | Audience Context |
+| SPEC-2506 | Brand Context |
+| SPEC-2507 | Commercial Goal |
+| SPEC-2508 | Design Intent |
+| SPEC-2509 | Constraints |
+| SPEC-2510 | Assets |
+| SPEC-2511 | Provider Context |
+| SPEC-2512 | Rendering Context |
+| SPEC-2513 | Benchmark Context |
+| SPEC-2514 | Learning Context |
+| RFC-2503 | Context Immutability |
+| RFC-2504 | Context Consumers |
+| RFC-2505 | Context Versioning |
+| RFC-2506 | Context Traceability |
+| RFC-2507 | Context Integrity |
+| RFC-2508 | Context Principle |
+
+**END OF VOLUME 25** (content in [part-01/](./constitution-v3/volume-25-generation-context-model/part-01/))
