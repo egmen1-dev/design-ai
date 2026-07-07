@@ -82,6 +82,14 @@ export {
 } from "./SceneGraphConstitutionMirror";
 
 export {
+  evaluateSceneGraphLaw003V2,
+  compareLaw003V1V2,
+  SCENE_GRAPH_LAW003_V2_VERSION,
+  type SceneGraphLaw003V2Result,
+  type SceneGraphLaw003V2Metrics,
+} from "./SceneGraphLaw003V2";
+
+export {
   analyzeSceneGraphWhitespaceAttribution,
   summarizeSceneGraphWhitespaceAttribution,
   type SceneGraphWhitespaceAttributionResult,

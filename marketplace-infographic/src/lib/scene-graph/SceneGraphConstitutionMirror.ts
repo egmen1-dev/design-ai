@@ -5,6 +5,7 @@ import {
   LAW003_OVERLAY_DENSITY_SAFE,
   LAW003_PRODUCT_AREA_GOOD,
 } from "@/lib/daos/governance/law003-recalibration";
+import { compareLaw003V1V2, type SceneGraphLaw003V2Result } from "./SceneGraphLaw003V2";
 
 export type SceneGraphConstitutionSource = "actual" | "planned" | "mixed";
 
@@ -34,6 +35,7 @@ export type SceneGraphConstitutionMirrorResult = {
   evaluatedAt: string;
   graphStage: SceneGraph["stage"];
   law003: SceneGraphLaw003MirrorResult;
+  law003V2: SceneGraphLaw003V2Result;
   law014: SceneGraphLaw014MirrorResult;
   sceneGraphConstitutionSource: SceneGraphConstitutionSource;
   passed: boolean;
@@ -393,6 +395,7 @@ export function evaluateSceneGraphConstitutionMirror(
   graph: SceneGraph,
 ): SceneGraphConstitutionMirrorResult {
   const law003 = evaluateSceneGraphLaw003(graph);
+  const law003V2 = compareLaw003V1V2(graph);
   const law014 = evaluateSceneGraphLaw014(graph);
   const sceneGraphConstitutionSource = combineSources([law003.source, law014.source]);
   const passed = law003.passed && law014.passed;
@@ -402,6 +405,7 @@ export function evaluateSceneGraphConstitutionMirror(
     evaluatedAt: new Date().toISOString(),
     graphStage: graph.stage,
     law003,
+    law003V2,
     law014,
     sceneGraphConstitutionSource,
     passed,

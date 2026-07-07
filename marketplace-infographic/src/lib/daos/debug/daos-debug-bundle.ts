@@ -178,6 +178,10 @@ export type DaosDebugBundle = {
     sceneGraphLaw003Passed?: boolean;
     sceneGraphLaw014Passed?: boolean;
     sceneGraphConstitutionSource?: "actual" | "planned" | "mixed";
+    sceneGraphLaw003V2Passed?: boolean;
+    sceneGraphLaw003V2Score?: number;
+    sceneGraphLaw003V2Disagreement?: boolean;
+    sceneGraphLaw003V2Reason?: string;
     whitespacePrimaryCause?: string;
     whitespaceSecondaryCauses?: string[];
     whitespaceRecommendations?: string[];
@@ -543,6 +547,10 @@ export function createDaosDebugBundle(
             sceneGraphLaw003Passed: sceneGraphConstitutionMirror.law003.passed,
             sceneGraphLaw014Passed: sceneGraphConstitutionMirror.law014.passed,
             sceneGraphConstitutionSource: sceneGraphConstitutionMirror.sceneGraphConstitutionSource,
+            sceneGraphLaw003V2Passed: sceneGraphConstitutionMirror.law003V2.passed,
+            sceneGraphLaw003V2Score: sceneGraphConstitutionMirror.law003V2.score,
+            sceneGraphLaw003V2Disagreement: sceneGraphConstitutionMirror.law003V2.disagreement,
+            sceneGraphLaw003V2Reason: sceneGraphConstitutionMirror.law003V2.reason,
           }
         : {}),
       ...(sceneGraphWhitespaceAttribution
