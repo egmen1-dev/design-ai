@@ -47,5 +47,9 @@ Constitution RFCs:
 | RFC-607 | 6 Part 2 | [../volume-06-decision-engine/part-02/RFC-607.md](../volume-06-decision-engine/part-02/RFC-607.md) |
 | RFC-608 | 6 Part 2 | [../volume-06-decision-engine/part-02/RFC-608.md](../volume-06-decision-engine/part-02/RFC-608.md) |
 | RFC-609 | 6 Part 2 | [../volume-06-decision-engine/part-02/RFC-609.md](../volume-06-decision-engine/part-02/RFC-609.md) |
+| RFC-700 | 7 Part 1 | [../volume-07-agent-reasoning-protocol/part-01/RFC-700.md](../volume-07-agent-reasoning-protocol/part-01/RFC-700.md) |
+| RFC-701 | 7 Part 1 | [../volume-07-agent-reasoning-protocol/part-01/RFC-701.md](../volume-07-agent-reasoning-protocol/part-01/RFC-701.md) |
+| RFC-702 | 7 Part 1 | [../volume-07-agent-reasoning-protocol/part-01/RFC-702.md](../volume-07-agent-reasoning-protocol/part-01/RFC-702.md) |
+| RFC-703 | 7 Part 1 | [../volume-07-agent-reasoning-protocol/part-01/RFC-703.md](../volume-07-agent-reasoning-protocol/part-01/RFC-703.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)

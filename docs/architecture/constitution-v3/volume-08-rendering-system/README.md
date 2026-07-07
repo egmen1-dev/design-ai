@@ -1,4 +1,4 @@
-# Volume 7 — Rendering System
+# Volume 8 — Rendering System
 
 **Status:** pending
 

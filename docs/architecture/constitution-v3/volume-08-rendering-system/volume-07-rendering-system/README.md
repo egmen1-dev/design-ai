@@ -1,4 +1,4 @@
-# Volume 6 — Rendering System
+# Volume 7 — Rendering System
 
 **Status:** superseded
 

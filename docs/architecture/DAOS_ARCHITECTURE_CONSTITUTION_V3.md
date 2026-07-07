@@ -25,10 +25,11 @@
 | 4 | SceneGraph | [volume-04-scenegraph](./constitution-v3/volume-04-scenegraph/) | Part 1 draft |
 | 5 | Commercial Knowledge System | [volume-05-commercial-knowledge-system](./constitution-v3/volume-05-commercial-knowledge-system/) | Part 1 draft |
 | 6 | Decision Engine | [volume-06-decision-engine](./constitution-v3/volume-06-decision-engine/) | Part 1–2 draft |
-| 7 | Rendering System | [volume-07-rendering-system](./constitution-v3/volume-07-rendering-system/) | pending |
+| 7 | Agent Reasoning Protocol | [volume-07-agent-reasoning-protocol](./constitution-v3/volume-07-agent-reasoning-protocol/) | Part 1 draft |
+| 8 | Rendering System | [volume-08-rendering-system](./constitution-v3/volume-08-rendering-system/) | pending |
 | 9 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
 | 10 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
-| 11 | Agent Communication Protocol | [volume-11-agent-communication-protocol](./constitution-v3/volume-11-agent-communication-protocol/) | pending |
+| 11 | Agent Communication Protocol | [volume-11-agent-communication-protocol](./constitution-v3/volume-11-agent-communication-protocol/) | superseded → Vol 7 |
 | 12 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
 | 13 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
 | 14 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
@@ -338,3 +339,36 @@ Deterministic 13-stage commercial generation lifecycle, retry strategy, failure 
 | RFC-609 | Commercial Invariants |
 
 **END OF VOLUME 6 — PART 2** (content in [part-02/](./constitution-v3/volume-06-decision-engine/part-02/))
+
+---
+
+# Volume 7 — Agent Reasoning Protocol (Part 1)
+
+Unified expert reasoning pipeline, protocol objects, determinism, and commercial thinking priorities.
+
+→ Full text: [constitution-v3/volume-07-agent-reasoning-protocol/part-01/](./constitution-v3/volume-07-agent-reasoning-protocol/part-01/)
+
+| Spec / RFC | Title |
+|------------|-------|
+| RFC-700 | Unified Agent Reasoning |
+| SPEC-700 | Universal Reasoning Pipeline |
+| SPEC-701 | Input Contract |
+| SPEC-702 | Internal Reasoning Stages |
+| SPEC-703 | Context Validation |
+| SPEC-704 | Knowledge Lookup |
+| SPEC-705 | Evidence Evaluation |
+| SPEC-706 | Constraint Detection |
+| SPEC-707 | Finding Generation |
+| SPEC-708 | Proposal Generation |
+| SPEC-709 | Risk Evaluation |
+| SPEC-710 | Confidence Calculation |
+| RFC-701 | Reasoning Determinism |
+| SPEC-711 | Proposal Completeness |
+| SPEC-712 | Agent Memory |
+| SPEC-713 | Forbidden Behaviors |
+| SPEC-714 | Required Behaviors |
+| RFC-702 | Native Communication Language |
+| SPEC-715 | Explainability |
+| RFC-703 | Commercial Thinking |
+
+**END OF VOLUME 7 — PART 1** (content in [part-01/](./constitution-v3/volume-07-agent-reasoning-protocol/part-01/))
