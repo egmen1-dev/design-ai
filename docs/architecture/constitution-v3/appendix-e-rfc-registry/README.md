@@ -166,5 +166,24 @@ Constitution RFCs:
 | RFC-2007 | 20 | [../volume-20-platform-evolution-model/part-01/RFC-2007.md](../volume-20-platform-evolution-model/part-01/RFC-2007.md) |
 | RFC-2008 | 20 | [../volume-20-platform-evolution-model/part-01/RFC-2008.md](../volume-20-platform-evolution-model/part-01/RFC-2008.md) |
 | RFC-2009 | 20 | [../volume-20-platform-evolution-model/part-01/RFC-2009.md](../volume-20-platform-evolution-model/part-01/RFC-2009.md) |
+| RFC-2100 | 21 | [../volume-21-architectural-debt-prevention/part-01/RFC-2100.md](../volume-21-architectural-debt-prevention/part-01/RFC-2100.md) |
+| RFC-2101 | 21 | [../volume-21-architectural-debt-prevention/part-01/RFC-2101.md](../volume-21-architectural-debt-prevention/part-01/RFC-2101.md) |
+| RFC-2102 | 21 | [../volume-21-architectural-debt-prevention/part-01/RFC-2102.md](../volume-21-architectural-debt-prevention/part-01/RFC-2102.md) |
+| RFC-2103 | 21 | [../volume-21-architectural-debt-prevention/part-01/RFC-2103.md](../volume-21-architectural-debt-prevention/part-01/RFC-2103.md) |
+| RFC-2104 | 21 | [../volume-21-architectural-debt-prevention/part-01/RFC-2104.md](../volume-21-architectural-debt-prevention/part-01/RFC-2104.md) |
+| RFC-2105 | 21 | [../volume-21-architectural-debt-prevention/part-01/RFC-2105.md](../volume-21-architectural-debt-prevention/part-01/RFC-2105.md) |
+| RFC-2106 | 21 | [../volume-21-architectural-debt-prevention/part-01/RFC-2106.md](../volume-21-architectural-debt-prevention/part-01/RFC-2106.md) |
+| RFC-2107 | 21 | [../volume-21-architectural-debt-prevention/part-01/RFC-2107.md](../volume-21-architectural-debt-prevention/part-01/RFC-2107.md) |
+| RFC-2108 | 21 | [../volume-21-architectural-debt-prevention/part-01/RFC-2108.md](../volume-21-architectural-debt-prevention/part-01/RFC-2108.md) |
+| RFC-2109 | 21 | [../volume-21-architectural-debt-prevention/part-01/RFC-2109.md](../volume-21-architectural-debt-prevention/part-01/RFC-2109.md) |
+| RFC-2110 | 21 | [../volume-21-architectural-debt-prevention/part-01/RFC-2110.md](../volume-21-architectural-debt-prevention/part-01/RFC-2110.md) |
+| RFC-2111 | 21 | [../volume-21-architectural-debt-prevention/part-01/RFC-2111.md](../volume-21-architectural-debt-prevention/part-01/RFC-2111.md) |
+| RFC-2112 | 21 | [../volume-21-architectural-debt-prevention/part-01/RFC-2112.md](../volume-21-architectural-debt-prevention/part-01/RFC-2112.md) |
+| RFC-2113 | 21 | [../volume-21-architectural-debt-prevention/part-01/RFC-2113.md](../volume-21-architectural-debt-prevention/part-01/RFC-2113.md) |
+| RFC-2114 | 21 | [../volume-21-architectural-debt-prevention/part-01/RFC-2114.md](../volume-21-architectural-debt-prevention/part-01/RFC-2114.md) |
+| RFC-2115 | 21 | [../volume-21-architectural-debt-prevention/part-01/RFC-2115.md](../volume-21-architectural-debt-prevention/part-01/RFC-2115.md) |
+| RFC-2116 | 21 | [../volume-21-architectural-debt-prevention/part-01/RFC-2116.md](../volume-21-architectural-debt-prevention/part-01/RFC-2116.md) |
+| RFC-2117 | 21 | [../volume-21-architectural-debt-prevention/part-01/RFC-2117.md](../volume-21-architectural-debt-prevention/part-01/RFC-2117.md) |
+| RFC-2118 | 21 | [../volume-21-architectural-debt-prevention/part-01/RFC-2118.md](../volume-21-architectural-debt-prevention/part-01/RFC-2118.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)

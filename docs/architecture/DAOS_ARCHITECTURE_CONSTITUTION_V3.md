@@ -39,13 +39,14 @@
 | 18 | Platform Operating Modes | [volume-18-platform-operating-modes](./constitution-v3/volume-18-platform-operating-modes/) | canonical |
 | 19 | System Invariants | [volume-19-system-invariants](./constitution-v3/volume-19-system-invariants/) | canonical |
 | 20 | Platform Evolution Model | [volume-20-platform-evolution-model](./constitution-v3/volume-20-platform-evolution-model/) | canonical |
-| 21 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
-| 22 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
+| 21 | Architectural Debt Prevention | [volume-21-architectural-debt-prevention](./constitution-v3/volume-21-architectural-debt-prevention/) | canonical |
+| 22 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
+| 23 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
 | — | Agent Communication Protocol | [volume-11-agent-communication-protocol](./constitution-v3/volume-11-agent-communication-protocol/) | superseded → Vol 7 / 13 |
-| 23 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
-| 24 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
-| 25 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
-| 26 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
+| 24 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
+| 25 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
+| 26 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
+| 27 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
 
 ## Appendices
 
@@ -872,3 +873,37 @@ Controlled architectural evolution through the Canonical Evolution Pipeline: Ide
 | RFC-2009 | Platform Philosophy |
 
 **END OF VOLUME 20** (content in [part-01/](./constitution-v3/volume-20-platform-evolution-model/part-01/))
+
+---
+
+# Volume 21 — Architectural Debt Prevention
+
+**Architecture status:** Canonical · **Normative:** Mandatory · **Priority:** Critical
+
+Rules to prevent architectural debt: temporary solution governance, SSOT enforcement, duplicate logic elimination, complexity budget, PR review gate, entropy metrics, and continuous refactoring.
+
+→ Full text: [constitution-v3/volume-21-architectural-debt-prevention/part-01/](./constitution-v3/volume-21-architectural-debt-prevention/part-01/)
+
+| RFC | Title |
+|-----|-------|
+| RFC-2100 | Architectural Debt |
+| RFC-2101 | Temporary Solutions |
+| RFC-2102 | Root Cause First |
+| RFC-2103 | Source of Truth |
+| RFC-2104 | No Duplicate Logic |
+| RFC-2105 | Metrics |
+| RFC-2106 | One Calculation Rule |
+| RFC-2107 | No Mirror Drift |
+| RFC-2108 | Patch Elimination Policy |
+| RFC-2109 | Experimental Features |
+| RFC-2110 | Complexity Budget |
+| RFC-2111 | Agent Responsibility |
+| RFC-2112 | Communication |
+| RFC-2113 | Knowledge Placement |
+| RFC-2114 | Evolution Policy |
+| RFC-2115 | Architectural Review Gate |
+| RFC-2116 | Architectural Entropy |
+| RFC-2117 | Continuous Refactoring |
+| RFC-2118 | Fundamental Principle |
+
+**END OF VOLUME 21** (content in [part-01/](./constitution-v3/volume-21-architectural-debt-prevention/part-01/))
