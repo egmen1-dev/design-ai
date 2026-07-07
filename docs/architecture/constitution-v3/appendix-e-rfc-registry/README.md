@@ -225,5 +225,16 @@ Constitution RFCs:
 | RFC-2609 | 26 | [../volume-26-metric-registry/part-01/RFC-2609.md](../volume-26-metric-registry/part-01/RFC-2609.md) |
 | RFC-2610 | 26 | [../volume-26-metric-registry/part-01/RFC-2610.md](../volume-26-metric-registry/part-01/RFC-2610.md) |
 | RFC-2611 | 26 | [../volume-26-metric-registry/part-01/RFC-2611.md](../volume-26-metric-registry/part-01/RFC-2611.md) |
+| RFC-2700 | 27 | [../volume-27-canonical-object-registry/part-01/RFC-2700.md](../volume-27-canonical-object-registry/part-01/RFC-2700.md) |
+| RFC-2701 | 27 | [../volume-27-canonical-object-registry/part-01/RFC-2701.md](../volume-27-canonical-object-registry/part-01/RFC-2701.md) |
+| RFC-2702 | 27 | [../volume-27-canonical-object-registry/part-01/RFC-2702.md](../volume-27-canonical-object-registry/part-01/RFC-2702.md) |
+| RFC-2703 | 27 | [../volume-27-canonical-object-registry/part-01/RFC-2703.md](../volume-27-canonical-object-registry/part-01/RFC-2703.md) |
+| RFC-2704 | 27 | [../volume-27-canonical-object-registry/part-01/RFC-2704.md](../volume-27-canonical-object-registry/part-01/RFC-2704.md) |
+| RFC-2705 | 27 | [../volume-27-canonical-object-registry/part-01/RFC-2705.md](../volume-27-canonical-object-registry/part-01/RFC-2705.md) |
+| RFC-2706 | 27 | [../volume-27-canonical-object-registry/part-01/RFC-2706.md](../volume-27-canonical-object-registry/part-01/RFC-2706.md) |
+| RFC-2707 | 27 | [../volume-27-canonical-object-registry/part-01/RFC-2707.md](../volume-27-canonical-object-registry/part-01/RFC-2707.md) |
+| RFC-2708 | 27 | [../volume-27-canonical-object-registry/part-01/RFC-2708.md](../volume-27-canonical-object-registry/part-01/RFC-2708.md) |
+| RFC-2709 | 27 | [../volume-27-canonical-object-registry/part-01/RFC-2709.md](../volume-27-canonical-object-registry/part-01/RFC-2709.md) |
+| RFC-2710 | 27 | [../volume-27-canonical-object-registry/part-01/RFC-2710.md](../volume-27-canonical-object-registry/part-01/RFC-2710.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)

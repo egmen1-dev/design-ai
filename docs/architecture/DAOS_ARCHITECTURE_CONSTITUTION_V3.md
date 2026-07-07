@@ -45,13 +45,14 @@
 | 24 | Knowledge Resolution Engine | [volume-24-knowledge-resolution-engine](./constitution-v3/volume-24-knowledge-resolution-engine/) | canonical |
 | 25 | Generation Context Model | [volume-25-generation-context-model](./constitution-v3/volume-25-generation-context-model/) | canonical |
 | 26 | Metric Registry | [volume-26-metric-registry](./constitution-v3/volume-26-metric-registry/) | canonical |
-| 27 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
-| 28 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
+| 27 | Canonical Object Registry | [volume-27-canonical-object-registry](./constitution-v3/volume-27-canonical-object-registry/) | canonical |
+| 28 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
+| 29 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
 | — | Agent Communication Protocol | [volume-11-agent-communication-protocol](./constitution-v3/volume-11-agent-communication-protocol/) | superseded → Vol 7 / 13 |
-| 29 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
-| 30 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
-| 31 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
-| 32 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
+| 30 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
+| 31 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
+| 32 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
+| 33 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
 
 ## Appendices
 
@@ -1097,3 +1098,35 @@ Canonical source of truth for every measurable value: one metric, one formula, o
 | RFC-2611 | Metric Principle |
 
 **END OF VOLUME 26** (content in [part-01/](./constitution-v3/volume-26-metric-registry/part-01/))
+
+---
+
+# Volume 27 — Canonical Object Registry
+
+**Architecture status:** Canonical · **Layer:** Object Governance · **Normative:** Mandatory · **Audit source:** DAOS Architecture Audit 2026
+
+Authoritative catalog of all platform architectural objects: identity, single ownership, single responsibility, explicit relationships, lifecycle, dependency graph, duplicate detection, and CI validation.
+
+→ Full text: [constitution-v3/volume-27-canonical-object-registry/part-01/](./constitution-v3/volume-27-canonical-object-registry/part-01/)
+
+| Spec / RFC | Title |
+|------------|-------|
+| RFC-2700 | Purpose |
+| RFC-2701 | Canonical Object |
+| RFC-2702 | Object Identity |
+| RFC-2703 | Canonical Object Types |
+| SPEC-2700 | Object Ownership |
+| SPEC-2701 | Object Responsibility |
+| SPEC-2702 | Object Relationships |
+| SPEC-2703 | Object Lifecycle |
+| SPEC-2704 | Object Schema |
+| SPEC-2705 | Object Mutability |
+| RFC-2704 | Object Registry Lookup |
+| RFC-2705 | Duplicate Detection |
+| RFC-2706 | Object Dependency Graph |
+| RFC-2707 | Object Discovery |
+| RFC-2708 | Object Evolution |
+| RFC-2709 | Registry Validation |
+| RFC-2710 | Registry Principle |
+
+**END OF VOLUME 27** (content in [part-01/](./constitution-v3/volume-27-canonical-object-registry/part-01/))
