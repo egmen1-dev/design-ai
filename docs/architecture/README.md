@@ -8,9 +8,11 @@ See **Part 20** in [DAOS_Specification.md](../DAOS_Specification.md).
 
 **Primary:** [`architecture.yaml`](architecture.yaml) — machine-readable DSL (Part 23)
 
-**Constitution v3:** [`DAOS_ARCHITECTURE_CONSTITUTION_V3.md`](DAOS_ARCHITECTURE_CONSTITUTION_V3.md) — canonical agent/runtime language (SPEC-000+)
+**Constitution v3:** [`DAOS_ARCHITECTURE_CONSTITUTION_V3.md`](DAOS_ARCHITECTURE_CONSTITUTION_V3.md) — canonical index (Volumes 0–15 + Appendices A–E)
 
-**Experimental knowledge:** [`DAOS_EXPERIMENTAL_KNOWLEDGE_BASE.md`](DAOS_EXPERIMENTAL_KNOWLEDGE_BASE.md) — stage evidence, anti-rules (subordinate to constitution)
+**Constitution tree:** [`constitution-v3/`](constitution-v3/) — per-volume folders
+
+**Experimental knowledge:** [`DAOS_EXPERIMENTAL_KNOWLEDGE_BASE.md`](DAOS_EXPERIMENTAL_KNOWLEDGE_BASE.md) — stage evidence (feeds Volume 8)
 
 **Secondary:** Architecture Bible, ADRs, RFCs (human-readable)
 

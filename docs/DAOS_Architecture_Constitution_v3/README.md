@@ -1,14 +1,7 @@
-# DAOS Architecture Constitution v3
+# DAOS Architecture Constitution v3 (legacy index)
 
-Canonical architecture specification for Design AI Operating System.
+**Moved to:** [docs/architecture/DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../architecture/DAOS_ARCHITECTURE_CONSTITUTION_V3.md)
 
-**Canonical path:** [`docs/architecture/DAOS_ARCHITECTURE_CONSTITUTION_V3.md`](../architecture/DAOS_ARCHITECTURE_CONSTITUTION_V3.md)
+**Tree:** [docs/architecture/constitution-v3/](../architecture/constitution-v3/)
 
-| Volume | Status | Notes |
-|--------|--------|-------|
-| Volume 0 Part 1 — Language Specification (SPEC-000–008) | canonical | mirrored in this folder for convenience |
-| Volume 0 Part 2 — KnowledgeRule, Experiment, Evidence, SceneMutation, DecisionGraph | pending | — |
-
-Legacy copy: [Volume_0_Part_1_Language_Specification.md](./Volume_0_Part_1_Language_Specification.md)
-
-Supersedes narrative sections of `docs/DAOS_Specification.md` v1.0 for agent/runtime contracts. Stage reports (`docs/DAOS_V2_*`) remain historical experiment evidence.
+This folder is deprecated. Use `docs/architecture/constitution-v3/` for all new content.
