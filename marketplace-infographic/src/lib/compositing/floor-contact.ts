@@ -1,6 +1,11 @@
 import sharp from "sharp";
 import type { Rgb } from "./scene-analysis";
 import { getAlphaBounds, getAlphaFootBottom } from "./ground-detector";
+import {
+  createSafeExtractArea,
+  mergeExtractGuard,
+  type ExtractAreaGuard,
+} from "@/lib/daos/compositor/safe-extract-area";
 
 export type FloorContactLayer = {
   buffer: Buffer;
@@ -15,23 +20,25 @@ export async function renderFloorContactShadow(
   productLeft: number,
   footCanvasY: number,
   floorColor: Rgb,
+  extractGuard?: ExtractAreaGuard,
 ): Promise<FloorContactLayer | null> {
   const bounds = await getAlphaBounds(productBuffer);
   if (!bounds) return null;
 
   const meta = await sharp(productBuffer).metadata();
   const w = meta.width ?? bounds.width;
+  const h = meta.height ?? bounds.height;
   const footTop = bounds.top + Math.round(bounds.height * 0.62);
   const footHeight = Math.max(10, bounds.bottom - footTop + 4);
+  const safeExtract = createSafeExtractArea(
+    { left: bounds.left, top: footTop, width: bounds.width, height: footHeight },
+    { width: w, height: h },
+  );
+  mergeExtractGuard(extractGuard, safeExtract);
 
   const slice = await sharp(productBuffer)
     .ensureAlpha()
-    .extract({
-      left: bounds.left,
-      top: footTop,
-      width: bounds.width,
-      height: footHeight,
-    })
+    .extract(safeExtract.area)
     .greyscale()
     .linear(1.4, -35)
     .blur(5)
@@ -84,23 +91,31 @@ export async function renderFloorReflection(
   productTop: number,
   footCanvasY: number,
   floorColor: Rgb,
+  extractGuard?: ExtractAreaGuard,
 ): Promise<FloorContactLayer | null> {
   const bounds = await getAlphaBounds(productBuffer);
   if (!bounds) return null;
 
   const meta = await sharp(productBuffer).metadata();
   const w = meta.width ?? bounds.width;
+  const h = meta.height ?? bounds.height;
   const reflectSourceH = Math.min(bounds.height, Math.round(bounds.height * 0.35));
   const extractTop = bounds.bottom - reflectSourceH + 1;
-
-  const reflected = await sharp(productBuffer)
-    .ensureAlpha()
-    .extract({
+  const rawHeight = Math.max(8, bounds.bottom - Math.max(0, extractTop) + 1);
+  const safeExtract = createSafeExtractArea(
+    {
       left: bounds.left,
       top: Math.max(0, extractTop),
       width: bounds.width,
-      height: Math.max(8, bounds.bottom - Math.max(0, extractTop) + 1),
-    })
+      height: rawHeight,
+    },
+    { width: w, height: h },
+  );
+  mergeExtractGuard(extractGuard, safeExtract);
+
+  const reflected = await sharp(productBuffer)
+    .ensureAlpha()
+    .extract(safeExtract.area)
     .flip()
     .resize(bounds.width, Math.max(16, Math.round(reflectSourceH * 0.55)), { fit: "fill" })
     .linear(0.7, -20)

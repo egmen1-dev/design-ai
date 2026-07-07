@@ -1,0 +1,1 @@
+export { DaosRegistry } from "./DaosRegistry";
