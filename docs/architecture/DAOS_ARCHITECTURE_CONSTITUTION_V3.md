@@ -21,7 +21,7 @@
 | 0 | DAOS Language Specification | [volume-00-language-specification](./constitution-v3/volume-00-language-specification/) | Part 1–2 draft |
 | 1 | Core Architecture | [volume-01-core-architecture](./constitution-v3/volume-01-core-architecture/) | Part 1 draft |
 | 2 | Research System | [volume-02-research-system](./constitution-v3/volume-02-research-system/) | Part 1 draft |
-| 3 | Commercial Knowledge Engine | [volume-03-commercial-knowledge-engine](./constitution-v3/volume-03-commercial-knowledge-engine/) | pending |
+| 3 | Core Domain Model | [volume-03-core-domain-model](./constitution-v3/volume-03-core-domain-model/) | Part 1 draft |
 | 4 | Decision Engine | [volume-04-decision-engine](./constitution-v3/volume-04-decision-engine/) | pending |
 | 5 | SceneGraph | [volume-05-scenegraph](./constitution-v3/volume-05-scenegraph/) | pending |
 | 6 | Rendering System | [volume-06-rendering-system](./constitution-v3/volume-06-rendering-system/) | pending |
@@ -157,3 +157,28 @@ Research philosophy, object model, evidence, validation, promotion pipeline, and
 | RFC-202 | Experimental Knowledge Priority |
 
 **END OF VOLUME 2 — PART 1** (content in [part-01/](./constitution-v3/volume-02-research-system/part-01/))
+
+---
+
+# Volume 3 — Core Domain Model (Part 1)
+
+Persistent business entities: commercial knowledge hierarchy, domain objects, genome, and stability model.
+
+→ Full text: [constitution-v3/volume-03-core-domain-model/part-01/](./constitution-v3/volume-03-core-domain-model/part-01/)
+
+| Spec / RFC | Title |
+|------------|-------|
+| RFC-300 | Core Domain Model |
+| SPEC-300 | Domain Architecture |
+| SPEC-301 | Root Domain Objects |
+| RFC-301 | Commercial Knowledge Hierarchy |
+| SPEC-302 | Commercial Law |
+| SPEC-303 | Commercial Rule |
+| SPEC-304 | Category Rule |
+| SPEC-305 | Brand DNA |
+| SPEC-306 | Adaptive Parameter |
+| RFC-302 | Commercial Genome |
+| SPEC-307 | Knowledge Rule |
+| SPEC-308 | Domain Stability |
+
+**END OF VOLUME 3 — PART 1** (content in [part-01/](./constitution-v3/volume-03-core-domain-model/part-01/))

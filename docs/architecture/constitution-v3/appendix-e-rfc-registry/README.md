@@ -18,5 +18,8 @@ Constitution RFCs:
 | RFC-200 | 2 Part 1 | [../volume-02-research-system/part-01/RFC-200.md](../volume-02-research-system/part-01/RFC-200.md) |
 | RFC-201 | 2 Part 1 | [../volume-02-research-system/part-01/RFC-201.md](../volume-02-research-system/part-01/RFC-201.md) |
 | RFC-202 | 2 Part 1 | [../volume-02-research-system/part-01/RFC-202.md](../volume-02-research-system/part-01/RFC-202.md) |
+| RFC-300 | 3 Part 1 | [../volume-03-core-domain-model/part-01/RFC-300.md](../volume-03-core-domain-model/part-01/RFC-300.md) |
+| RFC-301 | 3 Part 1 | [../volume-03-core-domain-model/part-01/RFC-301.md](../volume-03-core-domain-model/part-01/RFC-301.md) |
+| RFC-302 | 3 Part 1 | [../volume-03-core-domain-model/part-01/RFC-302.md](../volume-03-core-domain-model/part-01/RFC-302.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)
