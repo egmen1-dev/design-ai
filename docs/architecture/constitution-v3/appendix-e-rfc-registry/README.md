@@ -135,5 +135,26 @@ Constitution RFCs:
 | RFC-1807 | 18 | [../volume-18-platform-operating-modes/part-01/RFC-1807.md](../volume-18-platform-operating-modes/part-01/RFC-1807.md) |
 | RFC-1808 | 18 | [../volume-18-platform-operating-modes/part-01/RFC-1808.md](../volume-18-platform-operating-modes/part-01/RFC-1808.md) |
 | RFC-1809 | 18 | [../volume-18-platform-operating-modes/part-01/RFC-1809.md](../volume-18-platform-operating-modes/part-01/RFC-1809.md) |
+| RFC-1900 | 19 | [../volume-19-system-invariants/part-01/RFC-1900.md](../volume-19-system-invariants/part-01/RFC-1900.md) |
+| RFC-1901 | 19 | [../volume-19-system-invariants/part-01/RFC-1901.md](../volume-19-system-invariants/part-01/RFC-1901.md) |
+| RFC-1902 | 19 | [../volume-19-system-invariants/part-01/RFC-1902.md](../volume-19-system-invariants/part-01/RFC-1902.md) |
+| RFC-1903 | 19 | [../volume-19-system-invariants/part-01/RFC-1903.md](../volume-19-system-invariants/part-01/RFC-1903.md) |
+| RFC-1904 | 19 | [../volume-19-system-invariants/part-01/RFC-1904.md](../volume-19-system-invariants/part-01/RFC-1904.md) |
+| RFC-1905 | 19 | [../volume-19-system-invariants/part-01/RFC-1905.md](../volume-19-system-invariants/part-01/RFC-1905.md) |
+| RFC-1906 | 19 | [../volume-19-system-invariants/part-01/RFC-1906.md](../volume-19-system-invariants/part-01/RFC-1906.md) |
+| RFC-1907 | 19 | [../volume-19-system-invariants/part-01/RFC-1907.md](../volume-19-system-invariants/part-01/RFC-1907.md) |
+| RFC-1908 | 19 | [../volume-19-system-invariants/part-01/RFC-1908.md](../volume-19-system-invariants/part-01/RFC-1908.md) |
+| RFC-1909 | 19 | [../volume-19-system-invariants/part-01/RFC-1909.md](../volume-19-system-invariants/part-01/RFC-1909.md) |
+| RFC-1910 | 19 | [../volume-19-system-invariants/part-01/RFC-1910.md](../volume-19-system-invariants/part-01/RFC-1910.md) |
+| RFC-1911 | 19 | [../volume-19-system-invariants/part-01/RFC-1911.md](../volume-19-system-invariants/part-01/RFC-1911.md) |
+| RFC-1912 | 19 | [../volume-19-system-invariants/part-01/RFC-1912.md](../volume-19-system-invariants/part-01/RFC-1912.md) |
+| RFC-1913 | 19 | [../volume-19-system-invariants/part-01/RFC-1913.md](../volume-19-system-invariants/part-01/RFC-1913.md) |
+| RFC-1914 | 19 | [../volume-19-system-invariants/part-01/RFC-1914.md](../volume-19-system-invariants/part-01/RFC-1914.md) |
+| RFC-1915 | 19 | [../volume-19-system-invariants/part-01/RFC-1915.md](../volume-19-system-invariants/part-01/RFC-1915.md) |
+| RFC-1916 | 19 | [../volume-19-system-invariants/part-01/RFC-1916.md](../volume-19-system-invariants/part-01/RFC-1916.md) |
+| RFC-1917 | 19 | [../volume-19-system-invariants/part-01/RFC-1917.md](../volume-19-system-invariants/part-01/RFC-1917.md) |
+| RFC-1918 | 19 | [../volume-19-system-invariants/part-01/RFC-1918.md](../volume-19-system-invariants/part-01/RFC-1918.md) |
+| RFC-1919 | 19 | [../volume-19-system-invariants/part-01/RFC-1919.md](../volume-19-system-invariants/part-01/RFC-1919.md) |
+| RFC-1920 | 19 | [../volume-19-system-invariants/part-01/RFC-1920.md](../volume-19-system-invariants/part-01/RFC-1920.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)

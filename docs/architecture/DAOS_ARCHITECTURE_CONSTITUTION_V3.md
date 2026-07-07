@@ -37,13 +37,14 @@
 | 16 | DAOS Kernel Specification | [volume-16-daos-kernel-specification](./constitution-v3/volume-16-daos-kernel-specification/) | canonical |
 | 17 | Module System & Plugin ABI | [volume-17-module-system-plugin-abi](./constitution-v3/volume-17-module-system-plugin-abi/) | canonical |
 | 18 | Platform Operating Modes | [volume-18-platform-operating-modes](./constitution-v3/volume-18-platform-operating-modes/) | canonical |
-| 19 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
-| 20 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
+| 19 | System Invariants | [volume-19-system-invariants](./constitution-v3/volume-19-system-invariants/) | canonical |
+| 20 | Learning Engine | [volume-09-learning-engine](./constitution-v3/volume-09-learning-engine/) | pending |
+| 21 | Marketplace Intelligence | [volume-10-marketplace-intelligence](./constitution-v3/volume-10-marketplace-intelligence/) | pending |
 | — | Agent Communication Protocol | [volume-11-agent-communication-protocol](./constitution-v3/volume-11-agent-communication-protocol/) | superseded → Vol 7 / 13 |
-| 21 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
-| 22 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
-| 23 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
-| 24 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
+| 22 | Governance | [volume-12-governance](./constitution-v3/volume-12-governance/) | pending |
+| 23 | Benchmark Framework | [volume-13-benchmark-framework](./constitution-v3/volume-13-benchmark-framework/) | pending |
+| 24 | Evolution Rules | [volume-14-evolution-rules](./constitution-v3/volume-14-evolution-rules/) | pending |
+| 25 | Migration Strategy | [volume-15-migration-strategy](./constitution-v3/volume-15-migration-strategy/) | pending |
 
 ## Appendices
 
@@ -798,3 +799,39 @@ Explicit execution modes (Research → Exploration → Refinement → Production
 | RFC-1809 | Fundamental Principle |
 
 **END OF VOLUME 18** (content in [part-01/](./constitution-v3/volume-18-platform-operating-modes/part-01/))
+
+---
+
+# Volume 19 — System Invariants
+
+**Architecture status:** Canonical · **Layer:** Global Invariants · **Normative:** Mandatory · **Priority:** Highest
+
+Properties that SHALL remain true for every generation lifecycle: commercial goal immutability, SSOT, decision integrity, evidence-first, determinism, separation, governance/learning independence, explainability, and traceability.
+
+→ Full text: [constitution-v3/volume-19-system-invariants/part-01/](./constitution-v3/volume-19-system-invariants/part-01/)
+
+| RFC | Title |
+|-----|-------|
+| RFC-1900 | Global Invariants |
+| RFC-1901 | Commercial Goal Invariant |
+| RFC-1902 | Single Source of Truth |
+| RFC-1903 | Decision Integrity |
+| RFC-1904 | Evidence First |
+| RFC-1905 | Deterministic Execution |
+| RFC-1906 | Knowledge Separation |
+| RFC-1907 | Rendering Separation |
+| RFC-1908 | Governance Independence |
+| RFC-1909 | Learning Independence |
+| RFC-1910 | Experimental Isolation |
+| RFC-1911 | Rule of One Change |
+| RFC-1912 | Explainability |
+| RFC-1913 | Traceability |
+| RFC-1914 | Plugin Isolation |
+| RFC-1915 | Research Priority |
+| RFC-1916 | Commercial Genome Priority |
+| RFC-1917 | Human Override |
+| RFC-1918 | Backward Compatibility |
+| RFC-1919 | Commercial Identity |
+| RFC-1920 | Fundamental Principle |
+
+**END OF VOLUME 19** (content in [part-01/](./constitution-v3/volume-19-system-invariants/part-01/))
