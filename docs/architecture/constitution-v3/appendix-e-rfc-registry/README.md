@@ -64,5 +64,11 @@ Constitution RFCs:
 | RFC-1000 | 10 Part 1 | [../volume-10-canonical-data-contracts/part-01/RFC-1000.md](../volume-10-canonical-data-contracts/part-01/RFC-1000.md) |
 | RFC-1001 | 10 Part 1 | [../volume-10-canonical-data-contracts/part-01/RFC-1001.md](../volume-10-canonical-data-contracts/part-01/RFC-1001.md) |
 | RFC-1002 | 10 Part 1 | [../volume-10-canonical-data-contracts/part-01/RFC-1002.md](../volume-10-canonical-data-contracts/part-01/RFC-1002.md) |
+| RFC-1100 | 11 | [../volume-11-state-machine-specification/part-01/RFC-1100.md](../volume-11-state-machine-specification/part-01/RFC-1100.md) |
+| RFC-1101 | 11 | [../volume-11-state-machine-specification/part-01/RFC-1101.md](../volume-11-state-machine-specification/part-01/RFC-1101.md) |
+| RFC-1102 | 11 | [../volume-11-state-machine-specification/part-01/RFC-1102.md](../volume-11-state-machine-specification/part-01/RFC-1102.md) |
+| RFC-1103 | 11 | [../volume-11-state-machine-specification/part-01/RFC-1103.md](../volume-11-state-machine-specification/part-01/RFC-1103.md) |
+| RFC-1104 | 11 | [../volume-11-state-machine-specification/part-01/RFC-1104.md](../volume-11-state-machine-specification/part-01/RFC-1104.md) |
+| RFC-1105 | 11 | [../volume-11-state-machine-specification/part-01/RFC-1105.md](../volume-11-state-machine-specification/part-01/RFC-1105.md) |
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)
