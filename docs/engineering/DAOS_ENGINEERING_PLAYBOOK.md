@@ -6,7 +6,8 @@
 
 **Applies to:** All DAOS contributors · Cursor · AI Agents · Human Engineers
 
-> **Agents:** Read [CURSOR_ENGINEERING_KERNEL.md](./CURSOR_ENGINEERING_KERNEL.md) first before any implementation task.
+> **Agents:** Read [CURSOR_ENGINEERING_KERNEL.md](./CURSOR_ENGINEERING_KERNEL.md) first before any implementation task.  
+> **Before code:** [PRE_IMPLEMENTATION_ARCHITECTURE_REVIEW.md](./PRE_IMPLEMENTATION_ARCHITECTURE_REVIEW.md)
 
 ---
 
@@ -21,8 +22,8 @@ The Playbook is derived from:
 - [DAOS Constitution V3](../architecture/DAOS_ARCHITECTURE_CONSTITUTION_V3.md)
 - Architecture Audit
 - Wave 1–34
-- [Experimental Knowledge Base](../architecture/DAOS_EXPERIMENTAL_KNOWLEDGE_BASE.md)
-- Commercial Genome roadmap
+- [Experimental Knowledge v1.0](../knowledge/Experimental-Knowledge-v1.0.md)
+- Commercial Genome roadmap (`docs/knowledge/Commercial-Genome/`)
 
 ---
 

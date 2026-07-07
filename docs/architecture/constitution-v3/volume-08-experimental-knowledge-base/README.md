@@ -8,7 +8,7 @@ Research system: [SPEC-210](../volume-02-research-system/part-01/SPEC-210.md) (V
 
 Runtime experimental rules:
 
-- [DAOS_EXPERIMENTAL_KNOWLEDGE_BASE.md](../../DAOS_EXPERIMENTAL_KNOWLEDGE_BASE.md)
-- [DAOS_EXPERIMENTAL_KNOWLEDGE_BASE/](../../DAOS_EXPERIMENTAL_KNOWLEDGE_BASE/)
+- [Experimental-Knowledge-v1.0.md](../../../knowledge/Experimental-Knowledge-v1.0.md)
+- [experimental-artifacts/](../../../knowledge/experimental-artifacts/)
 
 Index: [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../../DAOS_ARCHITECTURE_CONSTITUTION_V3.md)

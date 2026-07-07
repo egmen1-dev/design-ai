@@ -69,10 +69,13 @@
 
 ## Related (outside constitution tree)
 
+- [Documentation index](../README.md) — docs layout (architecture, engineering, knowledge, adr, rfc, roadmap)
 - [DAOS Engineering Kernel](../engineering/CURSOR_ENGINEERING_KERNEL.md) — read first before implementation (Cursor / agents)
+- [Pre-Implementation Architecture Review](../engineering/PRE_IMPLEMENTATION_ARCHITECTURE_REVIEW.md) — mandatory before code
 - [DAOS Engineering Playbook](../engineering/DAOS_ENGINEERING_PLAYBOOK.md) — mandatory engineering process (derived from this constitution)
-- [RFC-010 — Architecture Council Protocol](./RFC-010_ARCHITECTURE_COUNCIL.md) — deterministic review pipeline before implementation (draft)
-- [DAOS_EXPERIMENTAL_KNOWLEDGE_BASE.md](./DAOS_EXPERIMENTAL_KNOWLEDGE_BASE.md) — stage evidence (feeds Volume 8)
+- [RFC-010 — Architecture Council Protocol](../rfc/RFC-010_ARCHITECTURE_COUNCIL.md) — deterministic review pipeline before implementation (draft)
+- [Experimental Knowledge v1.0](../knowledge/Experimental-Knowledge-v1.0.md) — stage evidence (feeds Volume 8)
+- [Implementation Roadmap](../roadmap/IMPLEMENTATION_ROADMAP.md) — code priorities (living document)
 - [architecture.yaml](./architecture.yaml) — legacy DSL (migrate per Volume 15)
 - [DAOS_Specification.md](../DAOS_Specification.md) — v1.0 narrative (superseded by this constitution)
 

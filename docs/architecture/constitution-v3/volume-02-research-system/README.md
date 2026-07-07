@@ -6,4 +6,4 @@
 |------|---------|------|
 | Part 1 | Research philosophy, experiments, evidence, promotion | [part-01/](./part-01/) |
 
-Related runtime artifact: [DAOS_EXPERIMENTAL_KNOWLEDGE_BASE.md](../../DAOS_EXPERIMENTAL_KNOWLEDGE_BASE.md)
+Related runtime artifact: [Experimental-Knowledge-v1.0.md](../../../knowledge/Experimental-Knowledge-v1.0.md)

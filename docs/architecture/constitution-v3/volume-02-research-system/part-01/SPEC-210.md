@@ -30,4 +30,4 @@ Every experiment performed by humans is stored here.
 
 No experiment is discarded.
 
-Runtime artifact: [DAOS_EXPERIMENTAL_KNOWLEDGE_BASE.md](../../../DAOS_EXPERIMENTAL_KNOWLEDGE_BASE.md)
+Runtime artifact: [Experimental-Knowledge-v1.0.md](../../../../knowledge/Experimental-Knowledge-v1.0.md)
