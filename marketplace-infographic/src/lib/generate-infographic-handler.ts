@@ -114,6 +114,12 @@ import type { VisualSceneBlueprint } from "@/lib/design/visual-pipeline";
 import type { FeedbackLearningSnapshot } from "@/lib/feedback/types";
 import { PIPELINE_VERSION } from "@/lib/pipeline-version";
 import {
+  buildCommercialGenomeBetaPromptSnippet,
+  createCommercialGenomeBetaDecision,
+  isCommercialGenomeBetaEnabled,
+  type CommercialGenomeBetaDecisionResult,
+} from "@/lib/daos/commercial-genome-beta";
+import {
   USE_RENDER_ENGINE_V17,
   regenerateMarketplaceBackground,
   type RenderEngineOrchestratorResult,
@@ -386,7 +392,19 @@ function compileBackgroundPrompt(input: {
   luxuryScore?: number;
   compositionScore?: number;
   sceneScore?: number;
+  commercialGenomeBetaSnippet?: string;
 }) {
+  const knowledgeSnippet = agentKnowledgeSnippet(
+    input.marketIntelligence,
+    input.assetsIntelligence,
+    input.genomeIntelligence,
+    input.storyDirection,
+    input.trendIntelligence,
+  );
+  const genomeSnippet = [input.genomeIntelligence?.agentSnippet, input.commercialGenomeBetaSnippet]
+    .filter(Boolean)
+    .join(" | ");
+
   return compileSceneRenderingPrompt(input.scenePlan, input.analysis, {
     prompt: input.prompt,
     dominantColors: input.productVisual?.dominantColors,
@@ -395,14 +413,8 @@ function compileBackgroundPrompt(input: {
     layoutSpec: input.layoutSpec,
     sceneBlueprint: input.sceneBlueprint,
     designBrief: input.designBrief,
-    marketSnippet: agentKnowledgeSnippet(
-      input.marketIntelligence,
-      input.assetsIntelligence,
-      input.genomeIntelligence,
-      input.storyDirection,
-      input.trendIntelligence,
-    ),
-    genomeSnippet: input.genomeIntelligence?.agentSnippet,
+    marketSnippet: knowledgeSnippet,
+    genomeSnippet: genomeSnippet || undefined,
     luxuryScore: input.luxuryScore,
     compositionScore: input.compositionScore,
     sceneScore: input.sceneScore,
@@ -996,6 +1008,26 @@ export async function handleGenerateInfographic(
 
     let scenePlan = storedScenePlan ?? plannedScene;
 
+    let commercialGenomeBetaResult: CommercialGenomeBetaDecisionResult | undefined;
+    let commercialGenomeBetaSnippet: string | undefined;
+    if (sdData.layout === "marketplace" && isCommercialGenomeBetaEnabled()) {
+      commercialGenomeBetaResult = createCommercialGenomeBetaDecision({
+        marketplace: "wildberries",
+        category: analysis.category,
+        productTitle: input.prompt,
+        productColor: productVisual?.dominantColors?.[0],
+        productType: analysis.category,
+        mode: input.regenerateBackgroundOnly ? "refinement" : "generation",
+      });
+      commercialGenomeBetaSnippet = buildCommercialGenomeBetaPromptSnippet(commercialGenomeBetaResult);
+      console.info(
+        "[commercial-genome-beta]",
+        commercialGenomeBetaResult.decision.environmentDirection,
+        commercialGenomeBetaResult.decision.backgroundContrastDirection,
+        `rules=${commercialGenomeBetaResult.decision.selectedRules.length}`,
+      );
+    }
+
     if (useDesignGovernance) {
       governanceBlueprint = resolveDesignDecisions({
         analysis,
@@ -1174,6 +1206,7 @@ export async function handleGenerateInfographic(
         luxuryScore: luxuryScoreValue,
         compositionScore: compositionDirection?.quality.total,
         sceneScore: sceneDirection?.quality.total,
+        commercialGenomeBetaSnippet,
       });
       sdData.backgroundPrompt = compiledBackground.prompt;
       if (designBrief) {
@@ -1653,6 +1686,7 @@ export async function handleGenerateInfographic(
         luxuryScore: luxuryScoreValue,
         compositionScore: compositionDirection?.quality.total,
         sceneScore: sceneDirection?.quality.total,
+        commercialGenomeBetaSnippet,
       });
       compiledBackground = retryCompiled;
       sdData.backgroundPrompt = retryCompiled.prompt;
@@ -1887,6 +1921,7 @@ export async function handleGenerateInfographic(
         : undefined,
       feedbackLearning: undefined as FeedbackLearningSnapshot | undefined,
       promptCompiler: compiledBackground?.metadata,
+      commercialGenomeBeta: commercialGenomeBetaResult,
       designConstitution: constitutionReports.length ? constitutionReports : undefined,
       renderEngine: renderEngineResult
         ? buildStoredRenderReport({
@@ -2084,6 +2119,7 @@ export async function handleGenerateInfographic(
         finalQuality,
         conceptRetries: conceptRetryIndex,
         feedbackLearning: payloadExtras.feedbackLearning,
+        commercialGenomeBeta: commercialGenomeBetaResult,
       });
 
     if (input.regenerateBackgroundOnly && input.existingImageId) {
