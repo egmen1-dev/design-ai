@@ -23,6 +23,7 @@ Draft → Review → Accepted → Implemented → Released → Archived
 | [RFC-006](RFC-006.md) | Asset Platform | Accepted |
 | [RFC-010](RFC-010_ARCHITECTURE_COUNCIL.md) | Architecture Council Protocol | Draft |
 | [RFC-2600](RFC-2600_METRIC_REGISTRY_RUNTIME.md) | Metric Registry Runtime (`productAreaRatio` pilot) | Accepted |
+| [RFC-2500](RFC-2500_GENERATION_CONTEXT_IMPLEMENTATION.md) | GenerationContext Runtime (minimal SSOT) | Accepted |
 
 ## Rules
 

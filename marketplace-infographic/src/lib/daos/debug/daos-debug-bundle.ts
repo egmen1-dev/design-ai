@@ -46,6 +46,8 @@ import type { SceneGraphDriftReport } from "@/lib/scene-graph";
 import type { SceneGraphConstitutionMirrorResult } from "@/lib/scene-graph/SceneGraphConstitutionMirror";
 import type { SceneGraphWhitespaceAttributionResult } from "@/lib/scene-graph/SceneGraphWhitespaceAttribution";
 import { serializeSceneGraphSnapshots, type SceneGraphSnapshotSet } from "@/lib/scene-graph";
+import type { GenerationContextSnapshot } from "../generation-context";
+import { resolveGenerationContextPath } from "../generation-context";
 
 export type DaosDebugBundle = {
   projectId: string;
@@ -200,7 +202,12 @@ export type DaosDebugBundle = {
     whitespacePrimaryCause?: string;
     whitespaceSecondaryCauses?: string[];
     whitespaceRecommendations?: string[];
+    generationContextCreated?: boolean;
+    generationContextPath?: string;
+    generationContextCompleteness?: number;
+    generationContextMissingFields?: string[];
   };
+  generationContext?: GenerationContextSnapshot;
   generationMode: DAOSGenerationMode;
   generationPolicySummary: ReturnType<typeof summarizeDaosGenerationPolicy>;
   renderDebug?: DAOSRenderDebugArtifact;
@@ -279,9 +286,11 @@ export function createDaosDebugBundle(
       hasSignificantDrift: boolean;
     };
     sceneGraphWhitespaceAttribution?: SceneGraphWhitespaceAttributionResult;
+    generationContext?: GenerationContextSnapshot;
   },
 ): DaosDebugBundle {
   const renderDebug = options?.renderDebug;
+  const generationContext = options?.generationContext;
   const generationMode =
     options?.generationMode ?? state.brief?.generationMode ?? "balanced";
   const generationPolicy =
@@ -621,6 +630,14 @@ export function createDaosDebugBundle(
             whitespaceRecommendations: sceneGraphWhitespaceAttribution.recommendations,
           }
         : {}),
+      ...(generationContext
+        ? {
+            generationContextCreated: true,
+            generationContextPath: resolveGenerationContextPath(state.projectId, state.runId),
+            generationContextCompleteness: generationContext.diagnostics.completenessScore,
+            generationContextMissingFields: [...generationContext.diagnostics.missingFields],
+          }
+        : {}),
     },
     generationMode,
     generationPolicySummary,
@@ -651,6 +668,7 @@ export function createDaosDebugBundle(
     sceneGraphDrifts: sceneGraphSnapshots?.drifts,
     sceneGraphConstitutionMirror,
     sceneGraphWhitespaceAttribution,
+    generationContext,
     meaningLossReport,
   };
 }

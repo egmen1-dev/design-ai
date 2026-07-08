@@ -206,6 +206,11 @@ import type { CompositionLayout } from "@/lib/composition/types";
 import type { ScenePlan } from "@/lib/design/scene-planner";
 import type { DAOSProjectState } from "@/lib/daos/core/project-state";
 import type { KnowledgeContext } from "@/lib/design/knowledge-engine";
+import {
+  buildGenerationContext,
+  isDaosGenerationContextEnabled,
+  serializeGenerationContextSnapshot,
+} from "@/lib/daos/generation-context";
 
 function buildDaosSceneCompositeOptions(input: {
   scene: ScenePlan;
@@ -2933,6 +2938,35 @@ export async function handleGenerateInfographic(
       console.warn("[scene-graph] snapshot write errors:", sceneGraphWrite.errors);
     }
 
+    const daosGenerationContextSnapshot = isDaosGenerationContextEnabled()
+      ? serializeGenerationContextSnapshot(
+          buildGenerationContext({
+            projectId: enrichedDaosState.projectId,
+            runId: enrichedDaosState.runId,
+            productAnalysis: { category: analysis.category },
+            layout: sdData.layout,
+            knowledgeCategory,
+            genomeKey: genomeIntelligence?.mutatedGenome.genomeKey,
+            marketIntelligenceActive: !!marketIntelligence,
+            generationMode: daosGenerationMode,
+            generationPolicy: daosGenerationPolicy,
+            productImage: input.productImage,
+            productCutoutPath,
+            finalImagePath: imagePath,
+            backgroundUrl,
+            existingImageId: input.existingImageId,
+            style: input.style,
+            renderModel: input.renderModel ?? renderEngineResult?.request?.modelId,
+            regenerateBackgroundOnly: input.regenerateBackgroundOnly,
+            fastGeneration: process.env.FAST_GENERATION !== "0",
+            backgroundSource,
+            aiSource,
+            renderProvider: renderEngineResult?.request?.providerId,
+            pipelineContextCompleteness: daosPipelineContext.completenessScore,
+          }),
+        )
+      : undefined;
+
     const daosDebugBundle = createDaosDebugBundle(enrichedDaosState, {
       renderDebug,
       generationMode: daosGenerationMode,
@@ -2971,6 +3005,7 @@ export async function handleGenerateInfographic(
         : undefined,
       sceneGraphFiles: sceneGraphWrite.written,
       sceneGraphDriftSummary: sceneGraphMirror.getDriftSummary(),
+      generationContext: daosGenerationContextSnapshot,
     });
     const daosDebugSummary = createDaosDebugSummary(daosDebugBundle);
     const daosFinalGate = evaluateDaosFinalGate({
