@@ -30,6 +30,21 @@ import {
   applyFloorColorSpill,
   fitProductWithSafePlacement,
 } from "./alpha-fit";
+import {
+  createSafeExtractArea,
+  mergeExtractGuard,
+  type ExtractAreaGuard,
+} from "@/lib/daos/compositor/safe-extract-area";
+import type { AsymmetricLimits } from "@/lib/daos/compositor/asymmetric-limits";
+import type { WideHeroStrategy } from "@/lib/daos/compositor/wide-hero-strategy";
+import type {
+  WideTemplateCompositorHook,
+  WideTemplateCompositorHookDiagnostics,
+} from "@/lib/daos/templates/wide-product-template";
+import {
+  computeWideTemplateHeroLimits,
+  wideTemplateCompositeAreaRatio,
+} from "@/lib/daos/templates/wide-product-template";
 import { publicDir, resolvePublicAssetPath, writablePublicDir } from "@/lib/runtime-paths";
 
 const CANVAS_W = WB_COVER.width;
@@ -44,6 +59,14 @@ export type SceneCompositeOptions = {
   scene: ScenePlan;
   compositionLayout?: CompositionLayout;
   objectScale?: number;
+  /** DAOS Wave 24 — optional compositor scale boost (only when explicitly passed). */
+  productScaleMultiplier?: number;
+  /** DAOS Wave 32 — asymmetric compositor limits from aspect-ratio placement patch. */
+  asymmetricLimits?: AsymmetricLimits;
+  /** DAOS Wave 33 — wide product hero placement (full-bleed / crop-safe / diagonal). */
+  wideHeroStrategy?: WideHeroStrategy;
+  /** DAOS v2 Stage 5.1 — wide product template hero zone for compositor placement. */
+  wideTemplateCompositorHook?: WideTemplateCompositorHook;
 };
 
 async function loadImageBuffer(source: string): Promise<Buffer> {
@@ -76,6 +99,7 @@ async function resizeBackground(bgBuffer: Buffer): Promise<Buffer> {
 export async function softenBackgroundCenter(
   bgBuffer: Buffer,
   layout: SceneCompositeOptions["layout"] = "marketplace",
+  extractGuard?: ExtractAreaGuard,
 ): Promise<Buffer> {
   const resized = await resizeBackground(bgBuffer);
   if (layout === "marketplace") {
@@ -86,9 +110,14 @@ export async function softenBackgroundCenter(
   const ph = Math.round(CANVAS_H * 0.32);
   const left = Math.round((CANVAS_W - pw) / 2);
   const top = Math.round(CANVAS_H * 0.3);
+  const safeExtract = createSafeExtractArea(
+    { left, top, width: pw, height: ph },
+    { width: CANVAS_W, height: CANVAS_H },
+  );
+  mergeExtractGuard(extractGuard, safeExtract);
 
   const patch = await sharp(resized)
-    .extract({ left, top, width: pw, height: ph })
+    .extract(safeExtract.area)
     .blur(18)
     .modulate({ brightness: 1.03, saturation: 0.94 })
     .toBuffer();
@@ -111,7 +140,7 @@ export async function softenBackgroundCenter(
     .toBuffer();
 
   return sharp(resized)
-    .composite([{ input: feathered, left, top, blend: "over" }])
+    .composite([{ input: feathered, left: safeExtract.area.left, top: safeExtract.area.top, blend: "over" }])
     .png()
     .toBuffer();
 }
@@ -119,9 +148,48 @@ export async function softenBackgroundCenter(
 function computeMaxProductSize(
   compositionLayout: CompositionLayout | undefined,
   objectScale: number,
+  productScaleMultiplier = 1,
+  asymmetricLimits?: AsymmetricLimits,
+  wideHeroStrategy?: WideHeroStrategy,
+  wideTemplateCompositorHook?: WideTemplateCompositorHook,
+  productAspectRatio?: number,
 ): { maxW: number; maxH: number } {
+  if (wideTemplateCompositorHook?.applied) {
+    const limits = computeWideTemplateHeroLimits(
+      wideTemplateCompositorHook,
+      compositionLayout?.canvas,
+      productAspectRatio,
+    );
+    return {
+      maxW: limits.maxWidthPx,
+      maxH: limits.maxHeightPx,
+    };
+  }
+
+  if (wideHeroStrategy?.applied) {
+    return {
+      maxW: wideHeroStrategy.maxWidthPx,
+      maxH: wideHeroStrategy.maxHeightPx,
+    };
+  }
+
+  if (asymmetricLimits?.applied) {
+    return {
+      maxW: asymmetricLimits.maxWidthPx,
+      maxH: asymmetricLimits.maxHeightPx,
+    };
+  }
+
   const canvasMaxW = Math.min(PRODUCT_MAX_WIDTH_PX, CANVAS_W - SIDE_MARGIN * 2);
   const canvasMaxH = Math.min(PRODUCT_MAX_H, CANVAS_H - HEADER_RESERVE_PX - BOTTOM_PAD);
+  const widthCap = Math.min(
+    CANVAS_W - SIDE_MARGIN * 2,
+    Math.round(PRODUCT_MAX_WIDTH_PX * productScaleMultiplier),
+  );
+  const heightCap = Math.min(
+    CANVAS_H - HEADER_RESERVE_PX - BOTTOM_PAD,
+    Math.round(PRODUCT_MAX_H * productScaleMultiplier),
+  );
 
   const comp = compositionLayout?.product;
   if (comp) {
@@ -129,15 +197,15 @@ function computeMaxProductSize(
     const zoneH = Math.round(yPct(comp.maxHeightPct));
     const scaleBoost = 0.58 + objectScale * 0.05;
     return {
-      maxW: Math.min(canvasMaxW, PRODUCT_MAX_WIDTH_PX, Math.round(zoneW * scaleBoost)),
-      maxH: Math.min(canvasMaxH, PRODUCT_MAX_H, Math.round(zoneH * scaleBoost)),
+      maxW: Math.min(widthCap, PRODUCT_MAX_WIDTH_PX, Math.round(zoneW * scaleBoost * productScaleMultiplier)),
+      maxH: Math.min(heightCap, PRODUCT_MAX_H, Math.round(zoneH * scaleBoost * productScaleMultiplier)),
     };
   }
 
   const scale = 0.55 + objectScale * 0.18;
   return {
-    maxW: Math.min(canvasMaxW, Math.round(canvasMaxW * scale)),
-    maxH: Math.min(canvasMaxH, Math.round(canvasMaxH * scale)),
+    maxW: Math.min(widthCap, Math.round(canvasMaxW * scale * productScaleMultiplier)),
+    maxH: Math.min(heightCap, Math.round(canvasMaxH * scale * productScaleMultiplier)),
   };
 }
 
@@ -204,9 +272,11 @@ async function prepareProductLayer(
 
   const canvasMaxW = CANVAS_W - SIDE_MARGIN * 2;
   const canvasMaxH = CANVAS_H - HEADER_RESERVE_PX - BOTTOM_PAD;
-  if (info.width > canvasMaxW || info.height > canvasMaxH) {
+  const clampMaxW = canvasMaxW;
+  const clampMaxH = canvasMaxH;
+  if (info.width > clampMaxW || info.height > clampMaxH) {
     const fitted = await sharp(buffer)
-      .resize(canvasMaxW, canvasMaxH, { fit: "inside", withoutEnlargement: true })
+      .resize(clampMaxW, clampMaxH, { fit: "inside", withoutEnlargement: true })
       .png()
       .toBuffer({ resolveWithObject: true });
     buffer = fitted.data;
@@ -238,6 +308,7 @@ function resolveVerticalTop(
   alphaFootBottom: number,
   floorY: number,
   compositionLayout?: CompositionLayout,
+  wideTemplateCompositorHook?: WideTemplateCompositorHook,
 ): number {
   const safeInsetPx = compositionLayout
     ? Math.round(yPct(compositionLayout.safeInsetPct))
@@ -249,6 +320,21 @@ function resolveVerticalTop(
   top = Math.max(HEADER_RESERVE_PX, top);
   top = Math.min(top, CANVAS_H - BOTTOM_PAD - productHeight);
 
+  if (wideTemplateCompositorHook?.applied) {
+    const limits = computeWideTemplateHeroLimits(
+      wideTemplateCompositorHook,
+      compositionLayout?.canvas,
+    );
+    const heroBottom = limits.heroZonePx.top + limits.heroZonePx.height;
+    const heroTop = limits.heroZonePx.top;
+    const footY = Math.min(floorY, heroBottom);
+    top = footY - alphaFootBottom;
+    top = Math.min(top, heroBottom - productHeight);
+    top = Math.max(heroTop, top);
+    top = Math.max(HEADER_RESERVE_PX, top);
+    top = Math.min(top, CANVAS_H - BOTTOM_PAD - productHeight);
+  }
+
   return Math.round(top);
 }
 
@@ -257,6 +343,9 @@ export type SceneCompositeResult = {
   mergedBuffer: Buffer;
   lighting: Awaited<ReturnType<typeof analyzeSceneLighting>>;
   productPlacement: { left: number; top: number; width: number; height: number };
+  extractAreaWarnings?: string[];
+  extractAreaCorrected?: boolean;
+  wideTemplateCompositorHookDiagnostics?: WideTemplateCompositorHookDiagnostics;
 };
 
 export async function compositeProductIntoScene(
@@ -267,7 +356,19 @@ export async function compositeProductIntoScene(
   const layout = options.layout ?? "marketplace";
   const scene = options.scene;
   const objectScale = options.objectScale ?? 0.78;
+  const productScaleMultiplier = Math.max(1, options.productScaleMultiplier ?? 1);
+  const asymmetricLimits = options.asymmetricLimits;
+  const wideHeroStrategy = options.wideHeroStrategy;
+  const wideTemplateCompositorHook = options.wideTemplateCompositorHook;
   const comp = options.compositionLayout?.product;
+  const productAspectRatio =
+    comp && comp.maxHeightPct > 0 ? comp.maxWidthPct / comp.maxHeightPct : undefined;
+  const placementSideMargin = wideTemplateCompositorHook?.applied
+    ? wideTemplateCompositorHook.sideMarginPx
+    : wideHeroStrategy?.applied
+      ? wideHeroStrategy.sideMarginPx
+      : SIDE_MARGIN;
+  const extractGuard: ExtractAreaGuard = { warnings: [], corrected: false };
 
   const [bgRaw, productRaw] = await Promise.all([
     loadImageBuffer(backgroundUrl),
@@ -275,10 +376,27 @@ export async function compositeProductIntoScene(
   ]);
 
   const bgResized = await resizeBackground(bgRaw);
-  const { maxW, maxH } = computeMaxProductSize(options.compositionLayout, objectScale);
+  const baselineMax = computeMaxProductSize(
+    options.compositionLayout,
+    objectScale,
+    productScaleMultiplier,
+    asymmetricLimits,
+    wideHeroStrategy,
+    undefined,
+    productAspectRatio,
+  );
+  const { maxW, maxH } = computeMaxProductSize(
+    options.compositionLayout,
+    objectScale,
+    productScaleMultiplier,
+    asymmetricLimits,
+    wideHeroStrategy,
+    wideTemplateCompositorHook,
+    productAspectRatio,
+  );
 
   const prePlacement = {
-    left: SIDE_MARGIN,
+    left: placementSideMargin,
     top: HEADER_RESERVE_PX,
     width: maxW,
     height: maxH,
@@ -308,14 +426,42 @@ export async function compositeProductIntoScene(
     maxW,
     maxH,
   );
+  const maxAlphaW = wideTemplateCompositorHook?.applied
+    ? computeWideTemplateHeroLimits(
+        wideTemplateCompositorHook,
+        options.compositionLayout?.canvas,
+        productAspectRatio,
+      ).maxAlphaWidthPx
+    : wideHeroStrategy?.applied
+      ? wideHeroStrategy.maxAlphaWidthPx
+      : asymmetricLimits?.applied
+        ? asymmetricLimits.maxAlphaWidthPx
+        : Math.min(
+            CANVAS_W - SIDE_MARGIN * 2,
+            Math.round(PRODUCT_ALPHA_MAX_WIDTH_PX * productScaleMultiplier),
+          );
+  const maxAlphaH = wideTemplateCompositorHook?.applied
+    ? computeWideTemplateHeroLimits(
+        wideTemplateCompositorHook,
+        options.compositionLayout?.canvas,
+        productAspectRatio,
+      ).maxAlphaHeightPx
+    : wideHeroStrategy?.applied
+      ? wideHeroStrategy.maxAlphaHeightPx
+      : asymmetricLimits?.applied
+        ? asymmetricLimits.maxAlphaHeightPx
+        : Math.min(
+            CANVAS_H - HEADER_RESERVE_PX - BOTTOM_PAD,
+            Math.round(PRODUCT_ALPHA_MAX_HEIGHT_PX * productScaleMultiplier),
+          );
   const placement = await fitProductWithSafePlacement(
     prepared.buffer,
     prepared.width,
     prepared.height,
     CANVAS_W,
-    SIDE_MARGIN,
-    PRODUCT_ALPHA_MAX_WIDTH_PX,
-    PRODUCT_ALPHA_MAX_HEIGHT_PX,
+    placementSideMargin,
+    maxAlphaW,
+    maxAlphaH,
     options.compositionLayout,
   );
 
@@ -335,9 +481,10 @@ export async function compositeProductIntoScene(
     alphaFootBottom,
     floorY,
     options.compositionLayout,
+    wideTemplateCompositorHook,
   );
 
-  const bgPrepared = await softenBackgroundCenter(bgRaw, layout);
+  const bgPrepared = await softenBackgroundCenter(bgRaw, layout, extractGuard);
   const footCanvasY = productTop + alphaFootBottom;
 
   const floorContact = await renderFloorContactShadow(
@@ -345,6 +492,7 @@ export async function compositeProductIntoScene(
     productLeft,
     footCanvasY,
     floorColor,
+    extractGuard,
   );
   const floorReflection = await renderFloorReflection(
     product.buffer,
@@ -352,6 +500,7 @@ export async function compositeProductIntoScene(
     productTop,
     footCanvasY,
     floorColor,
+    extractGuard,
   );
 
   const shadows = await generateShadows({
@@ -366,6 +515,7 @@ export async function compositeProductIntoScene(
     productBuffer: product.buffer,
     floorColor,
     lightingDirectionOverride: scene.lightingDirection,
+    extractGuard,
   });
 
   const composites: sharp.OverlayOptions[] = shadows.map((s) => ({
@@ -448,11 +598,34 @@ export async function compositeProductIntoScene(
   const absPath = path.join(dir, filename);
   await writeFile(absPath, mergedBuffer);
 
+  const canvas = options.compositionLayout?.canvas ?? { width: CANVAS_W, height: CANVAS_H };
+  const wideTemplateCompositorHookDiagnostics: WideTemplateCompositorHookDiagnostics | undefined =
+    wideTemplateCompositorHook
+      ? {
+          hookEnabled: wideTemplateCompositorHook.enabled,
+          hookApplied: wideTemplateCompositorHook.applied,
+          heroZoneUsed: wideTemplateCompositorHook.heroZoneLabel,
+          compositeAreaBefore: wideTemplateCompositeAreaRatio(
+            baselineMax.maxW,
+            baselineMax.maxH,
+            canvas,
+          ),
+          compositeAreaAfter: wideTemplateCompositeAreaRatio(
+            finalPlacement.width,
+            finalPlacement.height,
+            canvas,
+          ),
+        }
+      : undefined;
+
   return {
     mergedPath: `/merged/${filename}`,
     mergedBuffer,
     lighting,
     productPlacement: finalPlacement,
+    extractAreaWarnings: extractGuard.warnings.length ? [...extractGuard.warnings] : undefined,
+    extractAreaCorrected: extractGuard.corrected || undefined,
+    wideTemplateCompositorHookDiagnostics,
   };
 }
 
