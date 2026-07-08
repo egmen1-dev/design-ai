@@ -1,1353 +1,752 @@
 # DAOS Runtime Specification
 
-**Status:** Canonical Runtime Specification  
-**Authority:** DAOS Architecture Council  
-**Version:** 1.0  
-**Scope:** Runtime behavior only
+## 1. Runtime Purpose
 
----
+DAOS runtime SHALL convert a generation request into:
 
-## Document Purpose
+1. A commercial decision that selects the best-fit strategy for a specific product, marketplace, audience, and goal.
+2. A visual scene that encodes that commercial decision as canonical design state.
+3. A rendered candidate that materializes the planned scene into an inspectable artifact.
+4. Benchmarkable evidence that supports learning and governed feedback.
 
-This specification defines how DAOS **thinks** at runtime.
+The runtime model SHALL express runtime reasoning only. It SHALL NOT describe implementation, programming constructs, module wiring, file organization, or provider APIs.
 
-It describes the canonical execution model from which every future implementation — Commercial Genome, Knowledge Resolution Engine, Decision Engine, DecisionGraph, SceneGraph, Render Pipeline, Benchmark, and Learning — SHALL be built.
+## 2. Runtime Invariants
 
-This document answers:
+The runtime SHALL obey the following invariants:
 
-- What is the first thing DAOS does?
-- How does DAOS understand a product?
-- How does DAOS decide?
-- How does DAOS select commercial knowledge?
-- How does DAOS reject bad ideas?
-- How does DAOS build a scene?
-- How does DAOS know that a decision is good?
-- How does DAOS learn?
+- GenerationContext is immutable after initialization.
+- Commercial Genome is read-only during generation.
+- Knowledge Resolution happens before DecisionGraph.
+- DecisionGraph is immutable after publication.
+- SceneGraph is the only scene state.
+- Rendering cannot change commercial intent.
+- Benchmark cannot change production state.
+- Learning creates proposals, not silent mutations.
 
-This document SHALL NOT describe implementation details, programming language constructs, module wiring, or file organization.
+In addition, every stage SHALL obey the ordering boundary:
 
----
+- No stage may skip another stage.
+- No stage may access future stages.
+- No stage may mutate previous stages.
 
-## Runtime Philosophy
+## 3. Runtime Pipeline Overview
 
-DAOS is **not** an image generator.
-
-DAOS is a **Commercial Decision Operating System**.
-
-Images, HTML, and other media are possible **outputs** of commercial reasoning. They are never the purpose of the runtime.
-
-The runtime SHALL be understood as a **strict sequence of commercial decision stages**. Each stage receives bounded inputs, performs bounded processing, emits bounded outputs, and hands control to exactly one next stage.
-
-No stage may:
-
-- Access future stages
-- Bypass earlier stages
-- Reconstruct context that belongs to a prior stage
-- Perform responsibilities owned by another stage
-
----
-
-## Global Execution Model
-
-Every generation is one **commercial reasoning run** bound to exactly one immutable **GenerationContext**.
-
-The canonical runtime pipeline is:
+The canonical runtime sequence is:
 
 Runtime Entry
-        ↓
+
+↓
+
 GenerationContext Initialization
-        ↓
+
+↓
+
 Commercial Genome Loading
-        ↓
+
+↓
+
 Knowledge Resolution
-        ↓
-Commercial Decision Engine
-        ↓
+
+↓
+
+Commercial Reasoning
+
+↓
+
 DecisionGraph Construction
-        ↓
+
+↓
+
 SceneGraph Construction
-        ↓
+
+↓
+
 Commercial Validation
-        ↓
+
+↓
+
 Render Preparation
-        ↓
+
+↓
+
 Rendering
-        ↓
+
+↓
+
 Post Render Validation
-        ↓
-Benchmark
-        ↓
+
+↓
+
+Commercial Benchmark
+
+↓
+
 Learning
-        ↓
-Genome Feedback
-        ↓
-Research Feedback
 
-Each stage below follows the mandatory structure:
+↓
 
-Inputs
-        ↓
-Processing
-        ↓
-Outputs
-        ↓
-Invariants
-        ↓
-Failure Conditions
-        ↓
-Diagnostics
-        ↓
-Next Stage
+Genome Feedback Proposal
 
----
+↓
 
-## Stage 0: Runtime Entry
+Research Feedback Proposal
 
-### Purpose
+No stage may be skipped. If any stage fails, the generation run SHALL terminate according to the Runtime Failure Model.
+
+## 4. Stage 0 — Runtime Entry
+
+Purpose
 Describe how a generation request enters DAOS.
 
-### Commercial objective
-Create a deterministic, traceable commercial intent envelope for the generation.
+Inputs
+- User Request
 
-### Runtime objective
-Normalize the user request into a Generation Request that is structurally complete for context initialization.
+Processing
+- Validate that the User Request can be normalized into a single generation identity and a complete commercial intent.
+- Verify that the request specifies the target product identity, marketplace context, and commercial goal.
+- Determine the runtime operating mode for this generation.
+- Emit a deterministic generationContextId for diagnostics.
 
-### Why this stage exists
-- Why previous stages are insufficient: Runtime has no prior state; without a normalized request, DAOS cannot reliably bind product, marketplace, and commercial goal.
-- Why following stages cannot replace it: Later stages depend on a complete request envelope and cannot safely infer missing commercial intent.
-
-### Inputs
-
-- External generation request containing at minimum:
-  - Product identity and attributes
-  - Target marketplace
-  - Commercial goal
-  - Operating mode (Production or Exploration)
-- Optional request extensions:
-  - Brand constraints
-  - Audience definition
-  - Design intent
-  - Asset references
-  - Provider preferences
-  - Benchmark profile
-  - Learning policy flags
-
-### Processing
-
-1. Accept the generation request as a **single commercial intent**.
-2. Validate that the request is structurally complete enough to initialize a generation.
-3. Reject requests that cannot be bound to a product, marketplace, and commercial goal.
-4. Assign a unique generation identity for traceability.
-5. Record entry timestamp, request provenance, and operating mode.
-6. Transition control to GenerationContext initialization.
-
-Runtime Entry performs **no** commercial reasoning, knowledge loading, or rendering.
-
-### Outputs
-
+Outputs
 - Generation Request
-- Generation identity
-- Entry audit record
 
-### Invariants
+Invariants
+- Runtime Entry SHALL perform no commercial reasoning.
+- Runtime Entry SHALL not access Commercial Genome or any resolved knowledge.
 
-- Exactly one generation identity per run
-- Operating mode is determined at entry and SHALL NOT change during the run
-- No subsystem state exists before entry completes
-- Entry never reads Commercial Genome
+Failure Conditions
+- The request is structurally incomplete for context initialization.
+- The request cannot be bound to a product, marketplace, and commercial goal.
+- The request operating mode is invalid or unknown.
 
-### Failure Conditions
+Diagnostics
+- generationContextId
+- Request validationResults summary
+- Rejected input fields with reasons
 
-- Missing product, marketplace, or commercial goal
-- Invalid or unknown operating mode
-- Malformed request that cannot be normalized
-- Duplicate generation identity collision
+Transition Rule
+- On success: proceed to Stage 1.
+- On failure: terminate the generation run immediately.
 
-### Diagnostics
+Next Stage
+Stage 1 — GenerationContext Initialization
 
-- Request validation summary
-- Normalized field list
-- Rejected field list with reasons
-- Entry latency
+## 5. Stage 1 — GenerationContext Initialization
 
-### Transition Rule
-- Success: If Outputs satisfy Invariants and no Failure Conditions trigger, transition to the Next Stage.
-- Failure: If any Failure Conditions trigger, terminate the generation run immediately and emit Failure Diagnostics; no later stage is executed.
-
-### Next Stage
-
-**Stage 1: Generation Context Initialization**
-
----
-
-## Stage 1: Generation Context Initialization
-
-### Purpose
+Purpose
 Create the canonical GenerationContext. The context becomes immutable.
 
-### Commercial objective
-Guarantee that every subsequent commercial decision uses the same single source of truth for the generation.
+Inputs
+- Generation Request
 
-### Runtime objective
-Freeze GenerationContext immutably after initialization so later stages cannot rewrite the meaning of the run.
+Processing
+- Construct GenerationContext as the single source of truth for the generation.
+- Populate GenerationContext domains for:
+  - product identity and attributes
+  - marketplace, category, audience, brand
+  - commercial goal and operating mode
+  - design intent, constraints, and required asset/provider context
+  - rendering, benchmarking, and learning context needed for later stages
+- Validate internal consistency within GenerationContext.
+- Freeze GenerationContext so it cannot change for the remainder of the generation run.
 
-### Why this stage exists
-- Why previous stages are insufficient: Runtime Entry validates structure but does not establish the complete, authoritative context domain.
-- Why following stages cannot replace it: Knowledge resolution and commercial reasoning must not attempt to reconstruct context; they must consume the frozen GenerationContext.
+Outputs
+- GenerationContext
 
-### Inputs
+Invariants
+- GenerationContext SHALL be immutable after initialization.
+- No later stage may reconstruct, override, or partially replace GenerationContext.
 
-- Validated generation request envelope from Runtime Entry
-- Generation identity
-- Operating mode
+Failure Conditions
+- Any required GenerationContext domain is missing.
+- GenerationContext contains contradictions that prevent safe downstream evaluation.
 
-### Processing
+Diagnostics
+- generationContextId
+- genomeVersion is not set yet (Stage 2 not executed) but dependencies summary is recorded
+- resolvedKnowledgeSummary is not set yet (Stage 3 not executed)
+- sceneGraphTrace is not set yet
+- initializationResults summary
 
-1. Assemble the canonical **GenerationContext** — the single source of truth for the entire run.
-2. Populate all required context domains:
-   - Metadata (generation identity, timestamps, trace identifiers)
-   - Product
-   - Marketplace
-   - Category
-   - Audience
-   - Brand
-   - Commercial Goal
-   - Operating Mode
-   - Design Intent
-   - Constraints
-   - Assets
-   - Provider Capabilities
-   - Rendering Context
-   - Benchmark Context
-   - Learning Context
-3. Validate internal consistency (for example: marketplace constraints compatible with product type, assets sufficient for stated goal).
-4. **Freeze** the GenerationContext — after initialization it becomes immutable.
-5. Publish the frozen context to all downstream consumers.
+Transition Rule
+- On success: proceed to Stage 2.
+- On failure: terminate the generation run immediately.
 
-No subsystem may reconstruct, shadow, or locally override GenerationContext.
+Next Stage
+Stage 2 — Commercial Genome Loading
 
-### Outputs
+## 6. Stage 2 — Commercial Genome Loading
 
-- Immutable GenerationContext
-- Context integrity attestation
-- Initialization trace record
-
-### Invariants
-
-- GenerationContext is the **only** authoritative description of what this generation is
-- GenerationContext SHALL NOT be modified after initialization
-- Every downstream stage consumes the **same** GenerationContext instance
-- DecisionGraph, SceneGraph, and rendered artifacts SHALL NOT exist at this stage
-
-### Failure Conditions
-
-- Incomplete required context domains
-- Internal context contradiction (conflicting constraints, incompatible goals)
-- Asset references that cannot be resolved
-- Attempt to mutate context after freeze
-
-### Diagnostics
-
-- Context domain completeness report
-- Constraint conflict report
-- Asset resolution summary
-- Initialization latency
-
-### Transition Rule
-- Success: If Outputs satisfy Invariants and no Failure Conditions trigger, transition to the Next Stage.
-- Failure: If any Failure Conditions trigger, terminate the generation run immediately and emit Failure Diagnostics; no later stage is executed.
-
-### Next Stage
-
-**Stage 2: Commercial Genome Loading**
-
----
-
-## Stage 2: Commercial Genome Loading
-
-### Purpose
+Purpose
 Load only production-approved commercial knowledge.
-Rejected rules and experimental rules are isolated and never enter the production reasoning path.
-Research candidates are treated as non-production until explicitly governed for promotion.
 
-### Commercial objective
-Ensure the commercial reasoning pipeline for this generation has access only to production-eligible knowledge.
+Inputs
+- GenerationContext
 
-### Runtime objective
-Produce a Commercial Genome Snapshot that is eligible for downstream resolution while preserving traceable records of excluded content.
+Processing
+- Determine which Commercial Genome corpus is eligible for this generation and operating mode.
+- Production mode SHALL load only certified/stable knowledge.
+- Experimental knowledge SHALL NOT affect production reasoning.
+- Research candidates SHALL be isolated from production reasoning until governed promotion occurs outside this runtime run.
+- Coarsely filter knowledge by GenerationContext eligibility boundaries to create a production-eligible snapshot.
+- Record excluded knowledge as ignoredKnowledge.
 
-### Why this stage exists
-- Why previous stages are insufficient: GenerationContext defines what the generation is, but it does not select which knowledge is allowed to drive production decisions.
-- Why following stages cannot replace it: Knowledge resolution and commercial reasoning assume the input knowledge is already eligible; inserting ineligible knowledge later breaks determinism and mode boundaries.
-
-### Inputs
-
-- Immutable GenerationContext
-- Operating mode
-
-### Processing
-
-1. Resolve which Commercial Genome corpus is authoritative for this run.
-2. Load lifecycle-managed commercial knowledge objects that are production-approved for production reasoning for this generation.
-3. Filter loaded objects by coarse applicability using GenerationContext (marketplace, category, audience, brand, operating mode).
-4. Reject or quarantine objects that lack required lifecycle metadata:
-   - Type
-   - Version
-   - Evidence reference
-   - Confidence score
-   - Applicability scope
-   - Lifecycle state
-   - Traceability
-5. Assemble the Commercial Genome Snapshot — the raw, filtered production-eligible knowledge corpus available for resolution.
-6. Record genome version, object counts, and exclusion reasons for any quarantined content.
-
-Commercial Genome Loading performs **no** conflict resolution, ranking, or commercial reasoning. It only loads and coarse-filters.
-
-### Outputs
-
+Outputs
 - Commercial Genome Snapshot
-- Genome version manifest
-- Load exclusion report
-- Genome access trace
+- IgnoredKnowledge (coarse exclusions)
 
-### Invariants
+Invariants
+- Commercial Genome SHALL be read-only during the generation run.
+- This stage SHALL not resolve conflicts, rank, or decide commercial strategy.
 
-- Commercial Genome is lifecycle-managed knowledge, not a static rules file
-- Objects without lifecycle metadata SHALL NOT enter the Commercial Genome Snapshot
-- Loading does not mutate Commercial Genome
-- Downstream stages consume only the Commercial Genome Snapshot for production reasoning
+Failure Conditions
+- No production-eligible knowledge can be loaded for the generation.
+- The Commercial Genome Snapshot cannot be constructed due to integrity or eligibility failures.
 
-### Failure Conditions
+Diagnostics
+- generationContextId
+- genomeVersion
+- ignoredKnowledge summary
 
-- Genome corpus unavailable or corrupt
-- No production-eligible knowledge objects after coarse filter
-- Missing genome version or integrity attestation
+Transition Rule
+- On success: proceed to Stage 3.
+- On failure: terminate the generation run immediately.
 
-### Diagnostics
+Next Stage
+Stage 3 — Knowledge Resolution
 
-- Objects loaded by type and lifecycle state
-- Objects excluded by reason
-- Genome version and checksum
-- Load latency
+## 7. Stage 3 — Knowledge Resolution
 
-### Transition Rule
-- Success: If Outputs satisfy Invariants and no Failure Conditions trigger, transition to the Next Stage.
-- Failure: If any Failure Conditions trigger, terminate the generation run immediately and emit Failure Diagnostics; no later stage is executed.
-
-### Next Stage
-
-**Stage 3: Knowledge Resolution**
-
----
-
-## Stage 3: Knowledge Resolution
-
-### Purpose
+Purpose
 Resolve only knowledge applicable to the current product.
 
-### Commercial objective
-Derive a mode-eligible, conflict-free ResolvedKnowledgeSet that accurately represents what DAOS may use for commercial reasoning in this generation.
-
-### Runtime objective
-Transform the Commercial Genome Snapshot into an ordered ResolvedKnowledgeSet using a deterministic resolution pipeline.
-
-### Why this stage exists
-- Why previous stages are insufficient: Commercial Genome Loading produces an eligible snapshot but does not resolve applicability, conflicts, priority, and confidence into a final reasoning-ready set.
-- Why following stages cannot replace it: Commercial reasoning requires a governed ResolvedKnowledgeSet; later stages cannot interpret raw knowledge without redoing resolution semantics.
-
-### Inputs
-
-- Immutable GenerationContext
+Inputs
+- GenerationContext
 - Commercial Genome Snapshot
 
-### Processing
+Processing
+- Apply the governed resolution pipeline in order to transform the snapshot into a ResolvedKnowledgeSet.
+- Apply conflict resolution governed by precedence rules.
+- Activate AntiRule semantics so known commercial failures are explicitly eliminated from downstream reasoning.
+- Record:
+  - ignoredKnowledge (any knowledge excluded during resolution)
+  - conflictReport (what conflicted, how it was resolved, and what was suppressed)
 
-Knowledge Resolution is the **sole** transformation path from Commercial Genome to executable commercial knowledge. It SHALL execute the following pipeline in order without skipping stages:
+Outputs
+- ResolvedKnowledgeSet
+- IgnoredKnowledge (resolution exclusions)
+- ConflictReport
 
-Genome Filter
-        ↓
-Applicability Filter
-        ↓
-Lifecycle Filter
-        ↓
-Conflict Resolution
-        ↓
-Priority Resolution
-        ↓
-Confidence Resolution
-        ↓
-Knowledge Ranking
-        ↓
-Resolved Knowledge Set
+Invariants
+- Knowledge Resolution SHALL occur before DecisionGraph construction.
+- Decision Engine SHALL never consume raw Commercial Genome snapshot directly.
+- Resolution SHALL produce a mode-eligible, reasoning-ready knowledge set.
 
-**Genome Filter** — Remove knowledge that does not belong to the generation's marketplace, category, audience, operating mode, brand, or provider constraints.
+Failure Conditions
+- ResolvedKnowledgeSet is empty after mandatory filters and governed AntiRule elimination.
+- Conflict resolution cannot produce a governed outcome.
 
-**Applicability Filter** — Score each remaining object for contextual fit (marketplace match, category match, audience match, brand match, product match, aspect ratio, product type, operating mode). Objects below applicability threshold are excluded.
+Diagnostics
+- generationContextId
+- resolvedKnowledgeSummary
+- ignoredKnowledge summary
+- conflictReport summary
 
-**Lifecycle Filter** — Enforce operating-mode eligibility. Deprecate, archive, or experimental objects are excluded or isolated per mode policy.
+Transition Rule
+- On success: proceed to Stage 4.
+- On failure: terminate the generation run immediately.
 
-**Conflict Resolution** — When multiple knowledge objects assert incompatible commercial guidance, resolve using governed precedence rules. Suppressed objects are recorded, not silently dropped.
+Next Stage
+Stage 4 — Commercial Reasoning
 
-**Priority Resolution** — Order surviving objects by commercial priority within their domain.
+## 8. Stage 4 — Commercial Reasoning
 
-**Confidence Resolution** — Adjust effective confidence using evidence strength, recency, and benchmark history.
+Purpose
+Answer one question:
+What is the best commercial strategy for THIS product?
 
-**Knowledge Ranking** — Produce the final ordered **Resolved Knowledge Set** ready for commercial reasoning.
+This stage SHALL NOT think about images or rendering.
+It SHALL think about selling.
 
-**AntiRule processing** — Explicit rejection rules SHALL eliminate proposals that violate known commercial failures. AntiRules are core knowledge, not exceptions.
+Inputs
+- ResolvedKnowledgeSet
+- GenerationContext
 
-### Outputs
+Processing
+- Determine the product value proposition implied by GenerationContext.
+- Select the single coherent commercial strategy that is:
+  - internally consistent across commercial decision domains
+  - evidence-backed by the ResolvedKnowledgeSet
+  - compliant with constraints and AntiRule semantics
+- Reject any strategy that fails commercial evidence thresholds or introduces incoherence.
 
-- Resolved Knowledge Set (ordered, conflict-free, mode-eligible)
-- Resolution trace (every inclusion, exclusion, conflict, and override)
-- Applicability scores per retained object
-- AntiRule activation record
-
-### Invariants
-
-- Knowledge Resolution is the **only** path from Genome to reasoning
-- Decision Engine SHALL reason only over the Resolved Knowledge Set
-- Skipping resolution stages is prohibited
-- Resolution does not mutate Commercial Genome
-- Resolution does not make final commercial strategy decisions — it prepares knowledge
-
-### Failure Conditions
-
-- Empty Resolved Knowledge Set after mandatory filters
-- Unresolvable conflict with no governed precedence
-- AntiRule cascade that eliminates all viable knowledge in a required domain
-- Trace integrity failure
-
-### Diagnostics
-
-- Per-stage object counts
-- Conflict resolution log
-- AntiRule activations
-- Applicability score distribution
-- Resolution latency
-
-### Transition Rule
-- Success: If Outputs satisfy Invariants and no Failure Conditions trigger, transition to the Next Stage.
-- Failure: If any Failure Conditions trigger, terminate the generation run immediately and emit Failure Diagnostics; no later stage is executed.
-
-### Next Stage
-
-**Stage 4: Commercial Reasoning**
-
----
-
-## Stage 4: Commercial Reasoning
-
-### Purpose
-Answer one question: What is the best commercial strategy for THIS product?
-This stage does not think about images. It thinks about selling.
-
-### Commercial objective
-Select exactly one coherent commercial strategy that is internally consistent and evidence-backed.
-
-### Runtime objective
-Produce a single integrated Commercial Strategy that is ready to be transformed deterministically into decision objects.
-
-### Why this stage exists
-- Why previous stages are insufficient: Knowledge resolution prepares usable knowledge but does not decide a strategy.
-- Why following stages cannot replace it: Decision construction must encode the chosen strategy into deterministic commercial authorities; it cannot invent strategy at the scene level.
-
-### Inputs
-
-- Immutable GenerationContext
-- Resolved Knowledge Set
-
-### Processing
-
-The Commercial Decision Engine is the central commercial reasoning subsystem. It selects **exactly one coherent commercial strategy** from competing possibilities.
-
-1. **Understand the product** — Derive a product profile from GenerationContext: what is being sold, to whom, in which marketplace context, under which commercial goal.
-2. **Activate reasoning domains** — Hero, environment, composition, typography, overlay, lighting, camera, material, and governance constraints as required by the commercial goal.
-3. **Generate proposals** — Expert reasoning units analyze context and resolved knowledge. Each may analyze, propose, reject, estimate, and explain. Each produces bounded proposals with evidence references.
-4. **Reject bad ideas** — Proposals are eliminated when they:
-   - Violate hard constraints from GenerationContext
-   - Contradict active AntiRules
-   - Lack supporting evidence above threshold
-   - Introduce incoherent commercial strategy (conflicting hero, environment, and goal)
-   - Exceed acceptable commercial cost (cognitive load, visual noise, implementation complexity, benchmark risk, governance risk)
-5. **Evaluate survivors** — Weighted evidence scoring across proposals within each domain.
-6. **Integrate** — Compose domain decisions into one coherent commercial strategy. No expert bypasses integration.
-7. **Emit decision intent** — Hand off to DecisionGraph construction.
-
-The Decision Engine:
-
-- **Never** renders
-- **Never** performs research
-- **Never** generates prompts
-- **Never** accesses Commercial Genome directly
-- **Only** makes commercial decisions
-
-### Outputs
-
+Outputs
 - Commercial Strategy
-- Proposal registry (accepted and rejected)
-- Rejection rationale per eliminated proposal
-- Evidence weighting record
-- Decision confidence estimate
 
-### Invariants
+Invariants
+- Commercial Reasoning SHALL produce exactly one strategy (Production) or isolated candidates only if operating mode requires isolation.
+- Rendering cannot change commercial intent; this stage defines the intent.
 
-- Exactly one coherent commercial strategy per generation
-- All proposals flow through integration — no bypass
-- Rejected proposals are recorded, not discarded silently
-- Decision Engine does not mutate GenerationContext, Genome, or SceneGraph
-- Experts communicate only through the governed protocol
+Failure Conditions
+- No viable commercial strategy remains after rejection.
+- Inter-domain coherence cannot be achieved under governed rules.
 
-### Failure Conditions
+Diagnostics
+- generationContextId
+- decisionTrace summary (strategy selection trace)
+- rejectedAlternatives summary (top rejected strategies or key rejections)
 
-- No viable proposal survives rejection in a required domain
-- Unresolvable inter-domain incoherence
-- Evidence threshold failure across all candidates
-- Integration timeout with incomplete domain coverage
+Transition Rule
+- On success: proceed to Stage 5.
+- On failure: terminate the generation run immediately.
 
-### Diagnostics
+Next Stage
+Stage 5 — DecisionGraph Construction
 
-- Proposals generated, accepted, rejected per domain
-- Rejection reason taxonomy
-- Evidence weight distribution
-- Commercial cost breakdown
-- Decision latency
+## 9. Stage 5 — DecisionGraph Construction
 
-### Transition Rule
-- Success: If Outputs satisfy Invariants and no Failure Conditions trigger, transition to the Next Stage.
-- Failure: If any Failure Conditions trigger, terminate the generation run immediately and emit Failure Diagnostics; no later stage is executed.
+Purpose
+Transform Commercial Strategy into deterministic commercial decisions.
 
-### Next Stage
+Inputs
+- Commercial Strategy
+- ResolvedKnowledgeSet
 
-**Stage 5: Decision Construction**
+Processing
+- Encode the selected commercial strategy into a deterministic DecisionGraph structure.
+- Populate decision domains required for commercial authority:
+  - HeroDecision
+  - TypographyDecision
+  - SceneDecision
+  - CompositionDecision
+  - LightingDecision
+  - OverlayDecision
+  - CameraDecision
+  - EnvironmentDecision
+- Validate DecisionGraph structural completeness and internal consistency.
+- Publish DecisionGraph as immutable commercial authority.
 
----
+Outputs
+- DecisionGraph
 
-## Stage 5: Decision Construction
+Invariants
+- DecisionGraph SHALL be immutable after publication.
+- DecisionGraph Construction SHALL not alter the meaning of GenerationContext.
+- Knowledge Resolution outputs SHALL not be re-derived from within this stage.
 
-### Purpose
-Transform the chosen commercial strategy into deterministic commercial decisions.
+Failure Conditions
+- DecisionGraph is incomplete or structurally invalid.
+- Published DecisionGraph fails internal consistency checks.
 
-### Commercial objective
-Create a single, immutable DecisionGraph that downstream stages treat as the sole commercial authority.
+Diagnostics
+- generationContextId
+- decisionTrace summary
+- decisionGraphTrace summary (structural completeness and validations)
 
-### Runtime objective
-Publish a DecisionGraph with structural completeness and internal consistency, then lock it.
+Transition Rule
+- On success: proceed to Stage 6.
+- On failure: terminate the generation run immediately.
 
-### Why this stage exists
-- Why previous stages are insufficient: Commercial reasoning produces a strategy narrative, not a deterministically structured authority object.
-- Why following stages cannot replace it: Scene planning and validation consume DecisionGraph; they cannot infer decisions from knowledge without violating the reasoning boundary.
+Next Stage
+Stage 6 — SceneGraph Construction
 
-### Inputs
+## 10. Stage 6 — SceneGraph Construction
 
-- Immutable GenerationContext
-- Integrated commercial decision intent from Decision Engine
-- Proposal registry and evidence references
+Purpose
+Transform deterministic decisions into canonical planned scene design state.
 
-### Processing
+Inputs
+- DecisionGraph
+- GenerationContext
 
-1. Materialize the integrated commercial strategy into the canonical **DecisionGraph** structure.
-2. Populate required decision domains:
-   - Commercial goal
-   - Marketplace alignment
-   - Product profile
-   - Hero decision
-   - Environment decision
-   - Composition decision
-   - Typography decision
-   - Overlay decision
-   - Lighting decision
-   - Camera decision
-   - Material decision
-   - Governance constraints
-   - Benchmark references
-   - Evidence references
-   - Confidence
-   - History and trace metadata
-3. Validate structural completeness and internal consistency.
-4. **Publish** the DecisionGraph — after publication it becomes **immutable**.
-5. Emit publication event for downstream consumers.
+Processing
+- Translate DecisionGraph into scene-structured design intent.
+- Populate SceneGraph.planned as the canonical design state.
+- Ensure SceneGraph is the only authoritative representation of the planned scene for later validation.
 
-DecisionGraph Construction is the formalization step. It does not re-reason; it records the outcome of reasoning.
+Outputs
+- SceneGraph.planned
 
-### Outputs
+Invariants
+- SceneGraph is the only scene state.
+- SceneGraph Construction SHALL not render.
 
-- Published immutable DecisionGraph
-- Publication attestation
-- Structural validation report
+Failure Conditions
+- SceneGraph.planned cannot be mapped from DecisionGraph.
+- Planned scene violates SceneGraph invariants.
 
-### Invariants
+Diagnostics
+- generationContextId
+- sceneGraphTrace summary (planned structure inventory and validation)
 
-- DecisionGraph is the **sole commercial authority** for all downstream stages
-- Exactly one DecisionGraph per generation (in Production mode)
-- DecisionGraph SHALL NOT exist before Decision Engine completes
-- DecisionGraph SHALL NOT be modified after publication
-- GenerationContext SHALL NOT be modified by DecisionGraph
-- Exploration mode may emit candidate DecisionGraphs under isolation policy, but each follows the same construction rules
+Transition Rule
+- On success: proceed to Stage 7.
+- On failure: terminate the generation run immediately.
 
-### Failure Conditions
+Next Stage
+Stage 7 — Commercial Validation
 
-- Incomplete required decision domains
-- Internal inconsistency detected at publication
-- Publication attestation failure
-- Attempt to modify published DecisionGraph
+## 11. Stage 7 — Commercial Validation
 
-### Diagnostics
-
-- Domain completeness checklist
-- Confidence score
-- Evidence reference count
-- Construction latency
-
-### Transition Rule
-- Success: If Outputs satisfy Invariants and no Failure Conditions trigger, transition to the Next Stage.
-- Failure: If any Failure Conditions trigger, terminate the generation run immediately and emit Failure Diagnostics; no later stage is executed.
-
-### Next Stage
-
-**Stage 6: Scene Planning**
-
----
-
-## Stage 6: Scene Planning
-
-### Purpose
-Transform decisions into visual intentions.
-
-### Commercial objective
-Preserve commercial intent encoded in DecisionGraph while representing it as an authoritative planned scene suitable for validation.
-
-### Runtime objective
-Produce the SceneGraph that downstream validation and rendering preparation consume as the single authoritative design state.
-
-### Why this stage exists
-- Why previous stages are insufficient: DecisionGraph expresses commercial decisions but does not define the scene-structured design state required by downstream checks.
-- Why following stages cannot replace it: Commercial validation and render preparation require SceneGraph as the authoritative structure; they cannot recreate it from decisions without re-implementing planning semantics.
-
-### Inputs
-
-- Immutable GenerationContext
-- Published immutable DecisionGraph
-
-### Processing
-
-1. Translate commercial decisions into spatial and visual design intent.
-2. Build **SceneGraph.planned** — the authoritative planned representation of the commercial design state.
-3. Instantiate scene nodes as required by the DecisionGraph (product placement, environment, composition, typography regions, overlay regions, lighting, camera, materials).
-4. Apply governance constraints from DecisionGraph as structural bounds, not as new commercial reasoning.
-5. Validate SceneGraph invariants (single authoritative scene, no duplicate geometry authority, planned state only).
-6. Leave **SceneGraph.actual** empty — actual state is populated only during rendering.
-
-SceneGraph Construction does not render. It plans.
-
-### Outputs
-
-- SceneGraph with populated **planned** state
-- Empty **actual** state
-- Scene construction trace
-- Planned-vs-decision alignment report
-
-### Invariants
-
-- SceneGraph is the **single authoritative representation** of commercial design state
-- No subsystem may maintain an alternative scene representation
-- SceneGraph may only be changed through governed scene mutations after construction
-- SceneGraph.actual SHALL be empty at construction completion
-- DecisionGraph is consumed read-only
-- Governance never modifies SceneGraph during construction
-
-### Failure Conditions
-
-- DecisionGraph domain cannot be mapped to scene structure
-- SceneGraph invariant violation
-- Required node missing for mandatory decision domain
-- Planning conflict that cannot be resolved within constraints
-
-### Diagnostics
-
-- Node inventory
-- Planned geometry summary
-- Decision-to-scene mapping coverage
-- Construction latency
-
-### Transition Rule
-- Success: If Outputs satisfy Invariants and no Failure Conditions trigger, transition to the Next Stage.
-- Failure: If any Failure Conditions trigger, terminate the generation run immediately and emit Failure Diagnostics; no later stage is executed.
-
-### Next Stage
-
-**Stage 7: Commercial Validation**
-
----
-
-## Stage 7: Commercial Validation
-
-### Purpose
+Purpose
 Reject weak commercial solutions before rendering.
 
-### Commercial objective
-Ensure the planned scene meets governed commercial quality gates (hierarchy, hero emphasis, visual noise, emphasis correctness, and differentiation).
-
-### Runtime objective
-Emit a Validated SceneGraph when checks pass, otherwise emit a Rejected SceneGraph with explicit failure diagnostics.
-
-### Why this stage exists
-- Why previous stages are insufficient: Scene planning can express intent, but it does not enforce commercial quality gates against the planned outcome.
-- Why following stages cannot replace it: Rendering is costly; it must not execute for designs that validation rejects.
-
-### Inputs
-
-- Immutable GenerationContext
-- Published DecisionGraph
+Inputs
 - SceneGraph.planned
+- DecisionGraph
+- ResolvedKnowledgeSet
 
-### Processing
+Processing
+- Validate commercial quality of the planned scene against governed checks:
+  - Hero dominance
+  - One main message
+  - Hierarchy
+  - Visual noise
+  - Thumbnail readability
+  - Grammar
+  - Commercial psychology
+- Validate that planned scene satisfies hard constraints implied by GenerationContext and AntiRule semantics.
+- Produce either a validated or rejected planned scene.
 
-Commercial Validation is the pre-execution gate that confirms the planned commercial outcome is viable before any rendering investment.
+Outputs
+- ValidatedSceneGraph
+- RejectedSceneGraph
 
-1. **Decision completeness** — Verify DecisionGraph covers all requirements implied by Commercial Goal and Operating Mode.
-2. **Knowledge alignment** — Verify decisions remain consistent with the Resolved Knowledge Set that produced them (no drift between resolution trace and final graph).
-3. **Constraint satisfaction** — Verify hard constraints from GenerationContext are satisfied in both DecisionGraph and SceneGraph.planned.
-4. **Governance pre-check** — Evaluate planned outcome against active governance rules. Governance observes and reports; it does not mutate SceneGraph.
-5. **Commercial viability** — Assess whether the planned scene can achieve the stated commercial goal (for example: hero prominence, message clarity, marketplace fit).
-6. **AntiRule re-validation** — Re-check planned outcome against active AntiRules at the scene level.
-7. Emit pass, conditional pass, or fail verdict.
+Invariants
+- This stage SHALL not render.
+- Rejected planned scenes SHALL not proceed to render preparation.
 
-### Outputs
+Failure Conditions
+- Planned scene fails one or more mandatory commercial validation checks.
 
-- Validated SceneGraph
-- Rejected SceneGraph
-- Commercial Validation Report
-- Findings list with severity
-- Governance pre-check record
+Diagnostics
+- generationContextId
+- validationResults summary
+- rejectedAlternatives summary (rejected planned scenes and key failing checks)
 
-### Invariants
+Transition Rule
+- On pass: proceed to Stage 8.
+- On rejection: terminate the generation run immediately or switch to permitted exploration isolation rules if operating mode explicitly allows it.
 
-- Validation occurs **before** rendering
-- Validation does not mutate DecisionGraph or SceneGraph
-- Fail verdict blocks rendering unless operating mode explicitly allows degraded exploration output
-- Governance evaluates but never modifies scene state
+Next Stage
+Stage 8 — Render Preparation
 
-### Failure Conditions
+## 12. Stage 8 — Render Preparation
 
-- Hard constraint violation
-- AntiRule violation in planned scene
-- Decision-knowledge drift detected
-- Governance block in Production mode
-- Incomplete decision coverage for stated goal
+Purpose
+Prepare executable render instructions. DAOS still does not make commercial decisions here.
 
-### Diagnostics
+Inputs
+- ValidatedSceneGraph
 
-- Validation rule inventory
-- Findings by severity
-- Constraint check matrix
-- Validation latency
+Processing
+- Translate validated planned design into a Render Blueprint.
+- Ensure Render Blueprint is a projection of validated decisions and does not reinterpret commercial intent.
+- Ensure Render Blueprint is incapable of changing the commercial strategy.
+- Bind Render Blueprint to the rendering context required by GenerationContext.
 
-### Transition Rule
-- Success: If Outputs satisfy Invariants and no Failure Conditions trigger, transition to the Next Stage.
-- Failure: If any Failure Conditions trigger, terminate the generation run immediately and emit Failure Diagnostics; no later stage is executed.
-
-### Next Stage
-
-**Stage 8: Render Preparation** (on pass or conditional pass)  
-**Run termination with audit bundle** (on hard fail in Production mode)
-
----
-
-## Stage 8: Render Preparation
-
-### Purpose
-Prepare rendering instructions.
-DAOS still does not generate images in this stage.
-
-### Commercial objective
-Translate the validated scene into a render blueprint that cannot reinterpret commercial intent.
-
-### Runtime objective
-Produce a Render Blueprint suitable for rendering execution, without performing rendering or commercial reasoning.
-
-### Why this stage exists
-- Why previous stages are insufficient: Commercial validation verifies viability but does not produce a render-ready blueprint.
-- Why following stages cannot replace it: Rendering requires a prebuilt blueprint; it cannot rerun commercial validation without breaking stage separation.
-
-### Inputs
-
-- Immutable GenerationContext
-- Published DecisionGraph
-- SceneGraph.planned
-- Commercial Validation Report (pass or conditional pass)
-- Rendering capability constraints from context
-
-### Processing
-
-1. Project SceneGraph.planned and DecisionGraph into a Render Blueprint that contains only presentation instructions derived from the validated planned scene.
-2. Ensure the Render Blueprint contains no commercial reasoning and cannot reinterpret commercial intent.
-3. Bind the Render Blueprint to rendering capability constraints specified by GenerationContext.
-4. Freeze the Render Blueprint for execution by the rendering stage.
-5. Confirm that no rendering execution occurs in this stage.
-
-### Outputs
-
+Outputs
 - Render Blueprint
-- Capability constraints binding
-- Render instruction set
-- Preparation trace
 
-### Invariants
+Invariants
+- Render Preparation SHALL NOT change commercial decisions.
+- Render Blueprint SHALL be derived from the validated planned scene only.
 
-- The Render Blueprint is a projection of SceneGraph.planned, not an alternative scene authority.
-- No commercial reasoning appears inside the Render Blueprint.
-- SceneGraph.actual remains empty until the rendering stage begins.
-- Render Blueprint capability bindings respect GenerationContext constraints.
+Failure Conditions
+- Render Blueprint cannot be constructed from validated scene.
+- Render Blueprint projection integrity fails.
 
-### Failure Conditions
+Diagnostics
+- generationContextId
+- sceneGraphTrace summary (validated planned scene linkage)
+- blueprintTrace summary
 
-- Rendering capability constraints are insufficient for the planned scene.
-- Render Blueprint projection integrity failure.
-- Commercial reasoning embedded in the Render Blueprint.
-- Render Blueprint preparation timeout
+Transition Rule
+- On success: proceed to Stage 9.
+- On failure: terminate the generation run immediately.
 
-### Diagnostics
+Next Stage
+Stage 9 — Rendering
 
-- Render Blueprint integrity summary
-- Capability binding report
-- Projection coverage report
-- Render Blueprint preparation latency
+## 13. Stage 9 — Rendering
 
-### Transition Rule
-- Success: If Outputs satisfy Invariants and no Failure Conditions trigger, transition to the Next Stage.
-- Failure: If any Failure Conditions trigger, terminate the generation run immediately and emit Failure Diagnostics; no later stage is executed.
+Purpose
+Render the prepared blueprint into an inspectable candidate artifact.
 
-### Next Stage
+Inputs
+- Render Blueprint
 
-**Stage 9: Rendering**
+Processing
+- Execute the Render Blueprint to materialize the planned scene into an actual rendered candidate.
+- Update SceneGraph.actual only as a governed manifestation of the Render Blueprint.
 
----
-
-## Stage 9: Rendering
-
-### Purpose
-Render the prepared blueprint.
-
-### Commercial objective
-Materialize the planned commercial intent into actual output while preserving fidelity to the render blueprint.
-
-### Runtime objective
-Generate a Rendered Candidate that can be evaluated in post-render validation.
-
-### Why this stage exists
-- Why previous stages are insufficient: Render preparation creates instructions but has not executed realization and composition.
-- Why following stages cannot replace it: Post render validation must evaluate an actual rendered candidate, not only intent.
-
-### Inputs
-
-- Immutable GenerationContext
-- Published DecisionGraph
-- SceneGraph.planned
-- Execution-ready render plan and render instructions
-
-### Processing
-
-Rendering executes the Render Blueprint to materialize the validated planned design into an actual rendered candidate.
-
-1. Execute the Render Blueprint to produce the rendered candidate output.
-2. Apply governed mutations only to SceneGraph actual state.
-3. Record planned-vs-actual drift where the rendered outcome deviates from the planned scene.
-4. Produce the Rendered Candidate artifact for post-render evaluation.
-
-Rendering:
-
-- **Never** re-decides commercial strategy
-- **Never** modifies DecisionGraph
-- **Never** updates Commercial Genome
-- **Never** performs knowledge resolution
-
-### Outputs
-
+Outputs
 - Rendered Candidate
-- Planned-vs-actual drift report
-- Render execution trace
 
-### Invariants
+Invariants
+- Rendering cannot change commercial intent.
+- Rendering SHALL not modify DecisionGraph or GenerationContext.
+- SceneGraph is the only scene state: planned and actual are owned by SceneGraph.
 
-- SceneGraph remains the authoritative scene representation throughout rendering
-- Only governed mutations may change SceneGraph during rendering
-- DecisionGraph is consumed read-only
-- Commercial reasoning does not occur during rendering
-- Rendered output is derived from SceneGraph actual state derived from the Render Blueprint
+Failure Conditions
+- Render execution failure.
+- Governed SceneGraph.actual mutation invariants violated.
 
-### Failure Conditions
+Diagnostics
+- generationContextId
+- decisionTrace summary references (what DecisionGraph governed)
+- sceneGraphTrace updated with actual-state linkage
+- renderResults summary
 
-- Render Blueprint execution failure
-- Governed scene mutation invariant violation
-- Critical fidelity drift beyond tolerance (mode-dependent)
+Transition Rule
+- On success: proceed to Stage 10.
+- On failure: terminate the generation run immediately.
 
-### Diagnostics
+Next Stage
+Stage 10 — Post Render Validation
 
-- Per-stage render latency
-- Drift measurements
-- Fidelity drift diagnostics
+## 14. Stage 10 — Post Render Validation
 
-### Transition Rule
-- Success: If Outputs satisfy Invariants and no Failure Conditions trigger, transition to the Next Stage.
-- Failure: If any Failure Conditions trigger, terminate the generation run immediately and emit Failure Diagnostics; no later stage is executed.
+Purpose
+Evaluate commercial quality, rendering fidelity, and benchmark suitability.
 
-### Next Stage
+Inputs
+- Rendered Candidate
+- SceneGraph.actual
+- DecisionGraph
 
-**Stage 10: Post Render Validation**
+Processing
+- Validate:
+  - product dominance
+  - overlay readability
+  - contrast
+  - composition
+  - marketplace quality
+  - commercial quality
+- Confirm rendered candidate matches the published commercial intent encoded in DecisionGraph.
+- Produce a validated or rejected candidate.
 
----
+Outputs
+- ValidatedCandidate
+- RejectedCandidate
 
-## Stage 10: Post Render Validation
+Invariants
+- Post Render Validation SHALL occur before benchmark evidence is produced.
+- Benchmark suitability SHALL only be computed for validated candidates.
 
-### Purpose
-Evaluate commercial quality, rendering quality, and benchmark quality.
+Failure Conditions
+- Candidate fails mandatory fidelity or commercial quality validations.
+- Governance evaluation fails in Production mode.
 
-### Commercial objective
-Certify that the rendered candidate matches the published commercial intent.
+Diagnostics
+- generationContextId
+- validationResults summary (validated vs rejected)
+- rejectedAlternatives summary (key failing checks)
 
-### Runtime objective
-Produce a Validated Candidate or a Rejected Candidate with explicit failure diagnostics.
+Transition Rule
+- On validated: proceed to Stage 11.
+- On rejected: terminate the generation run immediately or produce permitted exploration artifacts only if explicitly allowed by operating mode.
 
-### Why this stage exists
-- Why previous stages are insufficient: Rendering executes intent but does not certify commercial quality or fidelity against governance checks.
-- Why following stages cannot replace it: Benchmarking and learning must operate only on validated outcomes.
+Next Stage
+Stage 11 — Commercial Benchmark
 
-### Inputs
+## 15. Stage 11 — Commercial Benchmark
 
-- Immutable GenerationContext
-- Published DecisionGraph
-- SceneGraph (planned and actual)
-- Final rendered assets
-- Render execution trace
-
-### Processing
-
-Post Render Validation confirms the **actual** outcome matches commercial intent after execution.
-
-1. **Visual fidelity** — Compare SceneGraph.actual against SceneGraph.planned within governed tolerances.
-2. **Decision fidelity** — Verify rendered output reflects published DecisionGraph (hero treatment, composition, typography, overlay).
-3. **Constraint re-check** — Confirm hard constraints still satisfied in actual output.
-4. **Governance evaluation** — Run full governance rules against actual assets and scene state. Governance reports; it does not mutate.
-5. **Quality signals** — Collect metric values through the Metric Registry for downstream benchmark and learning.
-6. Emit pass, conditional pass, or fail verdict.
-
-### Outputs
-
-- Validated Candidate
-- Rejected Candidate
-- Post Render Validation Report
-- Governance findings on actual output
-- Metric value snapshot
-- Fidelity scores (planned vs actual, decision vs output)
-
-### Invariants
-
-- Post Render Validation occurs after rendering, before benchmark
-- Validation does not mutate DecisionGraph, SceneGraph, or Genome
-- Metric definitions come from the Metric Registry — ad hoc metrics are prohibited
-- Governance evaluates but does not modify scene or assets
-
-### Failure Conditions
-
-- Critical fidelity failure
-- Governance block in Production mode
-- Mandatory metric computation failure
-- Asset integrity failure
-
-### Diagnostics
-
-- Fidelity score breakdown
-- Governance finding taxonomy
-- Metric computation log
-- Validation latency
-
-### Transition Rule
-- Success: If Outputs satisfy Invariants and no Failure Conditions trigger, transition to the Next Stage.
-- Failure: If any Failure Conditions trigger, terminate the generation run immediately and emit Failure Diagnostics; no later stage is executed.
-
-### Next Stage
-
-**Stage 11: Commercial Benchmark**
-
----
-
-## Stage 11: Commercial Benchmark
-
-### Purpose
+Purpose
 Measure commercial performance.
 
-### Commercial objective
-Quantify benchmark-relevant commercial performance for the validated candidate.
+Inputs
+- ValidatedCandidate
 
-### Runtime objective
-Produce a Benchmark Report that is suitable for learning.
+Processing
+- Measure quality using governed benchmark criteria derived from the generation context and validated scene/candidate.
+- Compute performance metrics and evidence comparisons.
+- Produce a Benchmark Report for learning and feedback proposal generation.
 
-### Why this stage exists
-- Why previous stages are insufficient: Post render validation checks fidelity and quality signals, but does not quantify performance through governed benchmark criteria.
-- Why following stages cannot replace it: Learning requires benchmark evidence; it cannot operate without a benchmark report.
-
-### Inputs
-
-- Immutable GenerationContext
-- Published DecisionGraph
-- SceneGraph (planned and actual)
-- Final rendered assets
-- Post Render Validation Report
-- Metric value snapshot
-- Benchmark Context from GenerationContext
-
-### Processing
-
-1. Select benchmark suite appropriate to operating mode and Benchmark Context.
-2. Execute governed benchmark measurements using Metric Registry definitions.
-3. Compare results against:
-   - Baseline references
-   - Regression thresholds
-   - Certification criteria (Production mode)
-4. Produce benchmark verdict: pass, regression, or fail.
-5. Generate confidence adjustment proposals (not applied here — deferred to Learning).
-6. Record benchmark integrity attestation.
-
-Benchmark:
-
-- **Never** modifies production state
-- **Never** mutates DecisionGraph or SceneGraph
-- **Never** promotes knowledge
-
-### Outputs
-
+Outputs
 - Benchmark Report
-- Metric comparison matrix
-- Benchmark verdict
-- Confidence adjustment proposals
-- Benchmark integrity attestation
 
-### Invariants
+Invariants
+- Benchmark cannot change production state.
+- Benchmark does not modify DecisionGraph, SceneGraph, or Commercial Genome during the generation run.
 
-- Benchmark uses only Metric Registry definitions
-- Benchmark does not modify the generation artifact
-- Benchmark results are traceable to generation identity
-- Exploration mode may use exploratory benchmark profiles; Production mode uses certification profiles
-- Learning in Exploration mode SHALL NOT occur
+Failure Conditions
+- Benchmark suite or required measurements are unavailable.
+- Benchmark integrity checks fail.
 
-### Failure Conditions
+Diagnostics
+- generationContextId
+- benchmarkSummary
 
-- Benchmark suite unavailable
-- Integrity attestation failure
-- Regression beyond release threshold (Production mode)
-- Missing mandatory benchmark metrics
+Transition Rule
+- On success: proceed to Stage 12.
+- On failure: terminate the generation run immediately.
 
-### Diagnostics
+Next Stage
+Stage 12 — Learning
 
-- Per-metric values and deltas
-- Regression analysis summary
-- Benchmark execution latency
-- Suite version and profile
+## 16. Stage 12 — Learning
 
-### Transition Rule
-- Success: If Outputs satisfy Invariants and no Failure Conditions trigger, transition to the Next Stage.
-- Failure: If any Failure Conditions trigger, terminate the generation run immediately and emit Failure Diagnostics; no later stage is executed.
-
-### Next Stage
-
-**Stage 12: Learning** (Production mode and when learning policy permits)  
-**Run completion** (Exploration mode — Learning skipped)
-
----
-
-## Stage 12: Learning
-
-### Purpose
+Purpose
 Learn only from validated benchmark evidence.
 
-### Commercial objective
-Adjust the confidence of existing knowledge in a traceable way using governed benchmark outcomes.
-
-### Runtime objective
-Emit Learning Events that are evidence-backed and ready for genome feedback proposals.
-
-### Why this stage exists
-- Why previous stages are insufficient: Benchmark evidence exists, but learning does not produce governed confidence adjustments.
-- Why following stages cannot replace it: Genome feedback proposals must originate from learning events; they must not infer learning directly from benchmark output.
-
-### Inputs
-
-- Immutable GenerationContext
-- Published DecisionGraph
-- SceneGraph (planned and actual)
+Inputs
 - Benchmark Report
-- Confidence adjustment proposals
-- Learning Context from GenerationContext
+- Historical Results
 
-### Processing
+Processing
+- Determine which knowledge confidence adjustments are warranted by benchmark evidence.
+- Generate Learning Events that are evidence-backed and traceable.
+- Learning creates proposals, not silent mutations; no direct genome mutation occurs here.
 
-1. Evaluate benchmark outcomes against learning policy.
-2. Identify knowledge objects from the resolution trace that contributed to this generation.
-3. Adjust **confidence scores** on existing knowledge objects — Learning never creates new knowledge.
-4. Emit Learning Events recording:
-   - Affected knowledge object
-   - Previous confidence
-   - New confidence
-   - Reason
-   - Benchmark reference
-5. Identify promotion candidates and deprecation signals for genome lifecycle review.
-6. Preserve generation immutability — learning adjusts future knowledge, not this run's artifacts.
-
-Learning:
-
-- **Never** changes the current generation's DecisionGraph, SceneGraph, or assets
-- **Never** creates knowledge objects directly
-- **Never** bypasses lifecycle governance for promotion
-
-### Outputs
-
+Outputs
 - Learning Events
-- Confidence adjustment record
-- Promotion candidate list
-- Deprecation signal list
 
-### Invariants
+Invariants
+- Learning mutates neither DecisionGraph nor SceneGraph.
+- Learning does not mutate completed generations.
 
-- Learning Engine never creates knowledge — it adjusts confidence
-- Learning Engine never changes runtime artifacts of the current generation
-- All confidence changes are traceable to benchmark evidence
-- Promotion requires lifecycle governance — Learning proposes, it does not promote
+Failure Conditions
+- Evidence is insufficient to justify confidence changes under governed thresholds.
+- Learning policy prohibits adjustment.
 
-### Failure Conditions
+Diagnostics
+- generationContextId
+- learningEvents summary
 
-- Learning policy prohibits adjustment
-- Traceability link from outcome to knowledge object missing
-- Confidence adjustment would violate lifecycle bounds
+Transition Rule
+- On success: proceed to Stage 13.
+- On failure: proceed with a minimal, empty, or no-change Learning Events set according to governed policy, then proceed to Stage 13.
 
-### Diagnostics
+Next Stage
+Stage 13 — Genome Feedback Proposal
 
-- Learning events emitted
-- Objects affected count
-- Confidence delta distribution
-- Learning latency
+## 17. Stage 13 — Genome Feedback Proposal
 
-### Transition Rule
-- Success: If Outputs satisfy Invariants and no Failure Conditions trigger, transition to the Next Stage.
-- Failure: If any Failure Conditions trigger, terminate the generation run immediately and emit Failure Diagnostics; no later stage is executed.
-
-### Next Stage
-
-**Stage 13: Commercial Genome Feedback**
-
----
-
-## Stage 13: Commercial Genome Feedback
-
-### Purpose
+Purpose
 Determine whether genome knowledge should change.
-Output is a Genome Update Proposal. No genome mutation occurs in this stage.
 
-### Commercial objective
-Prepare governance-ready proposals for what knowledge confidence or applicability changes should be considered for future runs.
-
-### Runtime objective
-Emit only proposals with full audit traceability back to learning evidence.
-
-### Why this stage exists
-- Why previous stages are insufficient: Learning produces learning events, but does not translate them into genome update proposals.
-- Why following stages cannot replace it: Research feedback requires explicit genome feedback proposals (and their trace) to decide whether new research should begin.
-
-### Inputs
-
+Inputs
 - Learning Events
-- Confidence adjustment record
-- Promotion candidate list
-- Deprecation signal list
-- Generation identity and trace
+- Benchmark Report
 
-### Processing
+Processing
+- Convert Learning Events into a Genome Update Proposal.
+- The proposal SHALL contain governance-ready change candidates and rationale.
+- The proposal SHALL not directly mutate the genome during runtime.
 
-1. Translate Learning outputs into a Genome Update Proposal:
-   - Confidence change proposals for affected knowledge objects
-   - Applicability change proposals where scope boundaries are implicated
-   - Conflict resolution proposals where contradictions are evidenced
-   - Deprecation signals (signals only) when benchmarks indicate failure patterns
-2. Validate that every proposal is traceable to learning evidence and benchmark signals.
-3. Enforce that no production knowledge is mutated during runtime; only proposals are emitted.
-4. Record the proposal set audit trail for downstream governance workflow.
-
-### Outputs
-
+Outputs
 - Genome Update Proposal
-- Proposal audit trail
 
-### Invariants
+Invariants
+- This stage SHALL not mutate Commercial Genome during the generation run.
+- Genome Update Proposal is traceable to learning evidence.
 
-- No genome mutation occurs in this stage.
-- Proposals are traceable to learning evidence and benchmark signals.
-- Direct mutation attempts are rejected.
+Failure Conditions
+- Learning Events cannot be transformed into a valid governance proposal set.
 
-### Failure Conditions
+Diagnostics
+- generationContextId
+- genomeUpdateProposalTrace summary
 
-- Inability to form a valid proposal set from learning evidence.
-- Proposal audit trail integrity failure.
+Transition Rule
+- On success: proceed to Stage 14.
+- On failure: terminate the generation run with diagnostics; research feedback may still be emitted if governed policy permits it.
 
-### Diagnostics
+Next Stage
+Stage 14 — Research Feedback Proposal
 
-- Proposal set summary (counts by change type).
-- Trace coverage metrics.
-- Feedback latency
+## 18. Stage 14 — Research Feedback Proposal
 
-### Transition Rule
-- Success: If Outputs satisfy Invariants and no Failure Conditions trigger, transition to the Next Stage.
-- Failure: If any Failure Conditions trigger, terminate the generation run immediately and emit Failure Diagnostics; no later stage is executed.
-
-### Next Stage
-
-**Stage 14: Research Feedback**
-
----
-
-## Stage 14: Research Feedback
-
-### Purpose
+Purpose
 Determine whether new research should begin.
 
-### Commercial objective
-Convert validated generation outcomes into structured research-entry artifacts that guide future knowledge discovery.
+Inputs
+- Failures
+- Rejected Candidates
+- Benchmark Gaps
 
-### Runtime objective
-Emit a Research Proposal along with a Knowledge Candidate and an Anti Rule Candidate as outputs when research signals warrant it.
+Processing
+- Identify failure patterns that indicate missing or insufficient commercial knowledge.
+- Convert gaps into a Research Proposal and associated artifacts:
+  - Knowledge Candidate: what knowledge should be explored or refined
+  - AntiRule Candidate: what must be rejected next time to prevent repeated failure patterns
+- Explain negative knowledge explicitly: failed experiments create useful negative knowledge by turning repeated failure into governed rejection constraints.
 
-### Why this stage exists
-- Why previous stages are insufficient: Learning and genome feedback proposals do not decide whether new research is required.
-- Why following stages cannot replace it: The runtime model must emit research feedback artifacts explicitly; no later stage exists within the runtime pipeline.
-
-### Inputs
-
-- Complete generation trace (all prior stage diagnostics)
-- Benchmark Report
-- Learning Events
-- Genome Update Proposal
-- Proposal audit trail
-- Unresolved findings from validation and governance
-
-### Processing
-
-1. Identify research-worthy signals suggested by:
-   - Validated and rejected outcomes
-   - Benchmark regressions and quality deltas
-   - Planned-vs-actual drift patterns
-   - Governance findings
-   - Anti-rule near misses
-2. Convert signals into a Research Proposal that is suitable for external research execution.
-3. Emit a Knowledge Candidate when the signals suggest refined or expanded commercial knowledge would likely improve future outcomes.
-4. Emit an Anti Rule Candidate when the signals indicate new or updated rejection constraints would prevent repeat failures.
-5. Preserve traceability from emitted research artifacts back to generation identity and benchmark evidence.
-
-### Outputs
-
+Outputs
 - Research Proposal
 - Knowledge Candidate
-- Anti Rule Candidate
+- AntiRule Candidate
 
-### Invariants
+Invariants
+- Research Feedback Proposal SHALL not mutate production knowledge directly within this runtime run.
+- Emitted artifacts SHALL be traceable to failures, rejected candidates, and benchmark gaps.
 
-- Research Feedback does not mutate Commercial Genome in runtime.
-- Knowledge Candidates and Anti Rule Candidates remain outside Commercial Genome until governed research promotion occurs.
-- Research feedback preserves full traceability to the source generation and benchmark evidence.
+Failure Conditions
+- Research artifacts cannot be structured under governed research entry constraints.
 
-### Failure Conditions
+Diagnostics
+- generationContextId
+- rejectedAlternatives summary (failure pattern keys)
+- researchFeedbackTrace summary
 
-- Research packaging failure
-- Traceability break between outcome and emitted artifacts
-- Attempt to inject emitted research artifacts directly into Commercial Genome
+Transition Rule
+- On success: terminate the generation run.
+- On failure: terminate the generation run with diagnostics.
 
-### Diagnostics
+Next Stage
+None
 
-- Artifact counts by type (proposal, knowledge candidate, anti rule candidate)
-- Evidence linkage integrity
-- End-to-end generation latency
+## 19. Runtime Failure Model
 
-### Transition Rule
-- Success: If Outputs are emitted and Invariants hold, the generation run terminates (no later stage is executed).
-- Failure: If any Failure Conditions trigger, terminate the generation run immediately and emit Failure Diagnostics; no later stage is executed.
+When a stage fails, DAOS SHALL follow the failure model below:
 
-### Next Stage
+- Fail early when context is invalid.
+- Reject unresolved knowledge conflicts.
+- Reject incomplete DecisionGraph.
+- Reject weak SceneGraph before rendering.
+- Reject poor render after validation.
+- Create Finding, not hidden retry.
 
-**None** — the commercial generation run is complete.
+The generation run terminates immediately upon any hard failure condition, except where operating mode explicitly allows permitted exploration isolation artifacts.
 
-Research proposal artifacts enter the external Research lifecycle:
+## 20. Runtime Diagnostics
 
-Observation → Hypothesis → Experiment → Evidence → Knowledge Candidate → Certification → Commercial Genome
+Every generation MUST produce the following diagnostics fields:
 
----
+- generationContextId
+- genomeVersion
+- resolvedKnowledgeSummary
+- decisionTrace
+- sceneGraphTrace
+- validationResults
+- benchmarkSummary
+- learningEvents
+- ignoredKnowledge
+- rejectedAlternatives
 
-## Operating Mode Behavior
+Diagnostics MUST be complete enough to reconstruct the full runtime reasoning chain without re-running any stage.
 
-### Production Mode
+## 21. Runtime Anti-Patterns
 
-- Commercial Genome is authoritative
-- Experimental rules do not execute
-- Exactly one production DecisionGraph
-- Learning and Genome Feedback execute when policy permits
-- Benchmark uses certification profiles
-- Hard validation failures block rendering or release
+DAOS runtime SHALL explicitly prohibit:
 
-### Exploration Mode
+- prompt-first generation
+- rendering before decision
+- raw Genome access by renderer
+- commercial rules inside templates
+- hidden retry loops
+- patch replacing root-cause fix
+- benchmark changing production state
+- learning mutating completed generations
 
-- Design space exploration is permitted
-- Candidate DecisionGraphs and SceneGraphs may be emitted under isolation
-- Learning SHALL NOT occur
-- Benchmark uses exploration profiles
-- Output is for comparison and research, not direct production release
+Any implementation that violates these runtime anti-patterns SHALL be considered non-compliant.
 
----
+## 22. Final Principle
 
-## Rejection Model
+DAOS thinks before it renders.
+DAOS decides before it composes.
+DAOS validates before it learns.
+DAOS learns only from evidence.
 
-DAOS rejects bad ideas at multiple layers. Rejection is **explicit and traced**, never silent.
-
-| Layer | What is rejected | Mechanism |
-|-------|------------------|-----------|
-| Runtime Entry | Invalid requests | Structural validation |
-| Context Init | Inconsistent context | Constraint checking |
-| Genome Loading | Unqualified knowledge objects | Lifecycle metadata gate |
-| Knowledge Resolution | Inapplicable, conflicting, low-confidence knowledge | Filters, AntiRules, conflict resolution |
-| Decision Engine | Incoherent proposals, evidence-poor strategies | Expert rejection, commercial cost, AntiRules |
-| Commercial Validation | Planned outcomes that violate constraints or governance | Pre-render gate |
-| Post Render Validation | Actual output that diverges from decision intent | Fidelity and governance checks |
-| Benchmark | Regressed quality | Threshold comparison |
-| Genome Feedback | Unauthorized mutations | Lifecycle event enforcement |
-| Research Feedback | Direct knowledge injection | Observation-only contract |
-
----
-
-## Traceability Contract
-
-Every generation run SHALL produce a trace sufficient to answer:
-
-- What was requested?
-- What context was frozen?
-- What knowledge was considered, excluded, and selected?
-- What was proposed, rejected, and decided?
-- What was planned vs what was rendered?
-- What did validation and benchmark conclude?
-- What did learning change for future runs?
-- What observations were sent to research?
-
-No stage may destroy diagnostic information required by downstream stages or post-hoc audit.
-
----
-
-## Authority and Subordination
-
-This Runtime Specification is subordinate to the DAOS Architecture Constitution.
-
-Where the Constitution defines object contracts, lifecycle rules, or governance policy, this document describes **when and how** those contracts participate in runtime execution.
-
-Implementations SHALL conform to this execution order. Deviations require Architecture Council approval.
-
----
-
-## Document History
-
-| Version | Date | Authority | Change |
-|---------|------|-----------|--------|
-| 1.0 | 2026-07-08 | DAOS Architecture Council | Initial canonical runtime specification |
