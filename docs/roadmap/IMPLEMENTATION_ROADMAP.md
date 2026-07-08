@@ -44,7 +44,7 @@ This roadmap tracks **code implementation** against the constitution. Update it 
 
 | Priority | Task | Constitution | Status |
 |----------|------|--------------|--------|
-| A1 | Metric registry — eliminate duplicate `productArea` calculations | Vol 26 | [RFC-2600](../rfc/RFC-2600_METRIC_REGISTRY_RUNTIME.md) drafted |
+| A1 | Metric registry — eliminate duplicate `productArea` calculations | Vol 26 | Wave 1 implemented (RFC-2600) |
 | A2 | `GenerationContext` canonical object | Vol 25 | pending |
 | A3 | Feature flag registry + lifecycle | Vol 28 | pending |
 | A4 | Object registry validation in CI | Vol 27 | pending |

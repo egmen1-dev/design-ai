@@ -5,6 +5,13 @@ import {
   LAW003_OVERLAY_DENSITY_SAFE,
   LAW003_PRODUCT_AREA_GOOD,
 } from "@/lib/daos/governance/law003-recalibration";
+import {
+  isMetricRegistryEnabled,
+  isMetricRegistryShadowEnabled,
+  METRIC_PRODUCT_AREA_RATIO,
+  MetricRegistry,
+  recordMetricShadowDiagnostic,
+} from "@/lib/daos/metric-registry";
 import { compareLaw003V1V2, type SceneGraphLaw003V2Result } from "./SceneGraphLaw003V2";
 
 export type SceneGraphConstitutionSource = "actual" | "planned" | "mixed";
@@ -87,7 +94,7 @@ function resolveCanvas(graph: SceneGraph) {
   return graph.canvas.actual ?? graph.canvas.planned;
 }
 
-function resolveProductArea(graph: SceneGraph): {
+function legacyResolveProductArea(graph: SceneGraph): {
   ratio: number;
   source: "actual" | "planned";
 } {
@@ -119,6 +126,54 @@ function resolveProductArea(graph: SceneGraph): {
   }
 
   return { ratio: 0, source: "planned" };
+}
+
+function resolveProductArea(graph: SceneGraph): {
+  ratio: number;
+  source: "actual" | "planned";
+} {
+  const legacy = legacyResolveProductArea(graph);
+  const registryEnabled = isMetricRegistryEnabled();
+  const shadowEnabled = isMetricRegistryShadowEnabled();
+
+  if (shadowEnabled) {
+    const metric = MetricRegistry.compute(METRIC_PRODUCT_AREA_RATIO, {
+      kind: "scene_graph",
+      graph,
+      mode: "mirror",
+    });
+    const registryResolutionKind = metric.provenance.includes(":planned:")
+      ? ("planned" as const)
+      : metric.provenance.includes(":actual:")
+        ? ("actual" as const)
+        : legacy.source;
+    recordMetricShadowDiagnostic({
+      metricId: METRIC_PRODUCT_AREA_RATIO,
+      mode: "mirror",
+      legacyValue: legacy.ratio,
+      registryValue: metric.value,
+    });
+    if (!registryEnabled) {
+      return legacy;
+    }
+    return { ratio: metric.value, source: registryResolutionKind };
+  }
+
+  if (registryEnabled) {
+    const metric = MetricRegistry.compute(METRIC_PRODUCT_AREA_RATIO, {
+      kind: "scene_graph",
+      graph,
+      mode: "mirror",
+    });
+    const resolutionKind = metric.provenance.includes(":planned:")
+      ? ("planned" as const)
+      : metric.provenance.includes(":actual:")
+        ? ("actual" as const)
+        : legacy.source;
+    return { ratio: metric.value, source: resolutionKind };
+  }
+
+  return legacy;
 }
 
 function resolvePlannedProductArea(graph: SceneGraph): number {

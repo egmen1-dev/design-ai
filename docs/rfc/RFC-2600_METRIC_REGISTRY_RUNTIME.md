@@ -5,7 +5,7 @@
 | **RFC Number** | RFC-2600 |
 | **Title** | Metric Registry Runtime — `productAreaRatio` pilot |
 | **Author** | DAOS Architecture Council (Audit-driven) |
-| **Status** | Draft (Proposed) |
+| **Status** | Accepted |
 | **Layer** | Foundation / Quality |
 | **Normative** | Mandatory after acceptance |
 | **Constitution** | [Volume 26 — Metric Registry](../architecture/constitution-v3/volume-26-metric-registry/) |
@@ -503,7 +503,7 @@ RFC-2600 is **Accepted** when:
 | Role | Decision | Date |
 |------|----------|------|
 | Architecture Auditor | Proposed | 2026-07-08 |
-| Architecture Council | _Pending_ | — |
+| Architecture Council | **Accepted** | 2026-07-08 |
 | Engineering Lead | _Pending_ | — |
 
 **Status transitions:** `Draft → Review → Accepted → Implemented (Wave 1) → Released`

@@ -1,5 +1,12 @@
 import type { SceneGraph } from "./SceneGraph";
 import { evaluateSceneGraphLaw003 } from "./SceneGraphConstitutionMirror";
+import {
+  isMetricRegistryEnabled,
+  isMetricRegistryShadowEnabled,
+  METRIC_PRODUCT_AREA_RATIO,
+  MetricRegistry,
+  recordMetricShadowDiagnostic,
+} from "@/lib/daos/metric-registry";
 
 export const SCENE_GRAPH_LAW003_V2_VERSION = "scenegraph-law003-v2" as const;
 
@@ -45,7 +52,7 @@ function resolveCanvas(graph: SceneGraph) {
   return graph.canvas.actual ?? graph.canvas.planned;
 }
 
-function resolveProductAreaRatio(graph: SceneGraph): number {
+function legacyResolveProductAreaRatio(graph: SceneGraph): number {
   if (graph.metadata.wideProductTemplateApplied) {
     const plannedPct = graph.composition.actual?.productAreaPct;
     if (plannedPct != null && plannedPct > 0) {
@@ -64,6 +71,36 @@ function resolveProductAreaRatio(graph: SceneGraph): number {
   const productAreaPct = graph.composition.actual?.productAreaPct;
   if (productAreaPct != null) return productAreaPct / 100;
   return 0;
+}
+
+function resolveProductAreaRatio(graph: SceneGraph): number {
+  const legacyValue = legacyResolveProductAreaRatio(graph);
+  const registryEnabled = isMetricRegistryEnabled();
+  const shadowEnabled = isMetricRegistryShadowEnabled();
+
+  if (shadowEnabled) {
+    const registryValue = MetricRegistry.compute(METRIC_PRODUCT_AREA_RATIO, {
+      kind: "scene_graph",
+      graph,
+      mode: "law003_v2",
+    }).value;
+    recordMetricShadowDiagnostic({
+      metricId: METRIC_PRODUCT_AREA_RATIO,
+      mode: "law003_v2",
+      legacyValue,
+      registryValue,
+    });
+  }
+
+  if (registryEnabled) {
+    return MetricRegistry.compute(METRIC_PRODUCT_AREA_RATIO, {
+      kind: "scene_graph",
+      graph,
+      mode: "law003_v2",
+    }).value;
+  }
+
+  return legacyValue;
 }
 
 function resolveOverlayDensity(graph: SceneGraph): number {

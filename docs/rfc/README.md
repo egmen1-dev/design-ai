@@ -22,7 +22,7 @@ Draft → Review → Accepted → Implemented → Released → Archived
 | [RFC-005](RFC-005.md) | RenderGraph | Accepted |
 | [RFC-006](RFC-006.md) | Asset Platform | Accepted |
 | [RFC-010](RFC-010_ARCHITECTURE_COUNCIL.md) | Architecture Council Protocol | Draft |
-| [RFC-2600](RFC-2600_METRIC_REGISTRY_RUNTIME.md) | Metric Registry Runtime (`productAreaRatio` pilot) | Draft |
+| [RFC-2600](RFC-2600_METRIC_REGISTRY_RUNTIME.md) | Metric Registry Runtime (`productAreaRatio` pilot) | Accepted |
 
 ## Rules
 
