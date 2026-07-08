@@ -17,6 +17,7 @@ SPECS=(
   src/lib/render-blueprint/lifecycle-manager.spec.ts
   src/lib/render-blueprint/mutation-engine.spec.ts
   src/lib/render-blueprint/validation-engine.spec.ts
+  src/lib/daos/feature-flag-registry/feature-flag-registry.spec.ts
 )
 for f in "${SPECS[@]}"; do
   echo "==> $f"
