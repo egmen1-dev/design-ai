@@ -1,0 +1,3 @@
+# Moved
+
+RFC-010: [docs/rfc/RFC-010_ARCHITECTURE_COUNCIL.md](../../rfc/RFC-010_ARCHITECTURE_COUNCIL.md)
