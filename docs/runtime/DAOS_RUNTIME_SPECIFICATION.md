@@ -394,7 +394,7 @@ Resolved Knowledge Set
 
 **Knowledge Ranking** — Produce the final ordered **Resolved Knowledge Set** ready for commercial reasoning.
 
-**AntiRule processing** — Explicit rejection rules SHALL eliminate proposals that violate known commercial failures. AntiRules are first-class knowledge, not exceptions.
+**AntiRule processing** — Explicit rejection rules SHALL eliminate proposals that violate known commercial failures. AntiRules are core knowledge, not exceptions.
 
 ### Outputs
 
