@@ -32,67 +32,96 @@ In addition, every stage SHALL obey the ordering boundary:
 
 ## 3. Runtime Pipeline Overview
 
-The canonical runtime sequence is:
+DAOS runtime SHALL be described as a **Commercial Decision Cycle**, not only as a sequence of technical stages.
 
-Runtime Entry
+The technical stages in this specification implement the canonical cycle below. No stage exists outside this cycle.
 
-↓
-
-GenerationContext Initialization
+Context
 
 ↓
 
-Commercial Genome Loading
+Understand
 
 ↓
 
-Knowledge Resolution
+Reason
 
 ↓
 
-Commercial Reasoning
+Decide
 
 ↓
 
-DecisionGraph Construction
+Plan
 
 ↓
 
-SceneGraph Construction
+Validate
 
 ↓
 
-Commercial Validation
+Execute
 
 ↓
 
-Render Preparation
+Measure
 
 ↓
 
-Rendering
+Learn
 
 ↓
 
-Post Render Validation
+Improve
 
-↓
+This cycle is canonical.
 
-Commercial Benchmark
+### Phase Mapping
 
-↓
+Every Runtime stage belongs to exactly one decision phase:
 
-Learning
-
-↓
-
-Genome Feedback Proposal
-
-↓
-
-Research Feedback Proposal
+- Context
+  - Runtime Entry
+  - GenerationContext Initialization
+- Understand
+  - Commercial Genome Loading
+  - Knowledge Resolution
+- Reason
+  - Commercial Reasoning
+- Decide
+  - DecisionGraph Construction
+- Plan
+  - SceneGraph Construction
+  - Render Preparation
+- Validate
+  - Commercial Validation
+- Execute
+  - Rendering
+- Measure
+  - Post Render Validation
+  - Commercial Benchmark
+- Learn
+  - Learning
+  - Genome Feedback Proposal
+- Improve
+  - Research Feedback Proposal
 
 No stage may be skipped. If any stage fails, the generation run SHALL terminate according to the Runtime Failure Model.
+
+### Architectural Rule (Decision-Phase Questioning)
+
+Every Runtime stage SHALL answer one question only:
+
+- Context: What problem am I solving?
+- Understand: What do I know?
+- Reason: What should I do?
+- Decide: What will I do?
+- Plan: How will I do it?
+- Validate: Is it good enough?
+- Execute: Can it be produced?
+- Measure: How well did it perform?
+- Learn: What did I discover?
+- Improve: What should be researched next?
 
 ## 4. Stage 0 — Runtime Entry
 
