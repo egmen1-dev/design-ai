@@ -1,0 +1,219 @@
+{
+  "createdAt": "2026-07-07T12:18:02.713Z",
+  "results": [
+    {
+      "arm": "baseline",
+      "product": {
+        "id": "mattress",
+        "name": "Mattress",
+        "category": "home",
+        "complexity": "medium",
+        "prompt": "Ортопедический матрас 160x200 для Wildberries: независимые пружины, средняя жёсткость, премиальная карточка для сна",
+        "image": {
+          "background": "#f5f0e8",
+          "accent": "#d4c4b0",
+          "shape": "mattress"
+        }
+      },
+      "seed": "daos-benchmark-phase1-20260706:mattress",
+      "productId": "mattress",
+      "productName": "Mattress",
+      "imageId": "cmram734d0003jskuyzrn1uix",
+      "generationTimeMs": 14899,
+      "meaningLossCount": 3,
+      "meaningLossCodes": [
+        "VISUAL_TO_RENDER_STRATEGY_MISMATCH",
+        "MODULES_IGNORED",
+        "DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES"
+      ],
+      "modulesIgnored": [
+        "layout_coordinates",
+        "hierarchy",
+        "typography_zones",
+        "ctr_wording"
+      ],
+      "modulesCompiled": [
+        "layout_coordinates",
+        "hierarchy",
+        "typography_zones",
+        "ctr_wording"
+      ],
+      "modulesStillIgnored": [],
+      "backgroundHash": "29f586fcab76fa1cb49feda2fdaa7313",
+      "finalImageHash": "589858cc251f1673a244dbd92130a1cb",
+      "projectId": "daee5c1d-d908-4f26-becd-385e20f193aa",
+      "runId": "0c97f28a-da07-45e7-9665-59f1ec89db27",
+      "summaryScore": 73,
+      "finalGateStatus": "warning",
+      "finalGateScore": 73,
+      "promptLength": 894,
+      "provider": "pollinations",
+      "model": "flux",
+      "latencyMs": 3714,
+      "fallbackUsed": false,
+      "composerQualityScore": 72,
+      "productAreaRatio": 0.5007896000000001,
+      "finalCompositionRisk": 0.21300000000000002,
+      "overlayQualityScore": 63,
+      "overlayDensity": 0.1104,
+      "pngOverlayFeelRisk": 0.2,
+      "law003WhitespaceViolation": true,
+      "law014ContrastViolation": false,
+      "productScaleScore": 17,
+      "productDominanceScore": 58,
+      "emptySpaceEstimate": 0.29,
+      "sceneFillRisk": 0.2238,
+      "compositeProductAreaRatio": 0.20133333333333334,
+      "compositeProductWidthRatio": 0.8,
+      "compositeProductHeightRatio": 0.25166666666666665,
+      "extractAreaCorrected": true,
+      "compositePlacementFound": true,
+      "law003Before": true,
+      "law003After": true,
+      "law003StaleMetricDetected": false,
+      "law003GovernanceSource": "daos_recalibrated",
+      "law003SoftResolved": false,
+      "overlayGateStatus": "warning",
+      "overlayGateScore": 63,
+      "targetUnreachable": true,
+      "aspectRatioPlacementPatchApplied": true,
+      "fitStrategy": "fit-width",
+      "wideProductTemplateApplied": true,
+      "wideTemplateCompositorHookEnabled": false,
+      "law003V2Passed": true,
+      "law003V2Score": 100,
+      "law003V2Reason": "Scene fill, hero/text balance, overlay density, and background empty area within V2 bounds",
+      "law014MirrorPassed": true,
+      "compositePlacementPx": {
+        "width": 720,
+        "height": 302
+      },
+      "wideProductHeroZone": "top:53.8%;h:42.2%;w:93.6%;l:0.2%"
+    },
+    {
+      "arm": "hook",
+      "product": {
+        "id": "mattress",
+        "name": "Mattress",
+        "category": "home",
+        "complexity": "medium",
+        "prompt": "Ортопедический матрас 160x200 для Wildberries: независимые пружины, средняя жёсткость, премиальная карточка для сна",
+        "image": {
+          "background": "#f5f0e8",
+          "accent": "#d4c4b0",
+          "shape": "mattress"
+        }
+      },
+      "seed": "daos-benchmark-phase1-20260706:mattress",
+      "productId": "mattress",
+      "productName": "Mattress",
+      "imageId": "cmram77et0007jsku9xjzw3zv",
+      "generationTimeMs": 5540,
+      "meaningLossCount": 3,
+      "meaningLossCodes": [
+        "VISUAL_TO_RENDER_STRATEGY_MISMATCH",
+        "MODULES_IGNORED",
+        "DAOS_V17_BRIDGE_APPLIED_WITH_IGNORED_MODULES"
+      ],
+      "modulesIgnored": [
+        "layout_coordinates",
+        "hierarchy",
+        "typography_zones",
+        "ctr_wording"
+      ],
+      "modulesCompiled": [
+        "layout_coordinates",
+        "hierarchy",
+        "typography_zones",
+        "ctr_wording"
+      ],
+      "modulesStillIgnored": [],
+      "backgroundHash": "29f586fcab76fa1cb49feda2fdaa7313",
+      "finalImageHash": "773cbd928a020cf3c188d91e853e438f",
+      "projectId": "5b072f20-5fda-44e3-a004-6dde541978d0",
+      "runId": "c6f26b58-925c-4a3b-a32a-d4ef1c28e229",
+      "summaryScore": 73,
+      "finalGateStatus": "warning",
+      "finalGateScore": 73,
+      "promptLength": 894,
+      "provider": "pollinations",
+      "model": "flux",
+      "latencyMs": 600,
+      "fallbackUsed": false,
+      "composerQualityScore": 72,
+      "productAreaRatio": 0.5007896000000001,
+      "finalCompositionRisk": 0.21300000000000002,
+      "overlayQualityScore": 63,
+      "overlayDensity": 0.1104,
+      "pngOverlayFeelRisk": 0.2,
+      "law003WhitespaceViolation": true,
+      "law014ContrastViolation": false,
+      "productScaleScore": 1,
+      "productDominanceScore": 46,
+      "emptySpaceEstimate": 0.29,
+      "sceneFillRisk": 0.29447333333333336,
+      "compositeProductAreaRatio": 0.1228074074074074,
+      "compositeProductWidthRatio": 0.6244444444444445,
+      "compositeProductHeightRatio": 0.19666666666666666,
+      "extractAreaCorrected": true,
+      "compositePlacementFound": true,
+      "law003Before": true,
+      "law003After": true,
+      "law003StaleMetricDetected": false,
+      "law003GovernanceSource": "daos_recalibrated",
+      "law003SoftResolved": false,
+      "overlayGateStatus": "warning",
+      "overlayGateScore": 63,
+      "targetUnreachable": true,
+      "aspectRatioPlacementPatchApplied": true,
+      "fitStrategy": "fit-width",
+      "wideProductTemplateApplied": true,
+      "wideTemplateCompositorHookEnabled": true,
+      "wideTemplateCompositorHookApplied": true,
+      "wideTemplateHeroZoneUsed": "top:53.8%;h:42.2%;w:93.6%;l:0.2%",
+      "wideTemplateCompositeAreaBefore": 0.24185925925925925,
+      "wideTemplateCompositeAreaAfter": 0.1228074074074074,
+      "law003V2Passed": true,
+      "law003V2Score": 100,
+      "law003V2Reason": "Scene fill, hero/text balance, overlay density, and background empty area within V2 bounds",
+      "law014MirrorPassed": true,
+      "compositePlacementPx": {
+        "width": 562,
+        "height": 236
+      },
+      "wideProductHeroZone": "top:53.8%;h:42.2%;w:93.6%;l:0.2%"
+    }
+  ],
+  "aggregate": {
+    "mattress": {
+      "baseline": {
+        "law003V2Passed": true,
+        "law014MirrorPassed": true,
+        "compositeProductAreaRatio": 0.20133333333333334,
+        "compositePlacementPx": {
+          "width": 720,
+          "height": 302
+        },
+        "overlayQualityScore": 63,
+        "finalImageHash": "589858cc251f1673a244dbd92130a1cb"
+      },
+      "hook": {
+        "wideTemplateCompositorHookApplied": true,
+        "wideTemplateHeroZoneUsed": "top:53.8%;h:42.2%;w:93.6%;l:0.2%",
+        "wideTemplateCompositeAreaBefore": 0.24185925925925925,
+        "wideTemplateCompositeAreaAfter": 0.1228074074074074,
+        "law003V2Passed": true,
+        "law014MirrorPassed": true,
+        "compositeProductAreaRatio": 0.1228074074074074,
+        "compositePlacementPx": {
+          "width": 562,
+          "height": 236
+        },
+        "overlayQualityScore": 63,
+        "finalImageHash": "773cbd928a020cf3c188d91e853e438f"
+      },
+      "compositeAreaImproved": false,
+      "visualHashChanged": true
+    }
+  }
+}
