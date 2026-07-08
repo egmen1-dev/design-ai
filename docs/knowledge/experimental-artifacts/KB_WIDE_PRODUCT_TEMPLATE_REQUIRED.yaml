@@ -1,0 +1,13 @@
+id: KB_WIDE_PRODUCT_TEMPLATE_REQUIRED
+type: KnowledgeRule
+status: experimental
+confidence: 0.87
+domain: layout
+statement: "Products with aspect >= 2.0 or mattress category signal require wide_bottom_hero template for LAW_003 V2 pass on planned geometry."
+evidence_refs:
+  - STAGE_5_WIDE_PRODUCT_TEMPLATE
+vocabulary_actions:
+  - apply_wide_product_template
+  - move_text_top
+  - reduce_badge_count
+feature_flag: DAOS_WIDE_PRODUCT_TEMPLATE=1

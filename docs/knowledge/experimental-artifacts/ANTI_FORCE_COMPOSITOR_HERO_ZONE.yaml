@@ -1,0 +1,12 @@
+id: ANTI_FORCE_COMPOSITOR_HERO_ZONE
+type: anti_rule
+status: experimental
+confidence: 0.91
+statement: "Do not enable DAOS_WIDE_TEMPLATE_COMPOSITOR_HOOK in production."
+evidence_refs:
+  - STAGE_5_1_COMPOSITOR_HOOK
+  - STAGE_5_2_HOOK_DECISION
+rejected_action: force_compositor_hero_zone
+recommended_alternative: apply_wide_product_template
+warning_code: WIDE_TEMPLATE_COMPOSITOR_HOOK_EXPERIMENTAL
+feature_flag_default: DAOS_WIDE_TEMPLATE_COMPOSITOR_HOOK=0
