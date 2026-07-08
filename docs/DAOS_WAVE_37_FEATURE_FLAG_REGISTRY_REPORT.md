@@ -24,14 +24,25 @@ No runtime behavior (flag gating) is changed in Wave 37: the registry is additiv
 
 ## Compliance Delta
 
-- **Closes V-010 Feature Flag Governance**
-  - Flags are now represented as registered objects with lifecycle metadata, ownership, and validation diagnostics.
-  - Diagnostics are additive and validation is non-terminating.
+- **V-010 Feature Flag Governance**
+  - Status after: **PARTIAL**
+  - Reason: Wave 37 introduces registry-backed visibility (ownership + lifecycle metadata + diagnostics), but does not yet fully close feature flag governance because:
+    - lifecycle is metadata-only (no retirement/rollout enforcement)
+    - consumers are empty for discovery-only mode
+    - plannedRemovalWave remains unassigned for every discovered flag
+    - CI/enforcement for unmanaged new flags is not yet active
+    - legacy `process.env` behavior remains the runtime source of truth in this wave
+    - the registry is not yet consumed by Wave 38 / future rollout gates
 
 ## Architecture Health Delta
 
-- Reduces architectural entropy by providing a single canonical registry boundary for runtime DAOS flags.
-- Improves explainability by attaching owner and lifecycle metadata to runtime flags.
+- **Feature Flag Governance Health**
+  - Before: 2/10
+  - After: 6/10
+  - Delta: +4
+- **Global Architecture Health**
+  - Not recalculated in Wave 37.
+  - (This estimate applies only to the feature-flag governance subdomain.)
 
 ## Technical Debt Delta
 
@@ -39,9 +50,18 @@ No runtime behavior (flag gating) is changed in Wave 37: the registry is additiv
 - Lifecycle metadata is implemented for governance and diagnostics, but lifecycle state is not used to gate runtime behavior in Wave 37 (per scope).
 
 ## Tests
-
-- ✅ `cd marketplace-infographic && npx tsx src/lib/daos/feature-flag-registry/feature-flag-registry.spec.ts`
-- ✅ `cd marketplace-infographic && bash scripts/run-specs.sh`
+- feature-flag-registry spec:
+  - ✅ `cd marketplace-infographic && npx tsx src/lib/daos/feature-flag-registry/feature-flag-registry.spec.ts`
+- scripts/run-specs:
+  - ✅ `cd marketplace-infographic && bash scripts/run-specs.sh`
+- lint:
+  - ✅ `cd marketplace-infographic && npm run lint`
+- typecheck:
+  - ❌ `cd marketplace-infographic && npx tsc --noEmit` (FAIL; pre-existing repository errors not attributable to Wave 37)
+- daos:test:
+  - NOT AVAILABLE (no such script/command in this repo’s current scripts)
+- daos:spec:
+  - NOT AVAILABLE (no such script/command in this repo’s current scripts)
 
 ## Compatibility
 
@@ -64,7 +84,14 @@ Discovery discovers the following DAOS flags and registers them as runtime objec
 - `DAOS_V17_MODULES_BRIDGE`
 - `DAOS_V17_CTR_BRIDGE`
 
-If a runtime env key with `DAOS_` prefix is present but not discovered/registered, diagnostics report it under `unknownFlags`.
+Flag discovery vs unknown flags semantics are distinct:
+
+- repository discovery:
+  - static/source usage detection performed by the registry scan
+- `unknownFlags`:
+  - runtime environment key detection: `DAOS_*` env keys present at runtime but not discovered/registered are reported under `unknownFlags`
+
+In the compatibility diagnostic run, `unknownFlags` was empty.
 
 ## Known limitations
 
@@ -73,14 +100,19 @@ If a runtime env key with `DAOS_` prefix is present but not discovered/registere
   - `docs`
 - If future DAOS runtime flags are referenced outside these scopes, they may not be discovered automatically until the discovery scope expands.
 - Lifecycle is metadata-only in Wave 37 and does not gate runtime behavior.
+- Consumer mapping is not yet complete:
+  - Wave 37 discovers and registers runtime DAOS `env` flags, but does not yet map all concrete source-level consumers.
+  - Consumer mapping is deferred to future registry enforcement / Object Registry integration waves.
+  - Full lifecycle governance is therefore not claimed until consumers and enforcement gates are mapped.
 
 ## Exit Criteria verification
-
-- ✅ Every discovered `DAOS_*` runtime env flag becomes a registered object (listed above).
-- ✅ No runtime behavior changes were introduced (registry is additive only).
-- ✅ No render/benchmark/handler refactoring/public API changes were made.
-- ✅ Registry diagnostics and validation issues work and do not terminate runtime.
-- ✅ Unknown env flags are surfaced as diagnostics.
+- PARTIAL PASS:
+  - ✅ Wave 37 establishes the registry and discovery diagnostics to make unmanaged `DAOS_*` flags detectable.
+  - ✅ Registry exists and is test-covered.
+  - ✅ Unmanaged runtime env flags are detectable via `unknownFlags`.
+  - ✅ Enforcement gating is not yet mandatory in Wave 37; this is deferred to a future CI / Object Registry integration wave.
+  - ✅ No render/benchmark/handler refactoring/public API changes were made in Wave 37.
+  - ✅ Unknown env flags are surfaced as diagnostics.
 
 ## Council Questions
 
@@ -91,4 +123,38 @@ If a runtime env key with `DAOS_` prefix is present but not discovered/registere
 
 - Wave 38: Consume this Feature Flag Registry as the runtime source of truth for DAOS flags (while preserving legacy `process.env` compatibility).
 - Optionally, tighten ownership mapping from heuristics to explicit governance-owned metadata once ownership sources are finalized.
+
+---
+## Planned removal / review policy (Wave 37 discovery-only metadata)
+
+Wave 37 does not yet assign `plannedRemovalWave` for any discovered `DAOS_*` flag.
+
+To avoid leaving all flags with `plannedRemovalWave: null` without explanation, Wave 37 records the following review markers in this report:
+
+### 1) Long-lived production capability flags
+- `DAOS_PROMPT_CONTEXT`
+- `DAOS_RENDER_CONTEXT`
+- `DAOS_SCENE_GRAPH_V2_PLANNED_ENV`
+- `DAOS_SCENE_GRAPH_V2_GATED_ENV`
+- `DAOS_SCENE_GRAPH_V2_ACTUAL_ENV`
+
+plannedRemovalWave: null  
+reviewRequired: true  
+reviewReason: "Wave 37 discovery-only registration; retirement wave must be assigned during Feature Flag Registry enforcement / lifecycle retirement phase."
+
+### 2) Bridge / compatibility flags (legacy runtime compatibility)
+- `DAOS_V17_CTR_BRIDGE`
+- `DAOS_V17_MODULES_BRIDGE`
+- `DAOS_V17_PROMPT_BRIDGE`
+
+category: Compatibility or Migration  
+plannedRemovalWave: null  
+reviewRequired: true  
+reviewReason: "Legacy bridge flag discovered in Wave 37; retirement decision deferred to bridge/adapters migration enforcement phase."
+
+### 3) Consumers
+
+For all flags above, `consumers` is currently empty in Wave 37 discovery mode.
+This is acceptable for Wave 37, but enforcement and lifecycle governance are deferred until consumer mapping is implemented in a future wave.
+
 
