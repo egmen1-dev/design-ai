@@ -43,6 +43,9 @@ export type FeatureFlagRegistryDiagnostics = {
     discoveredFlagCount: number;
     discoveredFlags: string[];
   };
+  unregistered: {
+    unregisteredFlagIds: string[];
+  };
   registered: {
     flagCount: number;
     flags: Array<{
@@ -51,6 +54,8 @@ export type FeatureFlagRegistryDiagnostics = {
       LifecycleState: FeatureFlagLifecycleState;
       Category: FeatureFlagCategory;
       CurrentValue: string;
+      Consumers: string[];
+      Dependencies: string[];
     }>;
   };
   duplicates: {
@@ -61,6 +66,9 @@ export type FeatureFlagRegistryDiagnostics = {
   };
   deprecatedCandidates: {
     deprecatedFlagIds: string[];
+  };
+  missingOwnership: {
+    missingOwnerFlagIds: string[];
   };
   validationIssues: Array<{
     code:
@@ -330,6 +338,15 @@ export function createRuntimeFeatureFlagRegistry(params?: {
       validationIssues.push(...validateFlagDefinition(f).issues);
     }
 
+    const unregisteredFlagIds = sourcesForDiagnostics
+      .filter((id) => !registry.has(id))
+      .sort();
+
+    const missingOwnerFlagIds = validationIssues
+      .filter((i) => i.code === "MISSING_OWNER" && i.flagId)
+      .map((i) => i.flagId!)
+      .sort();
+
     // Unknown flags are env keys present at runtime which were not discovered as used.
     const unknownFlagIds = Object.keys(env)
       .filter((k) => k.startsWith("DAOS_") && !registry.has(k))
@@ -346,6 +363,9 @@ export function createRuntimeFeatureFlagRegistry(params?: {
         discoveredFlagCount: sourcesForDiagnostics.length,
         discoveredFlags: [...sourcesForDiagnostics].sort(),
       },
+      unregistered: {
+        unregisteredFlagIds,
+      },
       registered: {
         flagCount: registeredFlags.length,
         flags: registeredFlags
@@ -357,6 +377,8 @@ export function createRuntimeFeatureFlagRegistry(params?: {
             LifecycleState: f.LifecycleState,
             Category: f.Category,
             CurrentValue: f.CurrentValue,
+            Consumers: f.Consumers,
+            Dependencies: f.Dependencies,
           })),
       },
       duplicates: {
@@ -367,6 +389,9 @@ export function createRuntimeFeatureFlagRegistry(params?: {
       },
       deprecatedCandidates: {
         deprecatedFlagIds,
+      },
+      missingOwnership: {
+        missingOwnerFlagIds,
       },
       validationIssues,
     };

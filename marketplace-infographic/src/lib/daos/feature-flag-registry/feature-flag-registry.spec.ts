@@ -149,11 +149,17 @@ function testDiagnosticsShape() {
   const d = registry.Diagnostics();
   assert.equal(d.RegistryVersion, 1);
   assert.ok(typeof d.discovery.discoveredFlagCount === "number");
+  assert.ok(Array.isArray(d.unregistered.unregisteredFlagIds));
   assert.ok(Array.isArray(d.registered.flags));
   assert.ok(Array.isArray(d.duplicates.duplicateFlagIds));
   assert.ok(Array.isArray(d.unknownFlags.unknownFlagIds));
   assert.ok(Array.isArray(d.deprecatedCandidates.deprecatedFlagIds));
+  assert.ok(Array.isArray(d.missingOwnership.missingOwnerFlagIds));
   assert.ok(Array.isArray(d.validationIssues));
+  for (const f of d.registered.flags) {
+    assert.ok(Array.isArray(f.Consumers));
+    assert.ok(Array.isArray(f.Dependencies));
+  }
   console.log("✔ diagnostics shape");
 }
 
