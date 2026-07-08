@@ -1,6 +1,6 @@
 # DAOS Implementation Roadmap
 
-**Version:** 1.0  
+**Version:** 2.0  
 **Status:** Living document  
 **Constitution:** [DAOS_ARCHITECTURE_CONSTITUTION_V3.md](../architecture/DAOS_ARCHITECTURE_CONSTITUTION_V3.md) (change rarely)
 
@@ -29,51 +29,152 @@ This roadmap tracks **code implementation** against the constitution. Update it 
 | DecisionGraph / engine | Vol 6, 8 | Not fully implemented |
 | Commercial Genome | Vol 22–23, `knowledge/Commercial-Genome/` | Planned |
 | Knowledge resolution | Vol 24 | Not implemented |
-| GenerationContext | Vol 25 | Implicit only |
-| Metric registry | Vol 26 | Duplicate metrics exist |
-| Object registry | Vol 27 | Organic growth |
+| GenerationContext | Vol 25 | Runtime snapshot pilot implemented (Wave 36) |
+| Metric registry | Vol 26 | Pilot SSOT for `productAreaRatio` implemented (Wave 35) — remaining metrics pending |
+| Foundation Object registry | Vol 27 | pending (foundation-only objects) |
 | Feature flags | Vol 28 | Ad-hoc flags |
 | Quality / benchmark | Vol 29 | Wave benchmarks exist |
 | Research governance | Vol 30 | EKB v1.0 manual |
 
 ---
 
-## Phase A — Foundation (in progress)
+## Wave sequencing (v2.0) — after Waves 35–36
 
-**Goal:** Single sources of truth before new features.
+**Council constraint:** only sequencing may change; Constitution and RFCs are not modified.
 
-| Priority | Task | Constitution | Status |
-|----------|------|--------------|--------|
-| A1 | Metric registry — eliminate duplicate `productArea` calculations | Vol 26 | Wave 1 implemented (RFC-2600) |
-| A2 | `GenerationContext` canonical object | Vol 25 | Wave 36 implemented (RFC-2500) |
-| A3 | Feature flag registry + lifecycle | Vol 28 | pending |
-| A4 | Object registry validation in CI | Vol 27 | pending |
+### Completed
 
----
+| Wave | RFC | Objective |
+|------|-----|-----------|
+| 35 | RFC-2600 (W1) | Metric Registry Runtime pilot: `METRIC_PRODUCT_AREA_RATIO` |
+| 36 | RFC-2500 (W1) | GenerationContext Runtime snapshot for debug bundle |
 
-## Phase B — Commercial reasoning
+### Next Waves (single objective per wave)
 
-**Goal:** DecisionGraph + knowledge pipeline.
-
-| Priority | Task | Constitution | Status |
-|----------|------|--------------|--------|
-| B1 | Knowledge Resolution Engine | Vol 24 | pending |
-| B2 | Commercial Genome runtime + promotion from EKB | Vol 22–23, `knowledge/` | pending |
-| B3 | Decision Engine consumes ResolvedKnowledgeSet only | Vol 6, 24 | pending |
-| B4 | AntiRule enforcement (e.g. compositor hook) | Vol 22 SPEC-2207 | partial evidence |
+| Wave | RFC | Objective |
+|------|-----|-----------|
+| 37 | RFC-2800 | Feature Flag Registry + lifecycle (remove ad-hoc rollout flags) |
+| 38 | RFC-2700 | Foundation Object Registry (foundation-only objects only) |
+| 39–41 | RFC-2600 (W2–W4) | Metric Registry Completion (treated as one migration chain) |
+| 42 | RFC-2500 (W2) | GenerationContext → PipelineContext Adapter (temporary compatibility) |
+| 43 | RFC-2200 | EKB → Genome Loader → Commercial Genome Runtime |
+| 44+ | RFC-2400 → RFC-600-R → RFC-2700 → RFC-400-R → RFC-900-R | Knowledge Resolution → DecisionGraph → Commercial Object Registry → SceneGraph Authority → Handler Decomposition |
 
 ---
 
-## Phase C — Quality and research
+## Foundation Object Registry (naming + scope)
 
-**Goal:** Deterministic promotion path.
+At this stage only runtime foundation objects exist.
 
-| Priority | Task | Constitution | Status |
-|----------|------|--------------|--------|
-| C1 | Certified benchmark registry | Vol 29 | pending |
-| C2 | Regression gate in CI | Vol 29 | partial |
-| C3 | Research pipeline automation | Vol 30 | pending |
-| C4 | EKB → Knowledge Candidate → Genome promotion | Vol 30, 22 | pending |
+Foundation Registry contains only:
+
+- GenerationContext
+- MetricValue
+- FeatureFlag
+
+Foundation Registry explicitly does NOT contain:
+
+- CommercialGenome
+- KnowledgeCandidate
+- ResolvedKnowledgeSet
+- DecisionGraph
+- Rule
+- AntiRule
+
+These belong to the Commercial Registry extension after RFC-2200.
+
+---
+
+## Metric Registry Completion (epic)
+
+Treat RFC-2600 W2–W4 as one engineering epic:
+
+Epic name: **Metric Registry Completion**
+
+| Wave | Subwave | Goal |
+|------|----------|------|
+| 39 | Debug Bundle SSOT | debug bundle consumes registry-owned `ProductAreaRatio` |
+| 40 | Audit Consumers read-only | audits/patch consumers never recompute `ProductAreaRatio` |
+| 41 | CI Guard | CI rejects new inline `ProductAreaRatio` metric SSOT outside registry |
+
+---
+
+## GenerationContext migration wording
+
+Replace:
+
+GenerationContext → DAOSPipelineContext
+
+With:
+
+GenerationContext → PipelineContext Adapter
+
+Reason:
+
+- `DAOSPipelineContext` is a temporary compatibility layer.
+- `GenerationContext` is the canonical runtime object.
+
+---
+
+## Commercial Genome runtime staging (explicit runtime stage)
+
+Before Commercial Genome Runtime introduce an explicit runtime stage:
+
+EKB
+
+↓
+
+Genome Loader
+
+↓
+
+Commercial Genome Runtime
+
+Genome Loader SHALL:
+
+- load validated research artifacts
+- load Experimental Knowledge Base
+- validate lifecycle
+- validate schema
+- prepare runtime Genome objects
+
+Commercial Genome SHALL consume only loader output.
+Commercial Genome Runtime SHALL NEVER read markdown directly.
+
+---
+
+## Architecture Health + Wave Exit Criteria (mandatory)
+
+Every Wave Report SHALL include:
+
+- `Architecture Health Before`
+- `Architecture Health After`
+- `Architecture Health Delta` (After - Before)
+
+Architecture Health represents architectural improvement (not implementation size).
+
+Every wave SHALL define **Exit Criteria** answering: “Is the architecture ready for the next Wave?”
+
+Examples:
+
+- Wave 37 Exit Criteria
+  - No unmanaged rollout flags remain.
+  - Every rollout flag exists inside Feature Flag Registry.
+  - Every temporary flag has a removal plan.
+- Wave 38 Exit Criteria
+  - Every foundation runtime object is registered.
+  - Schema validation passes.
+  - CI validates registry integrity.
+- Wave 39–41 Exit Criteria
+  - Debug bundle consumes registry-owned metric values.
+  - Audit consumers never recompute `ProductAreaRatio`.
+  - CI rejects new inline `ProductAreaRatio` SSOT outside registry.
+- Wave 42 Exit Criteria
+  - PipelineContext Adapter consumes GenerationContext only through adapter boundaries.
+  - No duplicated context reconstruction exists.
+- Wave 43 Exit Criteria
+  - Genome Loader loads only validated runtime Genome objects.
+  - Runtime no longer depends on markdown knowledge.
 
 ---
 
@@ -101,6 +202,7 @@ Every wave SHALL:
 3. Benchmark before production (Vol 29)
 4. Update EKB or Genome when commercial knowledge changes
 5. Update this roadmap
+6. Define Exit Criteria and include Architecture Health delta in the Wave Report
 
 ---
 
