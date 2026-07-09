@@ -30,6 +30,13 @@ export {
   simplifyCardMeaningForSpec,
 } from "./patches";
 export {
+  resolveLayoutObjectScale,
+  layoutObjectScaleFromTemplate,
+  COMMERCIAL_PROPAGATION_VERSION,
+  type CommercialLayoutPropagationDiagnostics,
+  type CommercialScaleSource,
+} from "./commercial-layout-propagation";
+export {
   compileDesignInstructionsFromLayoutSpec,
   compileSceneConstraintsFromLayoutSpec,
   compileLayoutSpecJson,
