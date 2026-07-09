@@ -202,8 +202,8 @@ export function buildGenerationDiagnostic(
       id: "commercial_layout_integration",
       label: "Commercial Layout Integration",
       status: "ok",
-      summary: `mappings=${Object.keys(input.commercialLayoutIntegration.appliedMappings).length}`,
-      data: input.commercialLayoutIntegration,
+      summary: `applied=${input.commercialLayoutIntegration.commercialIntentApplied.length}`,
+      data: input.commercialLayoutIntegration as unknown as Record<string, unknown>,
     });
   }
 

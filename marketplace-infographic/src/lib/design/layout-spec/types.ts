@@ -47,16 +47,12 @@ export type ScenePreference =
   | "commercial_studio";
 
 export type CommercialLayoutDiagnostics = {
-  commercialLayoutApplied: boolean;
+  commercialIntentReceived: boolean;
+  commercialIntentApplied: string[];
+  commercialIntentIgnored: string[];
+  commercialIntentReason: Record<string, string>;
+  commercialIntegrationVersion: string;
   commercialDecisionId: string;
-  commercialMappings: Array<{
-    source: string;
-    target: string;
-    from: unknown;
-    to: unknown;
-  }>;
-  ignoredCommercialMappings: string[];
-  layoutCommercialVersion: string;
 };
 
 export type LayoutSpec = {

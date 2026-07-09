@@ -1,13 +1,14 @@
 import assert from "node:assert/strict";
 import type { CommercialDecisionBeta } from "@/lib/daos/commercial-genome-beta/types";
 import { createCommercialGenomeBetaDecision } from "@/lib/daos/commercial-genome-beta";
+import { buildInitialLayoutSpec } from "./builder";
 import { LAYOUT_SPEC_DEFAULTS } from "./types";
 import {
   applyCommercialIntentToLayoutSpec,
   COMMERCIAL_LAYOUT_INTEGRATION_FLAG,
   deriveCommercialDecisionId,
+  stabilizeLayoutSpecWithCommercialIntent,
 } from "./commercial-layout-integration";
-import { buildInitialLayoutSpec } from "./builder";
 
 const ENABLED_ENV = {
   [COMMERCIAL_LAYOUT_INTEGRATION_FLAG]: "1",
@@ -41,7 +42,7 @@ function testFlagOffPreservesLegacyLayout() {
     env: DISABLED_ENV,
   });
   assert.deepEqual(result.layout, legacy);
-  assert.equal(result.diagnostics.commercialLayoutApplied, false);
+  assert.equal(result.diagnostics.commercialIntentApplied.length, 0);
   assert.equal(result.layout.commercialLayout, undefined);
   console.log("✔ flag off preserves legacy LayoutSpec");
 }
@@ -52,6 +53,7 @@ function testProductAreaTargetApplied() {
   });
   assert.equal(result.layout.heroScale, 0.55);
   assert.equal(result.layout.productAreaPct, 55);
+  assert.ok(result.diagnostics.commercialIntentApplied.includes("heroScale"));
   console.log("✔ productAreaTarget applies to heroScale");
 }
 
@@ -126,38 +128,43 @@ function testDeterministicIntegration() {
     env: ENABLED_ENV,
   });
 
-  assert.equal(
-    deriveCommercialDecisionId(decision),
-    first.diagnostics.commercialDecisionId,
-  );
+  assert.equal(deriveCommercialDecisionId(decision), first.diagnostics.commercialDecisionId);
   assert.deepEqual(first.layout, second.layout);
-  assert.deepEqual(first.diagnostics.commercialMappings, second.diagnostics.commercialMappings);
+  assert.deepEqual(
+    first.diagnostics.commercialIntentApplied,
+    second.diagnostics.commercialIntentApplied,
+  );
   console.log("✔ integration is deterministic");
 }
 
-function testBuilderPassesCommercialDecision() {
-  const decision = sampleDecision({ badgeLimit: 3 });
+function testAdditiveIntegration() {
   const analysis = {
     category: "electronics",
     priceSegment: "mass",
     brandTone: "neutral",
   } as import("@/lib/product-analysis").ProductAnalysis;
 
-  const prev = process.env[COMMERCIAL_LAYOUT_INTEGRATION_FLAG];
-  process.env[COMMERCIAL_LAYOUT_INTEGRATION_FLAG] = "1";
-  try {
-    const layout = buildInitialLayoutSpec({
-      analysis,
-      commercialDecision: decision,
-    });
-    assert.equal(layout.maxIcons, 3);
-    assert.equal(layout.heroScale, 0.55);
-    assert.ok(layout.commercialLayout?.commercialLayoutApplied);
-  } finally {
-    if (prev === undefined) delete process.env[COMMERCIAL_LAYOUT_INTEGRATION_FLAG];
-    else process.env[COMMERCIAL_LAYOUT_INTEGRATION_FLAG] = prev;
-  }
-  console.log("✔ buildInitialLayoutSpec applies commercial decision when flag enabled");
+  const legacy = buildInitialLayoutSpec({ analysis });
+  const stabilized = stabilizeLayoutSpecWithCommercialIntent(legacy, sampleDecision(), {
+    env: ENABLED_ENV,
+  }).layout;
+
+  assert.notEqual(stabilized.heroScale, legacy.heroScale);
+  assert.equal(legacy.heroPosition, stabilized.heroPosition);
+  assert.equal(legacy.palette.join(","), stabilized.palette.join(","));
+  console.log("✔ integration is additive — only commercial fields change");
+}
+
+function testTerminalStabilizerMatchesApply() {
+  const decision = sampleDecision();
+  const viaApply = applyCommercialIntentToLayoutSpec(LAYOUT_SPEC_DEFAULTS, decision, {
+    env: ENABLED_ENV,
+  });
+  const viaStabilize = stabilizeLayoutSpecWithCommercialIntent(LAYOUT_SPEC_DEFAULTS, decision, {
+    env: ENABLED_ENV,
+  });
+  assert.deepEqual(viaApply.layout, viaStabilize.layout);
+  console.log("✔ stabilizeLayoutSpecWithCommercialIntent is the terminal gate");
 }
 
 function testDebugBundleWhenRequested() {
@@ -166,10 +173,10 @@ function testDebugBundleWhenRequested() {
     includeDebugBundle: true,
   });
   assert.ok(result.debugBundle);
-  assert.equal(result.debugBundle!.commercialLayoutIntegration, true);
-  assert.ok(Object.keys(result.debugBundle!.appliedMappings).length > 0);
-  assert.ok(result.debugBundle!.ignoredMappings.includes("mainMessage:layout_not_owner"));
-  console.log("✔ debug bundle includes applied and ignored mappings");
+  assert.equal(result.debugBundle!.commercialIntentReceived, true);
+  assert.ok(result.debugBundle!.commercialIntentApplied.length > 0);
+  assert.ok(result.debugBundle!.commercialIntentIgnored.includes("mainMessage"));
+  console.log("✔ debug bundle includes commercial intent diagnostics");
 }
 
 testFlagOffPreservesLegacyLayout();
@@ -181,7 +188,8 @@ testHierarchyApplied();
 testEnvironmentApplied();
 testBackgroundApplied();
 testDeterministicIntegration();
-testBuilderPassesCommercialDecision();
+testAdditiveIntegration();
+testTerminalStabilizerMatchesApply();
 testDebugBundleWhenRequested();
 
 console.log("All commercial layout integration tests passed");

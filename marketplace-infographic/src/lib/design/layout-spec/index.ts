@@ -13,11 +13,14 @@ export { LAYOUT_SPEC_DEFAULTS } from "./types";
 export { buildInitialLayoutSpec, layoutSpecFromComposition } from "./builder";
 export {
   applyCommercialIntentToLayoutSpec,
+  stabilizeLayoutSpecWithCommercialIntent,
   deriveCommercialDecisionId,
   isCommercialLayoutIntegrationEnabled,
   COMMERCIAL_LAYOUT_INTEGRATION_FLAG,
-  LAYOUT_COMMERCIAL_VERSION,
+  COMMERCIAL_INTEGRATION_VERSION,
+  KNOWN_LAYOUT_SPEC_KEYS,
   type ApplyCommercialIntentResult,
+  type CommercialIntentDiagnostics,
   type CommercialLayoutDebugBundle,
 } from "./commercial-layout-integration";
 export {

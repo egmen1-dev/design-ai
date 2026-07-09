@@ -129,7 +129,7 @@ import {
   buildInitialLayoutSpec,
   layoutSpecToTemplatePreference,
   simplifyCardMeaningForSpec,
-  applyCommercialIntentToLayoutSpec,
+  stabilizeLayoutSpecWithCommercialIntent,
   isCommercialLayoutIntegrationEnabled,
   type LayoutSpec,
   type CommercialLayoutDebugBundle,
@@ -488,6 +488,18 @@ function storyBlueprintSnippet(story?: VisualStoryDirectorResult): string | unde
   return `Story: ${story.heroConcept}`;
 }
 
+/** Terminal production boundary: Genome intent → stabilized LayoutSpec (single call site). */
+function finalizeProductionLayoutSpec(
+  layout: LayoutSpec | undefined,
+  decision?: CommercialDecisionBeta,
+): { layoutSpec?: LayoutSpec; debugBundle?: CommercialLayoutDebugBundle } {
+  if (!layout || !decision) return { layoutSpec: layout };
+  const integrated = stabilizeLayoutSpecWithCommercialIntent(layout, decision, {
+    includeDebugBundle: isCommercialLayoutIntegrationEnabled(),
+  });
+  return { layoutSpec: integrated.layout, debugBundle: integrated.debugBundle };
+}
+
 async function buildLayoutWithAgentReview(input: {
   designBrief?: DesignBrief;
   activeCreative?: CreativeDirectorResult;
@@ -507,7 +519,6 @@ async function buildLayoutWithAgentReview(input: {
   compositionScore?: number;
   constitutionReports?: ConstitutionReport[];
   useGovernanceConstitution?: boolean;
-  commercialDecision?: CommercialDecisionBeta;
 }): Promise<{
   compositionResult: CompositionResult;
   cardMeaning: CardMeaning;
@@ -521,10 +532,6 @@ async function buildLayoutWithAgentReview(input: {
   refinementPasses: number;
 }> {
   const excluded: LayoutTemplateId[] = [];
-  const finalizeCommercialLayout = (spec: LayoutSpec): LayoutSpec => {
-    if (!input.commercialDecision) return spec;
-    return applyCommercialIntentToLayoutSpec(spec, input.commercialDecision).layout;
-  };
   let layoutSpec =
     input.initialLayoutSpec ??
     buildInitialLayoutSpec({
@@ -646,7 +653,7 @@ async function buildLayoutWithAgentReview(input: {
           `[quality-v16.5] approved pass ${pass + 1}: luxury=${qualityGate.luxuryScore.total} template=${built.templateId}`,
         );
       }
-      return { ...last, layoutSpec: finalizeCommercialLayout(last.layoutSpec) };
+      return last;
     }
 
     console.warn(
@@ -664,7 +671,7 @@ async function buildLayoutWithAgentReview(input: {
     );
   }
 
-  return { ...last!, layoutSpec: finalizeCommercialLayout(last!.layoutSpec) };
+  return last!;
 }
 
 async function loadProductCutout(
@@ -1036,15 +1043,6 @@ export async function handleGenerateInfographic(
         commercialGenomeBetaResult.decision.backgroundContrastDirection,
         `rules=${commercialGenomeBetaResult.decision.selectedRules.length}`,
       );
-      if (activeLayoutSpec) {
-        const integrated = applyCommercialIntentToLayoutSpec(
-          activeLayoutSpec,
-          commercialGenomeBetaResult.decision,
-          { includeDebugBundle: isCommercialLayoutIntegrationEnabled() },
-        );
-        activeLayoutSpec = integrated.layout;
-        commercialLayoutDebugBundle = integrated.debugBundle;
-      }
     }
 
     if (useDesignGovernance) {
@@ -1155,7 +1153,6 @@ export async function handleGenerateInfographic(
         compositionScore: compositionDirection?.quality.total,
         constitutionReports,
         useGovernanceConstitution: useDesignGovernance,
-        commercialDecision: commercialGenomeBetaResult?.decision,
       });
       compositionResult = built.compositionResult;
       cardMeaning = built.cardMeaning;
@@ -1165,20 +1162,19 @@ export async function handleGenerateInfographic(
       layoutSpec = built.layoutSpec;
       qualityGateV165 = built.qualityGate;
       qualityRefinementPasses = built.refinementPasses;
-      if (
-        layoutSpec &&
-        commercialGenomeBetaResult &&
-        isCommercialLayoutIntegrationEnabled() &&
-        !commercialLayoutDebugBundle
-      ) {
-        const integrated = applyCommercialIntentToLayoutSpec(
-          layoutSpec,
-          commercialGenomeBetaResult.decision,
-          { includeDebugBundle: true },
-        );
-        layoutSpec = integrated.layout;
-        commercialLayoutDebugBundle = integrated.debugBundle;
+
+      if (governanceBlueprint?.locked) {
+        layoutSpec = governanceBlueprint.layoutSpec;
+        activeSceneBlueprint = governanceBlueprint.sceneBlueprint;
+        scenePlan = governanceBlueprint.scenePlan;
       }
+
+      const finalized = finalizeProductionLayoutSpec(
+        layoutSpec,
+        commercialGenomeBetaResult?.decision,
+      );
+      layoutSpec = finalized.layoutSpec;
+      commercialLayoutDebugBundle = finalized.debugBundle ?? commercialLayoutDebugBundle;
 
       if (useRenderEngineV17 && layoutSpec) {
         const pipeline = rebuildVisualPipelineForRender({
@@ -1194,11 +1190,6 @@ export async function handleGenerateInfographic(
         activeSceneBlueprint = pipeline.sceneBlueprint;
       }
       luxuryScoreValue = built.qualityGate.luxuryScore.total;
-      if (governanceBlueprint?.locked) {
-        layoutSpec = governanceBlueprint.layoutSpec;
-        activeSceneBlueprint = governanceBlueprint.sceneBlueprint;
-        scenePlan = governanceBlueprint.scenePlan;
-      }
       if (designBrief && !designBrief.cardMeaning) {
         designBrief = { ...designBrief, cardMeaning };
       }
@@ -1676,6 +1667,13 @@ export async function handleGenerateInfographic(
         qualityGateV165 = rebuilt.qualityGate;
         luxuryScoreValue = rebuilt.qualityGate.luxuryScore.total;
         qualityRefinementPasses = rebuilt.refinementPasses;
+        const retryFinalized = finalizeProductionLayoutSpec(
+          layoutSpec,
+          commercialGenomeBetaResult?.decision,
+        );
+        layoutSpec = retryFinalized.layoutSpec;
+        commercialLayoutDebugBundle =
+          retryFinalized.debugBundle ?? commercialLayoutDebugBundle;
       }
 
       const retryScene = planScene({
