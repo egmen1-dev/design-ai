@@ -19,6 +19,7 @@ SPECS=(
   src/lib/render-blueprint/validation-engine.spec.ts
   src/lib/daos/commercial-genome-beta/commercial-genome-beta.test.ts
   src/lib/design/layout-spec/commercial-layout-integration.test.ts
+  src/lib/design/layout-spec/commercial-layout-propagation.test.ts
   src/lib/design/prompt-compiler/commercial-layout-materializer.test.ts
   src/lib/design/visual-pipeline/commercial-blueprint-materializer.test.ts
   src/lib/commercial-fidelity/commercial-fidelity.test.ts

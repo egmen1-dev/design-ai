@@ -133,6 +133,8 @@ import {
   isCommercialLayoutIntegrationEnabled,
   type LayoutSpec,
   type CommercialLayoutDebugBundle,
+  resolveLayoutObjectScale,
+  type CommercialLayoutPropagationDiagnostics,
 } from "@/lib/design/layout-spec";
 import type { CommercialDecisionBeta } from "@/lib/daos/commercial-genome-beta/types";
 import { runQualityGate, applyRefinementPatch, type QualityGateResult } from "@/lib/design/quality-v165";
@@ -282,9 +284,22 @@ function toProductShapeHint(visual?: ProductVisualProfile): ProductShapeHint {
   return "standard";
 }
 
-function layoutObjectScale(areaPct?: number): number {
-  const pct = areaPct ?? 65;
-  return Math.min(0.62, Math.max(0.5, pct / 100));
+function resolveObjectScaleFromLayout(
+  layoutSpec: LayoutSpec | undefined,
+  templateAreaPct: number | undefined,
+  decisionLog?: string[],
+): { objectScale: number; propagation: CommercialLayoutPropagationDiagnostics } {
+  const resolved = resolveLayoutObjectScale({ layoutSpec, templateAreaPct });
+  decisionLog?.push(
+    `CommercialPropagation source=${resolved.diagnostics.commercialScaleSource} expected=${resolved.diagnostics.commercialScaleExpected}% applied=${resolved.diagnostics.commercialScaleApplied}`,
+  );
+  for (const warning of resolved.diagnostics.commercialPropagationWarnings) {
+    decisionLog?.push(`CommercialPropagation warn: ${warning}`);
+  }
+  return {
+    objectScale: resolved.objectScale,
+    propagation: resolved.diagnostics,
+  };
 }
 
 function normalizeCardMeaning(
@@ -1027,6 +1042,7 @@ export async function handleGenerateInfographic(
     let commercialGenomeBetaResult: CommercialGenomeBetaDecisionResult | undefined;
     let commercialGenomeBetaSnippet: string | undefined;
     let commercialLayoutDebugBundle: CommercialLayoutDebugBundle | undefined;
+    let commercialLayoutPropagation: CommercialLayoutPropagationDiagnostics | undefined;
     if (sdData.layout === "marketplace" && isCommercialGenomeBetaEnabled()) {
       commercialGenomeBetaResult = createCommercialGenomeBetaDecision({
         marketplace: "wildberries",
@@ -1196,7 +1212,15 @@ export async function handleGenerateInfographic(
     }
 
     let compositionLayout = compositionResult?.layout;
-    let objectScale = layoutObjectScale(compositionLayout?.metrics?.productAreaPct);
+    let objectScale: number;
+    ({
+      objectScale,
+      propagation: commercialLayoutPropagation,
+    } = resolveObjectScaleFromLayout(
+      layoutSpec,
+      compositionLayout?.metrics?.productAreaPct,
+      governanceDecisionLog,
+    ));
     compositingHints = sceneToCompositingHints(scenePlan, objectScale);
 
     if (useDesignGovernance && governanceBlueprint) {
@@ -1511,7 +1535,14 @@ export async function handleGenerateInfographic(
           });
           compositionResult = fixed.compositionResult;
           compositionLayout = compositionResult.layout;
-          objectScale = layoutObjectScale(compositionLayout.metrics?.productAreaPct);
+          ({
+            objectScale,
+            propagation: commercialLayoutPropagation,
+          } = resolveObjectScaleFromLayout(
+            layoutSpec,
+            compositionLayout.metrics?.productAreaPct,
+            governanceDecisionLog,
+          ));
           cardMeaning = fixed.cardMeaning;
         }
 
@@ -1660,7 +1691,6 @@ export async function handleGenerateInfographic(
         });
         compositionResult = rebuilt.compositionResult;
         compositionLayout = compositionResult.layout;
-        objectScale = layoutObjectScale(compositionLayout.metrics?.productAreaPct);
         seniorAdReview = rebuilt.seniorAdReview;
         ctrReview = rebuilt.ctrReview;
         layoutSpec = rebuilt.layoutSpec;
@@ -1674,6 +1704,14 @@ export async function handleGenerateInfographic(
         layoutSpec = retryFinalized.layoutSpec;
         commercialLayoutDebugBundle =
           retryFinalized.debugBundle ?? commercialLayoutDebugBundle;
+        ({
+          objectScale,
+          propagation: commercialLayoutPropagation,
+        } = resolveObjectScaleFromLayout(
+          layoutSpec,
+          compositionLayout.metrics?.productAreaPct,
+          governanceDecisionLog,
+        ));
       }
 
       const retryScene = planScene({
@@ -1955,6 +1993,7 @@ export async function handleGenerateInfographic(
       promptCompiler: compiledBackground?.metadata,
       commercialGenomeBeta: commercialGenomeBetaResult,
       commercialLayoutIntegration: commercialLayoutDebugBundle,
+      commercialLayoutPropagation,
       designConstitution: constitutionReports.length ? constitutionReports : undefined,
       renderEngine: renderEngineResult
         ? buildStoredRenderReport({
@@ -2154,6 +2193,7 @@ export async function handleGenerateInfographic(
         feedbackLearning: payloadExtras.feedbackLearning,
         commercialGenomeBeta: commercialGenomeBetaResult,
         commercialLayoutIntegration: commercialLayoutDebugBundle,
+      commercialLayoutPropagation,
       });
 
     if (input.regenerateBackgroundOnly && input.existingImageId) {
