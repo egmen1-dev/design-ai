@@ -21,6 +21,7 @@ SPECS=(
   src/lib/design/layout-spec/commercial-layout-integration.test.ts
   src/lib/design/prompt-compiler/commercial-layout-materializer.test.ts
   src/lib/design/visual-pipeline/commercial-blueprint-materializer.test.ts
+  src/lib/commercial-fidelity/commercial-fidelity.test.ts
   src/lib/daos/feature-flag-registry/feature-flag-registry.spec.ts
 )
 for f in "${SPECS[@]}"; do
