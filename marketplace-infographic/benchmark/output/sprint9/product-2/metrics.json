@@ -1,0 +1,64 @@
+{
+  "productArea": 9.7,
+  "productAreaLegacy": 4.3,
+  "commercialFidelity": 35,
+  "commercialFidelityLegacy": 37,
+  "productDominance": 45,
+  "visualHierarchy": 45,
+  "backgroundSeparation": 28,
+  "commercialDecisionApplied": true,
+  "overallProductScore": 4.3,
+  "overallProductScoreLegacy": 4.8,
+  "productAreaModel": {
+    "aspirationalTarget": 55,
+    "reachableTarget": 42,
+    "measuredArea": 31,
+    "unreachableGap": 24
+  },
+  "propagation": {
+    "commercialLayoutPropagation": true,
+    "commercialScaleSource": "commercial",
+    "commercialScaleExpected": 42,
+    "commercialScaleApplied": 0.75,
+    "commercialScaleDelta": 0.25,
+    "commercialPropagationVersion": "1.1.0-sprint8c",
+    "commercialPropagationWarnings": [
+      "aspirational target 55% exceeds reachable 42% — compositor uses geometry ceiling harvest @ objectScale=0.75"
+    ],
+    "commercialReachableTargetPct": 42,
+    "commercialAspirationalTargetPct": 55,
+    "commercialPropagationMode": "geometry_ceiling_harvest",
+    "productAreaRecalibrationVersion": "1.0.0-sprint8c"
+  },
+  "geometryOptimization": {
+    "geometryClampVersion": "1.0.0-sprint8b",
+    "geometryClampSource": "sprint8b_finalH_58",
+    "geometryFinalHBefore": 70.4,
+    "geometryFinalHAfter": 58,
+    "geometryHeightBindingBefore": "height_binding",
+    "geometryHeightBindingAfter": "height_binding",
+    "geometryPolicyCeilingReachable": true,
+    "geometryOptimizationWarnings": [
+      "geometry ceiling improved +6.3pp @ objectScale=1; commercial objectScale=0.75 unchanged"
+    ]
+  },
+  "commercialDecision": {
+    "productAreaTarget": 0.42,
+    "productAreaAspirationalTarget": 0.55,
+    "environmentDirection": "clean_industrial_technical"
+  },
+  "scores": {
+    "commercialFidelity": 3.5,
+    "visualQuality": 5.3,
+    "commercialReadability": 4.5,
+    "marketplaceReadiness": 4.5,
+    "overallProductScore": 4.3
+  },
+  "scoresLegacy": {
+    "commercialFidelity": 3.7,
+    "visualQuality": 6.4,
+    "commercialReadability": 5,
+    "marketplaceReadiness": 4.7,
+    "overallProductScore": 4.8
+  }
+}
