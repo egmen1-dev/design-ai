@@ -36,6 +36,10 @@ import {
   type CommercialCalibrationDiagnostics,
   type CommercialCalibrationMode,
 } from "./commercial-calibration";
+import {
+  buildCommercialAlphaPolicyDiagnostics,
+  type CommercialAlphaPolicyDiagnostics,
+} from "./commercial-alpha-policy";
 import { publicDir, resolvePublicAssetPath, writablePublicDir } from "@/lib/runtime-paths";
 
 const CANVAS_W = WB_COVER.width;
@@ -241,6 +245,7 @@ export type SceneCompositeResult = {
   lighting: Awaited<ReturnType<typeof analyzeSceneLighting>>;
   productPlacement: { left: number; top: number; width: number; height: number };
   commercialCalibration?: CommercialCalibrationDiagnostics;
+  commercialAlphaPolicy?: CommercialAlphaPolicyDiagnostics;
 };
 
 export async function compositeProductIntoScene(
@@ -456,6 +461,7 @@ export async function compositeProductIntoScene(
       mode: calibrationMode,
       measuredAreaPct,
     }),
+    commercialAlphaPolicy: buildCommercialAlphaPolicyDiagnostics(),
   };
 }
 
