@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { registerCommercialGenomeBetaFlag } from "@/lib/daos/commercial-genome-beta/commercial-genome-beta";
+import { registerCommercialLayoutIntegrationFlag } from "@/lib/design/layout-spec/commercial-layout-integration";
 
 export type FeatureFlagLifecycleState =
   | "Draft"
@@ -332,6 +333,7 @@ export function createRuntimeFeatureFlagRegistry(params?: {
 
   registerDiscovered();
   registerCommercialGenomeBetaFlag((def) => registry.set(def.FlagId, def), env);
+  registerCommercialLayoutIntegrationFlag((def) => registry.set(def.FlagId, def), env);
 
   const diagnostics = (): FeatureFlagRegistryDiagnostics => {
     const registeredFlags = Array.from(registry.values());

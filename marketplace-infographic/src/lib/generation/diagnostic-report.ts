@@ -10,6 +10,7 @@ import type { RenderRequest } from "@/lib/render-engine/types";
 import type { RenderEngineOrchestratorResult } from "@/lib/render-engine";
 import { PIPELINE_VERSION } from "@/lib/pipeline-version";
 import type { CommercialGenomeBetaDecisionResult } from "@/lib/daos/commercial-genome-beta";
+import type { CommercialLayoutDebugBundle } from "@/lib/design/layout-spec";
 
 export const DIAGNOSTIC_REPORT_VERSION = "1.0";
 
@@ -162,6 +163,7 @@ export type BuildGenerationDiagnosticInput = {
   conceptRetries?: number;
   feedbackLearning?: FeedbackLearningSnapshot;
   commercialGenomeBeta?: CommercialGenomeBetaDecisionResult;
+  commercialLayoutIntegration?: CommercialLayoutDebugBundle;
 };
 
 export function buildGenerationDiagnostic(
@@ -192,6 +194,16 @@ export function buildGenerationDiagnostic(
         backgroundContrastDirection: input.commercialGenomeBeta.decision.backgroundContrastDirection,
         productAreaTarget: input.commercialGenomeBeta.decision.productAreaTarget,
       },
+    });
+  }
+
+  if (input.commercialLayoutIntegration) {
+    steps.push({
+      id: "commercial_layout_integration",
+      label: "Commercial Layout Integration",
+      status: "ok",
+      summary: `mappings=${Object.keys(input.commercialLayoutIntegration.appliedMappings).length}`,
+      data: input.commercialLayoutIntegration,
     });
   }
 

@@ -129,8 +129,12 @@ import {
   buildInitialLayoutSpec,
   layoutSpecToTemplatePreference,
   simplifyCardMeaningForSpec,
+  applyCommercialIntentToLayoutSpec,
+  isCommercialLayoutIntegrationEnabled,
   type LayoutSpec,
+  type CommercialLayoutDebugBundle,
 } from "@/lib/design/layout-spec";
+import type { CommercialDecisionBeta } from "@/lib/daos/commercial-genome-beta/types";
 import { runQualityGate, applyRefinementPatch, type QualityGateResult } from "@/lib/design/quality-v165";
 import type { CoverConceptId } from "@/lib/cover-concepts";
 import { evaluateFinalQuality } from "@/lib/design/final-quality-validator";
@@ -503,6 +507,7 @@ async function buildLayoutWithAgentReview(input: {
   compositionScore?: number;
   constitutionReports?: ConstitutionReport[];
   useGovernanceConstitution?: boolean;
+  commercialDecision?: CommercialDecisionBeta;
 }): Promise<{
   compositionResult: CompositionResult;
   cardMeaning: CardMeaning;
@@ -516,6 +521,10 @@ async function buildLayoutWithAgentReview(input: {
   refinementPasses: number;
 }> {
   const excluded: LayoutTemplateId[] = [];
+  const finalizeCommercialLayout = (spec: LayoutSpec): LayoutSpec => {
+    if (!input.commercialDecision) return spec;
+    return applyCommercialIntentToLayoutSpec(spec, input.commercialDecision).layout;
+  };
   let layoutSpec =
     input.initialLayoutSpec ??
     buildInitialLayoutSpec({
@@ -637,7 +646,7 @@ async function buildLayoutWithAgentReview(input: {
           `[quality-v16.5] approved pass ${pass + 1}: luxury=${qualityGate.luxuryScore.total} template=${built.templateId}`,
         );
       }
-      return last;
+      return { ...last, layoutSpec: finalizeCommercialLayout(last.layoutSpec) };
     }
 
     console.warn(
@@ -655,7 +664,7 @@ async function buildLayoutWithAgentReview(input: {
     );
   }
 
-  return last!;
+  return { ...last!, layoutSpec: finalizeCommercialLayout(last!.layoutSpec) };
 }
 
 async function loadProductCutout(
@@ -1010,6 +1019,7 @@ export async function handleGenerateInfographic(
 
     let commercialGenomeBetaResult: CommercialGenomeBetaDecisionResult | undefined;
     let commercialGenomeBetaSnippet: string | undefined;
+    let commercialLayoutDebugBundle: CommercialLayoutDebugBundle | undefined;
     if (sdData.layout === "marketplace" && isCommercialGenomeBetaEnabled()) {
       commercialGenomeBetaResult = createCommercialGenomeBetaDecision({
         marketplace: "wildberries",
@@ -1026,6 +1036,15 @@ export async function handleGenerateInfographic(
         commercialGenomeBetaResult.decision.backgroundContrastDirection,
         `rules=${commercialGenomeBetaResult.decision.selectedRules.length}`,
       );
+      if (activeLayoutSpec) {
+        const integrated = applyCommercialIntentToLayoutSpec(
+          activeLayoutSpec,
+          commercialGenomeBetaResult.decision,
+          { includeDebugBundle: isCommercialLayoutIntegrationEnabled() },
+        );
+        activeLayoutSpec = integrated.layout;
+        commercialLayoutDebugBundle = integrated.debugBundle;
+      }
     }
 
     if (useDesignGovernance) {
@@ -1136,6 +1155,7 @@ export async function handleGenerateInfographic(
         compositionScore: compositionDirection?.quality.total,
         constitutionReports,
         useGovernanceConstitution: useDesignGovernance,
+        commercialDecision: commercialGenomeBetaResult?.decision,
       });
       compositionResult = built.compositionResult;
       cardMeaning = built.cardMeaning;
@@ -1145,6 +1165,20 @@ export async function handleGenerateInfographic(
       layoutSpec = built.layoutSpec;
       qualityGateV165 = built.qualityGate;
       qualityRefinementPasses = built.refinementPasses;
+      if (
+        layoutSpec &&
+        commercialGenomeBetaResult &&
+        isCommercialLayoutIntegrationEnabled() &&
+        !commercialLayoutDebugBundle
+      ) {
+        const integrated = applyCommercialIntentToLayoutSpec(
+          layoutSpec,
+          commercialGenomeBetaResult.decision,
+          { includeDebugBundle: true },
+        );
+        layoutSpec = integrated.layout;
+        commercialLayoutDebugBundle = integrated.debugBundle;
+      }
 
       if (useRenderEngineV17 && layoutSpec) {
         const pipeline = rebuildVisualPipelineForRender({
@@ -1922,6 +1956,7 @@ export async function handleGenerateInfographic(
       feedbackLearning: undefined as FeedbackLearningSnapshot | undefined,
       promptCompiler: compiledBackground?.metadata,
       commercialGenomeBeta: commercialGenomeBetaResult,
+      commercialLayoutIntegration: commercialLayoutDebugBundle,
       designConstitution: constitutionReports.length ? constitutionReports : undefined,
       renderEngine: renderEngineResult
         ? buildStoredRenderReport({
@@ -2120,6 +2155,7 @@ export async function handleGenerateInfographic(
         conceptRetries: conceptRetryIndex,
         feedbackLearning: payloadExtras.feedbackLearning,
         commercialGenomeBeta: commercialGenomeBetaResult,
+        commercialLayoutIntegration: commercialLayoutDebugBundle,
       });
 
     if (input.regenerateBackgroundOnly && input.existingImageId) {

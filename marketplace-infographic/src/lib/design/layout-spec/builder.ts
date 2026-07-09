@@ -3,6 +3,8 @@ import type { CardMeaning, LayoutTemplateId } from "@/lib/layout-engine/types";
 import type { CreativeDirectorResult } from "@/lib/design-process/creative-concept";
 import type { ProductAnalysis } from "@/lib/product-analysis";
 import type { VisualStoryDirectorResult } from "@/lib/agents/visual-story-director/types";
+import type { CommercialDecisionBeta } from "@/lib/daos/commercial-genome-beta/types";
+import { applyCommercialIntentToLayoutSpec } from "./commercial-layout-integration";
 import {
   LAYOUT_SPEC_DEFAULTS,
   type BackgroundStyle,
@@ -37,6 +39,7 @@ export function buildInitialLayoutSpec(input: {
   genomeTemplateId?: LayoutTemplateId;
   storyDirection?: VisualStoryDirectorResult;
   palette?: string[];
+  commercialDecision?: CommercialDecisionBeta;
 }): LayoutSpec {
   const templateId = input.genomeTemplateId;
   const heroPosition = heroFromTemplate(templateId);
@@ -48,7 +51,7 @@ export function buildInitialLayoutSpec(input: {
   const premium = input.analysis.priceSegment === "premium";
   const whitespaceTarget = premium ? 32 : 28;
 
-  return {
+  const base: LayoutSpec = {
     ...LAYOUT_SPEC_DEFAULTS,
     heroPosition,
     heroScale: premium ? 0.7 : 0.66,
@@ -69,12 +72,16 @@ export function buildInitialLayoutSpec(input: {
       background: 6,
     },
   };
+
+  if (!input.commercialDecision) return base;
+  return applyCommercialIntentToLayoutSpec(base, input.commercialDecision).layout;
 }
 
 export function layoutSpecFromComposition(
   layout: CompositionLayout,
   meaning: CardMeaning,
   palette?: string[],
+  commercialDecision?: CommercialDecisionBeta,
 ): LayoutSpec {
   const m = layout.metrics;
   const secondary =
@@ -83,7 +90,7 @@ export function layoutSpecFromComposition(
   const heroPosition: HeroPosition =
     layout.product.centerX < 42 ? "left" : layout.product.centerX > 58 ? "right" : "center";
 
-  return {
+  const base: LayoutSpec = {
     ...LAYOUT_SPEC_DEFAULTS,
     heroPosition,
     heroScale: clamp(m.productAreaPct / 100, 0.5, 0.8),
@@ -105,4 +112,7 @@ export function layoutSpecFromComposition(
       background: clamp(100 - m.productAreaPct - m.textAreaPct - m.plaqueAreaPct, 4, 25),
     },
   };
+
+  if (!commercialDecision) return base;
+  return applyCommercialIntentToLayoutSpec(base, commercialDecision).layout;
 }
