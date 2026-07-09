@@ -138,6 +138,7 @@ import {
   type CommercialLayoutPropagationDiagnostics,
 } from "@/lib/design/layout-spec";
 import type { CommercialCalibrationDiagnostics } from "@/lib/compositing/commercial-calibration";
+import type { CommercialAlphaPolicyDiagnostics } from "@/lib/compositing/commercial-alpha-policy";
 import type { CommercialDecisionBeta } from "@/lib/daos/commercial-genome-beta/types";
 import { runQualityGate, applyRefinementPatch, type QualityGateResult } from "@/lib/design/quality-v165";
 import type { CoverConceptId } from "@/lib/cover-concepts";
@@ -323,6 +324,12 @@ function captureCommercialCalibration(
   composite: Awaited<ReturnType<typeof compositeProductIntoScene>> | undefined,
 ): CommercialCalibrationDiagnostics | undefined {
   return composite?.commercialCalibration;
+}
+
+function captureCommercialAlphaPolicy(
+  composite: Awaited<ReturnType<typeof compositeProductIntoScene>> | undefined,
+): CommercialAlphaPolicyDiagnostics | undefined {
+  return composite?.commercialAlphaPolicy;
 }
 
 function normalizeCardMeaning(
@@ -1067,6 +1074,7 @@ export async function handleGenerateInfographic(
     let commercialLayoutDebugBundle: CommercialLayoutDebugBundle | undefined;
     let commercialLayoutPropagation: CommercialLayoutPropagationDiagnostics | undefined;
     let commercialCalibration: CommercialCalibrationDiagnostics | undefined;
+    let commercialAlphaPolicy: CommercialAlphaPolicyDiagnostics | undefined;
     if (sdData.layout === "marketplace" && isCommercialGenomeBetaEnabled()) {
       commercialGenomeBetaResult = createCommercialGenomeBetaDecision({
         marketplace: "wildberries",
@@ -1465,6 +1473,7 @@ export async function handleGenerateInfographic(
             }),
           });
           commercialCalibration = captureCommercialCalibration(compositeResult);
+          commercialAlphaPolicy = captureCommercialAlphaPolicy(compositeResult);
 
           qualityValidation = validateQuality({
             compositionLayout,
@@ -1628,6 +1637,7 @@ export async function handleGenerateInfographic(
               }),
             });
             commercialCalibration = captureCommercialCalibration(compositeResult);
+          commercialAlphaPolicy = captureCommercialAlphaPolicy(compositeResult);
             mergedImageDataUrl = await mergedToDataUrl(compositeResult.mergedPath);
             qualityValidation = validateQuality({
               compositionLayout,
@@ -1811,6 +1821,7 @@ export async function handleGenerateInfographic(
             }),
           });
           commercialCalibration = captureCommercialCalibration(compositeResult);
+          commercialAlphaPolicy = captureCommercialAlphaPolicy(compositeResult);
           mergedImageDataUrl = await mergedToDataUrl(compositeResult.mergedPath);
           qualityValidation = validateQuality({
             compositionLayout,
@@ -2028,6 +2039,7 @@ export async function handleGenerateInfographic(
       commercialLayoutIntegration: commercialLayoutDebugBundle,
       commercialLayoutPropagation,
       commercialCalibration,
+      commercialAlphaPolicy,
       designConstitution: constitutionReports.length ? constitutionReports : undefined,
       renderEngine: renderEngineResult
         ? buildStoredRenderReport({
@@ -2229,6 +2241,7 @@ export async function handleGenerateInfographic(
         commercialLayoutIntegration: commercialLayoutDebugBundle,
       commercialLayoutPropagation,
       commercialCalibration,
+      commercialAlphaPolicy,
       });
 
     if (input.regenerateBackgroundOnly && input.existingImageId) {
