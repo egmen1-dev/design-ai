@@ -102,6 +102,7 @@ import { creativeConceptToCardMeaning } from "@/lib/design-process/card-meaning"
 import type { ProductVisualProfile } from "@/lib/design/scene-planner";
 import type { CreativeDirectorResult } from "@/lib/design-process/creative-concept";
 import type { ScenePlan } from "@/lib/design/scene-planner";
+import type { CompositionLayout } from "@/lib/composition/types";
 import type { QualityValidationResult } from "@/lib/design/quality-validator";
 import type { ArtDirectorModeId } from "@/lib/design-process/art-director-modes";
 import type { RenderModelId } from "@/lib/render-engine/types";
@@ -136,6 +137,7 @@ import {
   resolveLayoutObjectScale,
   type CommercialLayoutPropagationDiagnostics,
 } from "@/lib/design/layout-spec";
+import type { CommercialCalibrationDiagnostics } from "@/lib/compositing/commercial-calibration";
 import type { CommercialDecisionBeta } from "@/lib/daos/commercial-genome-beta/types";
 import { runQualityGate, applyRefinementPatch, type QualityGateResult } from "@/lib/design/quality-v165";
 import type { CoverConceptId } from "@/lib/cover-concepts";
@@ -300,6 +302,27 @@ function resolveObjectScaleFromLayout(
     objectScale: resolved.objectScale,
     propagation: resolved.diagnostics,
   };
+}
+
+function marketplaceCompositeOptions(input: {
+  scene: ScenePlan;
+  compositionLayout?: CompositionLayout;
+  objectScale: number;
+  commercialLayoutPropagation?: CommercialLayoutPropagationDiagnostics;
+}) {
+  return {
+    layout: "marketplace" as const,
+    scene: input.scene,
+    compositionLayout: input.compositionLayout,
+    objectScale: input.objectScale,
+    commercialCalibration: input.commercialLayoutPropagation?.commercialLayoutPropagation ?? false,
+  };
+}
+
+function captureCommercialCalibration(
+  composite: Awaited<ReturnType<typeof compositeProductIntoScene>> | undefined,
+): CommercialCalibrationDiagnostics | undefined {
+  return composite?.commercialCalibration;
 }
 
 function normalizeCardMeaning(
@@ -1043,6 +1066,7 @@ export async function handleGenerateInfographic(
     let commercialGenomeBetaSnippet: string | undefined;
     let commercialLayoutDebugBundle: CommercialLayoutDebugBundle | undefined;
     let commercialLayoutPropagation: CommercialLayoutPropagationDiagnostics | undefined;
+    let commercialCalibration: CommercialCalibrationDiagnostics | undefined;
     if (sdData.layout === "marketplace" && isCommercialGenomeBetaEnabled()) {
       commercialGenomeBetaResult = createCommercialGenomeBetaDecision({
         marketplace: "wildberries",
@@ -1433,11 +1457,14 @@ export async function handleGenerateInfographic(
           }
 
           compositeResult = await compositeProductIntoScene(backgroundUrl, productCutoutPath, {
-            layout: "marketplace",
-            scene: scenePlan,
-            compositionLayout,
-            objectScale,
+            ...marketplaceCompositeOptions({
+              scene: scenePlan,
+              compositionLayout,
+              objectScale,
+              commercialLayoutPropagation,
+            }),
           });
+          commercialCalibration = captureCommercialCalibration(compositeResult);
 
           qualityValidation = validateQuality({
             compositionLayout,
@@ -1593,11 +1620,14 @@ export async function handleGenerateInfographic(
             backgroundSource = bg.source;
             if (bg.engine) renderEngineResult = bg.engine as RenderEngineOrchestratorResult;
             compositeResult = await compositeProductIntoScene(bg.url, productCutoutPath, {
-              layout: "marketplace",
-              scene: chiefScenePlan,
-              compositionLayout,
-              objectScale,
+              ...marketplaceCompositeOptions({
+                scene: chiefScenePlan,
+                compositionLayout,
+                objectScale,
+                commercialLayoutPropagation,
+              }),
             });
+            commercialCalibration = captureCommercialCalibration(compositeResult);
             mergedImageDataUrl = await mergedToDataUrl(compositeResult.mergedPath);
             qualityValidation = validateQuality({
               compositionLayout,
@@ -1773,11 +1803,14 @@ export async function handleGenerateInfographic(
 
         if (productCutoutPath && usePhotorealMerge) {
           compositeResult = await compositeProductIntoScene(bg.url, productCutoutPath, {
-            layout: "marketplace",
-            scene: retryScene,
-            compositionLayout,
-            objectScale,
+            ...marketplaceCompositeOptions({
+              scene: retryScene,
+              compositionLayout,
+              objectScale,
+              commercialLayoutPropagation,
+            }),
           });
+          commercialCalibration = captureCommercialCalibration(compositeResult);
           mergedImageDataUrl = await mergedToDataUrl(compositeResult.mergedPath);
           qualityValidation = validateQuality({
             compositionLayout,
@@ -1994,6 +2027,7 @@ export async function handleGenerateInfographic(
       commercialGenomeBeta: commercialGenomeBetaResult,
       commercialLayoutIntegration: commercialLayoutDebugBundle,
       commercialLayoutPropagation,
+      commercialCalibration,
       designConstitution: constitutionReports.length ? constitutionReports : undefined,
       renderEngine: renderEngineResult
         ? buildStoredRenderReport({
@@ -2194,6 +2228,7 @@ export async function handleGenerateInfographic(
         commercialGenomeBeta: commercialGenomeBetaResult,
         commercialLayoutIntegration: commercialLayoutDebugBundle,
       commercialLayoutPropagation,
+      commercialCalibration,
       });
 
     if (input.regenerateBackgroundOnly && input.existingImageId) {
