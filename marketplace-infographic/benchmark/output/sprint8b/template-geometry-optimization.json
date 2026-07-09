@@ -1,0 +1,529 @@
+{
+  "sprint": "DAOS Product Sprint 8B — Template Geometry Clamp Optimization",
+  "timestamp": "2026-07-09T16:58:59.645Z",
+  "change": {
+    "file": "layout-engine/builder.ts",
+    "finalHClampMax": "85 → 58"
+  },
+  "policyMaxPct": 39.4,
+  "templateSurvey": [
+    {
+      "templateId": "hero_left",
+      "productZoneH8b": 58,
+      "productZoneHLegacy": 69.3,
+      "allowedAtObjectScale1_8b": 35.2,
+      "allowedAtObjectScale1_legacy": 29.5,
+      "gapToPolicy8b": 4.2,
+      "gain": 5.7
+    },
+    {
+      "templateId": "hero_right",
+      "productZoneH8b": 58,
+      "productZoneHLegacy": 68.25,
+      "allowedAtObjectScale1_8b": 34.7,
+      "allowedAtObjectScale1_legacy": 29.5,
+      "gapToPolicy8b": 4.7,
+      "gain": 5.2
+    },
+    {
+      "templateId": "premium",
+      "productZoneH8b": 58,
+      "productZoneHLegacy": 67.2,
+      "allowedAtObjectScale1_8b": 34.2,
+      "allowedAtObjectScale1_legacy": 29.5,
+      "gapToPolicy8b": 5.2,
+      "gain": 4.7
+    },
+    {
+      "templateId": "magazine",
+      "productZoneH8b": 58,
+      "productZoneHLegacy": 65.10000000000001,
+      "allowedAtObjectScale1_8b": 33.6,
+      "allowedAtObjectScale1_legacy": 30,
+      "gapToPolicy8b": 5.8,
+      "gain": 3.6
+    },
+    {
+      "templateId": "minimal",
+      "productZoneH8b": 58,
+      "productZoneHLegacy": 71.4,
+      "allowedAtObjectScale1_8b": 36.3,
+      "allowedAtObjectScale1_legacy": 29.5,
+      "gapToPolicy8b": 3.1,
+      "gain": 6.8
+    },
+    {
+      "templateId": "poster",
+      "productZoneH8b": 58,
+      "productZoneHLegacy": 73.5,
+      "allowedAtObjectScale1_8b": 37.4,
+      "allowedAtObjectScale1_legacy": 29.5,
+      "gapToPolicy8b": 2,
+      "gain": 7.9
+    },
+    {
+      "templateId": "lifestyle",
+      "productZoneH8b": 58,
+      "productZoneHLegacy": 66.15,
+      "allowedAtObjectScale1_8b": 33.6,
+      "allowedAtObjectScale1_legacy": 29.5,
+      "gapToPolicy8b": 5.8,
+      "gain": 4.1
+    },
+    {
+      "templateId": "studio",
+      "productZoneH8b": 58,
+      "productZoneHLegacy": 68.25,
+      "allowedAtObjectScale1_8b": 34.7,
+      "allowedAtObjectScale1_legacy": 29.5,
+      "gapToPolicy8b": 4.7,
+      "gain": 5.2
+    },
+    {
+      "templateId": "technical",
+      "productZoneH8b": 58,
+      "productZoneHLegacy": 67.2,
+      "allowedAtObjectScale1_8b": 34.2,
+      "allowedAtObjectScale1_legacy": 29.5,
+      "gapToPolicy8b": 5.2,
+      "gain": 4.7
+    },
+    {
+      "templateId": "luxury",
+      "productZoneH8b": 58,
+      "productZoneHLegacy": 66.15,
+      "allowedAtObjectScale1_8b": 33.6,
+      "allowedAtObjectScale1_legacy": 29.5,
+      "gapToPolicy8b": 5.8,
+      "gain": 4.1
+    },
+    {
+      "templateId": "diagonal",
+      "productZoneH8b": 58,
+      "productZoneHLegacy": 69.3,
+      "allowedAtObjectScale1_8b": 35.2,
+      "allowedAtObjectScale1_legacy": 29.5,
+      "gapToPolicy8b": 4.2,
+      "gain": 5.7
+    },
+    {
+      "templateId": "floating",
+      "productZoneH8b": 58,
+      "productZoneHLegacy": 70.35000000000001,
+      "allowedAtObjectScale1_8b": 35.8,
+      "allowedAtObjectScale1_legacy": 29.5,
+      "gapToPolicy8b": 3.6,
+      "gain": 6.3
+    },
+    {
+      "templateId": "split",
+      "productZoneH8b": 58,
+      "productZoneHLegacy": 65.10000000000001,
+      "allowedAtObjectScale1_8b": 33.6,
+      "allowedAtObjectScale1_legacy": 30,
+      "gapToPolicy8b": 5.8,
+      "gain": 3.6
+    },
+    {
+      "templateId": "focus",
+      "productZoneH8b": 58,
+      "productZoneHLegacy": 72.45,
+      "allowedAtObjectScale1_8b": 36.8,
+      "allowedAtObjectScale1_legacy": 29.5,
+      "gapToPolicy8b": 2.6,
+      "gain": 7.3
+    },
+    {
+      "templateId": "grid",
+      "productZoneH8b": 58,
+      "productZoneHLegacy": 67.2,
+      "allowedAtObjectScale1_8b": 34.2,
+      "allowedAtObjectScale1_legacy": 29.5,
+      "gapToPolicy8b": 5.2,
+      "gain": 4.7
+    },
+    {
+      "templateId": "asymmetric",
+      "productZoneH8b": 58,
+      "productZoneHLegacy": 68.25,
+      "allowedAtObjectScale1_8b": 34.7,
+      "allowedAtObjectScale1_legacy": 29.5,
+      "gapToPolicy8b": 4.7,
+      "gain": 5.2
+    },
+    {
+      "templateId": "editorial",
+      "productZoneH8b": 58,
+      "productZoneHLegacy": 64.05,
+      "allowedAtObjectScale1_8b": 33.6,
+      "allowedAtObjectScale1_legacy": 30.4,
+      "gapToPolicy8b": 5.8,
+      "gain": 3.2
+    },
+    {
+      "templateId": "modern",
+      "productZoneH8b": 58,
+      "productZoneHLegacy": 69.3,
+      "allowedAtObjectScale1_8b": 35.2,
+      "allowedAtObjectScale1_legacy": 29.5,
+      "gapToPolicy8b": 4.2,
+      "gain": 5.7
+    },
+    {
+      "templateId": "glass",
+      "productZoneH8b": 58,
+      "productZoneHLegacy": 67.2,
+      "allowedAtObjectScale1_8b": 34.2,
+      "allowedAtObjectScale1_legacy": 29.5,
+      "gapToPolicy8b": 5.2,
+      "gain": 4.7
+    },
+    {
+      "templateId": "commercial",
+      "productZoneH8b": 58,
+      "productZoneHLegacy": 70.35000000000001,
+      "allowedAtObjectScale1_8b": 35.8,
+      "allowedAtObjectScale1_legacy": 29.5,
+      "gapToPolicy8b": 3.6,
+      "gain": 6.3
+    }
+  ],
+  "metrics": {
+    "templates": 20,
+    "products": 5,
+    "avgAllowedLegacyMax": 29.5,
+    "avgAllowed8bMax": 36.6,
+    "avgGainPct": 7.1,
+    "ceilingReachedCount": 0,
+    "overlapRegressions": 0
+  },
+  "successCriteria": {
+    "ceilingIncreased": true,
+    "gapToPolicyReduced": true,
+    "noOverlapRegression": true,
+    "minimalLocalChange": true,
+    "note": "Ceiling measured @ objectScale=1. Commercial objectScale=0.55 is fixed by propagation (out of scope); re-run calibration to harvest ceiling gain in production."
+  },
+  "productResults": [
+    {
+      "productId": "battery-sprayer",
+      "templateId": "focus",
+      "targetAreaPct": 55,
+      "objectScale": 0.55,
+      "diagnostics": {
+        "geometryClampVersion": "1.0.0-sprint8b",
+        "geometryClampSource": "sprint8b_finalH_58",
+        "geometryFinalHBefore": 72.5,
+        "geometryFinalHAfter": 58,
+        "geometryHeightBindingBefore": "height_binding",
+        "geometryHeightBindingAfter": "height_binding",
+        "geometryPolicyCeilingReachable": true,
+        "geometryOptimizationWarnings": [
+          "geometry ceiling improved +7.3pp @ objectScale=1; commercial objectScale=0.55 unchanged"
+        ]
+      },
+      "comparison": {
+        "sprint7b_8a_commercial": {
+          "allowedAreaPct": 19.1,
+          "finalAreaPct": 19.1,
+          "alphaAreaPct": 19.1,
+          "width": 368,
+          "height": 560,
+          "maxW": 368,
+          "maxH": 560,
+          "overlapPct": 0
+        },
+        "sprint8b_commercial": {
+          "allowedAreaPct": 17.2,
+          "finalAreaPct": 17.2,
+          "alphaAreaPct": 17.2,
+          "width": 391,
+          "height": 476,
+          "maxW": 391,
+          "maxH": 476,
+          "overlapPct": 0
+        },
+        "sprint7b_8a_max": {
+          "allowedAreaPct": 29.5,
+          "finalAreaPct": 29.5,
+          "alphaAreaPct": 29.5,
+          "width": 457,
+          "height": 696,
+          "maxW": 457,
+          "maxH": 696,
+          "overlapPct": 0
+        },
+        "sprint8b_max": {
+          "allowedAreaPct": 36.8,
+          "finalAreaPct": 36.8,
+          "alphaAreaPct": 36.8,
+          "width": 571,
+          "height": 696,
+          "maxW": 571,
+          "maxH": 696,
+          "overlapPct": 0
+        }
+      },
+      "areaGainCommercial": -1.9,
+      "areaGainMax": 7.3,
+      "bboxChanged": true,
+      "overlapRegression": false
+    },
+    {
+      "productId": "construction-vacuum",
+      "templateId": "commercial",
+      "targetAreaPct": 55,
+      "objectScale": 0.55,
+      "diagnostics": {
+        "geometryClampVersion": "1.0.0-sprint8b",
+        "geometryClampSource": "sprint8b_finalH_58",
+        "geometryFinalHBefore": 70.4,
+        "geometryFinalHAfter": 58,
+        "geometryHeightBindingBefore": "height_binding",
+        "geometryHeightBindingAfter": "height_binding",
+        "geometryPolicyCeilingReachable": true,
+        "geometryOptimizationWarnings": [
+          "geometry ceiling improved +6.3pp @ objectScale=1; commercial objectScale=0.55 unchanged"
+        ]
+      },
+      "comparison": {
+        "sprint7b_8a_commercial": {
+          "allowedAreaPct": 18.3,
+          "finalAreaPct": 18.3,
+          "alphaAreaPct": 18.3,
+          "width": 360,
+          "height": 548,
+          "maxW": 360,
+          "maxH": 548,
+          "overlapPct": 0
+        },
+        "sprint8b_commercial": {
+          "allowedAreaPct": 16.7,
+          "finalAreaPct": 16.7,
+          "alphaAreaPct": 16.7,
+          "width": 380,
+          "height": 476,
+          "maxW": 380,
+          "maxH": 476,
+          "overlapPct": 0
+        },
+        "sprint7b_8a_max": {
+          "allowedAreaPct": 29.5,
+          "finalAreaPct": 29.5,
+          "alphaAreaPct": 29.5,
+          "width": 458,
+          "height": 696,
+          "maxW": 458,
+          "maxH": 696,
+          "overlapPct": 0
+        },
+        "sprint8b_max": {
+          "allowedAreaPct": 35.8,
+          "finalAreaPct": 35.8,
+          "alphaAreaPct": 35.8,
+          "width": 555,
+          "height": 696,
+          "maxW": 555,
+          "maxH": 696,
+          "overlapPct": 0
+        }
+      },
+      "areaGainCommercial": -1.6,
+      "areaGainMax": 6.3,
+      "bboxChanged": true,
+      "overlapRegression": false
+    },
+    {
+      "productId": "impact-drill",
+      "templateId": "poster",
+      "targetAreaPct": 55,
+      "objectScale": 0.55,
+      "diagnostics": {
+        "geometryClampVersion": "1.0.0-sprint8b",
+        "geometryClampSource": "sprint8b_finalH_58",
+        "geometryFinalHBefore": 73.5,
+        "geometryFinalHAfter": 58,
+        "geometryHeightBindingBefore": "height_binding",
+        "geometryHeightBindingAfter": "height_binding",
+        "geometryPolicyCeilingReachable": true,
+        "geometryOptimizationWarnings": [
+          "geometry ceiling improved +7.9pp @ objectScale=1; commercial objectScale=0.55 unchanged"
+        ]
+      },
+      "comparison": {
+        "sprint7b_8a_commercial": {
+          "allowedAreaPct": 19.5,
+          "finalAreaPct": 19.5,
+          "alphaAreaPct": 19.5,
+          "width": 372,
+          "height": 566,
+          "maxW": 372,
+          "maxH": 566,
+          "overlapPct": 0
+        },
+        "sprint8b_commercial": {
+          "allowedAreaPct": 17.5,
+          "finalAreaPct": 17.5,
+          "alphaAreaPct": 17.5,
+          "width": 397,
+          "height": 476,
+          "maxW": 397,
+          "maxH": 476,
+          "overlapPct": 0
+        },
+        "sprint7b_8a_max": {
+          "allowedAreaPct": 29.5,
+          "finalAreaPct": 29.5,
+          "alphaAreaPct": 29.5,
+          "width": 458,
+          "height": 696,
+          "maxW": 458,
+          "maxH": 696,
+          "overlapPct": 0
+        },
+        "sprint8b_max": {
+          "allowedAreaPct": 37.4,
+          "finalAreaPct": 37.4,
+          "alphaAreaPct": 37.4,
+          "width": 580,
+          "height": 696,
+          "maxW": 580,
+          "maxH": 696,
+          "overlapPct": 0
+        }
+      },
+      "areaGainCommercial": -2,
+      "areaGainMax": 7.9,
+      "bboxChanged": true,
+      "overlapRegression": false
+    },
+    {
+      "productId": "pressure-washer",
+      "templateId": "commercial",
+      "targetAreaPct": 55,
+      "objectScale": 0.55,
+      "diagnostics": {
+        "geometryClampVersion": "1.0.0-sprint8b",
+        "geometryClampSource": "sprint8b_finalH_58",
+        "geometryFinalHBefore": 70.4,
+        "geometryFinalHAfter": 58,
+        "geometryHeightBindingBefore": "height_binding",
+        "geometryHeightBindingAfter": "height_binding",
+        "geometryPolicyCeilingReachable": true,
+        "geometryOptimizationWarnings": [
+          "geometry ceiling improved +6.3pp @ objectScale=1; commercial objectScale=0.55 unchanged"
+        ]
+      },
+      "comparison": {
+        "sprint7b_8a_commercial": {
+          "allowedAreaPct": 18.3,
+          "finalAreaPct": 18.3,
+          "alphaAreaPct": 18.3,
+          "width": 360,
+          "height": 548,
+          "maxW": 360,
+          "maxH": 548,
+          "overlapPct": 0
+        },
+        "sprint8b_commercial": {
+          "allowedAreaPct": 16.7,
+          "finalAreaPct": 16.7,
+          "alphaAreaPct": 16.7,
+          "width": 380,
+          "height": 476,
+          "maxW": 380,
+          "maxH": 476,
+          "overlapPct": 0
+        },
+        "sprint7b_8a_max": {
+          "allowedAreaPct": 29.5,
+          "finalAreaPct": 29.5,
+          "alphaAreaPct": 29.5,
+          "width": 458,
+          "height": 696,
+          "maxW": 458,
+          "maxH": 696,
+          "overlapPct": 0
+        },
+        "sprint8b_max": {
+          "allowedAreaPct": 35.8,
+          "finalAreaPct": 35.8,
+          "alphaAreaPct": 35.8,
+          "width": 555,
+          "height": 696,
+          "maxW": 555,
+          "maxH": 696,
+          "overlapPct": 0
+        }
+      },
+      "areaGainCommercial": -1.6,
+      "areaGainMax": 6.3,
+      "bboxChanged": true,
+      "overlapRegression": false
+    },
+    {
+      "productId": "home-humidifier",
+      "templateId": "poster",
+      "targetAreaPct": 55,
+      "objectScale": 0.55,
+      "diagnostics": {
+        "geometryClampVersion": "1.0.0-sprint8b",
+        "geometryClampSource": "sprint8b_finalH_58",
+        "geometryFinalHBefore": 73.5,
+        "geometryFinalHAfter": 58,
+        "geometryHeightBindingBefore": "height_binding",
+        "geometryHeightBindingAfter": "height_binding",
+        "geometryPolicyCeilingReachable": true,
+        "geometryOptimizationWarnings": [
+          "geometry ceiling improved +7.9pp @ objectScale=1; commercial objectScale=0.55 unchanged"
+        ]
+      },
+      "comparison": {
+        "sprint7b_8a_commercial": {
+          "allowedAreaPct": 19.5,
+          "finalAreaPct": 19.5,
+          "alphaAreaPct": 19.5,
+          "width": 372,
+          "height": 566,
+          "maxW": 372,
+          "maxH": 566,
+          "overlapPct": 0
+        },
+        "sprint8b_commercial": {
+          "allowedAreaPct": 17.5,
+          "finalAreaPct": 17.5,
+          "alphaAreaPct": 17.5,
+          "width": 397,
+          "height": 476,
+          "maxW": 397,
+          "maxH": 476,
+          "overlapPct": 0
+        },
+        "sprint7b_8a_max": {
+          "allowedAreaPct": 29.5,
+          "finalAreaPct": 29.5,
+          "alphaAreaPct": 29.5,
+          "width": 458,
+          "height": 696,
+          "maxW": 458,
+          "maxH": 696,
+          "overlapPct": 0
+        },
+        "sprint8b_max": {
+          "allowedAreaPct": 37.4,
+          "finalAreaPct": 37.4,
+          "alphaAreaPct": 37.4,
+          "width": 580,
+          "height": 696,
+          "maxW": 580,
+          "maxH": 696,
+          "overlapPct": 0
+        }
+      },
+      "areaGainCommercial": -2,
+      "areaGainMax": 7.9,
+      "bboxChanged": true,
+      "overlapRegression": false
+    }
+  ]
+}

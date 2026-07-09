@@ -22,6 +22,7 @@ SPECS=(
   src/lib/design/layout-spec/commercial-layout-propagation.test.ts
   src/lib/design/prompt-compiler/commercial-layout-materializer.test.ts
   src/lib/design/visual-pipeline/commercial-blueprint-materializer.test.ts
+  src/lib/layout-engine/geometry-clamp-optimization.test.ts
   src/lib/compositing/commercial-alpha-policy.test.ts
   src/lib/compositing/commercial-calibration.test.ts
   src/lib/commercial-fidelity/commercial-fidelity.test.ts

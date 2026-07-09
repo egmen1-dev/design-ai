@@ -97,6 +97,7 @@ import {
   toCompositionResult,
 } from "@/lib/layout-engine";
 import type { CardMeaning, LayoutTemplateId, ProductShapeHint } from "@/lib/layout-engine/types";
+import { getTemplate } from "@/lib/layout-engine/templates";
 import { runSeniorArtDirector, runMarketplaceCtrExpert, runCommercialPhotographer, runChiefDesignDirector, runDesignMemory, loadDesignMemoryStore, deriveFixApplicationHints, computeOutcomeScore, runVisualStoryDirector, runCommercialPhotoDirector, runArtDirector, type SeniorArtDirectorReview, type MarketplaceCtrReview, type CommercialPhotographerReview, type ChiefDesignDirectorPlan, type DesignMemoryUpdateResult, type VisualStoryDirectorResult, type CommercialPhotoDirectorResult, type ArtDirectorReview } from "@/lib/agents";
 import { creativeConceptToCardMeaning } from "@/lib/design-process/card-meaning";
 import type { ProductVisualProfile } from "@/lib/design/scene-planner";
@@ -139,6 +140,8 @@ import {
 } from "@/lib/design/layout-spec";
 import type { CommercialCalibrationDiagnostics } from "@/lib/compositing/commercial-calibration";
 import type { CommercialAlphaPolicyDiagnostics } from "@/lib/compositing/commercial-alpha-policy";
+import type { GeometryClampDiagnostics } from "@/lib/layout-engine/geometry-clamp-optimization";
+import { buildGeometryClampDiagnostics } from "@/lib/layout-engine/geometry-clamp-optimization";
 import type { CommercialDecisionBeta } from "@/lib/daos/commercial-genome-beta/types";
 import { runQualityGate, applyRefinementPatch, type QualityGateResult } from "@/lib/design/quality-v165";
 import type { CoverConceptId } from "@/lib/cover-concepts";
@@ -1075,6 +1078,7 @@ export async function handleGenerateInfographic(
     let commercialLayoutPropagation: CommercialLayoutPropagationDiagnostics | undefined;
     let commercialCalibration: CommercialCalibrationDiagnostics | undefined;
     let commercialAlphaPolicy: CommercialAlphaPolicyDiagnostics | undefined;
+    let geometryOptimization: GeometryClampDiagnostics | undefined;
     if (sdData.layout === "marketplace" && isCommercialGenomeBetaEnabled()) {
       commercialGenomeBetaResult = createCommercialGenomeBetaDecision({
         marketplace: "wildberries",
@@ -1254,6 +1258,21 @@ export async function handleGenerateInfographic(
       governanceDecisionLog,
     ));
     compositingHints = sceneToCompositingHints(scenePlan, objectScale);
+
+    if (compositionLayout) {
+      const templateId = (compositionResult?.templateId ??
+        compositionLayout.scenarioId) as LayoutTemplateId | undefined;
+      geometryOptimization = buildGeometryClampDiagnostics({
+        layout: compositionLayout,
+        productScale: templateId ? getTemplate(templateId).productScale : undefined,
+        objectScale,
+      });
+      if (geometryOptimization.geometryOptimizationWarnings.length) {
+        for (const w of geometryOptimization.geometryOptimizationWarnings) {
+          governanceDecisionLog.push(`GeometryOptimization warn: ${w}`);
+        }
+      }
+    }
 
     if (useDesignGovernance && governanceBlueprint) {
       assertRenderAllowed({
@@ -2040,6 +2059,7 @@ export async function handleGenerateInfographic(
       commercialLayoutPropagation,
       commercialCalibration,
       commercialAlphaPolicy,
+      geometryOptimization,
       designConstitution: constitutionReports.length ? constitutionReports : undefined,
       renderEngine: renderEngineResult
         ? buildStoredRenderReport({
@@ -2242,6 +2262,7 @@ export async function handleGenerateInfographic(
       commercialLayoutPropagation,
       commercialCalibration,
       commercialAlphaPolicy,
+      geometryOptimization,
       });
 
     if (input.regenerateBackgroundOnly && input.existingImageId) {
