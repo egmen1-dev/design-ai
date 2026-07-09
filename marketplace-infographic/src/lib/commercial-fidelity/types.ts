@@ -1,6 +1,6 @@
-/** Commercial Fidelity — read-only measurement layer (Sprint 5) */
+/** Commercial Fidelity — read-only measurement layer */
 
-export const COMMERCIAL_FIDELITY_VERSION = "1.0.0-sprint5";
+export const COMMERCIAL_FIDELITY_VERSION = "1.1.0-sprint8c";
 
 export type FidelityParameterId =
   | "product_area"
@@ -22,6 +22,14 @@ export type FidelityParameterResult = {
   notes?: string;
 };
 
+/** Sprint 8C — dual-target product area model */
+export type ProductAreaFidelityModel = {
+  aspirationalTarget: number;
+  reachableTarget: number;
+  measuredArea: number;
+  unreachableGap: number;
+};
+
 export type CommercialFidelityDiagnostics = {
   commercialFidelityVersion: string;
   commercialFidelityScore: number;
@@ -31,6 +39,7 @@ export type CommercialFidelityDiagnostics = {
   commercialValidationWarnings: string[];
   commercialValidationErrors: string[];
   commercialImprovementCandidates: string[];
+  productAreaModel?: ProductAreaFidelityModel;
 };
 
 export type CommercialFidelityReport = {

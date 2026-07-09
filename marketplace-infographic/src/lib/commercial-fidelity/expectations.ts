@@ -1,5 +1,6 @@
 import type { HierarchyMap, LayoutSpec } from "@/lib/design/layout-spec/types";
 import type { VisualSceneBlueprint } from "@/lib/design/visual-pipeline/types";
+import { ASPIRATIONAL_PRODUCT_AREA_TARGET } from "@/lib/daos/commercial-genome-beta/product-area-targets";
 import type { FidelityParameterId } from "./types";
 
 export type CommercialExpectations = Record<FidelityParameterId, number>;
@@ -40,9 +41,38 @@ function dominanceExpectation(primaryObject?: string): number {
   return 65;
 }
 
+export type ProductAreaTargets = {
+  reachableTarget: number;
+  aspirationalTarget: number;
+};
+
+export function deriveProductAreaTargets(input: {
+  layoutSpec?: LayoutSpec;
+  visualBlueprint?: VisualSceneBlueprint;
+}): ProductAreaTargets {
+  const layout = input.layoutSpec;
+  const snapshot = input.visualBlueprint?.commercial?.snapshot;
+
+  const reachableTarget =
+    layout?.reachableProductAreaPct ??
+    layout?.productAreaPct ??
+    (layout?.heroScale != null ? Math.round(layout.heroScale * 100) : undefined) ??
+    snapshot?.productAreaPct ??
+    (snapshot?.heroScale != null ? Math.round(snapshot.heroScale * 100) : 68);
+
+  const aspirationalTarget =
+    layout?.aspirationalProductAreaPct ??
+    Math.round(ASPIRATIONAL_PRODUCT_AREA_TARGET * 100);
+
+  return {
+    reachableTarget,
+    aspirationalTarget,
+  };
+}
+
 /**
  * Derives expected fidelity targets from stabilized LayoutSpec / blueprint snapshot.
- * Read-only — never imports Commercial Genome.
+ * Product area uses reachable target (Sprint 8C), not aspirational EKB goal.
  */
 export function deriveCommercialExpectations(input: {
   layoutSpec?: LayoutSpec;
@@ -50,12 +80,7 @@ export function deriveCommercialExpectations(input: {
 }): CommercialExpectations {
   const layout = input.layoutSpec;
   const snapshot = input.visualBlueprint?.commercial?.snapshot;
-
-  const productAreaPct =
-    layout?.productAreaPct ??
-    (layout?.heroScale != null ? Math.round(layout.heroScale * 100) : undefined) ??
-    (snapshot?.productAreaPct ??
-      (snapshot?.heroScale != null ? Math.round(snapshot.heroScale * 100) : 68));
+  const { reachableTarget } = deriveProductAreaTargets(input);
 
   const scenePreference =
     layout?.scenePreference ?? snapshot?.scenePreference ?? "commercial_studio";
@@ -67,7 +92,7 @@ export function deriveCommercialExpectations(input: {
   const hierarchy = layout?.hierarchy ?? snapshot?.hierarchy;
 
   return {
-    product_area: productAreaPct,
+    product_area: reachableTarget,
     product_dominance: dominanceExpectation(primaryObject),
     visual_hierarchy: hierarchyExpectation(hierarchy),
     background_separation:

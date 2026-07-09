@@ -51,7 +51,10 @@ export type BackgroundContrastDirection =
 export type CommercialDecisionBeta = {
   mainMessage: string;
   heroDominance: HeroDominance;
+  /** Reachable product area for current layout (Sprint 8C production target) */
   productAreaTarget: number;
+  /** Aspirational EKB target — not applied to current layout compositor path */
+  productAreaAspirationalTarget: number;
   maxCharacteristics: number;
   badgeLimit: number;
   environmentDirection: EnvironmentDirection;

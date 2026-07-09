@@ -5,6 +5,7 @@ import type {
   EnvironmentDirection,
   VisualHierarchyOrder,
 } from "@/lib/daos/commercial-genome-beta/types";
+import { clampReachableTarget } from "@/lib/daos/commercial-genome-beta/product-area-targets";
 import { LAYOUT_SPEC_DEFAULTS, type HierarchyMap, type LayoutSpec } from "./types";
 
 export const COMMERCIAL_LAYOUT_INTEGRATION_FLAG = "DAOS_COMMERCIAL_LAYOUT_INTEGRATION";
@@ -18,6 +19,8 @@ export const KNOWN_LAYOUT_SPEC_KEYS = new Set<string>([
   "visualWeight",
   "hierarchy",
   "productAreaPct",
+  "reachableProductAreaPct",
+  "aspirationalProductAreaPct",
   "primaryObject",
   "maxCharacteristics",
   "typographyStrategy",
@@ -216,10 +219,19 @@ function buildIntentBindings(): IntentBinding[] {
       extensionTarget: "productAreaPct",
       reason: "heroScale is the existing production field for product area ratio",
       apply: (_layout, decision, target) => {
-        const heroScale = clamp(decision.productAreaTarget, 0.5, 0.8);
+        const heroScale = clampReachableTarget(decision.productAreaTarget);
         if (target === "productAreaPct") return Math.round(heroScale * 100);
         return heroScale;
       },
+    },
+    {
+      source: "productAreaAspirationalTarget",
+      preferredTargets: [],
+      extensionTarget: "aspirationalProductAreaPct",
+      reason:
+        "aspirational EKB target stored for roadmap — not applied to heroScale/compositor",
+      apply: (_layout, decision) =>
+        Math.round(clamp(decision.productAreaAspirationalTarget, 0.5, 0.8) * 100),
     },
     {
       source: "heroDominance",
@@ -413,12 +425,19 @@ export function applyCommercialIntentToLayoutSpec(
       : binding.reason;
 
     if (binding.source === "productAreaTarget" && layoutHasField("productAreaPct")) {
-      const pct = Math.round(clamp(decision.productAreaTarget, 0.5, 0.8) * 100);
+      const pct = Math.round(clampReachableTarget(decision.productAreaTarget) * 100);
       next.productAreaPct = pct;
       diagnostics.commercialIntentApplied.push("productAreaPct");
       appliedFieldValues.productAreaPct = pct;
       diagnostics.commercialIntentReason.productAreaPct =
-        "mirror of heroScale for layout-engine metrics alignment";
+        "reachable mirror of heroScale for fidelity alignment";
+      if (layoutHasField("reachableProductAreaPct")) {
+        next.reachableProductAreaPct = pct;
+        diagnostics.commercialIntentApplied.push("reachableProductAreaPct");
+        appliedFieldValues.reachableProductAreaPct = pct;
+        diagnostics.commercialIntentReason.reachableProductAreaPct =
+          "Sprint 8C reachable target for current layout";
+      }
     }
 
     if (binding.source === "badgeLimit" && layoutHasField("maxBadges")) {

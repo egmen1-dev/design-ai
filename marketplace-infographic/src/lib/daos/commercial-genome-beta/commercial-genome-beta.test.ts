@@ -141,6 +141,15 @@ function main() {
   testRefinementModeRuleOfOneChange();
   testAntiRulesAlwaysSelected();
   testBuildCommercialDecisionBetaDeterministic();
+  const decision = buildCommercialDecisionBeta({
+    selectedRules: [],
+    antiRules: [],
+    resolveInput: { marketplace: "wildberries" },
+    decisionTrace: [],
+  });
+  assert.equal(decision.productAreaTarget, 0.42);
+  assert.equal(decision.productAreaAspirationalTarget, 0.55);
+  console.log("✔ reachable vs aspirational product area targets (Sprint 8C)");
   testFlagOffDoesNotAffectLegacyPath();
   testExperimentalKnowledgeBaseSource();
   console.log("==> commercial-genome-beta tests OK");

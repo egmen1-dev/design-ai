@@ -13,8 +13,10 @@ function main() {
   });
 
   const layoutSpec = {
-    heroScale: 0.55,
-    productAreaPct: 55,
+    heroScale: 0.42,
+    productAreaPct: 42,
+    reachableProductAreaPct: 42,
+    aspirationalProductAreaPct: 55,
     primaryObject: "product",
     scenePreference: "industrial_technical",
     backgroundPalettePreference: "cool_neutral",

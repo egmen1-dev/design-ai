@@ -193,6 +193,8 @@ export function buildGenerationDiagnostic(
         environmentDirection: input.commercialGenomeBeta.decision.environmentDirection,
         backgroundContrastDirection: input.commercialGenomeBeta.decision.backgroundContrastDirection,
         productAreaTarget: input.commercialGenomeBeta.decision.productAreaTarget,
+        productAreaAspirationalTarget:
+          input.commercialGenomeBeta.decision.productAreaAspirationalTarget,
       },
     });
   }
