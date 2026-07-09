@@ -33,7 +33,7 @@ function commercialLayoutSpec() {
 function testMaterializerReadsHeroScale() {
   const spec = commercialLayoutSpec();
   const materialized = materializeCommercialLayoutIntent(spec);
-  assert.ok(materialized.compositionClauses.some((c) => c.includes("55%")));
+  assert.ok(materialized.compositionClauses.some((c) => c.includes("42%")));
   assert.ok(materialized.diagnostics.commercialIntentRead.includes("heroScale"));
   console.log("✔ materializer reads heroScale from LayoutSpec");
 }
@@ -80,7 +80,7 @@ function testPromptChangesWithCommercialLayout() {
   }).prompt;
 
   assert.notEqual(legacyPrompt, commercialPrompt);
-  assert.ok(commercialPrompt.includes("product hero target area 55%"));
+  assert.ok(commercialPrompt.includes("product hero target area 42%"));
   assert.ok(commercialPrompt.includes("product-first dominance"));
   assert.ok(commercialPrompt.includes("maximum 2 icon elements"));
   assert.ok(commercialPrompt.includes("cool neutral background separation"));

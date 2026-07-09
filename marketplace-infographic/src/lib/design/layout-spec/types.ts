@@ -69,6 +69,10 @@ export type LayoutSpec = {
   heroScale: number;
   /** Explicit product area % mirror of heroScale when commercial intent is applied */
   productAreaPct?: number;
+  /** Sprint 8C — reachable product area % for fidelity (current layout) */
+  reachableProductAreaPct?: number;
+  /** Sprint 8C — aspirational EKB target % (not applied to compositor) */
+  aspirationalProductAreaPct?: number;
   /** Commercial Genome — dominant object preference */
   primaryObject?: PrimaryObjectPreference;
   /** Commercial Genome — max benefit/characteristic lines */

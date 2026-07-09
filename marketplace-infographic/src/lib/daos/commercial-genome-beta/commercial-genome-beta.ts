@@ -103,7 +103,8 @@ export function buildCommercialGenomeBetaPromptSnippet(
   return [
     "[Commercial Genome Beta]",
     `Main: ${result.decision.mainMessage}`,
-    `Product area target: ${Math.round(result.decision.productAreaTarget * 100)}%`,
+    `Product area reachable target: ${Math.round(result.decision.productAreaTarget * 100)}%`,
+    `Product area aspirational (future layout): ${Math.round(result.decision.productAreaAspirationalTarget * 100)}%`,
     `Environment: ${env}`,
     `Background contrast: ${contrast}`,
     `Hierarchy: ${result.decision.visualHierarchy.join(" > ")}`,

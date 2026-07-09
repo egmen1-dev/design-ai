@@ -1,5 +1,6 @@
 import {
   deriveCommercialExpectations,
+  deriveProductAreaTargets,
   resolveMeasurementZones,
 } from "./expectations";
 import { measureImageCommercialSignals } from "./measure";
@@ -101,6 +102,10 @@ export async function evaluateCommercialFidelity(
     layoutSpec: input.layoutSpec,
     visualBlueprint: input.visualBlueprint,
   });
+  const productAreaTargets = deriveProductAreaTargets({
+    layoutSpec: input.layoutSpec,
+    visualBlueprint: input.visualBlueprint,
+  });
   const zones = resolveMeasurementZones(input.layoutSpec);
   const scenePreference =
     input.layoutSpec?.scenePreference ??
@@ -176,6 +181,15 @@ export async function evaluateCommercialFidelity(
     commercialValidationWarnings: warnings,
     commercialValidationErrors: errors,
     commercialImprovementCandidates: buildImprovementCandidates(parameters),
+    productAreaModel: {
+      aspirationalTarget: productAreaTargets.aspirationalTarget,
+      reachableTarget: productAreaTargets.reachableTarget,
+      measuredArea: measuredSignals.productAreaPct,
+      unreachableGap:
+        Math.round(
+          (productAreaTargets.aspirationalTarget - measuredSignals.productAreaPct) * 10,
+        ) / 10,
+    },
   };
 
   return {

@@ -1,10 +1,10 @@
 import assert from "node:assert/strict";
-import { buildInitialLayoutSpec } from "./builder";
 import {
   resolveLayoutObjectScale,
-  layoutObjectScaleFromTemplate,
   COMMERCIAL_PROPAGATION_VERSION,
 } from "./commercial-layout-propagation";
+import { GEOMETRY_CEILING_OBJECT_SCALE } from "./commercial-target-propagation";
+import { buildInitialLayoutSpec } from "./builder";
 import type { LayoutSpec } from "./types";
 
 function main() {
@@ -14,11 +14,13 @@ function main() {
 
   const commercialLayout = {
     ...legacyLayout,
-    heroScale: 0.55,
-    productAreaPct: 55,
+    heroScale: 0.42,
+    productAreaPct: 42,
+    reachableProductAreaPct: 42,
+    aspirationalProductAreaPct: 55,
     commercialLayout: {
       commercialIntentReceived: true,
-      commercialIntentApplied: ["heroScale", "productAreaPct"],
+      commercialIntentApplied: ["heroScale", "productAreaPct", "reachableProductAreaPct"],
       commercialIntentIgnored: [],
       commercialIntentReason: {},
       commercialIntegrationVersion: "1.1.0-sprint1",
@@ -28,7 +30,6 @@ function main() {
 
   const templateOnly = resolveLayoutObjectScale({ templateAreaPct: 66 });
   assert.equal(templateOnly.diagnostics.commercialScaleSource, "template");
-  assert.equal(templateOnly.objectScale, layoutObjectScaleFromTemplate(66));
   console.log("✔ template fallback unchanged");
 
   const commercial = resolveLayoutObjectScale({
@@ -36,11 +37,12 @@ function main() {
     templateAreaPct: 66,
   });
   assert.equal(commercial.diagnostics.commercialScaleSource, "commercial");
-  assert.equal(commercial.diagnostics.commercialScaleExpected, 55);
-  assert.equal(commercial.objectScale, 0.55);
-  assert.ok(commercial.diagnostics.commercialScaleDelta < 0);
+  assert.equal(commercial.diagnostics.commercialReachableTargetPct, 42);
+  assert.equal(commercial.diagnostics.commercialAspirationalTargetPct, 55);
+  assert.equal(commercial.objectScale, GEOMETRY_CEILING_OBJECT_SCALE);
+  assert.equal(commercial.diagnostics.commercialPropagationMode, "geometry_ceiling_harvest");
   assert.equal(commercial.diagnostics.commercialPropagationVersion, COMMERCIAL_PROPAGATION_VERSION);
-  console.log("✔ commercial LayoutSpec drives objectScale");
+  console.log("✔ commercial path harvests geometry ceiling @ objectScale=0.75");
 
   const legacy = resolveLayoutObjectScale({
     layoutSpec: legacyLayout,

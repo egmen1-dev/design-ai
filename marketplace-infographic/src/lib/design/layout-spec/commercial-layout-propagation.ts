@@ -1,6 +1,11 @@
 import type { LayoutSpec } from "./types";
+import {
+  GEOMETRY_CEILING_OBJECT_SCALE,
+  productionObjectScaleFromReachable,
+  PRODUCT_AREA_RECALIBRATION_VERSION,
+} from "./commercial-target-propagation";
 
-export const COMMERCIAL_PROPAGATION_VERSION = "1.0.0-sprint6b";
+export const COMMERCIAL_PROPAGATION_VERSION = "1.1.0-sprint8c";
 
 export type CommercialScaleSource = "commercial" | "template" | "legacy";
 
@@ -12,11 +17,17 @@ export type CommercialLayoutPropagationDiagnostics = {
   commercialScaleDelta: number;
   commercialPropagationVersion: string;
   commercialPropagationWarnings: string[];
+  /** Sprint 8C — reachable target from LayoutSpec (fidelity) */
+  commercialReachableTargetPct?: number;
+  /** Sprint 8C — aspirational EKB target (not compositor-applied) */
+  commercialAspirationalTargetPct?: number;
+  commercialPropagationMode?: string;
+  productAreaRecalibrationVersion?: string;
 };
 
 const LEGACY_DEFAULT_AREA_PCT = 65;
 
-function clampObjectScale(pct: number): number {
+function clampTemplateObjectScale(pct: number): number {
   return Math.min(0.62, Math.max(0.5, pct / 100));
 }
 
@@ -25,6 +36,9 @@ function hasCommercialLayoutIntent(layoutSpec?: LayoutSpec): boolean {
 }
 
 function commercialAreaPct(layoutSpec: LayoutSpec): number | undefined {
+  if (layoutSpec.reachableProductAreaPct != null) {
+    return layoutSpec.reachableProductAreaPct;
+  }
   if (layoutSpec.productAreaPct != null) {
     return layoutSpec.productAreaPct;
   }
@@ -34,9 +48,13 @@ function commercialAreaPct(layoutSpec: LayoutSpec): number | undefined {
   return undefined;
 }
 
+function aspirationalAreaPct(layoutSpec: LayoutSpec): number | undefined {
+  return layoutSpec.aspirationalProductAreaPct;
+}
+
 /**
  * Resolves compositor objectScale from stabilized LayoutSpec with template fallback.
- * Read-only propagation — does not mutate LayoutSpec or compositor algorithms.
+ * Commercial path harvests geometry ceiling (Sprint 8C) — does not pursue aspirational 55%.
  */
 export function resolveLayoutObjectScale(input: {
   layoutSpec?: LayoutSpec;
@@ -45,19 +63,33 @@ export function resolveLayoutObjectScale(input: {
   const warnings: string[] = [];
   const templatePct = input.templateAreaPct;
   const templateScale =
-    templatePct != null ? clampObjectScale(templatePct) : undefined;
+    templatePct != null ? clampTemplateObjectScale(templatePct) : undefined;
 
   let source: CommercialScaleSource = "legacy";
   let expectedPct = LEGACY_DEFAULT_AREA_PCT;
+  let objectScale = clampTemplateObjectScale(LEGACY_DEFAULT_AREA_PCT);
+  let propagationMode: string | undefined;
+  let reachablePct: number | undefined;
+  let aspirationalPct: number | undefined;
 
   if (hasCommercialLayoutIntent(input.layoutSpec) && input.layoutSpec) {
     const commercialPct = commercialAreaPct(input.layoutSpec);
+    aspirationalPct = aspirationalAreaPct(input.layoutSpec);
     if (commercialPct != null) {
       source = "commercial";
       expectedPct = commercialPct;
+      const harvest = productionObjectScaleFromReachable(commercialPct / 100);
+      objectScale = harvest.objectScale;
+      reachablePct = harvest.reachableTargetPct;
+      propagationMode = harvest.propagationMode;
+      if (aspirationalPct != null && aspirationalPct > reachablePct + 5) {
+        warnings.push(
+          `aspirational target ${aspirationalPct}% exceeds reachable ${reachablePct}% — compositor uses geometry ceiling harvest @ objectScale=${GEOMETRY_CEILING_OBJECT_SCALE}`,
+        );
+      }
     } else {
       warnings.push(
-        "Commercial LayoutSpec received but productAreaPct/heroScale unresolved — falling back to template",
+        "Commercial LayoutSpec received but reachable product area unresolved — falling back to template",
       );
     }
   }
@@ -66,23 +98,24 @@ export function resolveLayoutObjectScale(input: {
     if (templatePct != null) {
       source = "template";
       expectedPct = templatePct;
+      objectScale = clampTemplateObjectScale(templatePct);
     } else {
       source = "legacy";
       expectedPct = LEGACY_DEFAULT_AREA_PCT;
+      objectScale = clampTemplateObjectScale(LEGACY_DEFAULT_AREA_PCT);
     }
   }
 
-  const objectScale = clampObjectScale(expectedPct);
   const delta =
     templateScale != null ? Math.round((objectScale - templateScale) * 1000) / 1000 : 0;
 
   if (
     hasCommercialLayoutIntent(input.layoutSpec) &&
-    input.layoutSpec?.productAreaPct != null &&
+    input.layoutSpec?.reachableProductAreaPct != null &&
     source !== "commercial"
   ) {
     warnings.push(
-      `ASSERT: commercial productAreaPct=${input.layoutSpec.productAreaPct} present but source=${source}`,
+      `ASSERT: reachableProductAreaPct=${input.layoutSpec.reachableProductAreaPct} present but source=${source}`,
     );
   }
 
@@ -102,6 +135,10 @@ export function resolveLayoutObjectScale(input: {
       commercialScaleDelta: delta,
       commercialPropagationVersion: COMMERCIAL_PROPAGATION_VERSION,
       commercialPropagationWarnings: warnings,
+      commercialReachableTargetPct: reachablePct,
+      commercialAspirationalTargetPct: aspirationalPct,
+      commercialPropagationMode: propagationMode,
+      productAreaRecalibrationVersion: PRODUCT_AREA_RECALIBRATION_VERSION,
     },
   };
 }

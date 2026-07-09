@@ -9,6 +9,10 @@ import {
   isProfessionalProduct,
   isYellowProductColor,
 } from "./resolve-commercial-rules";
+import {
+  ASPIRATIONAL_PRODUCT_AREA_TARGET,
+  REACHABLE_PRODUCT_AREA_TARGET,
+} from "./product-area-targets";
 
 function normalize(value?: string): string {
   return (value ?? "").trim().toLowerCase();
@@ -88,12 +92,15 @@ export function buildCommercialDecisionBeta(
 ): CommercialDecisionBeta {
   const environmentDirection = deriveEnvironmentDirection(input);
   const backgroundContrastDirection = deriveBackgroundContrast(input);
+  const reachable = REACHABLE_PRODUCT_AREA_TARGET;
+  const aspirational = ASPIRATIONAL_PRODUCT_AREA_TARGET;
   const decisionTrace = [
     ...input.decisionTrace,
     `buildCommercialDecisionBeta: environment=${environmentDirection}`,
     `buildCommercialDecisionBeta: contrast=${backgroundContrastDirection}`,
     "heroDominance=product_first",
-    "productAreaTarget=0.55",
+    `productAreaTarget=${reachable} (reachable, current layout)`,
+    `productAreaAspirationalTarget=${aspirational} (future ultra-dominant, not applied)`,
     "maxCharacteristics=4",
     "badgeLimit=2",
   ];
@@ -101,7 +108,8 @@ export function buildCommercialDecisionBeta(
   return {
     mainMessage: deriveMainMessage(input),
     heroDominance: "product_first",
-    productAreaTarget: 0.55,
+    productAreaTarget: reachable,
+    productAreaAspirationalTarget: aspirational,
     maxCharacteristics: 4,
     badgeLimit: 2,
     environmentDirection,
