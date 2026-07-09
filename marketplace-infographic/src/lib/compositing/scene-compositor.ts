@@ -30,6 +30,12 @@ import {
   applyFloorColorSpill,
   fitProductWithSafePlacement,
 } from "./alpha-fit";
+import {
+  buildCommercialCalibrationDiagnostics,
+  computeMaxProductSize,
+  type CommercialCalibrationDiagnostics,
+  type CommercialCalibrationMode,
+} from "./commercial-calibration";
 import { publicDir, resolvePublicAssetPath, writablePublicDir } from "@/lib/runtime-paths";
 
 const CANVAS_W = WB_COVER.width;
@@ -44,6 +50,8 @@ export type SceneCompositeOptions = {
   scene: ScenePlan;
   compositionLayout?: CompositionLayout;
   objectScale?: number;
+  /** When true, uses Sprint 6C calibrated scaleBoost formula */
+  commercialCalibration?: boolean;
 };
 
 async function loadImageBuffer(source: string): Promise<Buffer> {
@@ -114,31 +122,6 @@ export async function softenBackgroundCenter(
     .composite([{ input: feathered, left, top, blend: "over" }])
     .png()
     .toBuffer();
-}
-
-function computeMaxProductSize(
-  compositionLayout: CompositionLayout | undefined,
-  objectScale: number,
-): { maxW: number; maxH: number } {
-  const canvasMaxW = Math.min(PRODUCT_MAX_WIDTH_PX, CANVAS_W - SIDE_MARGIN * 2);
-  const canvasMaxH = Math.min(PRODUCT_MAX_H, CANVAS_H - HEADER_RESERVE_PX - BOTTOM_PAD);
-
-  const comp = compositionLayout?.product;
-  if (comp) {
-    const zoneW = Math.round(xPct(comp.maxWidthPct));
-    const zoneH = Math.round(yPct(comp.maxHeightPct));
-    const scaleBoost = 0.58 + objectScale * 0.05;
-    return {
-      maxW: Math.min(canvasMaxW, PRODUCT_MAX_WIDTH_PX, Math.round(zoneW * scaleBoost)),
-      maxH: Math.min(canvasMaxH, PRODUCT_MAX_H, Math.round(zoneH * scaleBoost)),
-    };
-  }
-
-  const scale = 0.55 + objectScale * 0.18;
-  return {
-    maxW: Math.min(canvasMaxW, Math.round(canvasMaxW * scale)),
-    maxH: Math.min(canvasMaxH, Math.round(canvasMaxH * scale)),
-  };
 }
 
 async function fitProductInFrame(
@@ -257,6 +240,7 @@ export type SceneCompositeResult = {
   mergedBuffer: Buffer;
   lighting: Awaited<ReturnType<typeof analyzeSceneLighting>>;
   productPlacement: { left: number; top: number; width: number; height: number };
+  commercialCalibration?: CommercialCalibrationDiagnostics;
 };
 
 export async function compositeProductIntoScene(
@@ -268,6 +252,9 @@ export async function compositeProductIntoScene(
   const scene = options.scene;
   const objectScale = options.objectScale ?? 0.78;
   const comp = options.compositionLayout?.product;
+  const calibrationMode: CommercialCalibrationMode = options.commercialCalibration
+    ? "calibrated"
+    : "legacy";
 
   const [bgRaw, productRaw] = await Promise.all([
     loadImageBuffer(backgroundUrl),
@@ -275,7 +262,12 @@ export async function compositeProductIntoScene(
   ]);
 
   const bgResized = await resizeBackground(bgRaw);
-  const { maxW, maxH } = computeMaxProductSize(options.compositionLayout, objectScale);
+  const maxSize = computeMaxProductSize(
+    options.compositionLayout,
+    objectScale,
+    calibrationMode,
+  );
+  const { maxW, maxH } = maxSize;
 
   const prePlacement = {
     left: SIDE_MARGIN,
@@ -448,11 +440,22 @@ export async function compositeProductIntoScene(
   const absPath = path.join(dir, filename);
   await writeFile(absPath, mergedBuffer);
 
+  const measuredAreaPct =
+    Math.round(
+      ((finalPlacement.width * finalPlacement.height) / (CANVAS_W * CANVAS_H)) * 1000,
+    ) / 10;
+
   return {
     mergedPath: `/merged/${filename}`,
     mergedBuffer,
     lighting,
     productPlacement: finalPlacement,
+    commercialCalibration: buildCommercialCalibrationDiagnostics({
+      objectScale,
+      compositionLayout: options.compositionLayout,
+      mode: calibrationMode,
+      measuredAreaPct,
+    }),
   };
 }
 
