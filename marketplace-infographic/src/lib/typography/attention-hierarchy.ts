@@ -6,6 +6,8 @@ import type { AttentionCompetitionMetrics } from "@/lib/typography/attention-met
 import { measureAttentionCompetition } from "@/lib/typography/attention-metrics";
 import { computeSaliencyGrid } from "@/lib/typography/attention-heatmap";
 import { WB_COVER } from "@/lib/composition/canvas";
+import type { ProductCategory } from "@/lib/product-analysis";
+import { competitiveHeadlineScaleFactor } from "@/lib/competitive/dominance-preservation";
 
 export type AttentionHierarchyDiagnostics = {
   enabled: boolean;
@@ -31,8 +33,10 @@ export function attentionHierarchyEnabled(): boolean {
 }
 
 /** Additive CSS — de-emphasizes headline bar while preserving readability. */
-export function buildAttentionHierarchyCss(): string {
+export function buildAttentionHierarchyCss(category?: ProductCategory): string {
   if (!attentionHierarchyEnabled()) return "";
+
+  const headlineFactor = category != null ? competitiveHeadlineScaleFactor(category) : 0.62;
 
   return `
     /* DAOS Attention Hierarchy — Cycle 5 */
@@ -55,7 +59,7 @@ export function buildAttentionHierarchyCss(): string {
 
     .wb-top__title {
       font-weight: 600 !important;
-      font-size: calc(var(--comp-headline-size-pct) * var(--canvas-h-num) / 100 * 0.62px) !important;
+      font-size: calc(var(--comp-headline-size-pct) * var(--canvas-h-num) / 100 * ${headlineFactor}px) !important;
       letter-spacing: -0.01em !important;
       color: rgba(255, 255, 255, 0.9) !important;
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);

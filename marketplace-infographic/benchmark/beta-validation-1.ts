@@ -41,6 +41,7 @@ function applyBenchmarkEnv(): void {
   process.env.DAOS_COMMERCIAL_GENOME_BETA = "1";
   process.env.DAOS_COMMERCIAL_LAYOUT_INTEGRATION = "1";
   process.env.DAOS_ATTENTION_HIERARCHY = "1";
+  process.env.DAOS_COMPETITIVE_DOMINANCE = "1";
 }
 
 async function ensureBenchmarkUser(): Promise<string> {

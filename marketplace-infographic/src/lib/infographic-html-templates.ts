@@ -261,7 +261,7 @@ export function renderLayoutHtml(
       : "";
 
     const compositionCss = options?.compositionLayout
-      ? compositionToCssBlock(options.compositionLayout)
+      ? compositionToCssBlock(options.compositionLayout, options.productCategory)
       : "";
 
     const coverHeadHtml = buildMarketplaceCover(

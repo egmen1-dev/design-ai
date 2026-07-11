@@ -1,0 +1,56 @@
+{
+  "productId": 253631867,
+  "category": "auto",
+  "categoryLabel": "Авто",
+  "name": "Пылесос для автомобиля беспроводной мощный",
+  "daosGenerated": true,
+  "genDurationMs": 8488,
+  "leader": {
+    "productDominance": 54,
+    "foregroundIsolation": 63.8,
+    "headlineVisualWeight": 20.7,
+    "primaryFocusRatio": 0.289,
+    "attentionHierarchyScore": 32.6,
+    "commercialFidelity": 40,
+    "visualWeightHero": 24.5,
+    "thumbnailReadability": 61.3,
+    "productVisualWeight": 24.5,
+    "typographyCompetition": 28.3
+  },
+  "daos": {
+    "productDominance": 74,
+    "foregroundIsolation": 93.7,
+    "headlineVisualWeight": 10.1,
+    "primaryFocusRatio": 0.422,
+    "attentionHierarchyScore": 44.7,
+    "commercialFidelity": 47,
+    "visualWeightHero": 29.1,
+    "thumbnailReadability": 93.6,
+    "productVisualWeight": 29.1,
+    "typographyCompetition": 27.7
+  },
+  "delta": {
+    "productDominance": 20,
+    "foregroundIsolation": 29.9,
+    "headlineVisualWeight": -10.6,
+    "primaryFocusRatio": 0.13,
+    "attentionHierarchyScore": 12.1,
+    "commercialFidelity": 7,
+    "visualWeightHero": 4.6,
+    "thumbnailReadability": 32.3,
+    "productVisualWeight": 4.6,
+    "typographyCompetition": -0.6
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 54 vs DAOS 74 (Δ20); FI: WB 63.8 vs DAOS 93.7; Thumbnail: WB 61.3 vs DAOS 93.6; Fidelity: WB 40 vs DAOS 47"
+  },
+  "compositeScore": {
+    "leader": 47.6,
+    "daos": 66.6
+  }
+}

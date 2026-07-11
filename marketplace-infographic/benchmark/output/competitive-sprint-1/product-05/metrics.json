@@ -1,0 +1,56 @@
+{
+  "productId": 903330846,
+  "category": "garden",
+  "categoryLabel": "Сад",
+  "name": "Аккумуляторный триммер для травы мощный Косилка садовая",
+  "daosGenerated": true,
+  "genDurationMs": 13885,
+  "leader": {
+    "productDominance": 52,
+    "foregroundIsolation": 50.5,
+    "headlineVisualWeight": 24,
+    "primaryFocusRatio": 0.269,
+    "attentionHierarchyScore": 30.4,
+    "commercialFidelity": 37.5,
+    "visualWeightHero": 26.4,
+    "thumbnailReadability": 56.2,
+    "productVisualWeight": 26.4,
+    "typographyCompetition": 43.6
+  },
+  "daos": {
+    "productDominance": 53,
+    "foregroundIsolation": 76.7,
+    "headlineVisualWeight": 18.4,
+    "primaryFocusRatio": 0.316,
+    "attentionHierarchyScore": 33.8,
+    "commercialFidelity": 38.5,
+    "visualWeightHero": 20.7,
+    "thumbnailReadability": 75.4,
+    "productVisualWeight": 20.7,
+    "typographyCompetition": 31.9
+  },
+  "delta": {
+    "productDominance": 1,
+    "foregroundIsolation": 26.2,
+    "headlineVisualWeight": -5.6,
+    "primaryFocusRatio": 0.05,
+    "attentionHierarchyScore": 3.4,
+    "commercialFidelity": 1,
+    "visualWeightHero": -5.7,
+    "thumbnailReadability": 19.2,
+    "productVisualWeight": -5.7,
+    "typographyCompetition": -11.7
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 52 vs DAOS 53 (Δ1); FI: WB 50.5 vs DAOS 76.7; Thumbnail: WB 56.2 vs DAOS 75.4; Fidelity: WB 37.5 vs DAOS 38.5"
+  },
+  "compositeScore": {
+    "leader": 43.6,
+    "daos": 50.9
+  }
+}

@@ -40,6 +40,7 @@ import {
   buildCommercialAlphaPolicyDiagnostics,
   type CommercialAlphaPolicyDiagnostics,
 } from "./commercial-alpha-policy";
+import { competitiveLightingContrastBoost } from "@/lib/competitive/dominance-preservation";
 import {
   applyBackgroundSeparationHalo,
   enhanceForegroundIsolation,
@@ -299,7 +300,7 @@ export async function compositeProductIntoScene(
   let matched = await matchLightingToScene(productRaw, lighting, {
     expectedDirection: scene.lightingDirection,
     expectedTemperature: kelvin,
-    contrastBoost: 0.06,
+    contrastBoost: competitiveLightingContrastBoost(),
   });
   matched = await matchColorToScene(matched, bgResized, lighting);
   const softenedProduct = await softenProductEdges(matched);

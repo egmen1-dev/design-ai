@@ -1,0 +1,57 @@
+{
+  "productId": 196125400,
+  "category": "humidifier",
+  "categoryLabel": "Климат",
+  "name": "Увлажнитель воздуха мини",
+  "daosGenerated": true,
+  "genDurationMs": 8181,
+  "leader": {
+    "productDominance": 67,
+    "foregroundIsolation": 68.5,
+    "headlineVisualWeight": 12.1,
+    "primaryFocusRatio": 0.402,
+    "attentionHierarchyScore": 41.7,
+    "commercialFidelity": 57.5,
+    "visualWeightHero": 25.3,
+    "thumbnailReadability": 72.3,
+    "productVisualWeight": 25.3,
+    "typographyCompetition": 26.5
+  },
+  "daos": {
+    "productDominance": 68,
+    "foregroundIsolation": 66.4,
+    "headlineVisualWeight": 9.3,
+    "primaryFocusRatio": 0.426,
+    "attentionHierarchyScore": 42.2,
+    "commercialFidelity": 51,
+    "visualWeightHero": 19.6,
+    "thumbnailReadability": 63.9,
+    "productVisualWeight": 19.6,
+    "typographyCompetition": 19.1
+  },
+  "delta": {
+    "productDominance": 1,
+    "foregroundIsolation": -2.1,
+    "headlineVisualWeight": -2.8,
+    "primaryFocusRatio": 0.02,
+    "attentionHierarchyScore": 0.5,
+    "commercialFidelity": -6.5,
+    "visualWeightHero": -5.7,
+    "thumbnailReadability": -8.4,
+    "productVisualWeight": -5.7,
+    "typographyCompetition": -7.4
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "draw",
+    "fasterRead": "wb",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "Dominance: WB 67 vs DAOS 68 (Δ1); FI: WB 68.5 vs DAOS 66.4; Thumbnail: WB 72.3 vs DAOS 63.9; Fidelity: WB 57.5 vs DAOS 51",
+    "gapClass": "Visual"
+  },
+  "compositeScore": {
+    "leader": 58.8,
+    "daos": 55.9
+  }
+}

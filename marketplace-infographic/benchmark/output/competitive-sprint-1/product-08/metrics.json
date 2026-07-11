@@ -1,0 +1,56 @@
+{
+  "productId": 282525552,
+  "category": "construction",
+  "categoryLabel": "Строительство",
+  "name": "Перфоратор ПЭВ-1450",
+  "daosGenerated": true,
+  "genDurationMs": 7571,
+  "leader": {
+    "productDominance": 64,
+    "foregroundIsolation": 92,
+    "headlineVisualWeight": 11,
+    "primaryFocusRatio": 0.365,
+    "attentionHierarchyScore": 38.7,
+    "commercialFidelity": 50,
+    "visualWeightHero": 19.2,
+    "thumbnailReadability": 76.7,
+    "productVisualWeight": 19.2,
+    "typographyCompetition": 26.6
+  },
+  "daos": {
+    "productDominance": 77,
+    "foregroundIsolation": 104.7,
+    "headlineVisualWeight": 8.5,
+    "primaryFocusRatio": 0.511,
+    "attentionHierarchyScore": 49.1,
+    "commercialFidelity": 50,
+    "visualWeightHero": 28.7,
+    "thumbnailReadability": 100,
+    "productVisualWeight": 28.7,
+    "typographyCompetition": 20
+  },
+  "delta": {
+    "productDominance": 13,
+    "foregroundIsolation": 12.7,
+    "headlineVisualWeight": -2.5,
+    "primaryFocusRatio": 0.15,
+    "attentionHierarchyScore": 10.4,
+    "commercialFidelity": 0,
+    "visualWeightHero": 9.5,
+    "thumbnailReadability": 23.3,
+    "productVisualWeight": 9.5,
+    "typographyCompetition": -6.6
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 64 vs DAOS 77 (Δ13); FI: WB 92 vs DAOS 104.7; Thumbnail: WB 76.7 vs DAOS 100; Fidelity: WB 50 vs DAOS 50"
+  },
+  "compositeScore": {
+    "leader": 59.7,
+    "daos": 71.2
+  }
+}

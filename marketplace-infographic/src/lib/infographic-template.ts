@@ -119,6 +119,8 @@ export type RenderInfographicOptions = {
   compositionLayout?: CompositionLayout;
   /** Исходный промпт товара — для фактологичного заголовка marketplace */
   productPrompt?: string;
+  /** Product category — competitive attention hierarchy caps */
+  productCategory?: import("@/lib/product-analysis").ProductCategory;
 };
 
 function escapeHtml(text: string): string {

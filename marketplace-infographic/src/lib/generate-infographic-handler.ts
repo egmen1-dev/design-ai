@@ -38,6 +38,13 @@ import {
   captureAttentionHierarchy,
   type AttentionHierarchyDiagnostics,
 } from "@/lib/typography/attention-hierarchy";
+import {
+  applyCompetitiveObjectScale,
+  competitiveDominanceEnabled,
+  DOMINANCE_RETRY_SCALE_DELTA,
+  MAX_DOMINANCE_RETRIES,
+  shouldRetryForDominance,
+} from "@/lib/competitive/dominance-preservation";
 import { bufferToDataUrl } from "@/lib/background-removal";
 import {
   parseProductImageDataUrl,
@@ -318,12 +325,15 @@ function marketplaceCompositeOptions(input: {
   objectScale: number;
   commercialLayoutPropagation?: CommercialLayoutPropagationDiagnostics;
 }) {
+  const calibrated =
+    input.commercialLayoutPropagation?.commercialLayoutPropagation ||
+    competitiveDominanceEnabled();
   return {
     layout: "marketplace" as const,
     scene: input.scene,
     compositionLayout: input.compositionLayout,
     objectScale: input.objectScale,
-    commercialCalibration: input.commercialLayoutPropagation?.commercialLayoutPropagation ?? false,
+    commercialCalibration: calibrated,
   };
 }
 
@@ -1269,6 +1279,7 @@ export async function handleGenerateInfographic(
       compositionLayout?.metrics?.productAreaPct,
       governanceDecisionLog,
     ));
+    objectScale = applyCompetitiveObjectScale(objectScale, analysis.category, input.prompt);
     compositingHints = sceneToCompositingHints(scenePlan, objectScale);
 
     if (compositionLayout) {
@@ -1611,6 +1622,7 @@ export async function handleGenerateInfographic(
             compositionLayout.metrics?.productAreaPct,
             governanceDecisionLog,
           ));
+          objectScale = applyCompetitiveObjectScale(objectScale, analysis.category, input.prompt);
           cardMeaning = fixed.cardMeaning;
         }
 
@@ -1785,6 +1797,7 @@ export async function handleGenerateInfographic(
           compositionLayout.metrics?.productAreaPct,
           governanceDecisionLog,
         ));
+        objectScale = applyCompetitiveObjectScale(objectScale, analysis.category, input.prompt);
       }
 
       const retryScene = planScene({
@@ -2012,7 +2025,7 @@ export async function handleGenerateInfographic(
       ]);
     }
 
-    const html = renderInfographicHtml(infographicData, {
+    let html = renderInfographicHtml(infographicData, {
       style: appliedStyle,
       layout: sdData.layout,
       mergedImageDataUrl,
@@ -2026,22 +2039,74 @@ export async function handleGenerateInfographic(
       accentHex,
       compositionLayout,
       productPrompt: input.prompt,
+      productCategory: analysis.category,
     });
 
     const filename = `${input.userId}-${Date.now()}.png`;
     let imagePath = await renderHtmlToImage(html, filename);
     if (sdData.layout === "marketplace") {
       imagePath = await polishCoverImage(imagePath);
-      try {
-        const { resolvePublicAssetPath } = await import("@/lib/runtime-paths");
-        const normalized = imagePath.startsWith("/api/") ? imagePath.replace("/api/", "/") : imagePath;
-        const absPath = await resolvePublicAssetPath(normalized);
-        attentionHierarchy = await captureAttentionHierarchy(absPath);
-        if (!attentionHierarchy.law101Passed) {
-          console.warn("[attention-hierarchy] LAW_101", attentionHierarchy.law101Warning);
+
+      let dominanceRetry = 0;
+      while (dominanceRetry <= MAX_DOMINANCE_RETRIES) {
+        try {
+          const { resolvePublicAssetPath } = await import("@/lib/runtime-paths");
+          const normalized = imagePath.startsWith("/api/") ? imagePath.replace("/api/", "/") : imagePath;
+          const absPath = await resolvePublicAssetPath(normalized);
+          attentionHierarchy = await captureAttentionHierarchy(absPath);
+          if (!attentionHierarchy.law101Passed) {
+            console.warn("[attention-hierarchy] LAW_101", attentionHierarchy.law101Warning);
+          }
+
+          const needsDominanceRetry =
+            dominanceRetry < MAX_DOMINANCE_RETRIES &&
+            shouldRetryForDominance(attentionHierarchy) &&
+            usePhotorealMerge &&
+            productCutoutPath &&
+            backgroundUrl &&
+            isAiBackgroundSource(backgroundSource);
+
+          if (!needsDominanceRetry) break;
+
+          objectScale = Math.min(0.9, objectScale + DOMINANCE_RETRY_SCALE_DELTA);
+          governanceDecisionLog.push(
+            `CompetitiveDominance retry=${dominanceRetry + 1} objectScale=${objectScale} dominance=${attentionHierarchy.productDominanceScore}`,
+          );
+          compositeResult = await compositeProductIntoScene(backgroundUrl, productCutoutPath, {
+            ...marketplaceCompositeOptions({
+              scene: scenePlan,
+              compositionLayout,
+              objectScale,
+              commercialLayoutPropagation,
+            }),
+          });
+          commercialCalibration = captureCommercialCalibration(compositeResult);
+          commercialAlphaPolicy = captureCommercialAlphaPolicy(compositeResult);
+          foregroundIsolation = captureForegroundIsolation(compositeResult);
+          mergedImageDataUrl = await mergedToDataUrl(compositeResult.mergedPath);
+
+          html = renderInfographicHtml(infographicData, {
+            style: appliedStyle,
+            layout: sdData.layout,
+            mergedImageDataUrl,
+            backgroundDataUrl: undefined,
+            productImageSrc: undefined,
+            productImageCutout: false,
+            libraryFont,
+            libraryBadge,
+            parametricBadgeHtml,
+            accentHex,
+            compositionLayout,
+            productPrompt: input.prompt,
+            productCategory: analysis.category,
+          });
+          imagePath = await renderHtmlToImage(html, filename);
+          imagePath = await polishCoverImage(imagePath);
+          dominanceRetry++;
+        } catch (err) {
+          console.warn("[attention-hierarchy] capture failed:", err);
+          break;
         }
-      } catch (err) {
-        console.warn("[attention-hierarchy] capture failed:", err);
       }
     }
 
