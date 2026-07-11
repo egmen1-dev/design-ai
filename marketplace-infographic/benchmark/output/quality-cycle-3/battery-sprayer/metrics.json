@@ -1,0 +1,41 @@
+{
+  "productId": "battery-sprayer",
+  "label": "Battery Sprayer",
+  "durationMs": 7044,
+  "finalPath": "/workspace/marketplace-infographic/public/generated/cmrfxsxrr0000jspcur6g96le-1783748683977.png",
+  "compositedPath": "/workspace/marketplace-infographic/public/merged/d2ebe99a89a42e07-1783748681615.png",
+  "composited": true,
+  "foregroundIsolationApplied": true,
+  "foregroundIsolationDiagnostics": {
+    "applied": true,
+    "backgroundHalo": true,
+    "localContrast": true,
+    "edgeSeparation": true,
+    "version": "1.1.0-quality-cycle-3"
+  },
+  "metrics": {
+    "productAreaPct": 31,
+    "foregroundIsolation": 32,
+    "objectSharpness": 17.7,
+    "objectContrast": 44,
+    "localContrast": 17.7,
+    "visualWeightHero": 6.8,
+    "productDominanceScore": 29,
+    "commercialFidelityScore": 16
+  },
+  "metricsComposited": {
+    "productAreaPct": 31,
+    "foregroundIsolation": 86.5,
+    "objectSharpness": 15.6,
+    "objectContrast": 38.7,
+    "localContrast": 15.6,
+    "visualWeightHero": 5.5,
+    "productDominanceScore": 89,
+    "commercialFidelityScore": 32.5
+  },
+  "handlerFlags": [
+    null,
+    null
+  ],
+  "qualityScore": 85
+}

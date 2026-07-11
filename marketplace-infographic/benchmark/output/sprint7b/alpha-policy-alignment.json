@@ -1,0 +1,339 @@
+{
+  "sprint": "DAOS Product Sprint 7B — Alpha Policy Alignment",
+  "timestamp": "2026-07-09T16:10:20.497Z",
+  "policy": {
+    "commercialAlphaPolicyVersion": "1.0.0-sprint7b",
+    "alphaPolicySource": "aligned",
+    "alphaPolicyWidth": 612,
+    "alphaPolicyHeight": 696,
+    "alphaPolicyConsistency": true,
+    "alphaPolicyWarnings": []
+  },
+  "legacyAlphaCaps": {
+    "width": 504,
+    "height": 600,
+    "areaPct": 28
+  },
+  "alignedAlphaCaps": {
+    "width": 612,
+    "height": 696,
+    "areaPct": 39.4
+  },
+  "metrics": {
+    "products": 5,
+    "finalAreaImproved": 0,
+    "bboxChanged": 0,
+    "avgFinalArea7a": 14.6,
+    "avgFinalArea7b": 14.6,
+    "maxFinalArea7bObjectScale1": 24.3,
+    "policyConsistent": true
+  },
+  "successCriteria": {
+    "productMaxAlphaAligned": true,
+    "maxAreaIncreased": true,
+    "stressTestAreaGain": 17.7,
+    "noCompositorRewrite": true,
+    "policyConstantsOnly": true
+  },
+  "stressTestPolicyMax": {
+    "prepared": {
+      "width": 612,
+      "height": 696,
+      "areaPct": 39.4
+    },
+    "sprint7a": {
+      "frame": {
+        "width": 454,
+        "height": 516,
+        "areaPct": 21.7
+      },
+      "alpha": {
+        "width": 454,
+        "height": 516,
+        "areaPct": 21.7
+      },
+      "blockingConstraint": "PRODUCT_ALPHA_MAX_legacy_504x600"
+    },
+    "sprint7b": {
+      "frame": {
+        "width": 612,
+        "height": 696,
+        "areaPct": 39.4
+      },
+      "alpha": {
+        "width": 612,
+        "height": 696,
+        "areaPct": 39.4
+      },
+      "blockingConstraint": "alpha_fit_0.9_safety_only"
+    },
+    "areaGainPct": 17.7
+  },
+  "productResults": [
+    {
+      "productId": "battery-sprayer",
+      "targetAreaPct": 55,
+      "objectScale": 0.55,
+      "policy": {
+        "commercialAlphaPolicyVersion": "1.0.0-sprint7b",
+        "alphaPolicySource": "aligned",
+        "alphaPolicyWidth": 612,
+        "alphaPolicyHeight": 696,
+        "alphaPolicyConsistency": true,
+        "alphaPolicyWarnings": []
+      },
+      "comparison": {
+        "sprint7a": {
+          "allowedAreaPct": 19.5,
+          "alphaAreaPct": 12.6,
+          "finalAreaPct": 16,
+          "width": 372,
+          "height": 465,
+          "alphaBounds": {
+            "width": 318,
+            "height": 429
+          }
+        },
+        "sprint7b": {
+          "allowedAreaPct": 19.5,
+          "alphaAreaPct": 12.6,
+          "finalAreaPct": 16,
+          "width": 372,
+          "height": 465,
+          "alphaBounds": {
+            "width": 318,
+            "height": 429
+          }
+        },
+        "sprint7bObjectScale1": {
+          "allowedAreaPct": 29.5,
+          "alphaAreaPct": 19,
+          "finalAreaPct": 24.3,
+          "width": 458,
+          "height": 573,
+          "alphaBounds": {
+            "width": 390,
+            "height": 527
+          }
+        }
+      },
+      "contradictionResolved": true,
+      "finalAreaImproved": false,
+      "alphaAreaImproved": false,
+      "bboxChanged": false,
+      "areaDelta": 0
+    },
+    {
+      "productId": "construction-vacuum",
+      "targetAreaPct": 55,
+      "objectScale": 0.55,
+      "policy": {
+        "commercialAlphaPolicyVersion": "1.0.0-sprint7b",
+        "alphaPolicySource": "aligned",
+        "alphaPolicyWidth": 612,
+        "alphaPolicyHeight": 696,
+        "alphaPolicyConsistency": true,
+        "alphaPolicyWarnings": []
+      },
+      "comparison": {
+        "sprint7a": {
+          "allowedAreaPct": 16.7,
+          "alphaAreaPct": 10.8,
+          "finalAreaPct": 13.7,
+          "width": 344,
+          "height": 430,
+          "alphaBounds": {
+            "width": 294,
+            "height": 396
+          }
+        },
+        "sprint7b": {
+          "allowedAreaPct": 16.7,
+          "alphaAreaPct": 10.8,
+          "finalAreaPct": 13.7,
+          "width": 344,
+          "height": 430,
+          "alphaBounds": {
+            "width": 294,
+            "height": 396
+          }
+        },
+        "sprint7bObjectScale1": {
+          "allowedAreaPct": 29.5,
+          "alphaAreaPct": 19,
+          "finalAreaPct": 24.3,
+          "width": 458,
+          "height": 573,
+          "alphaBounds": {
+            "width": 390,
+            "height": 527
+          }
+        }
+      },
+      "contradictionResolved": true,
+      "finalAreaImproved": false,
+      "alphaAreaImproved": false,
+      "bboxChanged": false,
+      "areaDelta": 0
+    },
+    {
+      "productId": "impact-drill",
+      "targetAreaPct": 55,
+      "objectScale": 0.55,
+      "policy": {
+        "commercialAlphaPolicyVersion": "1.0.0-sprint7b",
+        "alphaPolicySource": "aligned",
+        "alphaPolicyWidth": 612,
+        "alphaPolicyHeight": 696,
+        "alphaPolicyConsistency": true,
+        "alphaPolicyWarnings": []
+      },
+      "comparison": {
+        "sprint7a": {
+          "allowedAreaPct": 16.7,
+          "alphaAreaPct": 10.8,
+          "finalAreaPct": 13.7,
+          "width": 344,
+          "height": 430,
+          "alphaBounds": {
+            "width": 294,
+            "height": 396
+          }
+        },
+        "sprint7b": {
+          "allowedAreaPct": 16.7,
+          "alphaAreaPct": 10.8,
+          "finalAreaPct": 13.7,
+          "width": 344,
+          "height": 430,
+          "alphaBounds": {
+            "width": 294,
+            "height": 396
+          }
+        },
+        "sprint7bObjectScale1": {
+          "allowedAreaPct": 29.5,
+          "alphaAreaPct": 19,
+          "finalAreaPct": 24.3,
+          "width": 458,
+          "height": 573,
+          "alphaBounds": {
+            "width": 390,
+            "height": 527
+          }
+        }
+      },
+      "contradictionResolved": true,
+      "finalAreaImproved": false,
+      "alphaAreaImproved": false,
+      "bboxChanged": false,
+      "areaDelta": 0
+    },
+    {
+      "productId": "pressure-washer",
+      "targetAreaPct": 55,
+      "objectScale": 0.55,
+      "policy": {
+        "commercialAlphaPolicyVersion": "1.0.0-sprint7b",
+        "alphaPolicySource": "aligned",
+        "alphaPolicyWidth": 612,
+        "alphaPolicyHeight": 696,
+        "alphaPolicyConsistency": true,
+        "alphaPolicyWarnings": []
+      },
+      "comparison": {
+        "sprint7a": {
+          "allowedAreaPct": 16.7,
+          "alphaAreaPct": 10.8,
+          "finalAreaPct": 13.7,
+          "width": 344,
+          "height": 430,
+          "alphaBounds": {
+            "width": 294,
+            "height": 396
+          }
+        },
+        "sprint7b": {
+          "allowedAreaPct": 16.7,
+          "alphaAreaPct": 10.8,
+          "finalAreaPct": 13.7,
+          "width": 344,
+          "height": 430,
+          "alphaBounds": {
+            "width": 294,
+            "height": 396
+          }
+        },
+        "sprint7bObjectScale1": {
+          "allowedAreaPct": 29.5,
+          "alphaAreaPct": 19,
+          "finalAreaPct": 24.3,
+          "width": 458,
+          "height": 573,
+          "alphaBounds": {
+            "width": 390,
+            "height": 527
+          }
+        }
+      },
+      "contradictionResolved": true,
+      "finalAreaImproved": false,
+      "alphaAreaImproved": false,
+      "bboxChanged": false,
+      "areaDelta": 0
+    },
+    {
+      "productId": "home-humidifier",
+      "targetAreaPct": 55,
+      "objectScale": 0.55,
+      "policy": {
+        "commercialAlphaPolicyVersion": "1.0.0-sprint7b",
+        "alphaPolicySource": "aligned",
+        "alphaPolicyWidth": 612,
+        "alphaPolicyHeight": 696,
+        "alphaPolicyConsistency": true,
+        "alphaPolicyWarnings": []
+      },
+      "comparison": {
+        "sprint7a": {
+          "allowedAreaPct": 19.5,
+          "alphaAreaPct": 12.6,
+          "finalAreaPct": 16,
+          "width": 372,
+          "height": 465,
+          "alphaBounds": {
+            "width": 318,
+            "height": 429
+          }
+        },
+        "sprint7b": {
+          "allowedAreaPct": 19.5,
+          "alphaAreaPct": 12.6,
+          "finalAreaPct": 16,
+          "width": 372,
+          "height": 465,
+          "alphaBounds": {
+            "width": 318,
+            "height": 429
+          }
+        },
+        "sprint7bObjectScale1": {
+          "allowedAreaPct": 29.5,
+          "alphaAreaPct": 19,
+          "finalAreaPct": 24.3,
+          "width": 458,
+          "height": 573,
+          "alphaBounds": {
+            "width": 390,
+            "height": 527
+          }
+        }
+      },
+      "contradictionResolved": true,
+      "finalAreaImproved": false,
+      "alphaAreaImproved": false,
+      "bboxChanged": false,
+      "areaDelta": 0
+    }
+  ]
+}
