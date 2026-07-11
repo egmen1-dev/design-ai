@@ -335,6 +335,12 @@ function captureCommercialAlphaPolicy(
   return composite?.commercialAlphaPolicy;
 }
 
+function captureForegroundIsolation(
+  composite: Awaited<ReturnType<typeof compositeProductIntoScene>> | undefined,
+) {
+  return composite?.foregroundIsolation;
+}
+
 function normalizeCardMeaning(
   partial: DesignBrief["cardMeaning"] | CardMeaning,
 ): CardMeaning {
@@ -1078,6 +1084,7 @@ export async function handleGenerateInfographic(
     let commercialLayoutPropagation: CommercialLayoutPropagationDiagnostics | undefined;
     let commercialCalibration: CommercialCalibrationDiagnostics | undefined;
     let commercialAlphaPolicy: CommercialAlphaPolicyDiagnostics | undefined;
+    let foregroundIsolation: ReturnType<typeof captureForegroundIsolation>;
     let geometryOptimization: GeometryClampDiagnostics | undefined;
     if (sdData.layout === "marketplace" && isCommercialGenomeBetaEnabled()) {
       commercialGenomeBetaResult = createCommercialGenomeBetaDecision({
@@ -1493,6 +1500,7 @@ export async function handleGenerateInfographic(
           });
           commercialCalibration = captureCommercialCalibration(compositeResult);
           commercialAlphaPolicy = captureCommercialAlphaPolicy(compositeResult);
+          foregroundIsolation = captureForegroundIsolation(compositeResult);
 
           qualityValidation = validateQuality({
             compositionLayout,
@@ -1657,6 +1665,7 @@ export async function handleGenerateInfographic(
             });
             commercialCalibration = captureCommercialCalibration(compositeResult);
           commercialAlphaPolicy = captureCommercialAlphaPolicy(compositeResult);
+          foregroundIsolation = captureForegroundIsolation(compositeResult);
             mergedImageDataUrl = await mergedToDataUrl(compositeResult.mergedPath);
             qualityValidation = validateQuality({
               compositionLayout,
@@ -1841,6 +1850,7 @@ export async function handleGenerateInfographic(
           });
           commercialCalibration = captureCommercialCalibration(compositeResult);
           commercialAlphaPolicy = captureCommercialAlphaPolicy(compositeResult);
+          foregroundIsolation = captureForegroundIsolation(compositeResult);
           mergedImageDataUrl = await mergedToDataUrl(compositeResult.mergedPath);
           qualityValidation = validateQuality({
             compositionLayout,
@@ -2059,6 +2069,7 @@ export async function handleGenerateInfographic(
       commercialLayoutPropagation,
       commercialCalibration,
       commercialAlphaPolicy,
+      foregroundIsolation,
       geometryOptimization,
       designConstitution: constitutionReports.length ? constitutionReports : undefined,
       renderEngine: renderEngineResult

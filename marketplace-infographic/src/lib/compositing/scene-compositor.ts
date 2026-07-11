@@ -40,6 +40,12 @@ import {
   buildCommercialAlphaPolicyDiagnostics,
   type CommercialAlphaPolicyDiagnostics,
 } from "./commercial-alpha-policy";
+import {
+  applyBackgroundSeparationHalo,
+  enhanceForegroundIsolation,
+  foregroundIsolationEnabled,
+  type ForegroundIsolationDiagnostics,
+} from "./foreground-isolation";
 import { publicDir, resolvePublicAssetPath, writablePublicDir } from "@/lib/runtime-paths";
 
 const CANVAS_W = WB_COVER.width;
@@ -246,6 +252,7 @@ export type SceneCompositeResult = {
   productPlacement: { left: number; top: number; width: number; height: number };
   commercialCalibration?: CommercialCalibrationDiagnostics;
   commercialAlphaPolicy?: CommercialAlphaPolicyDiagnostics;
+  foregroundIsolation?: ForegroundIsolationDiagnostics;
 };
 
 export async function compositeProductIntoScene(
@@ -334,8 +341,28 @@ export async function compositeProductIntoScene(
     options.compositionLayout,
   );
 
-  const bgPrepared = await softenBackgroundCenter(bgRaw, layout);
+  let bgPrepared = await softenBackgroundCenter(bgRaw, layout);
   const footCanvasY = productTop + alphaFootBottom;
+
+  let foregroundIsolation: ForegroundIsolationDiagnostics | undefined;
+  if (foregroundIsolationEnabled()) {
+    bgPrepared = await applyBackgroundSeparationHalo({
+      backgroundBuffer: bgPrepared,
+      canvasWidth: CANVAS_W,
+      canvasHeight: CANVAS_H,
+      productBuffer: product.buffer,
+      productLeft,
+      productTop,
+      lighting,
+    });
+    foregroundIsolation = {
+      applied: true,
+      backgroundHalo: true,
+      localContrast: false,
+      edgeSeparation: false,
+      version: "1.1.0-quality-cycle-3",
+    };
+  }
 
   const floorContact = await renderFloorContactShadow(
     product.buffer,
@@ -415,11 +442,28 @@ export async function compositeProductIntoScene(
     blend: "over",
   });
 
+  let mergedRaw = await sharp(bgPrepared).composite(composites).png().toBuffer();
+
+  if (foregroundIsolationEnabled()) {
+    mergedRaw = await enhanceForegroundIsolation(mergedRaw, {
+      canvasWidth: CANVAS_W,
+      canvasHeight: CANVAS_H,
+      productBuffer: product.buffer,
+      productLeft,
+      productTop,
+      lighting,
+    });
+    foregroundIsolation = {
+      applied: true,
+      backgroundHalo: true,
+      localContrast: true,
+      edgeSeparation: true,
+      version: "1.1.0-quality-cycle-3",
+    };
+  }
+
   const mergedBuffer = await applySceneHarmony(
-    await applyFilmGrain(
-      await sharp(bgPrepared).composite(composites).png().toBuffer(),
-      0.022,
-    ),
+    await applyFilmGrain(mergedRaw, 0.022),
     floorColor,
     lighting.warmth,
   );
@@ -435,7 +479,7 @@ export async function compositeProductIntoScene(
     .update(backgroundUrl)
     .update(productUrl)
     .update(scene.seed)
-    .update("ground-v5")
+    .update("ground-v7-isolation")
     .digest("hex")
     .slice(0, 16);
 
@@ -462,6 +506,7 @@ export async function compositeProductIntoScene(
       measuredAreaPct,
     }),
     commercialAlphaPolicy: buildCommercialAlphaPolicyDiagnostics(),
+    foregroundIsolation,
   };
 }
 
