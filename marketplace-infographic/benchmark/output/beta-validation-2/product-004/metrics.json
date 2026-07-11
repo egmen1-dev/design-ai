@@ -1,0 +1,62 @@
+{
+  "productId": 271588005,
+  "category": "power-tools",
+  "categoryLabel": "Электроинструмент",
+  "name": "Дрель ударная сетевая DL-1138 1200 Вт",
+  "daosGenerated": true,
+  "genDurationMs": 9854,
+  "leader": {
+    "productDominance": 55,
+    "foregroundIsolation": 53.9,
+    "headlineVisualWeight": 21.4,
+    "primaryFocusRatio": 0.278,
+    "attentionHierarchyScore": 31.9,
+    "commercialFidelity": 40.5,
+    "visualWeightHero": 25.9,
+    "thumbnailReadability": 44.2,
+    "productVisualWeight": 25.9,
+    "typographyCompetition": 38.1,
+    "secondaryFocusRatio": 0.722,
+    "attentionDistribution": 0.303
+  },
+  "daos": {
+    "productDominance": 72,
+    "foregroundIsolation": 74.3,
+    "headlineVisualWeight": 10.8,
+    "primaryFocusRatio": 0.369,
+    "attentionHierarchyScore": 41.9,
+    "commercialFidelity": 49,
+    "visualWeightHero": 28.9,
+    "thumbnailReadability": 78.2,
+    "productVisualWeight": 28.9,
+    "typographyCompetition": 31.9,
+    "secondaryFocusRatio": 0.631,
+    "attentionDistribution": 0.404
+  },
+  "delta": {
+    "productDominance": 17,
+    "foregroundIsolation": 20.4,
+    "headlineVisualWeight": -10.6,
+    "primaryFocusRatio": 0.09,
+    "attentionHierarchyScore": 10,
+    "commercialFidelity": 8.5,
+    "visualWeightHero": 3,
+    "thumbnailReadability": 34,
+    "productVisualWeight": 3,
+    "typographyCompetition": -6.2,
+    "secondaryFocusRatio": -0.09,
+    "attentionDistribution": 0.1
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 55 vs DAOS 72 (Δ17); FI: WB 53.9 vs DAOS 74.3; Thumbnail: WB 44.2 vs DAOS 78.2; Fidelity: WB 40.5 vs DAOS 49"
+  },
+  "compositeScore": {
+    "leader": 44,
+    "daos": 60.8
+  }
+}

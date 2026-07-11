@@ -1,0 +1,62 @@
+{
+  "productId": 111713973,
+  "category": "power-tools",
+  "categoryLabel": "Электроинструмент",
+  "name": "Ударная дрель ДЭ-680ЕРУ 680 Вт, реверс",
+  "daosGenerated": true,
+  "genDurationMs": 20565,
+  "leader": {
+    "productDominance": 45,
+    "foregroundIsolation": 43.7,
+    "headlineVisualWeight": 35.7,
+    "primaryFocusRatio": 0.234,
+    "attentionHierarchyScore": 26.6,
+    "commercialFidelity": 31,
+    "visualWeightHero": 29,
+    "thumbnailReadability": 41.8,
+    "productVisualWeight": 29,
+    "typographyCompetition": 57.3,
+    "secondaryFocusRatio": 0.766,
+    "attentionDistribution": 0.238
+  },
+  "daos": {
+    "productDominance": 56,
+    "foregroundIsolation": 54.7,
+    "headlineVisualWeight": 10.1,
+    "primaryFocusRatio": 0.319,
+    "attentionHierarchyScore": 35.3,
+    "commercialFidelity": 42,
+    "visualWeightHero": 13,
+    "thumbnailReadability": 63.1,
+    "productVisualWeight": 13,
+    "typographyCompetition": 22.2,
+    "secondaryFocusRatio": 0.681,
+    "attentionDistribution": 0.287
+  },
+  "delta": {
+    "productDominance": 11,
+    "foregroundIsolation": 11,
+    "headlineVisualWeight": -25.6,
+    "primaryFocusRatio": 0.08,
+    "attentionHierarchyScore": 8.7,
+    "commercialFidelity": 11,
+    "visualWeightHero": -16,
+    "thumbnailReadability": 21.3,
+    "productVisualWeight": -16,
+    "typographyCompetition": -35.1,
+    "secondaryFocusRatio": -0.08,
+    "attentionDistribution": 0.05
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 45 vs DAOS 56 (Δ11); FI: WB 43.7 vs DAOS 54.7; Thumbnail: WB 41.8 vs DAOS 63.1; Fidelity: WB 31 vs DAOS 42"
+  },
+  "compositeScore": {
+    "leader": 36.3,
+    "daos": 47.2
+  }
+}

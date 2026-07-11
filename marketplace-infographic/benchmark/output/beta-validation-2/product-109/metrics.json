@@ -1,0 +1,70 @@
+{
+  "productId": 927245531,
+  "category": "pressure-wash",
+  "categoryLabel": "Мойка",
+  "name": "Мойка высокого давления K7 Comfort Premium",
+  "daosGenerated": true,
+  "genDurationMs": 17515,
+  "leader": {
+    "productDominance": 55,
+    "foregroundIsolation": 66.5,
+    "headlineVisualWeight": 21.5,
+    "primaryFocusRatio": 0.358,
+    "attentionHierarchyScore": 36.2,
+    "commercialFidelity": 41.5,
+    "visualWeightHero": 26.9,
+    "thumbnailReadability": 72.9,
+    "productVisualWeight": 26.9,
+    "typographyCompetition": 33.3,
+    "secondaryFocusRatio": 0.642,
+    "attentionDistribution": 0.329
+  },
+  "daos": {
+    "productDominance": 44,
+    "foregroundIsolation": 75,
+    "headlineVisualWeight": 29.6,
+    "primaryFocusRatio": 0.306,
+    "attentionHierarchyScore": 31.7,
+    "commercialFidelity": 30,
+    "visualWeightHero": 22.7,
+    "thumbnailReadability": 81.5,
+    "productVisualWeight": 22.7,
+    "typographyCompetition": 44.6,
+    "secondaryFocusRatio": 0.694,
+    "attentionDistribution": 0.234
+  },
+  "delta": {
+    "productDominance": -11,
+    "foregroundIsolation": 8.5,
+    "headlineVisualWeight": 8.1,
+    "primaryFocusRatio": -0.05,
+    "attentionHierarchyScore": -4.5,
+    "commercialFidelity": -11.5,
+    "visualWeightHero": -4.2,
+    "thumbnailReadability": 8.6,
+    "productVisualWeight": -4.2,
+    "typographyCompetition": 11.3,
+    "secondaryFocusRatio": 0.05,
+    "attentionDistribution": -0.1
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "draw",
+    "wouldOpen": "draw",
+    "overall": "wb",
+    "rationale": "Dominance: WB 55 vs DAOS 44 (Δ-11); FI: WB 66.5 vs DAOS 75; Thumbnail: WB 72.9 vs DAOS 81.5; Fidelity: WB 41.5 vs DAOS 30",
+    "gapClass": "Product Dominance"
+  },
+  "failure": {
+    "slot": "product-109",
+    "productId": 927245531,
+    "category": "Мойка",
+    "reason": "Typography",
+    "detail": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 50.9,
+    "daos": 46.6
+  }
+}

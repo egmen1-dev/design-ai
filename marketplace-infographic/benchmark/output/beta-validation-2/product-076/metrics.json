@@ -1,0 +1,62 @@
+{
+  "productId": 451262681,
+  "category": "humidifier",
+  "categoryLabel": "Климат",
+  "name": "Увлажнитель воздуха для дома с подсветкой белый",
+  "daosGenerated": true,
+  "genDurationMs": 16079,
+  "leader": {
+    "productDominance": 43,
+    "foregroundIsolation": 61.5,
+    "headlineVisualWeight": 16.2,
+    "primaryFocusRatio": 0.228,
+    "attentionHierarchyScore": 30.1,
+    "commercialFidelity": 29,
+    "visualWeightHero": 12.2,
+    "thumbnailReadability": 53.9,
+    "productVisualWeight": 12.2,
+    "typographyCompetition": 27,
+    "secondaryFocusRatio": 0.772,
+    "attentionDistribution": 0.22
+  },
+  "daos": {
+    "productDominance": 52,
+    "foregroundIsolation": 66.3,
+    "headlineVisualWeight": 18.7,
+    "primaryFocusRatio": 0.347,
+    "attentionHierarchyScore": 35,
+    "commercialFidelity": 38,
+    "visualWeightHero": 20.8,
+    "thumbnailReadability": 66.7,
+    "productVisualWeight": 20.8,
+    "typographyCompetition": 32.8,
+    "secondaryFocusRatio": 0.653,
+    "attentionDistribution": 0.288
+  },
+  "delta": {
+    "productDominance": 9,
+    "foregroundIsolation": 4.8,
+    "headlineVisualWeight": 2.5,
+    "primaryFocusRatio": 0.12,
+    "attentionHierarchyScore": 4.9,
+    "commercialFidelity": 9,
+    "visualWeightHero": 8.6,
+    "thumbnailReadability": 12.8,
+    "productVisualWeight": 8.6,
+    "typographyCompetition": 5.8,
+    "secondaryFocusRatio": -0.12,
+    "attentionDistribution": 0.07
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 43 vs DAOS 52 (Δ9); FI: WB 61.5 vs DAOS 66.3; Thumbnail: WB 53.9 vs DAOS 66.7; Fidelity: WB 29 vs DAOS 38"
+  },
+  "compositeScore": {
+    "leader": 39.4,
+    "daos": 47.8
+  }
+}

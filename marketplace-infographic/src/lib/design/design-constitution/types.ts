@@ -4,6 +4,7 @@ import type { LayoutSpec, LayoutSpecPatch } from "@/lib/design/layout-spec";
 import type { CompositionLayout } from "@/lib/composition/types";
 import type { CardMeaning } from "@/lib/layout-engine/types";
 import type { PromptCompilerMetadata } from "@/lib/design/prompt-compiler";
+import type { AttentionHierarchyDiagnostics } from "@/lib/typography/attention-hierarchy";
 
 /** Constitution version sets — category-specific law bundles */
 export type ConstitutionSetId =
@@ -103,6 +104,7 @@ export type ConstitutionContext = {
   sceneScore?: number;
   compositionScore?: number;
   luxuryScore?: number;
+  attentionHierarchy?: AttentionHierarchyDiagnostics;
 };
 
 export type ConstitutionScores = {

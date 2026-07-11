@@ -1,0 +1,28 @@
+{
+  "source": "daos",
+  "category": "impact-drill",
+  "categoryLabel": "Drill",
+  "productId": "product-3",
+  "sprint95Fidelity": 33.5,
+  "compositeFailed": true,
+  "handlerFlags": [
+    "not_professional",
+    "product_not_dominant",
+    "png_overlay_feel"
+  ],
+  "productAreaPct": 31,
+  "productDominanceScore": 47,
+  "visualHierarchyScore": 47,
+  "backgroundSeparationScore": 12,
+  "sceneConsistencyScore": 100,
+  "backgroundComplexity": 0.5,
+  "typographyDensity": 1.1,
+  "heroLuminance": 150.5,
+  "globalLuminance": 145.3,
+  "heroSaturation": 87.4,
+  "negativeSpaceProxy": 69,
+  "commercialFidelityScore": 33.5,
+  "heroZoneCanvasPct": 31.3,
+  "visualWeightHero": 26.3,
+  "contrastSeparation": 12
+}

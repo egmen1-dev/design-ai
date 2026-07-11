@@ -1,0 +1,62 @@
+{
+  "productId": 287231064,
+  "category": "humidifier",
+  "categoryLabel": "Климат",
+  "name": "Увлажнитель воздуха ультразвуковой с УФ и Wi-Fi TUH02DE, 4 л",
+  "daosGenerated": true,
+  "genDurationMs": 14391,
+  "leader": {
+    "productDominance": 49,
+    "foregroundIsolation": 44.3,
+    "headlineVisualWeight": 18.5,
+    "primaryFocusRatio": 0.262,
+    "attentionHierarchyScore": 30.6,
+    "commercialFidelity": 51.5,
+    "visualWeightHero": 17.7,
+    "thumbnailReadability": 46.5,
+    "productVisualWeight": 17.7,
+    "typographyCompetition": 35.6,
+    "secondaryFocusRatio": 0.738,
+    "attentionDistribution": 0.247
+  },
+  "daos": {
+    "productDominance": 62,
+    "foregroundIsolation": 74.3,
+    "headlineVisualWeight": 13.8,
+    "primaryFocusRatio": 0.449,
+    "attentionHierarchyScore": 42.3,
+    "commercialFidelity": 48,
+    "visualWeightHero": 23.3,
+    "thumbnailReadability": 57.7,
+    "productVisualWeight": 23.3,
+    "typographyCompetition": 23.9,
+    "secondaryFocusRatio": 0.551,
+    "attentionDistribution": 0.382
+  },
+  "delta": {
+    "productDominance": 13,
+    "foregroundIsolation": 30,
+    "headlineVisualWeight": -4.7,
+    "primaryFocusRatio": 0.19,
+    "attentionHierarchyScore": 11.7,
+    "commercialFidelity": -3.5,
+    "visualWeightHero": 5.6,
+    "thumbnailReadability": 11.2,
+    "productVisualWeight": 5.6,
+    "typographyCompetition": -11.7,
+    "secondaryFocusRatio": -0.19,
+    "attentionDistribution": 0.14
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 49 vs DAOS 62 (Δ13); FI: WB 44.3 vs DAOS 74.3; Thumbnail: WB 46.5 vs DAOS 57.7; Fidelity: WB 51.5 vs DAOS 48"
+  },
+  "compositeScore": {
+    "leader": 42.5,
+    "daos": 53.9
+  }
+}

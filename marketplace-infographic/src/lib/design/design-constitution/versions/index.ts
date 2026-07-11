@@ -47,6 +47,7 @@ export const CONSTITUTION_SETS: Record<ConstitutionSetId, ConstitutionSetDefinit
       "LAW_010",
       "LAW_012",
       "LAW_014",
+      "LAW_101",
     ],
   },
   beauty_dna: {

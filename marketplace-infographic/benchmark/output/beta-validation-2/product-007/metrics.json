@@ -1,0 +1,62 @@
+{
+  "productId": 467367359,
+  "category": "power-tools",
+  "categoryLabel": "Электроинструмент",
+  "name": "Ударная дрель Mak HP1630",
+  "daosGenerated": true,
+  "genDurationMs": 11381,
+  "leader": {
+    "productDominance": 53,
+    "foregroundIsolation": 60.4,
+    "headlineVisualWeight": 19.1,
+    "primaryFocusRatio": 0.261,
+    "attentionHierarchyScore": 30.8,
+    "commercialFidelity": 38.5,
+    "visualWeightHero": 21.2,
+    "thumbnailReadability": 52.3,
+    "productVisualWeight": 21.2,
+    "typographyCompetition": 38.1,
+    "secondaryFocusRatio": 0.739,
+    "attentionDistribution": 0.27
+  },
+  "daos": {
+    "productDominance": 66,
+    "foregroundIsolation": 83.2,
+    "headlineVisualWeight": 8.5,
+    "primaryFocusRatio": 0.475,
+    "attentionHierarchyScore": 43.5,
+    "commercialFidelity": 51,
+    "visualWeightHero": 16.5,
+    "thumbnailReadability": 79.3,
+    "productVisualWeight": 16.5,
+    "typographyCompetition": 10.5,
+    "secondaryFocusRatio": 0.525,
+    "attentionDistribution": 0.465
+  },
+  "delta": {
+    "productDominance": 13,
+    "foregroundIsolation": 22.8,
+    "headlineVisualWeight": -10.6,
+    "primaryFocusRatio": 0.21,
+    "attentionHierarchyScore": 12.7,
+    "commercialFidelity": 12.5,
+    "visualWeightHero": -4.7,
+    "thumbnailReadability": 27,
+    "productVisualWeight": -4.7,
+    "typographyCompetition": -27.6,
+    "secondaryFocusRatio": -0.21,
+    "attentionDistribution": 0.2
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 53 vs DAOS 66 (Δ13); FI: WB 60.4 vs DAOS 83.2; Thumbnail: WB 52.3 vs DAOS 79.3; Fidelity: WB 38.5 vs DAOS 51"
+  },
+  "compositeScore": {
+    "leader": 44.7,
+    "daos": 60
+  }
+}

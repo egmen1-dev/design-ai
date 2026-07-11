@@ -1,0 +1,62 @@
+{
+  "productId": 895532765,
+  "category": "construction",
+  "categoryLabel": "Строительство",
+  "name": "Перфоратор сетевой ПЕ 1200",
+  "daosGenerated": true,
+  "genDurationMs": 14937,
+  "leader": {
+    "productDominance": 49,
+    "foregroundIsolation": 53.1,
+    "headlineVisualWeight": 28.1,
+    "primaryFocusRatio": 0.276,
+    "attentionHierarchyScore": 29.7,
+    "commercialFidelity": 35,
+    "visualWeightHero": 26.3,
+    "thumbnailReadability": 59,
+    "productVisualWeight": 26.3,
+    "typographyCompetition": 48,
+    "secondaryFocusRatio": 0.724,
+    "attentionDistribution": 0.257
+  },
+  "daos": {
+    "productDominance": 59,
+    "foregroundIsolation": 71.6,
+    "headlineVisualWeight": 15.2,
+    "primaryFocusRatio": 0.328,
+    "attentionHierarchyScore": 36,
+    "commercialFidelity": 45,
+    "visualWeightHero": 22,
+    "thumbnailReadability": 68.5,
+    "productVisualWeight": 22,
+    "typographyCompetition": 35.8,
+    "secondaryFocusRatio": 0.672,
+    "attentionDistribution": 0.301
+  },
+  "delta": {
+    "productDominance": 10,
+    "foregroundIsolation": 18.5,
+    "headlineVisualWeight": -12.9,
+    "primaryFocusRatio": 0.05,
+    "attentionHierarchyScore": 6.3,
+    "commercialFidelity": 10,
+    "visualWeightHero": -4.3,
+    "thumbnailReadability": 9.5,
+    "productVisualWeight": -4.3,
+    "typographyCompetition": -12.2,
+    "secondaryFocusRatio": -0.05,
+    "attentionDistribution": 0.04
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 49 vs DAOS 59 (Δ10); FI: WB 53.1 vs DAOS 71.6; Thumbnail: WB 59 vs DAOS 68.5; Fidelity: WB 35 vs DAOS 45"
+  },
+  "compositeScore": {
+    "leader": 42.7,
+    "daos": 52.8
+  }
+}

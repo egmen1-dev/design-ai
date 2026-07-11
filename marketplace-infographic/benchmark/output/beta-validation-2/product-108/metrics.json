@@ -1,0 +1,70 @@
+{
+  "productId": 901618182,
+  "category": "pressure-wash",
+  "categoryLabel": "Мойка",
+  "name": "Мойка высокого давления BHR-2000M чёрный бирюзовый",
+  "daosGenerated": true,
+  "genDurationMs": 17931,
+  "leader": {
+    "productDominance": 64,
+    "foregroundIsolation": 60.1,
+    "headlineVisualWeight": 19,
+    "primaryFocusRatio": 0.409,
+    "attentionHierarchyScore": 41.7,
+    "commercialFidelity": 56.5,
+    "visualWeightHero": 33.9,
+    "thumbnailReadability": 54.6,
+    "productVisualWeight": 33.9,
+    "typographyCompetition": 33.4,
+    "secondaryFocusRatio": 0.591,
+    "attentionDistribution": 0.393
+  },
+  "daos": {
+    "productDominance": 38,
+    "foregroundIsolation": 57,
+    "headlineVisualWeight": 16.8,
+    "primaryFocusRatio": 0.223,
+    "attentionHierarchyScore": 30.1,
+    "commercialFidelity": 24,
+    "visualWeightHero": 10.3,
+    "thumbnailReadability": 64.2,
+    "productVisualWeight": 10.3,
+    "typographyCompetition": 29.8,
+    "secondaryFocusRatio": 0.777,
+    "attentionDistribution": 0.181
+  },
+  "delta": {
+    "productDominance": -26,
+    "foregroundIsolation": -3.1,
+    "headlineVisualWeight": -2.2,
+    "primaryFocusRatio": -0.19,
+    "attentionHierarchyScore": -11.6,
+    "commercialFidelity": -32.5,
+    "visualWeightHero": -23.6,
+    "thumbnailReadability": 9.6,
+    "productVisualWeight": -23.6,
+    "typographyCompetition": -3.6,
+    "secondaryFocusRatio": 0.19,
+    "attentionDistribution": -0.21
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "draw",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "Dominance: WB 64 vs DAOS 38 (Δ-26); FI: WB 60.1 vs DAOS 57; Thumbnail: WB 54.6 vs DAOS 64.2; Fidelity: WB 56.5 vs DAOS 24",
+    "gapClass": "Product Dominance"
+  },
+  "failure": {
+    "slot": "product-108",
+    "productId": 901618182,
+    "category": "Мойка",
+    "reason": "Dominance",
+    "detail": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 54.3,
+    "daos": 37.6
+  }
+}

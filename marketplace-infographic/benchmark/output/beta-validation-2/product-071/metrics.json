@@ -1,0 +1,70 @@
+{
+  "productId": 196125400,
+  "category": "humidifier",
+  "categoryLabel": "Климат",
+  "name": "Увлажнитель воздуха мини",
+  "daosGenerated": true,
+  "genDurationMs": 17785,
+  "leader": {
+    "productDominance": 67,
+    "foregroundIsolation": 68.5,
+    "headlineVisualWeight": 12.1,
+    "primaryFocusRatio": 0.402,
+    "attentionHierarchyScore": 41.7,
+    "commercialFidelity": 57.5,
+    "visualWeightHero": 25.3,
+    "thumbnailReadability": 72.3,
+    "productVisualWeight": 25.3,
+    "typographyCompetition": 26.5,
+    "secondaryFocusRatio": 0.598,
+    "attentionDistribution": 0.396
+  },
+  "daos": {
+    "productDominance": 54,
+    "foregroundIsolation": 44.4,
+    "headlineVisualWeight": 11.3,
+    "primaryFocusRatio": 0.332,
+    "attentionHierarchyScore": 35.5,
+    "commercialFidelity": 40.5,
+    "visualWeightHero": 13.5,
+    "thumbnailReadability": 42.3,
+    "productVisualWeight": 13.5,
+    "typographyCompetition": 22.1,
+    "secondaryFocusRatio": 0.668,
+    "attentionDistribution": 0.288
+  },
+  "delta": {
+    "productDominance": -13,
+    "foregroundIsolation": -24.1,
+    "headlineVisualWeight": -0.8,
+    "primaryFocusRatio": -0.07,
+    "attentionHierarchyScore": -6.2,
+    "commercialFidelity": -17,
+    "visualWeightHero": -11.8,
+    "thumbnailReadability": -30,
+    "productVisualWeight": -11.8,
+    "typographyCompetition": -4.4,
+    "secondaryFocusRatio": 0.07,
+    "attentionDistribution": -0.11
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "wb",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "Dominance: WB 67 vs DAOS 54 (Δ-13); FI: WB 68.5 vs DAOS 44.4; Thumbnail: WB 72.3 vs DAOS 42.3; Fidelity: WB 57.5 vs DAOS 40.5",
+    "gapClass": "Product Dominance"
+  },
+  "failure": {
+    "slot": "product-071",
+    "productId": 196125400,
+    "category": "Климат",
+    "reason": "Category Specific",
+    "detail": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 58.8,
+    "daos": 41.6
+  }
+}

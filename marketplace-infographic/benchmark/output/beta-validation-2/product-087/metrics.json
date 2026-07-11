@@ -1,0 +1,62 @@
+{
+  "productId": 456423416,
+  "category": "kitchen",
+  "categoryLabel": "Кухня",
+  "name": "Блендер погружной измельчитель набор 3 в 1 CT-1349",
+  "daosGenerated": true,
+  "genDurationMs": 19230,
+  "leader": {
+    "productDominance": 47,
+    "foregroundIsolation": 56.8,
+    "headlineVisualWeight": 24.1,
+    "primaryFocusRatio": 0.256,
+    "attentionHierarchyScore": 29.5,
+    "commercialFidelity": 32.5,
+    "visualWeightHero": 21.4,
+    "thumbnailReadability": 52.8,
+    "productVisualWeight": 21.4,
+    "typographyCompetition": 37.3,
+    "secondaryFocusRatio": 0.744,
+    "attentionDistribution": 0.258
+  },
+  "daos": {
+    "productDominance": 44,
+    "foregroundIsolation": 54.6,
+    "headlineVisualWeight": 12.5,
+    "primaryFocusRatio": 0.275,
+    "attentionHierarchyScore": 32.6,
+    "commercialFidelity": 30,
+    "visualWeightHero": 10.2,
+    "thumbnailReadability": 53.2,
+    "productVisualWeight": 10.2,
+    "typographyCompetition": 22.3,
+    "secondaryFocusRatio": 0.725,
+    "attentionDistribution": 0.227
+  },
+  "delta": {
+    "productDominance": -3,
+    "foregroundIsolation": -2.2,
+    "headlineVisualWeight": -11.6,
+    "primaryFocusRatio": 0.02,
+    "attentionHierarchyScore": 3.1,
+    "commercialFidelity": -2.5,
+    "visualWeightHero": -11.2,
+    "thumbnailReadability": 0.4,
+    "productVisualWeight": -11.2,
+    "typographyCompetition": -15,
+    "secondaryFocusRatio": -0.02,
+    "attentionDistribution": -0.03
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "draw",
+    "fasterRead": "draw",
+    "wouldOpen": "draw",
+    "overall": "draw",
+    "rationale": "Dominance: WB 47 vs DAOS 44 (Δ-3); FI: WB 56.8 vs DAOS 54.6; Thumbnail: WB 52.8 vs DAOS 53.2; Fidelity: WB 32.5 vs DAOS 30"
+  },
+  "compositeScore": {
+    "leader": 40.9,
+    "daos": 39
+  }
+}

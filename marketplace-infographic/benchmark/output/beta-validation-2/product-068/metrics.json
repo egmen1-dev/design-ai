@@ -1,0 +1,70 @@
+{
+  "productId": 211165129,
+  "category": "home",
+  "categoryLabel": "Дом",
+  "name": "Коробка для хранения с крышкой",
+  "daosGenerated": true,
+  "genDurationMs": 17929,
+  "leader": {
+    "productDominance": 43,
+    "foregroundIsolation": 43.6,
+    "headlineVisualWeight": 23.6,
+    "primaryFocusRatio": 0.225,
+    "attentionHierarchyScore": 28.4,
+    "commercialFidelity": 29,
+    "visualWeightHero": 18.5,
+    "thumbnailReadability": 32,
+    "productVisualWeight": 18.5,
+    "typographyCompetition": 37.5,
+    "secondaryFocusRatio": 0.775,
+    "attentionDistribution": 0.232
+  },
+  "daos": {
+    "productDominance": 28,
+    "foregroundIsolation": 50.7,
+    "headlineVisualWeight": 20.4,
+    "primaryFocusRatio": 0.197,
+    "attentionHierarchyScore": 29.3,
+    "commercialFidelity": 15.5,
+    "visualWeightHero": 8,
+    "thumbnailReadability": 35.8,
+    "productVisualWeight": 8,
+    "typographyCompetition": 28.7,
+    "secondaryFocusRatio": 0.803,
+    "attentionDistribution": 0.14
+  },
+  "delta": {
+    "productDominance": -15,
+    "foregroundIsolation": 7.1,
+    "headlineVisualWeight": -3.2,
+    "primaryFocusRatio": -0.03,
+    "attentionHierarchyScore": 0.9,
+    "commercialFidelity": -13.5,
+    "visualWeightHero": -10.5,
+    "thumbnailReadability": 3.8,
+    "productVisualWeight": -10.5,
+    "typographyCompetition": -8.8,
+    "secondaryFocusRatio": 0.03,
+    "attentionDistribution": -0.09
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "draw",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "Dominance: WB 43 vs DAOS 28 (Δ-15); FI: WB 43.6 vs DAOS 50.7; Thumbnail: WB 32 vs DAOS 35.8; Fidelity: WB 29 vs DAOS 15.5",
+    "gapClass": "Product Dominance"
+  },
+  "failure": {
+    "slot": "product-068",
+    "productId": 211165129,
+    "category": "Дом",
+    "reason": "Dominance",
+    "detail": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 33.6,
+    "daos": 27.2
+  }
+}

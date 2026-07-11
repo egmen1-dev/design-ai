@@ -1,0 +1,56 @@
+{
+  "productId": 192183239,
+  "category": "home",
+  "categoryLabel": "Дом",
+  "name": "Держатель для соусов в холодильник",
+  "daosGenerated": true,
+  "genDurationMs": 10054,
+  "leader": {
+    "productDominance": 64,
+    "foregroundIsolation": 42.6,
+    "headlineVisualWeight": 13.4,
+    "primaryFocusRatio": 0.351,
+    "attentionHierarchyScore": 38.7,
+    "commercialFidelity": 50,
+    "visualWeightHero": 24.9,
+    "thumbnailReadability": 52,
+    "productVisualWeight": 24.9,
+    "typographyCompetition": 26.5
+  },
+  "daos": {
+    "productDominance": 71,
+    "foregroundIsolation": 78.9,
+    "headlineVisualWeight": 10.5,
+    "primaryFocusRatio": 0.353,
+    "attentionHierarchyScore": 40.7,
+    "commercialFidelity": 50,
+    "visualWeightHero": 27,
+    "thumbnailReadability": 90.9,
+    "productVisualWeight": 27,
+    "typographyCompetition": 34.9
+  },
+  "delta": {
+    "productDominance": 7,
+    "foregroundIsolation": 36.3,
+    "headlineVisualWeight": -2.9,
+    "primaryFocusRatio": 0,
+    "attentionHierarchyScore": 2,
+    "commercialFidelity": 0,
+    "visualWeightHero": 2.1,
+    "thumbnailReadability": 38.9,
+    "productVisualWeight": 2.1,
+    "typographyCompetition": 8.4
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 64 vs DAOS 71 (Δ7); FI: WB 42.6 vs DAOS 78.9; Thumbnail: WB 52 vs DAOS 90.9; Fidelity: WB 50 vs DAOS 50"
+  },
+  "compositeScore": {
+    "leader": 49.1,
+    "daos": 63
+  }
+}

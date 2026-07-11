@@ -1,0 +1,62 @@
+{
+  "productId": 467226722,
+  "category": "construction",
+  "categoryLabel": "Строительство",
+  "name": "Перфоратор электрический ударный с кейсом RH2526H, 1000 Вт",
+  "daosGenerated": true,
+  "genDurationMs": 17785,
+  "leader": {
+    "productDominance": 51,
+    "foregroundIsolation": 49.9,
+    "headlineVisualWeight": 21.6,
+    "primaryFocusRatio": 0.273,
+    "attentionHierarchyScore": 30.7,
+    "commercialFidelity": 36.5,
+    "visualWeightHero": 22.7,
+    "thumbnailReadability": 60.9,
+    "productVisualWeight": 22.7,
+    "typographyCompetition": 36.2,
+    "secondaryFocusRatio": 0.727,
+    "attentionDistribution": 0.282
+  },
+  "daos": {
+    "productDominance": 44,
+    "foregroundIsolation": 56.7,
+    "headlineVisualWeight": 25,
+    "primaryFocusRatio": 0.294,
+    "attentionHierarchyScore": 31.7,
+    "commercialFidelity": 30,
+    "visualWeightHero": 19.6,
+    "thumbnailReadability": 62,
+    "productVisualWeight": 19.6,
+    "typographyCompetition": 40.1,
+    "secondaryFocusRatio": 0.706,
+    "attentionDistribution": 0.231
+  },
+  "delta": {
+    "productDominance": -7,
+    "foregroundIsolation": 6.8,
+    "headlineVisualWeight": 3.4,
+    "primaryFocusRatio": 0.02,
+    "attentionHierarchyScore": 1,
+    "commercialFidelity": -6.5,
+    "visualWeightHero": -3.1,
+    "thumbnailReadability": 1.1,
+    "productVisualWeight": -3.1,
+    "typographyCompetition": 3.9,
+    "secondaryFocusRatio": -0.02,
+    "attentionDistribution": -0.05
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "draw",
+    "fasterRead": "draw",
+    "wouldOpen": "draw",
+    "overall": "draw",
+    "rationale": "Dominance: WB 51 vs DAOS 44 (Δ-7); FI: WB 49.9 vs DAOS 56.7; Thumbnail: WB 60.9 vs DAOS 62; Fidelity: WB 36.5 vs DAOS 30"
+  },
+  "compositeScore": {
+    "leader": 43.5,
+    "daos": 40.9
+  }
+}

@@ -1,0 +1,1403 @@
+{
+  "sprint": "DAOS Product Sprint 5 — Commercial Fidelity Engine",
+  "timestamp": "2026-07-09T13:21:26.100Z",
+  "renderEnabled": true,
+  "products": 5,
+  "avgCommercialFidelityScore": 27.3,
+  "avgLegacyFidelityScore": 45.6,
+  "mostStableParameters": [
+    "scene_consistency",
+    "product_area"
+  ],
+  "mostLostParameters": [
+    "visual_hierarchy",
+    "product_dominance"
+  ],
+  "unmeasurableAutomatically": [
+    "Exact composited product bbox % on background-only Flux images (proxy used)",
+    "Typography readability on final card (text overlay not in background render)",
+    "Human CTR perception",
+    "Brand tone nuance beyond palette/scene proxies"
+  ],
+  "successCriteria": {
+    "autoCompareDecisionToImage": true,
+    "fiveParametersMeasured": true,
+    "avgScoreCalculated": true,
+    "explainsMismatch": true,
+    "noPipelineChanges": true
+  },
+  "parameterStability": [
+    {
+      "parameter": "product_area",
+      "avgAbsDelta": 24,
+      "samples": 5
+    },
+    {
+      "parameter": "product_dominance",
+      "avgAbsDelta": 46.2,
+      "samples": 5
+    },
+    {
+      "parameter": "visual_hierarchy",
+      "avgAbsDelta": 39.2,
+      "samples": 5
+    },
+    {
+      "parameter": "background_separation",
+      "avgAbsDelta": 38.8,
+      "samples": 5
+    },
+    {
+      "parameter": "scene_consistency",
+      "avgAbsDelta": 18.4,
+      "samples": 5
+    }
+  ],
+  "productResults": [
+    {
+      "productId": "battery-sprayer",
+      "title": "Аккумуляторный опрыскиватель 16 л для сада",
+      "legacy": {
+        "arm": "legacy",
+        "layoutSpec": {
+          "heroScale": 0.66
+        },
+        "imagePath": "/workspace/marketplace-infographic/benchmark/output/sprint5/battery-sprayer-legacy.png",
+        "fidelity": {
+          "parameters": [
+            {
+              "parameter": "product_area",
+              "label": "Product Area",
+              "expected": 66,
+              "measured": 30,
+              "delta": -36,
+              "status": "ERROR",
+              "unit": "%",
+              "notes": "proxy: hero-zone canvas share × clarity"
+            },
+            {
+              "parameter": "product_dominance",
+              "label": "Product Dominance",
+              "expected": 65,
+              "measured": 50,
+              "delta": -15,
+              "status": "WARNING",
+              "unit": "score"
+            },
+            {
+              "parameter": "visual_hierarchy",
+              "label": "Visual Hierarchy",
+              "expected": 70,
+              "measured": 50,
+              "delta": -20,
+              "status": "ERROR",
+              "unit": "score"
+            },
+            {
+              "parameter": "background_separation",
+              "label": "Background Separation",
+              "expected": 82,
+              "measured": 85,
+              "delta": 3,
+              "status": "OK",
+              "unit": "score"
+            },
+            {
+              "parameter": "scene_consistency",
+              "label": "Scene Consistency",
+              "expected": 85,
+              "measured": 100,
+              "delta": 15,
+              "status": "WARNING",
+              "unit": "score"
+            }
+          ],
+          "diagnostics": {
+            "commercialFidelityVersion": "1.0.0-sprint5",
+            "commercialFidelityScore": 55.5,
+            "commercialFidelityDelta": {
+              "product_area": -36,
+              "product_dominance": -15,
+              "visual_hierarchy": -20,
+              "background_separation": 3,
+              "scene_consistency": 15
+            },
+            "commercialExpectedValues": {
+              "product_area": 66,
+              "product_dominance": 65,
+              "visual_hierarchy": 70,
+              "background_separation": 82,
+              "scene_consistency": 85
+            },
+            "commercialMeasuredValues": {
+              "product_area": 30,
+              "product_dominance": 50,
+              "visual_hierarchy": 50,
+              "background_separation": 85,
+              "scene_consistency": 100
+            },
+            "commercialValidationWarnings": [
+              "product_area measured via hero-zone clarity proxy on background image (no composited product bbox)",
+              "Product Dominance delta -15",
+              "Scene Consistency delta 15"
+            ],
+            "commercialValidationErrors": [
+              "Product Area delta -36%",
+              "Visual Hierarchy delta -20"
+            ],
+            "commercialImprovementCandidates": [
+              "Hero zone clutter or weak compositing floor reduces effective product area",
+              "Product zone lacks visual dominance versus headline/background regions",
+              "Visual hierarchy energy does not match commercial hero/headline priority",
+              "Generated scene atmosphere diverges from commercial scene preference"
+            ]
+          },
+          "imagePath": "/workspace/marketplace-infographic/benchmark/output/sprint5/battery-sprayer-legacy.png",
+          "measurementMode": "background"
+        }
+      },
+      "commercial": {
+        "arm": "commercial",
+        "layoutSpec": {
+          "heroScale": 0.55,
+          "productAreaPct": 55,
+          "primaryObject": "product",
+          "scenePreference": "industrial_technical",
+          "backgroundPalettePreference": "medium_contrast",
+          "hierarchy": {
+            "headline": "H1",
+            "hero": "hero",
+            "benefits": "supporting",
+            "cta": "cta",
+            "decorative": "decorative"
+          }
+        },
+        "imagePath": "/workspace/marketplace-infographic/benchmark/output/sprint5/battery-sprayer-commercial.png",
+        "fidelity": {
+          "parameters": [
+            {
+              "parameter": "product_area",
+              "label": "Product Area",
+              "expected": 55,
+              "measured": 31,
+              "delta": -24,
+              "status": "ERROR",
+              "unit": "%",
+              "notes": "proxy: hero-zone canvas share × clarity"
+            },
+            {
+              "parameter": "product_dominance",
+              "label": "Product Dominance",
+              "expected": 85,
+              "measured": 33,
+              "delta": -52,
+              "status": "ERROR",
+              "unit": "score"
+            },
+            {
+              "parameter": "visual_hierarchy",
+              "label": "Visual Hierarchy",
+              "expected": 78,
+              "measured": 33,
+              "delta": -45,
+              "status": "ERROR",
+              "unit": "score"
+            },
+            {
+              "parameter": "background_separation",
+              "label": "Background Separation",
+              "expected": 82,
+              "measured": 100,
+              "delta": 18,
+              "status": "WARNING",
+              "unit": "score"
+            },
+            {
+              "parameter": "scene_consistency",
+              "label": "Scene Consistency",
+              "expected": 72,
+              "measured": 86,
+              "delta": 14,
+              "status": "OK",
+              "unit": "score"
+            }
+          ],
+          "diagnostics": {
+            "commercialFidelityVersion": "1.0.0-sprint5",
+            "commercialFidelityScore": 32,
+            "commercialFidelityDelta": {
+              "product_area": -24,
+              "product_dominance": -52,
+              "visual_hierarchy": -45,
+              "background_separation": 18,
+              "scene_consistency": 14
+            },
+            "commercialExpectedValues": {
+              "product_area": 55,
+              "product_dominance": 85,
+              "visual_hierarchy": 78,
+              "background_separation": 82,
+              "scene_consistency": 72
+            },
+            "commercialMeasuredValues": {
+              "product_area": 31,
+              "product_dominance": 33,
+              "visual_hierarchy": 33,
+              "background_separation": 100,
+              "scene_consistency": 86
+            },
+            "commercialValidationWarnings": [
+              "product_area measured via hero-zone clarity proxy on background image (no composited product bbox)",
+              "Background Separation delta 18"
+            ],
+            "commercialValidationErrors": [
+              "Product Area delta -24%",
+              "Product Dominance delta -52",
+              "Visual Hierarchy delta -45"
+            ],
+            "commercialImprovementCandidates": [
+              "Hero zone clutter or weak compositing floor reduces effective product area",
+              "Product zone lacks visual dominance versus headline/background regions",
+              "Visual hierarchy energy does not match commercial hero/headline priority",
+              "Background palette separation between hero and headline zones is insufficient"
+            ]
+          },
+          "imagePath": "/workspace/marketplace-infographic/benchmark/output/sprint5/battery-sprayer-commercial.png",
+          "measurementMode": "background"
+        }
+      },
+      "comparison": {
+        "imageDiff": {
+          "identical": false,
+          "meanAbsDiff": 125.71,
+          "changedPixelPct": 95.49,
+          "hashA": "ab5b86fe3404ba9bb85c235039f2d55b75d4300b4f2f4d646fbf002650bf4027",
+          "hashB": "07b750b761d9c6e827bfd40025f31b58fc34ca5d9c0364e6a607c430db52b9a9"
+        },
+        "fidelityScoreLegacy": 55.5,
+        "fidelityScoreCommercial": 32,
+        "fidelityScoreDelta": -23.5,
+        "commercialFidelityTable": [
+          {
+            "parameter": "Product Area",
+            "expected": 55,
+            "measured": 31,
+            "delta": -24,
+            "status": "ERROR",
+            "unit": "%"
+          },
+          {
+            "parameter": "Product Dominance",
+            "expected": 85,
+            "measured": 33,
+            "delta": -52,
+            "status": "ERROR",
+            "unit": "score"
+          },
+          {
+            "parameter": "Visual Hierarchy",
+            "expected": 78,
+            "measured": 33,
+            "delta": -45,
+            "status": "ERROR",
+            "unit": "score"
+          },
+          {
+            "parameter": "Background Separation",
+            "expected": 82,
+            "measured": 100,
+            "delta": 18,
+            "status": "WARNING",
+            "unit": "score"
+          },
+          {
+            "parameter": "Scene Consistency",
+            "expected": 72,
+            "measured": 86,
+            "delta": 14,
+            "status": "OK",
+            "unit": "score"
+          }
+        ]
+      }
+    },
+    {
+      "productId": "construction-vacuum",
+      "title": "Строительный пылесос для ремонта 30 л",
+      "legacy": {
+        "arm": "legacy",
+        "layoutSpec": {
+          "heroScale": 0.66
+        },
+        "imagePath": "/workspace/marketplace-infographic/benchmark/output/sprint5/construction-vacuum-legacy.png",
+        "fidelity": {
+          "parameters": [
+            {
+              "parameter": "product_area",
+              "label": "Product Area",
+              "expected": 66,
+              "measured": 31,
+              "delta": -35,
+              "status": "ERROR",
+              "unit": "%",
+              "notes": "proxy: hero-zone canvas share × clarity"
+            },
+            {
+              "parameter": "product_dominance",
+              "label": "Product Dominance",
+              "expected": 65,
+              "measured": 79,
+              "delta": 14,
+              "status": "WARNING",
+              "unit": "score"
+            },
+            {
+              "parameter": "visual_hierarchy",
+              "label": "Visual Hierarchy",
+              "expected": 70,
+              "measured": 79,
+              "delta": 9,
+              "status": "OK",
+              "unit": "score"
+            },
+            {
+              "parameter": "background_separation",
+              "label": "Background Separation",
+              "expected": 82,
+              "measured": 4,
+              "delta": -78,
+              "status": "ERROR",
+              "unit": "score"
+            },
+            {
+              "parameter": "scene_consistency",
+              "label": "Scene Consistency",
+              "expected": 85,
+              "measured": 100,
+              "delta": 15,
+              "status": "WARNING",
+              "unit": "score"
+            }
+          ],
+          "diagnostics": {
+            "commercialFidelityVersion": "1.0.0-sprint5",
+            "commercialFidelityScore": 43.5,
+            "commercialFidelityDelta": {
+              "product_area": -35,
+              "product_dominance": 14,
+              "visual_hierarchy": 9,
+              "background_separation": -78,
+              "scene_consistency": 15
+            },
+            "commercialExpectedValues": {
+              "product_area": 66,
+              "product_dominance": 65,
+              "visual_hierarchy": 70,
+              "background_separation": 82,
+              "scene_consistency": 85
+            },
+            "commercialMeasuredValues": {
+              "product_area": 31,
+              "product_dominance": 79,
+              "visual_hierarchy": 79,
+              "background_separation": 4,
+              "scene_consistency": 100
+            },
+            "commercialValidationWarnings": [
+              "product_area measured via hero-zone clarity proxy on background image (no composited product bbox)",
+              "Product Dominance delta 14",
+              "Scene Consistency delta 15"
+            ],
+            "commercialValidationErrors": [
+              "Product Area delta -35%",
+              "Background Separation delta -78"
+            ],
+            "commercialImprovementCandidates": [
+              "Hero zone clutter or weak compositing floor reduces effective product area",
+              "Product zone lacks visual dominance versus headline/background regions",
+              "Background palette separation between hero and headline zones is insufficient",
+              "Generated scene atmosphere diverges from commercial scene preference"
+            ]
+          },
+          "imagePath": "/workspace/marketplace-infographic/benchmark/output/sprint5/construction-vacuum-legacy.png",
+          "measurementMode": "background"
+        }
+      },
+      "commercial": {
+        "arm": "commercial",
+        "layoutSpec": {
+          "heroScale": 0.55,
+          "productAreaPct": 55,
+          "primaryObject": "product",
+          "scenePreference": "industrial_technical",
+          "backgroundPalettePreference": "cool_neutral",
+          "hierarchy": {
+            "headline": "H1",
+            "hero": "hero",
+            "benefits": "supporting",
+            "cta": "cta",
+            "decorative": "decorative"
+          }
+        },
+        "imagePath": "/workspace/marketplace-infographic/benchmark/output/sprint5/construction-vacuum-commercial.png",
+        "fidelity": {
+          "parameters": [
+            {
+              "parameter": "product_area",
+              "label": "Product Area",
+              "expected": 55,
+              "measured": 31,
+              "delta": -24,
+              "status": "ERROR",
+              "unit": "%",
+              "notes": "proxy: hero-zone canvas share × clarity"
+            },
+            {
+              "parameter": "product_dominance",
+              "label": "Product Dominance",
+              "expected": 85,
+              "measured": 37,
+              "delta": -48,
+              "status": "ERROR",
+              "unit": "score"
+            },
+            {
+              "parameter": "visual_hierarchy",
+              "label": "Visual Hierarchy",
+              "expected": 78,
+              "measured": 37,
+              "delta": -41,
+              "status": "ERROR",
+              "unit": "score"
+            },
+            {
+              "parameter": "background_separation",
+              "label": "Background Separation",
+              "expected": 70,
+              "measured": 31,
+              "delta": -39,
+              "status": "ERROR",
+              "unit": "score"
+            },
+            {
+              "parameter": "scene_consistency",
+              "label": "Scene Consistency",
+              "expected": 72,
+              "measured": 93,
+              "delta": 21,
+              "status": "WARNING",
+              "unit": "score"
+            }
+          ],
+          "diagnostics": {
+            "commercialFidelityVersion": "1.0.0-sprint5",
+            "commercialFidelityScore": 18,
+            "commercialFidelityDelta": {
+              "product_area": -24,
+              "product_dominance": -48,
+              "visual_hierarchy": -41,
+              "background_separation": -39,
+              "scene_consistency": 21
+            },
+            "commercialExpectedValues": {
+              "product_area": 55,
+              "product_dominance": 85,
+              "visual_hierarchy": 78,
+              "background_separation": 70,
+              "scene_consistency": 72
+            },
+            "commercialMeasuredValues": {
+              "product_area": 31,
+              "product_dominance": 37,
+              "visual_hierarchy": 37,
+              "background_separation": 31,
+              "scene_consistency": 93
+            },
+            "commercialValidationWarnings": [
+              "product_area measured via hero-zone clarity proxy on background image (no composited product bbox)",
+              "Scene Consistency delta 21"
+            ],
+            "commercialValidationErrors": [
+              "Product Area delta -24%",
+              "Product Dominance delta -48",
+              "Visual Hierarchy delta -41",
+              "Background Separation delta -39"
+            ],
+            "commercialImprovementCandidates": [
+              "Hero zone clutter or weak compositing floor reduces effective product area",
+              "Product zone lacks visual dominance versus headline/background regions",
+              "Visual hierarchy energy does not match commercial hero/headline priority",
+              "Background palette separation between hero and headline zones is insufficient",
+              "Generated scene atmosphere diverges from commercial scene preference"
+            ]
+          },
+          "imagePath": "/workspace/marketplace-infographic/benchmark/output/sprint5/construction-vacuum-commercial.png",
+          "measurementMode": "background"
+        }
+      },
+      "comparison": {
+        "imageDiff": {
+          "identical": false,
+          "meanAbsDiff": 89.64,
+          "changedPixelPct": 98.01,
+          "hashA": "5198c1dddef2f0cdb83a75828a5fb9d3f4088c46b7a9a99392ae30b3f9bd8bc9",
+          "hashB": "56f7c2049ad2e785385ed8775a9670068d53b353e36fc754d945850a38393b55"
+        },
+        "fidelityScoreLegacy": 43.5,
+        "fidelityScoreCommercial": 18,
+        "fidelityScoreDelta": -25.5,
+        "commercialFidelityTable": [
+          {
+            "parameter": "Product Area",
+            "expected": 55,
+            "measured": 31,
+            "delta": -24,
+            "status": "ERROR",
+            "unit": "%"
+          },
+          {
+            "parameter": "Product Dominance",
+            "expected": 85,
+            "measured": 37,
+            "delta": -48,
+            "status": "ERROR",
+            "unit": "score"
+          },
+          {
+            "parameter": "Visual Hierarchy",
+            "expected": 78,
+            "measured": 37,
+            "delta": -41,
+            "status": "ERROR",
+            "unit": "score"
+          },
+          {
+            "parameter": "Background Separation",
+            "expected": 70,
+            "measured": 31,
+            "delta": -39,
+            "status": "ERROR",
+            "unit": "score"
+          },
+          {
+            "parameter": "Scene Consistency",
+            "expected": 72,
+            "measured": 93,
+            "delta": 21,
+            "status": "WARNING",
+            "unit": "score"
+          }
+        ]
+      }
+    },
+    {
+      "productId": "impact-drill",
+      "title": "Ударная дрель 800 Вт профессиональная",
+      "legacy": {
+        "arm": "legacy",
+        "layoutSpec": {
+          "heroScale": 0.66
+        },
+        "imagePath": "/workspace/marketplace-infographic/benchmark/output/sprint5/impact-drill-legacy.png",
+        "fidelity": {
+          "parameters": [
+            {
+              "parameter": "product_area",
+              "label": "Product Area",
+              "expected": 66,
+              "measured": 31,
+              "delta": -35,
+              "status": "ERROR",
+              "unit": "%",
+              "notes": "proxy: hero-zone canvas share × clarity"
+            },
+            {
+              "parameter": "product_dominance",
+              "label": "Product Dominance",
+              "expected": 65,
+              "measured": 50,
+              "delta": -15,
+              "status": "WARNING",
+              "unit": "score"
+            },
+            {
+              "parameter": "visual_hierarchy",
+              "label": "Visual Hierarchy",
+              "expected": 70,
+              "measured": 50,
+              "delta": -20,
+              "status": "ERROR",
+              "unit": "score"
+            },
+            {
+              "parameter": "background_separation",
+              "label": "Background Separation",
+              "expected": 82,
+              "measured": 78,
+              "delta": -4,
+              "status": "OK",
+              "unit": "score"
+            },
+            {
+              "parameter": "scene_consistency",
+              "label": "Scene Consistency",
+              "expected": 85,
+              "measured": 100,
+              "delta": 15,
+              "status": "WARNING",
+              "unit": "score"
+            }
+          ],
+          "diagnostics": {
+            "commercialFidelityVersion": "1.0.0-sprint5",
+            "commercialFidelityScore": 55.5,
+            "commercialFidelityDelta": {
+              "product_area": -35,
+              "product_dominance": -15,
+              "visual_hierarchy": -20,
+              "background_separation": -4,
+              "scene_consistency": 15
+            },
+            "commercialExpectedValues": {
+              "product_area": 66,
+              "product_dominance": 65,
+              "visual_hierarchy": 70,
+              "background_separation": 82,
+              "scene_consistency": 85
+            },
+            "commercialMeasuredValues": {
+              "product_area": 31,
+              "product_dominance": 50,
+              "visual_hierarchy": 50,
+              "background_separation": 78,
+              "scene_consistency": 100
+            },
+            "commercialValidationWarnings": [
+              "product_area measured via hero-zone clarity proxy on background image (no composited product bbox)",
+              "Product Dominance delta -15",
+              "Scene Consistency delta 15"
+            ],
+            "commercialValidationErrors": [
+              "Product Area delta -35%",
+              "Visual Hierarchy delta -20"
+            ],
+            "commercialImprovementCandidates": [
+              "Hero zone clutter or weak compositing floor reduces effective product area",
+              "Product zone lacks visual dominance versus headline/background regions",
+              "Visual hierarchy energy does not match commercial hero/headline priority",
+              "Generated scene atmosphere diverges from commercial scene preference"
+            ]
+          },
+          "imagePath": "/workspace/marketplace-infographic/benchmark/output/sprint5/impact-drill-legacy.png",
+          "measurementMode": "background"
+        }
+      },
+      "commercial": {
+        "arm": "commercial",
+        "layoutSpec": {
+          "heroScale": 0.55,
+          "productAreaPct": 55,
+          "primaryObject": "product",
+          "scenePreference": "industrial_technical",
+          "backgroundPalettePreference": "light_neutral",
+          "hierarchy": {
+            "headline": "H1",
+            "hero": "hero",
+            "benefits": "supporting",
+            "cta": "cta",
+            "decorative": "decorative"
+          }
+        },
+        "imagePath": "/workspace/marketplace-infographic/benchmark/output/sprint5/impact-drill-commercial.png",
+        "fidelity": {
+          "parameters": [
+            {
+              "parameter": "product_area",
+              "label": "Product Area",
+              "expected": 55,
+              "measured": 31,
+              "delta": -24,
+              "status": "ERROR",
+              "unit": "%",
+              "notes": "proxy: hero-zone canvas share × clarity"
+            },
+            {
+              "parameter": "product_dominance",
+              "label": "Product Dominance",
+              "expected": 85,
+              "measured": 41,
+              "delta": -44,
+              "status": "ERROR",
+              "unit": "score"
+            },
+            {
+              "parameter": "visual_hierarchy",
+              "label": "Visual Hierarchy",
+              "expected": 78,
+              "measured": 41,
+              "delta": -37,
+              "status": "ERROR",
+              "unit": "score"
+            },
+            {
+              "parameter": "background_separation",
+              "label": "Background Separation",
+              "expected": 75,
+              "measured": 43,
+              "delta": -32,
+              "status": "ERROR",
+              "unit": "score"
+            },
+            {
+              "parameter": "scene_consistency",
+              "label": "Scene Consistency",
+              "expected": 72,
+              "measured": 89,
+              "delta": 17,
+              "status": "WARNING",
+              "unit": "score"
+            }
+          ],
+          "diagnostics": {
+            "commercialFidelityVersion": "1.0.0-sprint5",
+            "commercialFidelityScore": 25,
+            "commercialFidelityDelta": {
+              "product_area": -24,
+              "product_dominance": -44,
+              "visual_hierarchy": -37,
+              "background_separation": -32,
+              "scene_consistency": 17
+            },
+            "commercialExpectedValues": {
+              "product_area": 55,
+              "product_dominance": 85,
+              "visual_hierarchy": 78,
+              "background_separation": 75,
+              "scene_consistency": 72
+            },
+            "commercialMeasuredValues": {
+              "product_area": 31,
+              "product_dominance": 41,
+              "visual_hierarchy": 41,
+              "background_separation": 43,
+              "scene_consistency": 89
+            },
+            "commercialValidationWarnings": [
+              "product_area measured via hero-zone clarity proxy on background image (no composited product bbox)",
+              "Scene Consistency delta 17"
+            ],
+            "commercialValidationErrors": [
+              "Product Area delta -24%",
+              "Product Dominance delta -44",
+              "Visual Hierarchy delta -37",
+              "Background Separation delta -32"
+            ],
+            "commercialImprovementCandidates": [
+              "Hero zone clutter or weak compositing floor reduces effective product area",
+              "Product zone lacks visual dominance versus headline/background regions",
+              "Visual hierarchy energy does not match commercial hero/headline priority",
+              "Background palette separation between hero and headline zones is insufficient",
+              "Generated scene atmosphere diverges from commercial scene preference"
+            ]
+          },
+          "imagePath": "/workspace/marketplace-infographic/benchmark/output/sprint5/impact-drill-commercial.png",
+          "measurementMode": "background"
+        }
+      },
+      "comparison": {
+        "imageDiff": {
+          "identical": false,
+          "meanAbsDiff": 68.74,
+          "changedPixelPct": 95.95,
+          "hashA": "315f338fd1ab8a86c5ab6cf4563f177489f7be132cb4dcd8db08072da3b4b826",
+          "hashB": "ee5fd5184cd99519ac57b510e3cd5be9d254a92a7ba955e1b26d28e6a7a1d032"
+        },
+        "fidelityScoreLegacy": 55.5,
+        "fidelityScoreCommercial": 25,
+        "fidelityScoreDelta": -30.5,
+        "commercialFidelityTable": [
+          {
+            "parameter": "Product Area",
+            "expected": 55,
+            "measured": 31,
+            "delta": -24,
+            "status": "ERROR",
+            "unit": "%"
+          },
+          {
+            "parameter": "Product Dominance",
+            "expected": 85,
+            "measured": 41,
+            "delta": -44,
+            "status": "ERROR",
+            "unit": "score"
+          },
+          {
+            "parameter": "Visual Hierarchy",
+            "expected": 78,
+            "measured": 41,
+            "delta": -37,
+            "status": "ERROR",
+            "unit": "score"
+          },
+          {
+            "parameter": "Background Separation",
+            "expected": 75,
+            "measured": 43,
+            "delta": -32,
+            "status": "ERROR",
+            "unit": "score"
+          },
+          {
+            "parameter": "Scene Consistency",
+            "expected": 72,
+            "measured": 89,
+            "delta": 17,
+            "status": "WARNING",
+            "unit": "score"
+          }
+        ]
+      }
+    },
+    {
+      "productId": "pressure-washer",
+      "title": "Мойка высокого давления 180 бар",
+      "legacy": {
+        "arm": "legacy",
+        "layoutSpec": {
+          "heroScale": 0.66
+        },
+        "imagePath": "/workspace/marketplace-infographic/benchmark/output/sprint5/pressure-washer-legacy.png",
+        "fidelity": {
+          "parameters": [
+            {
+              "parameter": "product_area",
+              "label": "Product Area",
+              "expected": 66,
+              "measured": 31,
+              "delta": -35,
+              "status": "ERROR",
+              "unit": "%",
+              "notes": "proxy: hero-zone canvas share × clarity"
+            },
+            {
+              "parameter": "product_dominance",
+              "label": "Product Dominance",
+              "expected": 65,
+              "measured": 31,
+              "delta": -34,
+              "status": "ERROR",
+              "unit": "score"
+            },
+            {
+              "parameter": "visual_hierarchy",
+              "label": "Visual Hierarchy",
+              "expected": 70,
+              "measured": 31,
+              "delta": -39,
+              "status": "ERROR",
+              "unit": "score"
+            },
+            {
+              "parameter": "background_separation",
+              "label": "Background Separation",
+              "expected": 82,
+              "measured": 18,
+              "delta": -64,
+              "status": "ERROR",
+              "unit": "score"
+            },
+            {
+              "parameter": "scene_consistency",
+              "label": "Scene Consistency",
+              "expected": 85,
+              "measured": 100,
+              "delta": 15,
+              "status": "WARNING",
+              "unit": "score"
+            }
+          ],
+          "diagnostics": {
+            "commercialFidelityVersion": "1.0.0-sprint5",
+            "commercialFidelityScore": 18.5,
+            "commercialFidelityDelta": {
+              "product_area": -35,
+              "product_dominance": -34,
+              "visual_hierarchy": -39,
+              "background_separation": -64,
+              "scene_consistency": 15
+            },
+            "commercialExpectedValues": {
+              "product_area": 66,
+              "product_dominance": 65,
+              "visual_hierarchy": 70,
+              "background_separation": 82,
+              "scene_consistency": 85
+            },
+            "commercialMeasuredValues": {
+              "product_area": 31,
+              "product_dominance": 31,
+              "visual_hierarchy": 31,
+              "background_separation": 18,
+              "scene_consistency": 100
+            },
+            "commercialValidationWarnings": [
+              "product_area measured via hero-zone clarity proxy on background image (no composited product bbox)",
+              "Scene Consistency delta 15"
+            ],
+            "commercialValidationErrors": [
+              "Product Area delta -35%",
+              "Product Dominance delta -34",
+              "Visual Hierarchy delta -39",
+              "Background Separation delta -64"
+            ],
+            "commercialImprovementCandidates": [
+              "Hero zone clutter or weak compositing floor reduces effective product area",
+              "Product zone lacks visual dominance versus headline/background regions",
+              "Visual hierarchy energy does not match commercial hero/headline priority",
+              "Background palette separation between hero and headline zones is insufficient",
+              "Generated scene atmosphere diverges from commercial scene preference"
+            ]
+          },
+          "imagePath": "/workspace/marketplace-infographic/benchmark/output/sprint5/pressure-washer-legacy.png",
+          "measurementMode": "background"
+        }
+      },
+      "commercial": {
+        "arm": "commercial",
+        "layoutSpec": {
+          "heroScale": 0.55,
+          "productAreaPct": 55,
+          "primaryObject": "product",
+          "scenePreference": "light_modern",
+          "backgroundPalettePreference": "medium_contrast",
+          "hierarchy": {
+            "headline": "H1",
+            "hero": "hero",
+            "benefits": "supporting",
+            "cta": "cta",
+            "decorative": "decorative"
+          }
+        },
+        "imagePath": "/workspace/marketplace-infographic/benchmark/output/sprint5/pressure-washer-commercial.png",
+        "fidelity": {
+          "parameters": [
+            {
+              "parameter": "product_area",
+              "label": "Product Area",
+              "expected": 55,
+              "measured": 31,
+              "delta": -24,
+              "status": "ERROR",
+              "unit": "%",
+              "notes": "proxy: hero-zone canvas share × clarity"
+            },
+            {
+              "parameter": "product_dominance",
+              "label": "Product Dominance",
+              "expected": 85,
+              "measured": 67,
+              "delta": -18,
+              "status": "WARNING",
+              "unit": "score"
+            },
+            {
+              "parameter": "visual_hierarchy",
+              "label": "Visual Hierarchy",
+              "expected": 78,
+              "measured": 67,
+              "delta": -11,
+              "status": "WARNING",
+              "unit": "score"
+            },
+            {
+              "parameter": "background_separation",
+              "label": "Background Separation",
+              "expected": 82,
+              "measured": 25,
+              "delta": -57,
+              "status": "ERROR",
+              "unit": "score"
+            },
+            {
+              "parameter": "scene_consistency",
+              "label": "Scene Consistency",
+              "expected": 80,
+              "measured": 100,
+              "delta": 20,
+              "status": "WARNING",
+              "unit": "score"
+            }
+          ],
+          "diagnostics": {
+            "commercialFidelityVersion": "1.0.0-sprint5",
+            "commercialFidelityScore": 43.5,
+            "commercialFidelityDelta": {
+              "product_area": -24,
+              "product_dominance": -18,
+              "visual_hierarchy": -11,
+              "background_separation": -57,
+              "scene_consistency": 20
+            },
+            "commercialExpectedValues": {
+              "product_area": 55,
+              "product_dominance": 85,
+              "visual_hierarchy": 78,
+              "background_separation": 82,
+              "scene_consistency": 80
+            },
+            "commercialMeasuredValues": {
+              "product_area": 31,
+              "product_dominance": 67,
+              "visual_hierarchy": 67,
+              "background_separation": 25,
+              "scene_consistency": 100
+            },
+            "commercialValidationWarnings": [
+              "product_area measured via hero-zone clarity proxy on background image (no composited product bbox)",
+              "Product Dominance delta -18",
+              "Visual Hierarchy delta -11",
+              "Scene Consistency delta 20"
+            ],
+            "commercialValidationErrors": [
+              "Product Area delta -24%",
+              "Background Separation delta -57"
+            ],
+            "commercialImprovementCandidates": [
+              "Hero zone clutter or weak compositing floor reduces effective product area",
+              "Product zone lacks visual dominance versus headline/background regions",
+              "Visual hierarchy energy does not match commercial hero/headline priority",
+              "Background palette separation between hero and headline zones is insufficient",
+              "Generated scene atmosphere diverges from commercial scene preference"
+            ]
+          },
+          "imagePath": "/workspace/marketplace-infographic/benchmark/output/sprint5/pressure-washer-commercial.png",
+          "measurementMode": "background"
+        }
+      },
+      "comparison": {
+        "imageDiff": {
+          "identical": false,
+          "meanAbsDiff": 41.68,
+          "changedPixelPct": 89.33,
+          "hashA": "564eee98cf1f5ca5eb1efa02b1044e2efec81fdb05e5292984bbfdc07b0a17e2",
+          "hashB": "d4875c19d08caaf843e6f3752411c4df09da593b31a5f3a020d9953be94f6ac5"
+        },
+        "fidelityScoreLegacy": 18.5,
+        "fidelityScoreCommercial": 43.5,
+        "fidelityScoreDelta": 25,
+        "commercialFidelityTable": [
+          {
+            "parameter": "Product Area",
+            "expected": 55,
+            "measured": 31,
+            "delta": -24,
+            "status": "ERROR",
+            "unit": "%"
+          },
+          {
+            "parameter": "Product Dominance",
+            "expected": 85,
+            "measured": 67,
+            "delta": -18,
+            "status": "WARNING",
+            "unit": "score"
+          },
+          {
+            "parameter": "Visual Hierarchy",
+            "expected": 78,
+            "measured": 67,
+            "delta": -11,
+            "status": "WARNING",
+            "unit": "score"
+          },
+          {
+            "parameter": "Background Separation",
+            "expected": 82,
+            "measured": 25,
+            "delta": -57,
+            "status": "ERROR",
+            "unit": "score"
+          },
+          {
+            "parameter": "Scene Consistency",
+            "expected": 80,
+            "measured": 100,
+            "delta": 20,
+            "status": "WARNING",
+            "unit": "score"
+          }
+        ]
+      }
+    },
+    {
+      "productId": "home-humidifier",
+      "title": "Увлажнитель воздуха для дома ультразвуковой",
+      "legacy": {
+        "arm": "legacy",
+        "layoutSpec": {
+          "heroScale": 0.66
+        },
+        "imagePath": "/workspace/marketplace-infographic/benchmark/output/sprint5/home-humidifier-legacy.png",
+        "fidelity": {
+          "parameters": [
+            {
+              "parameter": "product_area",
+              "label": "Product Area",
+              "expected": 66,
+              "measured": 31,
+              "delta": -35,
+              "status": "ERROR",
+              "unit": "%",
+              "notes": "proxy: hero-zone canvas share × clarity"
+            },
+            {
+              "parameter": "product_dominance",
+              "label": "Product Dominance",
+              "expected": 65,
+              "measured": 48,
+              "delta": -17,
+              "status": "WARNING",
+              "unit": "score"
+            },
+            {
+              "parameter": "visual_hierarchy",
+              "label": "Visual Hierarchy",
+              "expected": 70,
+              "measured": 48,
+              "delta": -22,
+              "status": "ERROR",
+              "unit": "score"
+            },
+            {
+              "parameter": "background_separation",
+              "label": "Background Separation",
+              "expected": 82,
+              "measured": 81,
+              "delta": -1,
+              "status": "OK",
+              "unit": "score"
+            },
+            {
+              "parameter": "scene_consistency",
+              "label": "Scene Consistency",
+              "expected": 85,
+              "measured": 100,
+              "delta": 15,
+              "status": "WARNING",
+              "unit": "score"
+            }
+          ],
+          "diagnostics": {
+            "commercialFidelityVersion": "1.0.0-sprint5",
+            "commercialFidelityScore": 55,
+            "commercialFidelityDelta": {
+              "product_area": -35,
+              "product_dominance": -17,
+              "visual_hierarchy": -22,
+              "background_separation": -1,
+              "scene_consistency": 15
+            },
+            "commercialExpectedValues": {
+              "product_area": 66,
+              "product_dominance": 65,
+              "visual_hierarchy": 70,
+              "background_separation": 82,
+              "scene_consistency": 85
+            },
+            "commercialMeasuredValues": {
+              "product_area": 31,
+              "product_dominance": 48,
+              "visual_hierarchy": 48,
+              "background_separation": 81,
+              "scene_consistency": 100
+            },
+            "commercialValidationWarnings": [
+              "product_area measured via hero-zone clarity proxy on background image (no composited product bbox)",
+              "Product Dominance delta -17",
+              "Scene Consistency delta 15"
+            ],
+            "commercialValidationErrors": [
+              "Product Area delta -35%",
+              "Visual Hierarchy delta -22"
+            ],
+            "commercialImprovementCandidates": [
+              "Hero zone clutter or weak compositing floor reduces effective product area",
+              "Product zone lacks visual dominance versus headline/background regions",
+              "Visual hierarchy energy does not match commercial hero/headline priority",
+              "Generated scene atmosphere diverges from commercial scene preference"
+            ]
+          },
+          "imagePath": "/workspace/marketplace-infographic/benchmark/output/sprint5/home-humidifier-legacy.png",
+          "measurementMode": "background"
+        }
+      },
+      "commercial": {
+        "arm": "commercial",
+        "layoutSpec": {
+          "heroScale": 0.55,
+          "productAreaPct": 55,
+          "primaryObject": "product",
+          "scenePreference": "light_modern",
+          "backgroundPalettePreference": "medium_contrast",
+          "hierarchy": {
+            "headline": "H1",
+            "hero": "hero",
+            "benefits": "supporting",
+            "cta": "cta",
+            "decorative": "decorative"
+          }
+        },
+        "imagePath": "/workspace/marketplace-infographic/benchmark/output/sprint5/home-humidifier-commercial.png",
+        "fidelity": {
+          "parameters": [
+            {
+              "parameter": "product_area",
+              "label": "Product Area",
+              "expected": 55,
+              "measured": 31,
+              "delta": -24,
+              "status": "ERROR",
+              "unit": "%",
+              "notes": "proxy: hero-zone canvas share × clarity"
+            },
+            {
+              "parameter": "product_dominance",
+              "label": "Product Dominance",
+              "expected": 85,
+              "measured": 16,
+              "delta": -69,
+              "status": "ERROR",
+              "unit": "score"
+            },
+            {
+              "parameter": "visual_hierarchy",
+              "label": "Visual Hierarchy",
+              "expected": 78,
+              "measured": 16,
+              "delta": -62,
+              "status": "ERROR",
+              "unit": "score"
+            },
+            {
+              "parameter": "background_separation",
+              "label": "Background Separation",
+              "expected": 82,
+              "measured": 34,
+              "delta": -48,
+              "status": "ERROR",
+              "unit": "score"
+            },
+            {
+              "parameter": "scene_consistency",
+              "label": "Scene Consistency",
+              "expected": 80,
+              "measured": 100,
+              "delta": 20,
+              "status": "WARNING",
+              "unit": "score"
+            }
+          ],
+          "diagnostics": {
+            "commercialFidelityVersion": "1.0.0-sprint5",
+            "commercialFidelityScore": 18,
+            "commercialFidelityDelta": {
+              "product_area": -24,
+              "product_dominance": -69,
+              "visual_hierarchy": -62,
+              "background_separation": -48,
+              "scene_consistency": 20
+            },
+            "commercialExpectedValues": {
+              "product_area": 55,
+              "product_dominance": 85,
+              "visual_hierarchy": 78,
+              "background_separation": 82,
+              "scene_consistency": 80
+            },
+            "commercialMeasuredValues": {
+              "product_area": 31,
+              "product_dominance": 16,
+              "visual_hierarchy": 16,
+              "background_separation": 34,
+              "scene_consistency": 100
+            },
+            "commercialValidationWarnings": [
+              "product_area measured via hero-zone clarity proxy on background image (no composited product bbox)",
+              "Scene Consistency delta 20"
+            ],
+            "commercialValidationErrors": [
+              "Product Area delta -24%",
+              "Product Dominance delta -69",
+              "Visual Hierarchy delta -62",
+              "Background Separation delta -48"
+            ],
+            "commercialImprovementCandidates": [
+              "Hero zone clutter or weak compositing floor reduces effective product area",
+              "Product zone lacks visual dominance versus headline/background regions",
+              "Visual hierarchy energy does not match commercial hero/headline priority",
+              "Background palette separation between hero and headline zones is insufficient",
+              "Generated scene atmosphere diverges from commercial scene preference"
+            ]
+          },
+          "imagePath": "/workspace/marketplace-infographic/benchmark/output/sprint5/home-humidifier-commercial.png",
+          "measurementMode": "background"
+        }
+      },
+      "comparison": {
+        "imageDiff": {
+          "identical": false,
+          "meanAbsDiff": 47.21,
+          "changedPixelPct": 81.1,
+          "hashA": "eb047a17ab60b682cd7cc47c6711d02f90d5245583ad7a605a51ca4d773d58b9",
+          "hashB": "7538b6982d808279c308d8b2d48363ed6c7cbe6af57ffb8936f18fd3faa12a83"
+        },
+        "fidelityScoreLegacy": 55,
+        "fidelityScoreCommercial": 18,
+        "fidelityScoreDelta": -37,
+        "commercialFidelityTable": [
+          {
+            "parameter": "Product Area",
+            "expected": 55,
+            "measured": 31,
+            "delta": -24,
+            "status": "ERROR",
+            "unit": "%"
+          },
+          {
+            "parameter": "Product Dominance",
+            "expected": 85,
+            "measured": 16,
+            "delta": -69,
+            "status": "ERROR",
+            "unit": "score"
+          },
+          {
+            "parameter": "Visual Hierarchy",
+            "expected": 78,
+            "measured": 16,
+            "delta": -62,
+            "status": "ERROR",
+            "unit": "score"
+          },
+          {
+            "parameter": "Background Separation",
+            "expected": 82,
+            "measured": 34,
+            "delta": -48,
+            "status": "ERROR",
+            "unit": "score"
+          },
+          {
+            "parameter": "Scene Consistency",
+            "expected": 80,
+            "measured": 100,
+            "delta": 20,
+            "status": "WARNING",
+            "unit": "score"
+          }
+        ]
+      }
+    }
+  ]
+}

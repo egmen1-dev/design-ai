@@ -1,0 +1,62 @@
+{
+  "productId": 835780159,
+  "category": "pressure-wash",
+  "categoryLabel": "Мойка",
+  "name": "Мойка высокого давления аккумуляторная для автомобиля",
+  "daosGenerated": true,
+  "genDurationMs": 15110,
+  "leader": {
+    "productDominance": 50,
+    "foregroundIsolation": 53,
+    "headlineVisualWeight": 23.8,
+    "primaryFocusRatio": 0.247,
+    "attentionHierarchyScore": 28.8,
+    "commercialFidelity": 35.5,
+    "visualWeightHero": 24.3,
+    "thumbnailReadability": 54.5,
+    "productVisualWeight": 24.3,
+    "typographyCompetition": 41.1,
+    "secondaryFocusRatio": 0.753,
+    "attentionDistribution": 0.272
+  },
+  "daos": {
+    "productDominance": 63,
+    "foregroundIsolation": 61.5,
+    "headlineVisualWeight": 12,
+    "primaryFocusRatio": 0.432,
+    "attentionHierarchyScore": 41.6,
+    "commercialFidelity": 49,
+    "visualWeightHero": 20.9,
+    "thumbnailReadability": 73.7,
+    "productVisualWeight": 20.9,
+    "typographyCompetition": 22.6,
+    "secondaryFocusRatio": 0.568,
+    "attentionDistribution": 0.377
+  },
+  "delta": {
+    "productDominance": 13,
+    "foregroundIsolation": 8.5,
+    "headlineVisualWeight": -11.8,
+    "primaryFocusRatio": 0.18,
+    "attentionHierarchyScore": 12.8,
+    "commercialFidelity": 13.5,
+    "visualWeightHero": -3.4,
+    "thumbnailReadability": 19.2,
+    "productVisualWeight": -3.4,
+    "typographyCompetition": -18.5,
+    "secondaryFocusRatio": -0.19,
+    "attentionDistribution": 0.1
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 50 vs DAOS 63 (Δ13); FI: WB 53 vs DAOS 61.5; Thumbnail: WB 54.5 vs DAOS 73.7; Fidelity: WB 35.5 vs DAOS 49"
+  },
+  "compositeScore": {
+    "leader": 42.3,
+    "daos": 54.6
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "productId": 373967588,
+  "category": "construction",
+  "categoryLabel": "Строительство",
+  "name": "Перфоратор профессиональный со сменным патроном",
+  "daosGenerated": true,
+  "genDurationMs": 17942,
+  "leader": {
+    "productDominance": 55,
+    "foregroundIsolation": 37.4,
+    "headlineVisualWeight": 25.1,
+    "primaryFocusRatio": 0.274,
+    "attentionHierarchyScore": 31.1,
+    "commercialFidelity": 60,
+    "visualWeightHero": 30.6,
+    "thumbnailReadability": 51.9,
+    "productVisualWeight": 30.6,
+    "typographyCompetition": 48.8,
+    "secondaryFocusRatio": 0.726,
+    "attentionDistribution": 0.293
+  },
+  "daos": {
+    "productDominance": 29,
+    "foregroundIsolation": 69.5,
+    "headlineVisualWeight": 24.7,
+    "primaryFocusRatio": 0.217,
+    "attentionHierarchyScore": 29.7,
+    "commercialFidelity": 16,
+    "visualWeightHero": 9.8,
+    "thumbnailReadability": 69.5,
+    "productVisualWeight": 9.8,
+    "typographyCompetition": 31.9,
+    "secondaryFocusRatio": 0.783,
+    "attentionDistribution": 0.148
+  },
+  "delta": {
+    "productDominance": -26,
+    "foregroundIsolation": 32.1,
+    "headlineVisualWeight": -0.4,
+    "primaryFocusRatio": -0.06,
+    "attentionHierarchyScore": -1.4,
+    "commercialFidelity": -44,
+    "visualWeightHero": -20.8,
+    "thumbnailReadability": 17.6,
+    "productVisualWeight": -20.8,
+    "typographyCompetition": -16.9,
+    "secondaryFocusRatio": 0.06,
+    "attentionDistribution": -0.14
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "daos",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "Dominance: WB 55 vs DAOS 29 (Δ-26); FI: WB 37.4 vs DAOS 69.5; Thumbnail: WB 51.9 vs DAOS 69.5; Fidelity: WB 60 vs DAOS 16",
+    "gapClass": "Product Dominance"
+  },
+  "failure": {
+    "slot": "product-020",
+    "productId": 373967588,
+    "category": "Строительство",
+    "reason": "Dominance",
+    "detail": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 46.8,
+    "daos": 35.5
+  }
+}

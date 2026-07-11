@@ -1,0 +1,62 @@
+{
+  "productId": 335316091,
+  "category": "power-tools",
+  "categoryLabel": "Электроинструмент",
+  "name": "Дрель ударная электрическая 600 Вт",
+  "daosGenerated": true,
+  "genDurationMs": 9651,
+  "leader": {
+    "productDominance": 53,
+    "foregroundIsolation": 45,
+    "headlineVisualWeight": 25.9,
+    "primaryFocusRatio": 0.333,
+    "attentionHierarchyScore": 33.9,
+    "commercialFidelity": 39,
+    "visualWeightHero": 29.8,
+    "thumbnailReadability": 46.2,
+    "productVisualWeight": 29.8,
+    "typographyCompetition": 42.8,
+    "secondaryFocusRatio": 0.667,
+    "attentionDistribution": 0.303
+  },
+  "daos": {
+    "productDominance": 61,
+    "foregroundIsolation": 75,
+    "headlineVisualWeight": 10.9,
+    "primaryFocusRatio": 0.365,
+    "attentionHierarchyScore": 38.1,
+    "commercialFidelity": 47.5,
+    "visualWeightHero": 17.2,
+    "thumbnailReadability": 83.9,
+    "productVisualWeight": 17.2,
+    "typographyCompetition": 24.2,
+    "secondaryFocusRatio": 0.635,
+    "attentionDistribution": 0.329
+  },
+  "delta": {
+    "productDominance": 8,
+    "foregroundIsolation": 30,
+    "headlineVisualWeight": -15,
+    "primaryFocusRatio": 0.03,
+    "attentionHierarchyScore": 4.2,
+    "commercialFidelity": 8.5,
+    "visualWeightHero": -12.6,
+    "thumbnailReadability": 37.7,
+    "productVisualWeight": -12.6,
+    "typographyCompetition": -18.6,
+    "secondaryFocusRatio": -0.03,
+    "attentionDistribution": 0.03
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 53 vs DAOS 61 (Δ8); FI: WB 45 vs DAOS 75; Thumbnail: WB 46.2 vs DAOS 83.9; Fidelity: WB 39 vs DAOS 47.5"
+  },
+  "compositeScore": {
+    "leader": 42.5,
+    "daos": 56.6
+  }
+}

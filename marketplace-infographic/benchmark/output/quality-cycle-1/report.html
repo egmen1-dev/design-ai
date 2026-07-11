@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"/>
+  <title>Quality Cycle 1 — Product Dominance Research</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #0b1220; color: #e2e8f0; padding: 24px; max-width: 1100px; margin: 0 auto; }
+    h1, h2 { color: #f8fafc; }
+    table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+    th, td { border: 1px solid #334155; padding: 8px 12px; text-align: left; }
+    th { background: #1e293b; }
+    .gap { color: #f87171; }
+    .ok { color: #4ade80; }
+    .card { background: #1e293b; border-radius: 8px; padding: 16px; margin: 12px 0; }
+    pre { background: #0f172a; padding: 12px; overflow: auto; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <h1>Quality Cycle 1 — Product Dominance Research</h1>
+  <p>120 Wildberries leader cards vs 5 DAOS Sprint 9.5 production finals. No production code changed.</p>
+
+  <div class="card">
+    <h2>Council — Top-5 Product Gaps</h2>
+    <ol>
+      <li><strong>Scene integration failure</strong> — compositor merge 0/5, <code>png_overlay_feel</code></li>
+      <li><strong>Low hero visual weight</strong> — DAOS 19.1 vs WB 23.9 (top-Q 25.4)</li>
+      <li><strong>Dominance energy gap</strong> — −7.2 pts, <code>product_not_dominant</code></li>
+      <li><strong>Typography competition</strong> — headline steals hero energy</li>
+      <li><strong>SVG benchmark inputs</strong> — not real seller photography</li>
+    </ol>
+  </div>
+
+  <h2>Aggregate comparison</h2>
+  <table>
+    <tr><th>Metric</th><th>WB (n=120)</th><th>DAOS (n=5)</th><th>Δ</th></tr>
+    <tr><td>Product Dominance</td><td>49.6</td><td class="gap">42.4</td><td class="gap">−7.2</td></tr>
+    <tr><td>Visual Weight (hero)</td><td>23.9</td><td class="gap">19.1</td><td class="gap">−4.8</td></tr>
+    <tr><td>Product Area %</td><td>29.5</td><td>31.0</td><td>+1.5</td></tr>
+    <tr><td>Commercial Fidelity</td><td>38.2</td><td class="gap">32.9</td><td class="gap">−5.3</td></tr>
+    <tr><td>Background Complexity</td><td>1.9</td><td>0.5</td><td>−1.3</td></tr>
+    <tr><td>Typography Density</td><td>2.1</td><td>1.0</td><td>−1.1</td></tr>
+  </table>
+
+  <h2>WB by category (dominance)</h2>
+  <table>
+    <tr><th>Category</th><th>n</th><th>Avg Dominance</th><th>Avg Fidelity</th></tr>
+    <tr><td>Строительство</td><td>14</td><td>52.4</td><td>44.5</td></tr>
+    <tr><td>Электроинструмент</td><td>14</td><td>52.3</td><td>40.8</td></tr>
+    <tr><td>Дом</td><td>14</td><td>51.1</td><td>35.4</td></tr>
+    <tr><td>Мойка</td><td>14</td><td>50.5</td><td>40.0</td></tr>
+    <tr><td>Сад</td><td>14</td><td>49.9</td><td>35.6</td></tr>
+    <tr><td>Бытовая техника</td><td>14</td><td class="gap">44.7</td><td>33.5</td></tr>
+  </table>
+
+  <h2>Product Dominance Model</h2>
+  <pre>
+Product Dominance ≈
+  Hero Visual Weight        (~35%)
++ Hero/Headline Energy Gap  (~30%)
++ Scene Integration         (~20%)  ← DAOS weakest
++ Background Simplicity     (~10%)
+− Typography Competition    (~5%)
+  </pre>
+
+  <h2>DAOS Sprint 9.5 flags (all 5 products)</h2>
+  <p><code>not_professional</code> · <code>product_not_dominant</code> · <code>png_overlay_feel</code></p>
+
+  <p><a href="../../../docs/DAOS_PRODUCT_DOMINANCE_RESEARCH.md">Full research doc</a> ·
+     <a href="../../../docs/DAOS_QUALITY_BACKLOG.md">Quality backlog</a></p>
+</body>
+</html>

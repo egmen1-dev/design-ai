@@ -1,0 +1,70 @@
+{
+  "productId": 436689555,
+  "category": "home-appliances",
+  "categoryLabel": "Бытовая техника",
+  "name": "Пылесос вертикальный мощный для дома с контейнером, 800 Вт",
+  "daosGenerated": true,
+  "genDurationMs": 17730,
+  "leader": {
+    "productDominance": 49,
+    "foregroundIsolation": 35.6,
+    "headlineVisualWeight": 24,
+    "primaryFocusRatio": 0.301,
+    "attentionHierarchyScore": 31.6,
+    "commercialFidelity": 53.5,
+    "visualWeightHero": 23.1,
+    "thumbnailReadability": 42,
+    "productVisualWeight": 23.1,
+    "typographyCompetition": 40.3,
+    "secondaryFocusRatio": 0.699,
+    "attentionDistribution": 0.264
+  },
+  "daos": {
+    "productDominance": 43,
+    "foregroundIsolation": 41.5,
+    "headlineVisualWeight": 18,
+    "primaryFocusRatio": 0.279,
+    "attentionHierarchyScore": 32.1,
+    "commercialFidelity": 29.5,
+    "visualWeightHero": 13.8,
+    "thumbnailReadability": 50.3,
+    "productVisualWeight": 13.8,
+    "typographyCompetition": 30,
+    "secondaryFocusRatio": 0.721,
+    "attentionDistribution": 0.223
+  },
+  "delta": {
+    "productDominance": -6,
+    "foregroundIsolation": 5.9,
+    "headlineVisualWeight": -6,
+    "primaryFocusRatio": -0.02,
+    "attentionHierarchyScore": 0.5,
+    "commercialFidelity": -24,
+    "visualWeightHero": -9.3,
+    "thumbnailReadability": 8.3,
+    "productVisualWeight": -9.3,
+    "typographyCompetition": -10.3,
+    "secondaryFocusRatio": 0.02,
+    "attentionDistribution": -0.04
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "draw",
+    "fasterRead": "daos",
+    "wouldOpen": "draw",
+    "overall": "wb",
+    "rationale": "Dominance: WB 49 vs DAOS 43 (Δ-6); FI: WB 35.6 vs DAOS 41.5; Thumbnail: WB 42 vs DAOS 50.3; Fidelity: WB 53.5 vs DAOS 29.5",
+    "gapClass": "Lighting"
+  },
+  "failure": {
+    "slot": "product-095",
+    "productId": 436689555,
+    "category": "Бытовая техника",
+    "reason": "Lighting",
+    "detail": "Lighting"
+  },
+  "compositeScore": {
+    "leader": 41.3,
+    "daos": 36.3
+  }
+}
