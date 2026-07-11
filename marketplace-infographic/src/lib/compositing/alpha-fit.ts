@@ -6,10 +6,11 @@ export async function fitProductByAlphaBounds(
   productBuffer: Buffer,
   maxAlphaW: number,
   maxAlphaH: number,
+  options?: { allowEnlargement?: boolean; minAlphaFillRatio?: number },
 ): Promise<{ buffer: Buffer; width: number; height: number }> {
   let current = await sharp(productBuffer).ensureAlpha().png().toBuffer({ resolveWithObject: true });
 
-  for (let attempt = 0; attempt < 6; attempt++) {
+  for (let attempt = 0; attempt < 8; attempt++) {
     const bounds = await getAlphaBounds(current.data);
     const w = current.info.width;
     const h = current.info.height;
@@ -18,18 +19,46 @@ export async function fitProductByAlphaBounds(
       return { buffer: current.data, width: w, height: h };
     }
 
-    if (bounds.width <= maxAlphaW && bounds.height <= maxAlphaH) {
+    const fits =
+      bounds.width <= maxAlphaW &&
+      bounds.height <= maxAlphaH &&
+      (!options?.minAlphaFillRatio ||
+        bounds.width >= maxAlphaW * options.minAlphaFillRatio * 0.85 ||
+        bounds.height >= maxAlphaH * options.minAlphaFillRatio * 0.85);
+
+    if (fits) {
       return { buffer: current.data, width: w, height: h };
     }
 
-    const scale =
-      Math.min(maxAlphaW / bounds.width, maxAlphaH / bounds.height, 1) * 0.9;
+    const shrink = bounds.width > maxAlphaW || bounds.height > maxAlphaH;
+    const grow =
+      options?.allowEnlargement &&
+      options.minAlphaFillRatio != null &&
+      options.minAlphaFillRatio > 0 &&
+      (bounds.width < maxAlphaW * options.minAlphaFillRatio ||
+        bounds.height < maxAlphaH * options.minAlphaFillRatio);
+
+    let scale: number;
+    if (grow) {
+      scale = Math.min(
+        maxAlphaW / bounds.width,
+        maxAlphaH / bounds.height,
+        2.5,
+      );
+    } else if (shrink) {
+      scale = Math.min(maxAlphaW / bounds.width, maxAlphaH / bounds.height, 1) * 0.9;
+    } else {
+      return { buffer: current.data, width: w, height: h };
+    }
 
     const nextW = Math.max(64, Math.round(w * scale));
     const nextH = Math.max(64, Math.round(h * scale));
 
     current = await sharp(current.data)
-      .resize(nextW, nextH, { fit: "inside", withoutEnlargement: true })
+      .resize(nextW, nextH, {
+        fit: "inside",
+        withoutEnlargement: !grow,
+      })
       .png()
       .toBuffer({ resolveWithObject: true });
   }
@@ -91,13 +120,16 @@ export async function fitProductWithSafePlacement(
   maxAlphaW: number,
   maxAlphaH: number,
   compositionLayout?: { product: { left: number; width: number } },
+  fitOptions?: { allowEnlargement?: boolean; minAlphaFillRatio?: number },
 ): Promise<{ buffer: Buffer; width: number; height: number; left: number }> {
   let buffer = productBuffer;
   let width = productWidth;
   let height = productHeight;
+  let alphaW = maxAlphaW;
+  let alphaH = maxAlphaH;
 
   for (let attempt = 0; attempt < 8; attempt++) {
-    const fitted = await fitProductByAlphaBounds(buffer, maxAlphaW, maxAlphaH);
+    const fitted = await fitProductByAlphaBounds(buffer, alphaW, alphaH, fitOptions);
     buffer = fitted.buffer;
     width = fitted.width;
     height = fitted.height;
@@ -131,8 +163,8 @@ export async function fitProductWithSafePlacement(
     buffer = resized.data;
     width = resized.info.width;
     height = resized.info.height;
-    maxAlphaW = Math.round(maxAlphaW * scale);
-    maxAlphaH = Math.round(maxAlphaH * scale);
+    alphaW = Math.round(alphaW * scale);
+    alphaH = Math.round(alphaH * scale);
   }
 
   const left = await resolveAlphaCenteredLeft(

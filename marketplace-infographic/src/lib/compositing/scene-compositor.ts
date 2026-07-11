@@ -31,6 +31,14 @@ import {
   fitProductWithSafePlacement,
 } from "./alpha-fit";
 import {
+  computeHeroMaxProductSize,
+  getHeroVisualMassPolicy,
+  isFlatWideSilhouette,
+  resolveHeroAlphaLimits,
+  resolveHeroObjectScale,
+} from "./hero-visual-mass";
+import { getAlphaBounds } from "./ground-detector";
+import {
   buildCommercialCalibrationDiagnostics,
   computeMaxProductSize,
   type CommercialCalibrationDiagnostics,
@@ -231,6 +239,7 @@ function resolveVerticalTop(
   alphaFootBottom: number,
   floorY: number,
   compositionLayout?: CompositionLayout,
+  headerReservePx: number = HEADER_RESERVE_PX,
 ): number {
   const safeInsetPx = compositionLayout
     ? Math.round(yPct(compositionLayout.safeInsetPct))
@@ -239,7 +248,7 @@ function resolveVerticalTop(
 
   let top = floorY - alphaFootBottom;
   top = Math.min(top, zoneBottom - productHeight);
-  top = Math.max(HEADER_RESERVE_PX, top);
+  top = Math.max(headerReservePx, top);
   top = Math.min(top, CANVAS_H - BOTTOM_PAD - productHeight);
 
   return Math.round(top);
@@ -262,7 +271,11 @@ export async function compositeProductIntoScene(
 ): Promise<SceneCompositeResult> {
   const layout = options.layout ?? "marketplace";
   const scene = options.scene;
-  const objectScale = options.objectScale ?? 0.78;
+  const baseObjectScale = options.objectScale ?? 0.78;
+  const objectScale = resolveHeroObjectScale(baseObjectScale);
+  const heroPolicy = getHeroVisualMassPolicy();
+  const alphaLimits = resolveHeroAlphaLimits(heroPolicy);
+  const headerReservePx = alphaLimits.headerReservePx;
   const comp = options.compositionLayout?.product;
   const calibrationMode: CommercialCalibrationMode = options.commercialCalibration
     ? "calibrated"
@@ -273,17 +286,40 @@ export async function compositeProductIntoScene(
     loadImageBuffer(productUrl),
   ]);
 
+  const preBounds = await getAlphaBounds(productRaw);
+  const flatWide =
+    preBounds != null &&
+    isFlatWideSilhouette(preBounds.width, preBounds.height);
+
   const bgResized = await resizeBackground(bgRaw);
-  const maxSize = computeMaxProductSize(
+  let maxSize = computeMaxProductSize(
     options.compositionLayout,
     objectScale,
     calibrationMode,
   );
+
+  if (heroPolicy.enabled) {
+    const heroSize = computeHeroMaxProductSize({
+      compositionLayout: options.compositionLayout,
+      objectScale,
+      canvasMaxW: Math.min(PRODUCT_MAX_WIDTH_PX, CANVAS_W - SIDE_MARGIN * 2),
+      canvasMaxH: Math.min(PRODUCT_MAX_H, CANVAS_H - headerReservePx - BOTTOM_PAD),
+      productMaxW: PRODUCT_MAX_WIDTH_PX,
+      productMaxH: PRODUCT_MAX_H,
+      flatWide,
+    });
+    maxSize = {
+      maxW: Math.max(maxSize.maxW, heroSize.maxW),
+      maxH: Math.max(maxSize.maxH, heroSize.maxH),
+      placementAreaPct: maxSize.placementAreaPct,
+    };
+  }
+
   const { maxW, maxH } = maxSize;
 
   const prePlacement = {
     left: SIDE_MARGIN,
-    top: HEADER_RESERVE_PX,
+    top: headerReservePx,
     width: maxW,
     height: maxH,
   };
@@ -318,9 +354,13 @@ export async function compositeProductIntoScene(
     prepared.height,
     CANVAS_W,
     SIDE_MARGIN,
-    PRODUCT_ALPHA_MAX_WIDTH_PX,
-    PRODUCT_ALPHA_MAX_HEIGHT_PX,
+    alphaLimits.maxAlphaW,
+    alphaLimits.maxAlphaH,
     options.compositionLayout,
+    {
+      allowEnlargement: heroPolicy.allowAlphaEnlargement,
+      minAlphaFillRatio: heroPolicy.minAlphaFillRatio,
+    },
   );
 
   const floorColor = await sampleFloorColor(
@@ -339,6 +379,7 @@ export async function compositeProductIntoScene(
     alphaFootBottom,
     floorY,
     options.compositionLayout,
+    headerReservePx,
   );
 
   let bgPrepared = await softenBackgroundCenter(bgRaw, layout);
