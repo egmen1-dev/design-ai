@@ -1,0 +1,62 @@
+{
+  "productId": 915494514,
+  "category": "pressure-wash",
+  "categoryLabel": "Мойка",
+  "name": "Мойка высокого давления HPW 140, 330л в ч, 1800Вт",
+  "daosGenerated": true,
+  "genDurationMs": 14724,
+  "leader": {
+    "productDominance": 52,
+    "foregroundIsolation": 52.2,
+    "headlineVisualWeight": 26.8,
+    "primaryFocusRatio": 0.278,
+    "attentionHierarchyScore": 30.4,
+    "commercialFidelity": 47,
+    "visualWeightHero": 28.5,
+    "thumbnailReadability": 57.1,
+    "productVisualWeight": 28.5,
+    "typographyCompetition": 41.6,
+    "secondaryFocusRatio": 0.722,
+    "attentionDistribution": 0.294
+  },
+  "daos": {
+    "productDominance": 54,
+    "foregroundIsolation": 60.8,
+    "headlineVisualWeight": 12,
+    "primaryFocusRatio": 0.384,
+    "attentionHierarchyScore": 37.6,
+    "commercialFidelity": 40.5,
+    "visualWeightHero": 14.3,
+    "thumbnailReadability": 78.7,
+    "productVisualWeight": 14.3,
+    "typographyCompetition": 19.4,
+    "secondaryFocusRatio": 0.616,
+    "attentionDistribution": 0.313
+  },
+  "delta": {
+    "productDominance": 2,
+    "foregroundIsolation": 8.6,
+    "headlineVisualWeight": -14.8,
+    "primaryFocusRatio": 0.11,
+    "attentionHierarchyScore": 7.2,
+    "commercialFidelity": -6.5,
+    "visualWeightHero": -14.2,
+    "thumbnailReadability": 21.6,
+    "productVisualWeight": -14.2,
+    "typographyCompetition": -22.2,
+    "secondaryFocusRatio": -0.11,
+    "attentionDistribution": 0.02
+  },
+  "verdict": {
+    "moreProfessional": "draw",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 52 vs DAOS 54 (Δ2); FI: WB 52.2 vs DAOS 60.8; Thumbnail: WB 57.1 vs DAOS 78.7; Fidelity: WB 47 vs DAOS 40.5"
+  },
+  "compositeScore": {
+    "leader": 45.9,
+    "daos": 49.8
+  }
+}

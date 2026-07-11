@@ -1,0 +1,70 @@
+{
+  "productId": 268281744,
+  "category": "pressure-wash",
+  "categoryLabel": "Мойка",
+  "name": "Мойка ВД PW-1210H 1200 Вт, 100 бар, 390 л ч, пеногенератор",
+  "daosGenerated": true,
+  "genDurationMs": 18404,
+  "leader": {
+    "productDominance": 44,
+    "foregroundIsolation": 59.9,
+    "headlineVisualWeight": 33.2,
+    "primaryFocusRatio": 0.229,
+    "attentionHierarchyScore": 26.9,
+    "commercialFidelity": 30,
+    "visualWeightHero": 26.1,
+    "thumbnailReadability": 68,
+    "productVisualWeight": 26.1,
+    "typographyCompetition": 56.5,
+    "secondaryFocusRatio": 0.771,
+    "attentionDistribution": 0.225
+  },
+  "daos": {
+    "productDominance": 45,
+    "foregroundIsolation": 36.5,
+    "headlineVisualWeight": 10.9,
+    "primaryFocusRatio": 0.31,
+    "attentionHierarchyScore": 34.3,
+    "commercialFidelity": 31.5,
+    "visualWeightHero": 9,
+    "thumbnailReadability": 28.6,
+    "productVisualWeight": 9,
+    "typographyCompetition": 17,
+    "secondaryFocusRatio": 0.69,
+    "attentionDistribution": 0.244
+  },
+  "delta": {
+    "productDominance": 1,
+    "foregroundIsolation": -23.4,
+    "headlineVisualWeight": -22.3,
+    "primaryFocusRatio": 0.08,
+    "attentionHierarchyScore": 7.4,
+    "commercialFidelity": 1.5,
+    "visualWeightHero": -17.1,
+    "thumbnailReadability": -39.4,
+    "productVisualWeight": -17.1,
+    "typographyCompetition": -39.5,
+    "secondaryFocusRatio": -0.08,
+    "attentionDistribution": 0.02
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "wb",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "Dominance: WB 44 vs DAOS 45 (Δ1); FI: WB 59.9 vs DAOS 36.5; Thumbnail: WB 68 vs DAOS 28.6; Fidelity: WB 30 vs DAOS 31.5",
+    "gapClass": "Scene"
+  },
+  "failure": {
+    "slot": "product-118",
+    "productId": 268281744,
+    "category": "Мойка",
+    "reason": "Background",
+    "detail": "Scene"
+  },
+  "compositeScore": {
+    "leader": 42,
+    "daos": 33.4
+  }
+}

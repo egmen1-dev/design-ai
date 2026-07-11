@@ -1,0 +1,62 @@
+{
+  "productId": 933956465,
+  "category": "kitchen",
+  "categoryLabel": "Кухня",
+  "name": "Стационарный блендер для смузи и коктейлей",
+  "daosGenerated": true,
+  "genDurationMs": 15099,
+  "leader": {
+    "productDominance": 47,
+    "foregroundIsolation": 66.4,
+    "headlineVisualWeight": 21,
+    "primaryFocusRatio": 0.273,
+    "attentionHierarchyScore": 31.1,
+    "commercialFidelity": 38,
+    "visualWeightHero": 18.2,
+    "thumbnailReadability": 55.9,
+    "productVisualWeight": 18.2,
+    "typographyCompetition": 31.7,
+    "secondaryFocusRatio": 0.727,
+    "attentionDistribution": 0.257
+  },
+  "daos": {
+    "productDominance": 67,
+    "foregroundIsolation": 73.6,
+    "headlineVisualWeight": 12.7,
+    "primaryFocusRatio": 0.4,
+    "attentionHierarchyScore": 41.9,
+    "commercialFidelity": 51,
+    "visualWeightHero": 27.3,
+    "thumbnailReadability": 73.4,
+    "productVisualWeight": 27.3,
+    "typographyCompetition": 32.2,
+    "secondaryFocusRatio": 0.6,
+    "attentionDistribution": 0.378
+  },
+  "delta": {
+    "productDominance": 20,
+    "foregroundIsolation": 7.2,
+    "headlineVisualWeight": -8.3,
+    "primaryFocusRatio": 0.13,
+    "attentionHierarchyScore": 10.8,
+    "commercialFidelity": 13,
+    "visualWeightHero": 9.1,
+    "thumbnailReadability": 17.5,
+    "productVisualWeight": 9.1,
+    "typographyCompetition": 0.5,
+    "secondaryFocusRatio": -0.13,
+    "attentionDistribution": 0.12
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 47 vs DAOS 67 (Δ20); FI: WB 66.4 vs DAOS 73.6; Thumbnail: WB 55.9 vs DAOS 73.4; Fidelity: WB 38 vs DAOS 51"
+  },
+  "compositeScore": {
+    "leader": 43.9,
+    "daos": 58.6
+  }
+}

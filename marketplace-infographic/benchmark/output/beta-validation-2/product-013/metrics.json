@@ -1,0 +1,62 @@
+{
+  "productId": 444661943,
+  "category": "power-tools",
+  "categoryLabel": "Электроинструмент",
+  "name": "Дрель электрическая ДУ-550 ударная от сети",
+  "daosGenerated": true,
+  "genDurationMs": 17344,
+  "leader": {
+    "productDominance": 45,
+    "foregroundIsolation": 45,
+    "headlineVisualWeight": 30,
+    "primaryFocusRatio": 0.237,
+    "attentionHierarchyScore": 27.7,
+    "commercialFidelity": 31,
+    "visualWeightHero": 24.7,
+    "thumbnailReadability": 37.2,
+    "productVisualWeight": 24.7,
+    "typographyCompetition": 49.7,
+    "secondaryFocusRatio": 0.763,
+    "attentionDistribution": 0.237
+  },
+  "daos": {
+    "productDominance": 64,
+    "foregroundIsolation": 58.6,
+    "headlineVisualWeight": 15.2,
+    "primaryFocusRatio": 0.516,
+    "attentionHierarchyScore": 46.1,
+    "commercialFidelity": 50.5,
+    "visualWeightHero": 27.9,
+    "thumbnailReadability": 73.5,
+    "productVisualWeight": 27.9,
+    "typographyCompetition": 22.6,
+    "secondaryFocusRatio": 0.484,
+    "attentionDistribution": 0.425
+  },
+  "delta": {
+    "productDominance": 19,
+    "foregroundIsolation": 13.6,
+    "headlineVisualWeight": -14.8,
+    "primaryFocusRatio": 0.28,
+    "attentionHierarchyScore": 18.4,
+    "commercialFidelity": 19.5,
+    "visualWeightHero": 3.2,
+    "thumbnailReadability": 36.3,
+    "productVisualWeight": 3.2,
+    "typographyCompetition": -27.1,
+    "secondaryFocusRatio": -0.28,
+    "attentionDistribution": 0.19
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 45 vs DAOS 64 (Δ19); FI: WB 45 vs DAOS 58.6; Thumbnail: WB 37.2 vs DAOS 73.5; Fidelity: WB 31 vs DAOS 50.5"
+  },
+  "compositeScore": {
+    "leader": 35.8,
+    "daos": 55.8
+  }
+}

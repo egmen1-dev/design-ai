@@ -1,0 +1,62 @@
+{
+  "productId": 446180182,
+  "category": "auto",
+  "categoryLabel": "Авто",
+  "name": "Маленький пылесос для машины Урал Смерч 3000",
+  "daosGenerated": true,
+  "genDurationMs": 15307,
+  "leader": {
+    "productDominance": 46,
+    "foregroundIsolation": 33.6,
+    "headlineVisualWeight": 32.2,
+    "primaryFocusRatio": 0.372,
+    "attentionHierarchyScore": 34,
+    "commercialFidelity": 32,
+    "visualWeightHero": 28.9,
+    "thumbnailReadability": 38.4,
+    "productVisualWeight": 28.9,
+    "typographyCompetition": 42.5,
+    "secondaryFocusRatio": 0.628,
+    "attentionDistribution": 0.279
+  },
+  "daos": {
+    "productDominance": 69,
+    "foregroundIsolation": 55.7,
+    "headlineVisualWeight": 10.8,
+    "primaryFocusRatio": 0.451,
+    "attentionHierarchyScore": 44.2,
+    "commercialFidelity": 51.5,
+    "visualWeightHero": 24.7,
+    "thumbnailReadability": 67.5,
+    "productVisualWeight": 24.7,
+    "typographyCompetition": 24,
+    "secondaryFocusRatio": 0.549,
+    "attentionDistribution": 0.415
+  },
+  "delta": {
+    "productDominance": 23,
+    "foregroundIsolation": 22.1,
+    "headlineVisualWeight": -21.4,
+    "primaryFocusRatio": 0.08,
+    "attentionHierarchyScore": 10.2,
+    "commercialFidelity": 19.5,
+    "visualWeightHero": -4.2,
+    "thumbnailReadability": 29.1,
+    "productVisualWeight": -4.2,
+    "typographyCompetition": -18.5,
+    "secondaryFocusRatio": -0.08,
+    "attentionDistribution": 0.14
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 46 vs DAOS 69 (Δ23); FI: WB 33.6 vs DAOS 55.7; Thumbnail: WB 38.4 vs DAOS 67.5; Fidelity: WB 32 vs DAOS 51.5"
+  },
+  "compositeScore": {
+    "leader": 35.7,
+    "daos": 55.8
+  }
+}

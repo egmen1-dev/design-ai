@@ -1,0 +1,62 @@
+{
+  "productId": 313679246,
+  "category": "construction",
+  "categoryLabel": "Строительство",
+  "name": "Перфоратор SDS-Plus PDH28G2.1",
+  "daosGenerated": true,
+  "genDurationMs": 18058,
+  "leader": {
+    "productDominance": 46,
+    "foregroundIsolation": 54.9,
+    "headlineVisualWeight": 25.7,
+    "primaryFocusRatio": 0.334,
+    "attentionHierarchyScore": 33.3,
+    "commercialFidelity": 32,
+    "visualWeightHero": 21.9,
+    "thumbnailReadability": 44.1,
+    "productVisualWeight": 21.9,
+    "typographyCompetition": 36,
+    "secondaryFocusRatio": 0.666,
+    "attentionDistribution": 0.262
+  },
+  "daos": {
+    "productDominance": 44,
+    "foregroundIsolation": 39.8,
+    "headlineVisualWeight": 20.5,
+    "primaryFocusRatio": 0.325,
+    "attentionHierarchyScore": 33.7,
+    "commercialFidelity": 30.5,
+    "visualWeightHero": 16.6,
+    "thumbnailReadability": 58.5,
+    "productVisualWeight": 16.6,
+    "typographyCompetition": 30,
+    "secondaryFocusRatio": 0.675,
+    "attentionDistribution": 0.247
+  },
+  "delta": {
+    "productDominance": -2,
+    "foregroundIsolation": -15.1,
+    "headlineVisualWeight": -5.2,
+    "primaryFocusRatio": -0.01,
+    "attentionHierarchyScore": 0.4,
+    "commercialFidelity": -1.5,
+    "visualWeightHero": -5.3,
+    "thumbnailReadability": 14.4,
+    "productVisualWeight": -5.3,
+    "typographyCompetition": -6,
+    "secondaryFocusRatio": 0.01,
+    "attentionDistribution": -0.02
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 46 vs DAOS 44 (Δ-2); FI: WB 54.9 vs DAOS 39.8; Thumbnail: WB 44.1 vs DAOS 58.5; Fidelity: WB 32 vs DAOS 30.5"
+  },
+  "compositeScore": {
+    "leader": 39.3,
+    "daos": 38.1
+  }
+}

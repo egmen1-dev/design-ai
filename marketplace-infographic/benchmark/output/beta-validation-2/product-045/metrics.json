@@ -1,0 +1,62 @@
+{
+  "productId": 422452334,
+  "category": "auto",
+  "categoryLabel": "Авто",
+  "name": "Пылесос для автомобиля беспроводной мощный воздуходувка",
+  "daosGenerated": true,
+  "genDurationMs": 17753,
+  "leader": {
+    "productDominance": 52,
+    "foregroundIsolation": 45.4,
+    "headlineVisualWeight": 26.7,
+    "primaryFocusRatio": 0.283,
+    "attentionHierarchyScore": 30.6,
+    "commercialFidelity": 37.5,
+    "visualWeightHero": 28.6,
+    "thumbnailReadability": 48.4,
+    "productVisualWeight": 28.6,
+    "typographyCompetition": 44.1,
+    "secondaryFocusRatio": 0.717,
+    "attentionDistribution": 0.288
+  },
+  "daos": {
+    "productDominance": 49,
+    "foregroundIsolation": 60.2,
+    "headlineVisualWeight": 20.2,
+    "primaryFocusRatio": 0.306,
+    "attentionHierarchyScore": 32.3,
+    "commercialFidelity": 35,
+    "visualWeightHero": 19.7,
+    "thumbnailReadability": 62.9,
+    "productVisualWeight": 19.7,
+    "typographyCompetition": 37.1,
+    "secondaryFocusRatio": 0.694,
+    "attentionDistribution": 0.256
+  },
+  "delta": {
+    "productDominance": -3,
+    "foregroundIsolation": 14.8,
+    "headlineVisualWeight": -6.5,
+    "primaryFocusRatio": 0.02,
+    "attentionHierarchyScore": 1.7,
+    "commercialFidelity": -2.5,
+    "visualWeightHero": -8.9,
+    "thumbnailReadability": 14.5,
+    "productVisualWeight": -8.9,
+    "typographyCompetition": -7,
+    "secondaryFocusRatio": -0.02,
+    "attentionDistribution": -0.03
+  },
+  "verdict": {
+    "moreProfessional": "draw",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 52 vs DAOS 49 (Δ-3); FI: WB 45.4 vs DAOS 60.2; Thumbnail: WB 48.4 vs DAOS 62.9; Fidelity: WB 37.5 vs DAOS 35"
+  },
+  "compositeScore": {
+    "leader": 41.8,
+    "daos": 44.4
+  }
+}

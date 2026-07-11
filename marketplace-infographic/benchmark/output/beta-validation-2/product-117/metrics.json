@@ -1,0 +1,62 @@
+{
+  "productId": 890673106,
+  "category": "pressure-wash",
+  "categoryLabel": "Мойка",
+  "name": "Мойка высокого давления электрическая 2500Вт",
+  "daosGenerated": true,
+  "genDurationMs": 14842,
+  "leader": {
+    "productDominance": 45,
+    "foregroundIsolation": 50.2,
+    "headlineVisualWeight": 25.1,
+    "primaryFocusRatio": 0.218,
+    "attentionHierarchyScore": 27.5,
+    "commercialFidelity": 30,
+    "visualWeightHero": 20.5,
+    "thumbnailReadability": 45.8,
+    "productVisualWeight": 20.5,
+    "typographyCompetition": 43.6,
+    "secondaryFocusRatio": 0.782,
+    "attentionDistribution": 0.23
+  },
+  "daos": {
+    "productDominance": 52,
+    "foregroundIsolation": 57.9,
+    "headlineVisualWeight": 17,
+    "primaryFocusRatio": 0.33,
+    "attentionHierarchyScore": 34.4,
+    "commercialFidelity": 38,
+    "visualWeightHero": 18.7,
+    "thumbnailReadability": 62.5,
+    "productVisualWeight": 18.7,
+    "typographyCompetition": 31.4,
+    "secondaryFocusRatio": 0.67,
+    "attentionDistribution": 0.279
+  },
+  "delta": {
+    "productDominance": 7,
+    "foregroundIsolation": 7.7,
+    "headlineVisualWeight": -8.1,
+    "primaryFocusRatio": 0.11,
+    "attentionHierarchyScore": 6.9,
+    "commercialFidelity": 8,
+    "visualWeightHero": -1.8,
+    "thumbnailReadability": 16.7,
+    "productVisualWeight": -1.8,
+    "typographyCompetition": -12.2,
+    "secondaryFocusRatio": -0.11,
+    "attentionDistribution": 0.05
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 45 vs DAOS 52 (Δ7); FI: WB 50.2 vs DAOS 57.9; Thumbnail: WB 45.8 vs DAOS 62.5; Fidelity: WB 30 vs DAOS 38"
+  },
+  "compositeScore": {
+    "leader": 37.4,
+    "daos": 45.7
+  }
+}

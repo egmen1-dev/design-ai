@@ -1,0 +1,62 @@
+{
+  "productId": 366475818,
+  "category": "home-appliances",
+  "categoryLabel": "Бытовая техника",
+  "name": "Вертикальный пылесос для дома DX118C combo",
+  "daosGenerated": true,
+  "genDurationMs": 14065,
+  "leader": {
+    "productDominance": 45,
+    "foregroundIsolation": 42.6,
+    "headlineVisualWeight": 24.7,
+    "primaryFocusRatio": 0.267,
+    "attentionHierarchyScore": 30.1,
+    "commercialFidelity": 31,
+    "visualWeightHero": 20.9,
+    "thumbnailReadability": 45.9,
+    "productVisualWeight": 20.9,
+    "typographyCompetition": 42.4,
+    "secondaryFocusRatio": 0.733,
+    "attentionDistribution": 0.237
+  },
+  "daos": {
+    "productDominance": 52,
+    "foregroundIsolation": 50.6,
+    "headlineVisualWeight": 13.1,
+    "primaryFocusRatio": 0.359,
+    "attentionHierarchyScore": 36.2,
+    "commercialFidelity": 38.5,
+    "visualWeightHero": 14.7,
+    "thumbnailReadability": 66.8,
+    "productVisualWeight": 14.7,
+    "typographyCompetition": 22,
+    "secondaryFocusRatio": 0.641,
+    "attentionDistribution": 0.295
+  },
+  "delta": {
+    "productDominance": 7,
+    "foregroundIsolation": 8,
+    "headlineVisualWeight": -11.6,
+    "primaryFocusRatio": 0.09,
+    "attentionHierarchyScore": 6.1,
+    "commercialFidelity": 7.5,
+    "visualWeightHero": -6.2,
+    "thumbnailReadability": 20.9,
+    "productVisualWeight": -6.2,
+    "typographyCompetition": -20.4,
+    "secondaryFocusRatio": -0.09,
+    "attentionDistribution": 0.06
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 45 vs DAOS 52 (Δ7); FI: WB 42.6 vs DAOS 50.6; Thumbnail: WB 45.9 vs DAOS 66.8; Fidelity: WB 31 vs DAOS 38.5"
+  },
+  "compositeScore": {
+    "leader": 36.8,
+    "daos": 45.3
+  }
+}

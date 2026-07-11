@@ -1,0 +1,70 @@
+{
+  "productId": 952441785,
+  "category": "home-appliances",
+  "categoryLabel": "Бытовая техника",
+  "name": "Беспроводной вертикальный пылесос для дома",
+  "daosGenerated": true,
+  "genDurationMs": 17128,
+  "leader": {
+    "productDominance": 51,
+    "foregroundIsolation": 48.5,
+    "headlineVisualWeight": 15.2,
+    "primaryFocusRatio": 0.233,
+    "attentionHierarchyScore": 30,
+    "commercialFidelity": 40,
+    "visualWeightHero": 15.7,
+    "thumbnailReadability": 47.4,
+    "productVisualWeight": 15.7,
+    "typographyCompetition": 24.8,
+    "secondaryFocusRatio": 0.767,
+    "attentionDistribution": 0.282
+  },
+  "daos": {
+    "productDominance": 35,
+    "foregroundIsolation": 43.9,
+    "headlineVisualWeight": 26.6,
+    "primaryFocusRatio": 0.23,
+    "attentionHierarchyScore": 29.3,
+    "commercialFidelity": 21.5,
+    "visualWeightHero": 14.5,
+    "thumbnailReadability": 48.8,
+    "productVisualWeight": 14.5,
+    "typographyCompetition": 41.6,
+    "secondaryFocusRatio": 0.77,
+    "attentionDistribution": 0.175
+  },
+  "delta": {
+    "productDominance": -16,
+    "foregroundIsolation": -4.6,
+    "headlineVisualWeight": 11.4,
+    "primaryFocusRatio": 0,
+    "attentionHierarchyScore": -0.7,
+    "commercialFidelity": -18.5,
+    "visualWeightHero": -1.2,
+    "thumbnailReadability": 1.4,
+    "productVisualWeight": -1.2,
+    "typographyCompetition": 16.8,
+    "secondaryFocusRatio": 0,
+    "attentionDistribution": -0.11
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "draw",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "Dominance: WB 51 vs DAOS 35 (Δ-16); FI: WB 48.5 vs DAOS 43.9; Thumbnail: WB 47.4 vs DAOS 48.8; Fidelity: WB 40 vs DAOS 21.5",
+    "gapClass": "Product Dominance"
+  },
+  "failure": {
+    "slot": "product-093",
+    "productId": 952441785,
+    "category": "Бытовая техника",
+    "reason": "Dominance",
+    "detail": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 41.5,
+    "daos": 31.8
+  }
+}

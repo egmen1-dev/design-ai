@@ -1,0 +1,637 @@
+{
+  "version": "market-learning-v1",
+  "sprint": "Quality Cycle 6 — Marketplace Learning MVP",
+  "timestamp": "2026-07-11T08:04:39.740Z",
+  "mode": "cached_features",
+  "knowledgeBaseVersion": "1.0.0-knowledge-freeze",
+  "dataset": {
+    "categories": [
+      "power-tools",
+      "garden",
+      "home-appliances",
+      "construction",
+      "home",
+      "auto",
+      "kitchen",
+      "pressure-wash",
+      "humidifier"
+    ],
+    "cardCount": 120,
+    "source": "quality-cycle-1/wb-cards"
+  },
+  "correlations": [
+    {
+      "feature": "productAttention",
+      "correlation": 0.783,
+      "absCorrelation": 0.783,
+      "n": 120,
+      "wbMean": 3.44,
+      "wbMedian": 3.5
+    },
+    {
+      "feature": "primaryFocusRatio",
+      "correlation": 0.744,
+      "absCorrelation": 0.744,
+      "n": 120,
+      "wbMean": 0.28,
+      "wbMedian": 0.27
+    },
+    {
+      "feature": "secondaryFocusRatio",
+      "correlation": -0.744,
+      "absCorrelation": 0.744,
+      "n": 120,
+      "wbMean": 0.72,
+      "wbMedian": 0.73
+    },
+    {
+      "feature": "headlineVisualWeight",
+      "correlation": -0.723,
+      "absCorrelation": 0.723,
+      "n": 120,
+      "wbMean": 24.68,
+      "wbMedian": 24.4
+    },
+    {
+      "feature": "typographyContrast",
+      "correlation": -0.595,
+      "absCorrelation": 0.595,
+      "n": 120,
+      "wbMean": 75.4,
+      "wbMedian": 75.7
+    },
+    {
+      "feature": "typographyCompetition",
+      "correlation": -0.537,
+      "absCorrelation": 0.537,
+      "n": 120,
+      "wbMean": 39.95,
+      "wbMedian": 41
+    },
+    {
+      "feature": "textCompetition",
+      "correlation": -0.537,
+      "absCorrelation": 0.537,
+      "n": 120,
+      "wbMean": 40.47,
+      "wbMedian": 41.5
+    },
+    {
+      "feature": "attentionCompetitionIndex",
+      "correlation": -0.448,
+      "absCorrelation": 0.448,
+      "n": 120,
+      "wbMean": 17.78,
+      "wbMedian": 18.2
+    },
+    {
+      "feature": "eyePathScore",
+      "correlation": -0.39,
+      "absCorrelation": 0.39,
+      "n": 120,
+      "wbMean": 86.2,
+      "wbMedian": 88.2
+    },
+    {
+      "feature": "productVisualWeight",
+      "correlation": 0.349,
+      "absCorrelation": 0.349,
+      "n": 120,
+      "wbMean": 23.88,
+      "wbMedian": 24.3
+    },
+    {
+      "feature": "visualWeightHero",
+      "correlation": 0.349,
+      "absCorrelation": 0.349,
+      "n": 120,
+      "wbMean": 23.88,
+      "wbMedian": 24.3
+    },
+    {
+      "feature": "foregroundIsolation",
+      "correlation": 0.332,
+      "absCorrelation": 0.332,
+      "n": 120,
+      "wbMean": 52.71,
+      "wbMedian": 50.2
+    },
+    {
+      "feature": "objectSharpness",
+      "correlation": 0.326,
+      "absCorrelation": 0.326,
+      "n": 120,
+      "wbMean": 30.51,
+      "wbMedian": 29.6
+    },
+    {
+      "feature": "localContrast",
+      "correlation": 0.321,
+      "absCorrelation": 0.321,
+      "n": 120,
+      "wbMean": 29.71,
+      "wbMedian": 29
+    },
+    {
+      "feature": "objectContrast",
+      "correlation": 0.313,
+      "absCorrelation": 0.313,
+      "n": 120,
+      "wbMean": 71.27,
+      "wbMedian": 69.57
+    },
+    {
+      "feature": "objectSaturation",
+      "correlation": 0.313,
+      "absCorrelation": 0.313,
+      "n": 120,
+      "wbMean": 71.27,
+      "wbMedian": 69.6
+    },
+    {
+      "feature": "textureCompetition",
+      "correlation": -0.289,
+      "absCorrelation": 0.289,
+      "n": 120,
+      "wbMean": 2.11,
+      "wbMedian": 2.1
+    },
+    {
+      "feature": "typographyDensity",
+      "correlation": -0.223,
+      "absCorrelation": 0.223,
+      "n": 120,
+      "wbMean": 3.49,
+      "wbMedian": 3.3
+    },
+    {
+      "feature": "perspective",
+      "correlation": 0.173,
+      "absCorrelation": 0.173,
+      "n": 120,
+      "wbMean": 26.7,
+      "wbMedian": 23.2
+    },
+    {
+      "feature": "visualCenterOffset",
+      "correlation": 0.15,
+      "absCorrelation": 0.15,
+      "n": 120,
+      "wbMean": 10.73,
+      "wbMedian": 8.7
+    },
+    {
+      "feature": "brightnessSeparation",
+      "correlation": 0.133,
+      "absCorrelation": 0.133,
+      "n": 120,
+      "wbMean": 32.36,
+      "wbMedian": 23.8
+    },
+    {
+      "feature": "objectSymmetry",
+      "correlation": -0.13,
+      "absCorrelation": 0.13,
+      "n": 120,
+      "wbMean": 68.81,
+      "wbMedian": 71.6
+    },
+    {
+      "feature": "negativeSpace",
+      "correlation": 0.122,
+      "absCorrelation": 0.122,
+      "n": 120,
+      "wbMean": 68.55,
+      "wbMedian": 68.5
+    },
+    {
+      "feature": "dominantColorBalance",
+      "correlation": -0.12,
+      "absCorrelation": 0.12,
+      "n": 120,
+      "wbMean": 30.83,
+      "wbMedian": 24.9
+    },
+    {
+      "feature": "productAreaPct",
+      "correlation": -0.099,
+      "absCorrelation": 0.099,
+      "n": 120,
+      "wbMean": 29.53,
+      "wbMedian": 30
+    },
+    {
+      "feature": "objectDepth",
+      "correlation": 0.098,
+      "absCorrelation": 0.098,
+      "n": 120,
+      "wbMean": 15.55,
+      "wbMedian": 11
+    },
+    {
+      "feature": "highlightStrength",
+      "correlation": 0.095,
+      "absCorrelation": 0.095,
+      "n": 120,
+      "wbMean": 31.4,
+      "wbMedian": 28.5
+    },
+    {
+      "feature": "edgeContrast",
+      "correlation": 0.094,
+      "absCorrelation": 0.094,
+      "n": 120,
+      "wbMean": 2,
+      "wbMedian": 1.8
+    },
+    {
+      "feature": "shadowPresence",
+      "correlation": 0.091,
+      "absCorrelation": 0.091,
+      "n": 120,
+      "wbMean": 14.77,
+      "wbMedian": 11.5
+    },
+    {
+      "feature": "colorSeparation",
+      "correlation": 0.085,
+      "absCorrelation": 0.085,
+      "n": 120,
+      "wbMean": 64.16,
+      "wbMedian": 57.8
+    },
+    {
+      "feature": "backgroundNoise",
+      "correlation": -0.07,
+      "absCorrelation": 0.07,
+      "n": 120,
+      "wbMean": 1.28,
+      "wbMedian": 1.2
+    },
+    {
+      "feature": "visualClutter",
+      "correlation": -0.07,
+      "absCorrelation": 0.07,
+      "n": 120,
+      "wbMean": 1.28,
+      "wbMedian": 1.2
+    },
+    {
+      "feature": "badgeVisualWeight",
+      "correlation": -0.014,
+      "absCorrelation": 0.014,
+      "n": 120,
+      "wbMean": 16.16,
+      "wbMedian": 17
+    },
+    {
+      "feature": "badgeCompetition",
+      "correlation": -0.014,
+      "absCorrelation": 0.014,
+      "n": 120,
+      "wbMean": 16.16,
+      "wbMedian": 17
+    },
+    {
+      "feature": "objectLighting",
+      "correlation": 0.009,
+      "absCorrelation": 0.009,
+      "n": 120,
+      "wbMean": 8.69,
+      "wbMedian": 10.5
+    }
+  ],
+  "lawValidation": [
+    {
+      "lawId": "LAW_001",
+      "lawName": "Product Area Does Not Drive Dominance",
+      "productionStatus": "PROVEN",
+      "feature": "productAreaPct",
+      "baselineCorrelation": -0.099,
+      "currentCorrelation": -0.099,
+      "deltaCorrelation": 0,
+      "validationStatus": "Still Proven",
+      "finding": "confirmation",
+      "rationale": "Remains negligible: r=-0.099 (baseline -0.099)."
+    },
+    {
+      "lawId": "LAW_002",
+      "lawName": "Foreground Isolation Increases Dominance",
+      "productionStatus": "PROVEN",
+      "feature": "foregroundIsolation",
+      "baselineCorrelation": 0.332,
+      "currentCorrelation": 0.332,
+      "deltaCorrelation": 0,
+      "validationStatus": "Still Proven",
+      "finding": "confirmation",
+      "rationale": "Within drift tolerance: r=0.332 (baseline 0.332, Δ=0)."
+    },
+    {
+      "lawId": "LAW_003",
+      "lawName": "Headline Steals Attention",
+      "productionStatus": "PROVEN",
+      "feature": "headlineVisualWeight",
+      "baselineCorrelation": -0.723,
+      "currentCorrelation": -0.723,
+      "deltaCorrelation": 0,
+      "validationStatus": "Still Proven",
+      "finding": "confirmation",
+      "rationale": "Within drift tolerance: r=-0.723 (baseline -0.723, Δ=0)."
+    },
+    {
+      "lawId": "LAW_004",
+      "lawName": "Badge Competition Not Bottleneck",
+      "productionStatus": "PROVEN",
+      "feature": "badgeCompetition",
+      "baselineCorrelation": 0.05,
+      "validationStatus": "Not Measurable",
+      "finding": "not_applicable",
+      "rationale": "Qualitative law. Re-confirmed if related feature remains negligible in WB scan."
+    },
+    {
+      "lawId": "LAW_005",
+      "lawName": "Attention Hierarchy > Product Area",
+      "productionStatus": "PROVEN",
+      "feature": "primaryFocusRatio",
+      "baselineCorrelation": 0.744,
+      "currentCorrelation": 0.744,
+      "deltaCorrelation": 0,
+      "validationStatus": "Still Proven",
+      "finding": "confirmation",
+      "rationale": "Within drift tolerance: r=0.744 (baseline 0.744, Δ=0)."
+    },
+    {
+      "lawId": "LAW_006",
+      "lawName": "Compositor Sufficient; Overlay Dilutes FI",
+      "productionStatus": "PROVEN",
+      "validationStatus": "Not Measurable",
+      "finding": "not_applicable",
+      "rationale": "DAOS-only law (layer delta). Validated via production benchmarks, not WB correlation refresh."
+    },
+    {
+      "lawId": "LAW_007",
+      "lawName": "Hero Visual Weight Drives Dominance",
+      "productionStatus": "PROVEN",
+      "feature": "visualWeightHero",
+      "baselineCorrelation": 0.35,
+      "currentCorrelation": 0.349,
+      "deltaCorrelation": -0.001,
+      "validationStatus": "Still Proven",
+      "finding": "confirmation",
+      "rationale": "Within drift tolerance: r=0.349 (baseline 0.35, Δ=-0.001)."
+    },
+    {
+      "lawId": "LAW_008",
+      "lawName": "Sharpness Cluster Explains Visual Weight",
+      "productionStatus": "PROVEN",
+      "feature": "objectSharpness",
+      "baselineCorrelation": 0.326,
+      "currentCorrelation": 0.326,
+      "deltaCorrelation": 0,
+      "validationStatus": "Still Proven",
+      "finding": "confirmation",
+      "rationale": "Within drift tolerance: r=0.326 (baseline 0.326, Δ=0)."
+    },
+    {
+      "lawId": "LAW_009",
+      "lawName": "Texture Competition Reduces Dominance",
+      "productionStatus": "PROVEN",
+      "feature": "textureCompetition",
+      "baselineCorrelation": -0.289,
+      "currentCorrelation": -0.289,
+      "deltaCorrelation": 0,
+      "validationStatus": "Still Proven",
+      "finding": "confirmation",
+      "rationale": "Within drift tolerance: r=-0.289 (baseline -0.289, Δ=0)."
+    },
+    {
+      "lawId": "LAW_014",
+      "lawName": "Object Sharpness Correlates With Dominance",
+      "productionStatus": "LIKELY",
+      "feature": "objectSharpness",
+      "baselineCorrelation": 0.326,
+      "currentCorrelation": 0.326,
+      "deltaCorrelation": 0,
+      "validationStatus": "Still Likely",
+      "finding": "confirmation",
+      "rationale": "Within drift tolerance: r=0.326 (baseline 0.326, Δ=0)."
+    },
+    {
+      "lawId": "LAW_015",
+      "lawName": "Perspective Cues Correlate With Dominance",
+      "productionStatus": "LIKELY",
+      "feature": "perspective",
+      "baselineCorrelation": 0.173,
+      "currentCorrelation": 0.173,
+      "deltaCorrelation": 0,
+      "validationStatus": "Still Likely",
+      "finding": "confirmation",
+      "rationale": "Within drift tolerance: r=0.173 (baseline 0.173, Δ=0)."
+    },
+    {
+      "lawId": "LAW_021",
+      "lawName": "Product Area 55% as Dominance Lever — REJECTED",
+      "productionStatus": "REJECTED",
+      "feature": "productAreaPct",
+      "baselineCorrelation": -0.099,
+      "currentCorrelation": -0.099,
+      "deltaCorrelation": 0,
+      "validationStatus": "Still Rejected",
+      "finding": "confirmation",
+      "rationale": "Rejection holds: r=-0.099 (negligible expected)."
+    },
+    {
+      "lawId": "LAW_022",
+      "lawName": "Badge Competition Fix — REJECTED",
+      "productionStatus": "REJECTED",
+      "feature": "badgeCompetition",
+      "baselineCorrelation": 0.05,
+      "currentCorrelation": -0.014,
+      "deltaCorrelation": -0.064,
+      "validationStatus": "Still Rejected",
+      "finding": "confirmation",
+      "rationale": "Rejection holds: r=-0.014 (negligible expected)."
+    },
+    {
+      "lawId": "LAW_024",
+      "lawName": "Heavier Headline Improves Dominance — REJECTED",
+      "productionStatus": "REJECTED",
+      "feature": "headlineVisualWeight",
+      "baselineCorrelation": -0.723,
+      "currentCorrelation": -0.723,
+      "deltaCorrelation": 0,
+      "validationStatus": "Still Rejected",
+      "finding": "confirmation",
+      "rationale": "Rejection holds: r=-0.723 (negative expected)."
+    }
+  ],
+  "candidateLaws": [
+    {
+      "feature": "productAttention",
+      "correlation": 0.783,
+      "absCorrelation": 0.783,
+      "n": 120,
+      "direction": "positive",
+      "status": "Candidate Law",
+      "rationale": "Unmapped feature with |r|=0.783 (n=120). Requires separate Council review before promotion.",
+      "requiresReview": true
+    },
+    {
+      "feature": "secondaryFocusRatio",
+      "correlation": -0.744,
+      "absCorrelation": 0.744,
+      "n": 120,
+      "direction": "negative",
+      "status": "Candidate Law",
+      "rationale": "Unmapped feature with |r|=0.744 (n=120). Requires separate Council review before promotion.",
+      "requiresReview": true
+    },
+    {
+      "feature": "typographyContrast",
+      "correlation": -0.595,
+      "absCorrelation": 0.595,
+      "n": 120,
+      "direction": "negative",
+      "status": "Candidate Law",
+      "rationale": "Unmapped feature with |r|=0.595 (n=120). Requires separate Council review before promotion.",
+      "requiresReview": true
+    },
+    {
+      "feature": "typographyCompetition",
+      "correlation": -0.537,
+      "absCorrelation": 0.537,
+      "n": 120,
+      "direction": "negative",
+      "status": "Candidate Law",
+      "rationale": "Unmapped feature with |r|=0.537 (n=120). Requires separate Council review before promotion.",
+      "requiresReview": true
+    },
+    {
+      "feature": "textCompetition",
+      "correlation": -0.537,
+      "absCorrelation": 0.537,
+      "n": 120,
+      "direction": "negative",
+      "status": "Candidate Law",
+      "rationale": "Unmapped feature with |r|=0.537 (n=120). Requires separate Council review before promotion.",
+      "requiresReview": true
+    },
+    {
+      "feature": "attentionCompetitionIndex",
+      "correlation": -0.448,
+      "absCorrelation": 0.448,
+      "n": 120,
+      "direction": "negative",
+      "status": "Candidate Law",
+      "rationale": "Unmapped feature with |r|=0.448 (n=120). Requires separate Council review before promotion.",
+      "requiresReview": true
+    },
+    {
+      "feature": "eyePathScore",
+      "correlation": -0.39,
+      "absCorrelation": 0.39,
+      "n": 120,
+      "direction": "negative",
+      "status": "Candidate Law",
+      "rationale": "Unmapped feature with |r|=0.39 (n=120). Requires separate Council review before promotion.",
+      "requiresReview": true
+    },
+    {
+      "feature": "productVisualWeight",
+      "correlation": 0.349,
+      "absCorrelation": 0.349,
+      "n": 120,
+      "direction": "positive",
+      "status": "Candidate Law",
+      "rationale": "Unmapped feature with |r|=0.349 (n=120). Requires separate Council review before promotion.",
+      "requiresReview": true
+    }
+  ],
+  "categorySnapshots": [
+    {
+      "category": "power-tools",
+      "label": "Электроинструмент",
+      "n": 14,
+      "topDriver": "headlineVisualWeight",
+      "topR": 0.799,
+      "dominanceMean": 52.29
+    },
+    {
+      "category": "garden",
+      "label": "Сад",
+      "n": 14,
+      "topDriver": "highlightStrength",
+      "topR": 0.545,
+      "dominanceMean": 49.86
+    },
+    {
+      "category": "home-appliances",
+      "label": "Бытовая техника",
+      "n": 14,
+      "topDriver": "headlineVisualWeight",
+      "topR": 0.541,
+      "dominanceMean": 44.71
+    },
+    {
+      "category": "construction",
+      "label": "Строительство",
+      "n": 14,
+      "topDriver": "productAttention",
+      "topR": 0.842,
+      "dominanceMean": 52.43
+    },
+    {
+      "category": "home",
+      "label": "Дом",
+      "n": 14,
+      "topDriver": "headlineVisualWeight",
+      "topR": 0.862,
+      "dominanceMean": 51.14
+    },
+    {
+      "category": "auto",
+      "label": "Авто",
+      "n": 14,
+      "topDriver": "headlineVisualWeight",
+      "topR": 0.771,
+      "dominanceMean": 48.64
+    },
+    {
+      "category": "kitchen",
+      "label": "Кухня",
+      "n": 14,
+      "topDriver": "productAttention",
+      "topR": 0.925,
+      "dominanceMean": 47.71
+    },
+    {
+      "category": "pressure-wash",
+      "label": "Мойка",
+      "n": 14,
+      "topDriver": "productAttention",
+      "topR": 0.942,
+      "dominanceMean": 50.5
+    },
+    {
+      "category": "humidifier",
+      "label": "Климат",
+      "n": 8,
+      "topDriver": "secondaryFocusRatio",
+      "topR": 0.954,
+      "dominanceMean": 49.38
+    }
+  ],
+  "summary": {
+    "confirmation": 12,
+    "change": 0,
+    "contradiction": 0,
+    "notApplicable": 2,
+    "stillProven": 9,
+    "confidenceIncreased": 0,
+    "confidenceDecreased": 0,
+    "contradicted": 0,
+    "candidateLaws": 0,
+    "candidateLawCount": 8,
+    "lawsValidated": 14
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "productId": 366448449,
+  "category": "auto",
+  "categoryLabel": "Авто",
+  "name": "Пылесос для автомобиля беспроводной мощный",
+  "daosGenerated": true,
+  "genDurationMs": 17351,
+  "leader": {
+    "productDominance": 50,
+    "foregroundIsolation": 60.9,
+    "headlineVisualWeight": 23.4,
+    "primaryFocusRatio": 0.254,
+    "attentionHierarchyScore": 29.2,
+    "commercialFidelity": 35,
+    "visualWeightHero": 23.8,
+    "thumbnailReadability": 58,
+    "productVisualWeight": 23.8,
+    "typographyCompetition": 41.1,
+    "secondaryFocusRatio": 0.746,
+    "attentionDistribution": 0.27
+  },
+  "daos": {
+    "productDominance": 43,
+    "foregroundIsolation": 45,
+    "headlineVisualWeight": 16.8,
+    "primaryFocusRatio": 0.268,
+    "attentionHierarchyScore": 31.6,
+    "commercialFidelity": 29,
+    "visualWeightHero": 13.2,
+    "thumbnailReadability": 59.4,
+    "productVisualWeight": 13.2,
+    "typographyCompetition": 30,
+    "secondaryFocusRatio": 0.732,
+    "attentionDistribution": 0.22
+  },
+  "delta": {
+    "productDominance": -7,
+    "foregroundIsolation": -15.9,
+    "headlineVisualWeight": -6.6,
+    "primaryFocusRatio": 0.01,
+    "attentionHierarchyScore": 2.4,
+    "commercialFidelity": -6,
+    "visualWeightHero": -10.6,
+    "thumbnailReadability": 1.4,
+    "productVisualWeight": -10.6,
+    "typographyCompetition": -11.1,
+    "secondaryFocusRatio": -0.01,
+    "attentionDistribution": -0.05
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "draw",
+    "fasterRead": "draw",
+    "wouldOpen": "draw",
+    "overall": "wb",
+    "rationale": "Dominance: WB 50 vs DAOS 43 (Δ-7); FI: WB 60.9 vs DAOS 45; Thumbnail: WB 58 vs DAOS 59.4; Fidelity: WB 35 vs DAOS 29",
+    "gapClass": "Scene"
+  },
+  "failure": {
+    "slot": "product-047",
+    "productId": 366448449,
+    "category": "Авто",
+    "reason": "Background",
+    "detail": "Scene"
+  },
+  "compositeScore": {
+    "leader": 44,
+    "daos": 38
+  }
+}

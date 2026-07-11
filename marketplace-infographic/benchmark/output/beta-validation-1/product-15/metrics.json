@@ -1,0 +1,58 @@
+{
+  "productId": 396190738,
+  "category": "kitchen",
+  "categoryLabel": "Кухня",
+  "name": "Портативный блендер для смузи и коктейлей с измельчителем",
+  "daosGenerated": false,
+  "genError": "[\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"oneThought\",\n      \"deferredSpecs\",\n      0\n    ]\n  },\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"deferredBullets\",\n      0\n    ]\n  }\n]",
+  "genDurationMs": 75,
+  "leader": {
+    "productDominance": 76,
+    "foregroundIsolation": 50.2,
+    "headlineVisualWeight": 8.7,
+    "primaryFocusRatio": 0.364,
+    "attentionHierarchyScore": 42.8,
+    "commercialFidelity": 54.5,
+    "visualWeightHero": 29.1,
+    "thumbnailReadability": 56.2,
+    "productVisualWeight": 29.1,
+    "typographyCompetition": 18.6
+  },
+  "daos": {
+    "productDominance": 76,
+    "foregroundIsolation": 50.2,
+    "headlineVisualWeight": 8.7,
+    "primaryFocusRatio": 0.364,
+    "attentionHierarchyScore": 42.8,
+    "commercialFidelity": 54.5,
+    "visualWeightHero": 29.1,
+    "thumbnailReadability": 56.2,
+    "productVisualWeight": 29.1,
+    "typographyCompetition": 18.6
+  },
+  "delta": {
+    "productDominance": 0,
+    "foregroundIsolation": 0,
+    "headlineVisualWeight": 0,
+    "primaryFocusRatio": 0,
+    "attentionHierarchyScore": 0,
+    "commercialFidelity": 0,
+    "visualWeightHero": 0,
+    "thumbnailReadability": 0,
+    "productVisualWeight": 0,
+    "typographyCompetition": 0
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "wb",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "DAOS generation failed: [\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"oneThought\",\n      \"deferredSpecs\",\n      0\n    ]\n  },\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"deferredBullets\",\n      0\n    ]\n  }\n]. WB leader wins by default.",
+    "gapClass": "Composition"
+  },
+  "compositeScore": {
+    "leader": 56.4,
+    "daos": 56.4
+  }
+}

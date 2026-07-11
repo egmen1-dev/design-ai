@@ -1,0 +1,62 @@
+{
+  "productId": 904886684,
+  "category": "garden",
+  "categoryLabel": "Сад",
+  "name": "Триммер садовый",
+  "daosGenerated": true,
+  "genDurationMs": 14279,
+  "leader": {
+    "productDominance": 51,
+    "foregroundIsolation": 62.7,
+    "headlineVisualWeight": 26.8,
+    "primaryFocusRatio": 0.241,
+    "attentionHierarchyScore": 27.9,
+    "commercialFidelity": 36.5,
+    "visualWeightHero": 27.6,
+    "thumbnailReadability": 58.6,
+    "productVisualWeight": 27.6,
+    "typographyCompetition": 49,
+    "secondaryFocusRatio": 0.759,
+    "attentionDistribution": 0.267
+  },
+  "daos": {
+    "productDominance": 58,
+    "foregroundIsolation": 64.7,
+    "headlineVisualWeight": 15.2,
+    "primaryFocusRatio": 0.366,
+    "attentionHierarchyScore": 37.7,
+    "commercialFidelity": 44,
+    "visualWeightHero": 21.8,
+    "thumbnailReadability": 67.9,
+    "productVisualWeight": 21.8,
+    "typographyCompetition": 30.7,
+    "secondaryFocusRatio": 0.634,
+    "attentionDistribution": 0.322
+  },
+  "delta": {
+    "productDominance": 7,
+    "foregroundIsolation": 2,
+    "headlineVisualWeight": -11.6,
+    "primaryFocusRatio": 0.13,
+    "attentionHierarchyScore": 9.8,
+    "commercialFidelity": 7.5,
+    "visualWeightHero": -5.8,
+    "thumbnailReadability": 9.3,
+    "productVisualWeight": -5.8,
+    "typographyCompetition": -18.3,
+    "secondaryFocusRatio": -0.13,
+    "attentionDistribution": 0.05
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 51 vs DAOS 58 (Δ7); FI: WB 62.7 vs DAOS 64.7; Thumbnail: WB 58.6 vs DAOS 67.9; Fidelity: WB 36.5 vs DAOS 44"
+  },
+  "compositeScore": {
+    "leader": 45,
+    "daos": 51.3
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "productId": 229003681,
+  "category": "home",
+  "categoryLabel": "Дом",
+  "name": "Коробка для хранения вещей тканевая",
+  "daosGenerated": true,
+  "genDurationMs": 18632,
+  "leader": {
+    "productDominance": 51,
+    "foregroundIsolation": 79,
+    "headlineVisualWeight": 24.2,
+    "primaryFocusRatio": 0.232,
+    "attentionHierarchyScore": 28,
+    "commercialFidelity": 36,
+    "visualWeightHero": 22.4,
+    "thumbnailReadability": 37.4,
+    "productVisualWeight": 22.4,
+    "typographyCompetition": 37.9,
+    "secondaryFocusRatio": 0.768,
+    "attentionDistribution": 0.265
+  },
+  "daos": {
+    "productDominance": 57,
+    "foregroundIsolation": 78.9,
+    "headlineVisualWeight": 18.4,
+    "primaryFocusRatio": 0.335,
+    "attentionHierarchyScore": 35,
+    "commercialFidelity": 42,
+    "visualWeightHero": 22.7,
+    "thumbnailReadability": 50.1,
+    "productVisualWeight": 22.7,
+    "typographyCompetition": 36.8,
+    "secondaryFocusRatio": 0.665,
+    "attentionDistribution": 0.291
+  },
+  "delta": {
+    "productDominance": 6,
+    "foregroundIsolation": -0.1,
+    "headlineVisualWeight": -5.8,
+    "primaryFocusRatio": 0.1,
+    "attentionHierarchyScore": 7,
+    "commercialFidelity": 6,
+    "visualWeightHero": 0.3,
+    "thumbnailReadability": 12.7,
+    "productVisualWeight": 0.3,
+    "typographyCompetition": -1.1,
+    "secondaryFocusRatio": -0.1,
+    "attentionDistribution": 0.03
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 51 vs DAOS 57 (Δ6); FI: WB 79 vs DAOS 78.9; Thumbnail: WB 37.4 vs DAOS 50.1; Fidelity: WB 36 vs DAOS 42"
+  },
+  "compositeScore": {
+    "leader": 43.8,
+    "daos": 49.7
+  }
+}

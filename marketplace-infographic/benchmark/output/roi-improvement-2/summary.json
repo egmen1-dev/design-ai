@@ -1,0 +1,247 @@
+{
+  "version": "beta-validation-1",
+  "timestamp": "2026-07-11T10:19:43.602Z",
+  "productCount": 20,
+  "aggregate": {
+    "daosWins": 17,
+    "wbWins": 2,
+    "draws": 1,
+    "byCategory": {
+      "Электроинструмент": {
+        "daos": 3,
+        "wb": 0,
+        "draw": 0
+      },
+      "Сад": {
+        "daos": 3,
+        "wb": 0,
+        "draw": 0
+      },
+      "Строительство": {
+        "daos": 2,
+        "wb": 0,
+        "draw": 0
+      },
+      "Бытовая техника": {
+        "daos": 2,
+        "wb": 0,
+        "draw": 0
+      },
+      "Дом": {
+        "daos": 2,
+        "wb": 0,
+        "draw": 0
+      },
+      "Авто": {
+        "daos": 1,
+        "wb": 0,
+        "draw": 1
+      },
+      "Кухня": {
+        "daos": 2,
+        "wb": 0,
+        "draw": 0
+      },
+      "Мойка": {
+        "daos": 1,
+        "wb": 1,
+        "draw": 0
+      },
+      "Климат": {
+        "daos": 1,
+        "wb": 1,
+        "draw": 0
+      }
+    },
+    "gapCounts": {
+      "Lighting": 1,
+      "Visual": 1
+    }
+  },
+  "council": {
+    "pctDaosBetter": 85,
+    "genSuccessRate": 100,
+    "topGaps": [
+      "Lighting (1)",
+      "Visual (1)"
+    ],
+    "betaReady": "READY",
+    "rationale": "DAOS wins or matches WB leaders in majority of head-to-head comparisons on real catalog images."
+  },
+  "improvements": [
+    {
+      "title": "Real seller packshot inputs (not full WB card as source)",
+      "impact": "CRITICAL",
+      "complexity": "Low (ops + benchmark)",
+      "benefit": "Eliminates double-overlay artifact; +15–25% dominance on real photos"
+    },
+    {
+      "title": "Post-overlay dominance preservation gate",
+      "impact": "CRITICAL",
+      "complexity": "Medium",
+      "benefit": "Addresses avg FI gap 25.9; blocks ship when overlay collapses hierarchy"
+    },
+    {
+      "title": "Thumbnail 120×160 pass/fail in final QA",
+      "impact": "HIGH",
+      "complexity": "Low",
+      "benefit": "+8–12% estimated CTR proxy; catches unreadable cards pre-publish"
+    },
+    {
+      "title": "Category-tuned attention hierarchy caps",
+      "impact": "HIGH",
+      "complexity": "Medium",
+      "benefit": "Fixes industrial/tool silhouettes where headline still wins"
+    },
+    {
+      "title": "Hero lighting on weak-edge cutouts",
+      "impact": "MEDIUM",
+      "complexity": "Medium",
+      "benefit": "Lifts visual weight when dominance Δ=5.1"
+    }
+  ],
+  "products": [
+    {
+      "slot": "product-01",
+      "productId": 243752873,
+      "category": "Электроинструмент",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-02",
+      "productId": 65018803,
+      "category": "Электроинструмент",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-03",
+      "productId": 865871291,
+      "category": "Электроинструмент",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-04",
+      "productId": 952674072,
+      "category": "Сад",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-05",
+      "productId": 903330846,
+      "category": "Сад",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-06",
+      "productId": 880158593,
+      "category": "Сад",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-07",
+      "productId": 14398217,
+      "category": "Строительство",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-08",
+      "productId": 282525552,
+      "category": "Строительство",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-09",
+      "productId": 952441785,
+      "category": "Бытовая техника",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-10",
+      "productId": 409958399,
+      "category": "Бытовая техника",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-11",
+      "productId": 10392457,
+      "category": "Дом",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-12",
+      "productId": 192183239,
+      "category": "Дом",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-13",
+      "productId": 901998555,
+      "category": "Авто",
+      "overall": "draw",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-14",
+      "productId": 253631867,
+      "category": "Авто",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-15",
+      "productId": 396190738,
+      "category": "Кухня",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-16",
+      "productId": 316171067,
+      "category": "Кухня",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-17",
+      "productId": 208892590,
+      "category": "Мойка",
+      "overall": "wb",
+      "daosGenerated": true,
+      "gapClass": "Lighting"
+    },
+    {
+      "slot": "product-18",
+      "productId": 901618182,
+      "category": "Мойка",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-19",
+      "productId": 196125400,
+      "category": "Климат",
+      "overall": "wb",
+      "daosGenerated": true,
+      "gapClass": "Visual"
+    },
+    {
+      "slot": "product-20",
+      "productId": 250141307,
+      "category": "Климат",
+      "overall": "daos",
+      "daosGenerated": true
+    }
+  ]
+}

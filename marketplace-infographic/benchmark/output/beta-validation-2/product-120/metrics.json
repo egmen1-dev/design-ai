@@ -1,0 +1,62 @@
+{
+  "productId": 372086067,
+  "category": "pressure-wash",
+  "categoryLabel": "Мойка",
+  "name": "Мойка высокого давления DKCW25, 40 бар, без АКБ и з у",
+  "daosGenerated": true,
+  "genDurationMs": 15534,
+  "leader": {
+    "productDominance": 38,
+    "foregroundIsolation": 69.4,
+    "headlineVisualWeight": 35,
+    "primaryFocusRatio": 0.192,
+    "attentionHierarchyScore": 25.5,
+    "commercialFidelity": 43.5,
+    "visualWeightHero": 21.1,
+    "thumbnailReadability": 69.6,
+    "productVisualWeight": 21.1,
+    "typographyCompetition": 56.4,
+    "secondaryFocusRatio": 0.808,
+    "attentionDistribution": 0.188
+  },
+  "daos": {
+    "productDominance": 56,
+    "foregroundIsolation": 55.3,
+    "headlineVisualWeight": 24,
+    "primaryFocusRatio": 0.339,
+    "attentionHierarchyScore": 35.2,
+    "commercialFidelity": 42,
+    "visualWeightHero": 31,
+    "thumbnailReadability": 73.9,
+    "productVisualWeight": 31,
+    "typographyCompetition": 49.3,
+    "secondaryFocusRatio": 0.661,
+    "attentionDistribution": 0.297
+  },
+  "delta": {
+    "productDominance": 18,
+    "foregroundIsolation": -14.1,
+    "headlineVisualWeight": -11,
+    "primaryFocusRatio": 0.15,
+    "attentionHierarchyScore": 9.7,
+    "commercialFidelity": -1.5,
+    "visualWeightHero": 9.9,
+    "thumbnailReadability": 4.3,
+    "productVisualWeight": 9.9,
+    "typographyCompetition": -7.1,
+    "secondaryFocusRatio": -0.15,
+    "attentionDistribution": 0.11
+  },
+  "verdict": {
+    "moreProfessional": "draw",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 38 vs DAOS 56 (Δ18); FI: WB 69.4 vs DAOS 55.3; Thumbnail: WB 69.6 vs DAOS 73.9; Fidelity: WB 43.5 vs DAOS 42"
+  },
+  "compositeScore": {
+    "leader": 43.9,
+    "daos": 50
+  }
+}

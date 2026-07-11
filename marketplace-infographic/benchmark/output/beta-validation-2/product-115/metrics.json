@@ -1,0 +1,70 @@
+{
+  "productId": 361890294,
+  "category": "pressure-wash",
+  "categoryLabel": "Мойка",
+  "name": "Электрическая мини мойка высокого давления для автомобиля",
+  "daosGenerated": true,
+  "genDurationMs": 17949,
+  "leader": {
+    "productDominance": 48,
+    "foregroundIsolation": 48.3,
+    "headlineVisualWeight": 22.5,
+    "primaryFocusRatio": 0.277,
+    "attentionHierarchyScore": 30.7,
+    "commercialFidelity": 34,
+    "visualWeightHero": 20.8,
+    "thumbnailReadability": 53.1,
+    "productVisualWeight": 20.8,
+    "typographyCompetition": 39.6,
+    "secondaryFocusRatio": 0.723,
+    "attentionDistribution": 0.251
+  },
+  "daos": {
+    "productDominance": 34,
+    "foregroundIsolation": 49.3,
+    "headlineVisualWeight": 30.3,
+    "primaryFocusRatio": 0.205,
+    "attentionHierarchyScore": 27.7,
+    "commercialFidelity": 20.5,
+    "visualWeightHero": 15.3,
+    "thumbnailReadability": 55.1,
+    "productVisualWeight": 15.3,
+    "typographyCompetition": 50.3,
+    "secondaryFocusRatio": 0.795,
+    "attentionDistribution": 0.16
+  },
+  "delta": {
+    "productDominance": -14,
+    "foregroundIsolation": 1,
+    "headlineVisualWeight": 7.8,
+    "primaryFocusRatio": -0.07,
+    "attentionHierarchyScore": -3,
+    "commercialFidelity": -13.5,
+    "visualWeightHero": -5.5,
+    "thumbnailReadability": 2,
+    "productVisualWeight": -5.5,
+    "typographyCompetition": 10.7,
+    "secondaryFocusRatio": 0.07,
+    "attentionDistribution": -0.09
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "wb",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "Dominance: WB 48 vs DAOS 34 (Δ-14); FI: WB 48.3 vs DAOS 49.3; Thumbnail: WB 53.1 vs DAOS 55.1; Fidelity: WB 34 vs DAOS 20.5",
+    "gapClass": "Product Dominance"
+  },
+  "failure": {
+    "slot": "product-115",
+    "productId": 361890294,
+    "category": "Мойка",
+    "reason": "Dominance",
+    "detail": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 40.4,
+    "daos": 32.7
+  }
+}

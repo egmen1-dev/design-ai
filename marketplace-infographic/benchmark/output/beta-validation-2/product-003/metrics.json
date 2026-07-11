@@ -1,0 +1,62 @@
+{
+  "productId": 865871291,
+  "category": "power-tools",
+  "categoryLabel": "Электроинструмент",
+  "name": "Дрель ударная электрическая 780В, 719.0.0.70",
+  "daosGenerated": true,
+  "genDurationMs": 10152,
+  "leader": {
+    "productDominance": 56,
+    "foregroundIsolation": 56.9,
+    "headlineVisualWeight": 15.4,
+    "primaryFocusRatio": 0.337,
+    "attentionHierarchyScore": 35.7,
+    "commercialFidelity": 42,
+    "visualWeightHero": 19.5,
+    "thumbnailReadability": 56.6,
+    "productVisualWeight": 19.5,
+    "typographyCompetition": 25.9,
+    "secondaryFocusRatio": 0.663,
+    "attentionDistribution": 0.321
+  },
+  "daos": {
+    "productDominance": 66,
+    "foregroundIsolation": 81.5,
+    "headlineVisualWeight": 13.1,
+    "primaryFocusRatio": 0.431,
+    "attentionHierarchyScore": 42.7,
+    "commercialFidelity": 51,
+    "visualWeightHero": 25.8,
+    "thumbnailReadability": 92.6,
+    "productVisualWeight": 25.8,
+    "typographyCompetition": 27.8,
+    "secondaryFocusRatio": 0.569,
+    "attentionDistribution": 0.387
+  },
+  "delta": {
+    "productDominance": 10,
+    "foregroundIsolation": 24.6,
+    "headlineVisualWeight": -2.3,
+    "primaryFocusRatio": 0.09,
+    "attentionHierarchyScore": 7,
+    "commercialFidelity": 9,
+    "visualWeightHero": 6.3,
+    "thumbnailReadability": 36,
+    "productVisualWeight": 6.3,
+    "typographyCompetition": 1.9,
+    "secondaryFocusRatio": -0.09,
+    "attentionDistribution": 0.07
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 56 vs DAOS 66 (Δ10); FI: WB 56.9 vs DAOS 81.5; Thumbnail: WB 56.6 vs DAOS 92.6; Fidelity: WB 42 vs DAOS 51"
+  },
+  "compositeScore": {
+    "leader": 47,
+    "daos": 62.3
+  }
+}

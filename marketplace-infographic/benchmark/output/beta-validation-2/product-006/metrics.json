@@ -1,0 +1,62 @@
+{
+  "productId": 165794864,
+  "category": "power-tools",
+  "categoryLabel": "Электроинструмент",
+  "name": "Дрель электрическая DM-13E, 13 мм, 750 Вт, 3000 об мин",
+  "daosGenerated": true,
+  "genDurationMs": 8987,
+  "leader": {
+    "productDominance": 53,
+    "foregroundIsolation": 52.5,
+    "headlineVisualWeight": 15.6,
+    "primaryFocusRatio": 0.322,
+    "attentionHierarchyScore": 34.3,
+    "commercialFidelity": 39,
+    "visualWeightHero": 17.4,
+    "thumbnailReadability": 56.7,
+    "productVisualWeight": 17.4,
+    "typographyCompetition": 30.2,
+    "secondaryFocusRatio": 0.678,
+    "attentionDistribution": 0.275
+  },
+  "daos": {
+    "productDominance": 69,
+    "foregroundIsolation": 63.4,
+    "headlineVisualWeight": 9.9,
+    "primaryFocusRatio": 0.575,
+    "attentionHierarchyScore": 48.7,
+    "commercialFidelity": 51.5,
+    "visualWeightHero": 22.1,
+    "thumbnailReadability": 73.3,
+    "productVisualWeight": 22.1,
+    "typographyCompetition": 14.4,
+    "secondaryFocusRatio": 0.425,
+    "attentionDistribution": 0.476
+  },
+  "delta": {
+    "productDominance": 16,
+    "foregroundIsolation": 10.9,
+    "headlineVisualWeight": -5.7,
+    "primaryFocusRatio": 0.25,
+    "attentionHierarchyScore": 14.4,
+    "commercialFidelity": 12.5,
+    "visualWeightHero": 4.7,
+    "thumbnailReadability": 16.6,
+    "productVisualWeight": 4.7,
+    "typographyCompetition": -15.8,
+    "secondaryFocusRatio": -0.25,
+    "attentionDistribution": 0.2
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 53 vs DAOS 69 (Δ16); FI: WB 52.5 vs DAOS 63.4; Thumbnail: WB 56.7 vs DAOS 73.3; Fidelity: WB 39 vs DAOS 51.5"
+  },
+  "compositeScore": {
+    "leader": 44.5,
+    "daos": 58.1
+  }
+}

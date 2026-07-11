@@ -1,0 +1,62 @@
+{
+  "productId": 30134323,
+  "category": "garden",
+  "categoryLabel": "Сад",
+  "name": "Триммер садовый бензиновый GT 620",
+  "daosGenerated": true,
+  "genDurationMs": 18189,
+  "leader": {
+    "productDominance": 49,
+    "foregroundIsolation": 59,
+    "headlineVisualWeight": 33.6,
+    "primaryFocusRatio": 0.32,
+    "attentionHierarchyScore": 31.1,
+    "commercialFidelity": 34,
+    "visualWeightHero": 31.8,
+    "thumbnailReadability": 52,
+    "productVisualWeight": 31.8,
+    "typographyCompetition": 48.3,
+    "secondaryFocusRatio": 0.68,
+    "attentionDistribution": 0.28
+  },
+  "daos": {
+    "productDominance": 45,
+    "foregroundIsolation": 73.5,
+    "headlineVisualWeight": 24.8,
+    "primaryFocusRatio": 0.312,
+    "attentionHierarchyScore": 32.5,
+    "commercialFidelity": 30.5,
+    "visualWeightHero": 19.9,
+    "thumbnailReadability": 68.7,
+    "productVisualWeight": 19.9,
+    "typographyCompetition": 37.8,
+    "secondaryFocusRatio": 0.688,
+    "attentionDistribution": 0.241
+  },
+  "delta": {
+    "productDominance": -4,
+    "foregroundIsolation": 14.5,
+    "headlineVisualWeight": -8.8,
+    "primaryFocusRatio": -0.01,
+    "attentionHierarchyScore": 1.4,
+    "commercialFidelity": -3.5,
+    "visualWeightHero": -11.9,
+    "thumbnailReadability": 16.7,
+    "productVisualWeight": -11.9,
+    "typographyCompetition": -10.5,
+    "secondaryFocusRatio": 0.01,
+    "attentionDistribution": -0.04
+  },
+  "verdict": {
+    "moreProfessional": "draw",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 49 vs DAOS 45 (Δ-4); FI: WB 59 vs DAOS 73.5; Thumbnail: WB 52 vs DAOS 68.7; Fidelity: WB 34 vs DAOS 30.5"
+  },
+  "compositeScore": {
+    "leader": 42.8,
+    "daos": 44.9
+  }
+}

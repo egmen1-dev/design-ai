@@ -1,0 +1,70 @@
+{
+  "productId": 219468153,
+  "category": "construction",
+  "categoryLabel": "Строительство",
+  "name": "Ударный электрический перфоратор для стройки П 1100 Вт",
+  "daosGenerated": true,
+  "genDurationMs": 17856,
+  "leader": {
+    "productDominance": 54,
+    "foregroundIsolation": 47.6,
+    "headlineVisualWeight": 26.7,
+    "primaryFocusRatio": 0.318,
+    "attentionHierarchyScore": 33.1,
+    "commercialFidelity": 48,
+    "visualWeightHero": 31.4,
+    "thumbnailReadability": 57.6,
+    "productVisualWeight": 31.4,
+    "typographyCompetition": 44.3,
+    "secondaryFocusRatio": 0.682,
+    "attentionDistribution": 0.307
+  },
+  "daos": {
+    "productDominance": 36,
+    "foregroundIsolation": 45.7,
+    "headlineVisualWeight": 15.4,
+    "primaryFocusRatio": 0.248,
+    "attentionHierarchyScore": 31.5,
+    "commercialFidelity": 22,
+    "visualWeightHero": 8.9,
+    "thumbnailReadability": 59.2,
+    "productVisualWeight": 8.9,
+    "typographyCompetition": 23.2,
+    "secondaryFocusRatio": 0.752,
+    "attentionDistribution": 0.187
+  },
+  "delta": {
+    "productDominance": -18,
+    "foregroundIsolation": -1.9,
+    "headlineVisualWeight": -11.3,
+    "primaryFocusRatio": -0.07,
+    "attentionHierarchyScore": -1.6,
+    "commercialFidelity": -26,
+    "visualWeightHero": -22.5,
+    "thumbnailReadability": 1.6,
+    "productVisualWeight": -22.5,
+    "typographyCompetition": -21.1,
+    "secondaryFocusRatio": 0.07,
+    "attentionDistribution": -0.12
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "wb",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "Dominance: WB 54 vs DAOS 36 (Δ-18); FI: WB 47.6 vs DAOS 45.7; Thumbnail: WB 57.6 vs DAOS 59.2; Fidelity: WB 48 vs DAOS 22",
+    "gapClass": "Product Dominance"
+  },
+  "failure": {
+    "slot": "product-021",
+    "productId": 219468153,
+    "category": "Строительство",
+    "reason": "Dominance",
+    "detail": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 46.7,
+    "daos": 34.2
+  }
+}

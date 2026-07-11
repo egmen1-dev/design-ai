@@ -1,0 +1,57 @@
+{
+  "productId": 243752873,
+  "category": "power-tools",
+  "categoryLabel": "Электроинструмент",
+  "name": "Дрель ударная электрическая ДУ-13 750ЭР, 546.1.0.00",
+  "daosGenerated": true,
+  "genDurationMs": 8565,
+  "leader": {
+    "productDominance": 63,
+    "foregroundIsolation": 61.8,
+    "headlineVisualWeight": 14.9,
+    "primaryFocusRatio": 0.339,
+    "attentionHierarchyScore": 37.7,
+    "commercialFidelity": 51,
+    "visualWeightHero": 25,
+    "thumbnailReadability": 57.6,
+    "productVisualWeight": 25,
+    "typographyCompetition": 23.8
+  },
+  "daos": {
+    "productDominance": 50,
+    "foregroundIsolation": 70.5,
+    "headlineVisualWeight": 32.3,
+    "primaryFocusRatio": 0.312,
+    "attentionHierarchyScore": 30.7,
+    "commercialFidelity": 36,
+    "visualWeightHero": 32.2,
+    "thumbnailReadability": 85.7,
+    "productVisualWeight": 32.2,
+    "typographyCompetition": 58.7
+  },
+  "delta": {
+    "productDominance": -13,
+    "foregroundIsolation": 8.7,
+    "headlineVisualWeight": 17.4,
+    "primaryFocusRatio": -0.03,
+    "attentionHierarchyScore": -7,
+    "commercialFidelity": -15,
+    "visualWeightHero": 7.2,
+    "thumbnailReadability": 28.1,
+    "productVisualWeight": 7.2,
+    "typographyCompetition": 34.9
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "draw",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "wb",
+    "rationale": "Dominance: WB 63 vs DAOS 50 (Δ-13); FI: WB 61.8 vs DAOS 70.5; Thumbnail: WB 57.6 vs DAOS 85.7; Fidelity: WB 51 vs DAOS 36",
+    "gapClass": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 52.5,
+    "daos": 50.3
+  }
+}

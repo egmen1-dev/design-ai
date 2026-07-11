@@ -1,0 +1,70 @@
+{
+  "productId": 276769869,
+  "category": "home",
+  "categoryLabel": "Дом",
+  "name": "Органайзер для хранения косметики, мелочей, канцелярии",
+  "daosGenerated": true,
+  "genDurationMs": 18477,
+  "leader": {
+    "productDominance": 56,
+    "foregroundIsolation": 46.1,
+    "headlineVisualWeight": 13.6,
+    "primaryFocusRatio": 0.25,
+    "attentionHierarchyScore": 32,
+    "commercialFidelity": 42,
+    "visualWeightHero": 18,
+    "thumbnailReadability": 40.2,
+    "productVisualWeight": 18,
+    "typographyCompetition": 25.9,
+    "secondaryFocusRatio": 0.75,
+    "attentionDistribution": 0.313
+  },
+  "daos": {
+    "productDominance": 43,
+    "foregroundIsolation": 55.5,
+    "headlineVisualWeight": 22.9,
+    "primaryFocusRatio": 0.308,
+    "attentionHierarchyScore": 32.7,
+    "commercialFidelity": 29,
+    "visualWeightHero": 17.4,
+    "thumbnailReadability": 56.2,
+    "productVisualWeight": 17.4,
+    "typographyCompetition": 33.9,
+    "secondaryFocusRatio": 0.692,
+    "attentionDistribution": 0.235
+  },
+  "delta": {
+    "productDominance": -13,
+    "foregroundIsolation": 9.4,
+    "headlineVisualWeight": 9.3,
+    "primaryFocusRatio": 0.06,
+    "attentionHierarchyScore": 0.7,
+    "commercialFidelity": -13,
+    "visualWeightHero": -0.6,
+    "thumbnailReadability": 16,
+    "productVisualWeight": -0.6,
+    "typographyCompetition": 8,
+    "secondaryFocusRatio": -0.06,
+    "attentionDistribution": -0.08
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "draw",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "wb",
+    "rationale": "Dominance: WB 56 vs DAOS 43 (Δ-13); FI: WB 46.1 vs DAOS 55.5; Thumbnail: WB 40.2 vs DAOS 56.2; Fidelity: WB 42 vs DAOS 29",
+    "gapClass": "Product Dominance"
+  },
+  "failure": {
+    "slot": "product-059",
+    "productId": 276769869,
+    "category": "Дом",
+    "reason": "Dominance",
+    "detail": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 42.5,
+    "daos": 39.3
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "version": "category-intelligence-wave1",
+  "timestamp": "2026-07-11T12:35:23.275Z",
+  "productCount": 50,
+  "flag": "DAOS_CATEGORY_INTELLIGENCE=1",
+  "aggregate": {
+    "genSuccessRate": 100,
+    "marketWinRate": 56,
+    "daosWins": 28,
+    "wbWins": 18,
+    "draws": 4,
+    "winRateCi": {
+      "rate": 56,
+      "low": 42.3,
+      "high": 68.8
+    }
+  },
+  "statistics": {
+    "daosDominance": {
+      "n": 50,
+      "mean": 49.86,
+      "stdDev": 10.1,
+      "ci95Low": 47.06,
+      "ci95High": 52.66,
+      "min": 27,
+      "max": 69,
+      "outliers": [],
+      "confidence": "MEDIUM"
+    }
+  },
+  "categoryAnalysis": {
+    "Дом": {
+      "daos": 8,
+      "wb": 5,
+      "draw": 1,
+      "n": 14,
+      "winRate": 57.1,
+      "baselineWinRate": 57.1,
+      "deltaPp": 0
+    },
+    "Климат": {
+      "daos": 4,
+      "wb": 3,
+      "draw": 1,
+      "n": 8,
+      "winRate": 50,
+      "baselineWinRate": 50,
+      "deltaPp": 0
+    },
+    "Кухня": {
+      "daos": 8,
+      "wb": 4,
+      "draw": 2,
+      "n": 14,
+      "winRate": 57.1,
+      "baselineWinRate": 50,
+      "deltaPp": 7.1
+    },
+    "Мойка": {
+      "daos": 8,
+      "wb": 6,
+      "draw": 0,
+      "n": 14,
+      "winRate": 57.1,
+      "baselineWinRate": 50,
+      "deltaPp": 7.1
+    }
+  },
+  "improvements": {
+    "Дом": {
+      "baseline": 57.1,
+      "current": 57.1,
+      "delta": 0,
+      "improved": false
+    },
+    "Климат": {
+      "baseline": 50,
+      "current": 50,
+      "delta": 0,
+      "improved": false
+    },
+    "Кухня": {
+      "baseline": 50,
+      "current": 57.1,
+      "delta": 7.1,
+      "improved": true
+    },
+    "Мойка": {
+      "baseline": 50,
+      "current": 57.1,
+      "delta": 7.1,
+      "improved": true
+    }
+  },
+  "failureReasons": {
+    "Dominance": 13,
+    "Category Specific": 3,
+    "Typography": 1,
+    "Background": 1
+  },
+  "confidenceLevel": "MEDIUM",
+  "council": {
+    "allCategoriesImproved": false,
+    "categoriesImproved": [
+      "Кухня",
+      "Мойка"
+    ],
+    "overallWinRate": 56,
+    "baselineAggregate": 51.8
+  }
+}

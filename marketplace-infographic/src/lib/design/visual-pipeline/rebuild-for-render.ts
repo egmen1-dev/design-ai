@@ -4,6 +4,7 @@ import type { ScenePlan } from "@/lib/design/scene-planner";
 import type { ProductAnalysis } from "@/lib/product-analysis";
 import type { SceneTypeId } from "@/lib/design/scene-blueprint/types";
 import { runVisualPipeline } from "./index";
+import { materializeCommercialBlueprintIntent } from "./commercial-blueprint-materializer";
 import { applyScenePlanPatchesToVisualBlueprint } from "./sync-scene-plan";
 import type { VisualSceneBlueprint } from "./types";
 
@@ -35,10 +36,31 @@ export function rebuildVisualPipelineForRender(
     coverConceptId: input.scenePlan.coverConceptId,
   });
 
-  const visualBlueprint = applyScenePlanPatchesToVisualBlueprint(
+  const patchedBlueprint = applyScenePlanPatchesToVisualBlueprint(
     pipeline.visualBlueprint,
     input.scenePlan,
   );
+
+  const visualBlueprint = materializeCommercialBlueprintIntent(
+    patchedBlueprint,
+    input.layoutSpec,
+  );
+
+  const commercialDiag = visualBlueprint.commercial?.diagnostics;
+  if (commercialDiag?.commercialBlueprintMaterialized) {
+    input.decisionLog?.push(
+      `CommercialBlueprint materialized v${commercialDiag.providerCommercialVersion}`,
+    );
+    if (commercialDiag.commercialSceneApplied) {
+      input.decisionLog?.push("CommercialBlueprint scene applied");
+    }
+    if (commercialDiag.commercialPaletteApplied) {
+      input.decisionLog?.push("CommercialBlueprint palette applied");
+    }
+    if (commercialDiag.commercialHeroApplied) {
+      input.decisionLog?.push("CommercialBlueprint hero applied");
+    }
+  }
 
   input.decisionLog?.push(
     ...pipeline.snippets.map((s) => `VisualPipeline ${s}`),

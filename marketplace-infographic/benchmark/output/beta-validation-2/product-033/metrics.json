@@ -1,0 +1,70 @@
+{
+  "productId": 953436240,
+  "category": "garden",
+  "categoryLabel": "Сад",
+  "name": "Триммер садовый электрический DKTR42, 3Т ПК",
+  "daosGenerated": true,
+  "genDurationMs": 18831,
+  "leader": {
+    "productDominance": 51,
+    "foregroundIsolation": 57.6,
+    "headlineVisualWeight": 27.3,
+    "primaryFocusRatio": 0.249,
+    "attentionHierarchyScore": 28.4,
+    "commercialFidelity": 37,
+    "visualWeightHero": 28.4,
+    "thumbnailReadability": 58.4,
+    "productVisualWeight": 28.4,
+    "typographyCompetition": 48.6,
+    "secondaryFocusRatio": 0.751,
+    "attentionDistribution": 0.272
+  },
+  "daos": {
+    "productDominance": 35,
+    "foregroundIsolation": 57.4,
+    "headlineVisualWeight": 24.6,
+    "primaryFocusRatio": 0.297,
+    "attentionHierarchyScore": 32.8,
+    "commercialFidelity": 21.5,
+    "visualWeightHero": 13.1,
+    "thumbnailReadability": 66.4,
+    "productVisualWeight": 13.1,
+    "typographyCompetition": 28.8,
+    "secondaryFocusRatio": 0.703,
+    "attentionDistribution": 0.197
+  },
+  "delta": {
+    "productDominance": -16,
+    "foregroundIsolation": -0.2,
+    "headlineVisualWeight": -2.7,
+    "primaryFocusRatio": 0.05,
+    "attentionHierarchyScore": 4.4,
+    "commercialFidelity": -15.5,
+    "visualWeightHero": -15.3,
+    "thumbnailReadability": 8,
+    "productVisualWeight": -15.3,
+    "typographyCompetition": -19.8,
+    "secondaryFocusRatio": -0.05,
+    "attentionDistribution": -0.08
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "draw",
+    "wouldOpen": "draw",
+    "overall": "wb",
+    "rationale": "Dominance: WB 51 vs DAOS 35 (Δ-16); FI: WB 57.6 vs DAOS 57.4; Thumbnail: WB 58.4 vs DAOS 66.4; Fidelity: WB 37 vs DAOS 21.5",
+    "gapClass": "Product Dominance"
+  },
+  "failure": {
+    "slot": "product-033",
+    "productId": 953436240,
+    "category": "Сад",
+    "reason": "Dominance",
+    "detail": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 44.4,
+    "daos": 36.7
+  }
+}
