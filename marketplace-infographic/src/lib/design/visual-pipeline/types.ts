@@ -116,6 +116,48 @@ export type VisualConstraints = {
   backdropOnly: true;
 };
 
+import type {
+  BackgroundPalettePreference,
+  HierarchyMap,
+  PrimaryObjectPreference,
+  ScenePreference,
+} from "@/lib/design/layout-spec/types";
+
+export type CommercialBlueprintDiagnostics = {
+  commercialBlueprintMaterialized: boolean;
+  commercialSceneApplied: boolean;
+  commercialPaletteApplied: boolean;
+  commercialHeroApplied: boolean;
+  commercialFieldsIgnored: string[];
+  providerCommercialVersion: string;
+  commercialMaterializationWarnings: string[];
+};
+
+/** Read-only snapshot of LayoutSpec commercial fields materialized onto the blueprint */
+export type CommercialBlueprintSnapshot = {
+  scenePreference?: ScenePreference;
+  backgroundPalettePreference?: BackgroundPalettePreference;
+  heroScale?: number;
+  productAreaPct?: number;
+  primaryObject?: PrimaryObjectPreference;
+  hierarchy?: HierarchyMap;
+};
+
+/** Provider-safe phrases derived from LayoutSpec — no Genome references */
+export type CommercialBlueprintGuidance = {
+  environmentPhrase?: string;
+  backgroundPhrase?: string;
+  heroEmphasisPhrase?: string;
+  productDominancePhrase?: string;
+  visualPriorityPhrase?: string;
+};
+
+export type CommercialBlueprintExtension = {
+  snapshot: CommercialBlueprintSnapshot;
+  guidance: CommercialBlueprintGuidance;
+  diagnostics: CommercialBlueprintDiagnostics;
+};
+
 /** Unified blueprint — no natural-language prompt fragments */
 export type VisualSceneBlueprint = {
   version: "2.0";
@@ -130,6 +172,8 @@ export type VisualSceneBlueprint = {
   composition: CompositionDecision;
   negative: VisualNegativeBlock;
   constraints: VisualConstraints;
+  /** Sprint 4 — commercial intent materialized from LayoutSpec only */
+  commercial?: CommercialBlueprintExtension;
 };
 
 export type VisualPipelineInput = {

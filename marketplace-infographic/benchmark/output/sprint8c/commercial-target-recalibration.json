@@ -1,0 +1,292 @@
+{
+  "sprint": "DAOS Product Sprint 8C — Product Area Target Recalibration",
+  "timestamp": "2026-07-09T17:21:04.566Z",
+  "recalibration": {
+    "reachableTarget": 0.42,
+    "aspirationalTarget": 0.55,
+    "geometryCeilingObjectScale": 0.75
+  },
+  "comparison": {
+    "sprint8b": {
+      "objectScale": 0.55,
+      "expectedTargetPct": 55,
+      "avgMeasuredArea": 17.2,
+      "avgFidelityScore": 5.5,
+      "avgUnreachableGap": 37.8,
+      "targetConflicts": 0
+    },
+    "sprint8c": {
+      "objectScale": 0.75,
+      "expectedTargetPct": 42,
+      "avgMeasuredArea": 37,
+      "avgFidelityScore": 87.4,
+      "avgUnreachableGap": 18,
+      "honestTargetAlignment": 5
+    },
+    "measuredAreaGain": 19.8,
+    "fidelityScoreGain": 81.9
+  },
+  "successCriteria": {
+    "targetNoLongerConflictsWithCeiling": true,
+    "fidelityScoreImproved": true,
+    "honestMeasurement": true,
+    "dualTargetModel": true
+  },
+  "products": [
+    {
+      "productId": "battery-sprayer",
+      "sprint8b": {
+        "productId": "battery-sprayer",
+        "templateId": "poster",
+        "mode": "sprint8b",
+        "objectScale": 0.55,
+        "propagationMode": "legacy_aspirational_55",
+        "expectedTarget": 55,
+        "reachableTarget": 42,
+        "aspirationalTarget": 55,
+        "measuredArea": 17.5,
+        "allowedArea": 17.5,
+        "fidelityScore": 6.3,
+        "aspirationalScore": 6.3,
+        "reachableScore": 38.8,
+        "unreachableGap": 37.5,
+        "targetConflict": true,
+        "productAreaModel": {
+          "aspirationalTarget": 55,
+          "reachableTarget": 42,
+          "measuredArea": 17.5,
+          "unreachableGap": 37.5
+        }
+      },
+      "sprint8c": {
+        "productId": "battery-sprayer",
+        "templateId": "poster",
+        "mode": "sprint8c",
+        "objectScale": 0.75,
+        "propagationMode": "geometry_ceiling_harvest",
+        "expectedTarget": 42,
+        "reachableTarget": 42,
+        "aspirationalTarget": 55,
+        "measuredArea": 37.4,
+        "allowedArea": 37.4,
+        "fidelityScore": 88.5,
+        "aspirationalScore": 56,
+        "reachableScore": 88.5,
+        "unreachableGap": 17.6,
+        "targetConflict": true,
+        "productAreaModel": {
+          "aspirationalTarget": 55,
+          "reachableTarget": 42,
+          "measuredArea": 37.4,
+          "unreachableGap": 17.6
+        }
+      },
+      "fidelityDelta": 82.2,
+      "measuredAreaDelta": 19.9
+    },
+    {
+      "productId": "construction-vacuum",
+      "sprint8b": {
+        "productId": "construction-vacuum",
+        "templateId": "commercial",
+        "mode": "sprint8b",
+        "objectScale": 0.55,
+        "propagationMode": "legacy_aspirational_55",
+        "expectedTarget": 55,
+        "reachableTarget": 42,
+        "aspirationalTarget": 55,
+        "measuredArea": 16.7,
+        "allowedArea": 16.7,
+        "fidelityScore": 4.3,
+        "aspirationalScore": 4.3,
+        "reachableScore": 36.8,
+        "unreachableGap": 38.3,
+        "targetConflict": true,
+        "productAreaModel": {
+          "aspirationalTarget": 55,
+          "reachableTarget": 42,
+          "measuredArea": 16.7,
+          "unreachableGap": 38.3
+        }
+      },
+      "sprint8c": {
+        "productId": "construction-vacuum",
+        "templateId": "commercial",
+        "mode": "sprint8c",
+        "objectScale": 0.75,
+        "propagationMode": "geometry_ceiling_harvest",
+        "expectedTarget": 42,
+        "reachableTarget": 42,
+        "aspirationalTarget": 55,
+        "measuredArea": 35.8,
+        "allowedArea": 35.8,
+        "fidelityScore": 84.5,
+        "aspirationalScore": 52,
+        "reachableScore": 84.5,
+        "unreachableGap": 19.2,
+        "targetConflict": true,
+        "productAreaModel": {
+          "aspirationalTarget": 55,
+          "reachableTarget": 42,
+          "measuredArea": 35.8,
+          "unreachableGap": 19.2
+        }
+      },
+      "fidelityDelta": 80.2,
+      "measuredAreaDelta": 19.1
+    },
+    {
+      "productId": "impact-drill",
+      "sprint8b": {
+        "productId": "impact-drill",
+        "templateId": "poster",
+        "mode": "sprint8b",
+        "objectScale": 0.55,
+        "propagationMode": "legacy_aspirational_55",
+        "expectedTarget": 55,
+        "reachableTarget": 42,
+        "aspirationalTarget": 55,
+        "measuredArea": 17.5,
+        "allowedArea": 17.5,
+        "fidelityScore": 6.3,
+        "aspirationalScore": 6.3,
+        "reachableScore": 38.8,
+        "unreachableGap": 37.5,
+        "targetConflict": true,
+        "productAreaModel": {
+          "aspirationalTarget": 55,
+          "reachableTarget": 42,
+          "measuredArea": 17.5,
+          "unreachableGap": 37.5
+        }
+      },
+      "sprint8c": {
+        "productId": "impact-drill",
+        "templateId": "poster",
+        "mode": "sprint8c",
+        "objectScale": 0.75,
+        "propagationMode": "geometry_ceiling_harvest",
+        "expectedTarget": 42,
+        "reachableTarget": 42,
+        "aspirationalTarget": 55,
+        "measuredArea": 37.4,
+        "allowedArea": 37.4,
+        "fidelityScore": 88.5,
+        "aspirationalScore": 56,
+        "reachableScore": 88.5,
+        "unreachableGap": 17.6,
+        "targetConflict": true,
+        "productAreaModel": {
+          "aspirationalTarget": 55,
+          "reachableTarget": 42,
+          "measuredArea": 37.4,
+          "unreachableGap": 17.6
+        }
+      },
+      "fidelityDelta": 82.2,
+      "measuredAreaDelta": 19.9
+    },
+    {
+      "productId": "pressure-washer",
+      "sprint8b": {
+        "productId": "pressure-washer",
+        "templateId": "poster",
+        "mode": "sprint8b",
+        "objectScale": 0.55,
+        "propagationMode": "legacy_aspirational_55",
+        "expectedTarget": 55,
+        "reachableTarget": 42,
+        "aspirationalTarget": 55,
+        "measuredArea": 17.5,
+        "allowedArea": 17.5,
+        "fidelityScore": 6.3,
+        "aspirationalScore": 6.3,
+        "reachableScore": 38.8,
+        "unreachableGap": 37.5,
+        "targetConflict": true,
+        "productAreaModel": {
+          "aspirationalTarget": 55,
+          "reachableTarget": 42,
+          "measuredArea": 17.5,
+          "unreachableGap": 37.5
+        }
+      },
+      "sprint8c": {
+        "productId": "pressure-washer",
+        "templateId": "focus",
+        "mode": "sprint8c",
+        "objectScale": 0.75,
+        "propagationMode": "geometry_ceiling_harvest",
+        "expectedTarget": 42,
+        "reachableTarget": 42,
+        "aspirationalTarget": 55,
+        "measuredArea": 36.8,
+        "allowedArea": 36.8,
+        "fidelityScore": 87,
+        "aspirationalScore": 54.5,
+        "reachableScore": 87,
+        "unreachableGap": 18.2,
+        "targetConflict": true,
+        "productAreaModel": {
+          "aspirationalTarget": 55,
+          "reachableTarget": 42,
+          "measuredArea": 36.8,
+          "unreachableGap": 18.2
+        }
+      },
+      "fidelityDelta": 80.7,
+      "measuredAreaDelta": 19.3
+    },
+    {
+      "productId": "home-humidifier",
+      "sprint8b": {
+        "productId": "home-humidifier",
+        "templateId": "commercial",
+        "mode": "sprint8b",
+        "objectScale": 0.55,
+        "propagationMode": "legacy_aspirational_55",
+        "expectedTarget": 55,
+        "reachableTarget": 42,
+        "aspirationalTarget": 55,
+        "measuredArea": 16.7,
+        "allowedArea": 16.7,
+        "fidelityScore": 4.3,
+        "aspirationalScore": 4.3,
+        "reachableScore": 36.8,
+        "unreachableGap": 38.3,
+        "targetConflict": true,
+        "productAreaModel": {
+          "aspirationalTarget": 55,
+          "reachableTarget": 42,
+          "measuredArea": 16.7,
+          "unreachableGap": 38.3
+        }
+      },
+      "sprint8c": {
+        "productId": "home-humidifier",
+        "templateId": "poster",
+        "mode": "sprint8c",
+        "objectScale": 0.75,
+        "propagationMode": "geometry_ceiling_harvest",
+        "expectedTarget": 42,
+        "reachableTarget": 42,
+        "aspirationalTarget": 55,
+        "measuredArea": 37.4,
+        "allowedArea": 37.4,
+        "fidelityScore": 88.5,
+        "aspirationalScore": 56,
+        "reachableScore": 88.5,
+        "unreachableGap": 17.6,
+        "targetConflict": true,
+        "productAreaModel": {
+          "aspirationalTarget": 55,
+          "reachableTarget": 42,
+          "measuredArea": 37.4,
+          "unreachableGap": 17.6
+        }
+      },
+      "fidelityDelta": 84.2,
+      "measuredAreaDelta": 20.7
+    }
+  ]
+}

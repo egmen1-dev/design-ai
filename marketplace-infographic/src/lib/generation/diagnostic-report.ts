@@ -9,6 +9,8 @@ import type { RenderQualityScores } from "@/lib/render-engine/quality/render-qua
 import type { RenderRequest } from "@/lib/render-engine/types";
 import type { RenderEngineOrchestratorResult } from "@/lib/render-engine";
 import { PIPELINE_VERSION } from "@/lib/pipeline-version";
+import type { CommercialGenomeBetaDecisionResult } from "@/lib/daos/commercial-genome-beta";
+import type { CommercialLayoutDebugBundle } from "@/lib/design/layout-spec";
 
 export const DIAGNOSTIC_REPORT_VERSION = "1.0";
 
@@ -80,6 +82,7 @@ export type GenerationDiagnosticReport = {
   finalQuality?: FinalQualityScore;
   feedbackLearning?: FeedbackLearningSnapshot;
   scenePlan?: ScenePlan;
+  commercialGenomeBeta?: CommercialGenomeBetaDecisionResult;
 };
 
 export function buildStoredRenderReport(input: {
@@ -159,6 +162,8 @@ export type BuildGenerationDiagnosticInput = {
   finalQuality?: FinalQualityScore;
   conceptRetries?: number;
   feedbackLearning?: FeedbackLearningSnapshot;
+  commercialGenomeBeta?: CommercialGenomeBetaDecisionResult;
+  commercialLayoutIntegration?: CommercialLayoutDebugBundle;
 };
 
 export function buildGenerationDiagnostic(
@@ -174,6 +179,35 @@ export function buildGenerationDiagnostic(
       ? `${input.analysis.category}${input.analysis.brandTone ? ` · ${input.analysis.brandTone}` : ""}`
       : undefined,
   });
+
+  if (input.commercialGenomeBeta) {
+    steps.push({
+      id: "commercial_genome_beta",
+      label: "Commercial Genome Beta",
+      status: "ok",
+      summary: input.commercialGenomeBeta.decision.mainMessage.slice(0, 120),
+      data: {
+        genomeVersion: input.commercialGenomeBeta.diagnostics.genomeVersion,
+        selectedRules: input.commercialGenomeBeta.decision.selectedRules.length,
+        antiRules: input.commercialGenomeBeta.decision.antiRules.length,
+        environmentDirection: input.commercialGenomeBeta.decision.environmentDirection,
+        backgroundContrastDirection: input.commercialGenomeBeta.decision.backgroundContrastDirection,
+        productAreaTarget: input.commercialGenomeBeta.decision.productAreaTarget,
+        productAreaAspirationalTarget:
+          input.commercialGenomeBeta.decision.productAreaAspirationalTarget,
+      },
+    });
+  }
+
+  if (input.commercialLayoutIntegration) {
+    steps.push({
+      id: "commercial_layout_integration",
+      label: "Commercial Layout Integration",
+      status: "ok",
+      summary: `applied=${input.commercialLayoutIntegration.commercialIntentApplied.length}`,
+      data: input.commercialLayoutIntegration as unknown as Record<string, unknown>,
+    });
+  }
 
   steps.push({
     id: "intelligence",
@@ -403,5 +437,6 @@ export function buildGenerationDiagnostic(
     finalQuality: input.finalQuality,
     feedbackLearning: input.feedbackLearning,
     scenePlan: input.scenePlan,
+    commercialGenomeBeta: input.commercialGenomeBeta,
   };
 }

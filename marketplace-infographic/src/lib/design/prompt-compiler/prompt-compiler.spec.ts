@@ -66,6 +66,8 @@ async function main() {
   assert.ok(compiled.metadata.readabilityScore >= 40);
   assert.ok(compiled.metadata.promptComplexityScore >= 50);
   assert.ok(DESIGN_CONSTITUTION.length >= 8);
+  assert.ok(compiled.metadata.promptCommercial);
+  assert.ok(compiled.metadata.promptCommercial!.commercialIntentIgnored.length > 0);
 
   const profile = resolveRenderingProfile({
     category: analysis.category,
@@ -75,7 +77,8 @@ async function main() {
   });
   assert.ok(profile.profile, "rendering profile resolved");
 
-  const sections = compileAllSections(input, profile.profile);
+  const sectionsResult = compileAllSections(input, profile.profile);
+  const sections = sectionsResult.sections;
   const joined = joinSections(sections);
   const validation = validateCompiledPrompt(sections, input, joined);
   assert.ok(validation.passed, validation.issues.join("; "));

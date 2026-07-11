@@ -1,0 +1,202 @@
+[
+  {
+    "feature": "productAttention",
+    "correlation": 0.783,
+    "absCorrelation": 0.783,
+    "confidence": "high",
+    "wbMean": 3.44,
+    "wbMedian": 3.5
+  },
+  {
+    "feature": "primaryFocusRatio",
+    "correlation": 0.744,
+    "absCorrelation": 0.744,
+    "confidence": "high",
+    "wbMean": 0.28,
+    "wbMedian": 0.27
+  },
+  {
+    "feature": "secondaryFocusRatio",
+    "correlation": -0.744,
+    "absCorrelation": 0.744,
+    "confidence": "high",
+    "wbMean": 0.72,
+    "wbMedian": 0.73
+  },
+  {
+    "feature": "headlineVisualWeight",
+    "correlation": -0.723,
+    "absCorrelation": 0.723,
+    "confidence": "high",
+    "wbMean": 24.68,
+    "wbMedian": 24.4
+  },
+  {
+    "feature": "typographyContrast",
+    "correlation": -0.595,
+    "absCorrelation": 0.595,
+    "confidence": "high",
+    "wbMean": 75.4,
+    "wbMedian": 75.7
+  },
+  {
+    "feature": "typographyCompetition",
+    "correlation": -0.537,
+    "absCorrelation": 0.537,
+    "confidence": "high",
+    "wbMean": 39.95,
+    "wbMedian": 41
+  },
+  {
+    "feature": "textCompetition",
+    "correlation": -0.537,
+    "absCorrelation": 0.537,
+    "confidence": "high",
+    "wbMean": 40.47,
+    "wbMedian": 41.5
+  },
+  {
+    "feature": "attentionCompetitionIndex",
+    "correlation": -0.448,
+    "absCorrelation": 0.448,
+    "confidence": "high",
+    "wbMean": 17.78,
+    "wbMedian": 18.2
+  },
+  {
+    "feature": "eyePathScore",
+    "correlation": -0.39,
+    "absCorrelation": 0.39,
+    "confidence": "high",
+    "wbMean": 86.2,
+    "wbMedian": 88.2
+  },
+  {
+    "feature": "productVisualWeight",
+    "correlation": 0.349,
+    "absCorrelation": 0.349,
+    "confidence": "medium",
+    "wbMean": 23.88,
+    "wbMedian": 24.3
+  },
+  {
+    "feature": "foregroundIsolation",
+    "correlation": 0.332,
+    "absCorrelation": 0.332,
+    "confidence": "medium",
+    "wbMean": 52.71,
+    "wbMedian": 50.2
+  },
+  {
+    "feature": "typographyDensity",
+    "correlation": -0.223,
+    "absCorrelation": 0.223,
+    "confidence": "medium",
+    "wbMean": 3.49,
+    "wbMedian": 3.3
+  },
+  {
+    "feature": "headlineAreaPct",
+    "correlation": -0.22,
+    "absCorrelation": 0.22,
+    "confidence": "medium",
+    "wbMean": 0.83,
+    "wbMedian": 0.8
+  },
+  {
+    "feature": "badgeAreaPct",
+    "correlation": 0.173,
+    "absCorrelation": 0.173,
+    "confidence": "low",
+    "wbMean": 0.67,
+    "wbMedian": 0.6
+  },
+  {
+    "feature": "textAreaPct",
+    "correlation": -0.154,
+    "absCorrelation": 0.154,
+    "confidence": "low",
+    "wbMean": 1.25,
+    "wbMedian": 1.1
+  },
+  {
+    "feature": "negativeSpace",
+    "correlation": 0.122,
+    "absCorrelation": 0.122,
+    "confidence": "low",
+    "wbMean": 68.55,
+    "wbMedian": 68.5
+  },
+  {
+    "feature": "whitespaceRatio",
+    "correlation": 0.122,
+    "absCorrelation": 0.122,
+    "confidence": "low",
+    "wbMean": 68.55,
+    "wbMedian": 68.5
+  },
+  {
+    "feature": "backgroundCompetition",
+    "correlation": -0.097,
+    "absCorrelation": 0.097,
+    "confidence": "negligible",
+    "wbMean": 1.98,
+    "wbMedian": 1.9
+  },
+  {
+    "feature": "visualClutter",
+    "correlation": -0.07,
+    "absCorrelation": 0.07,
+    "confidence": "negligible",
+    "wbMean": 1.28,
+    "wbMedian": 1.2
+  },
+  {
+    "feature": "visualNoise",
+    "correlation": -0.055,
+    "absCorrelation": 0.055,
+    "confidence": "negligible",
+    "wbMean": 0.89,
+    "wbMedian": 0.8
+  },
+  {
+    "feature": "visualBalance",
+    "correlation": -0.031,
+    "absCorrelation": 0.031,
+    "confidence": "negligible",
+    "wbMean": 73.49,
+    "wbMedian": 77.5
+  },
+  {
+    "feature": "badgeCount",
+    "correlation": 0.021,
+    "absCorrelation": 0.021,
+    "confidence": "negligible",
+    "wbMean": 23.6,
+    "wbMedian": 15
+  },
+  {
+    "feature": "informationDensity",
+    "correlation": -0.02,
+    "absCorrelation": 0.02,
+    "confidence": "negligible",
+    "wbMean": 1.91,
+    "wbMedian": 1.8
+  },
+  {
+    "feature": "badgeVisualWeight",
+    "correlation": -0.014,
+    "absCorrelation": 0.014,
+    "confidence": "negligible",
+    "wbMean": 16.16,
+    "wbMedian": 17
+  },
+  {
+    "feature": "badgeCompetition",
+    "correlation": -0.014,
+    "absCorrelation": 0.014,
+    "confidence": "negligible",
+    "wbMean": 16.16,
+    "wbMedian": 17
+  }
+]

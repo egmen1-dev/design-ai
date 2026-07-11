@@ -1,0 +1,219 @@
+{
+  "sprint": "DAOS Product Sprint 6B — Commercial Layout Propagation",
+  "timestamp": "2026-07-09T14:48:25.457Z",
+  "renderEnabled": true,
+  "products": 5,
+  "metrics": {
+    "objectScaleChanged": 5,
+    "bboxChanged": 5,
+    "areaCloserToExpected": 5,
+    "fidelityImproved": 0,
+    "avgFidelitySprint6a": 0,
+    "avgFidelitySprint6b": 0
+  },
+  "successCriteria": {
+    "commercialSourceForObjectScale": true,
+    "templateFallbackWhenNoCommercial": true,
+    "propagationDiagnostics": true,
+    "areaImprovedMin3": true,
+    "fidelityIncreased": false,
+    "noCompositorRewrite": true
+  },
+  "productResults": [
+    {
+      "productId": "battery-sprayer",
+      "title": "Аккумуляторный опрыскиватель 16 л для сада",
+      "expectedAreaPct": 55,
+      "templateAreaPct": 38.367000000000004,
+      "propagation": {
+        "sprint6a": {
+          "source": "template",
+          "objectScale": 0.5
+        },
+        "sprint6b": {
+          "commercialLayoutPropagation": true,
+          "commercialScaleSource": "commercial",
+          "commercialScaleExpected": 55,
+          "commercialScaleApplied": 0.55,
+          "commercialScaleDelta": 0.05,
+          "commercialPropagationVersion": "1.0.0-sprint6b",
+          "commercialPropagationWarnings": []
+        }
+      },
+      "objectScaleChanged": true,
+      "compositeComparison": {
+        "sprint6a": {
+          "objectScale": 0.5,
+          "placementAreaPct": 14,
+          "width": 316,
+          "height": 480
+        },
+        "sprint6b": {
+          "objectScale": 0.55,
+          "placementAreaPct": 14.1,
+          "width": 317,
+          "height": 482
+        },
+        "bboxChanged": true,
+        "areaImproved": true,
+        "measurementMode": "maxProductSizeEstimate"
+      }
+    },
+    {
+      "productId": "construction-vacuum",
+      "title": "Строительный пылесос для ремонта 30 л",
+      "expectedAreaPct": 55,
+      "templateAreaPct": 38.367000000000004,
+      "propagation": {
+        "sprint6a": {
+          "source": "template",
+          "objectScale": 0.5
+        },
+        "sprint6b": {
+          "commercialLayoutPropagation": true,
+          "commercialScaleSource": "commercial",
+          "commercialScaleExpected": 55,
+          "commercialScaleApplied": 0.55,
+          "commercialScaleDelta": 0.05,
+          "commercialPropagationVersion": "1.0.0-sprint6b",
+          "commercialPropagationWarnings": []
+        }
+      },
+      "objectScaleChanged": true,
+      "compositeComparison": {
+        "sprint6a": {
+          "objectScale": 0.5,
+          "placementAreaPct": 14,
+          "width": 316,
+          "height": 480
+        },
+        "sprint6b": {
+          "objectScale": 0.55,
+          "placementAreaPct": 14.1,
+          "width": 317,
+          "height": 482
+        },
+        "bboxChanged": true,
+        "areaImproved": true,
+        "measurementMode": "maxProductSizeEstimate"
+      }
+    },
+    {
+      "productId": "impact-drill",
+      "title": "Ударная дрель 800 Вт профессиональная",
+      "expectedAreaPct": 55,
+      "templateAreaPct": 42.07896,
+      "propagation": {
+        "sprint6a": {
+          "source": "template",
+          "objectScale": 0.5
+        },
+        "sprint6b": {
+          "commercialLayoutPropagation": true,
+          "commercialScaleSource": "commercial",
+          "commercialScaleExpected": 55,
+          "commercialScaleApplied": 0.55,
+          "commercialScaleDelta": 0.05,
+          "commercialPropagationVersion": "1.0.0-sprint6b",
+          "commercialPropagationWarnings": []
+        }
+      },
+      "objectScaleChanged": true,
+      "compositeComparison": {
+        "sprint6a": {
+          "objectScale": 0.5,
+          "placementAreaPct": 15.4,
+          "width": 330,
+          "height": 503
+        },
+        "sprint6b": {
+          "objectScale": 0.55,
+          "placementAreaPct": 15.5,
+          "width": 332,
+          "height": 505
+        },
+        "bboxChanged": true,
+        "areaImproved": true,
+        "measurementMode": "maxProductSizeEstimate"
+      }
+    },
+    {
+      "productId": "pressure-washer",
+      "title": "Мойка высокого давления 180 бар",
+      "expectedAreaPct": 55,
+      "templateAreaPct": 38.367000000000004,
+      "propagation": {
+        "sprint6a": {
+          "source": "template",
+          "objectScale": 0.5
+        },
+        "sprint6b": {
+          "commercialLayoutPropagation": true,
+          "commercialScaleSource": "commercial",
+          "commercialScaleExpected": 55,
+          "commercialScaleApplied": 0.55,
+          "commercialScaleDelta": 0.05,
+          "commercialPropagationVersion": "1.0.0-sprint6b",
+          "commercialPropagationWarnings": []
+        }
+      },
+      "objectScaleChanged": true,
+      "compositeComparison": {
+        "sprint6a": {
+          "objectScale": 0.5,
+          "placementAreaPct": 14,
+          "width": 316,
+          "height": 480
+        },
+        "sprint6b": {
+          "objectScale": 0.55,
+          "placementAreaPct": 14.1,
+          "width": 317,
+          "height": 482
+        },
+        "bboxChanged": true,
+        "areaImproved": true,
+        "measurementMode": "maxProductSizeEstimate"
+      }
+    },
+    {
+      "productId": "home-humidifier",
+      "title": "Увлажнитель воздуха для дома ультразвуковой",
+      "expectedAreaPct": 55,
+      "templateAreaPct": 47.333999999999996,
+      "propagation": {
+        "sprint6a": {
+          "source": "template",
+          "objectScale": 0.5
+        },
+        "sprint6b": {
+          "commercialLayoutPropagation": true,
+          "commercialScaleSource": "commercial",
+          "commercialScaleExpected": 55,
+          "commercialScaleApplied": 0.55,
+          "commercialScaleDelta": 0.05,
+          "commercialPropagationVersion": "1.0.0-sprint6b",
+          "commercialPropagationWarnings": []
+        }
+      },
+      "objectScaleChanged": true,
+      "compositeComparison": {
+        "sprint6a": {
+          "objectScale": 0.5,
+          "placementAreaPct": 17.4,
+          "width": 351,
+          "height": 534
+        },
+        "sprint6b": {
+          "objectScale": 0.55,
+          "placementAreaPct": 17.5,
+          "width": 352,
+          "height": 536
+        },
+        "bboxChanged": true,
+        "areaImproved": true,
+        "measurementMode": "maxProductSizeEstimate"
+      }
+    }
+  ]
+}
