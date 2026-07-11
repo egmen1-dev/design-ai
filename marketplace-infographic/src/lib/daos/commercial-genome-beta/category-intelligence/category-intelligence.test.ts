@@ -42,8 +42,8 @@ function testApplyOverridesDominance() {
     productTitle: "Органайзер для дома",
   });
   assert.equal(intelligence.key, "home");
-  assert.equal(decision.productAreaTarget, 0.44);
-  assert.equal(decision.maxCharacteristics, 3);
+  assert.equal(decision.productAreaTarget, 0.45);
+  assert.equal(decision.maxCharacteristics, 1);
   assert.equal(decision.environmentDirection, "light_modern_clean");
   assert.equal(decision.backgroundContrastDirection, "light_background");
   assert.ok(decision.antiRules.length > base.antiRules.length);
@@ -73,7 +73,7 @@ function testFlagGatedIntegration() {
     mode: "generation",
   });
   assert.equal(on.categoryIntelligence?.key, "kitchen");
-  assert.equal(on.decision.productAreaTarget, 0.44);
+  assert.equal(on.decision.productAreaTarget, 0.45);
 
   if (prev === undefined) delete process.env.DAOS_CATEGORY_INTELLIGENCE;
   else process.env.DAOS_CATEGORY_INTELLIGENCE = prev;

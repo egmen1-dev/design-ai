@@ -1,49 +1,12 @@
 import type { CategoryIntelligenceKey, CategoryIntelligenceProfile } from "./types";
+import { HOME_PROFILE_V11 } from "./home-category-knowledge";
 
 /**
  * Wave 1 Category Intelligence profiles — calibrated from BV2 failure analysis.
- * Дом: dominance (5/5 losses) | Кухня: dominance (4) | Климат: category-specific (3) | Мойка: background+dominance
+ * Дом v1.1: LAW_003 headline suppression + mass priority (home wave 1 sprint)
  */
 export const CATEGORY_INTELLIGENCE_PROFILES: Record<CategoryIntelligenceKey, CategoryIntelligenceProfile> = {
-  home: {
-    key: "home",
-    label: "Дом",
-    marketGroup: "home",
-    commercialLaws: ["LAW_003", "LAW_005", "LAW_101"],
-    visualPattern: "single_hero_product_soft_gradient_minimal_sidebar",
-    attentionRules: {
-      headlineFactor: 0.52,
-      barOpacity: 0.3,
-      sidebarOpacity: 0.78,
-      dominanceFloor: 50,
-      focusRatioFloor: 0.34,
-    },
-    compositionRules: {
-      productAreaTarget: 0.44,
-      maxCharacteristics: 3,
-      badgeLimit: 1,
-      visualHierarchy: ["product", "headline", "characteristics", "logo"],
-    },
-    lightingRules: {
-      contrastBoost: 0.1,
-      environmentDirection: "light_modern_clean",
-    },
-    heroRules: {
-      heroDominance: "product_first",
-      mainMessageSuffix: "порядок и уют в доме",
-    },
-    typographyRules: {
-      direction: "compact benefit headline, product dominates visual field",
-      defaultOverlayMode: "relaxed",
-    },
-    backgroundRules: {
-      contrastDirection: "light_background",
-    },
-    antiRules: [
-      "Не перегружать карточку декором — товар должен занимать центр внимания",
-      "Избегать тёмного фона для светлых домашних товаров",
-    ],
-  },
+  home: HOME_PROFILE_V11,
 
   kitchen: {
     key: "kitchen",

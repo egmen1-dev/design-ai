@@ -45,6 +45,8 @@ export function buildAttentionHierarchyCss(
   const headlineFactor = categoryRules?.headlineFactor ?? (relaxed ? 0.42 : 0.62);
   const sidebarOpacity = categoryRules?.sidebarOpacity ?? (relaxed ? 0.72 : 0.92);
   const barOpacity = categoryRules?.barOpacity ?? (relaxed ? 0.28 : 0.38);
+  const headlineMaxWidth = categoryRules?.headlineMaxWidthPct ?? 58;
+  const sidebarWrapOpacity = categoryRules?.sidebarWrapOpacity;
 
   return `
     /* DAOS Attention Hierarchy — Cycle 5 */
@@ -71,7 +73,7 @@ export function buildAttentionHierarchyCss(
       letter-spacing: -0.01em !important;
       color: rgba(255, 255, 255, 0.9) !important;
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
-      max-width: 58% !important;
+      max-width: ${headlineMaxWidth}% !important;
       line-height: 1.15 !important;
     }
 
@@ -93,7 +95,7 @@ export function buildAttentionHierarchyCss(
       font-weight: ${relaxed ? 600 : 650} !important;
       font-size: calc(var(--comp-subtitle-size-pct) * var(--canvas-h-num) / 100 * ${relaxed ? 0.75 : 0.9}px) !important;
     }
-    ${relaxed ? `.mp-sidebar-wrap { opacity: 0.78 !important; }` : ""}
+    ${relaxed ? `.mp-sidebar-wrap { opacity: ${sidebarWrapOpacity ?? 0.78} !important; }` : sidebarWrapOpacity != null ? `.mp-sidebar-wrap { opacity: ${sidebarWrapOpacity} !important; }` : ""}
   `.trim();
 }
 

@@ -6,7 +6,7 @@ import type {
 } from "../types";
 
 export const CATEGORY_INTELLIGENCE_FLAG = "DAOS_CATEGORY_INTELLIGENCE";
-export const CATEGORY_INTELLIGENCE_VERSION = "1.0.0-wave1";
+export const CATEGORY_INTELLIGENCE_VERSION = "1.1.0-home-wave1";
 
 /** Harvest-aligned keys — match BV2 benchmark category ids */
 export type CategoryIntelligenceKey = "home" | "kitchen" | "humidifier" | "pressure-wash";
@@ -25,6 +25,10 @@ export type CategoryAttentionRules = {
   sidebarOpacity: number;
   dominanceFloor: number;
   focusRatioFloor: number;
+  /** Optional — caps headline width (% of canvas) for LAW_003 compliance */
+  headlineMaxWidthPct?: number;
+  /** Optional — de-emphasizes full sidebar wrap */
+  sidebarWrapOpacity?: number;
 };
 
 export type CategoryCompositionRules = {
