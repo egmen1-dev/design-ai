@@ -1,34 +1,45 @@
 # Product Execution Sprint 1 — Hero Visual Mass
 
-**Status:** Validation Pending  
-**Date:** 2026-07-11  
+**Status:** Council **FAIL** (2026-07-11)  
 **Flag:** `DAOS_HERO_VISUAL_MASS=1`  
-**Scope:** Compositor / hero fill / alpha-fit only
+**Scope:** Compositor / hero fill / alpha-fit only  
+**Full report:** [DAOS_EXECUTION_SPRINT_1_REPORT.md](./DAOS_EXECUTION_SPRINT_1_REPORT.md)
 
 ---
 
 ## Problem
 
-Wave 1 proved Commercial Knowledge is correct — Category Intelligence did not change Home Win Rate (57.1%). The gap is **Runtime Execution**: Commercial Genome requires Hero Dominance, but compositor produces low Product Visual Mass.
+Wave 1 proved Commercial Knowledge is correct — Category Intelligence did not change Home Win Rate (57.1%). The gap is **Runtime Execution**: Commercial Genome requires Hero Dominance, but compositor produced low Product Visual Mass.
 
 ---
 
 ## Solution
 
-Runtime module `src/lib/compositing/hero-visual-mass.ts` — flag-gated compositor policy:
+Runtime module `src/lib/compositing/hero-visual-mass.ts` — flag-gated compositor policy with **mandatory execution mass boost** on top of commercial calibration (not `Math.max`).
 
 | Parameter | Legacy | Sprint 1 |
 |-----------|--------|----------|
-| objectScale multiplier | 1.0 | **1.14** |
-| zone scaleBoost base | 0.58 | **0.72** |
-| zone scaleBoost slope | 0.05 | **0.20** |
-| alpha max width | 56% | **78%** |
-| alpha max height | 50% | **68%** |
-| header reserve | 20% | **12%** |
-| alpha enlargement | off | **on** (min fill 72%) |
-| flat-wide width boost | 1.0 | **1.18** |
+| objectScale multiplier | 1.0 | **1.18** |
+| execution mass width mul | 1.0 | **1.10** (+1.14 flat-wide) |
+| execution mass height mul | 1.0 | **1.08** |
+| alpha max width | 56% | **82%** |
+| alpha max height | 50% | **72%** |
+| header reserve | 20% | **10%** |
+| alpha enlargement | off | **on** (min fill 78%) |
+| flat-wide width boost | 1.0 | **1.22** |
 
-Flat-wide silhouettes (aspect ≥1.12) detected from cutout alpha bounds — organizers, storage boxes.
+---
+
+## Validation Summary
+
+| Layer | Result |
+|-------|--------|
+| Compositor isolation | **+8.5pp** area (synthetic) |
+| Real packshot compositor | **+11.5pp** area (product-001) |
+| Home Win Rate (n=9) | **44.4%** vs 57.1% baseline — **FAIL** |
+| Product VW mean | 17.9 (flat vs ~18 baseline) |
+
+Compositor changes propagate at merge layer but do not lift benchmark win rate because dominance is measured post-typography overlay.
 
 ---
 
@@ -41,30 +52,14 @@ Flat-wide silhouettes (aspect ≥1.12) detected from cutout alpha bounds — org
 
 ---
 
-## Validation
-
-```bash
-cd marketplace-infographic
-HVM_RESUME=0 npx tsx benchmark/hero-visual-mass-sprint1.ts
-```
-
-- Category: **Дом** only (n=14)
-- `DAOS_CATEGORY_INTELLIGENCE=0` — proves execution-only lift
-- Baseline: BV2 **57.1%**
-- Target: **≥70%**
-
----
-
 ## Success Criteria
 
-| Criterion | Target |
-|-----------|--------|
-| Product Visual Weight | ↑ |
-| Product Dominance | ↑ |
-| Home Win Rate | **≥70%** |
-| Gen Success | 100% |
-
-If Win Rate does not grow → **FAIL**
+| Criterion | Target | Result |
+|-----------|--------|--------|
+| Product Visual Weight | ↑ | Flat (~17.9) |
+| Product Dominance | ↑ | Flat (48.1) |
+| Home Win Rate | **≥70%** | **44.4% FAIL** |
+| Gen Success | 100% | 100% |
 
 ---
 

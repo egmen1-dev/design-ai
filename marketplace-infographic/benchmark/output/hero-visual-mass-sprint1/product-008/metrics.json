@@ -1,0 +1,50 @@
+{
+  "slot": "product-008",
+  "productId": 79890545,
+  "category": "home",
+  "daosGenerated": true,
+  "leader": {
+    "productDominance": 48,
+    "foregroundIsolation": 66.1,
+    "headlineVisualWeight": 18.5,
+    "primaryFocusRatio": 0.223,
+    "attentionHierarchyScore": 28.9,
+    "commercialFidelity": 34.5,
+    "visualWeightHero": 16.1,
+    "thumbnailReadability": 57.1,
+    "productVisualWeight": 16.1,
+    "typographyCompetition": 34.3
+  },
+  "daos": {
+    "productDominance": 63,
+    "foregroundIsolation": 83.9,
+    "headlineVisualWeight": 16.9,
+    "primaryFocusRatio": 0.366,
+    "attentionHierarchyScore": 38.7,
+    "commercialFidelity": 51.5,
+    "visualWeightHero": 27.7,
+    "thumbnailReadability": 91.4,
+    "productVisualWeight": 27.7,
+    "typographyCompetition": 38.3
+  },
+  "delta": {
+    "productDominance": 15,
+    "foregroundIsolation": 17.8,
+    "headlineVisualWeight": -1.6,
+    "primaryFocusRatio": 0.14,
+    "attentionHierarchyScore": 9.8,
+    "commercialFidelity": 17,
+    "visualWeightHero": 11.6,
+    "thumbnailReadability": 34.3,
+    "productVisualWeight": 11.6,
+    "typographyCompetition": 4
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 48 vs DAOS 63 (Δ15); FI: WB 66.1 vs DAOS 83.9; Thumbnail: WB 57.1 vs DAOS 91.4; Fidelity: WB 34.5 vs DAOS 51.5"
+  }
+}
