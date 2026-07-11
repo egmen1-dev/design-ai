@@ -30,3 +30,16 @@ export {
   resolveCommercialRulesBeta,
   WILDBERRIES_HERO_RULES,
 } from "./commercial-genome-beta";
+
+export {
+  CATEGORY_INTELLIGENCE_FLAG,
+  CATEGORY_INTELLIGENCE_FLAG_DEFINITION,
+  CATEGORY_INTELLIGENCE_VERSION,
+  enrichDecisionWithCategoryIntelligence,
+  getCategoryAttentionRules,
+  getCategoryProfile,
+  isCategoryIntelligenceEnabled,
+  registerCategoryIntelligenceFlag,
+  resolveCategoryIntelligenceKey,
+  WAVE1_CATEGORY_KEYS,
+} from "./category-intelligence";

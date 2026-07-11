@@ -9,6 +9,7 @@ import {
   COMMERCIAL_GENOME_BETA_VERSION,
 } from "./types";
 import { WILDBERRIES_HERO_RULES } from "./wildberries-hero-rules";
+import { enrichDecisionWithCategoryIntelligence } from "./category-intelligence";
 import { resolveCommercialRulesBeta } from "./resolve-commercial-rules";
 import { buildCommercialDecisionBeta } from "./commercial-decision-beta";
 
@@ -59,11 +60,16 @@ export function createCommercialGenomeBetaDecision(
   input: ResolveCommercialRulesInput,
 ): CommercialGenomeBetaDecisionResult {
   const resolved = resolveCommercialRulesBeta(input);
-  const decision = buildCommercialDecisionBeta({
+  const baseDecision = buildCommercialDecisionBeta({
     selectedRules: resolved.selectedRules,
     antiRules: resolved.antiRules,
     resolveInput: input,
     decisionTrace: resolved.decisionTrace,
+  });
+  const { decision, intelligence } = enrichDecisionWithCategoryIntelligence({
+    decision: baseDecision,
+    productTitle: input.productTitle,
+    category: input.category,
   });
 
   const sourceBreakdown: Record<string, number> = {};
@@ -91,6 +97,13 @@ export function createCommercialGenomeBetaDecision(
     decision,
     trace: decision.decisionTrace,
     diagnostics,
+    categoryIntelligence: {
+      enabled: intelligence.enabled,
+      key: intelligence.key,
+      label: intelligence.label,
+      version: intelligence.version,
+      appliedOverrides: intelligence.appliedOverrides,
+    },
   };
 }
 
@@ -100,6 +113,9 @@ export function buildCommercialGenomeBetaPromptSnippet(
   const anti = result.decision.antiRules.slice(0, 4).join("; ");
   const env = result.decision.environmentDirection;
   const contrast = result.decision.backgroundContrastDirection;
+  const cat = result.categoryIntelligence?.key
+    ? ` | Category: ${result.categoryIntelligence.label ?? result.categoryIntelligence.key}`
+    : "";
   return [
     "[Commercial Genome Beta]",
     `Main: ${result.decision.mainMessage}`,
@@ -108,7 +124,7 @@ export function buildCommercialGenomeBetaPromptSnippet(
     `Environment: ${env}`,
     `Background contrast: ${contrast}`,
     `Hierarchy: ${result.decision.visualHierarchy.join(" > ")}`,
-    `Avoid: ${anti}`,
+    `Avoid: ${anti}${cat}`,
   ].join(" | ");
 }
 

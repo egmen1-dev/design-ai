@@ -1,6 +1,7 @@
 import type { AttentionHierarchyDiagnostics } from "@/lib/typography/attention-hierarchy";
+import type { CategoryAttentionRules } from "@/lib/daos/commercial-genome-beta/category-intelligence/types";
 
-export const POST_OVERLAY_GATE_VERSION = "1.0.0-bv1-sequential";
+export const POST_OVERLAY_GATE_VERSION = "1.1.0-category-intelligence";
 
 /** Product dominance floor — LAW_003 / LAW_005 alignment */
 export const DOMINANCE_GATE_MIN_SCORE = 48;
@@ -25,20 +26,23 @@ export function postOverlayDominanceGateEnabled(): boolean {
 
 export function evaluatePostOverlayDominanceGate(
   diagnostics: AttentionHierarchyDiagnostics,
+  categoryRules?: CategoryAttentionRules | null,
 ): PostOverlayDominanceGateResult {
+  const dominanceFloor = categoryRules?.dominanceFloor ?? DOMINANCE_GATE_MIN_SCORE;
+  const focusFloor = categoryRules?.focusRatioFloor ?? FOCUS_RATIO_GATE_MIN;
   const warnings: string[] = [];
 
   if (!diagnostics.law101Passed && diagnostics.law101Warning) {
     warnings.push(diagnostics.law101Warning);
   }
-  if (diagnostics.productDominanceScore < DOMINANCE_GATE_MIN_SCORE) {
+  if (diagnostics.productDominanceScore < dominanceFloor) {
     warnings.push(
-      `Product dominance ${diagnostics.productDominanceScore} below gate floor ${DOMINANCE_GATE_MIN_SCORE}`,
+      `Product dominance ${diagnostics.productDominanceScore} below gate floor ${dominanceFloor}`,
     );
   }
-  if (diagnostics.primaryFocusRatio < FOCUS_RATIO_GATE_MIN) {
+  if (diagnostics.primaryFocusRatio < focusFloor) {
     warnings.push(
-      `Primary focus ratio ${diagnostics.primaryFocusRatio} below ${FOCUS_RATIO_GATE_MIN}`,
+      `Primary focus ratio ${diagnostics.primaryFocusRatio} below ${focusFloor}`,
     );
   }
   if (diagnostics.attentionHierarchyScore < 30) {
@@ -51,13 +55,13 @@ export function evaluatePostOverlayDominanceGate(
   }
 
   const law101Passed = diagnostics.law101Passed;
-  const dominanceOk = diagnostics.productDominanceScore >= DOMINANCE_GATE_MIN_SCORE;
+  const dominanceOk = diagnostics.productDominanceScore >= dominanceFloor;
   const passed = law101Passed && dominanceOk;
 
   const needsTypographyRelaxation =
     !law101Passed ||
     diagnostics.headlineVisualWeight >= diagnostics.productVisualWeight ||
-    diagnostics.primaryFocusRatio < FOCUS_RATIO_GATE_MIN;
+    diagnostics.primaryFocusRatio < focusFloor;
 
   return {
     passed,

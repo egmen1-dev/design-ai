@@ -264,6 +264,7 @@ export function renderLayoutHtml(
       ? compositionToCssBlock(
           options.compositionLayout,
           options.typographyOverlayMode ?? "standard",
+          options.categoryAttentionRules,
         )
       : "";
 

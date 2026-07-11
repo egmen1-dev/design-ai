@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { TypographyOverlayMode } from "@/lib/typography/attention-hierarchy";
+import type { CategoryAttentionRules } from "@/lib/daos/commercial-genome-beta/category-intelligence/types";
 import type { CompositionLayout } from "@/lib/composition/types";
 import {
   type InfographicStyle,
@@ -122,6 +123,8 @@ export type RenderInfographicOptions = {
   productPrompt?: string;
   /** Post-overlay gate: standard vs typography-relaxed overlay */
   typographyOverlayMode?: TypographyOverlayMode;
+  /** Category Intelligence — attention rule overrides */
+  categoryAttentionRules?: CategoryAttentionRules | null;
 };
 
 function escapeHtml(text: string): string {

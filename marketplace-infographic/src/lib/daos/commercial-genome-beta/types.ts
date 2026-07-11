@@ -100,6 +100,14 @@ export type CommercialGenomeBetaDiagnostics = {
   sourceBreakdown: Record<string, number>;
 };
 
+export type CategoryIntelligenceDiagnostics = {
+  enabled: boolean;
+  key: string | null;
+  label: string | null;
+  version: string;
+  appliedOverrides: string[];
+};
+
 export type CommercialGenomeBetaDecisionResult = {
   rules: {
     all: CommercialRuleBeta[];
@@ -110,6 +118,7 @@ export type CommercialGenomeBetaDecisionResult = {
   decision: CommercialDecisionBeta;
   trace: string[];
   diagnostics: CommercialGenomeBetaDiagnostics;
+  categoryIntelligence?: CategoryIntelligenceDiagnostics;
 };
 
 export const COMMERCIAL_GENOME_BETA_VERSION = "0.1.0-beta";

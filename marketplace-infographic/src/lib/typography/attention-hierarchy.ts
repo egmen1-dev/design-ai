@@ -7,6 +7,8 @@ import { measureAttentionCompetition } from "@/lib/typography/attention-metrics"
 import { computeSaliencyGrid } from "@/lib/typography/attention-heatmap";
 import { WB_COVER } from "@/lib/composition/canvas";
 
+import type { CategoryAttentionRules } from "@/lib/daos/commercial-genome-beta/category-intelligence/types";
+
 export type AttentionHierarchyDiagnostics = {
   enabled: boolean;
   law101Passed: boolean;
@@ -33,13 +35,16 @@ export function attentionHierarchyEnabled(): boolean {
 export type TypographyOverlayMode = "standard" | "relaxed";
 
 /** Additive CSS — de-emphasizes headline bar while preserving readability. */
-export function buildAttentionHierarchyCss(mode: TypographyOverlayMode = "standard"): string {
+export function buildAttentionHierarchyCss(
+  mode: TypographyOverlayMode = "standard",
+  categoryRules?: CategoryAttentionRules | null,
+): string {
   if (!attentionHierarchyEnabled()) return "";
 
   const relaxed = mode === "relaxed";
-  const headlineFactor = relaxed ? 0.42 : 0.62;
-  const sidebarOpacity = relaxed ? 0.72 : 0.92;
-  const barOpacity = relaxed ? 0.28 : 0.38;
+  const headlineFactor = categoryRules?.headlineFactor ?? (relaxed ? 0.42 : 0.62);
+  const sidebarOpacity = categoryRules?.sidebarOpacity ?? (relaxed ? 0.72 : 0.92);
+  const barOpacity = categoryRules?.barOpacity ?? (relaxed ? 0.28 : 0.38);
 
   return `
     /* DAOS Attention Hierarchy — Cycle 5 */

@@ -136,6 +136,8 @@ import {
   isCommercialGenomeBetaEnabled,
   type CommercialGenomeBetaDecisionResult,
 } from "@/lib/daos/commercial-genome-beta";
+import { getCategoryProfile } from "@/lib/daos/commercial-genome-beta/category-intelligence";
+import type { CategoryIntelligenceKey } from "@/lib/daos/commercial-genome-beta/category-intelligence/types";
 import {
   USE_RENDER_ENGINE_V17,
   regenerateMarketplaceBackground,
@@ -1104,6 +1106,7 @@ export async function handleGenerateInfographic(
     let postOverlayDominanceGate: PostOverlayDominanceGateResult | undefined;
     let thumbnailReadabilityGate: ThumbnailReadabilityResult | undefined;
     let geometryOptimization: GeometryClampDiagnostics | undefined;
+    let categoryAttentionRules: ReturnType<typeof getCategoryProfile>["attentionRules"] | null = null;
     if (sdData.layout === "marketplace" && isCommercialGenomeBetaEnabled()) {
       commercialGenomeBetaResult = createCommercialGenomeBetaDecision({
         marketplace: "wildberries",
@@ -1113,12 +1116,17 @@ export async function handleGenerateInfographic(
         productType: analysis.category,
         mode: input.regenerateBackgroundOnly ? "refinement" : "generation",
       });
+      const catKey = commercialGenomeBetaResult.categoryIntelligence?.key as CategoryIntelligenceKey | null;
+      if (catKey) {
+        categoryAttentionRules = getCategoryProfile(catKey).attentionRules;
+      }
       commercialGenomeBetaSnippet = buildCommercialGenomeBetaPromptSnippet(commercialGenomeBetaResult);
       console.info(
         "[commercial-genome-beta]",
         commercialGenomeBetaResult.decision.environmentDirection,
         commercialGenomeBetaResult.decision.backgroundContrastDirection,
         `rules=${commercialGenomeBetaResult.decision.selectedRules.length}`,
+        catKey ? `category=${catKey}` : "",
       );
     }
 
@@ -2025,7 +2033,11 @@ export async function handleGenerateInfographic(
       ]);
     }
 
-    let typographyOverlayMode: TypographyOverlayMode = "standard";
+    const catKey = commercialGenomeBetaResult?.categoryIntelligence?.key as CategoryIntelligenceKey | null;
+    let typographyOverlayMode: TypographyOverlayMode =
+      catKey && commercialGenomeBetaResult?.categoryIntelligence?.enabled
+        ? getCategoryProfile(catKey).typographyRules.defaultOverlayMode
+        : "standard";
     let html = renderInfographicHtml(infographicData, {
       style: appliedStyle,
       layout: sdData.layout,
@@ -2041,6 +2053,7 @@ export async function handleGenerateInfographic(
       compositionLayout,
       productPrompt: input.prompt,
       typographyOverlayMode,
+      categoryAttentionRules,
     });
 
     const filename = `${input.userId}-${Date.now()}.png`;
@@ -2055,7 +2068,10 @@ export async function handleGenerateInfographic(
             const normalized = imagePath.startsWith("/api/") ? imagePath.replace("/api/", "/") : imagePath;
             const absPath = await resolvePublicAssetPath(normalized);
             attentionHierarchy = await captureAttentionHierarchy(absPath);
-            postOverlayDominanceGate = evaluatePostOverlayDominanceGate(attentionHierarchy);
+            postOverlayDominanceGate = evaluatePostOverlayDominanceGate(
+              attentionHierarchy,
+              categoryAttentionRules,
+            );
 
             if (postOverlayDominanceGate.passed) break;
 
@@ -2149,7 +2165,10 @@ export async function handleGenerateInfographic(
             );
             thumbnailReadabilityGate = await evaluateThumbnailReadabilityGate(absRetry);
             attentionHierarchy = await captureAttentionHierarchy(absRetry);
-            postOverlayDominanceGate = evaluatePostOverlayDominanceGate(attentionHierarchy);
+            postOverlayDominanceGate = evaluatePostOverlayDominanceGate(
+              attentionHierarchy,
+              categoryAttentionRules,
+            );
           }
 
           if (!thumbnailReadabilityGate.passed) {
