@@ -1,0 +1,224 @@
+{
+  "version": "category-home-wave1",
+  "profileVersion": "1.1.0-home-wave1",
+  "timestamp": "2026-07-11T12:44:27.115Z",
+  "productCount": 14,
+  "datasetNote": "WB harvest provides n=14 home products; target n≥30 not met — confidence LOW",
+  "aggregate": {
+    "genSuccessRate": 100,
+    "categoryWinRate": 57.1,
+    "daosWins": 8,
+    "wbWins": 5,
+    "draws": 1,
+    "winRateCi": {
+      "rate": 57.1,
+      "low": 32.6,
+      "high": 78.6
+    },
+    "baselineWinRate": 57.1,
+    "deltaPp": 0
+  },
+  "metrics": {
+    "productDominance": {
+      "n": 14,
+      "mean": 49.29,
+      "stdDev": 10.19,
+      "ci95Low": 43.13,
+      "ci95High": 55.44,
+      "min": 28,
+      "max": 63,
+      "outliers": [],
+      "confidence": "LOW"
+    },
+    "commercialFidelity": {
+      "n": 14,
+      "mean": 35.57,
+      "stdDev": 9.99,
+      "ci95Low": 29.53,
+      "ci95High": 41.61,
+      "min": 15.5,
+      "max": 52,
+      "outliers": [],
+      "confidence": "LOW"
+    },
+    "attentionHierarchy": {
+      "n": 14,
+      "mean": 33.74,
+      "stdDev": 3.37,
+      "ci95Low": 31.71,
+      "ci95High": 35.78,
+      "min": 29,
+      "max": 39.6,
+      "outliers": [],
+      "confidence": "LOW"
+    },
+    "foregroundIsolation": {
+      "n": 14,
+      "mean": 72.76,
+      "stdDev": 15.7,
+      "ci95Low": 63.27,
+      "ci95High": 82.26,
+      "min": 48.2,
+      "max": 113.2,
+      "outliers": [
+        113.2
+      ],
+      "confidence": "LOW"
+    },
+    "thumbnailReadability": {
+      "n": 14,
+      "mean": 68.92,
+      "stdDev": 15.73,
+      "ci95Low": 59.41,
+      "ci95High": 78.43,
+      "min": 33.6,
+      "max": 90.7,
+      "outliers": [
+        33.6
+      ],
+      "confidence": "LOW"
+    }
+  },
+  "tierARegression": {
+    "note": "Tier A categories not re-run; BV2 frozen results used (Электроинструмент 78.6%, Авто 78.6%, Строительство 71.4%)",
+    "degraded": false
+  },
+  "failureReasons": {
+    "Dominance": 4,
+    "Attention": 1
+  },
+  "confidenceLevel": "LOW",
+  "council": {
+    "verdict": "FAIL",
+    "winRate": 57.1,
+    "targetWinRate": 70,
+    "genSuccessRate": 100,
+    "dominanceMean": 49.29,
+    "dominanceDeltaVsBv2": -0.1,
+    "tierAReference": {
+      "winRate": 76.2,
+      "avgDominance": 55.4
+    },
+    "rationale": "No confirmed lift vs BV2 baseline (57.1%). Return to category analysis.",
+    "nextCategory": null
+  },
+  "products": [
+    {
+      "slot": "product-057",
+      "productId": 10392457,
+      "overall": "wb",
+      "daosDominance": 40,
+      "wbDominance": 79,
+      "deltaDominance": -39,
+      "failure": "Dominance"
+    },
+    {
+      "slot": "product-058",
+      "productId": 192183239,
+      "overall": "wb",
+      "daosDominance": 43,
+      "wbDominance": 64,
+      "deltaDominance": -21,
+      "failure": "Dominance"
+    },
+    {
+      "slot": "product-059",
+      "productId": 276769869,
+      "overall": "wb",
+      "daosDominance": 43,
+      "wbDominance": 56,
+      "deltaDominance": -13,
+      "failure": "Dominance"
+    },
+    {
+      "slot": "product-060",
+      "productId": 207567698,
+      "overall": "wb",
+      "daosDominance": 41,
+      "wbDominance": 51,
+      "deltaDominance": -10,
+      "failure": "Attention"
+    },
+    {
+      "slot": "product-061",
+      "productId": 229003681,
+      "overall": "daos",
+      "daosDominance": 58,
+      "wbDominance": 51,
+      "deltaDominance": 7
+    },
+    {
+      "slot": "product-062",
+      "productId": 220657499,
+      "overall": "daos",
+      "daosDominance": 61,
+      "wbDominance": 50,
+      "deltaDominance": 11
+    },
+    {
+      "slot": "product-063",
+      "productId": 445321175,
+      "overall": "draw",
+      "daosDominance": 46,
+      "wbDominance": 49,
+      "deltaDominance": -3
+    },
+    {
+      "slot": "product-064",
+      "productId": 844404616,
+      "overall": "daos",
+      "daosDominance": 62,
+      "wbDominance": 48,
+      "deltaDominance": 14
+    },
+    {
+      "slot": "product-065",
+      "productId": 430830019,
+      "overall": "daos",
+      "daosDominance": 53,
+      "wbDominance": 48,
+      "deltaDominance": 5
+    },
+    {
+      "slot": "product-066",
+      "productId": 303704774,
+      "overall": "daos",
+      "daosDominance": 55,
+      "wbDominance": 48,
+      "deltaDominance": 7
+    },
+    {
+      "slot": "product-067",
+      "productId": 79890545,
+      "overall": "daos",
+      "daosDominance": 63,
+      "wbDominance": 48,
+      "deltaDominance": 15
+    },
+    {
+      "slot": "product-068",
+      "productId": 211165129,
+      "overall": "wb",
+      "daosDominance": 28,
+      "wbDominance": 43,
+      "deltaDominance": -15,
+      "failure": "Dominance"
+    },
+    {
+      "slot": "product-069",
+      "productId": 436697125,
+      "overall": "daos",
+      "daosDominance": 44,
+      "wbDominance": 42,
+      "deltaDominance": 2
+    },
+    {
+      "slot": "product-070",
+      "productId": 876220926,
+      "overall": "daos",
+      "daosDominance": 53,
+      "wbDominance": 39,
+      "deltaDominance": 14
+    }
+  ]
+}
