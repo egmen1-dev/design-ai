@@ -1,0 +1,1044 @@
+{
+  "sprint": "DAOS Product Sprint 6C — Commercial Calibration Engine",
+  "version": "1.0.0-sprint6c",
+  "timestamp": "2026-07-09T15:18:35.002Z",
+  "products": 5,
+  "sensitivityScales": [
+    0.3,
+    0.4,
+    0.5,
+    0.55,
+    0.6,
+    0.65,
+    0.7,
+    0.75
+  ],
+  "metrics": {
+    "errorImproved": 5,
+    "bboxChanged": 5,
+    "measurableAreaDelta": 5,
+    "avgAbsoluteError": {
+      "legacy": 39.6,
+      "sprint6b": 39.5,
+      "sprint6c": 37.2
+    }
+  },
+  "calibrationCurve": [
+    {
+      "objectScale": 0.3,
+      "scaleBoost": 0.605,
+      "placementAreaPct": 17.4,
+      "formula": "calibrated:lerp(0.605..0.789,t=0.00)"
+    },
+    {
+      "objectScale": 0.4,
+      "scaleBoost": 0.605,
+      "placementAreaPct": 17.4,
+      "formula": "calibrated:lerp(0.605..0.789,t=0.00)"
+    },
+    {
+      "objectScale": 0.5,
+      "scaleBoost": 0.605,
+      "placementAreaPct": 17.4,
+      "formula": "calibrated:lerp(0.605..0.789,t=0.00)"
+    },
+    {
+      "objectScale": 0.55,
+      "scaleBoost": 0.6418231292517007,
+      "placementAreaPct": 19.5,
+      "formula": "calibrated:lerp(0.605..0.789,t=0.20)"
+    },
+    {
+      "objectScale": 0.6,
+      "scaleBoost": 0.6786462585034013,
+      "placementAreaPct": 21.9,
+      "formula": "calibrated:lerp(0.605..0.789,t=0.40)"
+    },
+    {
+      "objectScale": 0.65,
+      "scaleBoost": 0.715469387755102,
+      "placementAreaPct": 24.2,
+      "formula": "calibrated:lerp(0.605..0.789,t=0.60)"
+    },
+    {
+      "objectScale": 0.7,
+      "scaleBoost": 0.7522925170068027,
+      "placementAreaPct": 26.8,
+      "formula": "calibrated:lerp(0.605..0.789,t=0.80)"
+    },
+    {
+      "objectScale": 0.75,
+      "scaleBoost": 0.7891156462585034,
+      "placementAreaPct": 29.5,
+      "formula": "calibrated:lerp(0.605..0.789,t=1.00)"
+    }
+  ],
+  "formula": {
+    "legacy": "scaleBoost = 0.58 + objectScale * 0.05",
+    "calibrated": "scaleBoost = lerp(legacy(0.5), maxBoost(zone,caps), t) where t = (objectScale-0.5)/(0.75-0.5)"
+  },
+  "successCriteria": {
+    "objectScaleAffectsArea": true,
+    "targetErrorReduced": true,
+    "measurableDelta": true,
+    "noCompositorRewrite": true,
+    "legacyFallbackPreserved": true
+  },
+  "productResults": [
+    {
+      "productId": "battery-sprayer",
+      "title": "Аккумуляторный опрыскиватель 16 л для сада",
+      "targetAreaPct": 55,
+      "templateAreaPct": 47.333999999999996,
+      "objectScales": {
+        "legacy": 0.5,
+        "sprint6b": 0.55
+      },
+      "comparison": {
+        "legacy": {
+          "objectScale": 0.5,
+          "width": 351,
+          "height": 534,
+          "placementAreaPct": 17.4
+        },
+        "sprint6b": {
+          "objectScale": 0.55,
+          "width": 352,
+          "height": 536,
+          "placementAreaPct": 17.5
+        },
+        "sprint6c": {
+          "objectScale": 0.55,
+          "width": 372,
+          "height": 566,
+          "placementAreaPct": 19.5
+        }
+      },
+      "errors": {
+        "legacy": {
+          "absolute": 37.6,
+          "relative": 68.4
+        },
+        "sprint6b": {
+          "absolute": 37.5,
+          "relative": 68.2
+        },
+        "sprint6c": {
+          "absolute": 35.5,
+          "relative": 64.5
+        }
+      },
+      "calibration": {
+        "commercialCalibrationVersion": "1.0.0-sprint6c",
+        "commercialCalibrationFormula": "calibrated:lerp(0.605..0.773,t=0.20)",
+        "commercialTargetArea": 55,
+        "commercialMeasuredArea": 19.5,
+        "commercialAreaError": -35.5,
+        "commercialCalibrationWarnings": [
+          "Measured area 19.5% deviates from target 55% — canvas caps may limit materialization"
+        ]
+      },
+      "sensitivity": {
+        "legacy": [
+          {
+            "objectScale": 0.3,
+            "scaleBoost": 0.595,
+            "maxW": 345,
+            "maxH": 525,
+            "placementAreaPct": 16.8,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.4,
+            "scaleBoost": 0.6,
+            "maxW": 348,
+            "maxH": 529,
+            "placementAreaPct": 17,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.5,
+            "scaleBoost": 0.605,
+            "maxW": 351,
+            "maxH": 534,
+            "placementAreaPct": 17.4,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.55,
+            "scaleBoost": 0.6074999999999999,
+            "maxW": 352,
+            "maxH": 536,
+            "placementAreaPct": 17.5,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.6,
+            "scaleBoost": 0.61,
+            "maxW": 354,
+            "maxH": 538,
+            "placementAreaPct": 17.6,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.65,
+            "scaleBoost": 0.6124999999999999,
+            "maxW": 355,
+            "maxH": 540,
+            "placementAreaPct": 17.8,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.7,
+            "scaleBoost": 0.615,
+            "maxW": 357,
+            "maxH": 542,
+            "placementAreaPct": 17.9,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.75,
+            "scaleBoost": 0.6174999999999999,
+            "maxW": 358,
+            "maxH": 545,
+            "placementAreaPct": 18.1,
+            "formula": "legacy:0.58+objectScale*0.05"
+          }
+        ],
+        "calibrated": [
+          {
+            "objectScale": 0.3,
+            "scaleBoost": 0.605,
+            "maxW": 351,
+            "maxH": 534,
+            "placementAreaPct": 17.4,
+            "formula": "calibrated:lerp(0.605..0.789,t=0.00)"
+          },
+          {
+            "objectScale": 0.4,
+            "scaleBoost": 0.605,
+            "maxW": 351,
+            "maxH": 534,
+            "placementAreaPct": 17.4,
+            "formula": "calibrated:lerp(0.605..0.789,t=0.00)"
+          },
+          {
+            "objectScale": 0.5,
+            "scaleBoost": 0.605,
+            "maxW": 351,
+            "maxH": 534,
+            "placementAreaPct": 17.4,
+            "formula": "calibrated:lerp(0.605..0.789,t=0.00)"
+          },
+          {
+            "objectScale": 0.55,
+            "scaleBoost": 0.6418231292517007,
+            "maxW": 372,
+            "maxH": 566,
+            "placementAreaPct": 19.5,
+            "formula": "calibrated:lerp(0.605..0.789,t=0.20)"
+          },
+          {
+            "objectScale": 0.6,
+            "scaleBoost": 0.6786462585034013,
+            "maxW": 394,
+            "maxH": 599,
+            "placementAreaPct": 21.9,
+            "formula": "calibrated:lerp(0.605..0.789,t=0.40)"
+          },
+          {
+            "objectScale": 0.65,
+            "scaleBoost": 0.715469387755102,
+            "maxW": 415,
+            "maxH": 631,
+            "placementAreaPct": 24.2,
+            "formula": "calibrated:lerp(0.605..0.789,t=0.60)"
+          },
+          {
+            "objectScale": 0.7,
+            "scaleBoost": 0.7522925170068027,
+            "maxW": 436,
+            "maxH": 664,
+            "placementAreaPct": 26.8,
+            "formula": "calibrated:lerp(0.605..0.789,t=0.80)"
+          },
+          {
+            "objectScale": 0.75,
+            "scaleBoost": 0.7891156462585034,
+            "maxW": 458,
+            "maxH": 696,
+            "placementAreaPct": 29.5,
+            "formula": "calibrated:lerp(0.605..0.789,t=1.00)"
+          }
+        ]
+      },
+      "improved": true,
+      "bboxChanged": true,
+      "areaDelta6bTo6c": 2
+    },
+    {
+      "productId": "construction-vacuum",
+      "title": "Строительный пылесос для ремонта 30 л",
+      "targetAreaPct": 55,
+      "templateAreaPct": 38.367000000000004,
+      "objectScales": {
+        "legacy": 0.5,
+        "sprint6b": 0.55
+      },
+      "comparison": {
+        "legacy": {
+          "objectScale": 0.5,
+          "width": 316,
+          "height": 480,
+          "placementAreaPct": 14
+        },
+        "sprint6b": {
+          "objectScale": 0.55,
+          "width": 317,
+          "height": 482,
+          "placementAreaPct": 14.1
+        },
+        "sprint6c": {
+          "objectScale": 0.55,
+          "width": 344,
+          "height": 523,
+          "placementAreaPct": 16.7
+        }
+      },
+      "errors": {
+        "legacy": {
+          "absolute": 41,
+          "relative": 74.5
+        },
+        "sprint6b": {
+          "absolute": 40.9,
+          "relative": 74.4
+        },
+        "sprint6c": {
+          "absolute": 38.3,
+          "relative": 69.6
+        }
+      },
+      "calibration": {
+        "commercialCalibrationVersion": "1.0.0-sprint6c",
+        "commercialCalibrationFormula": "calibrated:lerp(0.605..0.773,t=0.20)",
+        "commercialTargetArea": 55,
+        "commercialMeasuredArea": 16.7,
+        "commercialAreaError": -38.3,
+        "commercialCalibrationWarnings": [
+          "Measured area 16.7% deviates from target 55% — canvas caps may limit materialization"
+        ]
+      },
+      "sensitivity": {
+        "legacy": [
+          {
+            "objectScale": 0.3,
+            "scaleBoost": 0.595,
+            "maxW": 311,
+            "maxH": 472,
+            "placementAreaPct": 13.6,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.4,
+            "scaleBoost": 0.6,
+            "maxW": 313,
+            "maxH": 476,
+            "placementAreaPct": 13.8,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.5,
+            "scaleBoost": 0.605,
+            "maxW": 316,
+            "maxH": 480,
+            "placementAreaPct": 14,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.55,
+            "scaleBoost": 0.6074999999999999,
+            "maxW": 317,
+            "maxH": 482,
+            "placementAreaPct": 14.1,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.6,
+            "scaleBoost": 0.61,
+            "maxW": 318,
+            "maxH": 484,
+            "placementAreaPct": 14.3,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.65,
+            "scaleBoost": 0.6124999999999999,
+            "maxW": 320,
+            "maxH": 486,
+            "placementAreaPct": 14.4,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.7,
+            "scaleBoost": 0.615,
+            "maxW": 321,
+            "maxH": 488,
+            "placementAreaPct": 14.5,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.75,
+            "scaleBoost": 0.6174999999999999,
+            "maxW": 322,
+            "maxH": 490,
+            "placementAreaPct": 14.6,
+            "formula": "legacy:0.58+objectScale*0.05"
+          }
+        ],
+        "calibrated": [
+          {
+            "objectScale": 0.3,
+            "scaleBoost": 0.605,
+            "maxW": 316,
+            "maxH": 480,
+            "placementAreaPct": 14,
+            "formula": "calibrated:lerp(0.605..0.877,t=0.00)"
+          },
+          {
+            "objectScale": 0.4,
+            "scaleBoost": 0.605,
+            "maxW": 316,
+            "maxH": 480,
+            "placementAreaPct": 14,
+            "formula": "calibrated:lerp(0.605..0.877,t=0.00)"
+          },
+          {
+            "objectScale": 0.5,
+            "scaleBoost": 0.605,
+            "maxW": 316,
+            "maxH": 480,
+            "placementAreaPct": 14,
+            "formula": "calibrated:lerp(0.605..0.877,t=0.00)"
+          },
+          {
+            "objectScale": 0.55,
+            "scaleBoost": 0.6593148614609572,
+            "maxW": 344,
+            "maxH": 523,
+            "placementAreaPct": 16.7,
+            "formula": "calibrated:lerp(0.605..0.877,t=0.20)"
+          },
+          {
+            "objectScale": 0.6,
+            "scaleBoost": 0.7136297229219143,
+            "maxW": 373,
+            "maxH": 567,
+            "placementAreaPct": 19.6,
+            "formula": "calibrated:lerp(0.605..0.877,t=0.40)"
+          },
+          {
+            "objectScale": 0.65,
+            "scaleBoost": 0.7679445843828716,
+            "maxW": 401,
+            "maxH": 610,
+            "placementAreaPct": 22.6,
+            "formula": "calibrated:lerp(0.605..0.877,t=0.60)"
+          },
+          {
+            "objectScale": 0.7,
+            "scaleBoost": 0.8222594458438287,
+            "maxW": 429,
+            "maxH": 653,
+            "placementAreaPct": 25.9,
+            "formula": "calibrated:lerp(0.605..0.877,t=0.80)"
+          },
+          {
+            "objectScale": 0.75,
+            "scaleBoost": 0.8765743073047859,
+            "maxW": 458,
+            "maxH": 696,
+            "placementAreaPct": 29.5,
+            "formula": "calibrated:lerp(0.605..0.877,t=1.00)"
+          }
+        ]
+      },
+      "improved": true,
+      "bboxChanged": true,
+      "areaDelta6bTo6c": 2.6
+    },
+    {
+      "productId": "impact-drill",
+      "title": "Ударная дрель 800 Вт профессиональная",
+      "targetAreaPct": 55,
+      "templateAreaPct": 38.367000000000004,
+      "objectScales": {
+        "legacy": 0.5,
+        "sprint6b": 0.55
+      },
+      "comparison": {
+        "legacy": {
+          "objectScale": 0.5,
+          "width": 316,
+          "height": 480,
+          "placementAreaPct": 14
+        },
+        "sprint6b": {
+          "objectScale": 0.55,
+          "width": 317,
+          "height": 482,
+          "placementAreaPct": 14.1
+        },
+        "sprint6c": {
+          "objectScale": 0.55,
+          "width": 344,
+          "height": 523,
+          "placementAreaPct": 16.7
+        }
+      },
+      "errors": {
+        "legacy": {
+          "absolute": 41,
+          "relative": 74.5
+        },
+        "sprint6b": {
+          "absolute": 40.9,
+          "relative": 74.4
+        },
+        "sprint6c": {
+          "absolute": 38.3,
+          "relative": 69.6
+        }
+      },
+      "calibration": {
+        "commercialCalibrationVersion": "1.0.0-sprint6c",
+        "commercialCalibrationFormula": "calibrated:lerp(0.605..0.773,t=0.20)",
+        "commercialTargetArea": 55,
+        "commercialMeasuredArea": 16.7,
+        "commercialAreaError": -38.3,
+        "commercialCalibrationWarnings": [
+          "Measured area 16.7% deviates from target 55% — canvas caps may limit materialization"
+        ]
+      },
+      "sensitivity": {
+        "legacy": [
+          {
+            "objectScale": 0.3,
+            "scaleBoost": 0.595,
+            "maxW": 311,
+            "maxH": 472,
+            "placementAreaPct": 13.6,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.4,
+            "scaleBoost": 0.6,
+            "maxW": 313,
+            "maxH": 476,
+            "placementAreaPct": 13.8,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.5,
+            "scaleBoost": 0.605,
+            "maxW": 316,
+            "maxH": 480,
+            "placementAreaPct": 14,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.55,
+            "scaleBoost": 0.6074999999999999,
+            "maxW": 317,
+            "maxH": 482,
+            "placementAreaPct": 14.1,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.6,
+            "scaleBoost": 0.61,
+            "maxW": 318,
+            "maxH": 484,
+            "placementAreaPct": 14.3,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.65,
+            "scaleBoost": 0.6124999999999999,
+            "maxW": 320,
+            "maxH": 486,
+            "placementAreaPct": 14.4,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.7,
+            "scaleBoost": 0.615,
+            "maxW": 321,
+            "maxH": 488,
+            "placementAreaPct": 14.5,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.75,
+            "scaleBoost": 0.6174999999999999,
+            "maxW": 322,
+            "maxH": 490,
+            "placementAreaPct": 14.6,
+            "formula": "legacy:0.58+objectScale*0.05"
+          }
+        ],
+        "calibrated": [
+          {
+            "objectScale": 0.3,
+            "scaleBoost": 0.605,
+            "maxW": 316,
+            "maxH": 480,
+            "placementAreaPct": 14,
+            "formula": "calibrated:lerp(0.605..0.877,t=0.00)"
+          },
+          {
+            "objectScale": 0.4,
+            "scaleBoost": 0.605,
+            "maxW": 316,
+            "maxH": 480,
+            "placementAreaPct": 14,
+            "formula": "calibrated:lerp(0.605..0.877,t=0.00)"
+          },
+          {
+            "objectScale": 0.5,
+            "scaleBoost": 0.605,
+            "maxW": 316,
+            "maxH": 480,
+            "placementAreaPct": 14,
+            "formula": "calibrated:lerp(0.605..0.877,t=0.00)"
+          },
+          {
+            "objectScale": 0.55,
+            "scaleBoost": 0.6593148614609572,
+            "maxW": 344,
+            "maxH": 523,
+            "placementAreaPct": 16.7,
+            "formula": "calibrated:lerp(0.605..0.877,t=0.20)"
+          },
+          {
+            "objectScale": 0.6,
+            "scaleBoost": 0.7136297229219143,
+            "maxW": 373,
+            "maxH": 567,
+            "placementAreaPct": 19.6,
+            "formula": "calibrated:lerp(0.605..0.877,t=0.40)"
+          },
+          {
+            "objectScale": 0.65,
+            "scaleBoost": 0.7679445843828716,
+            "maxW": 401,
+            "maxH": 610,
+            "placementAreaPct": 22.6,
+            "formula": "calibrated:lerp(0.605..0.877,t=0.60)"
+          },
+          {
+            "objectScale": 0.7,
+            "scaleBoost": 0.8222594458438287,
+            "maxW": 429,
+            "maxH": 653,
+            "placementAreaPct": 25.9,
+            "formula": "calibrated:lerp(0.605..0.877,t=0.80)"
+          },
+          {
+            "objectScale": 0.75,
+            "scaleBoost": 0.8765743073047859,
+            "maxW": 458,
+            "maxH": 696,
+            "placementAreaPct": 29.5,
+            "formula": "calibrated:lerp(0.605..0.877,t=1.00)"
+          }
+        ]
+      },
+      "improved": true,
+      "bboxChanged": true,
+      "areaDelta6bTo6c": 2.6
+    },
+    {
+      "productId": "pressure-washer",
+      "title": "Мойка высокого давления 180 бар",
+      "targetAreaPct": 55,
+      "templateAreaPct": 38.367000000000004,
+      "objectScales": {
+        "legacy": 0.5,
+        "sprint6b": 0.55
+      },
+      "comparison": {
+        "legacy": {
+          "objectScale": 0.5,
+          "width": 316,
+          "height": 480,
+          "placementAreaPct": 14
+        },
+        "sprint6b": {
+          "objectScale": 0.55,
+          "width": 317,
+          "height": 482,
+          "placementAreaPct": 14.1
+        },
+        "sprint6c": {
+          "objectScale": 0.55,
+          "width": 344,
+          "height": 523,
+          "placementAreaPct": 16.7
+        }
+      },
+      "errors": {
+        "legacy": {
+          "absolute": 41,
+          "relative": 74.5
+        },
+        "sprint6b": {
+          "absolute": 40.9,
+          "relative": 74.4
+        },
+        "sprint6c": {
+          "absolute": 38.3,
+          "relative": 69.6
+        }
+      },
+      "calibration": {
+        "commercialCalibrationVersion": "1.0.0-sprint6c",
+        "commercialCalibrationFormula": "calibrated:lerp(0.605..0.773,t=0.20)",
+        "commercialTargetArea": 55,
+        "commercialMeasuredArea": 16.7,
+        "commercialAreaError": -38.3,
+        "commercialCalibrationWarnings": [
+          "Measured area 16.7% deviates from target 55% — canvas caps may limit materialization"
+        ]
+      },
+      "sensitivity": {
+        "legacy": [
+          {
+            "objectScale": 0.3,
+            "scaleBoost": 0.595,
+            "maxW": 311,
+            "maxH": 472,
+            "placementAreaPct": 13.6,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.4,
+            "scaleBoost": 0.6,
+            "maxW": 313,
+            "maxH": 476,
+            "placementAreaPct": 13.8,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.5,
+            "scaleBoost": 0.605,
+            "maxW": 316,
+            "maxH": 480,
+            "placementAreaPct": 14,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.55,
+            "scaleBoost": 0.6074999999999999,
+            "maxW": 317,
+            "maxH": 482,
+            "placementAreaPct": 14.1,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.6,
+            "scaleBoost": 0.61,
+            "maxW": 318,
+            "maxH": 484,
+            "placementAreaPct": 14.3,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.65,
+            "scaleBoost": 0.6124999999999999,
+            "maxW": 320,
+            "maxH": 486,
+            "placementAreaPct": 14.4,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.7,
+            "scaleBoost": 0.615,
+            "maxW": 321,
+            "maxH": 488,
+            "placementAreaPct": 14.5,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.75,
+            "scaleBoost": 0.6174999999999999,
+            "maxW": 322,
+            "maxH": 490,
+            "placementAreaPct": 14.6,
+            "formula": "legacy:0.58+objectScale*0.05"
+          }
+        ],
+        "calibrated": [
+          {
+            "objectScale": 0.3,
+            "scaleBoost": 0.605,
+            "maxW": 316,
+            "maxH": 480,
+            "placementAreaPct": 14,
+            "formula": "calibrated:lerp(0.605..0.877,t=0.00)"
+          },
+          {
+            "objectScale": 0.4,
+            "scaleBoost": 0.605,
+            "maxW": 316,
+            "maxH": 480,
+            "placementAreaPct": 14,
+            "formula": "calibrated:lerp(0.605..0.877,t=0.00)"
+          },
+          {
+            "objectScale": 0.5,
+            "scaleBoost": 0.605,
+            "maxW": 316,
+            "maxH": 480,
+            "placementAreaPct": 14,
+            "formula": "calibrated:lerp(0.605..0.877,t=0.00)"
+          },
+          {
+            "objectScale": 0.55,
+            "scaleBoost": 0.6593148614609572,
+            "maxW": 344,
+            "maxH": 523,
+            "placementAreaPct": 16.7,
+            "formula": "calibrated:lerp(0.605..0.877,t=0.20)"
+          },
+          {
+            "objectScale": 0.6,
+            "scaleBoost": 0.7136297229219143,
+            "maxW": 373,
+            "maxH": 567,
+            "placementAreaPct": 19.6,
+            "formula": "calibrated:lerp(0.605..0.877,t=0.40)"
+          },
+          {
+            "objectScale": 0.65,
+            "scaleBoost": 0.7679445843828716,
+            "maxW": 401,
+            "maxH": 610,
+            "placementAreaPct": 22.6,
+            "formula": "calibrated:lerp(0.605..0.877,t=0.60)"
+          },
+          {
+            "objectScale": 0.7,
+            "scaleBoost": 0.8222594458438287,
+            "maxW": 429,
+            "maxH": 653,
+            "placementAreaPct": 25.9,
+            "formula": "calibrated:lerp(0.605..0.877,t=0.80)"
+          },
+          {
+            "objectScale": 0.75,
+            "scaleBoost": 0.8765743073047859,
+            "maxW": 458,
+            "maxH": 696,
+            "placementAreaPct": 29.5,
+            "formula": "calibrated:lerp(0.605..0.877,t=1.00)"
+          }
+        ]
+      },
+      "improved": true,
+      "bboxChanged": true,
+      "areaDelta6bTo6c": 2.6
+    },
+    {
+      "productId": "home-humidifier",
+      "title": "Увлажнитель воздуха для дома ультразвуковой",
+      "targetAreaPct": 55,
+      "templateAreaPct": 47.333999999999996,
+      "objectScales": {
+        "legacy": 0.5,
+        "sprint6b": 0.55
+      },
+      "comparison": {
+        "legacy": {
+          "objectScale": 0.5,
+          "width": 351,
+          "height": 534,
+          "placementAreaPct": 17.4
+        },
+        "sprint6b": {
+          "objectScale": 0.55,
+          "width": 352,
+          "height": 536,
+          "placementAreaPct": 17.5
+        },
+        "sprint6c": {
+          "objectScale": 0.55,
+          "width": 372,
+          "height": 566,
+          "placementAreaPct": 19.5
+        }
+      },
+      "errors": {
+        "legacy": {
+          "absolute": 37.6,
+          "relative": 68.4
+        },
+        "sprint6b": {
+          "absolute": 37.5,
+          "relative": 68.2
+        },
+        "sprint6c": {
+          "absolute": 35.5,
+          "relative": 64.5
+        }
+      },
+      "calibration": {
+        "commercialCalibrationVersion": "1.0.0-sprint6c",
+        "commercialCalibrationFormula": "calibrated:lerp(0.605..0.773,t=0.20)",
+        "commercialTargetArea": 55,
+        "commercialMeasuredArea": 19.5,
+        "commercialAreaError": -35.5,
+        "commercialCalibrationWarnings": [
+          "Measured area 19.5% deviates from target 55% — canvas caps may limit materialization"
+        ]
+      },
+      "sensitivity": {
+        "legacy": [
+          {
+            "objectScale": 0.3,
+            "scaleBoost": 0.595,
+            "maxW": 345,
+            "maxH": 525,
+            "placementAreaPct": 16.8,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.4,
+            "scaleBoost": 0.6,
+            "maxW": 348,
+            "maxH": 529,
+            "placementAreaPct": 17,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.5,
+            "scaleBoost": 0.605,
+            "maxW": 351,
+            "maxH": 534,
+            "placementAreaPct": 17.4,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.55,
+            "scaleBoost": 0.6074999999999999,
+            "maxW": 352,
+            "maxH": 536,
+            "placementAreaPct": 17.5,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.6,
+            "scaleBoost": 0.61,
+            "maxW": 354,
+            "maxH": 538,
+            "placementAreaPct": 17.6,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.65,
+            "scaleBoost": 0.6124999999999999,
+            "maxW": 355,
+            "maxH": 540,
+            "placementAreaPct": 17.8,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.7,
+            "scaleBoost": 0.615,
+            "maxW": 357,
+            "maxH": 542,
+            "placementAreaPct": 17.9,
+            "formula": "legacy:0.58+objectScale*0.05"
+          },
+          {
+            "objectScale": 0.75,
+            "scaleBoost": 0.6174999999999999,
+            "maxW": 358,
+            "maxH": 545,
+            "placementAreaPct": 18.1,
+            "formula": "legacy:0.58+objectScale*0.05"
+          }
+        ],
+        "calibrated": [
+          {
+            "objectScale": 0.3,
+            "scaleBoost": 0.605,
+            "maxW": 351,
+            "maxH": 534,
+            "placementAreaPct": 17.4,
+            "formula": "calibrated:lerp(0.605..0.789,t=0.00)"
+          },
+          {
+            "objectScale": 0.4,
+            "scaleBoost": 0.605,
+            "maxW": 351,
+            "maxH": 534,
+            "placementAreaPct": 17.4,
+            "formula": "calibrated:lerp(0.605..0.789,t=0.00)"
+          },
+          {
+            "objectScale": 0.5,
+            "scaleBoost": 0.605,
+            "maxW": 351,
+            "maxH": 534,
+            "placementAreaPct": 17.4,
+            "formula": "calibrated:lerp(0.605..0.789,t=0.00)"
+          },
+          {
+            "objectScale": 0.55,
+            "scaleBoost": 0.6418231292517007,
+            "maxW": 372,
+            "maxH": 566,
+            "placementAreaPct": 19.5,
+            "formula": "calibrated:lerp(0.605..0.789,t=0.20)"
+          },
+          {
+            "objectScale": 0.6,
+            "scaleBoost": 0.6786462585034013,
+            "maxW": 394,
+            "maxH": 599,
+            "placementAreaPct": 21.9,
+            "formula": "calibrated:lerp(0.605..0.789,t=0.40)"
+          },
+          {
+            "objectScale": 0.65,
+            "scaleBoost": 0.715469387755102,
+            "maxW": 415,
+            "maxH": 631,
+            "placementAreaPct": 24.2,
+            "formula": "calibrated:lerp(0.605..0.789,t=0.60)"
+          },
+          {
+            "objectScale": 0.7,
+            "scaleBoost": 0.7522925170068027,
+            "maxW": 436,
+            "maxH": 664,
+            "placementAreaPct": 26.8,
+            "formula": "calibrated:lerp(0.605..0.789,t=0.80)"
+          },
+          {
+            "objectScale": 0.75,
+            "scaleBoost": 0.7891156462585034,
+            "maxW": 458,
+            "maxH": 696,
+            "placementAreaPct": 29.5,
+            "formula": "calibrated:lerp(0.605..0.789,t=1.00)"
+          }
+        ]
+      },
+      "improved": true,
+      "bboxChanged": true,
+      "areaDelta6bTo6c": 2
+    }
+  ]
+}

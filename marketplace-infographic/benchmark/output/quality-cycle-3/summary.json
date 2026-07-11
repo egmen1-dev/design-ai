@@ -1,0 +1,244 @@
+{
+  "sprint": "Quality Cycle 3 — Foreground Isolation",
+  "timestamp": "2026-07-11T05:45:07.050Z",
+  "productCount": 5,
+  "wbMedianTarget": {
+    "foregroundIsolation": 50.2
+  },
+  "cycle2Baseline": {
+    "foregroundIsolation": 32.5,
+    "productDominance": 42.4,
+    "productArea": 31,
+    "visualWeight": 19.1
+  },
+  "cycle3": {
+    "foregroundIsolation": 33.8,
+    "objectSharpness": 21.7,
+    "objectContrast": 53.8,
+    "localContrast": 21.6,
+    "visualWeightHero": 13.7,
+    "productDominanceScore": 40,
+    "productAreaPct": 31,
+    "commercialFidelityScore": 28
+  },
+  "cycle3Composited": {
+    "foregroundIsolation": 80.5,
+    "productDominanceScore": 79.2,
+    "visualWeightHero": 14.1
+  },
+  "delta": {
+    "foregroundIsolation": 1.3,
+    "productDominance": -2.4,
+    "productArea": 0,
+    "visualWeight": -5.4
+  },
+  "compositorSuccessRate": "5/5",
+  "isolationAppliedRate": "5/5",
+  "products": [
+    {
+      "productId": "construction-vacuum",
+      "label": "Construction Vacuum",
+      "durationMs": 6823,
+      "finalPath": "/workspace/marketplace-infographic/public/generated/cmrfxsxrr0000jspcur6g96le-1783748676773.png",
+      "compositedPath": "/workspace/marketplace-infographic/public/merged/99b72dd94702f6dc-1783748676763.png",
+      "composited": true,
+      "foregroundIsolationApplied": true,
+      "foregroundIsolationDiagnostics": {
+        "applied": true,
+        "backgroundHalo": true,
+        "localContrast": true,
+        "edgeSeparation": true,
+        "version": "1.1.0-quality-cycle-3"
+      },
+      "metrics": {
+        "productAreaPct": 31,
+        "foregroundIsolation": 47.4,
+        "objectSharpness": 38.9,
+        "objectContrast": 96.5,
+        "localContrast": 38.8,
+        "visualWeightHero": 34.6,
+        "productDominanceScore": 63,
+        "commercialFidelityScore": 54.5
+      },
+      "metricsComposited": {
+        "productAreaPct": 31,
+        "foregroundIsolation": 83.2,
+        "objectSharpness": 37.9,
+        "objectContrast": 94,
+        "localContrast": 37.8,
+        "visualWeightHero": 34.3,
+        "productDominanceScore": 70,
+        "commercialFidelityScore": 63.5
+      },
+      "handlerFlags": [
+        null,
+        null
+      ],
+      "qualityScore": 85
+    },
+    {
+      "productId": "battery-sprayer",
+      "label": "Battery Sprayer",
+      "durationMs": 7044,
+      "finalPath": "/workspace/marketplace-infographic/public/generated/cmrfxsxrr0000jspcur6g96le-1783748683977.png",
+      "compositedPath": "/workspace/marketplace-infographic/public/merged/d2ebe99a89a42e07-1783748681615.png",
+      "composited": true,
+      "foregroundIsolationApplied": true,
+      "foregroundIsolationDiagnostics": {
+        "applied": true,
+        "backgroundHalo": true,
+        "localContrast": true,
+        "edgeSeparation": true,
+        "version": "1.1.0-quality-cycle-3"
+      },
+      "metrics": {
+        "productAreaPct": 31,
+        "foregroundIsolation": 32,
+        "objectSharpness": 17.7,
+        "objectContrast": 44,
+        "localContrast": 17.7,
+        "visualWeightHero": 6.8,
+        "productDominanceScore": 29,
+        "commercialFidelityScore": 16
+      },
+      "metricsComposited": {
+        "productAreaPct": 31,
+        "foregroundIsolation": 86.5,
+        "objectSharpness": 15.6,
+        "objectContrast": 38.7,
+        "localContrast": 15.6,
+        "visualWeightHero": 5.5,
+        "productDominanceScore": 89,
+        "commercialFidelityScore": 32.5
+      },
+      "handlerFlags": [
+        null,
+        null
+      ],
+      "qualityScore": 85
+    },
+    {
+      "productId": "impact-drill",
+      "label": "Drill",
+      "durationMs": 6691,
+      "finalPath": "/workspace/marketplace-infographic/public/generated/cmrfxsxrr0000jspcur6g96le-1783748690788.png",
+      "compositedPath": "/workspace/marketplace-infographic/public/merged/3b5c59561deec877-1783748690785.png",
+      "composited": true,
+      "foregroundIsolationApplied": true,
+      "foregroundIsolationDiagnostics": {
+        "applied": true,
+        "backgroundHalo": true,
+        "localContrast": true,
+        "edgeSeparation": true,
+        "version": "1.1.0-quality-cycle-3"
+      },
+      "metrics": {
+        "productAreaPct": 31,
+        "foregroundIsolation": 19.7,
+        "objectSharpness": 7.4,
+        "objectContrast": 18.3,
+        "localContrast": 7.4,
+        "visualWeightHero": 5.6,
+        "productDominanceScore": 26,
+        "commercialFidelityScore": 14.5
+      },
+      "metricsComposited": {
+        "productAreaPct": 31,
+        "foregroundIsolation": 77.9,
+        "objectSharpness": 7.9,
+        "objectContrast": 19.6,
+        "localContrast": 7.9,
+        "visualWeightHero": 6,
+        "productDominanceScore": 100,
+        "commercialFidelityScore": 21.5
+      },
+      "handlerFlags": [
+        null,
+        null
+      ],
+      "qualityScore": 85
+    },
+    {
+      "productId": "pressure-washer",
+      "label": "Pressure Washer",
+      "durationMs": 6696,
+      "finalPath": "/workspace/marketplace-infographic/public/generated/cmrfxsxrr0000jspcur6g96le-1783748697465.png",
+      "compositedPath": "/workspace/marketplace-infographic/public/merged/960a5f64c6f93510-1783748695249.png",
+      "composited": true,
+      "foregroundIsolationApplied": true,
+      "foregroundIsolationDiagnostics": {
+        "applied": true,
+        "backgroundHalo": true,
+        "localContrast": true,
+        "edgeSeparation": true,
+        "version": "1.1.0-quality-cycle-3"
+      },
+      "metrics": {
+        "productAreaPct": 31,
+        "foregroundIsolation": 37.9,
+        "objectSharpness": 22,
+        "objectContrast": 54.6,
+        "localContrast": 21.9,
+        "visualWeightHero": 6.1,
+        "productDominanceScore": 35,
+        "commercialFidelityScore": 21.5
+      },
+      "metricsComposited": {
+        "productAreaPct": 31,
+        "foregroundIsolation": 84.2,
+        "objectSharpness": 22.1,
+        "objectContrast": 54.8,
+        "localContrast": 22,
+        "visualWeightHero": 6.4,
+        "productDominanceScore": 77,
+        "commercialFidelityScore": 44.5
+      },
+      "handlerFlags": [
+        null,
+        null
+      ],
+      "qualityScore": 85
+    },
+    {
+      "productId": "home-humidifier",
+      "label": "Home Humidifier",
+      "durationMs": 7488,
+      "finalPath": "/workspace/marketplace-infographic/public/generated/cmrfxsxrr0000jspcur6g96le-1783748705019.png",
+      "compositedPath": "/workspace/marketplace-infographic/public/merged/ef5422835564a650-1783748702626.png",
+      "composited": true,
+      "foregroundIsolationApplied": true,
+      "foregroundIsolationDiagnostics": {
+        "applied": true,
+        "backgroundHalo": true,
+        "localContrast": true,
+        "edgeSeparation": true,
+        "version": "1.1.0-quality-cycle-3"
+      },
+      "metrics": {
+        "productAreaPct": 31,
+        "foregroundIsolation": 32.2,
+        "objectSharpness": 22.3,
+        "objectContrast": 55.5,
+        "localContrast": 22.3,
+        "visualWeightHero": 15.6,
+        "productDominanceScore": 47,
+        "commercialFidelityScore": 33.5
+      },
+      "metricsComposited": {
+        "productAreaPct": 31,
+        "foregroundIsolation": 70.6,
+        "objectSharpness": 25.6,
+        "objectContrast": 63.7,
+        "localContrast": 25.6,
+        "visualWeightHero": 18.1,
+        "productDominanceScore": 60,
+        "commercialFidelityScore": 46.5
+      },
+      "handlerFlags": [
+        null,
+        null
+      ],
+      "qualityScore": 85
+    }
+  ]
+}

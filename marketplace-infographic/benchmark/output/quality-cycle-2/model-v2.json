@@ -1,0 +1,152 @@
+{
+  "modelV2": [
+    {
+      "feature": "foregroundIsolation",
+      "weightPct": 12.8,
+      "correlation": 0.332,
+      "direction": "positive"
+    },
+    {
+      "feature": "objectSharpness",
+      "weightPct": 12.5,
+      "correlation": 0.326,
+      "direction": "positive"
+    },
+    {
+      "feature": "localContrast",
+      "weightPct": 12.3,
+      "correlation": 0.321,
+      "direction": "positive"
+    },
+    {
+      "feature": "objectContrast",
+      "weightPct": 12,
+      "correlation": 0.313,
+      "direction": "positive"
+    },
+    {
+      "feature": "objectSaturation",
+      "weightPct": 12,
+      "correlation": 0.313,
+      "direction": "positive"
+    },
+    {
+      "feature": "textureCompetition",
+      "weightPct": 11.1,
+      "correlation": -0.289,
+      "direction": "negative"
+    },
+    {
+      "feature": "perspective",
+      "weightPct": 6.7,
+      "correlation": 0.173,
+      "direction": "positive"
+    },
+    {
+      "feature": "visualCenterOffset",
+      "weightPct": 5.8,
+      "correlation": 0.15,
+      "direction": "positive"
+    },
+    {
+      "feature": "brightnessSeparation",
+      "weightPct": 5.1,
+      "correlation": 0.133,
+      "direction": "positive"
+    },
+    {
+      "feature": "objectSymmetry",
+      "weightPct": 5,
+      "correlation": -0.13,
+      "direction": "negative"
+    },
+    {
+      "feature": "dominantColorBalance",
+      "weightPct": 4.6,
+      "correlation": -0.12,
+      "direction": "negative"
+    }
+  ],
+  "vwCorrelations": [
+    {
+      "feature": "objectSharpness",
+      "correlationWithVisualWeight": 0.893
+    },
+    {
+      "feature": "localContrast",
+      "correlationWithVisualWeight": 0.887
+    },
+    {
+      "feature": "objectContrast",
+      "correlationWithVisualWeight": 0.87
+    },
+    {
+      "feature": "objectSaturation",
+      "correlationWithVisualWeight": 0.87
+    },
+    {
+      "feature": "backgroundNoise",
+      "correlationWithVisualWeight": 0.348
+    },
+    {
+      "feature": "shadowPresence",
+      "correlationWithVisualWeight": 0.317
+    },
+    {
+      "feature": "perspective",
+      "correlationWithVisualWeight": 0.299
+    },
+    {
+      "feature": "textureCompetition",
+      "correlationWithVisualWeight": 0.297
+    },
+    {
+      "feature": "objectSymmetry",
+      "correlationWithVisualWeight": -0.267
+    },
+    {
+      "feature": "objectDepth",
+      "correlationWithVisualWeight": 0.244
+    },
+    {
+      "feature": "visualCenterOffset",
+      "correlationWithVisualWeight": -0.216
+    },
+    {
+      "feature": "productAreaPct",
+      "correlationWithVisualWeight": -0.194
+    },
+    {
+      "feature": "negativeSpace",
+      "correlationWithVisualWeight": 0.194
+    },
+    {
+      "feature": "edgeContrast",
+      "correlationWithVisualWeight": 0.177
+    },
+    {
+      "feature": "dominantColorBalance",
+      "correlationWithVisualWeight": -0.066
+    },
+    {
+      "feature": "objectLighting",
+      "correlationWithVisualWeight": 0.062
+    },
+    {
+      "feature": "foregroundIsolation",
+      "correlationWithVisualWeight": -0.057
+    },
+    {
+      "feature": "highlightStrength",
+      "correlationWithVisualWeight": 0.036
+    },
+    {
+      "feature": "brightnessSeparation",
+      "correlationWithVisualWeight": 0.031
+    },
+    {
+      "feature": "colorSeparation",
+      "correlationWithVisualWeight": 0.025
+    }
+  ]
+}

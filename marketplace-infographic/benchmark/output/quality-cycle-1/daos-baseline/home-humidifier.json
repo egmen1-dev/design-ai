@@ -1,0 +1,28 @@
+{
+  "source": "daos",
+  "category": "home-humidifier",
+  "categoryLabel": "Home Humidifier",
+  "productId": "product-5",
+  "sprint95Fidelity": 26,
+  "compositeFailed": true,
+  "handlerFlags": [
+    "not_professional",
+    "product_not_dominant",
+    "png_overlay_feel"
+  ],
+  "productAreaPct": 31,
+  "productDominanceScore": 26,
+  "visualHierarchyScore": 26,
+  "backgroundSeparationScore": 65,
+  "sceneConsistencyScore": 100,
+  "backgroundComplexity": 0.4,
+  "typographyDensity": 0.9,
+  "heroLuminance": 207.2,
+  "globalLuminance": 180.9,
+  "heroSaturation": 27.5,
+  "negativeSpaceProxy": 69,
+  "commercialFidelityScore": 26,
+  "heroZoneCanvasPct": 31.3,
+  "visualWeightHero": 9.1,
+  "contrastSeparation": 65
+}

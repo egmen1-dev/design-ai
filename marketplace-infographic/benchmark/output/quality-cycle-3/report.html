@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"/>
+  <title>Quality Cycle 3 — Foreground Isolation</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #0b1220; color: #e2e8f0; padding: 24px; max-width: 1100px; margin: 0 auto; }
+    h1, h2 { color: #f8fafc; }
+    table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+    th, td { border: 1px solid #334155; padding: 8px 12px; text-align: left; }
+    th { background: #1e293b; }
+    .gap { color: #f87171; }
+    .gain { color: #4ade80; }
+    .card { background: #1e293b; border-radius: 8px; padding: 16px; margin: 12px 0; }
+    figure { display: inline-block; margin: 8px; vertical-align: top; }
+    img { max-width: 220px; border: 1px solid #334155; border-radius: 4px; }
+    figcaption { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Quality Cycle 3 — Foreground Isolation</h1>
+  <p>Additive compositor isolation · 5 benchmark products · Production handler only</p>
+
+  <div class="card">
+    <h2>Aggregate</h2>
+    <table>
+      <tr><th>Metric</th><th>Cycle 2</th><th>Cycle 3 Final</th><th>Δ</th><th>WB Target</th></tr>
+      <tr>
+        <td>Foreground Isolation</td>
+        <td>32.5</td>
+        <td>33.8</td>
+        <td class="gain">+1.3</td>
+        <td>50.2</td>
+      </tr>
+      <tr>
+        <td>Product Dominance</td>
+        <td>42.4</td>
+        <td>40</td>
+        <td class="gap">-2.4</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td>Visual Weight (hero)</td>
+        <td>19.1</td>
+        <td>13.7</td>
+        <td class="gap">-5.4</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td>Product Area %</td>
+        <td>31</td>
+        <td>31</td>
+        <td>0</td>
+        <td>unchanged</td>
+      </tr>
+    </table>
+  </div>
+
+  <h2>Per Product</h2>
+  <table>
+    <tr><th>Product</th><th>FI Final</th><th>FI Composited</th><th>Dominance</th><th>Area %</th><th>Compositor</th><th>Isolation ON</th></tr>
+    <tr>
+      <td>Construction Vacuum</td>
+      <td>47.4</td>
+      <td>83.2</td>
+      <td>63</td>
+      <td>31</td>
+      <td>Yes</td>
+      <td>Yes</td>
+    </tr><tr>
+      <td>Battery Sprayer</td>
+      <td>32</td>
+      <td>86.5</td>
+      <td>29</td>
+      <td>31</td>
+      <td>Yes</td>
+      <td>Yes</td>
+    </tr><tr>
+      <td>Drill</td>
+      <td>19.7</td>
+      <td>77.9</td>
+      <td>26</td>
+      <td>31</td>
+      <td>Yes</td>
+      <td>Yes</td>
+    </tr><tr>
+      <td>Pressure Washer</td>
+      <td>37.9</td>
+      <td>84.2</td>
+      <td>35</td>
+      <td>31</td>
+      <td>Yes</td>
+      <td>Yes</td>
+    </tr><tr>
+      <td>Home Humidifier</td>
+      <td>32.2</td>
+      <td>70.6</td>
+      <td>47</td>
+      <td>31</td>
+      <td>Yes</td>
+      <td>Yes</td>
+    </tr>
+  </table>
+
+  <h2>Visual Package</h2>
+  <div class="card">
+    <h3>Construction Vacuum</h3>
+    <figure><figcaption>03 Composited</figcaption><img src="construction-vacuum/03-composited.png" onerror="this.alt='missing'"/></figure>
+    <figure><figcaption>04 Final Card</figcaption><img src="construction-vacuum/04-final-card.png"/></figure>
+  </div><div class="card">
+    <h3>Battery Sprayer</h3>
+    <figure><figcaption>03 Composited</figcaption><img src="battery-sprayer/03-composited.png" onerror="this.alt='missing'"/></figure>
+    <figure><figcaption>04 Final Card</figcaption><img src="battery-sprayer/04-final-card.png"/></figure>
+  </div><div class="card">
+    <h3>Drill</h3>
+    <figure><figcaption>03 Composited</figcaption><img src="impact-drill/03-composited.png" onerror="this.alt='missing'"/></figure>
+    <figure><figcaption>04 Final Card</figcaption><img src="impact-drill/04-final-card.png"/></figure>
+  </div><div class="card">
+    <h3>Pressure Washer</h3>
+    <figure><figcaption>03 Composited</figcaption><img src="pressure-washer/03-composited.png" onerror="this.alt='missing'"/></figure>
+    <figure><figcaption>04 Final Card</figcaption><img src="pressure-washer/04-final-card.png"/></figure>
+  </div><div class="card">
+    <h3>Home Humidifier</h3>
+    <figure><figcaption>03 Composited</figcaption><img src="home-humidifier/03-composited.png" onerror="this.alt='missing'"/></figure>
+    <figure><figcaption>04 Final Card</figcaption><img src="home-humidifier/04-final-card.png"/></figure>
+  </div>
+
+  <p>
+    <a href="../../../docs/DAOS_FOREGROUND_ISOLATION.md">Isolation spec</a> ·
+    <a href="../../../docs/DAOS_QUALITY_CYCLE_3_REPORT.md">Full report</a>
+  </p>
+</body>
+</html>
