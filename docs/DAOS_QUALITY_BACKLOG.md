@@ -1,7 +1,7 @@
 # DAOS Quality Backlog
 
 **Program:** DAOS Quality Program v1  
-**Sources:** Quality Cycle 1 (Dominance) + Quality Cycle 2 (Visual Weight)  
+**Sources:** Cycle 1 (Dominance) + Cycle 2 (Visual Weight) + Cycle 3 (Isolation) + **Cycle 4 (Attention)**  
 **Updated:** 2026-07-11  
 **Rule:** Items sorted by **Product Impact**, not implementation difficulty.
 
@@ -11,12 +11,13 @@
 
 | Priority | Problem | Est. Impact | Status | Sprint | Complexity | Dependencies |
 |----------|---------|------------|--------|--------|------------|--------------|
-| P0-1 | **Compositor scene merge fails** — no `03-composited.png`, `floor-contact extract_area` | +25–35% perceived quality | **MISSING** — 0/5 | Cycle 3 Exec | Medium | Real cutouts |
-| P0-2 | **`png_overlay_feel`** — flat overlay, not grounded | +20% trust | **FAILING** | Cycle 3 Exec | Medium | P0-1 |
-| P0-3 | **`product_not_dominant`** — 42.4 vs WB 49.6 | +10–15% CTR proxy | **FAILING** | Cycle 3 Exec | Low | Dominance Model v2 |
-| **P0-4** | **Foreground Isolation** — 32.5 vs WB 52.7 (**−20.2**); r=0.332 with dominance | **+33% dominance** | **MISSING** | **Cycle 3 Exec** | Medium | P0-1, P0-6 |
-| **P0-5** | **Object Sharpness cluster** — sharpness 24.0 vs 30.5, contrast −12.3 | **+32% dominance** | **MISSING** | **Cycle 3 Exec** | Medium | Cutout quality |
-| **P0-6** | **Object Depth = 0** — no shadow/gradient cues (WB median 11.0) | +10% integration | **MISSING** | Cycle 3 Exec | Medium | P0-1 |
+| P0-1 | **Compositor scene merge fails** | +25–35% perceived quality | **DONE** — 5/5 (Cycle 3) | Cycle 3 | Medium | — |
+| P0-2 | **`png_overlay_feel`** | +20% trust | **DONE** — eliminated (Cycle 3) | Cycle 3 | Medium | P0-1 |
+| P0-3 | **`product_not_dominant`** — final 40 vs composited 79 | +10–15% CTR proxy | **FAILING** | **Cycle 5** | Medium | P0-7 |
+| P0-4 | **Foreground Isolation (compositor)** — 80.5 composited | +33% dominance | **DONE** compositor | Cycle 3 | Medium | — |
+| P0-5 | **Foreground Isolation (final card)** — 33.8 vs WB 52.7 | +33% final dominance | **FAILING** | **Cycle 5** | Low | P0-7 |
+| P0-6 | **Object Depth = 0** on SVG benchmark | +10% integration | **MISSING** | Cycle 5b | Medium | Real photos |
+| **P0-7** | **Headline Visual Weight** — r=−0.723 with dominance; layer +10 after overlay | **+72% dominance** | **MISSING** | **Cycle 5 Exec** | Low | Cycle 4 research |
 
 ---
 
@@ -24,13 +25,13 @@
 
 | Priority | Problem | Est. Impact | Status | Sprint | Complexity | Dependencies |
 |----------|---------|------------|--------|--------|------------|--------------|
-| P1-1 | **Local Contrast** — 23.8 vs WB 29.7 (−5.9); r=0.321 | +32% dominance | **MISSING** | Cycle 3 Exec | Low | P0-5 |
-| P1-2 | **SVG benchmark products** — invalidates dominance measurement | +10–15% validity | **MISSING** | Cycle 5 | Low | Seller PNGs |
-| P1-3 | **No thumbnail validation** at WB grid 120×160 | +8–12% CTR | **MISSING** | Cycle 4 | Low | Production PNG |
-| P1-4 | **Commercial fidelity** — 32.9 vs WB 38.2 | +8% competitiveness | **BELOW** | Cycle 3 Exec | Low | P0-4 |
-| P1-5 | **Final-quality layout default** — `productAreaPct ?? 62` masks weakness | Diagnostic gap | **PARTIAL** | Cycle 3 Exec | Low | Model v2 gate |
-| **P1-6** | **Perspective cues** — 8.6 vs WB 26.7 (−18.1); r=0.173 | +17% dominance | **MISSING** | Cycle 3 Exec | Medium | Compositor |
-| **P1-7** | **Texture Competition** — keep headline edge density low (r=−0.289) | +29% if violated | **OK** (1.0 vs 2.1) | Cycle 4 | Low | — |
+| P1-1 | **Typography Contrast** — +39 avg after overlay; r=−0.595 | +60% dominance | **MISSING** | Cycle 5 Exec | Low | P0-7 |
+| P1-2 | **Typography Competition Index** — +9.2 after overlay | +54% dominance | **MISSING** | Cycle 5 Exec | Low | P0-7 |
+| P1-3 | **Attention peak shift** — hero→headline (heatmap confirmed) | Diagnostic | **CONFIRMED** | Cycle 4 | — | — |
+| P1-4 | **SVG benchmark products** | +10–15% validity | **MISSING** | Cycle 6 | Low | Seller PNGs |
+| P1-5 | **Final-quality measures composited not final** | Diagnostic gap | **PARTIAL** | Cycle 5 | Low | P0-7 |
+| P1-6 | **Object Sharpness cluster** — 24.0 vs WB 30.5 | +32% dominance | **MISSING** | Cycle 5b | Medium | Real cutouts |
+| P1-7 | **Badge Competition** — zero delta on overlay | +3% | **SUPPORTED** | — | — | Cycle 4 |
 
 ---
 
@@ -38,14 +39,13 @@
 
 | Priority | Problem | Est. Impact | Status | Sprint | Complexity | Dependencies |
 |----------|---------|------------|--------|--------|------------|--------------|
-| P2-1 | **Typography competition** — confirmed r=−0.289 | +5–8% | **OK** | Cycle 4 | Low | — |
-| P2-2 | **Background flatness** — complexity 0.5 vs 1.9 | +5% | **PARTIAL** | Cycle 3 Exec | Med | Flux |
-| P2-3 | **Product area not a driver** — r=−0.099 confirmed | Stop optimizing | **DONE** | — | — | Cycle 2 research |
-| P2-4 | **Post-composite lighting** — objectLighting −80 gap on SVG | +5% | **MISSING** | Cycle 3 Exec | Med | P0-1 |
-| P2-5 | **`not_professional`** — all Sprint 9.5 | +5% trust | **FAILING** | Cycle 3 Exec | Low | P0-4 |
-| P2-6 | **Category dominance targets** — tools 52% vs appliances 45% | +5% | **NOT TUNED** | Cycle 4 | Low | Model v2 |
-| P2-7 | **Badge visual weight** | +3–5% | **PARTIAL** | Cycle 4 | Low | — |
-| **P2-8** | **Wire Dominance Model v2** to production gate | Measurement | **MISSING** | Cycle 3 Exec | Med | Research docs |
+| P2-1 | **Texture Competition** — r=−0.289 | +29% if violated | **OK** | — | — | Cycle 2 |
+| P2-2 | **Product area not a driver** — r=−0.099 | Stop optimizing | **DONE** | — | — | Cycle 2 |
+| P2-3 | **`not_professional`** — all runs | +5% trust | **FAILING** | Cycle 5 | Low | P0-7 |
+| P2-4 | **Thumbnail validation** at WB grid 120×160 | +8–12% CTR | **MISSING** | Cycle 6 | Low | Cycle 5 |
+| P2-5 | **Perspective cues** — 8.6 vs WB 26.7 | +17% dominance | **MISSING** | Cycle 5b | Medium | Compositor |
+| P2-6 | **Category dominance targets** | +5% | **NOT TUNED** | Cycle 6 | Low | Model v1 |
+| P2-7 | **Wire Attention Model v1** to final-quality gate | Measurement | **MISSING** | Cycle 5 | Med | Research docs |
 
 ---
 
@@ -54,10 +54,10 @@
 | Priority | Problem | Est. Impact | Status | Sprint |
 |----------|---------|------------|--------|--------|
 | P3-1 | Monthly WB re-scan (100+ cards) | Calibration | **MANUAL** | Cycle 1b |
-| P3-2 | Premium feel bands per category | +3% | **NOT MEASURED** | Cycle 5 |
-| P3-3 | Information block count limit | +3% | **PARTIAL** | Cycle 4 |
-| P3-4 | CTR headline templates | +3% | **PARTIAL** | Cycle 5 |
-| P3-5 | Camera angle policy | +3% | **PARTIAL** | Cycle 5 |
+| P3-2 | Premium feel bands per category | +3% | **NOT MEASURED** | Cycle 6 |
+| P3-3 | Information block count limit | +3% | **PARTIAL** | Cycle 5 |
+| P3-4 | CTR headline templates | +3% | **PARTIAL** | Cycle 6 |
+| P3-5 | Hero lighting post-overlay | +3% | **PLANNED** | Cycle 5b |
 
 ---
 
@@ -65,20 +65,27 @@
 
 ```
 Quality Cycle 2  →  Visual Weight Research          ✅ COMPLETE
-Quality Cycle 3  →  Visual Weight Execution          ← NEXT
-                   (compositor + foreground isolation + sharpness cluster)
-Quality Cycle 5  →  Real product photos              (parallel)
-Quality Cycle 4  →  Thumbnail + typography gates
-Quality Cycle 5b →  Category premium tuning
+Quality Cycle 3  →  Foreground Isolation Exec       ✅ COMPLETE
+Quality Cycle 4  →  Attention Competition Research ✅ COMPLETE
+Quality Cycle 5  →  Typography Weight Governance    ← NEXT
+Quality Cycle 6  →  Real product photos + thumbnail
 ```
 
 ---
 
-## Single Highest-Impact Fix (Cycle 2 Council)
+## Single Highest-Impact Fix (Cycle 4 Council)
 
-**Foreground Isolation** — raise from 32.5 → ≥50 (WB median).
+**Headline Visual Weight** — cap typography competition on final card overlay.
 
-One fix, maximum dominance lift. Requires compositor merge + crisp product silhouette.
+| Evidence | Value |
+|----------|-------|
+| r with dominance | **−0.723** |
+| DAOS gap | **−8.7** |
+| Layer gain 03→04 | **+10.1** |
+| FI loss | **−46.7** |
+| Heatmap peak shift | hero (0.39,0.23) → headline (0.12,0.07) |
+
+Compositor is sufficient. **Do not** add more isolation. Fix overlay stage.
 
 ---
 
@@ -86,13 +93,12 @@ One fix, maximum dominance lift. Requires compositor merge + crisp product silho
 
 | Item | Done when |
 |------|-----------|
-| P0-4 | Foreground Isolation ≥ 50 on ≥3/5 DAOS production cards |
-| P0-5 | Object Sharpness ≥ 29.6 (WB median) on ≥3/5 |
-| P0-1 | ≥4/5 cards produce `03-composited.png` on real photos |
-| P0-2 | `png_overlay_feel` absent on ≥4/5 runs |
-| P0-3 | Dominance Model v2 score ≥ WB median (49) on ≥3/5 |
-| P2-8 | `evaluateFinalQuality` uses pixel features, not layout default |
-| P1-2 | Benchmark uses seller PNG cutouts |
+| P0-7 | Headline VW on final card ≤ WB median (24.7) on ≥3/5 |
+| P0-5 | Final FI ≥ 50 on ≥3/5 production cards |
+| P0-3 | Final dominance ≥ WB median (49) on ≥3/5 |
+| P1-1 | Typography contrast delta 03→04 ≤ +10 |
+| P2-7 | `evaluateFinalQuality` uses attention metrics |
+| P1-4 | Benchmark uses seller PNG cutouts |
 
 ---
 
@@ -101,13 +107,13 @@ One fix, maximum dominance lift. Requires compositor merge + crisp product silho
 | Cycle | Status | PR |
 |-------|--------|-----|
 | Cycle 1 — Dominance Research | **Complete** | #76 |
-| **Cycle 2 — Visual Weight Research** | **Complete** | TBD |
-| Cycle 3 — Visual Weight Execution | **Next** | — |
-| Cycle 4 — Thumbnail CTR | Planned | — |
-| Cycle 5 — Real Photos | Planned | — |
+| Cycle 2 — Visual Weight Research | **Complete** | #77 |
+| Cycle 3 — Foreground Isolation | **Complete** | #78 |
+| **Cycle 4 — Attention Competition** | **Complete** | TBD |
+| Cycle 5 — Typography Governance | **Next** | — |
 
 ---
 
 ## Out of Scope
 
-No production code changes during research cycles. No Genome / Layout / Prompt / Geometry changes without Cycle 3 scope approval.
+No production code changes during research cycles (Cycle 4 complied). Cycle 5 may change typography overlay governance only — not Genome, Layout, Compositor, or Prompt without explicit approval.
