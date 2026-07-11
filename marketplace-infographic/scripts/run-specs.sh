@@ -17,6 +17,16 @@ SPECS=(
   src/lib/render-blueprint/lifecycle-manager.spec.ts
   src/lib/render-blueprint/mutation-engine.spec.ts
   src/lib/render-blueprint/validation-engine.spec.ts
+  src/lib/daos/commercial-genome-beta/commercial-genome-beta.test.ts
+  src/lib/design/layout-spec/commercial-layout-integration.test.ts
+  src/lib/design/layout-spec/commercial-layout-propagation.test.ts
+  src/lib/design/prompt-compiler/commercial-layout-materializer.test.ts
+  src/lib/design/visual-pipeline/commercial-blueprint-materializer.test.ts
+  src/lib/layout-engine/geometry-clamp-optimization.test.ts
+  src/lib/compositing/commercial-alpha-policy.test.ts
+  src/lib/compositing/commercial-calibration.test.ts
+  src/lib/commercial-fidelity/commercial-fidelity.test.ts
+  src/lib/daos/feature-flag-registry/feature-flag-registry.spec.ts
 )
 for f in "${SPECS[@]}"; do
   echo "==> $f"

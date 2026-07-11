@@ -1,0 +1,57 @@
+{
+  "productId": 901618182,
+  "category": "pressure-wash",
+  "categoryLabel": "Мойка",
+  "name": "Мойка высокого давления BHR-2000M чёрный бирюзовый",
+  "daosGenerated": true,
+  "genDurationMs": 7498,
+  "leader": {
+    "productDominance": 64,
+    "foregroundIsolation": 60.1,
+    "headlineVisualWeight": 19,
+    "primaryFocusRatio": 0.409,
+    "attentionHierarchyScore": 41.7,
+    "commercialFidelity": 56.5,
+    "visualWeightHero": 33.9,
+    "thumbnailReadability": 54.6,
+    "productVisualWeight": 33.9,
+    "typographyCompetition": 33.4
+  },
+  "daos": {
+    "productDominance": 49,
+    "foregroundIsolation": 85.9,
+    "headlineVisualWeight": 14.4,
+    "primaryFocusRatio": 0.305,
+    "attentionHierarchyScore": 33.4,
+    "commercialFidelity": 35,
+    "visualWeightHero": 13.4,
+    "thumbnailReadability": 90.2,
+    "productVisualWeight": 13.4,
+    "typographyCompetition": 25.7
+  },
+  "delta": {
+    "productDominance": -15,
+    "foregroundIsolation": 25.8,
+    "headlineVisualWeight": -4.6,
+    "primaryFocusRatio": -0.1,
+    "attentionHierarchyScore": -8.3,
+    "commercialFidelity": -21.5,
+    "visualWeightHero": -20.5,
+    "thumbnailReadability": 35.6,
+    "productVisualWeight": -20.5,
+    "typographyCompetition": -7.7
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "draw",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "wb",
+    "rationale": "Dominance: WB 64 vs DAOS 49 (Δ-15); FI: WB 60.1 vs DAOS 85.9; Thumbnail: WB 54.6 vs DAOS 90.2; Fidelity: WB 56.5 vs DAOS 35",
+    "gapClass": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 54.3,
+    "daos": 52.1
+  }
+}

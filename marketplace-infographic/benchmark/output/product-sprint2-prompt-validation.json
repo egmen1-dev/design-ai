@@ -1,0 +1,976 @@
+{
+  "generatedAt": "2026-07-09T11:35:14.772Z",
+  "results": [
+    {
+      "productId": "yellow-tool",
+      "productTitle": "Жёлтый шуруповёрт профессиональный",
+      "commercialDecision": {
+        "mainMessage": "Результат с Жёлтый шуруповёрт профессиональный: выгода для покупателя, не категория товара",
+        "heroDominance": "product_first",
+        "productAreaTarget": 0.55,
+        "maxCharacteristics": 4,
+        "badgeLimit": 2,
+        "environmentDirection": "clean_industrial_technical",
+        "backgroundContrastDirection": "cool_neutral_separation",
+        "typographyDirection": "one main message, strong result-oriented headline",
+        "visualHierarchy": [
+          "product",
+          "headline",
+          "characteristics",
+          "logo"
+        ],
+        "antiRules": [
+          "Не перегружать Hero.",
+          "Не делать collage.",
+          "Не использовать фон, конкурирующий с товаром.",
+          "Не делать текст поверх товара.",
+          "Не генерировать сам товар AI, если есть реальный cutout.",
+          "Не использовать один layout для всех категорий."
+        ],
+        "selectedRules": [
+          "WB-HERO-001",
+          "WB-HERO-002",
+          "WB-HERO-003",
+          "WB-HERO-004",
+          "WB-HERO-005",
+          "WB-HERO-006",
+          "WB-HERO-007",
+          "WB-HIER-001",
+          "WB-HIER-002",
+          "WB-HIER-003",
+          "WB-HIER-004",
+          "WB-HIER-005",
+          "WB-TYPE-001",
+          "WB-TYPE-002",
+          "WB-TYPE-003",
+          "WB-TYPE-004",
+          "WB-TYPE-005",
+          "WB-TYPE-006",
+          "WB-PSY-001",
+          "WB-PSY-002",
+          "WB-PSY-003",
+          "WB-PSY-004",
+          "WB-PSY-005",
+          "WB-ENV-001",
+          "WB-ENV-002",
+          "WB-ENV-003",
+          "WB-ENV-004",
+          "WB-ENV-006",
+          "WB-ENV-007",
+          "WB-DIFF-001",
+          "WB-DIFF-002",
+          "WB-DIFF-003",
+          "WB-DIFF-004",
+          "WB-BRAND-001",
+          "WB-BRAND-002",
+          "WB-BRAND-003",
+          "WB-BRAND-004",
+          "WB-RES-001",
+          "WB-RES-002",
+          "WB-RES-003",
+          "WB-RES-004",
+          "WB-ANTI-001",
+          "WB-ANTI-002",
+          "WB-ANTI-003",
+          "WB-ANTI-004",
+          "WB-ANTI-005",
+          "WB-ANTI-006"
+        ],
+        "decisionTrace": [
+          "resolveCommercialRulesBeta: marketplace=wildberries",
+          "category=professional tool",
+          "productType=professional tool",
+          "mode=generation",
+          "SELECT WB-HERO-001 [hero]: hero always high priority for WB",
+          "SELECT WB-HERO-002 [hero]: hero always high priority for WB",
+          "SELECT WB-HERO-003 [hero]: hero always high priority for WB",
+          "SELECT WB-HERO-004 [hero]: hero always high priority for WB",
+          "SELECT WB-HERO-005 [hero]: hero always high priority for WB",
+          "SELECT WB-HERO-006 [hero]: hero always high priority for WB",
+          "SELECT WB-HERO-007 [hero]: hero always high priority for WB",
+          "SELECT WB-HIER-001 [hierarchy]: hierarchy always high priority for WB",
+          "SELECT WB-HIER-002 [hierarchy]: hierarchy always high priority for WB",
+          "SELECT WB-HIER-003 [hierarchy]: hierarchy always high priority for WB",
+          "SELECT WB-HIER-004 [hierarchy]: hierarchy always high priority for WB",
+          "SELECT WB-HIER-005 [hierarchy]: hierarchy always high priority for WB",
+          "SELECT WB-TYPE-001 [typography]: typography always high priority for WB",
+          "SELECT WB-TYPE-002 [typography]: typography always high priority for WB",
+          "SELECT WB-TYPE-003 [typography]: typography always high priority for WB",
+          "SELECT WB-TYPE-004 [typography]: typography always high priority for WB",
+          "SELECT WB-TYPE-005 [typography]: typography always high priority for WB",
+          "SELECT WB-TYPE-006 [typography]: typography always high priority for WB",
+          "SELECT WB-PSY-001 [psychology]: psychology always high priority for WB",
+          "SELECT WB-PSY-002 [psychology]: psychology always high priority for WB",
+          "SELECT WB-PSY-003 [psychology]: psychology always high priority for WB",
+          "SELECT WB-PSY-004 [psychology]: psychology always high priority for WB",
+          "SELECT WB-PSY-005 [psychology]: psychology always high priority for WB",
+          "SELECT WB-ENV-001 [environment]: generic environment rule for WB",
+          "SELECT WB-ENV-002 [environment]: generic environment rule for WB",
+          "SELECT WB-ENV-003 [environment]: generic environment rule for WB",
+          "SELECT WB-ENV-004 [environment]: generic environment rule for WB",
+          "IGNORE WB-ENV-005 [environment]: category match",
+          "SELECT WB-ENV-006 [environment]: professional tool category",
+          "SELECT WB-ENV-007 [environment]: generic environment rule for WB",
+          "SELECT WB-DIFF-001 [differentiation]: differentiation selected for WB beta",
+          "SELECT WB-DIFF-002 [differentiation]: differentiation selected for WB beta",
+          "SELECT WB-DIFF-003 [differentiation]: differentiation selected for WB beta",
+          "SELECT WB-DIFF-004 [differentiation]: differentiation selected for WB beta",
+          "SELECT WB-BRAND-001 [brand]: brand selected for WB beta",
+          "SELECT WB-BRAND-002 [brand]: brand selected for WB beta",
+          "SELECT WB-BRAND-003 [brand]: brand selected for WB beta",
+          "SELECT WB-BRAND-004 [brand]: brand selected for WB beta",
+          "SELECT WB-RES-001 [research]: research selected for WB beta",
+          "SELECT WB-RES-002 [research]: research selected for WB beta",
+          "SELECT WB-RES-003 [research]: research selected for WB beta",
+          "SELECT WB-RES-004 [research]: research selected for WB beta",
+          "IGNORE WB-REF-001 [refinement]: refinement rules only in refinement mode",
+          "IGNORE WB-REF-002 [refinement]: refinement rules only in refinement mode",
+          "IGNORE WB-REF-003 [refinement]: refinement rules only in refinement mode",
+          "IGNORE WB-REF-004 [refinement]: refinement rules only in refinement mode",
+          "SELECT anti WB-ANTI-001: anti_rules always selected",
+          "SELECT anti WB-ANTI-002: anti_rules always selected",
+          "SELECT anti WB-ANTI-003: anti_rules always selected",
+          "SELECT anti WB-ANTI-004: anti_rules always selected",
+          "SELECT anti WB-ANTI-005: anti_rules always selected",
+          "SELECT anti WB-ANTI-006: anti_rules always selected",
+          "CONTRAST: yellow product → prefer cool/neutral background separation",
+          "ENVIRONMENT: professional tool → industrial/technical allowed",
+          "buildCommercialDecisionBeta: environment=clean_industrial_technical",
+          "buildCommercialDecisionBeta: contrast=cool_neutral_separation",
+          "heroDominance=product_first",
+          "productAreaTarget=0.55",
+          "maxCharacteristics=4",
+          "badgeLimit=2"
+        ]
+      },
+      "layoutSpecLegacy": {
+        "heroScale": 0.66,
+        "maxIcons": 1
+      },
+      "layoutSpecCommercial": {
+        "heroScale": 0.55,
+        "productAreaPct": 55,
+        "maxIcons": 2,
+        "hierarchy": {
+          "headline": "H1",
+          "hero": "hero",
+          "benefits": "supporting",
+          "cta": "cta",
+          "decorative": "decorative"
+        },
+        "scenePreference": "industrial_technical",
+        "backgroundPalettePreference": "cool_neutral",
+        "typographyStrategy": "one main message, strong result-oriented headline"
+      },
+      "promptLegacyExcerpt": "commercial professional tool product hero, shape standard, complementing colors neutral product tones, single primary object only, no duplicate products, scene mood premium confident, concept commercial studio, environment Студийная съёмка, surface studio_floor, horizon no visible horizon, studio infinity, composition hero right, whitespace 31%, max 2 secondary elements, product hero target area 6",
+      "promptCommercialExcerpt": "commercial professional tool product hero, shape standard, complementing colors neutral product tones, single primary object only, no duplicate products, product-first dominance, single hero product is the visual anchor, scene mood premium confident, concept commercial studio, environment Студийная съёмка, surface studio_floor, horizon no visible horizon, studio infinity, scene preference from lay",
+      "promptAddedLines": [
+        "product-first dominance",
+        "single hero product is the visual anchor",
+        "scene preference from layout: clean industrial technical environment",
+        "product hero target area 55% of frame",
+        "maximum 2 icon elements",
+        "maximum 2 badge elements",
+        "cool neutral background separation from product",
+        "VISUAL HIERARCHY (preserve order):",
+        "1. H1 — headline",
+        "2. hero — product hero",
+        "3. supporting — supporting benefit",
+        "4. cta — CTA badge",
+        "5. decorative — decorative (minimal)",
+        "product-first dominance",
+        "single hero product is the visual anchor",
+        "maximum 4 characteristic lines on card",
+        "typography strategy: one main message",
+        "strong result-oriented headline",
+        "maximum 2 icon elements",
+        "maximum 2 badge elements",
+        "maximum 4 characteristic lines on card",
+        "cool neutral background separation from product"
+      ],
+      "layoutDrivenPromptLines": [
+        "product-first dominance",
+        "scene preference from layout: clean industrial technical environment",
+        "product hero target area 55% of frame",
+        "maximum 2 icon elements",
+        "cool neutral background separation from product",
+        "product-first dominance",
+        "maximum 4 characteristic lines on card",
+        "typography strategy: one main message",
+        "maximum 2 icon elements",
+        "maximum 4 characteristic lines on card",
+        "cool neutral background separation from product"
+      ],
+      "promptCommercialDiagnostics": {
+        "commercialIntentRead": [
+          "heroScale",
+          "productAreaPct",
+          "primaryObject",
+          "hierarchy",
+          "maxIcons",
+          "maxCharacteristics",
+          "typographyStrategy",
+          "scenePreference",
+          "backgroundPalettePreference"
+        ],
+        "commercialIntentIgnored": [],
+        "promptCommercialMappings": [
+          {
+            "layoutField": "heroScale",
+            "section": "composition",
+            "excerpt": "product hero target area 55% of frame"
+          },
+          {
+            "layoutField": "productAreaPct",
+            "section": "composition",
+            "excerpt": "product area 55%"
+          },
+          {
+            "layoutField": "primaryObject",
+            "section": "product_identity",
+            "excerpt": "product-first dominance, single hero product is the visual anchor"
+          },
+          {
+            "layoutField": "hierarchy",
+            "section": "visual_hierarchy",
+            "excerpt": "hierarchy map from LayoutSpec applied in visual_hierarchy section"
+          },
+          {
+            "layoutField": "maxIcons",
+            "section": "composition",
+            "excerpt": "maximum 2 icon elements, maximum 2 badge elements"
+          },
+          {
+            "layoutField": "maxCharacteristics",
+            "section": "typography_safe_zone",
+            "excerpt": "maximum 4 characteristic lines on card"
+          },
+          {
+            "layoutField": "typographyStrategy",
+            "section": "typography_safe_zone",
+            "excerpt": "typography strategy: one main message, strong result-oriented headline"
+          },
+          {
+            "layoutField": "scenePreference",
+            "section": "environment",
+            "excerpt": "scene preference from layout: clean industrial technical environment"
+          },
+          {
+            "layoutField": "backgroundPalettePreference",
+            "section": "background",
+            "excerpt": "cool neutral background separation from product"
+          }
+        ],
+        "promptCommercialVersion": "1.0.0-sprint2"
+      },
+      "imageImpactHypothesis": [
+        {
+          "promptLine": "product-first dominance",
+          "expectedImageEffect": "stronger product dominance vs text"
+        },
+        {
+          "promptLine": "scene preference from layout: clean industrial technical environment",
+          "expectedImageEffect": "environment mood shift"
+        },
+        {
+          "promptLine": "product hero target area 55% of frame",
+          "expectedImageEffect": "smaller/larger product zone in background"
+        },
+        {
+          "promptLine": "maximum 2 icon elements",
+          "expectedImageEffect": "fewer decorative badges in scene"
+        },
+        {
+          "promptLine": "cool neutral background separation from product",
+          "expectedImageEffect": "background color/contrast shift"
+        },
+        {
+          "promptLine": "product-first dominance",
+          "expectedImageEffect": "stronger product dominance vs text"
+        },
+        {
+          "promptLine": "maximum 4 characteristic lines on card",
+          "expectedImageEffect": "hierarchy/read order"
+        },
+        {
+          "promptLine": "typography strategy: one main message",
+          "expectedImageEffect": "headline area treatment"
+        },
+        {
+          "promptLine": "maximum 2 icon elements",
+          "expectedImageEffect": "fewer decorative badges in scene"
+        },
+        {
+          "promptLine": "maximum 4 characteristic lines on card",
+          "expectedImageEffect": "hierarchy/read order"
+        },
+        {
+          "promptLine": "cool neutral background separation from product",
+          "expectedImageEffect": "background color/contrast shift"
+        }
+      ],
+      "validation": {
+        "promptChanged": true,
+        "layoutDrivenLines": 11,
+        "commercialIntentRead": [
+          "heroScale",
+          "productAreaPct",
+          "primaryObject",
+          "hierarchy",
+          "maxIcons",
+          "maxCharacteristics",
+          "typographyStrategy",
+          "scenePreference",
+          "backgroundPalettePreference"
+        ]
+      }
+    },
+    {
+      "productId": "garden-pump",
+      "productTitle": "Насос для сада и огорода",
+      "commercialDecision": {
+        "mainMessage": "Результат с Насос для сада и огорода: выгода для покупателя, не категория товара",
+        "heroDominance": "product_first",
+        "productAreaTarget": 0.55,
+        "maxCharacteristics": 4,
+        "badgeLimit": 2,
+        "environmentDirection": "clean_industrial_technical",
+        "backgroundContrastDirection": "medium_contrast_background",
+        "typographyDirection": "one main message, strong result-oriented headline",
+        "visualHierarchy": [
+          "product",
+          "headline",
+          "characteristics",
+          "logo"
+        ],
+        "antiRules": [
+          "Не перегружать Hero.",
+          "Не делать collage.",
+          "Не использовать фон, конкурирующий с товаром.",
+          "Не делать текст поверх товара.",
+          "Не генерировать сам товар AI, если есть реальный cutout.",
+          "Не использовать один layout для всех категорий."
+        ],
+        "selectedRules": [
+          "WB-HERO-001",
+          "WB-HERO-002",
+          "WB-HERO-003",
+          "WB-HERO-004",
+          "WB-HERO-005",
+          "WB-HERO-006",
+          "WB-HERO-007",
+          "WB-HIER-001",
+          "WB-HIER-002",
+          "WB-HIER-003",
+          "WB-HIER-004",
+          "WB-HIER-005",
+          "WB-TYPE-001",
+          "WB-TYPE-002",
+          "WB-TYPE-003",
+          "WB-TYPE-004",
+          "WB-TYPE-005",
+          "WB-TYPE-006",
+          "WB-PSY-001",
+          "WB-PSY-002",
+          "WB-PSY-003",
+          "WB-PSY-004",
+          "WB-PSY-005",
+          "WB-ENV-001",
+          "WB-ENV-002",
+          "WB-ENV-003",
+          "WB-ENV-004",
+          "WB-ENV-005",
+          "WB-ENV-006",
+          "WB-ENV-007",
+          "WB-DIFF-001",
+          "WB-DIFF-002",
+          "WB-DIFF-003",
+          "WB-DIFF-004",
+          "WB-BRAND-001",
+          "WB-BRAND-002",
+          "WB-BRAND-003",
+          "WB-BRAND-004",
+          "WB-RES-001",
+          "WB-RES-002",
+          "WB-RES-003",
+          "WB-RES-004",
+          "WB-ANTI-001",
+          "WB-ANTI-002",
+          "WB-ANTI-003",
+          "WB-ANTI-004",
+          "WB-ANTI-005",
+          "WB-ANTI-006"
+        ],
+        "decisionTrace": [
+          "resolveCommercialRulesBeta: marketplace=wildberries",
+          "category=garden_tools",
+          "productType=garden_tools",
+          "mode=generation",
+          "SELECT WB-HERO-001 [hero]: hero always high priority for WB",
+          "SELECT WB-HERO-002 [hero]: hero always high priority for WB",
+          "SELECT WB-HERO-003 [hero]: hero always high priority for WB",
+          "SELECT WB-HERO-004 [hero]: hero always high priority for WB",
+          "SELECT WB-HERO-005 [hero]: hero always high priority for WB",
+          "SELECT WB-HERO-006 [hero]: hero always high priority for WB",
+          "SELECT WB-HERO-007 [hero]: hero always high priority for WB",
+          "SELECT WB-HIER-001 [hierarchy]: hierarchy always high priority for WB",
+          "SELECT WB-HIER-002 [hierarchy]: hierarchy always high priority for WB",
+          "SELECT WB-HIER-003 [hierarchy]: hierarchy always high priority for WB",
+          "SELECT WB-HIER-004 [hierarchy]: hierarchy always high priority for WB",
+          "SELECT WB-HIER-005 [hierarchy]: hierarchy always high priority for WB",
+          "SELECT WB-TYPE-001 [typography]: typography always high priority for WB",
+          "SELECT WB-TYPE-002 [typography]: typography always high priority for WB",
+          "SELECT WB-TYPE-003 [typography]: typography always high priority for WB",
+          "SELECT WB-TYPE-004 [typography]: typography always high priority for WB",
+          "SELECT WB-TYPE-005 [typography]: typography always high priority for WB",
+          "SELECT WB-TYPE-006 [typography]: typography always high priority for WB",
+          "SELECT WB-PSY-001 [psychology]: psychology always high priority for WB",
+          "SELECT WB-PSY-002 [psychology]: psychology always high priority for WB",
+          "SELECT WB-PSY-003 [psychology]: psychology always high priority for WB",
+          "SELECT WB-PSY-004 [psychology]: psychology always high priority for WB",
+          "SELECT WB-PSY-005 [psychology]: psychology always high priority for WB",
+          "SELECT WB-ENV-001 [environment]: generic environment rule for WB",
+          "SELECT WB-ENV-002 [environment]: generic environment rule for WB",
+          "SELECT WB-ENV-003 [environment]: generic environment rule for WB",
+          "SELECT WB-ENV-004 [environment]: generic environment rule for WB",
+          "SELECT WB-ENV-005 [environment]: lifestyle/home environment",
+          "SELECT WB-ENV-006 [environment]: professional tool category",
+          "SELECT WB-ENV-007 [environment]: generic environment rule for WB",
+          "SELECT WB-DIFF-001 [differentiation]: differentiation selected for WB beta",
+          "SELECT WB-DIFF-002 [differentiation]: differentiation selected for WB beta",
+          "SELECT WB-DIFF-003 [differentiation]: differentiation selected for WB beta",
+          "SELECT WB-DIFF-004 [differentiation]: differentiation selected for WB beta",
+          "SELECT WB-BRAND-001 [brand]: brand selected for WB beta",
+          "SELECT WB-BRAND-002 [brand]: brand selected for WB beta",
+          "SELECT WB-BRAND-003 [brand]: brand selected for WB beta",
+          "SELECT WB-BRAND-004 [brand]: brand selected for WB beta",
+          "SELECT WB-RES-001 [research]: research selected for WB beta",
+          "SELECT WB-RES-002 [research]: research selected for WB beta",
+          "SELECT WB-RES-003 [research]: research selected for WB beta",
+          "SELECT WB-RES-004 [research]: research selected for WB beta",
+          "IGNORE WB-REF-001 [refinement]: refinement rules only in refinement mode",
+          "IGNORE WB-REF-002 [refinement]: refinement rules only in refinement mode",
+          "IGNORE WB-REF-003 [refinement]: refinement rules only in refinement mode",
+          "IGNORE WB-REF-004 [refinement]: refinement rules only in refinement mode",
+          "SELECT anti WB-ANTI-001: anti_rules always selected",
+          "SELECT anti WB-ANTI-002: anti_rules always selected",
+          "SELECT anti WB-ANTI-003: anti_rules always selected",
+          "SELECT anti WB-ANTI-004: anti_rules always selected",
+          "SELECT anti WB-ANTI-005: anti_rules always selected",
+          "SELECT anti WB-ANTI-006: anti_rules always selected",
+          "ENVIRONMENT: professional tool → industrial/technical allowed",
+          "ENVIRONMENT: garden equipment → outdoor/fresh natural preferred",
+          "ENVIRONMENT: lifestyle/home → light modern clean preferred",
+          "buildCommercialDecisionBeta: environment=clean_industrial_technical",
+          "buildCommercialDecisionBeta: contrast=medium_contrast_background",
+          "heroDominance=product_first",
+          "productAreaTarget=0.55",
+          "maxCharacteristics=4",
+          "badgeLimit=2"
+        ]
+      },
+      "layoutSpecLegacy": {
+        "heroScale": 0.66,
+        "maxIcons": 1
+      },
+      "layoutSpecCommercial": {
+        "heroScale": 0.55,
+        "productAreaPct": 55,
+        "maxIcons": 2,
+        "hierarchy": {
+          "headline": "H1",
+          "hero": "hero",
+          "benefits": "supporting",
+          "cta": "cta",
+          "decorative": "decorative"
+        },
+        "scenePreference": "industrial_technical",
+        "backgroundPalettePreference": "medium_contrast",
+        "typographyStrategy": "one main message, strong result-oriented headline"
+      },
+      "promptLegacyExcerpt": "commercial garden tools product hero, shape standard, complementing colors neutral product tones, single primary object only, no duplicate products, scene mood trustworthy commercial, concept commercial studio, environment Студийная съёмка, surface studio_floor, horizon no visible horizon, studio infinity, composition hero right, whitespace 31%, max 2 secondary elements, product hero target area 6",
+      "promptCommercialExcerpt": "commercial garden tools product hero, shape standard, complementing colors neutral product tones, single primary object only, no duplicate products, product-first dominance, single hero product is the visual anchor, scene mood trustworthy commercial, concept commercial studio, environment Студийная съёмка, surface studio_floor, horizon no visible horizon, studio infinity, scene preference from lay",
+      "promptAddedLines": [
+        "product-first dominance",
+        "single hero product is the visual anchor",
+        "scene preference from layout: clean industrial technical environment",
+        "product hero target area 55% of frame",
+        "maximum 2 icon elements",
+        "maximum 2 badge elements",
+        "medium contrast background separation",
+        "VISUAL HIERARCHY (preserve order):",
+        "1. H1 — headline",
+        "2. hero — product hero",
+        "3. supporting — supporting benefit",
+        "4. cta — CTA badge",
+        "5. decorative — decorative (minimal)",
+        "product-first dominance",
+        "single hero product is the visual anchor",
+        "maximum 4 characteristic lines on card",
+        "typography strategy: one main message",
+        "strong result-oriented headline",
+        "maximum 2 icon elements",
+        "maximum 2 badge elements",
+        "maximum 4 characteristic lines on card",
+        "medium contrast background separation"
+      ],
+      "layoutDrivenPromptLines": [
+        "product-first dominance",
+        "scene preference from layout: clean industrial technical environment",
+        "product hero target area 55% of frame",
+        "maximum 2 icon elements",
+        "medium contrast background separation",
+        "product-first dominance",
+        "maximum 4 characteristic lines on card",
+        "typography strategy: one main message",
+        "maximum 2 icon elements",
+        "maximum 4 characteristic lines on card",
+        "medium contrast background separation"
+      ],
+      "promptCommercialDiagnostics": {
+        "commercialIntentRead": [
+          "heroScale",
+          "productAreaPct",
+          "primaryObject",
+          "hierarchy",
+          "maxIcons",
+          "maxCharacteristics",
+          "typographyStrategy",
+          "scenePreference",
+          "backgroundPalettePreference"
+        ],
+        "commercialIntentIgnored": [],
+        "promptCommercialMappings": [
+          {
+            "layoutField": "heroScale",
+            "section": "composition",
+            "excerpt": "product hero target area 55% of frame"
+          },
+          {
+            "layoutField": "productAreaPct",
+            "section": "composition",
+            "excerpt": "product area 55%"
+          },
+          {
+            "layoutField": "primaryObject",
+            "section": "product_identity",
+            "excerpt": "product-first dominance, single hero product is the visual anchor"
+          },
+          {
+            "layoutField": "hierarchy",
+            "section": "visual_hierarchy",
+            "excerpt": "hierarchy map from LayoutSpec applied in visual_hierarchy section"
+          },
+          {
+            "layoutField": "maxIcons",
+            "section": "composition",
+            "excerpt": "maximum 2 icon elements, maximum 2 badge elements"
+          },
+          {
+            "layoutField": "maxCharacteristics",
+            "section": "typography_safe_zone",
+            "excerpt": "maximum 4 characteristic lines on card"
+          },
+          {
+            "layoutField": "typographyStrategy",
+            "section": "typography_safe_zone",
+            "excerpt": "typography strategy: one main message, strong result-oriented headline"
+          },
+          {
+            "layoutField": "scenePreference",
+            "section": "environment",
+            "excerpt": "scene preference from layout: clean industrial technical environment"
+          },
+          {
+            "layoutField": "backgroundPalettePreference",
+            "section": "background",
+            "excerpt": "medium contrast background separation"
+          }
+        ],
+        "promptCommercialVersion": "1.0.0-sprint2"
+      },
+      "imageImpactHypothesis": [
+        {
+          "promptLine": "product-first dominance",
+          "expectedImageEffect": "stronger product dominance vs text"
+        },
+        {
+          "promptLine": "scene preference from layout: clean industrial technical environment",
+          "expectedImageEffect": "environment mood shift"
+        },
+        {
+          "promptLine": "product hero target area 55% of frame",
+          "expectedImageEffect": "smaller/larger product zone in background"
+        },
+        {
+          "promptLine": "maximum 2 icon elements",
+          "expectedImageEffect": "fewer decorative badges in scene"
+        },
+        {
+          "promptLine": "medium contrast background separation",
+          "expectedImageEffect": "background color/contrast shift"
+        },
+        {
+          "promptLine": "product-first dominance",
+          "expectedImageEffect": "stronger product dominance vs text"
+        },
+        {
+          "promptLine": "maximum 4 characteristic lines on card",
+          "expectedImageEffect": "hierarchy/read order"
+        },
+        {
+          "promptLine": "typography strategy: one main message",
+          "expectedImageEffect": "headline area treatment"
+        },
+        {
+          "promptLine": "maximum 2 icon elements",
+          "expectedImageEffect": "fewer decorative badges in scene"
+        },
+        {
+          "promptLine": "maximum 4 characteristic lines on card",
+          "expectedImageEffect": "hierarchy/read order"
+        },
+        {
+          "promptLine": "medium contrast background separation",
+          "expectedImageEffect": "background color/contrast shift"
+        }
+      ],
+      "validation": {
+        "promptChanged": true,
+        "layoutDrivenLines": 11,
+        "commercialIntentRead": [
+          "heroScale",
+          "productAreaPct",
+          "primaryObject",
+          "hierarchy",
+          "maxIcons",
+          "maxCharacteristics",
+          "typographyStrategy",
+          "scenePreference",
+          "backgroundPalettePreference"
+        ]
+      }
+    },
+    {
+      "productId": "electronics-earbuds",
+      "productTitle": "Беспроводные наушники TWS",
+      "commercialDecision": {
+        "mainMessage": "Результат с Беспроводные наушники TWS: выгода для покупателя, не категория товара",
+        "heroDominance": "product_first",
+        "productAreaTarget": 0.55,
+        "maxCharacteristics": 4,
+        "badgeLimit": 2,
+        "environmentDirection": "clean_commercial_studio",
+        "backgroundContrastDirection": "medium_contrast_background",
+        "typographyDirection": "one main message, strong result-oriented headline",
+        "visualHierarchy": [
+          "product",
+          "headline",
+          "characteristics",
+          "logo"
+        ],
+        "antiRules": [
+          "Не перегружать Hero.",
+          "Не делать collage.",
+          "Не использовать фон, конкурирующий с товаром.",
+          "Не делать текст поверх товара.",
+          "Не генерировать сам товар AI, если есть реальный cutout.",
+          "Не использовать один layout для всех категорий."
+        ],
+        "selectedRules": [
+          "WB-HERO-001",
+          "WB-HERO-002",
+          "WB-HERO-003",
+          "WB-HERO-004",
+          "WB-HERO-005",
+          "WB-HERO-006",
+          "WB-HERO-007",
+          "WB-HIER-001",
+          "WB-HIER-002",
+          "WB-HIER-003",
+          "WB-HIER-004",
+          "WB-HIER-005",
+          "WB-TYPE-001",
+          "WB-TYPE-002",
+          "WB-TYPE-003",
+          "WB-TYPE-004",
+          "WB-TYPE-005",
+          "WB-TYPE-006",
+          "WB-PSY-001",
+          "WB-PSY-002",
+          "WB-PSY-003",
+          "WB-PSY-004",
+          "WB-PSY-005",
+          "WB-ENV-001",
+          "WB-ENV-002",
+          "WB-ENV-003",
+          "WB-ENV-004",
+          "WB-ENV-007",
+          "WB-DIFF-001",
+          "WB-DIFF-002",
+          "WB-DIFF-003",
+          "WB-DIFF-004",
+          "WB-BRAND-001",
+          "WB-BRAND-002",
+          "WB-BRAND-003",
+          "WB-BRAND-004",
+          "WB-RES-001",
+          "WB-RES-002",
+          "WB-RES-003",
+          "WB-RES-004",
+          "WB-ANTI-001",
+          "WB-ANTI-002",
+          "WB-ANTI-003",
+          "WB-ANTI-004",
+          "WB-ANTI-005",
+          "WB-ANTI-006"
+        ],
+        "decisionTrace": [
+          "resolveCommercialRulesBeta: marketplace=wildberries",
+          "category=electronics",
+          "productType=electronics",
+          "mode=generation",
+          "SELECT WB-HERO-001 [hero]: hero always high priority for WB",
+          "SELECT WB-HERO-002 [hero]: hero always high priority for WB",
+          "SELECT WB-HERO-003 [hero]: hero always high priority for WB",
+          "SELECT WB-HERO-004 [hero]: hero always high priority for WB",
+          "SELECT WB-HERO-005 [hero]: hero always high priority for WB",
+          "SELECT WB-HERO-006 [hero]: hero always high priority for WB",
+          "SELECT WB-HERO-007 [hero]: hero always high priority for WB",
+          "SELECT WB-HIER-001 [hierarchy]: hierarchy always high priority for WB",
+          "SELECT WB-HIER-002 [hierarchy]: hierarchy always high priority for WB",
+          "SELECT WB-HIER-003 [hierarchy]: hierarchy always high priority for WB",
+          "SELECT WB-HIER-004 [hierarchy]: hierarchy always high priority for WB",
+          "SELECT WB-HIER-005 [hierarchy]: hierarchy always high priority for WB",
+          "SELECT WB-TYPE-001 [typography]: typography always high priority for WB",
+          "SELECT WB-TYPE-002 [typography]: typography always high priority for WB",
+          "SELECT WB-TYPE-003 [typography]: typography always high priority for WB",
+          "SELECT WB-TYPE-004 [typography]: typography always high priority for WB",
+          "SELECT WB-TYPE-005 [typography]: typography always high priority for WB",
+          "SELECT WB-TYPE-006 [typography]: typography always high priority for WB",
+          "SELECT WB-PSY-001 [psychology]: psychology always high priority for WB",
+          "SELECT WB-PSY-002 [psychology]: psychology always high priority for WB",
+          "SELECT WB-PSY-003 [psychology]: psychology always high priority for WB",
+          "SELECT WB-PSY-004 [psychology]: psychology always high priority for WB",
+          "SELECT WB-PSY-005 [psychology]: psychology always high priority for WB",
+          "SELECT WB-ENV-001 [environment]: generic environment rule for WB",
+          "SELECT WB-ENV-002 [environment]: generic environment rule for WB",
+          "SELECT WB-ENV-003 [environment]: generic environment rule for WB",
+          "SELECT WB-ENV-004 [environment]: generic environment rule for WB",
+          "IGNORE WB-ENV-005 [environment]: category match",
+          "IGNORE WB-ENV-006 [environment]: category match",
+          "SELECT WB-ENV-007 [environment]: generic environment rule for WB",
+          "SELECT WB-DIFF-001 [differentiation]: differentiation selected for WB beta",
+          "SELECT WB-DIFF-002 [differentiation]: differentiation selected for WB beta",
+          "SELECT WB-DIFF-003 [differentiation]: differentiation selected for WB beta",
+          "SELECT WB-DIFF-004 [differentiation]: differentiation selected for WB beta",
+          "SELECT WB-BRAND-001 [brand]: brand selected for WB beta",
+          "SELECT WB-BRAND-002 [brand]: brand selected for WB beta",
+          "SELECT WB-BRAND-003 [brand]: brand selected for WB beta",
+          "SELECT WB-BRAND-004 [brand]: brand selected for WB beta",
+          "SELECT WB-RES-001 [research]: research selected for WB beta",
+          "SELECT WB-RES-002 [research]: research selected for WB beta",
+          "SELECT WB-RES-003 [research]: research selected for WB beta",
+          "SELECT WB-RES-004 [research]: research selected for WB beta",
+          "IGNORE WB-REF-001 [refinement]: refinement rules only in refinement mode",
+          "IGNORE WB-REF-002 [refinement]: refinement rules only in refinement mode",
+          "IGNORE WB-REF-003 [refinement]: refinement rules only in refinement mode",
+          "IGNORE WB-REF-004 [refinement]: refinement rules only in refinement mode",
+          "SELECT anti WB-ANTI-001: anti_rules always selected",
+          "SELECT anti WB-ANTI-002: anti_rules always selected",
+          "SELECT anti WB-ANTI-003: anti_rules always selected",
+          "SELECT anti WB-ANTI-004: anti_rules always selected",
+          "SELECT anti WB-ANTI-005: anti_rules always selected",
+          "SELECT anti WB-ANTI-006: anti_rules always selected",
+          "buildCommercialDecisionBeta: environment=clean_commercial_studio",
+          "buildCommercialDecisionBeta: contrast=medium_contrast_background",
+          "heroDominance=product_first",
+          "productAreaTarget=0.55",
+          "maxCharacteristics=4",
+          "badgeLimit=2"
+        ]
+      },
+      "layoutSpecLegacy": {
+        "heroScale": 0.66,
+        "maxIcons": 1
+      },
+      "layoutSpecCommercial": {
+        "heroScale": 0.55,
+        "productAreaPct": 55,
+        "maxIcons": 2,
+        "hierarchy": {
+          "headline": "H1",
+          "hero": "hero",
+          "benefits": "supporting",
+          "cta": "cta",
+          "decorative": "decorative"
+        },
+        "scenePreference": "commercial_studio",
+        "backgroundPalettePreference": "medium_contrast",
+        "typographyStrategy": "one main message, strong result-oriented headline"
+      },
+      "promptLegacyExcerpt": "commercial electronics product hero, shape standard, complementing colors neutral product tones, single primary object only, no duplicate products, scene mood sleek futuristic, concept tech showcase, environment Техно-витрина, surface gloss, horizon no visible horizon, studio infinity, composition hero right, whitespace 31%, max 2 secondary elements, product hero target area 66% of frame, maximum ",
+      "promptCommercialExcerpt": "commercial electronics product hero, shape standard, complementing colors neutral product tones, single primary object only, no duplicate products, product-first dominance, single hero product is the visual anchor, scene mood sleek futuristic, concept tech showcase, environment Техно-витрина, surface gloss, horizon no visible horizon, studio infinity, scene preference from layout: clean commercial",
+      "promptAddedLines": [
+        "product-first dominance",
+        "single hero product is the visual anchor",
+        "scene preference from layout: clean commercial studio environment",
+        "product hero target area 55% of frame",
+        "maximum 2 icon elements",
+        "maximum 2 badge elements",
+        "medium contrast background separation",
+        "VISUAL HIERARCHY (preserve order):",
+        "1. H1 — headline",
+        "2. hero — product hero",
+        "3. supporting — supporting benefit",
+        "4. cta — CTA badge",
+        "5. decorative — decorative (minimal)",
+        "product-first dominance",
+        "single hero product is the visual anchor",
+        "maximum 4 characteristic lines on card",
+        "typography strategy: one main message",
+        "strong result-oriented headline",
+        "maximum 2 icon elements",
+        "maximum 2 badge elements",
+        "maximum 4 characteristic lines on card",
+        "medium contrast background separation"
+      ],
+      "layoutDrivenPromptLines": [
+        "product-first dominance",
+        "scene preference from layout: clean commercial studio environment",
+        "product hero target area 55% of frame",
+        "maximum 2 icon elements",
+        "medium contrast background separation",
+        "product-first dominance",
+        "maximum 4 characteristic lines on card",
+        "typography strategy: one main message",
+        "maximum 2 icon elements",
+        "maximum 4 characteristic lines on card",
+        "medium contrast background separation"
+      ],
+      "promptCommercialDiagnostics": {
+        "commercialIntentRead": [
+          "heroScale",
+          "productAreaPct",
+          "primaryObject",
+          "hierarchy",
+          "maxIcons",
+          "maxCharacteristics",
+          "typographyStrategy",
+          "scenePreference",
+          "backgroundPalettePreference"
+        ],
+        "commercialIntentIgnored": [],
+        "promptCommercialMappings": [
+          {
+            "layoutField": "heroScale",
+            "section": "composition",
+            "excerpt": "product hero target area 55% of frame"
+          },
+          {
+            "layoutField": "productAreaPct",
+            "section": "composition",
+            "excerpt": "product area 55%"
+          },
+          {
+            "layoutField": "primaryObject",
+            "section": "product_identity",
+            "excerpt": "product-first dominance, single hero product is the visual anchor"
+          },
+          {
+            "layoutField": "hierarchy",
+            "section": "visual_hierarchy",
+            "excerpt": "hierarchy map from LayoutSpec applied in visual_hierarchy section"
+          },
+          {
+            "layoutField": "maxIcons",
+            "section": "composition",
+            "excerpt": "maximum 2 icon elements, maximum 2 badge elements"
+          },
+          {
+            "layoutField": "maxCharacteristics",
+            "section": "typography_safe_zone",
+            "excerpt": "maximum 4 characteristic lines on card"
+          },
+          {
+            "layoutField": "typographyStrategy",
+            "section": "typography_safe_zone",
+            "excerpt": "typography strategy: one main message, strong result-oriented headline"
+          },
+          {
+            "layoutField": "scenePreference",
+            "section": "environment",
+            "excerpt": "scene preference from layout: clean commercial studio environment"
+          },
+          {
+            "layoutField": "backgroundPalettePreference",
+            "section": "background",
+            "excerpt": "medium contrast background separation"
+          }
+        ],
+        "promptCommercialVersion": "1.0.0-sprint2"
+      },
+      "imageImpactHypothesis": [
+        {
+          "promptLine": "product-first dominance",
+          "expectedImageEffect": "stronger product dominance vs text"
+        },
+        {
+          "promptLine": "scene preference from layout: clean commercial studio environment",
+          "expectedImageEffect": "hierarchy/read order"
+        },
+        {
+          "promptLine": "product hero target area 55% of frame",
+          "expectedImageEffect": "smaller/larger product zone in background"
+        },
+        {
+          "promptLine": "maximum 2 icon elements",
+          "expectedImageEffect": "fewer decorative badges in scene"
+        },
+        {
+          "promptLine": "medium contrast background separation",
+          "expectedImageEffect": "background color/contrast shift"
+        },
+        {
+          "promptLine": "product-first dominance",
+          "expectedImageEffect": "stronger product dominance vs text"
+        },
+        {
+          "promptLine": "maximum 4 characteristic lines on card",
+          "expectedImageEffect": "hierarchy/read order"
+        },
+        {
+          "promptLine": "typography strategy: one main message",
+          "expectedImageEffect": "headline area treatment"
+        },
+        {
+          "promptLine": "maximum 2 icon elements",
+          "expectedImageEffect": "fewer decorative badges in scene"
+        },
+        {
+          "promptLine": "maximum 4 characteristic lines on card",
+          "expectedImageEffect": "hierarchy/read order"
+        },
+        {
+          "promptLine": "medium contrast background separation",
+          "expectedImageEffect": "background color/contrast shift"
+        }
+      ],
+      "validation": {
+        "promptChanged": true,
+        "layoutDrivenLines": 11,
+        "commercialIntentRead": [
+          "heroScale",
+          "productAreaPct",
+          "primaryObject",
+          "hierarchy",
+          "maxIcons",
+          "maxCharacteristics",
+          "typographyStrategy",
+          "scenePreference",
+          "backgroundPalettePreference"
+        ]
+      }
+    }
+  ]
+}

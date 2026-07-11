@@ -1,0 +1,41 @@
+{
+  "productId": "pressure-washer",
+  "label": "Pressure Washer",
+  "durationMs": 6696,
+  "finalPath": "/workspace/marketplace-infographic/public/generated/cmrfxsxrr0000jspcur6g96le-1783748697465.png",
+  "compositedPath": "/workspace/marketplace-infographic/public/merged/960a5f64c6f93510-1783748695249.png",
+  "composited": true,
+  "foregroundIsolationApplied": true,
+  "foregroundIsolationDiagnostics": {
+    "applied": true,
+    "backgroundHalo": true,
+    "localContrast": true,
+    "edgeSeparation": true,
+    "version": "1.1.0-quality-cycle-3"
+  },
+  "metrics": {
+    "productAreaPct": 31,
+    "foregroundIsolation": 37.9,
+    "objectSharpness": 22,
+    "objectContrast": 54.6,
+    "localContrast": 21.9,
+    "visualWeightHero": 6.1,
+    "productDominanceScore": 35,
+    "commercialFidelityScore": 21.5
+  },
+  "metricsComposited": {
+    "productAreaPct": 31,
+    "foregroundIsolation": 84.2,
+    "objectSharpness": 22.1,
+    "objectContrast": 54.8,
+    "localContrast": 22,
+    "visualWeightHero": 6.4,
+    "productDominanceScore": 77,
+    "commercialFidelityScore": 44.5
+  },
+  "handlerFlags": [
+    null,
+    null
+  ],
+  "qualityScore": 85
+}

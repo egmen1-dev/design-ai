@@ -4,6 +4,11 @@ import { getProfile } from "./profiles";
 import type { RenderingProfileId } from "./types";
 import { MATERIAL_PROFILES } from "@/lib/design/scene-blueprint/materials";
 import { hierarchyPromptBlock } from "@/lib/design/composition-director";
+import {
+  appendClauses,
+  materializeCommercialLayoutIntent,
+  type CommercialLayoutMaterialized,
+} from "./commercial-layout-materializer";
 
 function section(
   id: PromptSectionId,
@@ -15,13 +20,20 @@ function section(
   return { id, module, content, reason, rulesApplied: rules };
 }
 
-export function compileProductIdentity(input: PromptCompilerInput): CompiledSection {
+export function compileProductIdentity(
+  input: PromptCompilerInput,
+  commercial?: CommercialLayoutMaterialized,
+): CompiledSection {
   const category = input.analysis.category.replace(/_/g, " ");
   const colors = input.productColors?.slice(0, 2).join(" and ") ?? "neutral product tones";
+  const content = appendClauses(
+    `commercial ${category} product hero, shape ${input.productShape ?? "standard"}, complementing colors ${colors}, single primary object only, no duplicate products`,
+    commercial?.productIdentityClauses ?? [],
+  );
   return section(
     "product_identity",
     "product-analyzer",
-    `commercial ${category} product hero, shape ${input.productShape ?? "standard"}, complementing colors ${colors}, single primary object only, no duplicate products`,
+    content,
     "Defines the one hero object SD must leave empty for compositing",
     ["1 hero object", "max 3 secondary elements"],
   );
@@ -44,7 +56,10 @@ export function compileSceneSection(
   );
 }
 
-export function compileEnvironmentSection(input: PromptCompilerInput): CompiledSection {
+export function compileEnvironmentSection(
+  input: PromptCompilerInput,
+  commercial?: CommercialLayoutMaterialized,
+): CompiledSection {
   const bp = input.sceneBlueprint;
   const env = bp
     ? `environment ${bp.scene.environment}, floor ${bp.scene.floor}, background ${bp.scene.background}`
@@ -52,23 +67,26 @@ export function compileEnvironmentSection(input: PromptCompilerInput): CompiledS
   return section(
     "environment",
     "scene-blueprint",
-    env,
+    appendClauses(env, commercial?.environmentClauses ?? []),
     "Environment from blueprint, not invented prose",
     ["minimal decorative objects"],
   );
 }
 
-export function compileCompositionSection(input: PromptCompilerInput): CompiledSection {
+export function compileCompositionSection(
+  input: PromptCompilerInput,
+  commercial?: CommercialLayoutMaterialized,
+): CompiledSection {
   const spec = input.layoutSpec;
   const geo = spec?.geometry;
   const ws = spec?.whitespaceTarget ?? 28;
-  const content = geo
+  const base = geo
     ? `composition template ${spec?.compositionTemplateId ?? "hero_right"}, hero zone x=${geo.hero.x.toFixed(2)} y=${geo.hero.y.toFixed(2)} w=${geo.hero.width.toFixed(2)} h=${geo.hero.height.toFixed(2)}, whitespace target ${ws}%, eye flow hero then headline then benefits then cta`
     : `composition hero ${spec?.heroPosition ?? "right"}, whitespace ${ws}%, max ${spec?.maxSecondaryObjects ?? 2} secondary elements`;
   return section(
     "composition",
     "composition-director",
-    content,
+    appendClauses(base, commercial?.compositionClauses ?? []),
     "Deterministic geometry from Composition Director LayoutSpec",
     ["whitespace 20-35%", "no floating products"],
   );
@@ -125,40 +143,50 @@ export function compileCameraSection(
   );
 }
 
-export function compileBackgroundSection(input: PromptCompilerInput): CompiledSection {
+export function compileBackgroundSection(
+  input: PromptCompilerInput,
+  commercial?: CommercialLayoutMaterialized,
+): CompiledSection {
   const zones = input.scenePlan.textSafeZones
     .map((z) => `${z.purpose} zone ${z.left}% ${z.top}% ${z.width}x${z.height}% empty`)
     .join("; ");
   const pz = input.scenePlan.productSafeZone;
   const cx = Math.round((pz.centerX[0] + pz.centerX[1]) / 2);
   const cy = Math.round((pz.centerY[0] + pz.centerY[1]) / 2);
+  const base = `background for compositing, product placement zone ${cx}% ${cy}% empty, text safe zones: ${zones}, no objects in product zone, atmospheric depth foreground midground background`;
   return section(
     "background",
     "scene-planner",
-    `background for compositing, product placement zone ${cx}% ${cy}% empty, text safe zones: ${zones}, no objects in product zone, atmospheric depth foreground midground background`,
+    appendClauses(base, commercial?.backgroundClauses ?? []),
     "Reserves zones for product and typography overlay",
     ["no text in background", "no product in scene"],
   );
 }
 
-export function compileVisualHierarchySection(input: PromptCompilerInput): CompiledSection {
+export function compileVisualHierarchySection(
+  input: PromptCompilerInput,
+  commercial?: CommercialLayoutMaterialized,
+): CompiledSection {
   const hierarchy = input.layoutSpec?.hierarchy;
-  const content = hierarchy
+  const base = hierarchy
     ? hierarchyPromptBlock(hierarchy).replace(/\n/g, ", ")
     : "visual hierarchy: hero dominant, headline H1, one benefit, optional CTA badge, decorative minimal";
   return section(
     "visual_hierarchy",
     "composition-director",
-    content,
+    appendClauses(base, commercial?.hierarchyClauses ?? []),
     "Preserves designed reading and attention order",
     DESIGN_CONSTITUTION_RULES.slice(0, 4),
   );
 }
 
-export function compileTypographySafeZone(input: PromptCompilerInput): CompiledSection {
+export function compileTypographySafeZone(
+  input: PromptCompilerInput,
+  commercial?: CommercialLayoutMaterialized,
+): CompiledSection {
   const headline = input.layoutSpec?.geometry?.headline;
   const zones = input.scenePlan.textSafeZones.filter((z) => z.purpose === "headline");
-  const content = headline
+  const base = headline
     ? `typography safe zone headline x=${headline.x.toFixed(2)} y=${headline.y.toFixed(2)} w=${headline.width.toFixed(2)}, keep clear for overlay, max 2 lines, high contrast`
     : zones.length
       ? `headline safe zone ${zones[0].left}% ${zones[0].top}% keep empty for text overlay`
@@ -166,7 +194,7 @@ export function compileTypographySafeZone(input: PromptCompilerInput): CompiledS
   return section(
     "typography_safe_zone",
     "layout-spec",
-    content,
+    appendClauses(base, commercial?.typographyClauses ?? []),
     "Protects headline readability in final composite",
     ["no text artifacts in background"],
   );
@@ -183,12 +211,16 @@ export function compileRenderingQuality(profileId: RenderingProfileId): Compiled
   );
 }
 
-export function compileMarketplaceConstraints(input: PromptCompilerInput): CompiledSection {
+export function compileMarketplaceConstraints(
+  input: PromptCompilerInput,
+  commercial?: CommercialLayoutMaterialized,
+): CompiledSection {
   const palette = input.layoutSpec?.palette?.slice(0, 4).join(", ") ?? "brand palette";
+  const base = `Wildberries marketplace cover 900x1200, ${palette}, trustworthy commercial look, designed whitespace not empty accident, ${input.marketSnippet ? `market: ${input.marketSnippet.slice(0, 80)}` : "marketplace CTR optimized"}`;
   return section(
     "marketplace_constraints",
     "market-intelligence",
-    `Wildberries marketplace cover 900x1200, ${palette}, trustworthy commercial look, designed whitespace not empty accident, ${input.marketSnippet ? `market: ${input.marketSnippet.slice(0, 80)}` : "marketplace CTR optimized"}`,
+    appendClauses(base, commercial?.marketplaceClauses ?? []),
     "Marketplace-specific rendering constraints",
     ["marketplace compatibility"],
   );
@@ -197,21 +229,23 @@ export function compileMarketplaceConstraints(input: PromptCompilerInput): Compi
 export function compileAllSections(
   input: PromptCompilerInput,
   profileId: RenderingProfileId,
-): CompiledSection[] {
-  return [
-    compileProductIdentity(input),
+): { sections: CompiledSection[]; promptCommercial: import("./commercial-layout-materializer").PromptCommercialDiagnostics } {
+  const commercial = materializeCommercialLayoutIntent(input.layoutSpec);
+  const sections = [
+    compileProductIdentity(input, commercial),
     compileSceneSection(input, profileId),
-    compileEnvironmentSection(input),
-    compileCompositionSection(input),
+    compileEnvironmentSection(input, commercial),
+    compileCompositionSection(input, commercial),
     compileLightingSection(input, profileId),
     compileMaterialsSection(input),
     compileCameraSection(input, profileId),
-    compileBackgroundSection(input),
-    compileVisualHierarchySection(input),
-    compileTypographySafeZone(input),
+    compileBackgroundSection(input, commercial),
+    compileVisualHierarchySection(input, commercial),
+    compileTypographySafeZone(input, commercial),
     compileRenderingQuality(profileId),
-    compileMarketplaceConstraints(input),
+    compileMarketplaceConstraints(input, commercial),
   ];
+  return { sections, promptCommercial: commercial.diagnostics };
 }
 
 export function joinSections(sections: CompiledSection[]): string {

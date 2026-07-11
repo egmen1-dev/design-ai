@@ -1,0 +1,855 @@
+{
+          "sprint": "DAOS Product Sprint 8A — Template Geometry Investigation",
+          "timestamp": "2026-07-09T16:31:25.443Z",
+          "readOnly": true,
+          "codeMutations": false,
+          "commercialTargetPct": 55,
+          "compositorPolicyMaxPct": 39.4,
+          "pipelineMap": [
+                    {
+                              "stage": "LAYOUT_TEMPLATES",
+                              "module": "layout-engine/templates.ts",
+                              "affectsCompositorArea": false
+                    },
+                    {
+                              "stage": "buildLayoutFromTemplate",
+                              "module": "layout-engine/builder.ts",
+                              "affectsCompositorArea": true
+                    },
+                    {
+                              "stage": "computeProfessionalLayout",
+                              "module": "layout-engine/index.ts",
+                              "affectsCompositorArea": true
+                    },
+                    {
+                              "stage": "CompositionLayout.product.maxWidth/HeightPct",
+                              "module": "composition/types.ts",
+                              "affectsCompositorArea": true
+                    },
+                    {
+                              "stage": "computeMaxProductSize",
+                              "module": "commercial-calibration.ts",
+                              "affectsCompositorArea": true
+                    },
+                    {
+                              "stage": "LayoutSpec.geometry.hero",
+                              "module": "composition-director/geometry.ts",
+                              "affectsCompositorArea": false
+                    },
+                    {
+                              "stage": "HTML overlay",
+                              "module": "infographic-template / puppeteer",
+                              "affectsCompositorArea": false
+                    }
+          ],
+          "geometryOwnership": {
+                    "heroZoneCompositor": "layout-engine/builder.ts → product.maxWidthPct × maxHeightPct",
+                    "heroZoneFidelity": "LayoutSpec.geometry.hero (composition-director) — separate path",
+                    "productZone": "layout-engine/builder.ts from template.productScale",
+                    "margins": "safeInsetPct=6 in builder; PRODUCT_SIDE_MARGIN in compositor policy",
+                    "typographyReserve": "headline/subtitle zones — metrics only for compositor",
+                    "badgeReserve": "leftPanel/rightSidebar — metrics only for compositor",
+                    "productAreaPctBeforeCompositor": "layout.metrics.productAreaPct = zoneAreaPct(width,height)"
+          },
+          "templateSurvey": [
+                    {
+                              "templateId": "hero_left",
+                              "productScale": 0.66,
+                              "headlineWidthPct": 42,
+                              "headlineTopPct": 6,
+                              "heroZonePct": 42.1,
+                              "productZoneW": 60.720000000000006,
+                              "productZoneH": 69.3,
+                              "typographyReservePct": 4.9,
+                              "badgeReservePct": 1.6,
+                              "freeCanvasPct": 56.4,
+                              "safeMarginPct": 6,
+                              "layoutMetricsProductAreaPct": 42.1,
+                              "compositorAllowedAtObjectScale1": 29.5,
+                              "gapToPolicyMax": 9.9
+                    },
+                    {
+                              "templateId": "hero_right",
+                              "productScale": 0.65,
+                              "headlineWidthPct": 40,
+                              "headlineTopPct": 6,
+                              "heroZonePct": 40.8,
+                              "productZoneW": 59.800000000000004,
+                              "productZoneH": 68.25,
+                              "typographyReservePct": 4.7,
+                              "badgeReservePct": 1,
+                              "freeCanvasPct": 58.5,
+                              "safeMarginPct": 6,
+                              "layoutMetricsProductAreaPct": 40.8,
+                              "compositorAllowedAtObjectScale1": 29.5,
+                              "gapToPolicyMax": 9.9
+                    },
+                    {
+                              "templateId": "premium",
+                              "productScale": 0.64,
+                              "headlineWidthPct": 38,
+                              "headlineTopPct": 7,
+                              "heroZonePct": 39.6,
+                              "productZoneW": 58.88,
+                              "productZoneH": 67.2,
+                              "typographyReservePct": 4.4,
+                              "badgeReservePct": 1.6,
+                              "freeCanvasPct": 59.4,
+                              "safeMarginPct": 6,
+                              "layoutMetricsProductAreaPct": 39.6,
+                              "compositorAllowedAtObjectScale1": 29.5,
+                              "gapToPolicyMax": 9.9
+                    },
+                    {
+                              "templateId": "magazine",
+                              "productScale": 0.62,
+                              "headlineWidthPct": 44,
+                              "headlineTopPct": 5,
+                              "heroZonePct": 37.8,
+                              "productZoneW": 58,
+                              "productZoneH": 65.10000000000001,
+                              "typographyReservePct": 5.1,
+                              "badgeReservePct": 0,
+                              "freeCanvasPct": 57.1,
+                              "safeMarginPct": 6,
+                              "layoutMetricsProductAreaPct": 37.8,
+                              "compositorAllowedAtObjectScale1": 30,
+                              "gapToPolicyMax": 9.4
+                    },
+                    {
+                              "templateId": "minimal",
+                              "productScale": 0.68,
+                              "headlineWidthPct": 36,
+                              "headlineTopPct": 8,
+                              "heroZonePct": 44.7,
+                              "productZoneW": 62.56,
+                              "productZoneH": 71.4,
+                              "typographyReservePct": 4.2,
+                              "badgeReservePct": 1.6,
+                              "freeCanvasPct": 59.5,
+                              "safeMarginPct": 6,
+                              "layoutMetricsProductAreaPct": 44.7,
+                              "compositorAllowedAtObjectScale1": 29.5,
+                              "gapToPolicyMax": 9.9
+                    },
+                    {
+                              "templateId": "poster",
+                              "productScale": 0.7,
+                              "headlineWidthPct": 70,
+                              "headlineTopPct": 5,
+                              "heroZonePct": 47.3,
+                              "productZoneW": 64.4,
+                              "productZoneH": 73.5,
+                              "typographyReservePct": 8.8,
+                              "badgeReservePct": 0,
+                              "freeCanvasPct": 48.9,
+                              "safeMarginPct": 6,
+                              "layoutMetricsProductAreaPct": 47.3,
+                              "compositorAllowedAtObjectScale1": 29.5,
+                              "gapToPolicyMax": 9.9
+                    },
+                    {
+                              "templateId": "lifestyle",
+                              "productScale": 0.63,
+                              "headlineWidthPct": 40,
+                              "headlineTopPct": 6,
+                              "heroZonePct": 38.4,
+                              "productZoneW": 58,
+                              "productZoneH": 66.15,
+                              "typographyReservePct": 4.7,
+                              "badgeReservePct": 1.6,
+                              "freeCanvasPct": 55.3,
+                              "safeMarginPct": 6,
+                              "layoutMetricsProductAreaPct": 38.4,
+                              "compositorAllowedAtObjectScale1": 29.5,
+                              "gapToPolicyMax": 9.9
+                    },
+                    {
+                              "templateId": "studio",
+                              "productScale": 0.65,
+                              "headlineWidthPct": 38,
+                              "headlineTopPct": 7,
+                              "heroZonePct": 40.8,
+                              "productZoneW": 59.800000000000004,
+                              "productZoneH": 68.25,
+                              "typographyReservePct": 4.4,
+                              "badgeReservePct": 1.6,
+                              "freeCanvasPct": 63.1,
+                              "safeMarginPct": 6,
+                              "layoutMetricsProductAreaPct": 40.8,
+                              "compositorAllowedAtObjectScale1": 29.5,
+                              "gapToPolicyMax": 9.9
+                    },
+                    {
+                              "templateId": "technical",
+                              "productScale": 0.64,
+                              "headlineWidthPct": 42,
+                              "headlineTopPct": 5.5,
+                              "heroZonePct": 39.6,
+                              "productZoneW": 58.88,
+                              "productZoneH": 67.2,
+                              "typographyReservePct": 4.9,
+                              "badgeReservePct": 1.6,
+                              "freeCanvasPct": 58.9,
+                              "safeMarginPct": 6,
+                              "layoutMetricsProductAreaPct": 39.6,
+                              "compositorAllowedAtObjectScale1": 29.5,
+                              "gapToPolicyMax": 9.9
+                    },
+                    {
+                              "templateId": "luxury",
+                              "productScale": 0.63,
+                              "headlineWidthPct": 35,
+                              "headlineTopPct": 8,
+                              "heroZonePct": 38.4,
+                              "productZoneW": 58,
+                              "productZoneH": 66.15,
+                              "typographyReservePct": 4.1,
+                              "badgeReservePct": 1,
+                              "freeCanvasPct": 66.5,
+                              "safeMarginPct": 6,
+                              "layoutMetricsProductAreaPct": 38.4,
+                              "compositorAllowedAtObjectScale1": 29.5,
+                              "gapToPolicyMax": 9.9
+                    },
+                    {
+                              "templateId": "diagonal",
+                              "productScale": 0.66,
+                              "headlineWidthPct": 38,
+                              "headlineTopPct": 5,
+                              "heroZonePct": 42.1,
+                              "productZoneW": 60.720000000000006,
+                              "productZoneH": 69.3,
+                              "typographyReservePct": 4.4,
+                              "badgeReservePct": 1.6,
+                              "freeCanvasPct": 51.9,
+                              "safeMarginPct": 6,
+                              "layoutMetricsProductAreaPct": 42.1,
+                              "compositorAllowedAtObjectScale1": 29.5,
+                              "gapToPolicyMax": 9.9
+                    },
+                    {
+                              "templateId": "floating",
+                              "productScale": 0.67,
+                              "headlineWidthPct": 40,
+                              "headlineTopPct": 6,
+                              "heroZonePct": 43.4,
+                              "productZoneW": 61.64,
+                              "productZoneH": 70.35000000000001,
+                              "typographyReservePct": 4.7,
+                              "badgeReservePct": 0,
+                              "freeCanvasPct": 62,
+                              "safeMarginPct": 6,
+                              "layoutMetricsProductAreaPct": 43.4,
+                              "compositorAllowedAtObjectScale1": 29.5,
+                              "gapToPolicyMax": 9.9
+                    },
+                    {
+                              "templateId": "split",
+                              "productScale": 0.62,
+                              "headlineWidthPct": 36,
+                              "headlineTopPct": 6,
+                              "heroZonePct": 37.8,
+                              "productZoneW": 58,
+                              "productZoneH": 65.10000000000001,
+                              "typographyReservePct": 4.2,
+                              "badgeReservePct": 1.6,
+                              "freeCanvasPct": 56.4,
+                              "safeMarginPct": 6,
+                              "layoutMetricsProductAreaPct": 37.8,
+                              "compositorAllowedAtObjectScale1": 30,
+                              "gapToPolicyMax": 9.4
+                    },
+                    {
+                              "templateId": "focus",
+                              "productScale": 0.69,
+                              "headlineWidthPct": 72,
+                              "headlineTopPct": 4.5,
+                              "heroZonePct": 46,
+                              "productZoneW": 63.480000000000004,
+                              "productZoneH": 72.45,
+                              "typographyReservePct": 9.3,
+                              "badgeReservePct": 0,
+                              "freeCanvasPct": 49.8,
+                              "safeMarginPct": 6,
+                              "layoutMetricsProductAreaPct": 46,
+                              "compositorAllowedAtObjectScale1": 29.5,
+                              "gapToPolicyMax": 9.9
+                    },
+                    {
+                              "templateId": "grid",
+                              "productScale": 0.64,
+                              "headlineWidthPct": 41,
+                              "headlineTopPct": 6,
+                              "heroZonePct": 39.6,
+                              "productZoneW": 58.88,
+                              "productZoneH": 67.2,
+                              "typographyReservePct": 4.8,
+                              "badgeReservePct": 1.6,
+                              "freeCanvasPct": 59,
+                              "safeMarginPct": 6,
+                              "layoutMetricsProductAreaPct": 39.6,
+                              "compositorAllowedAtObjectScale1": 29.5,
+                              "gapToPolicyMax": 9.9
+                    },
+                    {
+                              "templateId": "asymmetric",
+                              "productScale": 0.65,
+                              "headlineWidthPct": 37,
+                              "headlineTopPct": 5.5,
+                              "heroZonePct": 40.8,
+                              "productZoneW": 59.800000000000004,
+                              "productZoneH": 68.25,
+                              "typographyReservePct": 4.3,
+                              "badgeReservePct": 1,
+                              "freeCanvasPct": 58.8,
+                              "safeMarginPct": 6,
+                              "layoutMetricsProductAreaPct": 40.8,
+                              "compositorAllowedAtObjectScale1": 29.5,
+                              "gapToPolicyMax": 9.9
+                    },
+                    {
+                              "templateId": "editorial",
+                              "productScale": 0.61,
+                              "headlineWidthPct": 34,
+                              "headlineTopPct": 7,
+                              "heroZonePct": 37.1,
+                              "productZoneW": 58,
+                              "productZoneH": 64.05,
+                              "typographyReservePct": 4,
+                              "badgeReservePct": 1,
+                              "freeCanvasPct": 62.9,
+                              "safeMarginPct": 6,
+                              "layoutMetricsProductAreaPct": 37.1,
+                              "compositorAllowedAtObjectScale1": 30.4,
+                              "gapToPolicyMax": 9
+                    },
+                    {
+                              "templateId": "modern",
+                              "productScale": 0.66,
+                              "headlineWidthPct": 43,
+                              "headlineTopPct": 6.5,
+                              "heroZonePct": 42.1,
+                              "productZoneW": 60.720000000000006,
+                              "productZoneH": 69.3,
+                              "typographyReservePct": 5,
+                              "badgeReservePct": 1.6,
+                              "freeCanvasPct": 56.3,
+                              "safeMarginPct": 6,
+                              "layoutMetricsProductAreaPct": 42.1,
+                              "compositorAllowedAtObjectScale1": 29.5,
+                              "gapToPolicyMax": 9.9
+                    },
+                    {
+                              "templateId": "glass",
+                              "productScale": 0.64,
+                              "headlineWidthPct": 40,
+                              "headlineTopPct": 6,
+                              "heroZonePct": 39.6,
+                              "productZoneW": 58.88,
+                              "productZoneH": 67.2,
+                              "typographyReservePct": 4.7,
+                              "badgeReservePct": 1.6,
+                              "freeCanvasPct": 59.1,
+                              "safeMarginPct": 6,
+                              "layoutMetricsProductAreaPct": 39.6,
+                              "compositorAllowedAtObjectScale1": 29.5,
+                              "gapToPolicyMax": 9.9
+                    },
+                    {
+                              "templateId": "commercial",
+                              "productScale": 0.67,
+                              "headlineWidthPct": 44,
+                              "headlineTopPct": 5.5,
+                              "heroZonePct": 43.4,
+                              "productZoneW": 61.64,
+                              "productZoneH": 70.35000000000001,
+                              "typographyReservePct": 5.1,
+                              "badgeReservePct": 1.6,
+                              "freeCanvasPct": 54.9,
+                              "safeMarginPct": 6,
+                              "layoutMetricsProductAreaPct": 43.4,
+                              "compositorAllowedAtObjectScale1": 29.5,
+                              "gapToPolicyMax": 9.9
+                    }
+          ],
+          "templateRange": {
+                    "best": {
+                              "templateId": "editorial",
+                              "productScale": 0.61,
+                              "headlineWidthPct": 34,
+                              "headlineTopPct": 7,
+                              "heroZonePct": 37.1,
+                              "productZoneW": 58,
+                              "productZoneH": 64.05,
+                              "typographyReservePct": 4,
+                              "badgeReservePct": 1,
+                              "freeCanvasPct": 62.9,
+                              "safeMarginPct": 6,
+                              "layoutMetricsProductAreaPct": 37.1,
+                              "compositorAllowedAtObjectScale1": 30.4,
+                              "gapToPolicyMax": 9
+                    },
+                    "worst": {
+                              "templateId": "hero_left",
+                              "productScale": 0.66,
+                              "headlineWidthPct": 42,
+                              "headlineTopPct": 6,
+                              "heroZonePct": 42.1,
+                              "productZoneW": 60.720000000000006,
+                              "productZoneH": 69.3,
+                              "typographyReservePct": 4.9,
+                              "badgeReservePct": 1.6,
+                              "freeCanvasPct": 56.4,
+                              "safeMarginPct": 6,
+                              "layoutMetricsProductAreaPct": 42.1,
+                              "compositorAllowedAtObjectScale1": 29.5,
+                              "gapToPolicyMax": 9.9
+                    },
+                    "allowedAreaMin": 29.5,
+                    "allowedAreaMax": 30.4
+          },
+          "builderDerivation": {
+                    "formula": "productW=clamp(scale×100×0.92,58,74); productH=clamp(scale×100×1.05,62,88); finalW≤72; finalH≤85",
+                    "focusTemplate": {
+                              "productW": 61.64,
+                              "productH": 70.35000000000001,
+                              "finalW": 61.64,
+                              "finalH": 70.35000000000001,
+                              "zoneArea": 43.363740000000014
+                    }
+          },
+          "maximumReachable": {
+                    "currentAvgAtObjectScale1": 29.5,
+                    "zoneClampMax72x85": 28.5,
+                    "policyAspect68x58Avg": 39.4,
+                    "compositorPolicyCeiling": 39.4,
+                    "gapToTarget55": 15.6
+          },
+          "lossAttribution": [
+                    {
+                              "constraint": "builder_finalH_clamp_85pct",
+                              "type": "Historical Constant",
+                              "estimatedAreaLossPct": 9.9,
+                              "reason": "layout-engine/builder.ts finalH max 85% → height_binding in computeMaxProductSize"
+                    },
+                    {
+                              "constraint": "builder_productW_H_coefficients",
+                              "type": "Implementation Detail",
+                              "estimatedAreaLossPct": 6,
+                              "reason": "productScale×0.92 and ×1.05 before clamp"
+                    },
+                    {
+                              "constraint": "template_productScale_range",
+                              "type": "Implementation Detail",
+                              "estimatedAreaLossPct": 3,
+                              "reason": "productScale 0.61–0.70 across templates"
+                    },
+                    {
+                              "constraint": "typography_badge_zones",
+                              "type": "Soft Constraint",
+                              "estimatedAreaLossPct": 0,
+                              "reason": "HTML/text zones do not shrink compositor bbox — overlap only in metrics"
+                    },
+                    {
+                              "constraint": "LayoutSpec_geometry_hero",
+                              "type": "Soft Constraint",
+                              "estimatedAreaLossPct": 0,
+                              "reason": "composition-director geometry — not consumed by compositor"
+                    },
+                    {
+                              "constraint": "safeInsetPct_6",
+                              "type": "Safety Constraint",
+                              "estimatedAreaLossPct": 1,
+                              "reason": "compositionLayout.safeInsetPct — vertical placement only"
+                    }
+          ],
+          "minimalChange": {
+                    "recommendation": "Align layout-engine product zone height clamp with compositor policy (58% not 85%)",
+                    "file": "layout-engine/builder.ts",
+                    "change": "finalH clamp max: 85 → 58 (match PRODUCT_TARGET_MAX_HEIGHT_PX ratio)",
+                    "optionalWidth": "finalW clamp max: keep 72 or raise to 68–72",
+                    "estimatedGainPct": 9.9,
+                    "rationale": "Tall product zones (75–85% height) trigger height_binding: scaleBoost capped at 696/zoneH ≈ 0.77. Policy-aspect zone 68×58% allows scaleBoost ≈ 0.94 → 39.4% allowed.",
+                    "withoutCompositorChange": true,
+                    "withoutLayoutEngineRewrite": true
+          },
+          "productResults": [
+                    {
+                              "productId": "battery-sprayer",
+                              "templateId": "poster",
+                              "commercialObjectScale": 0.55,
+                              "layoutZone": {
+                                        "w": 64.4,
+                                        "h": 73.5,
+                                        "metricsAreaPct": 47.333999999999996
+                              },
+                              "heightBinding": {
+                                        "zoneW": 580,
+                                        "zoneH": 882,
+                                        "maxBoostH": 0.7891156462585034,
+                                        "maxBoostW": 1.0551724137931036,
+                                        "binding": "height_binding"
+                              },
+                              "atCommercialObjectScale": {
+                                        "allowedAreaPct": 19.5,
+                                        "finalAreaPct": 19.5,
+                                        "alphaAreaPct": 19.5,
+                                        "width": 372,
+                                        "height": 566
+                              },
+                              "atObjectScale1": {
+                                        "allowedAreaPct": 29.5,
+                                        "finalAreaPct": 29.5,
+                                        "alphaAreaPct": 29.5,
+                                        "width": 458,
+                                        "height": 696
+                              },
+                              "scenarios": {
+                                        "currentGeometry": {
+                                                  "allowedAreaPct": 29.5,
+                                                  "finalAreaPct": 29.5,
+                                                  "alphaAreaPct": 29.5,
+                                                  "width": 458,
+                                                  "height": 696
+                                        },
+                                        "zoneClampMax72x85": {
+                                                  "allowedAreaPct": 28.5,
+                                                  "finalAreaPct": 28.5,
+                                                  "alphaAreaPct": 28.5,
+                                                  "width": 442,
+                                                  "height": 696
+                                        },
+                                        "policyAspect68x58": {
+                                                  "allowedAreaPct": 39.4,
+                                                  "finalAreaPct": 39.4,
+                                                  "alphaAreaPct": 39.4,
+                                                  "width": 612,
+                                                  "height": 696
+                                        },
+                                        "withoutBadgePanels": {
+                                                  "allowedAreaPct": 29.5,
+                                                  "finalAreaPct": 29.5,
+                                                  "alphaAreaPct": 29.5,
+                                                  "width": 458,
+                                                  "height": 696
+                                        },
+                                        "typographyClearedOnLayout": {
+                                                  "allowedAreaPct": 29.5,
+                                                  "finalAreaPct": 29.5,
+                                                  "alphaAreaPct": 29.5,
+                                                  "width": 458,
+                                                  "height": 696
+                                        }
+                              },
+                              "bestSensitivity": {
+                                        "maxWidthPct": 68,
+                                        "maxHeightPct": 58,
+                                        "allowedAreaPct": 39.4,
+                                        "binding": "width_binding"
+                              }
+                    },
+                    {
+                              "productId": "construction-vacuum",
+                              "templateId": "lifestyle",
+                              "commercialObjectScale": 0.55,
+                              "layoutZone": {
+                                        "w": 58,
+                                        "h": 66.15,
+                                        "metricsAreaPct": 38.367000000000004
+                              },
+                              "heightBinding": {
+                                        "zoneW": 522,
+                                        "zoneH": 794,
+                                        "maxBoostH": 0.8765743073047859,
+                                        "maxBoostW": 1.1724137931034482,
+                                        "binding": "height_binding"
+                              },
+                              "atCommercialObjectScale": {
+                                        "allowedAreaPct": 16.7,
+                                        "finalAreaPct": 16.7,
+                                        "alphaAreaPct": 16.7,
+                                        "width": 344,
+                                        "height": 523
+                              },
+                              "atObjectScale1": {
+                                        "allowedAreaPct": 29.5,
+                                        "finalAreaPct": 29.5,
+                                        "alphaAreaPct": 29.5,
+                                        "width": 458,
+                                        "height": 696
+                              },
+                              "scenarios": {
+                                        "currentGeometry": {
+                                                  "allowedAreaPct": 29.5,
+                                                  "finalAreaPct": 29.5,
+                                                  "alphaAreaPct": 29.5,
+                                                  "width": 458,
+                                                  "height": 696
+                                        },
+                                        "zoneClampMax72x85": {
+                                                  "allowedAreaPct": 28.5,
+                                                  "finalAreaPct": 28.5,
+                                                  "alphaAreaPct": 28.5,
+                                                  "width": 442,
+                                                  "height": 696
+                                        },
+                                        "policyAspect68x58": {
+                                                  "allowedAreaPct": 39.4,
+                                                  "finalAreaPct": 39.4,
+                                                  "alphaAreaPct": 39.4,
+                                                  "width": 612,
+                                                  "height": 696
+                                        },
+                                        "withoutBadgePanels": {
+                                                  "allowedAreaPct": 29.5,
+                                                  "finalAreaPct": 29.5,
+                                                  "alphaAreaPct": 29.5,
+                                                  "width": 458,
+                                                  "height": 696
+                                        },
+                                        "typographyClearedOnLayout": {
+                                                  "allowedAreaPct": 29.5,
+                                                  "finalAreaPct": 29.5,
+                                                  "alphaAreaPct": 29.5,
+                                                  "width": 458,
+                                                  "height": 696
+                                        }
+                              },
+                              "bestSensitivity": {
+                                        "maxWidthPct": 68,
+                                        "maxHeightPct": 58,
+                                        "allowedAreaPct": 39.4,
+                                        "binding": "width_binding"
+                              }
+                    },
+                    {
+                              "productId": "impact-drill",
+                              "templateId": "lifestyle",
+                              "commercialObjectScale": 0.55,
+                              "layoutZone": {
+                                        "w": 58,
+                                        "h": 66.15,
+                                        "metricsAreaPct": 38.367000000000004
+                              },
+                              "heightBinding": {
+                                        "zoneW": 522,
+                                        "zoneH": 794,
+                                        "maxBoostH": 0.8765743073047859,
+                                        "maxBoostW": 1.1724137931034482,
+                                        "binding": "height_binding"
+                              },
+                              "atCommercialObjectScale": {
+                                        "allowedAreaPct": 16.7,
+                                        "finalAreaPct": 16.7,
+                                        "alphaAreaPct": 16.7,
+                                        "width": 344,
+                                        "height": 523
+                              },
+                              "atObjectScale1": {
+                                        "allowedAreaPct": 29.5,
+                                        "finalAreaPct": 29.5,
+                                        "alphaAreaPct": 29.5,
+                                        "width": 458,
+                                        "height": 696
+                              },
+                              "scenarios": {
+                                        "currentGeometry": {
+                                                  "allowedAreaPct": 29.5,
+                                                  "finalAreaPct": 29.5,
+                                                  "alphaAreaPct": 29.5,
+                                                  "width": 458,
+                                                  "height": 696
+                                        },
+                                        "zoneClampMax72x85": {
+                                                  "allowedAreaPct": 28.5,
+                                                  "finalAreaPct": 28.5,
+                                                  "alphaAreaPct": 28.5,
+                                                  "width": 442,
+                                                  "height": 696
+                                        },
+                                        "policyAspect68x58": {
+                                                  "allowedAreaPct": 39.4,
+                                                  "finalAreaPct": 39.4,
+                                                  "alphaAreaPct": 39.4,
+                                                  "width": 612,
+                                                  "height": 696
+                                        },
+                                        "withoutBadgePanels": {
+                                                  "allowedAreaPct": 29.5,
+                                                  "finalAreaPct": 29.5,
+                                                  "alphaAreaPct": 29.5,
+                                                  "width": 458,
+                                                  "height": 696
+                                        },
+                                        "typographyClearedOnLayout": {
+                                                  "allowedAreaPct": 29.5,
+                                                  "finalAreaPct": 29.5,
+                                                  "alphaAreaPct": 29.5,
+                                                  "width": 458,
+                                                  "height": 696
+                                        }
+                              },
+                              "bestSensitivity": {
+                                        "maxWidthPct": 68,
+                                        "maxHeightPct": 58,
+                                        "allowedAreaPct": 39.4,
+                                        "binding": "width_binding"
+                              }
+                    },
+                    {
+                              "productId": "pressure-washer",
+                              "templateId": "lifestyle",
+                              "commercialObjectScale": 0.55,
+                              "layoutZone": {
+                                        "w": 58,
+                                        "h": 66.15,
+                                        "metricsAreaPct": 38.367000000000004
+                              },
+                              "heightBinding": {
+                                        "zoneW": 522,
+                                        "zoneH": 794,
+                                        "maxBoostH": 0.8765743073047859,
+                                        "maxBoostW": 1.1724137931034482,
+                                        "binding": "height_binding"
+                              },
+                              "atCommercialObjectScale": {
+                                        "allowedAreaPct": 16.7,
+                                        "finalAreaPct": 16.7,
+                                        "alphaAreaPct": 16.7,
+                                        "width": 344,
+                                        "height": 523
+                              },
+                              "atObjectScale1": {
+                                        "allowedAreaPct": 29.5,
+                                        "finalAreaPct": 29.5,
+                                        "alphaAreaPct": 29.5,
+                                        "width": 458,
+                                        "height": 696
+                              },
+                              "scenarios": {
+                                        "currentGeometry": {
+                                                  "allowedAreaPct": 29.5,
+                                                  "finalAreaPct": 29.5,
+                                                  "alphaAreaPct": 29.5,
+                                                  "width": 458,
+                                                  "height": 696
+                                        },
+                                        "zoneClampMax72x85": {
+                                                  "allowedAreaPct": 28.5,
+                                                  "finalAreaPct": 28.5,
+                                                  "alphaAreaPct": 28.5,
+                                                  "width": 442,
+                                                  "height": 696
+                                        },
+                                        "policyAspect68x58": {
+                                                  "allowedAreaPct": 39.4,
+                                                  "finalAreaPct": 39.4,
+                                                  "alphaAreaPct": 39.4,
+                                                  "width": 612,
+                                                  "height": 696
+                                        },
+                                        "withoutBadgePanels": {
+                                                  "allowedAreaPct": 29.5,
+                                                  "finalAreaPct": 29.5,
+                                                  "alphaAreaPct": 29.5,
+                                                  "width": 458,
+                                                  "height": 696
+                                        },
+                                        "typographyClearedOnLayout": {
+                                                  "allowedAreaPct": 29.5,
+                                                  "finalAreaPct": 29.5,
+                                                  "alphaAreaPct": 29.5,
+                                                  "width": 458,
+                                                  "height": 696
+                                        }
+                              },
+                              "bestSensitivity": {
+                                        "maxWidthPct": 68,
+                                        "maxHeightPct": 58,
+                                        "allowedAreaPct": 39.4,
+                                        "binding": "width_binding"
+                              }
+                    },
+                    {
+                              "productId": "home-humidifier",
+                              "templateId": "diagonal",
+                              "commercialObjectScale": 0.55,
+                              "layoutZone": {
+                                        "w": 60.720000000000006,
+                                        "h": 69.3,
+                                        "metricsAreaPct": 42.07896
+                              },
+                              "heightBinding": {
+                                        "zoneW": 546,
+                                        "zoneH": 832,
+                                        "maxBoostH": 0.8365384615384616,
+                                        "maxBoostW": 1.120879120879121,
+                                        "binding": "height_binding"
+                              },
+                              "atCommercialObjectScale": {
+                                        "allowedAreaPct": 17.9,
+                                        "finalAreaPct": 17.9,
+                                        "alphaAreaPct": 17.9,
+                                        "width": 356,
+                                        "height": 542
+                              },
+                              "atObjectScale1": {
+                                        "allowedAreaPct": 29.5,
+                                        "finalAreaPct": 29.5,
+                                        "alphaAreaPct": 29.5,
+                                        "width": 457,
+                                        "height": 696
+                              },
+                              "scenarios": {
+                                        "currentGeometry": {
+                                                  "allowedAreaPct": 29.5,
+                                                  "finalAreaPct": 29.5,
+                                                  "alphaAreaPct": 29.5,
+                                                  "width": 457,
+                                                  "height": 696
+                                        },
+                                        "zoneClampMax72x85": {
+                                                  "allowedAreaPct": 28.5,
+                                                  "finalAreaPct": 28.5,
+                                                  "alphaAreaPct": 28.5,
+                                                  "width": 442,
+                                                  "height": 696
+                                        },
+                                        "policyAspect68x58": {
+                                                  "allowedAreaPct": 39.4,
+                                                  "finalAreaPct": 39.4,
+                                                  "alphaAreaPct": 39.4,
+                                                  "width": 612,
+                                                  "height": 696
+                                        },
+                                        "withoutBadgePanels": {
+                                                  "allowedAreaPct": 29.5,
+                                                  "finalAreaPct": 29.5,
+                                                  "alphaAreaPct": 29.5,
+                                                  "width": 457,
+                                                  "height": 696
+                                        },
+                                        "typographyClearedOnLayout": {
+                                                  "allowedAreaPct": 29.5,
+                                                  "finalAreaPct": 29.5,
+                                                  "alphaAreaPct": 29.5,
+                                                  "width": 457,
+                                                  "height": 696
+                                        }
+                              },
+                              "bestSensitivity": {
+                                        "maxWidthPct": 68,
+                                        "maxHeightPct": 58,
+                                        "allowedAreaPct": 39.4,
+                                        "binding": "width_binding"
+                              }
+                    }
+          ],
+          "successCriteria": {
+                    "geometryBottleneckLocalized": true,
+                    "attributionMeasured": true,
+                    "maxReachableDetermined": true,
+                    "minimalChangeProposed": true
+          }
+}

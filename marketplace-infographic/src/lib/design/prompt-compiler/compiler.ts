@@ -29,7 +29,9 @@ export function compileRenderingPrompt(input: PromptCompilerInput): PromptCompil
   });
 
   let attempts = 0;
-  let sections = compileAllSections(input, strategy.profile);
+  let compiled = compileAllSections(input, strategy.profile);
+  let sections = compiled.sections;
+  let promptCommercial = compiled.promptCommercial;
   let prompt = joinSections(sections);
   let validation = validateCompiledPrompt(sections, input, prompt);
 
@@ -46,7 +48,9 @@ export function compileRenderingPrompt(input: PromptCompilerInput): PromptCompil
           }
         : input.layoutSpec,
     };
-    sections = compileAllSections(strictInput, "minimal");
+    compiled = compileAllSections(strictInput, "minimal");
+    sections = compiled.sections;
+    promptCommercial = compiled.promptCommercial;
     prompt = joinSections(sections);
     validation = validateCompiledPrompt(sections, strictInput, prompt);
   }
@@ -65,6 +69,7 @@ export function compileRenderingPrompt(input: PromptCompilerInput): PromptCompil
     promptComplexityScore: computePromptComplexityScore(prompt),
     validation,
     attempts: attempts + 1,
+    promptCommercial,
   };
 
   return {
