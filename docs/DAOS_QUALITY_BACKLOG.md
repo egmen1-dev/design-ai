@@ -109,8 +109,8 @@ Compositor is sufficient. **Do not** add more isolation. Fix overlay stage.
 | Cycle 1 — Dominance Research | **Complete** | #76 |
 | Cycle 2 — Visual Weight Research | **Complete** | #77 |
 | Cycle 3 — Foreground Isolation | **Complete** | #78 |
-| **Cycle 4 — Attention Competition** | **Complete** | TBD |
-| Cycle 5 — Typography Governance | **Next** | — |
+| **Cycle 5 — Attention Hierarchy** | **Complete (PARTIAL)** | TBD |
+| Cycle 5b — Real Photos + Caps | **Next** | — |
 
 ---
 

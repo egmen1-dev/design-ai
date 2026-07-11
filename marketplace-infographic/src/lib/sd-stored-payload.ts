@@ -12,6 +12,7 @@ import type { FinalDesignBlueprint } from "@/lib/design-governance/blueprint/typ
 import type { DecisionTrace, RenderReportJson } from "@/lib/design-governance/trace/trace";
 import type { GovernanceScorecard } from "@/lib/design-governance/scores/evaluate";
 import type { ForegroundIsolationDiagnostics } from "@/lib/compositing/foreground-isolation";
+import type { AttentionHierarchyDiagnostics } from "@/lib/typography/attention-hierarchy";
 import type { CommercialCalibrationDiagnostics } from "@/lib/compositing/commercial-calibration";
 import type { CommercialAlphaPolicyDiagnostics } from "@/lib/compositing/commercial-alpha-policy";
 import { sanitizeSdInput } from "@/lib/sd-sanitize";
@@ -35,6 +36,7 @@ export type StoredSdPayload = {
   renderReportJson?: RenderReportJson;
   governanceScorecard?: GovernanceScorecard;
   foregroundIsolation?: ForegroundIsolationDiagnostics;
+  attentionHierarchy?: AttentionHierarchyDiagnostics;
   commercialCalibration?: CommercialCalibrationDiagnostics;
   commercialAlphaPolicy?: CommercialAlphaPolicyDiagnostics;
 };
@@ -59,6 +61,7 @@ export function packSdPayload(
     renderReportJson?: RenderReportJson;
     governanceScorecard?: GovernanceScorecard;
     foregroundIsolation?: ForegroundIsolationDiagnostics;
+  attentionHierarchy?: AttentionHierarchyDiagnostics;
     commercialCalibration?: CommercialCalibrationDiagnostics;
     commercialAlphaPolicy?: CommercialAlphaPolicyDiagnostics;
   },
@@ -82,6 +85,7 @@ export function packSdPayload(
     renderReportJson: extras?.renderReportJson,
     governanceScorecard: extras?.governanceScorecard,
     foregroundIsolation: extras?.foregroundIsolation,
+    attentionHierarchy: extras?.attentionHierarchy,
     commercialCalibration: extras?.commercialCalibration,
     commercialAlphaPolicy: extras?.commercialAlphaPolicy,
   } satisfies StoredSdPayload);
@@ -118,6 +122,7 @@ export function unpackSdPayload(json: string): StoredSdPayload {
       renderReportJson: record.renderReportJson,
       governanceScorecard: record.governanceScorecard,
       foregroundIsolation: record.foregroundIsolation,
+      attentionHierarchy: record.attentionHierarchy,
       commercialCalibration: record.commercialCalibration,
       commercialAlphaPolicy: record.commercialAlphaPolicy,
     };

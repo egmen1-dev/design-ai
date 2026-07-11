@@ -34,6 +34,10 @@ import {
 import { DEFAULT_STYLE, TRENDS, type InfographicStyle } from "@/lib/design-trends";
 import { renderHtmlToImage } from "@/lib/puppeteer";
 import { polishCoverImage } from "@/lib/cover-polish";
+import {
+  captureAttentionHierarchy,
+  type AttentionHierarchyDiagnostics,
+} from "@/lib/typography/attention-hierarchy";
 import { bufferToDataUrl } from "@/lib/background-removal";
 import {
   parseProductImageDataUrl,
@@ -1085,6 +1089,7 @@ export async function handleGenerateInfographic(
     let commercialCalibration: CommercialCalibrationDiagnostics | undefined;
     let commercialAlphaPolicy: CommercialAlphaPolicyDiagnostics | undefined;
     let foregroundIsolation: ReturnType<typeof captureForegroundIsolation>;
+    let attentionHierarchy: AttentionHierarchyDiagnostics | undefined;
     let geometryOptimization: GeometryClampDiagnostics | undefined;
     if (sdData.layout === "marketplace" && isCommercialGenomeBetaEnabled()) {
       commercialGenomeBetaResult = createCommercialGenomeBetaDecision({
@@ -2027,6 +2032,17 @@ export async function handleGenerateInfographic(
     let imagePath = await renderHtmlToImage(html, filename);
     if (sdData.layout === "marketplace") {
       imagePath = await polishCoverImage(imagePath);
+      try {
+        const { resolvePublicAssetPath } = await import("@/lib/runtime-paths");
+        const normalized = imagePath.startsWith("/api/") ? imagePath.replace("/api/", "/") : imagePath;
+        const absPath = await resolvePublicAssetPath(normalized);
+        attentionHierarchy = await captureAttentionHierarchy(absPath);
+        if (!attentionHierarchy.law101Passed) {
+          console.warn("[attention-hierarchy] LAW_101", attentionHierarchy.law101Warning);
+        }
+      } catch (err) {
+        console.warn("[attention-hierarchy] capture failed:", err);
+      }
     }
 
     const balance = slot.usedFreeQuota
@@ -2070,6 +2086,7 @@ export async function handleGenerateInfographic(
       commercialCalibration,
       commercialAlphaPolicy,
       foregroundIsolation,
+      attentionHierarchy,
       geometryOptimization,
       designConstitution: constitutionReports.length ? constitutionReports : undefined,
       renderEngine: renderEngineResult

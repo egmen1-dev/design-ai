@@ -1,0 +1,97 @@
+{
+  "sprint": "Quality Cycle 5 — Attention Hierarchy",
+  "timestamp": "2026-07-11T06:11:15.534Z",
+  "before": {
+    "primaryFocusRatio": 0.3,
+    "headlineVisualWeight": 16.1,
+    "productVisualWeight": 13.6,
+    "attentionCompetitionIndex": 7.6,
+    "productDominanceScore": 39.2,
+    "commercialFidelityScore": null,
+    "peakOnProductRate": "0/5"
+  },
+  "after": {
+    "primaryFocusRatio": 0.4,
+    "headlineVisualWeight": 11.6,
+    "productVisualWeight": 15,
+    "attentionCompetitionIndex": 6.2,
+    "productDominanceScore": 49.4,
+    "commercialFidelityScore": null,
+    "peakOnProductRate": "1/5",
+    "law101PassRate": "2/5"
+  },
+  "delta": {
+    "primaryFocusRatio": 0.1,
+    "headlineVisualWeight": -4.5,
+    "productVisualWeight": 1.4,
+    "attentionCompetitionIndex": -1.4,
+    "productDominanceScore": 10.2,
+    "commercialFidelityScore": null
+  },
+  "products": [
+    {
+      "productId": "construction-vacuum",
+      "label": "Construction Vacuum",
+      "beforePeak": "(0.171, 0.098)",
+      "afterPeak": "(0.807, 0.733)",
+      "beforeDominance": 62,
+      "afterDominance": 77,
+      "humanFirstBefore": "headline",
+      "humanFirstAfter": "product"
+    },
+    {
+      "productId": "battery-sprayer",
+      "label": "Battery Sprayer",
+      "beforePeak": "(0.161, 0.079)",
+      "afterPeak": "(0.408, 0.199)",
+      "beforeDominance": 31,
+      "afterDominance": 43,
+      "humanFirstBefore": "headline",
+      "humanFirstAfter": "headline"
+    },
+    {
+      "productId": "impact-drill",
+      "label": "Drill",
+      "beforePeak": "(0.148, 0.077)",
+      "afterPeak": "(0.164, 0.083)",
+      "beforeDominance": 28,
+      "afterDominance": 35,
+      "humanFirstBefore": "headline",
+      "humanFirstAfter": "headline"
+    },
+    {
+      "productId": "pressure-washer",
+      "label": "Pressure Washer",
+      "beforePeak": "(0.113, 0.066)",
+      "afterPeak": "(0.128, 0.075)",
+      "beforeDominance": 30,
+      "afterDominance": 41,
+      "humanFirstBefore": "headline",
+      "humanFirstAfter": "headline"
+    },
+    {
+      "productId": "home-humidifier",
+      "label": "Home Humidifier",
+      "beforePeak": "(0.171, 0.098)",
+      "afterPeak": "(0.666, 0.2)",
+      "beforeDominance": 45,
+      "afterDominance": 51,
+      "humanFirstBefore": "headline",
+      "humanFirstAfter": "mixed"
+    }
+  ],
+  "council": {
+    "verdict": "PARTIAL",
+    "rationale": "Dominance +10.2, headline VW -4.5; peak on product 1/5 (construction-vacuum confirmed).",
+    "nextCompetitor": "headline"
+  },
+  "typographyInvestigation": {
+    "contributors": [
+      "font-weight 800 → 600",
+      "size multiplier 0.88 → 0.62",
+      "dark bar gradient 0.93 → 0.38 opacity",
+      "full-width top bar z-index 9",
+      "white #fff on dark = max contrast"
+    ]
+  }
+}
