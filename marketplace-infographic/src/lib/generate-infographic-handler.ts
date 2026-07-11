@@ -37,7 +37,18 @@ import { polishCoverImage } from "@/lib/cover-polish";
 import {
   captureAttentionHierarchy,
   type AttentionHierarchyDiagnostics,
+  type TypographyOverlayMode,
 } from "@/lib/typography/attention-hierarchy";
+import {
+  evaluatePostOverlayDominanceGate,
+  postOverlayDominanceGateEnabled,
+  type PostOverlayDominanceGateResult,
+} from "@/lib/typography/post-overlay-dominance-gate";
+import {
+  evaluateThumbnailReadabilityGate,
+  thumbnailReadabilityGateEnabled,
+  type ThumbnailReadabilityResult,
+} from "@/lib/typography/thumbnail-readability-gate";
 import { bufferToDataUrl } from "@/lib/background-removal";
 import {
   parseProductImageDataUrl,
@@ -1090,6 +1101,8 @@ export async function handleGenerateInfographic(
     let commercialAlphaPolicy: CommercialAlphaPolicyDiagnostics | undefined;
     let foregroundIsolation: ReturnType<typeof captureForegroundIsolation>;
     let attentionHierarchy: AttentionHierarchyDiagnostics | undefined;
+    let postOverlayDominanceGate: PostOverlayDominanceGateResult | undefined;
+    let thumbnailReadabilityGate: ThumbnailReadabilityResult | undefined;
     let geometryOptimization: GeometryClampDiagnostics | undefined;
     if (sdData.layout === "marketplace" && isCommercialGenomeBetaEnabled()) {
       commercialGenomeBetaResult = createCommercialGenomeBetaDecision({
@@ -2012,7 +2025,8 @@ export async function handleGenerateInfographic(
       ]);
     }
 
-    const html = renderInfographicHtml(infographicData, {
+    let typographyOverlayMode: TypographyOverlayMode = "standard";
+    let html = renderInfographicHtml(infographicData, {
       style: appliedStyle,
       layout: sdData.layout,
       mergedImageDataUrl,
@@ -2026,22 +2040,127 @@ export async function handleGenerateInfographic(
       accentHex,
       compositionLayout,
       productPrompt: input.prompt,
+      typographyOverlayMode,
     });
 
     const filename = `${input.userId}-${Date.now()}.png`;
     let imagePath = await renderHtmlToImage(html, filename);
     if (sdData.layout === "marketplace") {
       imagePath = await polishCoverImage(imagePath);
-      try {
-        const { resolvePublicAssetPath } = await import("@/lib/runtime-paths");
-        const normalized = imagePath.startsWith("/api/") ? imagePath.replace("/api/", "/") : imagePath;
-        const absPath = await resolvePublicAssetPath(normalized);
-        attentionHierarchy = await captureAttentionHierarchy(absPath);
-        if (!attentionHierarchy.law101Passed) {
-          console.warn("[attention-hierarchy] LAW_101", attentionHierarchy.law101Warning);
+
+      if (postOverlayDominanceGateEnabled()) {
+        for (let gateAttempt = 0; gateAttempt <= 1; gateAttempt++) {
+          try {
+            const { resolvePublicAssetPath } = await import("@/lib/runtime-paths");
+            const normalized = imagePath.startsWith("/api/") ? imagePath.replace("/api/", "/") : imagePath;
+            const absPath = await resolvePublicAssetPath(normalized);
+            attentionHierarchy = await captureAttentionHierarchy(absPath);
+            postOverlayDominanceGate = evaluatePostOverlayDominanceGate(attentionHierarchy);
+
+            if (postOverlayDominanceGate.passed) break;
+
+            if (gateAttempt === 0 && postOverlayDominanceGate.needsTypographyRelaxation) {
+              governanceDecisionLog.push(
+                `PostOverlayGate: LAW_101 — typography relaxation (${postOverlayDominanceGate.warnings.join("; ")})`,
+              );
+              console.warn(
+                "[post-overlay-gate] typography relaxation",
+                postOverlayDominanceGate.warnings,
+              );
+              typographyOverlayMode = "relaxed";
+              html = renderInfographicHtml(infographicData, {
+                style: appliedStyle,
+                layout: sdData.layout,
+                mergedImageDataUrl,
+                backgroundDataUrl: mergedImageDataUrl ? undefined : backgroundDataUrl,
+                backgroundCss: !backgroundDataUrl && !mergedImageDataUrl ? fallbackBg : undefined,
+                productImageSrc: mergedImageDataUrl ? undefined : productRender?.renderSrc,
+                productImageCutout: productRender?.cutout ?? false,
+                libraryFont,
+                libraryBadge,
+                parametricBadgeHtml,
+                accentHex,
+                compositionLayout,
+                productPrompt: input.prompt,
+                typographyOverlayMode,
+              });
+              imagePath = await renderHtmlToImage(html, filename);
+              imagePath = await polishCoverImage(imagePath);
+              continue;
+            }
+
+            governanceDecisionLog.push(
+              `PostOverlayGate: warning — ${postOverlayDominanceGate.warnings.join("; ")}`,
+            );
+            console.warn("[post-overlay-gate] dominance warning", postOverlayDominanceGate.warnings);
+            break;
+          } catch (err) {
+            console.warn("[post-overlay-gate] capture failed:", err);
+            break;
+          }
         }
-      } catch (err) {
-        console.warn("[attention-hierarchy] capture failed:", err);
+      } else {
+        try {
+          const { resolvePublicAssetPath } = await import("@/lib/runtime-paths");
+          const normalized = imagePath.startsWith("/api/") ? imagePath.replace("/api/", "/") : imagePath;
+          const absPath = await resolvePublicAssetPath(normalized);
+          attentionHierarchy = await captureAttentionHierarchy(absPath);
+          if (!attentionHierarchy.law101Passed) {
+            console.warn("[attention-hierarchy] LAW_101", attentionHierarchy.law101Warning);
+          }
+        } catch (err) {
+          console.warn("[attention-hierarchy] capture failed:", err);
+        }
+      }
+
+      if (thumbnailReadabilityGateEnabled()) {
+        try {
+          const { resolvePublicAssetPath } = await import("@/lib/runtime-paths");
+          const normalized = imagePath.startsWith("/api/") ? imagePath.replace("/api/", "/") : imagePath;
+          const absPath = await resolvePublicAssetPath(normalized);
+          thumbnailReadabilityGate = await evaluateThumbnailReadabilityGate(absPath);
+
+          if (!thumbnailReadabilityGate.passed && typographyOverlayMode === "standard") {
+            governanceDecisionLog.push(
+              `ThumbnailGate: readability ${thumbnailReadabilityGate.score} — typography relaxation`,
+            );
+            console.warn("[thumbnail-gate] typography relaxation", thumbnailReadabilityGate.warnings);
+            typographyOverlayMode = "relaxed";
+            html = renderInfographicHtml(infographicData, {
+              style: appliedStyle,
+              layout: sdData.layout,
+              mergedImageDataUrl,
+              backgroundDataUrl: mergedImageDataUrl ? undefined : backgroundDataUrl,
+              backgroundCss: !backgroundDataUrl && !mergedImageDataUrl ? fallbackBg : undefined,
+              productImageSrc: mergedImageDataUrl ? undefined : productRender?.renderSrc,
+              productImageCutout: productRender?.cutout ?? false,
+              libraryFont,
+              libraryBadge,
+              parametricBadgeHtml,
+              accentHex,
+              compositionLayout,
+              productPrompt: input.prompt,
+              typographyOverlayMode,
+            });
+            imagePath = await renderHtmlToImage(html, filename);
+            imagePath = await polishCoverImage(imagePath);
+            const absRetry = await resolvePublicAssetPath(
+              imagePath.startsWith("/api/") ? imagePath.replace("/api/", "/") : imagePath,
+            );
+            thumbnailReadabilityGate = await evaluateThumbnailReadabilityGate(absRetry);
+            attentionHierarchy = await captureAttentionHierarchy(absRetry);
+            postOverlayDominanceGate = evaluatePostOverlayDominanceGate(attentionHierarchy);
+          }
+
+          if (!thumbnailReadabilityGate.passed) {
+            governanceDecisionLog.push(
+              `ThumbnailGate: warning — ${thumbnailReadabilityGate.warnings.join("; ")}`,
+            );
+            console.warn("[thumbnail-gate] warning", thumbnailReadabilityGate.warnings);
+          }
+        } catch (err) {
+          console.warn("[thumbnail-gate] capture failed:", err);
+        }
       }
     }
 
@@ -2087,6 +2206,8 @@ export async function handleGenerateInfographic(
       commercialAlphaPolicy,
       foregroundIsolation,
       attentionHierarchy,
+      postOverlayDominanceGate,
+      thumbnailReadabilityGate,
       geometryOptimization,
       designConstitution: constitutionReports.length ? constitutionReports : undefined,
       renderEngine: renderEngineResult

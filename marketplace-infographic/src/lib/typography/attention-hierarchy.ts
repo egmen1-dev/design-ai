@@ -30,9 +30,16 @@ export function attentionHierarchyEnabled(): boolean {
   return process.env.DAOS_ATTENTION_HIERARCHY !== "0";
 }
 
+export type TypographyOverlayMode = "standard" | "relaxed";
+
 /** Additive CSS — de-emphasizes headline bar while preserving readability. */
-export function buildAttentionHierarchyCss(): string {
+export function buildAttentionHierarchyCss(mode: TypographyOverlayMode = "standard"): string {
   if (!attentionHierarchyEnabled()) return "";
+
+  const relaxed = mode === "relaxed";
+  const headlineFactor = relaxed ? 0.42 : 0.62;
+  const sidebarOpacity = relaxed ? 0.72 : 0.92;
+  const barOpacity = relaxed ? 0.28 : 0.38;
 
   return `
     /* DAOS Attention Hierarchy — Cycle 5 */
@@ -46,16 +53,16 @@ export function buildAttentionHierarchyCss(): string {
       padding: calc(var(--canvas-h-num) * 0.009px) calc(var(--canvas-w-num) * 0.022px) !important;
       background: linear-gradient(
         90deg,
-        rgba(15, 23, 42, 0.38) 0%,
-        rgba(15, 23, 42, 0.22) 55%,
-        rgba(15, 23, 42, 0.08) 100%
+        rgba(15, 23, 42, ${barOpacity}) 0%,
+        rgba(15, 23, 42, ${relaxed ? 0.14 : 0.22}) 55%,
+        rgba(15, 23, 42, ${relaxed ? 0.04 : 0.08}) 100%
       ) !important;
       border-bottom: none !important;
     }
 
     .wb-top__title {
       font-weight: 600 !important;
-      font-size: calc(var(--comp-headline-size-pct) * var(--canvas-h-num) / 100 * 0.62px) !important;
+      font-size: calc(var(--comp-headline-size-pct) * var(--canvas-h-num) / 100 * ${headlineFactor}px) !important;
       letter-spacing: -0.01em !important;
       color: rgba(255, 255, 255, 0.9) !important;
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
@@ -64,23 +71,24 @@ export function buildAttentionHierarchyCss(): string {
     }
 
     .wb-side {
-      opacity: 0.92;
+      opacity: ${sidebarOpacity};
     }
 
     .wb-side .plaque__text {
-      font-weight: 650 !important;
-      font-size: calc(var(--canvas-h-num) * 0.017px) !important;
+      font-weight: ${relaxed ? 600 : 650} !important;
+      font-size: calc(var(--canvas-h-num) * ${relaxed ? 0.014 : 0.017}px) !important;
     }
 
     .mp-pill__text {
       font-weight: 600 !important;
-      font-size: calc(var(--comp-subtitle-size-pct) * var(--canvas-h-num) / 100 * 0.82px) !important;
+      font-size: calc(var(--comp-subtitle-size-pct) * var(--canvas-h-num) / 100 * ${relaxed ? 0.68 : 0.82}px) !important;
     }
 
     .mp-bottom-ribbon__text {
-      font-weight: 650 !important;
-      font-size: calc(var(--comp-subtitle-size-pct) * var(--canvas-h-num) / 100 * 0.9px) !important;
+      font-weight: ${relaxed ? 600 : 650} !important;
+      font-size: calc(var(--comp-subtitle-size-pct) * var(--canvas-h-num) / 100 * ${relaxed ? 0.75 : 0.9}px) !important;
     }
+    ${relaxed ? `.mp-sidebar-wrap { opacity: 0.78 !important; }` : ""}
   `.trim();
 }
 

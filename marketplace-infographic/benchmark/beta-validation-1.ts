@@ -15,6 +15,7 @@ import {
   leaderImageToDataUrl,
   type BetaValidationProduct,
 } from "./lib/beta-validation-products";
+import { ensurePackshotFromLeader, packshotInputEnabled } from "./lib/packshot-input";
 import {
   measureBetaCardMetrics,
   compareMetrics,
@@ -41,6 +42,12 @@ function applyBenchmarkEnv(): void {
   process.env.DAOS_COMMERCIAL_GENOME_BETA = "1";
   process.env.DAOS_COMMERCIAL_LAYOUT_INTEGRATION = "1";
   process.env.DAOS_ATTENTION_HIERARCHY = "1";
+  process.env.DAOS_POST_OVERLAY_DOMINANCE_GATE = "1";
+  process.env.DAOS_THUMBNAIL_READABILITY_GATE = "1";
+  process.env.BV1_PACKSHOT_INPUT = process.env.BV1_PACKSHOT_INPUT ?? "0";
+  if (process.env.BV1_PACKSHOT_INPUT === "1") {
+    console.log("[benchmark] packshot input pipeline enabled");
+  }
 }
 
 async function ensureBenchmarkUser(): Promise<string> {
@@ -349,8 +356,19 @@ async function main() {
 
     const leaderMetrics = await measureBetaCardMetrics(path.join(productDir, "leader.png"));
 
-    const productImage = await leaderImageToDataUrl(product.leaderImagePath);
-    console.log("  generating DAOS…");
+    const productImage = packshotInputEnabled()
+      ? await ensurePackshotFromLeader({
+          leaderImagePath: product.leaderImagePath,
+          productId: product.productId,
+        })
+      : await leaderImageToDataUrl(product.leaderImagePath);
+
+    if (packshotInputEnabled()) {
+      const packshotBuf = Buffer.from(productImage.replace(/^data:image\/\w+;base64,/, ""), "base64");
+      await fsPromises.writeFile(path.join(productDir, "packshot.png"), packshotBuf);
+    }
+
+    console.log(`  generating DAOS… (${packshotInputEnabled() ? "packshot" : "full-card"} input)`);
     const gen = await generateDaosCard({ product, productImage, userId });
 
     let daosMetrics = leaderMetrics;

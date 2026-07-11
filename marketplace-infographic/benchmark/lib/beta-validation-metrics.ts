@@ -1,12 +1,10 @@
 /**
  * Beta Validation 1 — paired card metrics (benchmark-only).
  */
-import sharp from "sharp";
+import { measureThumbnailReadabilityScore } from "../../src/lib/typography/thumbnail-readability-gate";
 import { measureAttentionCompetition } from "./attention-competition-metrics";
 import { measureVisualWeightMetrics } from "./visual-weight-metrics";
 import { evaluateCommercialFidelity } from "../../src/lib/commercial-fidelity";
-import { resolveMeasurementZones } from "../../src/lib/commercial-fidelity/expectations";
-import { WB_COVER } from "../../src/lib/composition/canvas";
 
 export type BetaCardMetrics = {
   productDominance: number;
@@ -21,67 +19,8 @@ export type BetaCardMetrics = {
   typographyCompetition: number;
 };
 
-const zones = resolveMeasurementZones();
-
-/** Hero edge saliency at WB mobile grid size 120×160 */
 export async function measureThumbnailReadability(imagePath: string): Promise<number> {
-  const thumbW = 120;
-  const thumbH = 160;
-  const { data, info } = await sharp(imagePath)
-    .resize(thumbW, thumbH, { fit: "fill" })
-    .raw()
-    .toBuffer({ resolveWithObject: true });
-
-  const ch = info.channels;
-  const w = info.width;
-  const h = info.height;
-  const stride = w * ch;
-
-  const heroRect = {
-    left: Math.round(zones.hero.left * w),
-    top: Math.round(zones.hero.top * h),
-    width: Math.max(1, Math.round(zones.hero.width * w)),
-    height: Math.max(1, Math.round(zones.hero.height * h)),
-  };
-
-  let globalEdge = 0;
-  let heroEdge = 0;
-  let globalN = 0;
-  let heroN = 0;
-
-  for (let y = 1; y < h - 1; y++) {
-    for (let x = 1; x < w - 1; x++) {
-      const idx = y * stride + x * ch;
-      const l =
-        0.2126 * data[idx]! + 0.7152 * data[idx + 1]! + 0.0722 * data[idx + 2]!;
-      const lR =
-        0.2126 * data[idx + ch]! +
-        0.7152 * data[idx + ch + 1]! +
-        0.0722 * data[idx + ch + 2]!;
-      const lD =
-        0.2126 * data[idx + stride]! +
-        0.7152 * data[idx + stride + 1]! +
-        0.0722 * data[idx + stride + 2]!;
-      const e = Math.abs(l - lR) + Math.abs(l - lD);
-      globalEdge += e;
-      globalN++;
-      if (
-        x >= heroRect.left &&
-        x < heroRect.left + heroRect.width &&
-        y >= heroRect.top &&
-        y < heroRect.top + heroRect.height
-      ) {
-        heroEdge += e;
-        heroN++;
-      }
-    }
-  }
-
-  const heroDensity = heroN ? heroEdge / heroN : 0;
-  const globalDensity = globalN ? globalEdge / globalN : 0.001;
-  const ratio = (heroDensity / globalDensity) * 50;
-  const contrastBoost = Math.min(25, heroDensity / 8);
-  return Number(Math.min(100, ratio + contrastBoost).toFixed(1));
+  return measureThumbnailReadabilityScore(imagePath);
 }
 
 export async function measureBetaCardMetrics(imagePath: string): Promise<BetaCardMetrics> {

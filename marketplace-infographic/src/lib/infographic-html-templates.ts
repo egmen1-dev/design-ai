@@ -261,7 +261,10 @@ export function renderLayoutHtml(
       : "";
 
     const compositionCss = options?.compositionLayout
-      ? compositionToCssBlock(options.compositionLayout)
+      ? compositionToCssBlock(
+          options.compositionLayout,
+          options.typographyOverlayMode ?? "standard",
+        )
       : "";
 
     const coverHeadHtml = buildMarketplaceCover(

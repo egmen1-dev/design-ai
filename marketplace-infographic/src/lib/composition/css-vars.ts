@@ -1,8 +1,11 @@
 import type { CompositionLayout } from "./types";
-import { buildAttentionHierarchyCss } from "@/lib/typography/attention-hierarchy";
+import { buildAttentionHierarchyCss, type TypographyOverlayMode } from "@/lib/typography/attention-hierarchy";
 
 /** Генерирует CSS-переменные из композиции (% + calc от размера холста) */
-export function compositionToCssBlock(layout: CompositionLayout): string {
+export function compositionToCssBlock(
+  layout: CompositionLayout,
+  typographyOverlayMode: TypographyOverlayMode = "standard",
+): string {
   const { canvas: c, product: p, headline: h, subtitle: s, leftPanel: lp, rightSidebar: rs, plaques, icon, safeInsetPct } =
     layout;
 
@@ -202,6 +205,6 @@ export function compositionToCssBlock(layout: CompositionLayout): string {
       font-size: calc(var(--comp-icon-size) * var(--canvas-w-num) / 100 * 0.85px) !important;
     }
 
-    ${buildAttentionHierarchyCss()}
+    ${buildAttentionHierarchyCss(typographyOverlayMode)}
   `.trim();
 }
