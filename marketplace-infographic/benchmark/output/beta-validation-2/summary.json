@@ -1,0 +1,1545 @@
+{
+  "version": "beta-validation-2",
+  "timestamp": "2026-07-11T11:37:41.980Z",
+  "productCount": 120,
+  "datasetNote": {
+    "availableCategories": 9,
+    "missingCategories": [
+      "Освещение",
+      "Хранение",
+      "Электроника",
+      "Товары для ремонта"
+    ],
+    "packshotInput": true
+  },
+  "aggregate": {
+    "daosWins": 76,
+    "wbWins": 30,
+    "draws": 14,
+    "byCategory": {
+      "Электроинструмент": {
+        "daos": 11,
+        "wb": 1,
+        "draw": 2,
+        "n": 14
+      },
+      "Строительство": {
+        "daos": 10,
+        "wb": 3,
+        "draw": 1,
+        "n": 14
+      },
+      "Сад": {
+        "daos": 9,
+        "wb": 3,
+        "draw": 2,
+        "n": 14
+      },
+      "Авто": {
+        "daos": 11,
+        "wb": 3,
+        "draw": 0,
+        "n": 14
+      },
+      "Дом": {
+        "daos": 8,
+        "wb": 5,
+        "draw": 1,
+        "n": 14
+      },
+      "Климат": {
+        "daos": 4,
+        "wb": 3,
+        "draw": 1,
+        "n": 8
+      },
+      "Кухня": {
+        "daos": 7,
+        "wb": 4,
+        "draw": 3,
+        "n": 14
+      },
+      "Бытовая техника": {
+        "daos": 9,
+        "wb": 3,
+        "draw": 2,
+        "n": 14
+      },
+      "Мойка": {
+        "daos": 7,
+        "wb": 5,
+        "draw": 2,
+        "n": 14
+      }
+    },
+    "genSuccessRate": 100,
+    "marketWinRate": 63
+  },
+  "statistics": {
+    "marketWinRate": {
+      "n": 1,
+      "mean": 63,
+      "stdDev": 0,
+      "ci95Low": 63,
+      "ci95High": 63,
+      "min": 63,
+      "max": 63,
+      "outliers": [],
+      "confidence": "LOW"
+    },
+    "daosDominance": {
+      "n": 120,
+      "mean": 50.67,
+      "stdDev": 10.94,
+      "ci95Low": 48.72,
+      "ci95High": 52.63,
+      "min": 21,
+      "max": 72,
+      "outliers": [
+        21,
+        22
+      ],
+      "confidence": "HIGH"
+    },
+    "daosFidelity": {
+      "n": 120,
+      "mean": 36.57,
+      "stdDev": 9.89,
+      "ci95Low": 34.8,
+      "ci95High": 38.34,
+      "min": 14,
+      "max": 52,
+      "outliers": [],
+      "confidence": "HIGH"
+    },
+    "daosIsolation": {
+      "n": 120,
+      "mean": 60.91,
+      "stdDev": 14.04,
+      "ci95Low": 58.4,
+      "ci95High": 63.42,
+      "min": 22.1,
+      "max": 113.3,
+      "outliers": [
+        103.5,
+        113.3
+      ],
+      "confidence": "HIGH"
+    },
+    "daosAttention": {
+      "n": 120,
+      "mean": 35.23,
+      "stdDev": 4.66,
+      "ci95Low": 34.39,
+      "ci95High": 36.06,
+      "min": 25.9,
+      "max": 49.6,
+      "outliers": [
+        48.7,
+        49.6
+      ],
+      "confidence": "HIGH"
+    },
+    "daosThumbnail": {
+      "n": 120,
+      "mean": 65.37,
+      "stdDev": 13.5,
+      "ci95Low": 62.95,
+      "ci95High": 67.78,
+      "min": 19.9,
+      "max": 100,
+      "outliers": [
+        100,
+        19.9,
+        99.8,
+        28.6
+      ],
+      "confidence": "HIGH"
+    },
+    "daosHeadlineWeight": {
+      "n": 120,
+      "mean": 16.81,
+      "stdDev": 6.3,
+      "ci95Low": 15.69,
+      "ci95High": 17.94,
+      "min": 7.9,
+      "max": 35.5,
+      "outliers": [],
+      "confidence": "HIGH"
+    },
+    "daosPrimaryFocus": {
+      "n": 120,
+      "mean": 33.01,
+      "stdDev": 7.97,
+      "ci95Low": 31.59,
+      "ci95High": 34.44,
+      "min": 12.5,
+      "max": 57.49999999999999,
+      "outliers": [
+        57.49999999999999,
+        12.5,
+        57.49999999999999
+      ],
+      "confidence": "HIGH"
+    },
+    "daosSecondaryFocus": {
+      "n": 120,
+      "mean": 66.99,
+      "stdDev": 7.97,
+      "ci95Low": 65.56,
+      "ci95High": 68.41,
+      "min": 42.5,
+      "max": 87.5,
+      "outliers": [
+        42.5,
+        87.5,
+        42.5
+      ],
+      "confidence": "HIGH"
+    },
+    "deltaDominance": {
+      "n": 120,
+      "mean": 1.03,
+      "stdDev": 14.15,
+      "ci95Low": -1.5,
+      "ci95High": 3.56,
+      "min": -40,
+      "max": 35,
+      "outliers": [
+        -40,
+        -39,
+        -36
+      ],
+      "confidence": "HIGH"
+    }
+  },
+  "winRateCi": {
+    "rate": 63.3,
+    "low": 54.4,
+    "high": 71.4
+  },
+  "categoryAnalysis": {
+    "Электроинструмент": {
+      "daos": 11,
+      "wb": 1,
+      "draw": 2,
+      "n": 14,
+      "winRate": 78.6,
+      "dominanceMean": 60.6,
+      "fidelityMean": 45.2,
+      "attentionMean": 40,
+      "topFailureReasons": [
+        "Background (1)"
+      ]
+    },
+    "Строительство": {
+      "daos": 10,
+      "wb": 3,
+      "draw": 1,
+      "n": 14,
+      "winRate": 71.4,
+      "dominanceMean": 50.4,
+      "fidelityMean": 36.1,
+      "attentionMean": 34.5,
+      "topFailureReasons": [
+        "Dominance (3)"
+      ]
+    },
+    "Сад": {
+      "daos": 9,
+      "wb": 3,
+      "draw": 2,
+      "n": 14,
+      "winRate": 64.3,
+      "dominanceMean": 50.6,
+      "fidelityMean": 36.7,
+      "attentionMean": 35.1,
+      "topFailureReasons": [
+        "Dominance (3)"
+      ]
+    },
+    "Авто": {
+      "daos": 11,
+      "wb": 3,
+      "draw": 0,
+      "n": 14,
+      "winRate": 78.6,
+      "dominanceMean": 48.9,
+      "fidelityMean": 34.8,
+      "attentionMean": 34.9,
+      "topFailureReasons": [
+        "Dominance (2)",
+        "Background (1)"
+      ]
+    },
+    "Дом": {
+      "daos": 8,
+      "wb": 5,
+      "draw": 1,
+      "n": 14,
+      "winRate": 57.1,
+      "dominanceMean": 49.4,
+      "fidelityMean": 35.4,
+      "attentionMean": 33.7,
+      "topFailureReasons": [
+        "Dominance (5)"
+      ]
+    },
+    "Климат": {
+      "daos": 4,
+      "wb": 3,
+      "draw": 1,
+      "n": 8,
+      "winRate": 50,
+      "dominanceMean": 49.4,
+      "fidelityMean": 35.8,
+      "attentionMean": 34.4,
+      "topFailureReasons": [
+        "Category Specific (3)"
+      ]
+    },
+    "Кухня": {
+      "daos": 7,
+      "wb": 4,
+      "draw": 3,
+      "n": 14,
+      "winRate": 50,
+      "dominanceMean": 50.4,
+      "fidelityMean": 36.6,
+      "attentionMean": 35,
+      "topFailureReasons": [
+        "Dominance (4)"
+      ]
+    },
+    "Бытовая техника": {
+      "daos": 9,
+      "wb": 3,
+      "draw": 2,
+      "n": 14,
+      "winRate": 64.3,
+      "dominanceMean": 47.2,
+      "fidelityMean": 33.5,
+      "attentionMean": 34.6,
+      "topFailureReasons": [
+        "Dominance (2)",
+        "Lighting (1)"
+      ]
+    },
+    "Мойка": {
+      "daos": 7,
+      "wb": 5,
+      "draw": 2,
+      "n": 14,
+      "winRate": 50,
+      "dominanceMean": 48.6,
+      "fidelityMean": 34.8,
+      "attentionMean": 34.5,
+      "topFailureReasons": [
+        "Background (2)",
+        "Dominance (2)"
+      ]
+    }
+  },
+  "categoryVariance": [
+    {
+      "category": "Электроинструмент",
+      "n": 14,
+      "winRate": 78.6,
+      "dominanceMean": 60.6,
+      "fidelityMean": 45.2,
+      "attentionMean": 40,
+      "varianceWinRate": 2.32
+    },
+    {
+      "category": "Строительство",
+      "n": 14,
+      "winRate": 71.4,
+      "dominanceMean": 50.4,
+      "fidelityMean": 36.1,
+      "attentionMean": 34.5,
+      "varianceWinRate": 0.66
+    },
+    {
+      "category": "Сад",
+      "n": 14,
+      "winRate": 64.3,
+      "dominanceMean": 50.6,
+      "fidelityMean": 36.7,
+      "attentionMean": 35.1,
+      "varianceWinRate": 0.01
+    },
+    {
+      "category": "Авто",
+      "n": 14,
+      "winRate": 78.6,
+      "dominanceMean": 48.9,
+      "fidelityMean": 34.8,
+      "attentionMean": 34.9,
+      "varianceWinRate": 2.32
+    },
+    {
+      "category": "Дом",
+      "n": 14,
+      "winRate": 57.1,
+      "dominanceMean": 49.4,
+      "fidelityMean": 35.4,
+      "attentionMean": 33.7,
+      "varianceWinRate": 0.38
+    },
+    {
+      "category": "Климат",
+      "n": 8,
+      "winRate": 50,
+      "dominanceMean": 49.4,
+      "fidelityMean": 35.8,
+      "attentionMean": 34.4,
+      "varianceWinRate": 1.78
+    },
+    {
+      "category": "Кухня",
+      "n": 14,
+      "winRate": 50,
+      "dominanceMean": 50.4,
+      "fidelityMean": 36.6,
+      "attentionMean": 35,
+      "varianceWinRate": 1.78
+    },
+    {
+      "category": "Бытовая техника",
+      "n": 14,
+      "winRate": 64.3,
+      "dominanceMean": 47.2,
+      "fidelityMean": 33.5,
+      "attentionMean": 34.6,
+      "varianceWinRate": 0.01
+    },
+    {
+      "category": "Мойка",
+      "n": 14,
+      "winRate": 50,
+      "dominanceMean": 48.6,
+      "fidelityMean": 34.8,
+      "attentionMean": 34.5,
+      "varianceWinRate": 1.78
+    }
+  ],
+  "failureReasons": {
+    "Background": 4,
+    "Dominance": 21,
+    "Category Specific": 3,
+    "Lighting": 1,
+    "Typography": 1
+  },
+  "failures": [
+    {
+      "slot": "product-010",
+      "productId": 459854998,
+      "category": "Электроинструмент",
+      "reason": "Background",
+      "detail": "Scene"
+    },
+    {
+      "slot": "product-015",
+      "productId": 14398217,
+      "category": "Строительство",
+      "reason": "Dominance",
+      "detail": "Product Dominance"
+    },
+    {
+      "slot": "product-020",
+      "productId": 373967588,
+      "category": "Строительство",
+      "reason": "Dominance",
+      "detail": "Product Dominance"
+    },
+    {
+      "slot": "product-021",
+      "productId": 219468153,
+      "category": "Строительство",
+      "reason": "Dominance",
+      "detail": "Product Dominance"
+    },
+    {
+      "slot": "product-029",
+      "productId": 952674072,
+      "category": "Сад",
+      "reason": "Dominance",
+      "detail": "Product Dominance"
+    },
+    {
+      "slot": "product-032",
+      "productId": 945646115,
+      "category": "Сад",
+      "reason": "Dominance",
+      "detail": "Product Dominance"
+    },
+    {
+      "slot": "product-033",
+      "productId": 953436240,
+      "category": "Сад",
+      "reason": "Dominance",
+      "detail": "Product Dominance"
+    },
+    {
+      "slot": "product-043",
+      "productId": 901998555,
+      "category": "Авто",
+      "reason": "Dominance",
+      "detail": "Product Dominance"
+    },
+    {
+      "slot": "product-047",
+      "productId": 366448449,
+      "category": "Авто",
+      "reason": "Background",
+      "detail": "Scene"
+    },
+    {
+      "slot": "product-049",
+      "productId": 449808748,
+      "category": "Авто",
+      "reason": "Dominance",
+      "detail": "Product Dominance"
+    },
+    {
+      "slot": "product-057",
+      "productId": 10392457,
+      "category": "Дом",
+      "reason": "Dominance",
+      "detail": "Product Dominance"
+    },
+    {
+      "slot": "product-058",
+      "productId": 192183239,
+      "category": "Дом",
+      "reason": "Dominance",
+      "detail": "Product Dominance"
+    },
+    {
+      "slot": "product-059",
+      "productId": 276769869,
+      "category": "Дом",
+      "reason": "Dominance",
+      "detail": "Product Dominance"
+    },
+    {
+      "slot": "product-060",
+      "productId": 207567698,
+      "category": "Дом",
+      "reason": "Dominance",
+      "detail": "Product Dominance"
+    },
+    {
+      "slot": "product-068",
+      "productId": 211165129,
+      "category": "Дом",
+      "reason": "Dominance",
+      "detail": "Product Dominance"
+    },
+    {
+      "slot": "product-071",
+      "productId": 196125400,
+      "category": "Климат",
+      "reason": "Category Specific",
+      "detail": "Product Dominance"
+    },
+    {
+      "slot": "product-072",
+      "productId": 250141307,
+      "category": "Климат",
+      "reason": "Category Specific",
+      "detail": "Product Dominance"
+    },
+    {
+      "slot": "product-074",
+      "productId": 472047657,
+      "category": "Климат",
+      "reason": "Category Specific",
+      "detail": "Product Dominance"
+    },
+    {
+      "slot": "product-079",
+      "productId": 396190738,
+      "category": "Кухня",
+      "reason": "Dominance",
+      "detail": "Product Dominance"
+    },
+    {
+      "slot": "product-080",
+      "productId": 316171067,
+      "category": "Кухня",
+      "reason": "Dominance",
+      "detail": "Product Dominance"
+    },
+    {
+      "slot": "product-081",
+      "productId": 456375182,
+      "category": "Кухня",
+      "reason": "Dominance",
+      "detail": "Product Dominance"
+    },
+    {
+      "slot": "product-084",
+      "productId": 62929192,
+      "category": "Кухня",
+      "reason": "Dominance",
+      "detail": "Product Dominance"
+    },
+    {
+      "slot": "product-093",
+      "productId": 952441785,
+      "category": "Бытовая техника",
+      "reason": "Dominance",
+      "detail": "Product Dominance"
+    },
+    {
+      "slot": "product-095",
+      "productId": 436689555,
+      "category": "Бытовая техника",
+      "reason": "Lighting",
+      "detail": "Lighting"
+    },
+    {
+      "slot": "product-099",
+      "productId": 440630926,
+      "category": "Бытовая техника",
+      "reason": "Dominance",
+      "detail": "Product Dominance"
+    },
+    {
+      "slot": "product-107",
+      "productId": 208892590,
+      "category": "Мойка",
+      "reason": "Background",
+      "detail": "Product Dominance"
+    },
+    {
+      "slot": "product-108",
+      "productId": 901618182,
+      "category": "Мойка",
+      "reason": "Dominance",
+      "detail": "Product Dominance"
+    },
+    {
+      "slot": "product-109",
+      "productId": 927245531,
+      "category": "Мойка",
+      "reason": "Typography",
+      "detail": "Product Dominance"
+    },
+    {
+      "slot": "product-115",
+      "productId": 361890294,
+      "category": "Мойка",
+      "reason": "Dominance",
+      "detail": "Product Dominance"
+    },
+    {
+      "slot": "product-118",
+      "productId": 268281744,
+      "category": "Мойка",
+      "reason": "Background",
+      "detail": "Scene"
+    }
+  ],
+  "council": {
+    "marketWinRate": 63,
+    "winRateCi": {
+      "rate": 63.3,
+      "low": 54.4,
+      "high": 71.4
+    },
+    "genSuccessRate": 100,
+    "confidenceLevel": "HIGH",
+    "strongestCategories": [
+      "Электроинструмент",
+      "Авто",
+      "Строительство"
+    ],
+    "calibrationCategories": [
+      "Климат",
+      "Кухня",
+      "Мойка"
+    ],
+    "closedBetaReady": "NOT READY",
+    "exitCriteria": {
+      "genSuccess100": true,
+      "winRate75": false,
+      "highConfidence": true,
+      "noCriticalRegression": true
+    },
+    "rationale": "Validation incomplete or below exit criteria: gen=100%, win=63%."
+  },
+  "products": [
+    {
+      "slot": "product-001",
+      "productId": 243752873,
+      "category": "Электроинструмент",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-002",
+      "productId": 65018803,
+      "category": "Электроинструмент",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-003",
+      "productId": 865871291,
+      "category": "Электроинструмент",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-004",
+      "productId": 271588005,
+      "category": "Электроинструмент",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-005",
+      "productId": 335316091,
+      "category": "Электроинструмент",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-006",
+      "productId": 165794864,
+      "category": "Электроинструмент",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-007",
+      "productId": 467367359,
+      "category": "Электроинструмент",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-008",
+      "productId": 343369730,
+      "category": "Электроинструмент",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-009",
+      "productId": 260365373,
+      "category": "Электроинструмент",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-010",
+      "productId": 459854998,
+      "category": "Электроинструмент",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Background"
+    },
+    {
+      "slot": "product-011",
+      "productId": 283430043,
+      "category": "Электроинструмент",
+      "overall": "draw",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-012",
+      "productId": 282442606,
+      "category": "Электроинструмент",
+      "overall": "draw",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-013",
+      "productId": 444661943,
+      "category": "Электроинструмент",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-014",
+      "productId": 111713973,
+      "category": "Электроинструмент",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-015",
+      "productId": 14398217,
+      "category": "Строительство",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Dominance"
+    },
+    {
+      "slot": "product-016",
+      "productId": 282525552,
+      "category": "Строительство",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-017",
+      "productId": 860664155,
+      "category": "Строительство",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-018",
+      "productId": 953661781,
+      "category": "Строительство",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-019",
+      "productId": 11516920,
+      "category": "Строительство",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-020",
+      "productId": 373967588,
+      "category": "Строительство",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Dominance"
+    },
+    {
+      "slot": "product-021",
+      "productId": 219468153,
+      "category": "Строительство",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Dominance"
+    },
+    {
+      "slot": "product-022",
+      "productId": 467226722,
+      "category": "Строительство",
+      "overall": "draw",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-023",
+      "productId": 276762073,
+      "category": "Строительство",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-024",
+      "productId": 895532765,
+      "category": "Строительство",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-025",
+      "productId": 217796839,
+      "category": "Строительство",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-026",
+      "productId": 313679246,
+      "category": "Строительство",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-027",
+      "productId": 313811132,
+      "category": "Строительство",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-028",
+      "productId": 404228253,
+      "category": "Строительство",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-029",
+      "productId": 952674072,
+      "category": "Сад",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Dominance"
+    },
+    {
+      "slot": "product-030",
+      "productId": 903330846,
+      "category": "Сад",
+      "overall": "draw",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-031",
+      "productId": 880158593,
+      "category": "Сад",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-032",
+      "productId": 945646115,
+      "category": "Сад",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Dominance"
+    },
+    {
+      "slot": "product-033",
+      "productId": 953436240,
+      "category": "Сад",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Dominance"
+    },
+    {
+      "slot": "product-034",
+      "productId": 904886684,
+      "category": "Сад",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-035",
+      "productId": 222792233,
+      "category": "Сад",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-036",
+      "productId": 852947227,
+      "category": "Сад",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-037",
+      "productId": 850327378,
+      "category": "Сад",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-038",
+      "productId": 30134323,
+      "category": "Сад",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-039",
+      "productId": 188483852,
+      "category": "Сад",
+      "overall": "draw",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-040",
+      "productId": 903335763,
+      "category": "Сад",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-041",
+      "productId": 38098435,
+      "category": "Сад",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-042",
+      "productId": 837846148,
+      "category": "Сад",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-043",
+      "productId": 901998555,
+      "category": "Авто",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Dominance"
+    },
+    {
+      "slot": "product-044",
+      "productId": 253631867,
+      "category": "Авто",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-045",
+      "productId": 422452334,
+      "category": "Авто",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-046",
+      "productId": 371056783,
+      "category": "Авто",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-047",
+      "productId": 366448449,
+      "category": "Авто",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Background"
+    },
+    {
+      "slot": "product-048",
+      "productId": 419174546,
+      "category": "Авто",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-049",
+      "productId": 449808748,
+      "category": "Авто",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Dominance"
+    },
+    {
+      "slot": "product-050",
+      "productId": 211842761,
+      "category": "Авто",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-051",
+      "productId": 446180181,
+      "category": "Авто",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-052",
+      "productId": 907094892,
+      "category": "Авто",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-053",
+      "productId": 260545801,
+      "category": "Авто",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-054",
+      "productId": 446180182,
+      "category": "Авто",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-055",
+      "productId": 258329460,
+      "category": "Авто",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-056",
+      "productId": 419915083,
+      "category": "Авто",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-057",
+      "productId": 10392457,
+      "category": "Дом",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Dominance"
+    },
+    {
+      "slot": "product-058",
+      "productId": 192183239,
+      "category": "Дом",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Dominance"
+    },
+    {
+      "slot": "product-059",
+      "productId": 276769869,
+      "category": "Дом",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Dominance"
+    },
+    {
+      "slot": "product-060",
+      "productId": 207567698,
+      "category": "Дом",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Dominance"
+    },
+    {
+      "slot": "product-061",
+      "productId": 229003681,
+      "category": "Дом",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-062",
+      "productId": 220657499,
+      "category": "Дом",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-063",
+      "productId": 445321175,
+      "category": "Дом",
+      "overall": "draw",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-064",
+      "productId": 844404616,
+      "category": "Дом",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-065",
+      "productId": 430830019,
+      "category": "Дом",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-066",
+      "productId": 303704774,
+      "category": "Дом",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-067",
+      "productId": 79890545,
+      "category": "Дом",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-068",
+      "productId": 211165129,
+      "category": "Дом",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Dominance"
+    },
+    {
+      "slot": "product-069",
+      "productId": 436697125,
+      "category": "Дом",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-070",
+      "productId": 876220926,
+      "category": "Дом",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-071",
+      "productId": 196125400,
+      "category": "Климат",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Category Specific"
+    },
+    {
+      "slot": "product-072",
+      "productId": 250141307,
+      "category": "Климат",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Category Specific"
+    },
+    {
+      "slot": "product-073",
+      "productId": 140135549,
+      "category": "Климат",
+      "overall": "draw",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-074",
+      "productId": 472047657,
+      "category": "Климат",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Category Specific"
+    },
+    {
+      "slot": "product-075",
+      "productId": 287231064,
+      "category": "Климат",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-076",
+      "productId": 451262681,
+      "category": "Климат",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-077",
+      "productId": 151374815,
+      "category": "Климат",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-078",
+      "productId": 237665355,
+      "category": "Климат",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-079",
+      "productId": 396190738,
+      "category": "Кухня",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Dominance"
+    },
+    {
+      "slot": "product-080",
+      "productId": 316171067,
+      "category": "Кухня",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Dominance"
+    },
+    {
+      "slot": "product-081",
+      "productId": 456375182,
+      "category": "Кухня",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Dominance"
+    },
+    {
+      "slot": "product-082",
+      "productId": 9408643,
+      "category": "Кухня",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-083",
+      "productId": 340201166,
+      "category": "Кухня",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-084",
+      "productId": 62929192,
+      "category": "Кухня",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Dominance"
+    },
+    {
+      "slot": "product-085",
+      "productId": 460767433,
+      "category": "Кухня",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-086",
+      "productId": 933956465,
+      "category": "Кухня",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-087",
+      "productId": 456423416,
+      "category": "Кухня",
+      "overall": "draw",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-088",
+      "productId": 884530861,
+      "category": "Кухня",
+      "overall": "draw",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-089",
+      "productId": 192618575,
+      "category": "Кухня",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-090",
+      "productId": 158525642,
+      "category": "Кухня",
+      "overall": "draw",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-091",
+      "productId": 144665364,
+      "category": "Кухня",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-092",
+      "productId": 258014159,
+      "category": "Кухня",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-093",
+      "productId": 952441785,
+      "category": "Бытовая техника",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Dominance"
+    },
+    {
+      "slot": "product-094",
+      "productId": 409958399,
+      "category": "Бытовая техника",
+      "overall": "draw",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-095",
+      "productId": 436689555,
+      "category": "Бытовая техника",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Lighting"
+    },
+    {
+      "slot": "product-096",
+      "productId": 904781208,
+      "category": "Бытовая техника",
+      "overall": "draw",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-097",
+      "productId": 336953360,
+      "category": "Бытовая техника",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-098",
+      "productId": 402597884,
+      "category": "Бытовая техника",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-099",
+      "productId": 440630926,
+      "category": "Бытовая техника",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Dominance"
+    },
+    {
+      "slot": "product-100",
+      "productId": 366475818,
+      "category": "Бытовая техника",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-101",
+      "productId": 307232289,
+      "category": "Бытовая техника",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-102",
+      "productId": 368688432,
+      "category": "Бытовая техника",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-103",
+      "productId": 68786263,
+      "category": "Бытовая техника",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-104",
+      "productId": 217335145,
+      "category": "Бытовая техника",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-105",
+      "productId": 439622308,
+      "category": "Бытовая техника",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-106",
+      "productId": 307229408,
+      "category": "Бытовая техника",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-107",
+      "productId": 208892590,
+      "category": "Мойка",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Background"
+    },
+    {
+      "slot": "product-108",
+      "productId": 901618182,
+      "category": "Мойка",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Dominance"
+    },
+    {
+      "slot": "product-109",
+      "productId": 927245531,
+      "category": "Мойка",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Typography"
+    },
+    {
+      "slot": "product-110",
+      "productId": 205921411,
+      "category": "Мойка",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-111",
+      "productId": 418605724,
+      "category": "Мойка",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-112",
+      "productId": 915494514,
+      "category": "Мойка",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-113",
+      "productId": 835780159,
+      "category": "Мойка",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-114",
+      "productId": 917489254,
+      "category": "Мойка",
+      "overall": "draw",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-115",
+      "productId": 361890294,
+      "category": "Мойка",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Dominance"
+    },
+    {
+      "slot": "product-116",
+      "productId": 493108370,
+      "category": "Мойка",
+      "overall": "draw",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-117",
+      "productId": 890673106,
+      "category": "Мойка",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-118",
+      "productId": 268281744,
+      "category": "Мойка",
+      "overall": "wb",
+      "daosGenerated": true,
+      "failureReason": "Background"
+    },
+    {
+      "slot": "product-119",
+      "productId": 396506273,
+      "category": "Мойка",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-120",
+      "productId": 372086067,
+      "category": "Мойка",
+      "overall": "daos",
+      "daosGenerated": true
+    }
+  ]
+}

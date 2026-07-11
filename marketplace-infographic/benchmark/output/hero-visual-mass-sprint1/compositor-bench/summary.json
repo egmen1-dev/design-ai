@@ -1,0 +1,46 @@
+{
+  "version": "hero-visual-mass-compositor-bench",
+  "timestamp": "2026-07-11T15:24:33.265Z",
+  "legacy": {
+    "flag": "0",
+    "placement": {
+      "left": 224,
+      "top": 693,
+      "width": 453,
+      "height": 244
+    },
+    "areaPct": 10.2,
+    "calibration": {
+      "commercialCalibrationVersion": "1.0.0-sprint6c",
+      "commercialCalibrationFormula": "legacy:0.58+objectScale*0.05",
+      "commercialTargetArea": 75,
+      "commercialMeasuredArea": 10.2,
+      "commercialAreaError": -64.8,
+      "commercialCalibrationWarnings": [
+        "Measured area 10.2% deviates from target 75% — canvas caps may limit materialization"
+      ]
+    }
+  },
+  "heroMass": {
+    "flag": "1",
+    "placement": {
+      "left": 144,
+      "top": 607,
+      "width": 612,
+      "height": 330
+    },
+    "areaPct": 18.7,
+    "calibration": {
+      "commercialCalibrationVersion": "1.0.0-sprint6c",
+      "commercialCalibrationFormula": "legacy:0.58+objectScale*0.05",
+      "commercialTargetArea": 88.5,
+      "commercialMeasuredArea": 18.7,
+      "commercialAreaError": -69.8,
+      "commercialCalibrationWarnings": [
+        "Measured area 18.7% deviates from target 88.5% — canvas caps may limit materialization"
+      ]
+    }
+  },
+  "areaDeltaPp": 8.5,
+  "pass": true
+}

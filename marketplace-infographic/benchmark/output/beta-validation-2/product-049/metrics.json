@@ -1,0 +1,70 @@
+{
+  "productId": 449808748,
+  "category": "auto",
+  "categoryLabel": "Авто",
+  "name": "Пылесос для автомобиля беспроводной мощный",
+  "daosGenerated": true,
+  "genDurationMs": 17839,
+  "leader": {
+    "productDominance": 49,
+    "foregroundIsolation": 59,
+    "headlineVisualWeight": 32,
+    "primaryFocusRatio": 0.296,
+    "attentionHierarchyScore": 30,
+    "commercialFidelity": 34.5,
+    "visualWeightHero": 30.9,
+    "thumbnailReadability": 51.9,
+    "productVisualWeight": 30.9,
+    "typographyCompetition": 48,
+    "secondaryFocusRatio": 0.704,
+    "attentionDistribution": 0.279
+  },
+  "daos": {
+    "productDominance": 35,
+    "foregroundIsolation": 61.1,
+    "headlineVisualWeight": 24.1,
+    "primaryFocusRatio": 0.221,
+    "attentionHierarchyScore": 29.2,
+    "commercialFidelity": 21,
+    "visualWeightHero": 13,
+    "thumbnailReadability": 68.7,
+    "productVisualWeight": 13,
+    "typographyCompetition": 38.9,
+    "secondaryFocusRatio": 0.779,
+    "attentionDistribution": 0.171
+  },
+  "delta": {
+    "productDominance": -14,
+    "foregroundIsolation": 2.1,
+    "headlineVisualWeight": -7.9,
+    "primaryFocusRatio": -0.07,
+    "attentionHierarchyScore": -0.8,
+    "commercialFidelity": -13.5,
+    "visualWeightHero": -17.9,
+    "thumbnailReadability": 16.8,
+    "productVisualWeight": -17.9,
+    "typographyCompetition": -9.1,
+    "secondaryFocusRatio": 0.08,
+    "attentionDistribution": -0.11
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "daos",
+    "wouldOpen": "draw",
+    "overall": "wb",
+    "rationale": "Dominance: WB 49 vs DAOS 35 (Δ-14); FI: WB 59 vs DAOS 61.1; Thumbnail: WB 51.9 vs DAOS 68.7; Fidelity: WB 34.5 vs DAOS 21",
+    "gapClass": "Product Dominance"
+  },
+  "failure": {
+    "slot": "product-049",
+    "productId": 449808748,
+    "category": "Авто",
+    "reason": "Dominance",
+    "detail": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 42.7,
+    "daos": 37.2
+  }
+}

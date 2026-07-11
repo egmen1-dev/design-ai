@@ -1,0 +1,62 @@
+{
+  "productId": 38098435,
+  "category": "garden",
+  "categoryLabel": "Сад",
+  "name": "Триммер электрический садовый для травы ЕТ 2800",
+  "daosGenerated": true,
+  "genDurationMs": 14476,
+  "leader": {
+    "productDominance": 46,
+    "foregroundIsolation": 45,
+    "headlineVisualWeight": 31.9,
+    "primaryFocusRatio": 0.288,
+    "attentionHierarchyScore": 30.3,
+    "commercialFidelity": 31.5,
+    "visualWeightHero": 27,
+    "thumbnailReadability": 52,
+    "productVisualWeight": 27,
+    "typographyCompetition": 34,
+    "secondaryFocusRatio": 0.712,
+    "attentionDistribution": 0.291
+  },
+  "daos": {
+    "productDominance": 71,
+    "foregroundIsolation": 68,
+    "headlineVisualWeight": 11,
+    "primaryFocusRatio": 0.37,
+    "attentionHierarchyScore": 41.2,
+    "commercialFidelity": 50,
+    "visualWeightHero": 27.1,
+    "thumbnailReadability": 66.6,
+    "productVisualWeight": 27.1,
+    "typographyCompetition": 35.3,
+    "secondaryFocusRatio": 0.63,
+    "attentionDistribution": 0.369
+  },
+  "delta": {
+    "productDominance": 25,
+    "foregroundIsolation": 23,
+    "headlineVisualWeight": -20.9,
+    "primaryFocusRatio": 0.08,
+    "attentionHierarchyScore": 10.9,
+    "commercialFidelity": 18.5,
+    "visualWeightHero": 0.1,
+    "thumbnailReadability": 14.6,
+    "productVisualWeight": 0.1,
+    "typographyCompetition": 1.3,
+    "secondaryFocusRatio": -0.08,
+    "attentionDistribution": 0.08
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 46 vs DAOS 71 (Δ25); FI: WB 45 vs DAOS 68; Thumbnail: WB 52 vs DAOS 66.6; Fidelity: WB 31.5 vs DAOS 50"
+  },
+  "compositeScore": {
+    "leader": 38.8,
+    "daos": 57.8
+  }
+}

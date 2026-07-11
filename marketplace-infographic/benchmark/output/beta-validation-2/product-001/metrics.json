@@ -1,0 +1,62 @@
+{
+  "productId": 243752873,
+  "category": "power-tools",
+  "categoryLabel": "Электроинструмент",
+  "name": "Дрель ударная электрическая ДУ-13 750ЭР, 546.1.0.00",
+  "daosGenerated": true,
+  "genDurationMs": 10604,
+  "leader": {
+    "productDominance": 63,
+    "foregroundIsolation": 61.8,
+    "headlineVisualWeight": 14.9,
+    "primaryFocusRatio": 0.339,
+    "attentionHierarchyScore": 37.7,
+    "commercialFidelity": 51,
+    "visualWeightHero": 25,
+    "thumbnailReadability": 57.6,
+    "productVisualWeight": 25,
+    "typographyCompetition": 23.8,
+    "secondaryFocusRatio": 0.661,
+    "attentionDistribution": 0.392
+  },
+  "daos": {
+    "productDominance": 66,
+    "foregroundIsolation": 90,
+    "headlineVisualWeight": 12.9,
+    "primaryFocusRatio": 0.491,
+    "attentionHierarchyScore": 45,
+    "commercialFidelity": 51,
+    "visualWeightHero": 24.8,
+    "thumbnailReadability": 100,
+    "productVisualWeight": 24.8,
+    "typographyCompetition": 21.9,
+    "secondaryFocusRatio": 0.509,
+    "attentionDistribution": 0.416
+  },
+  "delta": {
+    "productDominance": 3,
+    "foregroundIsolation": 28.2,
+    "headlineVisualWeight": -2,
+    "primaryFocusRatio": 0.15,
+    "attentionHierarchyScore": 7.3,
+    "commercialFidelity": 0,
+    "visualWeightHero": -0.2,
+    "thumbnailReadability": 42.4,
+    "productVisualWeight": -0.2,
+    "typographyCompetition": -1.9,
+    "secondaryFocusRatio": -0.15,
+    "attentionDistribution": 0.02
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 63 vs DAOS 66 (Δ3); FI: WB 61.8 vs DAOS 90; Thumbnail: WB 57.6 vs DAOS 100; Fidelity: WB 51 vs DAOS 51"
+  },
+  "compositeScore": {
+    "leader": 52.5,
+    "daos": 64.8
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "productId": 472047657,
+  "category": "humidifier",
+  "categoryLabel": "Климат",
+  "name": "Увлажнитель воздуха мини для дома бесшумный в машину",
+  "daosGenerated": true,
+  "genDurationMs": 18624,
+  "leader": {
+    "productDominance": 49,
+    "foregroundIsolation": 21.7,
+    "headlineVisualWeight": 22.5,
+    "primaryFocusRatio": 0.3,
+    "attentionHierarchyScore": 31.7,
+    "commercialFidelity": 43,
+    "visualWeightHero": 22.7,
+    "thumbnailReadability": 26.2,
+    "productVisualWeight": 22.7,
+    "typographyCompetition": 38.8,
+    "secondaryFocusRatio": 0.7,
+    "attentionDistribution": 0.27
+  },
+  "daos": {
+    "productDominance": 38,
+    "foregroundIsolation": 31.6,
+    "headlineVisualWeight": 26.2,
+    "primaryFocusRatio": 0.233,
+    "attentionHierarchyScore": 29.1,
+    "commercialFidelity": 24.5,
+    "visualWeightHero": 16.4,
+    "thumbnailReadability": 36.9,
+    "productVisualWeight": 16.4,
+    "typographyCompetition": 45.5,
+    "secondaryFocusRatio": 0.767,
+    "attentionDistribution": 0.186
+  },
+  "delta": {
+    "productDominance": -11,
+    "foregroundIsolation": 9.9,
+    "headlineVisualWeight": 3.7,
+    "primaryFocusRatio": -0.07,
+    "attentionHierarchyScore": -2.6,
+    "commercialFidelity": -18.5,
+    "visualWeightHero": -6.3,
+    "thumbnailReadability": 10.7,
+    "productVisualWeight": -6.3,
+    "typographyCompetition": 6.7,
+    "secondaryFocusRatio": 0.07,
+    "attentionDistribution": -0.08
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "daos",
+    "wouldOpen": "draw",
+    "overall": "wb",
+    "rationale": "Dominance: WB 49 vs DAOS 38 (Δ-11); FI: WB 21.7 vs DAOS 31.6; Thumbnail: WB 26.2 vs DAOS 36.9; Fidelity: WB 43 vs DAOS 24.5",
+    "gapClass": "Product Dominance"
+  },
+  "failure": {
+    "slot": "product-074",
+    "productId": 472047657,
+    "category": "Климат",
+    "reason": "Category Specific",
+    "detail": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 34.8,
+    "daos": 29.8
+  }
+}

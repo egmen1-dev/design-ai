@@ -1,0 +1,62 @@
+{
+  "productId": 860664155,
+  "category": "construction",
+  "categoryLabel": "Строительство",
+  "name": "Перфоратор GBH 2-26 DRE SDS-plus 800вт 3дж",
+  "daosGenerated": true,
+  "genDurationMs": 16056,
+  "leader": {
+    "productDominance": 57,
+    "foregroundIsolation": 53.4,
+    "headlineVisualWeight": 23.1,
+    "primaryFocusRatio": 0.298,
+    "attentionHierarchyScore": 33.6,
+    "commercialFidelity": 60,
+    "visualWeightHero": 30.6,
+    "thumbnailReadability": 56.1,
+    "productVisualWeight": 30.6,
+    "typographyCompetition": 39,
+    "secondaryFocusRatio": 0.702,
+    "attentionDistribution": 0.33
+  },
+  "daos": {
+    "productDominance": 57,
+    "foregroundIsolation": 76.3,
+    "headlineVisualWeight": 9.4,
+    "primaryFocusRatio": 0.381,
+    "attentionHierarchyScore": 38.1,
+    "commercialFidelity": 43.5,
+    "visualWeightHero": 12.5,
+    "thumbnailReadability": 82.8,
+    "productVisualWeight": 12.5,
+    "typographyCompetition": 16.8,
+    "secondaryFocusRatio": 0.619,
+    "attentionDistribution": 0.323
+  },
+  "delta": {
+    "productDominance": 0,
+    "foregroundIsolation": 22.9,
+    "headlineVisualWeight": -13.7,
+    "primaryFocusRatio": 0.08,
+    "attentionHierarchyScore": 4.5,
+    "commercialFidelity": -16.5,
+    "visualWeightHero": -18.1,
+    "thumbnailReadability": 26.7,
+    "productVisualWeight": -18.1,
+    "typographyCompetition": -22.2,
+    "secondaryFocusRatio": -0.08,
+    "attentionDistribution": -0.01
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 57 vs DAOS 57 (Δ0); FI: WB 53.4 vs DAOS 76.3; Thumbnail: WB 56.1 vs DAOS 82.8; Fidelity: WB 60 vs DAOS 43.5"
+  },
+  "compositeScore": {
+    "leader": 50.8,
+    "daos": 54.3
+  }
+}

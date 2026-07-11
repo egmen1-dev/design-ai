@@ -1,0 +1,62 @@
+{
+  "productId": 222792233,
+  "category": "garden",
+  "categoryLabel": "Сад",
+  "name": "Триммер для травы электрический мотокоса TEE-1,63S40Т",
+  "daosGenerated": true,
+  "genDurationMs": 14461,
+  "leader": {
+    "productDominance": 50,
+    "foregroundIsolation": 48.2,
+    "headlineVisualWeight": 21.7,
+    "primaryFocusRatio": 0.257,
+    "attentionHierarchyScore": 29.7,
+    "commercialFidelity": 38,
+    "visualWeightHero": 21.9,
+    "thumbnailReadability": 42.9,
+    "productVisualWeight": 21.9,
+    "typographyCompetition": 34.6,
+    "secondaryFocusRatio": 0.743,
+    "attentionDistribution": 0.28
+  },
+  "daos": {
+    "productDominance": 61,
+    "foregroundIsolation": 50.5,
+    "headlineVisualWeight": 9.7,
+    "primaryFocusRatio": 0.422,
+    "attentionHierarchyScore": 40.5,
+    "commercialFidelity": 47.5,
+    "visualWeightHero": 15.5,
+    "thumbnailReadability": 59.3,
+    "productVisualWeight": 15.5,
+    "typographyCompetition": 17.5,
+    "secondaryFocusRatio": 0.578,
+    "attentionDistribution": 0.363
+  },
+  "delta": {
+    "productDominance": 11,
+    "foregroundIsolation": 2.3,
+    "headlineVisualWeight": -12,
+    "primaryFocusRatio": 0.16,
+    "attentionHierarchyScore": 10.8,
+    "commercialFidelity": 9.5,
+    "visualWeightHero": -6.4,
+    "thumbnailReadability": 16.4,
+    "productVisualWeight": -6.4,
+    "typographyCompetition": -17.1,
+    "secondaryFocusRatio": -0.17,
+    "attentionDistribution": 0.08
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 50 vs DAOS 61 (Δ11); FI: WB 48.2 vs DAOS 50.5; Thumbnail: WB 42.9 vs DAOS 59.3; Fidelity: WB 38 vs DAOS 47.5"
+  },
+  "compositeScore": {
+    "leader": 40.3,
+    "daos": 49.4
+  }
+}

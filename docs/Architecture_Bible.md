@@ -2,7 +2,7 @@
 
 > Architecture Bible
 
-Version: 1.0 (Draft)
+Version: 1.0 (Complete — Volume I)
 
 Продакшен: **https://design-ai.shop**  
 Обновлено: 2026-07-05
@@ -127,6 +127,7 @@ Version: 1.0 (Draft)
   - [CI-001–CI-003](#implementation-directive-ci-001)
   - [LAW-026–LAW-030](#new-law-2)
   - [LAW-031–LAW-035](#law-031)
+  - [LAW-036–LAW-050](#law-036)
 - [Part 17 — Design Knowledge Engine](#part-17--design-knowledge-engine)
   - [Current Audit & Target](#current-audit-1)
   - [Knowledge Graph & API](#knowledge-graph-1)
@@ -175,7 +176,34 @@ Version: 1.0 (Draft)
   - [Platform Core through Legacy](#platform-core)
   - [Tests, Docs & Configuration](#tests)
   - [REP-002 & Repository Laws](#implementation-directive-rep-002)
-- [Appendix A — Repository Implementation Reference](#appendix-a--repository-implementation-reference)
+- **Volume II — Code Specification**
+- [Part 28 — Platform Core Specification](#part-28--platform-core-specification)
+  - [Responsibilities & Directory](#responsibilities)
+  - [ProjectState & Registry](#project-state)
+  - [Directives PC-001–005](#implementation-directive-pc-001)
+  - [Tests & Success Criteria](#unit-tests)
+- [Part 29 — File Specification (Design Process, Governance, Render Engine)](#part-29--file-specification-design-process)
+  - [Design Process (DSP-001–004)](#module-design-process)
+  - [Design Governance (GOV-002–003)](#module-design-governance)
+  - [Render Engine (REN-002–003)](#module-render-engine)
+- [Part 30 — Evolution Strategy](#part-30--evolution-strategy)
+  - [Evolution Principles](#evolution-principles)
+  - [Maturity Model & Current Position](#maturity-model)
+  - [Feature Introduction & Deprecation](#feature-introduction)
+- [Part 31 — Release Strategy](#part-31--release-strategy)
+  - [Release Lifecycle](#release-lifecycle)
+  - [Release Types & Architecture Release](#release-types)
+  - [Artifacts & Rollback](#release-artifacts)
+- [Part 32 — Observability](#part-32--observability)
+  - [Platform Emissions & Project Storage](#every-platform-emits)
+  - [Debug Bundle](#debug-bundle)
+- [Part 33 — Final Architecture Laws](#part-33--final-architecture-laws)
+  - [LAW-036–LAW-050](#law-036)
+- [Appendix A — Glossary](#appendix-a--glossary)
+- [Appendix B — Architecture Index](#appendix-b--architecture-index)
+- [Appendix C — Implementation Index](#appendix-c--implementation-index)
+- [Appendix D — Volume I Completion](#appendix-d--volume-i-completion)
+- [Appendix E — Repository Implementation Reference](#appendix-e--repository-implementation-reference)
   - [Current Architecture (codebase)](#current-architecture-codebase)
   - [Laws Compliance Matrix](#laws-compliance-matrix)
   - [Future Architecture (code map)](#future-architecture-code-map)
@@ -493,6 +521,96 @@ No Runtime code inside Platforms.
 ## LAW-035
 
 Repository structure is architecture.
+
+---
+
+## LAW-036
+
+ProjectState is immutable.
+
+---
+
+## LAW-037
+
+Every platform owns exactly one responsibility.
+
+---
+
+## LAW-038
+
+No platform communicates directly with another platform.
+
+---
+
+## LAW-039
+
+Only Runtime orchestrates execution.
+
+---
+
+## LAW-040
+
+Only Provider Adapter generates prompts.
+
+---
+
+## LAW-041
+
+Only Asset Platform accesses filesystem.
+
+---
+
+## LAW-042
+
+Knowledge is queried only through Knowledge Engine.
+
+---
+
+## LAW-043
+
+Rendering executes blueprints only.
+
+---
+
+## LAW-044
+
+Vision is mandatory.
+
+---
+
+## LAW-045
+
+Learning executes after every completed generation.
+
+---
+
+## LAW-046
+
+Every architectural change requires ADR.
+
+---
+
+## LAW-047
+
+Every breaking change requires RFC.
+
+---
+
+## LAW-048
+
+Every implementation requires Directive.
+
+---
+
+## LAW-049
+
+Architecture validation blocks invalid releases.
+
+---
+
+## LAW-050
+
+Architecture Bible is the single source of truth.
 
 ---
 
@@ -8763,10 +8881,1139 @@ Primary DSL remains [`docs/architecture/architecture.yaml`](architecture/archite
 
 ---
 
-# APPENDIX A — REPOSITORY IMPLEMENTATION REFERENCE
+# VOLUME II — CODE SPECIFICATION
+
+> Executable architecture. Implementation chapters begin here.
+
+---
+
+# PART 28 — PLATFORM CORE SPECIFICATION
+
+# ============================================================================
+# VOLUME II — CODE SPECIFICATION
+# PART 28 — PLATFORM CORE SPECIFICATION
+# ============================================================================
+
+| | |
+|---|---|
+| **Status** | CRITICAL |
+| **Architecture Priority** | MAXIMUM |
+| **Implementation Wave** | 1 |
+
+## Purpose
+
+Platform Core is the **foundation** of Design AI OS.
+
+Nothing in the system may execute without Platform Core.
+
+Every platform · every provider · every runtime component · every asset — everything depends on Platform Core.
+
+Platform Core contains **ZERO** business logic.
+
+**Implementation:** `marketplace-infographic/src/lib/platform-core/`
+
+---
+
+# RESPONSIBILITIES
+
+Platform registration · Platform discovery · Project lifecycle · Architecture metadata · Execution context · Configuration · Versioning · Dependency registry · **ProjectState** · **DecisionTrace**
+
+---
+
+# DIRECTORY
+
+```
+src/lib/platform-core/
+├── context/
+├── registry/
+├── project-state/
+├── lifecycle/
+├── contracts/
+├── versioning/
+├── metadata/
+├── validation/
+├── execution/
+├── configuration/
+├── interfaces/
+└── PlatformCore.ts
+```
+
+---
+
+# PROJECT STATE
+
+| | |
+|---|---|
+| **Current** | Multiple objects |
+| **Future** | Single immutable `ProjectState` |
+
+Every platform receives identical state. Nothing else.
+
+### ProjectState structure
+
+`project` · `runtime` · `contracts` · `assets` · `events` · `metrics` · `configuration` · `execution` · `architecture` · `decisionTrace`
+
+---
+
+# PROJECT CONTEXT
+
+Project ID · Run ID · Marketplace · Product · Generation Mode · Architecture Version · Runtime Version · Provider · User Preferences
+
+---
+
+# ARCHITECTURE REGISTRY
+
+Runtime **never** imports platforms. Runtime asks **Registry**. Registry returns implementation.
+
+Supports: Platform · Skill · Plugin · Provider · Validator · Critic
+
+---
+
+# VERSION MANAGER
+
+Every object receives version: Platform · Runtime · Specification · Asset · Blueprint · Knowledge · Genome
+
+---
+
+# CONFIGURATION
+
+Platform Core loads: `architecture.yaml` · `runtime.yaml` · `providers.yaml` · `marketplaces.yaml` · `learning.yaml` · `plugins.yaml`
+
+Nothing hardcoded.
+
+---
+
+# EVENT REGISTRY
+
+Stores: Project Events · Platform Events · Runtime Events · Provider Events · Vision Events · Learning Events
+
+---
+
+# INTERFACES
+
+`IPlatform` · `IProvider` · `ISkill` · `IPlugin` · `IRuntime` · `IRegistry` · `IProjectState`
+
+---
+
+# FILES TO CREATE
+
+`PlatformCore.ts` · `ProjectState.ts` · `ProjectContext.ts` · `ProjectMetadata.ts` · `ArchitectureRegistry.ts` · `PlatformRegistry.ts` · `ProviderRegistry.ts` · `VersionManager.ts` · `ConfigurationManager.ts` · `ExecutionContext.ts`
+
+---
+
+# FILES TO MODIFY
+
+Search project. Replace direct object passing. Use `ProjectState`. (Directive **PC-005** — incremental)
+
+---
+
+# FILES TO DELETE
+
+None.
+
+---
+
+# REFACTOR STRATEGY
+
+| Reuse | Rewrite |
+|-------|---------|
+| 95% | 5% |
+
+---
+
+## IMPLEMENTATION DIRECTIVE PC-001
+
+Create **ProjectState**.
+
+**Status:** Completed
+
+---
+
+## IMPLEMENTATION DIRECTIVE PC-002
+
+Create **Architecture Registry**.
+
+**Status:** Completed
+
+---
+
+## IMPLEMENTATION DIRECTIVE PC-003
+
+Create **Version Manager**.
+
+**Status:** Completed
+
+---
+
+## IMPLEMENTATION DIRECTIVE PC-004
+
+Create **Configuration Manager**.
+
+**Status:** Completed
+
+---
+
+## IMPLEMENTATION DIRECTIVE PC-005
+
+Replace object passing. Use **ProjectState**.
+
+**Status:** In Progress (legacy handler not yet migrated)
+
+---
+
+# UNIT TESTS
+
+- ProjectState immutable
+- Registry registers platform
+- Registry resolves platform
+- Configuration loaded
+- Versions increment
+
+Run: `npx tsx src/lib/platform-core/platform-core.spec.ts`
+
+---
+
+# INTEGRATION TESTS
+
+- Runtime receives ProjectState
+- Platform executes
+- ProjectState updated
+
+---
+
+# ARCHITECTURE TESTS
+
+- No Platform imports Platform
+- No Runtime imports Provider
+- No Legacy imports Runtime
+
+---
+
+# PERFORMANCE
+
+| Operation | Target |
+|-----------|--------|
+| ProjectState creation | < 5 ms |
+| Registry lookup | < 1 ms |
+
+---
+
+# ROLLBACK
+
+Delete Platform Core. Legacy still operational.
+
+---
+
+# SUCCESS CRITERIA
+
+Platform Core becomes the **only architectural foundation**.
+
+---
+
+*END OF PART 28*
+
+---
+
+# PART 29 — FILE SPECIFICATION
+
+# ============================================================================
+# PART 29
+# FILE SPECIFICATION — DESIGN PROCESS · DESIGN GOVERNANCE · RENDER ENGINE
+# ============================================================================
+
+Volume II continues with per-module file specifications.
+
+---
+
+# MODULE — DESIGN PROCESS
+
+| | |
+|---|---|
+| **Module** | `src/lib/design-process/` |
+| **Status** | REFACTOR |
+| **Priority** | CRITICAL |
+| **Architecture Importance** | ★★★★★ |
+
+## Purpose
+
+Design Process becomes the orchestration layer of **Creative Intelligence**.
+
+This module **no longer** owns execution, rendering, or prompt generation.
+
+It owns **creative transformation only**.
+
+---
+
+### Current Responsibilities (Audit)
+
+✓ Product Analysis · ✓ Creative Planning · ✓ Layout Decisions · ✓ Scene Planning · ✓ Prompt Preparation · ✓ Generation Pipeline · ✓ Internal State
+
+### Problems Found
+
+Creative mixed with Rendering · Creative mixed with Runtime · Prompt generated too early · DesignBrief duplicated · Platform boundaries violated · DecisionTrace incomplete · ProjectState absent
+
+### Target Responsibilities
+
+Creative reasoning · Concept generation · Narrative generation · Creative evaluation · Alternative generation · Creative confidence · Creative memory · **Nothing else**
+
+### Remove
+
+Execution control · Prompt generation · Render preparation · Filesystem operations · Provider selection · Asset loading
+
+### Move
+
+| From | To |
+|------|-----|
+| Scene Planning | Visual Platform |
+| Prompt Builder | Provider Adapter |
+| Execution Flow | Runtime |
+| Asset Resolution | Asset Platform |
+| Configuration | Platform Core |
+
+### Keep
+
+Creative scoring · Creative memory · Concept generator · Concept evaluator · Creative critic
+
+### Create
+
+`CreativeSpec` · `CreativeDecision` · `CreativeAlternative` · `CreativeMetrics` · `CreativeConfidence`
+
+### New Pipeline
+
+```
+KnowledgeSpec → CommercialSpec → Creative Reasoning → Concept Generation → Creative Critic → CreativeSpec
+```
+
+### Imports
+
+**Forbidden:** `render-engine` · `provider` · `prompt` · `filesystem` · `legacy`
+
+**Allowed:** `contracts` · `runtime` · `shared` · `sdk`
+
+### Dependencies
+
+| | |
+|---|---|
+| **Depends on** | Knowledge · Commercial · Runtime |
+| **Returns** | `CreativeSpec` |
+
+### Tests
+
+| Suite | Scope |
+|-------|-------|
+| Unit | CreativeSpec generation · Alternative generation · Confidence calculation |
+| Integration | Commercial → Creative |
+| Architecture | No forbidden imports |
+
+### Success
+
+Module contains **creative logic only**.
+
+## IMPLEMENTATION DIRECTIVE DSP-001
+
+Replace **DesignBrief** with **CreativeSpec**.
+
+## IMPLEMENTATION DIRECTIVE DSP-002
+
+Move **Scene Planner** to Visual Platform.
+
+## IMPLEMENTATION DIRECTIVE DSP-003
+
+Move **Prompt Builder** to Provider Adapter.
+
+## IMPLEMENTATION DIRECTIVE DSP-004
+
+Remove **execution orchestration**.
+
+### Rollback
+
+Restore DesignBrief adapter.
+
+---
+
+# MODULE — DESIGN GOVERNANCE
+
+| | |
+|---|---|
+| **Module** | `src/lib/design-governance/` |
+| **Status** | KEEP |
+| **Priority** | CRITICAL |
+| **Architecture Importance** | ★★★★★ |
+
+### Audit Summary
+
+Governance is one of the strongest modules. Reuse preferred. Rewrite only where necessary.
+
+### Keep
+
+Constitution · Blueprint Lock · Validators · Resolver · Rules · Architecture Checks
+
+### Remove
+
+Professional Score · Image Quality · Marketplace Score · Commercial Score
+
+### Move
+
+| From | To |
+|------|-----|
+| Professional Score | Vision Platform |
+| Marketplace Validation | Vision Platform |
+| Image Validation | Vision Platform |
+
+### Add
+
+ProjectState Validation · Specification Validation · Runtime Validation · Execution Validation · Dependency Validation
+
+### Create
+
+`GovernanceRuntime` · `GovernanceEvents` · `GovernanceReport`
+
+### Success
+
+Governance validates **architecture only**.
+
+## IMPLEMENTATION DIRECTIVE GOV-002
+
+Split **Governance** and **Vision** responsibilities.
+
+## IMPLEMENTATION DIRECTIVE GOV-003
+
+Introduce **ProjectState** validation.
+
+---
+
+# MODULE — RENDER ENGINE
+
+| | |
+|---|---|
+| **Module** | `src/lib/render-engine/` |
+| **Status** | KEEP |
+| **Priority** | CRITICAL |
+| **Architecture Importance** | ★★★★★ |
+
+### Audit Summary
+
+Rendering quality is good. Architecture responsibilities mixed. Reuse rendering. Separate responsibilities.
+
+### Keep
+
+Background generation · Shadow generation · Composition · Export · Provider communication
+
+### Remove
+
+Creative decisions · Commercial decisions · Knowledge usage · Prompt strategy
+
+### Move
+
+| From | To |
+|------|-----|
+| Prompt | Provider Adapter |
+| Business | Commercial |
+| Creative | Creative |
+| Visual | Visual Platform |
+
+### Create
+
+`RenderGraph` · `RenderNode` · `RetryNode` · `NodeExecutor`
+
+### Success
+
+Rendering executes **RenderBlueprint**. Nothing else.
+
+## IMPLEMENTATION DIRECTIVE REN-002
+
+Introduce **RenderGraph**.
+
+## IMPLEMENTATION DIRECTIVE REN-003
+
+Remove **Prompt** ownership.
+
+---
+
+*END OF PART 29*
+
+---
+
+# PART 30 — EVOLUTION STRATEGY
+
+# ============================================================================
+# PART 30
+# EVOLUTION STRATEGY
+# ============================================================================
+
+## Purpose
+
+Design AI OS is designed to **evolve continuously**.
+
+Architecture must support change **without breaking** existing functionality.
+
+Evolution is a **first-class architectural concern**.
+
+Canonical DSL: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `evolution`
+
+---
+
+# EVOLUTION PRINCIPLES
+
+### Principle 1
+
+Never rewrite when **extension** is possible.
+
+### Principle 2
+
+Every architectural improvement must preserve **backward compatibility** unless explicitly approved by **RFC**.
+
+### Principle 3
+
+Every platform must evolve **independently**.
+
+### Principle 4
+
+No architectural decision may introduce **hidden coupling**.
+
+### Principle 5
+
+Every new capability must be **measurable**.
+
+---
+
+# MATURITY MODEL
+
+```
+Level 1  Working Prototype
+           ↓
+Level 2  Modular Architecture
+           ↓
+Level 3  Platform Architecture
+           ↓
+Level 4  Operating System
+           ↓
+Level 5  Self Improving Design Intelligence
+```
+
+---
+
+# CURRENT POSITION
+
+| | |
+|---|---|
+| **Current Target** | Level 4 — Design AI Operating System |
+| **Future Target** | Level 5 — Self Improving Design Intelligence |
+
+---
+
+# EVOLUTION RULES
+
+Everything versioned:
+
+| Object | Rule |
+|--------|------|
+| Every platform | Versioned |
+| Every contract | Versioned |
+| Every decision | Versioned |
+| Every asset | Versioned |
+| Every knowledge object | Versioned |
+
+---
+
+# FEATURE INTRODUCTION
+
+```
+New Feature
+    ↓
+RFC
+    ↓
+ADR
+    ↓
+Architecture Approval
+    ↓
+Implementation Directive
+    ↓
+Implementation
+    ↓
+Architecture Validation
+    ↓
+Release
+```
+
+Aligns with Part 20–22 (ADR → RFC → Directive → PR → Release).
+
+---
+
+# DEPRECATION POLICY
+
+```
+Deprecated functionality
+    ↓
+Marked
+    ↓
+Adapter created
+    ↓
+Migration
+    ↓
+Removal
+```
+
+**Never immediate deletion.**
+
+---
+
+# BACKWARD COMPATIBILITY
+
+Adapters required. Minimum **one major release** before removal.
+
+---
+
+# SUCCESS CRITERIA
+
+Architecture evolves **without large rewrites**.
+
+---
+
+## IMPLEMENTATION DIRECTIVE EVO-001
+
+| | |
+|---|---|
+| **Priority** | HIGH |
+| **Create** | Evolution policy in `architecture.yaml` |
+| **Acceptance** | Feature introduction and deprecation paths machine-readable |
+
+---
+
+*END OF PART 30*
+
+---
+
+# PART 31 — RELEASE STRATEGY
+
+# ============================================================================
+# PART 31
+# RELEASE STRATEGY
+# ============================================================================
+
+## Purpose
+
+Every release follows an **identical lifecycle**.
+
+Canonical DSL: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `release`
+
+---
+
+# RELEASE LIFECYCLE
+
+```
+Release Candidate
+       ↓
+Architecture Validation
+       ↓
+Unit Tests
+       ↓
+Integration Tests
+       ↓
+Marketplace Tests
+       ↓
+Golden Tests
+       ↓
+Performance Tests
+       ↓
+Manual Review
+       ↓
+Release
+```
+
+No stage may be skipped. Aligns with Part 19 wave gates and Part 24 execution protocol (Step 8–9).
+
+---
+
+# RELEASE TYPES
+
+| Type | Scope |
+|------|-------|
+| **Patch** | Bug fixes, no contract changes |
+| **Minor** | Additive features, backward compatible |
+| **Major** | Breaking changes (RFC required) |
+| **Architecture** | Platform, contract, or runtime structural change |
+
+---
+
+# ARCHITECTURE RELEASE
+
+Architecture releases **require**:
+
+- RFC
+- ADR
+- Migration Guide
+- Architecture Report
+
+Aligns with Part 20–22 and LAW-028 (every release stores Architecture Report).
+
+---
+
+# RELEASE ARTIFACTS
+
+Every release produces:
+
+| Artifact | Purpose |
+|----------|---------|
+| **Architecture Report** | Score, violations, compliance |
+| **Migration Report** | Files changed, remaining tasks (Part 24) |
+| **Performance Report** | Latency, registry lookup, render timings |
+| **Compatibility Report** | Adapter status, deprecated APIs |
+
+---
+
+# ROLLBACK
+
+Every release **must be reversible**.
+
+Rollback procedure documented per Implementation Directive. Legacy adapters remain until deprecation policy completes (Part 30).
+
+---
+
+# SUCCESS
+
+Every release **reproducible**.
+
+---
+
+## IMPLEMENTATION DIRECTIVE REL-001
+
+| | |
+|---|---|
+| **Priority** | HIGH |
+| **Create** | Release policy in `architecture.yaml` |
+| **Acceptance** | Release lifecycle and artifacts machine-readable |
+
+---
+
+*END OF PART 31*
+
+---
+
+# PART 32 — OBSERVABILITY
+
+# ============================================================================
+# PART 32
+# OBSERVABILITY
+# ============================================================================
+
+## Purpose
+
+Nothing inside Design AI OS is **hidden**.
+
+Canonical DSL: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `observability`
+
+---
+
+# EVERY PLATFORM EMITS
+
+| Emission | Description |
+|----------|-------------|
+| **Events** | Lifecycle and completion signals |
+| **Metrics** | Timing, counts, scores |
+| **Decision Trace** | Replayable decisions with confidence |
+| **Warnings** | Non-fatal issues |
+| **Errors** | Failures with context |
+| **Artifacts** | Outputs (specs, blueprints, images) |
+
+Aligns with Part 28 Event Registry and Part 23 platform `emit` definitions.
+
+---
+
+# EVERY PROJECT STORES
+
+| Stored | Description |
+|--------|-------------|
+| **Timeline** | Chronological execution history |
+| **Execution Graph** | DAG of runtime nodes |
+| **Decision Graph** | Platform decision dependencies |
+| **Architecture Version** | Active architecture release |
+| **Platform Versions** | Per-platform version map |
+| **Knowledge Version** | Knowledge graph snapshot |
+| **Genome Version** | Design genome snapshot |
+
+Stored in **ProjectState** and retrievable via Debug Bundle.
+
+---
+
+# DEBUG BUNDLE
+
+Complete project snapshot for reproduction and support:
+
+| Contents | |
+|----------|--|
+| Logs | |
+| Specifications | |
+| Blueprints | |
+| Reports | |
+| Assets | |
+| Metrics | |
+| Configuration | |
+
+---
+
+# SUCCESS
+
+Every project **fully reproducible**.
+
+Aligns with Part 30 versioning, Part 31 release artifacts, and Part 25 final acceptance (replay, rollback, DecisionTrace complete).
+
+---
+
+## IMPLEMENTATION DIRECTIVE OBS-001
+
+| | |
+|---|---|
+| **Priority** | HIGH |
+| **Create** | Observability policy in `architecture.yaml` |
+| **Acceptance** | Platform emissions and Debug Bundle schema machine-readable |
+
+---
+
+*END OF PART 32*
+
+---
+
+# PART 33 — FINAL ARCHITECTURE LAWS
+
+# ============================================================================
+# PART 33
+# FINAL ARCHITECTURE LAWS
+# ============================================================================
+
+Canonical laws **LAW-036** through **LAW-050** complete the Architecture Law set.
+
+All laws are enforced by Architecture Validation (Part 16) and CI (Part 31).
+
+Machine-readable index: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `architecture.laws`
+
+---
+
+## LAW-036
+
+**ProjectState** is immutable.
+
+---
+
+## LAW-037
+
+Every platform owns **exactly one** responsibility.
+
+---
+
+## LAW-038
+
+No platform communicates **directly** with another platform.
+
+---
+
+## LAW-039
+
+Only **Runtime** orchestrates execution.
+
+---
+
+## LAW-040
+
+Only **Provider Adapter** generates prompts.
+
+---
+
+## LAW-041
+
+Only **Asset Platform** accesses filesystem.
+
+---
+
+## LAW-042
+
+Knowledge is queried only through **Knowledge Engine**.
+
+---
+
+## LAW-043
+
+Rendering executes **blueprints only**.
+
+---
+
+## LAW-044
+
+**Vision** is mandatory.
+
+---
+
+## LAW-045
+
+**Learning** executes after every completed generation.
+
+---
+
+## LAW-046
+
+Every architectural change requires **ADR**.
+
+---
+
+## LAW-047
+
+Every breaking change requires **RFC**.
+
+---
+
+## LAW-048
+
+Every implementation requires **Directive**.
+
+---
+
+## LAW-049
+
+Architecture validation **blocks** invalid releases.
+
+---
+
+## LAW-050
+
+**Architecture Bible** is the single source of truth.
+
+> Machine execution uses [`architecture.yaml`](architecture/architecture.yaml) per Part 23–24; Bible remains canonical human specification.
+
+---
+
+## IMPLEMENTATION DIRECTIVE LAW-036
+
+| | |
+|---|---|
+| **Priority** | CRITICAL |
+| **Action** | Register LAW-036–LAW-050 in Part 1 and `architecture.yaml` |
+| **Acceptance** | All 50 laws documented and enforceable |
+
+---
+
+*END OF PART 33*
+
+---
+
+# APPENDIX A — GLOSSARY
+
+# ============================================================================
+# APPENDIX A
+# GLOSSARY
+# ============================================================================
+
+## Purpose
+
+This glossary defines the **canonical terminology** of Design AI OS.
+
+Every term has exactly **one meaning**.
+
+**No synonyms are allowed.**
+
+Machine-readable index: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `glossary`
+
+---
+
+| Term | Definition |
+|------|------------|
+| **Architecture Bible** | The canonical architecture specification. Single Source of Truth. |
+| **ProjectState** | Immutable object containing the complete project state. Never partially modified. |
+| **Runtime** | Execution engine. Coordinates platforms. Never makes business decisions. |
+| **Platform** | Independent architectural component. Owns one responsibility. Produces one Specification. |
+| **Specification** | Immutable DTO exchanged between platforms. |
+| **ProductBrief** | Initial project description. Created once. |
+| **ResearchSpec** | Research result. |
+| **KnowledgeSpec** | Merged structured knowledge. |
+| **CommercialSpec** | Commercial strategy. |
+| **CreativeSpec** | Creative strategy. |
+| **VisualBlueprint** | Visual implementation. |
+| **RenderBlueprint** | Rendering instructions. |
+| **OverlayBlueprint** | Overlay specification. |
+| **VisionReport** | Image evaluation. |
+| **LearningReport** | Learning result. |
+| **Design DNA** | Universal design principles. |
+| **Design Genome** | Category-specific design knowledge. |
+| **Knowledge Engine** | Unified knowledge layer. |
+| **Provider Adapter** | Only module allowed to generate Prompt. |
+| **Decision Trace** | Complete explanation of every architectural decision. |
+| **Execution Graph** | Runtime dependency graph. |
+| **Decision Graph** | Relationship graph between decisions. |
+| **RenderGraph** | Node-based rendering pipeline. |
+| **Asset Platform** | Single owner of every project asset. |
+| **Architecture Law** | Mandatory architectural rule. |
+| **ADR** | Architecture Decision Record. |
+| **RFC** | Request For Comments. |
+| **Directive** | Executable migration task. |
+
+---
+
+*END OF APPENDIX A*
+
+---
+
+# APPENDIX B — ARCHITECTURE INDEX
+
+# ============================================================================
+# APPENDIX B
+# ARCHITECTURE INDEX
+# ============================================================================
+
+Quick reference: topic → Part number.
+
+Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `architecture_index`
+
+| Topic | Parts |
+|-------|-------|
+| **Architecture** | Part 1–4 |
+| **Runtime** | Part 5 |
+| **Design DNA** | Part 6 |
+| **Reasoning** | Part 7 |
+| **Migration** | Part 8 |
+| **AI CEO** | Part 9 |
+| **SDK** | Part 10 |
+| **Platform Migration** | Part 11 |
+| **Runtime Migration** | Part 12 |
+| **Contracts** | Part 13 |
+| **Assets** | Part 14 |
+| **Engineering Standards** | Part 15 |
+| **Architecture Validation** | Part 16 |
+| **Knowledge Engine** | Part 17 |
+| **Implementation** | Part 18–19 |
+| **ADR** | Part 20 |
+| **RFC** | Part 21 |
+| **DSL** | Part 23 |
+| **Repository** | Part 27 |
+| **Evolution** | Part 30 |
+| **Release** | Part 31 |
+| **Observability** | Part 32 |
+| **Architecture Laws** | Part 33 |
+
+---
+
+*END OF APPENDIX B*
+
+---
+
+# APPENDIX C — IMPLEMENTATION INDEX
+
+# ============================================================================
+# APPENDIX C
+# IMPLEMENTATION INDEX
+# ============================================================================
+
+Directive prefix reference and execution order.
+
+Machine-readable: [`docs/architecture/architecture.yaml`](architecture/architecture.yaml) → `implementation_index`
+
+---
+
+## Directive Prefixes
+
+| Prefix | Domain |
+|--------|--------|
+| **PC** | Platform Core |
+| **RUN** | Runtime |
+| **DTO** | Contracts |
+| **CRE** | Creative |
+| **VIS** | Visual |
+| **REN** | Rendering |
+| **GOV** | Governance |
+| **KNOW** | Knowledge |
+| **AST** | Assets |
+| **SDK** | Platform SDK |
+| **CEO** | Execution Strategy |
+| **CI** | Architecture Validation |
+| **RFC** | Architecture Evolution |
+| **ADR** | Decision Records |
+
+---
+
+## Execution Order
+
+```
+PC
+ ↓
+RUN
+ ↓
+DTO
+ ↓
+KNOW
+ ↓
+COM
+ ↓
+CRE
+ ↓
+VIS
+ ↓
+REN
+ ↓
+VISION
+ ↓
+LEARN
+ ↓
+LEGACY
+```
+
+Aligns with Part 19 Implementation Playbook and Part 25 Implementation Plan.
+
+---
+
+*END OF APPENDIX C*
+
+---
+
+# APPENDIX D — VOLUME I COMPLETION
+
+# ============================================================================
+# APPENDIX D
+# VOLUME I COMPLETION
+# ============================================================================
+
+| | |
+|---|---|
+| **Architecture Bible Version** | 1.0 |
+| **Status** | Complete |
+| **Architecture Status** | Stable |
+| **Migration Status** | Ready |
+| **Cursor Status** | Not Ready |
+
+### Reason
+
+**Code Rewrite Bible** required.
+
+---
+
+## Next Document
+
+| | |
+|---|---|
+| **Document** | [`Code_Rewrite_Bible.md`](Code_Rewrite_Bible.md) |
+| **Purpose** | Describe migration of every important source file. No architectural theory. Implementation only. |
+
+---
+
+## Expected Size
+
+| Document | Pages |
+|----------|-------|
+| Architecture Bible | ≈ 400–700 |
+| Code Rewrite Bible | ≈ 1000–2000 |
+
+---
+
+# END OF VOLUME I
+
+---
+
+*END OF APPENDIX D*
+
+---
+
+# APPENDIX E — REPOSITORY IMPLEMENTATION REFERENCE
 
 > Практическая привязка Part 1 (канон) и Part 2 (аудит) к текущему коду репозитория `design-ai`.  
-> Это **не** Part 2 — справочник по реализации, не дублирует аудит.
+> Это **не** Part 2 — справочник по реализации, не дублирует аудит.  
+> Ранее **Appendix A** → **B** → **C** → **D** — переименован по мере добавления Glossary, Index, Implementation Index, Volume I Completion.
 
 ---
 
@@ -9155,4 +10402,4 @@ pm2 logs marketplace-infographic --lines 50
 
 ---
 
-*Architecture Bible — living document. Part 1 is canonical law (LAW-001–030). Parts 2–18 define audit, pipeline, platforms, runtime, contracts, migration specs, knowledge engine, CEO, SDK, and orchestration. Appendix A tracks repository implementation.*
+*Architecture Bible — living document. Parts 1–33 (LAW-001–050). **Appendix A** — Glossary. **Appendix B** — Architecture Index. **Appendix C** — Implementation Index. **Appendix D** — repository implementation reference.*

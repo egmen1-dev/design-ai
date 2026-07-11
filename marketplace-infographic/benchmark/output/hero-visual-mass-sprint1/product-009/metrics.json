@@ -1,0 +1,58 @@
+{
+  "slot": "product-009",
+  "productId": 211165129,
+  "category": "home",
+  "daosGenerated": true,
+  "leader": {
+    "productDominance": 43,
+    "foregroundIsolation": 43.6,
+    "headlineVisualWeight": 23.6,
+    "primaryFocusRatio": 0.225,
+    "attentionHierarchyScore": 28.4,
+    "commercialFidelity": 29,
+    "visualWeightHero": 18.5,
+    "thumbnailReadability": 32,
+    "productVisualWeight": 18.5,
+    "typographyCompetition": 37.5
+  },
+  "daos": {
+    "productDominance": 29,
+    "foregroundIsolation": 48.6,
+    "headlineVisualWeight": 20.6,
+    "primaryFocusRatio": 0.199,
+    "attentionHierarchyScore": 29.3,
+    "commercialFidelity": 16,
+    "visualWeightHero": 8.3,
+    "thumbnailReadability": 33.8,
+    "productVisualWeight": 8.3,
+    "typographyCompetition": 29.2
+  },
+  "delta": {
+    "productDominance": -14,
+    "foregroundIsolation": 5,
+    "headlineVisualWeight": -3,
+    "primaryFocusRatio": -0.03,
+    "attentionHierarchyScore": 0.9,
+    "commercialFidelity": -13,
+    "visualWeightHero": -10.2,
+    "thumbnailReadability": 1.8,
+    "productVisualWeight": -10.2,
+    "typographyCompetition": -8.3
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "draw",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "Dominance: WB 43 vs DAOS 29 (Δ-14); FI: WB 43.6 vs DAOS 48.6; Thumbnail: WB 32 vs DAOS 33.8; Fidelity: WB 29 vs DAOS 16",
+    "gapClass": "Product Dominance"
+  },
+  "failure": {
+    "slot": "product-009",
+    "productId": 211165129,
+    "category": "Дом",
+    "reason": "Dominance",
+    "detail": "Product Dominance"
+  }
+}

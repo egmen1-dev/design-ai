@@ -1,0 +1,62 @@
+{
+  "productId": 880158593,
+  "category": "garden",
+  "categoryLabel": "Сад",
+  "name": "Аккумуляторный триммер для травы мощный Косилка садовая",
+  "daosGenerated": true,
+  "genDurationMs": 17938,
+  "leader": {
+    "productDominance": 52,
+    "foregroundIsolation": 46.7,
+    "headlineVisualWeight": 24.3,
+    "primaryFocusRatio": 0.271,
+    "attentionHierarchyScore": 30.5,
+    "commercialFidelity": 37.5,
+    "visualWeightHero": 27.1,
+    "thumbnailReadability": 48.4,
+    "productVisualWeight": 27.1,
+    "typographyCompetition": 43.9,
+    "secondaryFocusRatio": 0.729,
+    "attentionDistribution": 0.284
+  },
+  "daos": {
+    "productDominance": 48,
+    "foregroundIsolation": 57.2,
+    "headlineVisualWeight": 10.7,
+    "primaryFocusRatio": 0.262,
+    "attentionHierarchyScore": 32.1,
+    "commercialFidelity": 34,
+    "visualWeightHero": 10.1,
+    "thumbnailReadability": 59.6,
+    "productVisualWeight": 10.1,
+    "typographyCompetition": 22.8,
+    "secondaryFocusRatio": 0.738,
+    "attentionDistribution": 0.232
+  },
+  "delta": {
+    "productDominance": -4,
+    "foregroundIsolation": 10.5,
+    "headlineVisualWeight": -13.6,
+    "primaryFocusRatio": -0.01,
+    "attentionHierarchyScore": 1.6,
+    "commercialFidelity": -3.5,
+    "visualWeightHero": -17,
+    "thumbnailReadability": 11.2,
+    "productVisualWeight": -17,
+    "typographyCompetition": -21.1,
+    "secondaryFocusRatio": 0.01,
+    "attentionDistribution": -0.05
+  },
+  "verdict": {
+    "moreProfessional": "draw",
+    "strongerSell": "draw",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 52 vs DAOS 48 (Δ-4); FI: WB 46.7 vs DAOS 57.2; Thumbnail: WB 48.4 vs DAOS 59.6; Fidelity: WB 37.5 vs DAOS 34"
+  },
+  "compositeScore": {
+    "leader": 41.9,
+    "daos": 42.4
+  }
+}

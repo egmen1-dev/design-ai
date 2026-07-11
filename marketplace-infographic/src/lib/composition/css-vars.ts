@@ -1,7 +1,13 @@
 import type { CompositionLayout } from "./types";
+import { buildAttentionHierarchyCss, type TypographyOverlayMode } from "@/lib/typography/attention-hierarchy";
+import type { CategoryAttentionRules } from "@/lib/daos/commercial-genome-beta/category-intelligence/types";
 
 /** Генерирует CSS-переменные из композиции (% + calc от размера холста) */
-export function compositionToCssBlock(layout: CompositionLayout): string {
+export function compositionToCssBlock(
+  layout: CompositionLayout,
+  typographyOverlayMode: TypographyOverlayMode = "standard",
+  categoryAttentionRules?: CategoryAttentionRules | null,
+): string {
   const { canvas: c, product: p, headline: h, subtitle: s, leftPanel: lp, rightSidebar: rs, plaques, icon, safeInsetPct } =
     layout;
 
@@ -200,5 +206,7 @@ export function compositionToCssBlock(layout: CompositionLayout): string {
     .mp-left-panel__hero-icon {
       font-size: calc(var(--comp-icon-size) * var(--canvas-w-num) / 100 * 0.85px) !important;
     }
+
+    ${buildAttentionHierarchyCss(typographyOverlayMode, categoryAttentionRules)}
   `.trim();
 }

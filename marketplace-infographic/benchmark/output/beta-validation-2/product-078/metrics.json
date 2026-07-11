@@ -1,0 +1,62 @@
+{
+  "productId": 237665355,
+  "category": "humidifier",
+  "categoryLabel": "Климат",
+  "name": "Увлажнитель воздуха для дома 2 литра",
+  "daosGenerated": true,
+  "genDurationMs": 15877,
+  "leader": {
+    "productDominance": 34,
+    "foregroundIsolation": 20.5,
+    "headlineVisualWeight": 37.2,
+    "primaryFocusRatio": 0.227,
+    "attentionHierarchyScore": 27.7,
+    "commercialFidelity": 25,
+    "visualWeightHero": 19.9,
+    "thumbnailReadability": 20.2,
+    "productVisualWeight": 19.9,
+    "typographyCompetition": 58.1,
+    "secondaryFocusRatio": 0.773,
+    "attentionDistribution": 0.173
+  },
+  "daos": {
+    "productDominance": 66,
+    "foregroundIsolation": 48,
+    "headlineVisualWeight": 10.4,
+    "primaryFocusRatio": 0.434,
+    "attentionHierarchyScore": 42.4,
+    "commercialFidelity": 52,
+    "visualWeightHero": 21,
+    "thumbnailReadability": 63.7,
+    "productVisualWeight": 21,
+    "typographyCompetition": 22,
+    "secondaryFocusRatio": 0.566,
+    "attentionDistribution": 0.393
+  },
+  "delta": {
+    "productDominance": 32,
+    "foregroundIsolation": 27.5,
+    "headlineVisualWeight": -26.8,
+    "primaryFocusRatio": 0.21,
+    "attentionHierarchyScore": 14.7,
+    "commercialFidelity": 27,
+    "visualWeightHero": 1.1,
+    "thumbnailReadability": 43.5,
+    "productVisualWeight": 1.1,
+    "typographyCompetition": -36.1,
+    "secondaryFocusRatio": -0.21,
+    "attentionDistribution": 0.22
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 34 vs DAOS 66 (Δ32); FI: WB 20.5 vs DAOS 48; Thumbnail: WB 20.2 vs DAOS 63.7; Fidelity: WB 25 vs DAOS 52"
+  },
+  "compositeScore": {
+    "leader": 24.2,
+    "daos": 52.8
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "productId": 445321175,
+  "category": "home",
+  "categoryLabel": "Дом",
+  "name": "Подвесной органайзер для пакетов на кухню",
+  "daosGenerated": true,
+  "genDurationMs": 20513,
+  "leader": {
+    "productDominance": 49,
+    "foregroundIsolation": 90.2,
+    "headlineVisualWeight": 23.9,
+    "primaryFocusRatio": 0.26,
+    "attentionHierarchyScore": 29.9,
+    "commercialFidelity": 34,
+    "visualWeightHero": 20.7,
+    "thumbnailReadability": 55.7,
+    "productVisualWeight": 20.7,
+    "typographyCompetition": 37.1,
+    "secondaryFocusRatio": 0.74,
+    "attentionDistribution": 0.253
+  },
+  "daos": {
+    "productDominance": 47,
+    "foregroundIsolation": 78,
+    "headlineVisualWeight": 19.2,
+    "primaryFocusRatio": 0.263,
+    "attentionHierarchyScore": 30.8,
+    "commercialFidelity": 32,
+    "visualWeightHero": 16.3,
+    "thumbnailReadability": 59.6,
+    "productVisualWeight": 16.3,
+    "typographyCompetition": 37.5,
+    "secondaryFocusRatio": 0.737,
+    "attentionDistribution": 0.223
+  },
+  "delta": {
+    "productDominance": -2,
+    "foregroundIsolation": -12.2,
+    "headlineVisualWeight": -4.7,
+    "primaryFocusRatio": 0,
+    "attentionHierarchyScore": 0.9,
+    "commercialFidelity": -2,
+    "visualWeightHero": -4.4,
+    "thumbnailReadability": 3.9,
+    "productVisualWeight": -4.4,
+    "typographyCompetition": 0.4,
+    "secondaryFocusRatio": 0,
+    "attentionDistribution": -0.03
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "draw",
+    "fasterRead": "draw",
+    "wouldOpen": "draw",
+    "overall": "draw",
+    "rationale": "Dominance: WB 49 vs DAOS 47 (Δ-2); FI: WB 90.2 vs DAOS 78; Thumbnail: WB 55.7 vs DAOS 59.6; Fidelity: WB 34 vs DAOS 32"
+  },
+  "compositeScore": {
+    "leader": 47.3,
+    "daos": 44.9
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "productId": 283430043,
+  "category": "power-tools",
+  "categoryLabel": "Электроинструмент",
+  "name": "Дрель электрическая от сети мощная ударная 710 Вт",
+  "daosGenerated": true,
+  "genDurationMs": 19750,
+  "leader": {
+    "productDominance": 49,
+    "foregroundIsolation": 53.2,
+    "headlineVisualWeight": 28.9,
+    "primaryFocusRatio": 0.32,
+    "attentionHierarchyScore": 31.8,
+    "commercialFidelity": 35,
+    "visualWeightHero": 27.7,
+    "thumbnailReadability": 49.2,
+    "productVisualWeight": 27.7,
+    "typographyCompetition": 48.1,
+    "secondaryFocusRatio": 0.68,
+    "attentionDistribution": 0.265
+  },
+  "daos": {
+    "productDominance": 45,
+    "foregroundIsolation": 55.6,
+    "headlineVisualWeight": 14.5,
+    "primaryFocusRatio": 0.283,
+    "attentionHierarchyScore": 32.6,
+    "commercialFidelity": 31.5,
+    "visualWeightHero": 12,
+    "thumbnailReadability": 58,
+    "productVisualWeight": 12,
+    "typographyCompetition": 25.4,
+    "secondaryFocusRatio": 0.717,
+    "attentionDistribution": 0.231
+  },
+  "delta": {
+    "productDominance": -4,
+    "foregroundIsolation": 2.4,
+    "headlineVisualWeight": -14.4,
+    "primaryFocusRatio": -0.04,
+    "attentionHierarchyScore": 0.8,
+    "commercialFidelity": -3.5,
+    "visualWeightHero": -15.7,
+    "thumbnailReadability": 8.8,
+    "productVisualWeight": -15.7,
+    "typographyCompetition": -22.7,
+    "secondaryFocusRatio": 0.04,
+    "attentionDistribution": -0.03
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "draw",
+    "fasterRead": "daos",
+    "wouldOpen": "draw",
+    "overall": "draw",
+    "rationale": "Dominance: WB 49 vs DAOS 45 (Δ-4); FI: WB 53.2 vs DAOS 55.6; Thumbnail: WB 49.2 vs DAOS 58; Fidelity: WB 35 vs DAOS 31.5"
+  },
+  "compositeScore": {
+    "leader": 41.6,
+    "daos": 40.6
+  }
+}

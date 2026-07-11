@@ -1,0 +1,62 @@
+{
+  "productId": 211842761,
+  "category": "auto",
+  "categoryLabel": "Авто",
+  "name": "Пылесос для автомобиля беспроводной DKVC20V",
+  "daosGenerated": true,
+  "genDurationMs": 14760,
+  "leader": {
+    "productDominance": 47,
+    "foregroundIsolation": 47.2,
+    "headlineVisualWeight": 33.3,
+    "primaryFocusRatio": 0.345,
+    "attentionHierarchyScore": 32.6,
+    "commercialFidelity": 32.5,
+    "visualWeightHero": 29.3,
+    "thumbnailReadability": 51.7,
+    "productVisualWeight": 29.3,
+    "typographyCompetition": 44.4,
+    "secondaryFocusRatio": 0.655,
+    "attentionDistribution": 0.274
+  },
+  "daos": {
+    "productDominance": 70,
+    "foregroundIsolation": 68.5,
+    "headlineVisualWeight": 10,
+    "primaryFocusRatio": 0.575,
+    "attentionHierarchyScore": 49.6,
+    "commercialFidelity": 51,
+    "visualWeightHero": 24.8,
+    "thumbnailReadability": 99.8,
+    "productVisualWeight": 24.8,
+    "typographyCompetition": 15.5,
+    "secondaryFocusRatio": 0.425,
+    "attentionDistribution": 0.493
+  },
+  "delta": {
+    "productDominance": 23,
+    "foregroundIsolation": 21.3,
+    "headlineVisualWeight": -23.3,
+    "primaryFocusRatio": 0.23,
+    "attentionHierarchyScore": 17,
+    "commercialFidelity": 18.5,
+    "visualWeightHero": -4.5,
+    "thumbnailReadability": 48.1,
+    "productVisualWeight": -4.5,
+    "typographyCompetition": -28.9,
+    "secondaryFocusRatio": -0.23,
+    "attentionDistribution": 0.22
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 47 vs DAOS 70 (Δ23); FI: WB 47.2 vs DAOS 68.5; Thumbnail: WB 51.7 vs DAOS 99.8; Fidelity: WB 32.5 vs DAOS 51"
+  },
+  "compositeScore": {
+    "leader": 40,
+    "daos": 63.4
+  }
+}

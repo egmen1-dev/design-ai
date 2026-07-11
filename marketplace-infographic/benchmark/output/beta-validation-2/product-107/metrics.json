@@ -1,0 +1,70 @@
+{
+  "productId": 208892590,
+  "category": "pressure-wash",
+  "categoryLabel": "Мойка",
+  "name": "Мойка высокого давления от сети BHR-2000-PRO 2.0кВт 150 бар",
+  "daosGenerated": true,
+  "genDurationMs": 14671,
+  "leader": {
+    "productDominance": 66,
+    "foregroundIsolation": 70.2,
+    "headlineVisualWeight": 17.3,
+    "primaryFocusRatio": 0.416,
+    "attentionHierarchyScore": 42.6,
+    "commercialFidelity": 58,
+    "visualWeightHero": 33.4,
+    "thumbnailReadability": 47.4,
+    "productVisualWeight": 33.4,
+    "typographyCompetition": 38,
+    "secondaryFocusRatio": 0.584,
+    "attentionDistribution": 0.377
+  },
+  "daos": {
+    "productDominance": 54,
+    "foregroundIsolation": 53.8,
+    "headlineVisualWeight": 8.1,
+    "primaryFocusRatio": 0.337,
+    "attentionHierarchyScore": 36,
+    "commercialFidelity": 40.5,
+    "visualWeightHero": 9.5,
+    "thumbnailReadability": 63.1,
+    "productVisualWeight": 9.5,
+    "typographyCompetition": 15.2,
+    "secondaryFocusRatio": 0.663,
+    "attentionDistribution": 0.29
+  },
+  "delta": {
+    "productDominance": -12,
+    "foregroundIsolation": -16.4,
+    "headlineVisualWeight": -9.2,
+    "primaryFocusRatio": -0.08,
+    "attentionHierarchyScore": -6.6,
+    "commercialFidelity": -17.5,
+    "visualWeightHero": -23.9,
+    "thumbnailReadability": 15.7,
+    "productVisualWeight": -23.9,
+    "typographyCompetition": -22.8,
+    "secondaryFocusRatio": 0.08,
+    "attentionDistribution": -0.09
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "daos",
+    "wouldOpen": "draw",
+    "overall": "wb",
+    "rationale": "Dominance: WB 66 vs DAOS 54 (Δ-12); FI: WB 70.2 vs DAOS 53.8; Thumbnail: WB 47.4 vs DAOS 63.1; Fidelity: WB 58 vs DAOS 40.5",
+    "gapClass": "Product Dominance"
+  },
+  "failure": {
+    "slot": "product-107",
+    "productId": 208892590,
+    "category": "Мойка",
+    "reason": "Background",
+    "detail": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 55.8,
+    "daos": 46
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "productId": 151374815,
+  "category": "humidifier",
+  "categoryLabel": "Климат",
+  "name": "Увлажнитель для лица и тела",
+  "daosGenerated": true,
+  "genDurationMs": 17136,
+  "leader": {
+    "productDominance": 35,
+    "foregroundIsolation": 24.5,
+    "headlineVisualWeight": 25.5,
+    "primaryFocusRatio": 0.163,
+    "attentionHierarchyScore": 25.8,
+    "commercialFidelity": 29,
+    "visualWeightHero": 13.9,
+    "thumbnailReadability": 29.4,
+    "productVisualWeight": 13.9,
+    "typographyCompetition": 41.7,
+    "secondaryFocusRatio": 0.837,
+    "attentionDistribution": 0.171
+  },
+  "daos": {
+    "productDominance": 50,
+    "foregroundIsolation": 56.4,
+    "headlineVisualWeight": 25.8,
+    "primaryFocusRatio": 0.332,
+    "attentionHierarchyScore": 32.8,
+    "commercialFidelity": 36,
+    "visualWeightHero": 26.4,
+    "thumbnailReadability": 70.2,
+    "productVisualWeight": 26.4,
+    "typographyCompetition": 44.7,
+    "secondaryFocusRatio": 0.668,
+    "attentionDistribution": 0.272
+  },
+  "delta": {
+    "productDominance": 15,
+    "foregroundIsolation": 31.9,
+    "headlineVisualWeight": 0.3,
+    "primaryFocusRatio": 0.17,
+    "attentionHierarchyScore": 7,
+    "commercialFidelity": 7,
+    "visualWeightHero": 12.5,
+    "thumbnailReadability": 40.8,
+    "productVisualWeight": 12.5,
+    "typographyCompetition": 3,
+    "secondaryFocusRatio": -0.17,
+    "attentionDistribution": 0.1
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 35 vs DAOS 50 (Δ15); FI: WB 24.5 vs DAOS 56.4; Thumbnail: WB 29.4 vs DAOS 70.2; Fidelity: WB 29 vs DAOS 36"
+  },
+  "compositeScore": {
+    "leader": 27.1,
+    "daos": 45.8
+  }
+}

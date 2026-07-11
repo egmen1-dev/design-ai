@@ -1,0 +1,70 @@
+{
+  "productId": 14398217,
+  "category": "construction",
+  "categoryLabel": "Строительство",
+  "name": "Ударный электрический перфоратор для дома П1050",
+  "daosGenerated": true,
+  "genDurationMs": 21960,
+  "leader": {
+    "productDominance": 65,
+    "foregroundIsolation": 78.2,
+    "headlineVisualWeight": 17.8,
+    "primaryFocusRatio": 0.4,
+    "attentionHierarchyScore": 41.5,
+    "commercialFidelity": 62,
+    "visualWeightHero": 33,
+    "thumbnailReadability": 71.2,
+    "productVisualWeight": 33,
+    "typographyCompetition": 39.7,
+    "secondaryFocusRatio": 0.6,
+    "attentionDistribution": 0.365
+  },
+  "daos": {
+    "productDominance": 40,
+    "foregroundIsolation": 67.3,
+    "headlineVisualWeight": 12.5,
+    "primaryFocusRatio": 0.142,
+    "attentionHierarchyScore": 26.5,
+    "commercialFidelity": 26,
+    "visualWeightHero": 8.3,
+    "thumbnailReadability": 68.8,
+    "productVisualWeight": 8.3,
+    "typographyCompetition": 38.6,
+    "secondaryFocusRatio": 0.858,
+    "attentionDistribution": 0.14
+  },
+  "delta": {
+    "productDominance": -25,
+    "foregroundIsolation": -10.9,
+    "headlineVisualWeight": -5.3,
+    "primaryFocusRatio": -0.26,
+    "attentionHierarchyScore": -15,
+    "commercialFidelity": -36,
+    "visualWeightHero": -24.7,
+    "thumbnailReadability": -2.4,
+    "productVisualWeight": -24.7,
+    "typographyCompetition": -1.1,
+    "secondaryFocusRatio": 0.26,
+    "attentionDistribution": -0.22
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "wb",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "Dominance: WB 65 vs DAOS 40 (Δ-25); FI: WB 78.2 vs DAOS 67.3; Thumbnail: WB 71.2 vs DAOS 68.8; Fidelity: WB 62 vs DAOS 26",
+    "gapClass": "Product Dominance"
+  },
+  "failure": {
+    "slot": "product-015",
+    "productId": 14398217,
+    "category": "Строительство",
+    "reason": "Dominance",
+    "detail": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 60.9,
+    "daos": 40.5
+  }
+}

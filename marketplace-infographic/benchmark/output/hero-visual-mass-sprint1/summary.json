@@ -1,0 +1,132 @@
+{
+  "version": "hero-visual-mass-sprint1",
+  "timestamp": "2026-07-11T15:26:13.257Z",
+  "productCount": 9,
+  "flag": "DAOS_HERO_VISUAL_MASS=1",
+  "categoryIntelligence": "OFF",
+  "aggregate": {
+    "genSuccessRate": 100,
+    "categoryWinRate": 44.4,
+    "daosWins": 4,
+    "baselineWinRate": 57.1,
+    "deltaPp": -12.7,
+    "winRateCi": {
+      "rate": 44.4,
+      "low": 18.9,
+      "high": 73.3
+    }
+  },
+  "metrics": {
+    "productDominance": {
+      "n": 9,
+      "mean": 48.11,
+      "stdDev": 10.86,
+      "ci95Low": 39.93,
+      "ci95High": 56.3,
+      "min": 29,
+      "max": 63,
+      "outliers": [],
+      "confidence": "LOW"
+    },
+    "productVisualWeight": {
+      "n": 9,
+      "mean": 17.94,
+      "stdDev": 5.62,
+      "ci95Low": 13.71,
+      "ci95High": 22.18,
+      "min": 8.3,
+      "max": 27.7,
+      "outliers": [
+        27.7,
+        8.3
+      ],
+      "confidence": "LOW"
+    },
+    "dominanceDeltaVsBv2": -1.3
+  },
+  "failureReasons": {
+    "Dominance": 4
+  },
+  "council": {
+    "verdict": "FAIL",
+    "winRate": 44.4,
+    "targetWinRate": 70,
+    "dominanceMean": 48.11,
+    "productVwMean": 17.94,
+    "rationale": "No win rate lift (44.4% vs 57.1% baseline). Execution Sprint FAIL."
+  },
+  "products": [
+    {
+      "slot": "product-001",
+      "overall": "wb",
+      "daosDominance": 40,
+      "wbDominance": 79,
+      "deltaDominance": -39,
+      "productVW": 17.2
+    },
+    {
+      "slot": "product-002",
+      "overall": "wb",
+      "daosDominance": 47,
+      "wbDominance": 64,
+      "deltaDominance": -17,
+      "productVW": 20.7
+    },
+    {
+      "slot": "product-003",
+      "overall": "draw",
+      "daosDominance": 44,
+      "wbDominance": 56,
+      "deltaDominance": -12,
+      "productVW": 17.7
+    },
+    {
+      "slot": "product-004",
+      "overall": "wb",
+      "daosDominance": 41,
+      "wbDominance": 51,
+      "deltaDominance": -10,
+      "productVW": 12.3
+    },
+    {
+      "slot": "product-005",
+      "overall": "daos",
+      "daosDominance": 57,
+      "wbDominance": 51,
+      "deltaDominance": 6,
+      "productVW": 22.7
+    },
+    {
+      "slot": "product-006",
+      "overall": "daos",
+      "daosDominance": 59,
+      "wbDominance": 50,
+      "deltaDominance": 9,
+      "productVW": 16.6
+    },
+    {
+      "slot": "product-007",
+      "overall": "daos",
+      "daosDominance": 53,
+      "wbDominance": 48,
+      "deltaDominance": 5,
+      "productVW": 18.3
+    },
+    {
+      "slot": "product-008",
+      "overall": "daos",
+      "daosDominance": 63,
+      "wbDominance": 48,
+      "deltaDominance": 15,
+      "productVW": 27.7
+    },
+    {
+      "slot": "product-009",
+      "overall": "wb",
+      "daosDominance": 29,
+      "wbDominance": 43,
+      "deltaDominance": -14,
+      "productVW": 8.3
+    }
+  ]
+}

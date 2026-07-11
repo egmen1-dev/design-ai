@@ -1,0 +1,62 @@
+{
+  "productId": 852947227,
+  "category": "garden",
+  "categoryLabel": "Сад",
+  "name": "Триммер садовый электрический ET 2900",
+  "daosGenerated": true,
+  "genDurationMs": 15023,
+  "leader": {
+    "productDominance": 50,
+    "foregroundIsolation": 39.2,
+    "headlineVisualWeight": 28.7,
+    "primaryFocusRatio": 0.284,
+    "attentionHierarchyScore": 29.8,
+    "commercialFidelity": 36,
+    "visualWeightHero": 28.8,
+    "thumbnailReadability": 45.5,
+    "productVisualWeight": 28.8,
+    "typographyCompetition": 45.2,
+    "secondaryFocusRatio": 0.716,
+    "attentionDistribution": 0.28
+  },
+  "daos": {
+    "productDominance": 52,
+    "foregroundIsolation": 45.5,
+    "headlineVisualWeight": 14.1,
+    "primaryFocusRatio": 0.34,
+    "attentionHierarchyScore": 35.2,
+    "commercialFidelity": 38.5,
+    "visualWeightHero": 15.7,
+    "thumbnailReadability": 64.8,
+    "productVisualWeight": 15.7,
+    "typographyCompetition": 25.3,
+    "secondaryFocusRatio": 0.66,
+    "attentionDistribution": 0.285
+  },
+  "delta": {
+    "productDominance": 2,
+    "foregroundIsolation": 6.3,
+    "headlineVisualWeight": -14.6,
+    "primaryFocusRatio": 0.06,
+    "attentionHierarchyScore": 5.4,
+    "commercialFidelity": 2.5,
+    "visualWeightHero": -13.1,
+    "thumbnailReadability": 19.3,
+    "productVisualWeight": -13.1,
+    "typographyCompetition": -19.9,
+    "secondaryFocusRatio": -0.06,
+    "attentionDistribution": 0
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 50 vs DAOS 52 (Δ2); FI: WB 39.2 vs DAOS 45.5; Thumbnail: WB 45.5 vs DAOS 64.8; Fidelity: WB 36 vs DAOS 38.5"
+  },
+  "compositeScore": {
+    "leader": 39.3,
+    "daos": 44.2
+  }
+}

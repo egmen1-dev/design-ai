@@ -1,0 +1,62 @@
+{
+  "productId": 340201166,
+  "category": "kitchen",
+  "categoryLabel": "Кухня",
+  "name": "Блендер погружной мощный профессиональный 4 в 1",
+  "daosGenerated": true,
+  "genDurationMs": 14901,
+  "leader": {
+    "productDominance": 49,
+    "foregroundIsolation": 59.4,
+    "headlineVisualWeight": 29.6,
+    "primaryFocusRatio": 0.282,
+    "attentionHierarchyScore": 29.9,
+    "commercialFidelity": 35,
+    "visualWeightHero": 27.9,
+    "thumbnailReadability": 55.2,
+    "productVisualWeight": 27.9,
+    "typographyCompetition": 41.6,
+    "secondaryFocusRatio": 0.718,
+    "attentionDistribution": 0.282
+  },
+  "daos": {
+    "productDominance": 55,
+    "foregroundIsolation": 63.6,
+    "headlineVisualWeight": 18.8,
+    "primaryFocusRatio": 0.345,
+    "attentionHierarchyScore": 35.8,
+    "commercialFidelity": 41,
+    "visualWeightHero": 23.9,
+    "thumbnailReadability": 58.1,
+    "productVisualWeight": 23.9,
+    "typographyCompetition": 37.1,
+    "secondaryFocusRatio": 0.655,
+    "attentionDistribution": 0.299
+  },
+  "delta": {
+    "productDominance": 6,
+    "foregroundIsolation": 4.2,
+    "headlineVisualWeight": -10.8,
+    "primaryFocusRatio": 0.06,
+    "attentionHierarchyScore": 5.9,
+    "commercialFidelity": 6,
+    "visualWeightHero": -4,
+    "thumbnailReadability": 2.9,
+    "productVisualWeight": -4,
+    "typographyCompetition": -4.5,
+    "secondaryFocusRatio": -0.06,
+    "attentionDistribution": 0.02
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 49 vs DAOS 55 (Δ6); FI: WB 59.4 vs DAOS 63.6; Thumbnail: WB 55.2 vs DAOS 58.1; Fidelity: WB 35 vs DAOS 41"
+  },
+  "compositeScore": {
+    "leader": 43.2,
+    "daos": 48
+  }
+}

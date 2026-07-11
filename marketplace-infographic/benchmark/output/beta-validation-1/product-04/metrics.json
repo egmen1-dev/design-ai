@@ -1,0 +1,58 @@
+{
+  "productId": 952674072,
+  "category": "garden",
+  "categoryLabel": "Сад",
+  "name": "Садовый триммер для травы аккумуляторный",
+  "daosGenerated": false,
+  "genError": "[\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"oneThought\",\n      \"deferredSpecs\",\n      0\n    ]\n  },\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"deferredBullets\",\n      0\n    ]\n  }\n]",
+  "genDurationMs": 90,
+  "leader": {
+    "productDominance": 57,
+    "foregroundIsolation": 49.4,
+    "headlineVisualWeight": 22.1,
+    "primaryFocusRatio": 0.265,
+    "attentionHierarchyScore": 31.6,
+    "commercialFidelity": 42.5,
+    "visualWeightHero": 28.7,
+    "thumbnailReadability": 58.4,
+    "productVisualWeight": 28.7,
+    "typographyCompetition": 41
+  },
+  "daos": {
+    "productDominance": 57,
+    "foregroundIsolation": 49.4,
+    "headlineVisualWeight": 22.1,
+    "primaryFocusRatio": 0.265,
+    "attentionHierarchyScore": 31.6,
+    "commercialFidelity": 42.5,
+    "visualWeightHero": 28.7,
+    "thumbnailReadability": 58.4,
+    "productVisualWeight": 28.7,
+    "typographyCompetition": 41
+  },
+  "delta": {
+    "productDominance": 0,
+    "foregroundIsolation": 0,
+    "headlineVisualWeight": 0,
+    "primaryFocusRatio": 0,
+    "attentionHierarchyScore": 0,
+    "commercialFidelity": 0,
+    "visualWeightHero": 0,
+    "thumbnailReadability": 0,
+    "productVisualWeight": 0,
+    "typographyCompetition": 0
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "wb",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "DAOS generation failed: [\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"oneThought\",\n      \"deferredSpecs\",\n      0\n    ]\n  },\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"deferredBullets\",\n      0\n    ]\n  }\n]. WB leader wins by default.",
+    "gapClass": "Composition"
+  },
+  "compositeScore": {
+    "leader": 46.7,
+    "daos": 46.7
+  }
+}

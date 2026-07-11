@@ -1,6 +1,7 @@
 import sharp from "sharp";
 import type { Rgb } from "./scene-analysis";
 import { getAlphaBounds, getAlphaFootBottom } from "./ground-detector";
+import { clampExtractRect } from "./safe-extract";
 
 export type FloorContactLayer = {
   buffer: Buffer;
@@ -20,18 +21,24 @@ export async function renderFloorContactShadow(
   if (!bounds) return null;
 
   const meta = await sharp(productBuffer).metadata();
-  const w = meta.width ?? bounds.width;
-  const footTop = bounds.top + Math.round(bounds.height * 0.62);
-  const footHeight = Math.max(10, bounds.bottom - footTop + 4);
+  const imgW = meta.width ?? bounds.width;
+  const imgH = meta.height ?? bounds.height;
+  const footTop = Math.min(bounds.top + Math.round(bounds.height * 0.62), imgH - 1);
+  const footHeight = Math.min(
+    Math.max(10, bounds.bottom - footTop + 4),
+    imgH - footTop,
+  );
+  const extractRect = clampExtractRect(imgW, imgH, {
+    left: bounds.left,
+    top: footTop,
+    width: bounds.width,
+    height: footHeight,
+  });
+  if (!extractRect) return null;
 
   const slice = await sharp(productBuffer)
     .ensureAlpha()
-    .extract({
-      left: bounds.left,
-      top: footTop,
-      width: bounds.width,
-      height: footHeight,
-    })
+    .extract(extractRect)
     .greyscale()
     .linear(1.4, -35)
     .blur(5)
@@ -89,18 +96,21 @@ export async function renderFloorReflection(
   if (!bounds) return null;
 
   const meta = await sharp(productBuffer).metadata();
-  const w = meta.width ?? bounds.width;
+  const imgW = meta.width ?? bounds.width;
+  const imgH = meta.height ?? bounds.height;
   const reflectSourceH = Math.min(bounds.height, Math.round(bounds.height * 0.35));
-  const extractTop = bounds.bottom - reflectSourceH + 1;
+  const extractTop = Math.max(0, bounds.bottom - reflectSourceH + 1);
+  const extractRect = clampExtractRect(imgW, imgH, {
+    left: bounds.left,
+    top: extractTop,
+    width: bounds.width,
+    height: Math.max(8, bounds.bottom - extractTop + 1),
+  });
+  if (!extractRect) return null;
 
   const reflected = await sharp(productBuffer)
     .ensureAlpha()
-    .extract({
-      left: bounds.left,
-      top: Math.max(0, extractTop),
-      width: bounds.width,
-      height: Math.max(8, bounds.bottom - Math.max(0, extractTop) + 1),
-    })
+    .extract(extractRect)
     .flip()
     .resize(bounds.width, Math.max(16, Math.round(reflectSourceH * 0.55)), { fit: "fill" })
     .linear(0.7, -20)

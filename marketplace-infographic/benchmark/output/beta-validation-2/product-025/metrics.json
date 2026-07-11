@@ -1,0 +1,62 @@
+{
+  "productId": 217796839,
+  "category": "construction",
+  "categoryLabel": "Строительство",
+  "name": "Перфоратор электрический П-26 890",
+  "daosGenerated": true,
+  "genDurationMs": 19164,
+  "leader": {
+    "productDominance": 47,
+    "foregroundIsolation": 43,
+    "headlineVisualWeight": 24.6,
+    "primaryFocusRatio": 0.265,
+    "attentionHierarchyScore": 29.8,
+    "commercialFidelity": 48,
+    "visualWeightHero": 22.4,
+    "thumbnailReadability": 43.9,
+    "productVisualWeight": 22.4,
+    "typographyCompetition": 46.5,
+    "secondaryFocusRatio": 0.735,
+    "attentionDistribution": 0.24
+  },
+  "daos": {
+    "productDominance": 58,
+    "foregroundIsolation": 47.7,
+    "headlineVisualWeight": 10.8,
+    "primaryFocusRatio": 0.329,
+    "attentionHierarchyScore": 36.2,
+    "commercialFidelity": 44.5,
+    "visualWeightHero": 15.7,
+    "thumbnailReadability": 50.2,
+    "productVisualWeight": 15.7,
+    "typographyCompetition": 25.4,
+    "secondaryFocusRatio": 0.671,
+    "attentionDistribution": 0.303
+  },
+  "delta": {
+    "productDominance": 11,
+    "foregroundIsolation": 4.7,
+    "headlineVisualWeight": -13.8,
+    "primaryFocusRatio": 0.06,
+    "attentionHierarchyScore": 6.4,
+    "commercialFidelity": -3.5,
+    "visualWeightHero": -6.7,
+    "thumbnailReadability": 6.3,
+    "productVisualWeight": -6.7,
+    "typographyCompetition": -21.1,
+    "secondaryFocusRatio": -0.06,
+    "attentionDistribution": 0.06
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 47 vs DAOS 58 (Δ11); FI: WB 43 vs DAOS 47.7; Thumbnail: WB 43.9 vs DAOS 50.2; Fidelity: WB 48 vs DAOS 44.5"
+  },
+  "compositeScore": {
+    "leader": 40.7,
+    "daos": 45.6
+  }
+}

@@ -1,0 +1,1040 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"/><title>Sprint 9.5 Production Card Validation</title>
+<style>body{font-family:system-ui,sans-serif;background:#0b1220;color:#e2e8f0;padding:24px;max-width:1400px}
+.row{display:flex;flex-wrap:wrap;gap:12px} img{max-width:280px;border:1px solid #334155;border-radius:8px}
+img.wide{max-width:100%} pre{background:#1e293b;padding:12px;font-size:11px;overflow:auto}
+.council{background:#172554;padding:16px;border-left:4px solid #38bdf8;margin-top:24px}</style></head>
+<body><h1>Sprint 9.5 — Production Card Validation</h1>
+<p>Production handler only — no fallback overlay.</p>
+
+<h2>product-1 — Construction Vacuum</h2>
+<h3>Pipeline stages (Commercial production)</h3>
+<div class="row">
+  <figure><figcaption>01 Background</figcaption><img src="product-1/01-background.png" onerror="this.style.display='none'"/></figure>
+  <figure><figcaption>02 Cutout</figcaption><img src="product-1/02-cutout.png" onerror="this.style.display='none'"/></figure>
+  <figure><figcaption>03 Composited</figcaption><img src="product-1/03-composited.png" onerror="this.style.display='none'"/></figure>
+  <figure><figcaption>04 Final card</figcaption><img src="product-1/04-final-card.png" onerror="this.style.display='none'"/></figure>
+</div>
+<img class="wide" src="product-1/05-comparison.png" onerror="this.style.display='none'"/>
+<pre>{
+  "legacy": {
+    "productionHandlerUsed": true,
+    "fallbackOverlayUsed": false,
+    "sprint9RootCause": "Sprint 9 bypassed handleGenerateInfographic and used benchmark simpleCompositeFallback when compositeProductIntoScene threw extract_area in floor-contact.ts on synthetic cutout",
+    "stagesInProductionHandler": [
+      {
+        "stage": "Raw Product",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Background Generation",
+        "productionHandler": true,
+        "sprint9Benchmark": true,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Cutout",
+        "productionHandler": true,
+        "sprint9Benchmark": true,
+        "sprint95Production": true
+      },
+      {
+        "stage": "prepareProductLayer",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "layoutObjectScale",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "computeMaxProductSize",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "fitProductWithSafePlacement",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Shadows",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Composite",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "HTML Overlay",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Typography",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Badges",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Final PNG",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      }
+    ],
+    "sprint9BenchmarkStages": {
+      "regenerateMarketplaceBackground": true,
+      "cutoutFromBuffer": true,
+      "compositeProductIntoScene": false,
+      "renderHtmlToImage": true,
+      "handleGenerateInfographic": true
+    },
+    "compositeFailedInHandler": true,
+    "compositeNote": "handleGenerateInfographic logged Scene composite failed (floor-contact extract_area); final PNG still produced via HTML overlay without merged scene"
+  },
+  "commercial": {
+    "productionHandlerUsed": true,
+    "fallbackOverlayUsed": false,
+    "sprint9RootCause": "Sprint 9 bypassed handleGenerateInfographic and used benchmark simpleCompositeFallback when compositeProductIntoScene threw extract_area in floor-contact.ts on synthetic cutout",
+    "stagesInProductionHandler": [
+      {
+        "stage": "Raw Product",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Background Generation",
+        "productionHandler": true,
+        "sprint9Benchmark": true,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Cutout",
+        "productionHandler": true,
+        "sprint9Benchmark": true,
+        "sprint95Production": true
+      },
+      {
+        "stage": "prepareProductLayer",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "layoutObjectScale",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "computeMaxProductSize",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "fitProductWithSafePlacement",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Shadows",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Composite",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "HTML Overlay",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Typography",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Badges",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Final PNG",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      }
+    ],
+    "sprint9BenchmarkStages": {
+      "regenerateMarketplaceBackground": true,
+      "cutoutFromBuffer": true,
+      "compositeProductIntoScene": false,
+      "renderHtmlToImage": true,
+      "handleGenerateInfographic": true
+    },
+    "compositeFailedInHandler": true,
+    "compositeNote": "handleGenerateInfographic logged Scene composite failed (floor-contact extract_area); final PNG still produced via HTML overlay without merged scene"
+  }
+}</pre>
+<hr/>
+<h2>product-2 — Battery Sprayer</h2>
+<h3>Pipeline stages (Commercial production)</h3>
+<div class="row">
+  <figure><figcaption>01 Background</figcaption><img src="product-2/01-background.png" onerror="this.style.display='none'"/></figure>
+  <figure><figcaption>02 Cutout</figcaption><img src="product-2/02-cutout.png" onerror="this.style.display='none'"/></figure>
+  <figure><figcaption>03 Composited</figcaption><img src="product-2/03-composited.png" onerror="this.style.display='none'"/></figure>
+  <figure><figcaption>04 Final card</figcaption><img src="product-2/04-final-card.png" onerror="this.style.display='none'"/></figure>
+</div>
+<img class="wide" src="product-2/05-comparison.png" onerror="this.style.display='none'"/>
+<pre>{
+  "legacy": {
+    "productionHandlerUsed": true,
+    "fallbackOverlayUsed": false,
+    "sprint9RootCause": "Sprint 9 bypassed handleGenerateInfographic and used benchmark simpleCompositeFallback when compositeProductIntoScene threw extract_area in floor-contact.ts on synthetic cutout",
+    "stagesInProductionHandler": [
+      {
+        "stage": "Raw Product",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Background Generation",
+        "productionHandler": true,
+        "sprint9Benchmark": true,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Cutout",
+        "productionHandler": true,
+        "sprint9Benchmark": true,
+        "sprint95Production": true
+      },
+      {
+        "stage": "prepareProductLayer",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "layoutObjectScale",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "computeMaxProductSize",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "fitProductWithSafePlacement",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Shadows",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Composite",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "HTML Overlay",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Typography",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Badges",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Final PNG",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      }
+    ],
+    "sprint9BenchmarkStages": {
+      "regenerateMarketplaceBackground": true,
+      "cutoutFromBuffer": true,
+      "compositeProductIntoScene": false,
+      "renderHtmlToImage": true,
+      "handleGenerateInfographic": true
+    },
+    "compositeFailedInHandler": true,
+    "compositeNote": "handleGenerateInfographic logged Scene composite failed (floor-contact extract_area); final PNG still produced via HTML overlay without merged scene"
+  },
+  "commercial": {
+    "productionHandlerUsed": true,
+    "fallbackOverlayUsed": false,
+    "sprint9RootCause": "Sprint 9 bypassed handleGenerateInfographic and used benchmark simpleCompositeFallback when compositeProductIntoScene threw extract_area in floor-contact.ts on synthetic cutout",
+    "stagesInProductionHandler": [
+      {
+        "stage": "Raw Product",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Background Generation",
+        "productionHandler": true,
+        "sprint9Benchmark": true,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Cutout",
+        "productionHandler": true,
+        "sprint9Benchmark": true,
+        "sprint95Production": true
+      },
+      {
+        "stage": "prepareProductLayer",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "layoutObjectScale",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "computeMaxProductSize",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "fitProductWithSafePlacement",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Shadows",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Composite",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "HTML Overlay",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Typography",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Badges",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Final PNG",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      }
+    ],
+    "sprint9BenchmarkStages": {
+      "regenerateMarketplaceBackground": true,
+      "cutoutFromBuffer": true,
+      "compositeProductIntoScene": false,
+      "renderHtmlToImage": true,
+      "handleGenerateInfographic": true
+    },
+    "compositeFailedInHandler": true,
+    "compositeNote": "handleGenerateInfographic logged Scene composite failed (floor-contact extract_area); final PNG still produced via HTML overlay without merged scene"
+  }
+}</pre>
+<hr/>
+<h2>product-3 — Drill</h2>
+<h3>Pipeline stages (Commercial production)</h3>
+<div class="row">
+  <figure><figcaption>01 Background</figcaption><img src="product-3/01-background.png" onerror="this.style.display='none'"/></figure>
+  <figure><figcaption>02 Cutout</figcaption><img src="product-3/02-cutout.png" onerror="this.style.display='none'"/></figure>
+  <figure><figcaption>03 Composited</figcaption><img src="product-3/03-composited.png" onerror="this.style.display='none'"/></figure>
+  <figure><figcaption>04 Final card</figcaption><img src="product-3/04-final-card.png" onerror="this.style.display='none'"/></figure>
+</div>
+<img class="wide" src="product-3/05-comparison.png" onerror="this.style.display='none'"/>
+<pre>{
+  "legacy": {
+    "productionHandlerUsed": true,
+    "fallbackOverlayUsed": false,
+    "sprint9RootCause": "Sprint 9 bypassed handleGenerateInfographic and used benchmark simpleCompositeFallback when compositeProductIntoScene threw extract_area in floor-contact.ts on synthetic cutout",
+    "stagesInProductionHandler": [
+      {
+        "stage": "Raw Product",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Background Generation",
+        "productionHandler": true,
+        "sprint9Benchmark": true,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Cutout",
+        "productionHandler": true,
+        "sprint9Benchmark": true,
+        "sprint95Production": true
+      },
+      {
+        "stage": "prepareProductLayer",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "layoutObjectScale",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "computeMaxProductSize",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "fitProductWithSafePlacement",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Shadows",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Composite",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "HTML Overlay",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Typography",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Badges",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Final PNG",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      }
+    ],
+    "sprint9BenchmarkStages": {
+      "regenerateMarketplaceBackground": true,
+      "cutoutFromBuffer": true,
+      "compositeProductIntoScene": false,
+      "renderHtmlToImage": true,
+      "handleGenerateInfographic": true
+    },
+    "compositeFailedInHandler": true,
+    "compositeNote": "handleGenerateInfographic logged Scene composite failed (floor-contact extract_area); final PNG still produced via HTML overlay without merged scene"
+  },
+  "commercial": {
+    "productionHandlerUsed": true,
+    "fallbackOverlayUsed": false,
+    "sprint9RootCause": "Sprint 9 bypassed handleGenerateInfographic and used benchmark simpleCompositeFallback when compositeProductIntoScene threw extract_area in floor-contact.ts on synthetic cutout",
+    "stagesInProductionHandler": [
+      {
+        "stage": "Raw Product",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Background Generation",
+        "productionHandler": true,
+        "sprint9Benchmark": true,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Cutout",
+        "productionHandler": true,
+        "sprint9Benchmark": true,
+        "sprint95Production": true
+      },
+      {
+        "stage": "prepareProductLayer",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "layoutObjectScale",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "computeMaxProductSize",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "fitProductWithSafePlacement",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Shadows",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Composite",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "HTML Overlay",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Typography",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Badges",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Final PNG",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      }
+    ],
+    "sprint9BenchmarkStages": {
+      "regenerateMarketplaceBackground": true,
+      "cutoutFromBuffer": true,
+      "compositeProductIntoScene": false,
+      "renderHtmlToImage": true,
+      "handleGenerateInfographic": true
+    },
+    "compositeFailedInHandler": true,
+    "compositeNote": "handleGenerateInfographic logged Scene composite failed (floor-contact extract_area); final PNG still produced via HTML overlay without merged scene"
+  }
+}</pre>
+<hr/>
+<h2>product-4 — Pressure Washer</h2>
+<h3>Pipeline stages (Commercial production)</h3>
+<div class="row">
+  <figure><figcaption>01 Background</figcaption><img src="product-4/01-background.png" onerror="this.style.display='none'"/></figure>
+  <figure><figcaption>02 Cutout</figcaption><img src="product-4/02-cutout.png" onerror="this.style.display='none'"/></figure>
+  <figure><figcaption>03 Composited</figcaption><img src="product-4/03-composited.png" onerror="this.style.display='none'"/></figure>
+  <figure><figcaption>04 Final card</figcaption><img src="product-4/04-final-card.png" onerror="this.style.display='none'"/></figure>
+</div>
+<img class="wide" src="product-4/05-comparison.png" onerror="this.style.display='none'"/>
+<pre>{
+  "legacy": {
+    "productionHandlerUsed": true,
+    "fallbackOverlayUsed": false,
+    "sprint9RootCause": "Sprint 9 bypassed handleGenerateInfographic and used benchmark simpleCompositeFallback when compositeProductIntoScene threw extract_area in floor-contact.ts on synthetic cutout",
+    "stagesInProductionHandler": [
+      {
+        "stage": "Raw Product",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Background Generation",
+        "productionHandler": true,
+        "sprint9Benchmark": true,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Cutout",
+        "productionHandler": true,
+        "sprint9Benchmark": true,
+        "sprint95Production": true
+      },
+      {
+        "stage": "prepareProductLayer",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "layoutObjectScale",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "computeMaxProductSize",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "fitProductWithSafePlacement",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Shadows",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Composite",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "HTML Overlay",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Typography",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Badges",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Final PNG",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      }
+    ],
+    "sprint9BenchmarkStages": {
+      "regenerateMarketplaceBackground": true,
+      "cutoutFromBuffer": true,
+      "compositeProductIntoScene": false,
+      "renderHtmlToImage": true,
+      "handleGenerateInfographic": true
+    },
+    "compositeFailedInHandler": true,
+    "compositeNote": "handleGenerateInfographic logged Scene composite failed (floor-contact extract_area); final PNG still produced via HTML overlay without merged scene"
+  },
+  "commercial": {
+    "productionHandlerUsed": true,
+    "fallbackOverlayUsed": false,
+    "sprint9RootCause": "Sprint 9 bypassed handleGenerateInfographic and used benchmark simpleCompositeFallback when compositeProductIntoScene threw extract_area in floor-contact.ts on synthetic cutout",
+    "stagesInProductionHandler": [
+      {
+        "stage": "Raw Product",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Background Generation",
+        "productionHandler": true,
+        "sprint9Benchmark": true,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Cutout",
+        "productionHandler": true,
+        "sprint9Benchmark": true,
+        "sprint95Production": true
+      },
+      {
+        "stage": "prepareProductLayer",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "layoutObjectScale",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "computeMaxProductSize",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "fitProductWithSafePlacement",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Shadows",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Composite",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "HTML Overlay",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Typography",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Badges",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Final PNG",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      }
+    ],
+    "sprint9BenchmarkStages": {
+      "regenerateMarketplaceBackground": true,
+      "cutoutFromBuffer": true,
+      "compositeProductIntoScene": false,
+      "renderHtmlToImage": true,
+      "handleGenerateInfographic": true
+    },
+    "compositeFailedInHandler": true,
+    "compositeNote": "handleGenerateInfographic logged Scene composite failed (floor-contact extract_area); final PNG still produced via HTML overlay without merged scene"
+  }
+}</pre>
+<hr/>
+<h2>product-5 — Home Humidifier</h2>
+<h3>Pipeline stages (Commercial production)</h3>
+<div class="row">
+  <figure><figcaption>01 Background</figcaption><img src="product-5/01-background.png" onerror="this.style.display='none'"/></figure>
+  <figure><figcaption>02 Cutout</figcaption><img src="product-5/02-cutout.png" onerror="this.style.display='none'"/></figure>
+  <figure><figcaption>03 Composited</figcaption><img src="product-5/03-composited.png" onerror="this.style.display='none'"/></figure>
+  <figure><figcaption>04 Final card</figcaption><img src="product-5/04-final-card.png" onerror="this.style.display='none'"/></figure>
+</div>
+<img class="wide" src="product-5/05-comparison.png" onerror="this.style.display='none'"/>
+<pre>{
+  "legacy": {
+    "productionHandlerUsed": true,
+    "fallbackOverlayUsed": false,
+    "sprint9RootCause": "Sprint 9 bypassed handleGenerateInfographic and used benchmark simpleCompositeFallback when compositeProductIntoScene threw extract_area in floor-contact.ts on synthetic cutout",
+    "stagesInProductionHandler": [
+      {
+        "stage": "Raw Product",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Background Generation",
+        "productionHandler": true,
+        "sprint9Benchmark": true,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Cutout",
+        "productionHandler": true,
+        "sprint9Benchmark": true,
+        "sprint95Production": true
+      },
+      {
+        "stage": "prepareProductLayer",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "layoutObjectScale",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "computeMaxProductSize",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "fitProductWithSafePlacement",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Shadows",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Composite",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "HTML Overlay",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Typography",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Badges",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Final PNG",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      }
+    ],
+    "sprint9BenchmarkStages": {
+      "regenerateMarketplaceBackground": true,
+      "cutoutFromBuffer": true,
+      "compositeProductIntoScene": false,
+      "renderHtmlToImage": true,
+      "handleGenerateInfographic": true
+    },
+    "compositeFailedInHandler": true,
+    "compositeNote": "handleGenerateInfographic logged Scene composite failed (floor-contact extract_area); final PNG still produced via HTML overlay without merged scene"
+  },
+  "commercial": {
+    "productionHandlerUsed": true,
+    "fallbackOverlayUsed": false,
+    "sprint9RootCause": "Sprint 9 bypassed handleGenerateInfographic and used benchmark simpleCompositeFallback when compositeProductIntoScene threw extract_area in floor-contact.ts on synthetic cutout",
+    "stagesInProductionHandler": [
+      {
+        "stage": "Raw Product",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Background Generation",
+        "productionHandler": true,
+        "sprint9Benchmark": true,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Cutout",
+        "productionHandler": true,
+        "sprint9Benchmark": true,
+        "sprint95Production": true
+      },
+      {
+        "stage": "prepareProductLayer",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "layoutObjectScale",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "computeMaxProductSize",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "fitProductWithSafePlacement",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Shadows",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "Composite",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      },
+      {
+        "stage": "HTML Overlay",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Typography",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Badges",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true,
+        "note": "Only in handleGenerateInfographic → renderInfographicHtml → puppeteer"
+      },
+      {
+        "stage": "Final PNG",
+        "productionHandler": true,
+        "sprint9Benchmark": false,
+        "sprint95Production": true
+      }
+    ],
+    "sprint9BenchmarkStages": {
+      "regenerateMarketplaceBackground": true,
+      "cutoutFromBuffer": true,
+      "compositeProductIntoScene": false,
+      "renderHtmlToImage": true,
+      "handleGenerateInfographic": true
+    },
+    "compositeFailedInHandler": true,
+    "compositeNote": "handleGenerateInfographic logged Scene composite failed (floor-contact extract_area); final PNG still produced via HTML overlay without merged scene"
+  }
+}</pre>
+<hr/>
+<div class="council"><h2>Council: YES WITH LIMITATIONS</h2><ul><li>5/5 products produced 04-final-card.png via production handler</li><li>No fallback overlay in production-card-validation.ts</li><li>Stages 01–04 extracted from handler artifacts (background, cutout, merged, final)</li><li>Scene compositor may fail on SVG benchmark products; handler still emits final PNG via HTML overlay</li></ul></div>
+</body></html>

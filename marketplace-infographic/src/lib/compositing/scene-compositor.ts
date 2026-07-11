@@ -30,6 +30,30 @@ import {
   applyFloorColorSpill,
   fitProductWithSafePlacement,
 } from "./alpha-fit";
+import {
+  applyHeroMassToMaxSize,
+  getHeroVisualMassPolicy,
+  isFlatWideSilhouette,
+  resolveHeroAlphaLimits,
+  resolveHeroObjectScale,
+} from "./hero-visual-mass";
+import { getAlphaBounds } from "./ground-detector";
+import {
+  buildCommercialCalibrationDiagnostics,
+  computeMaxProductSize,
+  type CommercialCalibrationDiagnostics,
+  type CommercialCalibrationMode,
+} from "./commercial-calibration";
+import {
+  buildCommercialAlphaPolicyDiagnostics,
+  type CommercialAlphaPolicyDiagnostics,
+} from "./commercial-alpha-policy";
+import {
+  applyBackgroundSeparationHalo,
+  enhanceForegroundIsolation,
+  foregroundIsolationEnabled,
+  type ForegroundIsolationDiagnostics,
+} from "./foreground-isolation";
 import { publicDir, resolvePublicAssetPath, writablePublicDir } from "@/lib/runtime-paths";
 
 const CANVAS_W = WB_COVER.width;
@@ -44,6 +68,8 @@ export type SceneCompositeOptions = {
   scene: ScenePlan;
   compositionLayout?: CompositionLayout;
   objectScale?: number;
+  /** When true, uses Sprint 6C calibrated scaleBoost formula */
+  commercialCalibration?: boolean;
 };
 
 async function loadImageBuffer(source: string): Promise<Buffer> {
@@ -116,31 +142,6 @@ export async function softenBackgroundCenter(
     .toBuffer();
 }
 
-function computeMaxProductSize(
-  compositionLayout: CompositionLayout | undefined,
-  objectScale: number,
-): { maxW: number; maxH: number } {
-  const canvasMaxW = Math.min(PRODUCT_MAX_WIDTH_PX, CANVAS_W - SIDE_MARGIN * 2);
-  const canvasMaxH = Math.min(PRODUCT_MAX_H, CANVAS_H - HEADER_RESERVE_PX - BOTTOM_PAD);
-
-  const comp = compositionLayout?.product;
-  if (comp) {
-    const zoneW = Math.round(xPct(comp.maxWidthPct));
-    const zoneH = Math.round(yPct(comp.maxHeightPct));
-    const scaleBoost = 0.58 + objectScale * 0.05;
-    return {
-      maxW: Math.min(canvasMaxW, PRODUCT_MAX_WIDTH_PX, Math.round(zoneW * scaleBoost)),
-      maxH: Math.min(canvasMaxH, PRODUCT_MAX_H, Math.round(zoneH * scaleBoost)),
-    };
-  }
-
-  const scale = 0.55 + objectScale * 0.18;
-  return {
-    maxW: Math.min(canvasMaxW, Math.round(canvasMaxW * scale)),
-    maxH: Math.min(canvasMaxH, Math.round(canvasMaxH * scale)),
-  };
-}
-
 async function fitProductInFrame(
   productBuffer: Buffer,
   maxW: number,
@@ -185,6 +186,7 @@ async function prepareProductLayer(
   rotationDeg: number,
   maxWidthPx: number,
   maxHeightPx: number,
+  headerReservePx: number = HEADER_RESERVE_PX,
 ): Promise<{ buffer: Buffer; width: number; height: number }> {
   let pipeline = sharp(productBuffer)
     .ensureAlpha()
@@ -203,7 +205,7 @@ async function prepareProductLayer(
   let { data: buffer, info } = resized;
 
   const canvasMaxW = CANVAS_W - SIDE_MARGIN * 2;
-  const canvasMaxH = CANVAS_H - HEADER_RESERVE_PX - BOTTOM_PAD;
+  const canvasMaxH = CANVAS_H - headerReservePx - BOTTOM_PAD;
   if (info.width > canvasMaxW || info.height > canvasMaxH) {
     const fitted = await sharp(buffer)
       .resize(canvasMaxW, canvasMaxH, { fit: "inside", withoutEnlargement: true })
@@ -238,6 +240,7 @@ function resolveVerticalTop(
   alphaFootBottom: number,
   floorY: number,
   compositionLayout?: CompositionLayout,
+  headerReservePx: number = HEADER_RESERVE_PX,
 ): number {
   const safeInsetPx = compositionLayout
     ? Math.round(yPct(compositionLayout.safeInsetPct))
@@ -246,7 +249,7 @@ function resolveVerticalTop(
 
   let top = floorY - alphaFootBottom;
   top = Math.min(top, zoneBottom - productHeight);
-  top = Math.max(HEADER_RESERVE_PX, top);
+  top = Math.max(headerReservePx, top);
   top = Math.min(top, CANVAS_H - BOTTOM_PAD - productHeight);
 
   return Math.round(top);
@@ -257,6 +260,9 @@ export type SceneCompositeResult = {
   mergedBuffer: Buffer;
   lighting: Awaited<ReturnType<typeof analyzeSceneLighting>>;
   productPlacement: { left: number; top: number; width: number; height: number };
+  commercialCalibration?: CommercialCalibrationDiagnostics;
+  commercialAlphaPolicy?: CommercialAlphaPolicyDiagnostics;
+  foregroundIsolation?: ForegroundIsolationDiagnostics;
 };
 
 export async function compositeProductIntoScene(
@@ -266,20 +272,55 @@ export async function compositeProductIntoScene(
 ): Promise<SceneCompositeResult> {
   const layout = options.layout ?? "marketplace";
   const scene = options.scene;
-  const objectScale = options.objectScale ?? 0.78;
+  const baseObjectScale = options.objectScale ?? 0.78;
+  const objectScale = resolveHeroObjectScale(baseObjectScale);
+  const heroPolicy = getHeroVisualMassPolicy();
+  const alphaLimits = resolveHeroAlphaLimits(heroPolicy);
+  const headerReservePx = alphaLimits.headerReservePx;
   const comp = options.compositionLayout?.product;
+  const calibrationMode: CommercialCalibrationMode = options.commercialCalibration
+    ? "calibrated"
+    : "legacy";
 
   const [bgRaw, productRaw] = await Promise.all([
     loadImageBuffer(backgroundUrl),
     loadImageBuffer(productUrl),
   ]);
 
+  const preBounds = await getAlphaBounds(productRaw);
+  const flatWide =
+    preBounds != null &&
+    isFlatWideSilhouette(preBounds.width, preBounds.height);
+
+  const canvasMaxW = Math.min(PRODUCT_MAX_WIDTH_PX, CANVAS_W - SIDE_MARGIN * 2);
+  const canvasMaxH = Math.min(PRODUCT_MAX_H, CANVAS_H - headerReservePx - BOTTOM_PAD);
+
   const bgResized = await resizeBackground(bgRaw);
-  const { maxW, maxH } = computeMaxProductSize(options.compositionLayout, objectScale);
+  let maxSize = computeMaxProductSize(
+    options.compositionLayout,
+    objectScale,
+    calibrationMode,
+  );
+
+  if (heroPolicy.enabled) {
+    maxSize = {
+      ...applyHeroMassToMaxSize({
+        maxW: maxSize.maxW,
+        maxH: maxSize.maxH,
+        policy: heroPolicy,
+        flatWide,
+        canvasMaxW,
+        canvasMaxH,
+      }),
+      placementAreaPct: maxSize.placementAreaPct,
+    };
+  }
+
+  const { maxW, maxH } = maxSize;
 
   const prePlacement = {
     left: SIDE_MARGIN,
-    top: HEADER_RESERVE_PX,
+    top: headerReservePx,
     width: maxW,
     height: maxH,
   };
@@ -307,6 +348,7 @@ export async function compositeProductIntoScene(
     rotationDeg,
     maxW,
     maxH,
+    headerReservePx,
   );
   const placement = await fitProductWithSafePlacement(
     prepared.buffer,
@@ -314,9 +356,13 @@ export async function compositeProductIntoScene(
     prepared.height,
     CANVAS_W,
     SIDE_MARGIN,
-    PRODUCT_ALPHA_MAX_WIDTH_PX,
-    PRODUCT_ALPHA_MAX_HEIGHT_PX,
+    alphaLimits.maxAlphaW,
+    alphaLimits.maxAlphaH,
     options.compositionLayout,
+    {
+      allowEnlargement: heroPolicy.allowAlphaEnlargement,
+      minAlphaFillRatio: heroPolicy.minAlphaFillRatio,
+    },
   );
 
   const floorColor = await sampleFloorColor(
@@ -335,10 +381,31 @@ export async function compositeProductIntoScene(
     alphaFootBottom,
     floorY,
     options.compositionLayout,
+    headerReservePx,
   );
 
-  const bgPrepared = await softenBackgroundCenter(bgRaw, layout);
+  let bgPrepared = await softenBackgroundCenter(bgRaw, layout);
   const footCanvasY = productTop + alphaFootBottom;
+
+  let foregroundIsolation: ForegroundIsolationDiagnostics | undefined;
+  if (foregroundIsolationEnabled()) {
+    bgPrepared = await applyBackgroundSeparationHalo({
+      backgroundBuffer: bgPrepared,
+      canvasWidth: CANVAS_W,
+      canvasHeight: CANVAS_H,
+      productBuffer: product.buffer,
+      productLeft,
+      productTop,
+      lighting,
+    });
+    foregroundIsolation = {
+      applied: true,
+      backgroundHalo: true,
+      localContrast: false,
+      edgeSeparation: false,
+      version: "1.1.0-quality-cycle-3",
+    };
+  }
 
   const floorContact = await renderFloorContactShadow(
     product.buffer,
@@ -418,11 +485,28 @@ export async function compositeProductIntoScene(
     blend: "over",
   });
 
+  let mergedRaw = await sharp(bgPrepared).composite(composites).png().toBuffer();
+
+  if (foregroundIsolationEnabled()) {
+    mergedRaw = await enhanceForegroundIsolation(mergedRaw, {
+      canvasWidth: CANVAS_W,
+      canvasHeight: CANVAS_H,
+      productBuffer: product.buffer,
+      productLeft,
+      productTop,
+      lighting,
+    });
+    foregroundIsolation = {
+      applied: true,
+      backgroundHalo: true,
+      localContrast: true,
+      edgeSeparation: true,
+      version: "1.1.0-quality-cycle-3",
+    };
+  }
+
   const mergedBuffer = await applySceneHarmony(
-    await applyFilmGrain(
-      await sharp(bgPrepared).composite(composites).png().toBuffer(),
-      0.022,
-    ),
+    await applyFilmGrain(mergedRaw, 0.022),
     floorColor,
     lighting.warmth,
   );
@@ -438,7 +522,7 @@ export async function compositeProductIntoScene(
     .update(backgroundUrl)
     .update(productUrl)
     .update(scene.seed)
-    .update("ground-v5")
+    .update("ground-v7-isolation")
     .digest("hex")
     .slice(0, 16);
 
@@ -448,11 +532,24 @@ export async function compositeProductIntoScene(
   const absPath = path.join(dir, filename);
   await writeFile(absPath, mergedBuffer);
 
+  const measuredAreaPct =
+    Math.round(
+      ((finalPlacement.width * finalPlacement.height) / (CANVAS_W * CANVAS_H)) * 1000,
+    ) / 10;
+
   return {
     mergedPath: `/merged/${filename}`,
     mergedBuffer,
     lighting,
     productPlacement: finalPlacement,
+    commercialCalibration: buildCommercialCalibrationDiagnostics({
+      objectScale,
+      compositionLayout: options.compositionLayout,
+      mode: calibrationMode,
+      measuredAreaPct,
+    }),
+    commercialAlphaPolicy: buildCommercialAlphaPolicyDiagnostics(),
+    foregroundIsolation,
   };
 }
 

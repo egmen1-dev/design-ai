@@ -1,0 +1,62 @@
+{
+  "productId": 276762073,
+  "category": "construction",
+  "categoryLabel": "Строительство",
+  "name": "Перфоратор электрический ударный мощный 2200 Вт 7,5 Дж",
+  "daosGenerated": true,
+  "genDurationMs": 18238,
+  "leader": {
+    "productDominance": 51,
+    "foregroundIsolation": 47.9,
+    "headlineVisualWeight": 28.1,
+    "primaryFocusRatio": 0.278,
+    "attentionHierarchyScore": 29.7,
+    "commercialFidelity": 36,
+    "visualWeightHero": 28.7,
+    "thumbnailReadability": 59.2,
+    "productVisualWeight": 28.7,
+    "typographyCompetition": 45.3,
+    "secondaryFocusRatio": 0.722,
+    "attentionDistribution": 0.281
+  },
+  "daos": {
+    "productDominance": 49,
+    "foregroundIsolation": 56.5,
+    "headlineVisualWeight": 24.7,
+    "primaryFocusRatio": 0.336,
+    "attentionHierarchyScore": 33.1,
+    "commercialFidelity": 35,
+    "visualWeightHero": 24.3,
+    "thumbnailReadability": 65.3,
+    "productVisualWeight": 24.3,
+    "typographyCompetition": 40.7,
+    "secondaryFocusRatio": 0.664,
+    "attentionDistribution": 0.271
+  },
+  "delta": {
+    "productDominance": -2,
+    "foregroundIsolation": 8.6,
+    "headlineVisualWeight": -3.4,
+    "primaryFocusRatio": 0.06,
+    "attentionHierarchyScore": 3.4,
+    "commercialFidelity": -1,
+    "visualWeightHero": -4.4,
+    "thumbnailReadability": 6.1,
+    "productVisualWeight": -4.4,
+    "typographyCompetition": -4.6,
+    "secondaryFocusRatio": -0.06,
+    "attentionDistribution": -0.01
+  },
+  "verdict": {
+    "moreProfessional": "draw",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 51 vs DAOS 49 (Δ-2); FI: WB 47.9 vs DAOS 56.5; Thumbnail: WB 59.2 vs DAOS 65.3; Fidelity: WB 36 vs DAOS 35"
+  },
+  "compositeScore": {
+    "leader": 43,
+    "daos": 44.5
+  }
+}

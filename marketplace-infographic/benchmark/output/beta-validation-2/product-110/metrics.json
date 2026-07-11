@@ -1,0 +1,62 @@
+{
+  "productId": 205921411,
+  "category": "pressure-wash",
+  "categoryLabel": "Мойка",
+  "name": "Мойка высокого давления 160 бар для автомобиля электрическая",
+  "daosGenerated": true,
+  "genDurationMs": 14267,
+  "leader": {
+    "productDominance": 55,
+    "foregroundIsolation": 72.5,
+    "headlineVisualWeight": 18.7,
+    "primaryFocusRatio": 0.279,
+    "attentionHierarchyScore": 32.4,
+    "commercialFidelity": 40.5,
+    "visualWeightHero": 22.7,
+    "thumbnailReadability": 66.2,
+    "productVisualWeight": 22.7,
+    "typographyCompetition": 30.2,
+    "secondaryFocusRatio": 0.721,
+    "attentionDistribution": 0.317
+  },
+  "daos": {
+    "productDominance": 52,
+    "foregroundIsolation": 75.4,
+    "headlineVisualWeight": 15.2,
+    "primaryFocusRatio": 0.4,
+    "attentionHierarchyScore": 37.6,
+    "commercialFidelity": 38,
+    "visualWeightHero": 16.7,
+    "thumbnailReadability": 82,
+    "productVisualWeight": 16.7,
+    "typographyCompetition": 21.8,
+    "secondaryFocusRatio": 0.6,
+    "attentionDistribution": 0.311
+  },
+  "delta": {
+    "productDominance": -3,
+    "foregroundIsolation": 2.9,
+    "headlineVisualWeight": -3.5,
+    "primaryFocusRatio": 0.12,
+    "attentionHierarchyScore": 5.2,
+    "commercialFidelity": -2.5,
+    "visualWeightHero": -6,
+    "thumbnailReadability": 15.8,
+    "productVisualWeight": -6,
+    "typographyCompetition": -8.4,
+    "secondaryFocusRatio": -0.12,
+    "attentionDistribution": -0.01
+  },
+  "verdict": {
+    "moreProfessional": "draw",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 55 vs DAOS 52 (Δ-3); FI: WB 72.5 vs DAOS 75.4; Thumbnail: WB 66.2 vs DAOS 82; Fidelity: WB 40.5 vs DAOS 38"
+  },
+  "compositeScore": {
+    "leader": 50,
+    "daos": 51.5
+  }
+}

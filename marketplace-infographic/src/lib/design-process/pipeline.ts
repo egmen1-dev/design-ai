@@ -145,8 +145,9 @@ export function applyPosterRules(
       ...ot,
       headline: meaning.title,
       badge: meaning.feature || meaning.badge || ot.badge,
+      deferredSpecs: ot.deferredSpecs.map((s) => s.slice(0, 80)).slice(0, 6),
     },
-    deferredBullets: ot.deferredSpecs,
+    deferredBullets: ot.deferredSpecs.map((s) => s.slice(0, 80)).slice(0, 6),
     selectedArchetypeId: creative.archetypeId,
     designDnaOverride: creative.multiConcept?.designDNA,
   };

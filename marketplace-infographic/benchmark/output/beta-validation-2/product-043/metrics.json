@@ -1,0 +1,70 @@
+{
+  "productId": 901998555,
+  "category": "auto",
+  "categoryLabel": "Авто",
+  "name": "Пылесос для автомобиля",
+  "daosGenerated": true,
+  "genDurationMs": 18207,
+  "leader": {
+    "productDominance": 62,
+    "foregroundIsolation": 39.3,
+    "headlineVisualWeight": 20.4,
+    "primaryFocusRatio": 0.42,
+    "attentionHierarchyScore": 42.1,
+    "commercialFidelity": 48,
+    "visualWeightHero": 35.5,
+    "thumbnailReadability": 41.3,
+    "productVisualWeight": 35.5,
+    "typographyCompetition": 38.3,
+    "secondaryFocusRatio": 0.58,
+    "attentionDistribution": 0.377
+  },
+  "daos": {
+    "productDominance": 22,
+    "foregroundIsolation": 35.3,
+    "headlineVisualWeight": 24.3,
+    "primaryFocusRatio": 0.163,
+    "attentionHierarchyScore": 27.9,
+    "commercialFidelity": 14,
+    "visualWeightHero": 6.8,
+    "thumbnailReadability": 42.3,
+    "productVisualWeight": 6.8,
+    "typographyCompetition": 31.4,
+    "secondaryFocusRatio": 0.837,
+    "attentionDistribution": 0.109
+  },
+  "delta": {
+    "productDominance": -40,
+    "foregroundIsolation": -4,
+    "headlineVisualWeight": 3.9,
+    "primaryFocusRatio": -0.26,
+    "attentionHierarchyScore": -14.2,
+    "commercialFidelity": -34,
+    "visualWeightHero": -28.7,
+    "thumbnailReadability": 1,
+    "productVisualWeight": -28.7,
+    "typographyCompetition": -6.9,
+    "secondaryFocusRatio": 0.26,
+    "attentionDistribution": -0.27
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "wb",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "Dominance: WB 62 vs DAOS 22 (Δ-40); FI: WB 39.3 vs DAOS 35.3; Thumbnail: WB 41.3 vs DAOS 42.3; Fidelity: WB 48 vs DAOS 14",
+    "gapClass": "Product Dominance"
+  },
+  "failure": {
+    "slot": "product-043",
+    "productId": 901998555,
+    "category": "Авто",
+    "reason": "Dominance",
+    "detail": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 47,
+    "daos": 23.3
+  }
+}

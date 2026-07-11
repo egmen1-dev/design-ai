@@ -1,0 +1,62 @@
+{
+  "productId": 844404616,
+  "category": "home",
+  "categoryLabel": "Дом",
+  "name": "Корзина для хранения пакетов держатель кухонный подвесной",
+  "daosGenerated": true,
+  "genDurationMs": 14657,
+  "leader": {
+    "productDominance": 48,
+    "foregroundIsolation": 43.2,
+    "headlineVisualWeight": 29.5,
+    "primaryFocusRatio": 0.31,
+    "attentionHierarchyScore": 31.3,
+    "commercialFidelity": 34,
+    "visualWeightHero": 27.7,
+    "thumbnailReadability": 55.6,
+    "productVisualWeight": 27.7,
+    "typographyCompetition": 46.6,
+    "secondaryFocusRatio": 0.69,
+    "attentionDistribution": 0.267
+  },
+  "daos": {
+    "productDominance": 62,
+    "foregroundIsolation": 57.6,
+    "headlineVisualWeight": 15.6,
+    "primaryFocusRatio": 0.386,
+    "attentionHierarchyScore": 39.5,
+    "commercialFidelity": 48,
+    "visualWeightHero": 25.5,
+    "thumbnailReadability": 74,
+    "productVisualWeight": 25.5,
+    "typographyCompetition": 32.8,
+    "secondaryFocusRatio": 0.614,
+    "attentionDistribution": 0.345
+  },
+  "delta": {
+    "productDominance": 14,
+    "foregroundIsolation": 14.4,
+    "headlineVisualWeight": -13.9,
+    "primaryFocusRatio": 0.08,
+    "attentionHierarchyScore": 8.2,
+    "commercialFidelity": 14,
+    "visualWeightHero": -2.2,
+    "thumbnailReadability": 18.4,
+    "productVisualWeight": -2.2,
+    "typographyCompetition": -13.8,
+    "secondaryFocusRatio": -0.08,
+    "attentionDistribution": 0.08
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 48 vs DAOS 62 (Δ14); FI: WB 43.2 vs DAOS 57.6; Thumbnail: WB 55.6 vs DAOS 74; Fidelity: WB 34 vs DAOS 48"
+  },
+  "compositeScore": {
+    "leader": 40.4,
+    "daos": 53.7
+  }
+}

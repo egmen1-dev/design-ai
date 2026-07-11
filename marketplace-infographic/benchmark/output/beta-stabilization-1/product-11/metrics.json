@@ -1,0 +1,57 @@
+{
+  "productId": 10392457,
+  "category": "home",
+  "categoryLabel": "Дом",
+  "name": "Органайзер для хранения вещей и белья",
+  "daosGenerated": true,
+  "genDurationMs": 10355,
+  "leader": {
+    "productDominance": 79,
+    "foregroundIsolation": 71,
+    "headlineVisualWeight": 5.2,
+    "primaryFocusRatio": 0.375,
+    "attentionHierarchyScore": 41.4,
+    "commercialFidelity": 41.5,
+    "visualWeightHero": 18.7,
+    "thumbnailReadability": 77.9,
+    "productVisualWeight": 18.7,
+    "typographyCompetition": 20.6
+  },
+  "daos": {
+    "productDominance": 48,
+    "foregroundIsolation": 87.4,
+    "headlineVisualWeight": 24.2,
+    "primaryFocusRatio": 0.319,
+    "attentionHierarchyScore": 32.6,
+    "commercialFidelity": 34,
+    "visualWeightHero": 21.9,
+    "thumbnailReadability": 92.3,
+    "productVisualWeight": 21.9,
+    "typographyCompetition": 39.2
+  },
+  "delta": {
+    "productDominance": -31,
+    "foregroundIsolation": 16.4,
+    "headlineVisualWeight": 19,
+    "primaryFocusRatio": -0.06,
+    "attentionHierarchyScore": -8.8,
+    "commercialFidelity": -7.5,
+    "visualWeightHero": 3.2,
+    "thumbnailReadability": 14.4,
+    "productVisualWeight": 3.2,
+    "typographyCompetition": 18.6
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "daos",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "Dominance: WB 79 vs DAOS 48 (Δ-31); FI: WB 71 vs DAOS 87.4; Thumbnail: WB 77.9 vs DAOS 92.3; Fidelity: WB 41.5 vs DAOS 34",
+    "gapClass": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 60.1,
+    "daos": 52.4
+  }
+}
