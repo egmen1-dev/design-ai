@@ -1,0 +1,28 @@
+{
+  "source": "daos",
+  "category": "construction-vacuum",
+  "categoryLabel": "Construction Vacuum",
+  "productId": "product-1",
+  "sprint95Fidelity": 44,
+  "compositeFailed": true,
+  "handlerFlags": [
+    "not_professional",
+    "product_not_dominant",
+    "png_overlay_feel"
+  ],
+  "productAreaPct": 31,
+  "productDominanceScore": 51,
+  "visualHierarchyScore": 51,
+  "backgroundSeparationScore": 55,
+  "sceneConsistencyScore": 100,
+  "backgroundComplexity": 0.5,
+  "typographyDensity": 1,
+  "heroLuminance": 164.3,
+  "globalLuminance": 145.7,
+  "heroSaturation": 73.2,
+  "negativeSpaceProxy": 69,
+  "commercialFidelityScore": 44,
+  "heroZoneCanvasPct": 31.3,
+  "visualWeightHero": 23,
+  "contrastSeparation": 55
+}

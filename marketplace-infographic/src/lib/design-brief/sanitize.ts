@@ -16,6 +16,28 @@ function normalizeHex(value: unknown, fallback: string): string {
   return fallback;
 }
 
+function normalizeDeferredStrings(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => clip(String(item).replace(/\bитра\b/gi, "литра"), 80))
+    .filter(Boolean)
+    .slice(0, 6);
+}
+
+function normalizeOneThought(value: unknown): Record<string, unknown> | undefined {
+  if (!value || typeof value !== "object") return undefined;
+  const ot = value as Record<string, unknown>;
+  return {
+    ...ot,
+    question: clip(ot.question, 100),
+    answer: clip(ot.answer, 20),
+    answerLabel: clip(ot.answerLabel, 40),
+    headline: clip(ot.headline, 60),
+    badge: ot.badge != null ? clip(ot.badge, 24) : undefined,
+    deferredSpecs: normalizeDeferredStrings(ot.deferredSpecs),
+  };
+}
+
 function normalizeBullets(value: unknown): string[] {
   if (!Array.isArray(value)) return ["Премиум качество"];
   const bullets = value
@@ -79,6 +101,13 @@ export function sanitizeDesignBrief(
     ),
     bullets: normalizeBullets(obj.bullets ?? obj.benefits),
     benefits: normalizeBullets(obj.benefits ?? obj.bullets),
+    oneThought: normalizeOneThought(obj.oneThought),
+    deferredBullets: normalizeDeferredStrings(
+      obj.deferredBullets ??
+        (obj.oneThought && typeof obj.oneThought === "object"
+          ? (obj.oneThought as Record<string, unknown>).deferredSpecs
+          : undefined),
+    ),
     colorPalette: normalizedPalette,
     colors: normalizedPalette,
     backgroundPrompt,

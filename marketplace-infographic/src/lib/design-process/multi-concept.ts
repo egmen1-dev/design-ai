@@ -27,7 +27,7 @@ export type MultiConcept = {
 function extractSpecs(prompt: string): string[] {
   return prompt
     .split(/[.!?\n;]+/)
-    .map((s) => s.trim())
+    .map((s) => s.trim().slice(0, 80))
     .filter((s) => s.length > 4)
     .slice(0, 8);
 }

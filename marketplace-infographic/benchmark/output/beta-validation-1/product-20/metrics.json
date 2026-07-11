@@ -1,0 +1,58 @@
+{
+  "productId": 250141307,
+  "category": "humidifier",
+  "categoryLabel": "Климат",
+  "name": "Увлажнитель воздуха для лица и тела, мини освежитель с паром",
+  "daosGenerated": false,
+  "genError": "[\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"oneThought\",\n      \"deferredSpecs\",\n      0\n    ]\n  },\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"deferredBullets\",\n      0\n    ]\n  }\n]",
+  "genDurationMs": 70,
+  "leader": {
+    "productDominance": 64,
+    "foregroundIsolation": 44.8,
+    "headlineVisualWeight": 5.7,
+    "primaryFocusRatio": 0.362,
+    "attentionHierarchyScore": 38.5,
+    "commercialFidelity": 54.5,
+    "visualWeightHero": 11.2,
+    "thumbnailReadability": 35.5,
+    "productVisualWeight": 11.2,
+    "typographyCompetition": 11.2
+  },
+  "daos": {
+    "productDominance": 64,
+    "foregroundIsolation": 44.8,
+    "headlineVisualWeight": 5.7,
+    "primaryFocusRatio": 0.362,
+    "attentionHierarchyScore": 38.5,
+    "commercialFidelity": 54.5,
+    "visualWeightHero": 11.2,
+    "thumbnailReadability": 35.5,
+    "productVisualWeight": 11.2,
+    "typographyCompetition": 11.2
+  },
+  "delta": {
+    "productDominance": 0,
+    "foregroundIsolation": 0,
+    "headlineVisualWeight": 0,
+    "primaryFocusRatio": 0,
+    "attentionHierarchyScore": 0,
+    "commercialFidelity": 0,
+    "visualWeightHero": 0,
+    "thumbnailReadability": 0,
+    "productVisualWeight": 0,
+    "typographyCompetition": 0
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "wb",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "DAOS generation failed: [\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"oneThought\",\n      \"deferredSpecs\",\n      0\n    ]\n  },\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"deferredBullets\",\n      0\n    ]\n  }\n]. WB leader wins by default.",
+    "gapClass": "Composition"
+  },
+  "compositeScore": {
+    "leader": 46.8,
+    "daos": 46.8
+  }
+}

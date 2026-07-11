@@ -1,0 +1,41 @@
+{
+  "productId": "impact-drill",
+  "label": "Drill",
+  "durationMs": 6691,
+  "finalPath": "/workspace/marketplace-infographic/public/generated/cmrfxsxrr0000jspcur6g96le-1783748690788.png",
+  "compositedPath": "/workspace/marketplace-infographic/public/merged/3b5c59561deec877-1783748690785.png",
+  "composited": true,
+  "foregroundIsolationApplied": true,
+  "foregroundIsolationDiagnostics": {
+    "applied": true,
+    "backgroundHalo": true,
+    "localContrast": true,
+    "edgeSeparation": true,
+    "version": "1.1.0-quality-cycle-3"
+  },
+  "metrics": {
+    "productAreaPct": 31,
+    "foregroundIsolation": 19.7,
+    "objectSharpness": 7.4,
+    "objectContrast": 18.3,
+    "localContrast": 7.4,
+    "visualWeightHero": 5.6,
+    "productDominanceScore": 26,
+    "commercialFidelityScore": 14.5
+  },
+  "metricsComposited": {
+    "productAreaPct": 31,
+    "foregroundIsolation": 77.9,
+    "objectSharpness": 7.9,
+    "objectContrast": 19.6,
+    "localContrast": 7.9,
+    "visualWeightHero": 6,
+    "productDominanceScore": 100,
+    "commercialFidelityScore": 21.5
+  },
+  "handlerFlags": [
+    null,
+    null
+  ],
+  "qualityScore": 85
+}

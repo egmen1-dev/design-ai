@@ -44,3 +44,6 @@ prisma/*.db-journal
 
 # Design Memory runtime store
 data/design-memory.json
+benchmark/output/beta-validation-1/_tmp/
+benchmark/output/beta-stabilization-1/_tmp/
+benchmark/output/competitive-sprint-1/_tmp/

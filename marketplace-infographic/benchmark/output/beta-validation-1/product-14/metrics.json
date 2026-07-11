@@ -1,0 +1,58 @@
+{
+  "productId": 253631867,
+  "category": "auto",
+  "categoryLabel": "Авто",
+  "name": "Пылесос для автомобиля беспроводной мощный",
+  "daosGenerated": false,
+  "genError": "[\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"oneThought\",\n      \"deferredSpecs\",\n      0\n    ]\n  },\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"deferredBullets\",\n      0\n    ]\n  }\n]",
+  "genDurationMs": 82,
+  "leader": {
+    "productDominance": 54,
+    "foregroundIsolation": 63.8,
+    "headlineVisualWeight": 20.7,
+    "primaryFocusRatio": 0.289,
+    "attentionHierarchyScore": 32.6,
+    "commercialFidelity": 40,
+    "visualWeightHero": 24.5,
+    "thumbnailReadability": 61.3,
+    "productVisualWeight": 24.5,
+    "typographyCompetition": 28.3
+  },
+  "daos": {
+    "productDominance": 54,
+    "foregroundIsolation": 63.8,
+    "headlineVisualWeight": 20.7,
+    "primaryFocusRatio": 0.289,
+    "attentionHierarchyScore": 32.6,
+    "commercialFidelity": 40,
+    "visualWeightHero": 24.5,
+    "thumbnailReadability": 61.3,
+    "productVisualWeight": 24.5,
+    "typographyCompetition": 28.3
+  },
+  "delta": {
+    "productDominance": 0,
+    "foregroundIsolation": 0,
+    "headlineVisualWeight": 0,
+    "primaryFocusRatio": 0,
+    "attentionHierarchyScore": 0,
+    "commercialFidelity": 0,
+    "visualWeightHero": 0,
+    "thumbnailReadability": 0,
+    "productVisualWeight": 0,
+    "typographyCompetition": 0
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "wb",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "DAOS generation failed: [\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"oneThought\",\n      \"deferredSpecs\",\n      0\n    ]\n  },\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"deferredBullets\",\n      0\n    ]\n  }\n]. WB leader wins by default.",
+    "gapClass": "Composition"
+  },
+  "compositeScore": {
+    "leader": 47.6,
+    "daos": 47.6
+  }
+}

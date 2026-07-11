@@ -1,0 +1,58 @@
+{
+  "productId": 952441785,
+  "category": "home-appliances",
+  "categoryLabel": "Бытовая техника",
+  "name": "Беспроводной вертикальный пылесос для дома",
+  "daosGenerated": false,
+  "genError": "[\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"oneThought\",\n      \"deferredSpecs\",\n      0\n    ]\n  },\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"deferredBullets\",\n      0\n    ]\n  }\n]",
+  "genDurationMs": 77,
+  "leader": {
+    "productDominance": 51,
+    "foregroundIsolation": 48.5,
+    "headlineVisualWeight": 15.2,
+    "primaryFocusRatio": 0.233,
+    "attentionHierarchyScore": 30,
+    "commercialFidelity": 40,
+    "visualWeightHero": 15.7,
+    "thumbnailReadability": 47.4,
+    "productVisualWeight": 15.7,
+    "typographyCompetition": 24.8
+  },
+  "daos": {
+    "productDominance": 51,
+    "foregroundIsolation": 48.5,
+    "headlineVisualWeight": 15.2,
+    "primaryFocusRatio": 0.233,
+    "attentionHierarchyScore": 30,
+    "commercialFidelity": 40,
+    "visualWeightHero": 15.7,
+    "thumbnailReadability": 47.4,
+    "productVisualWeight": 15.7,
+    "typographyCompetition": 24.8
+  },
+  "delta": {
+    "productDominance": 0,
+    "foregroundIsolation": 0,
+    "headlineVisualWeight": 0,
+    "primaryFocusRatio": 0,
+    "attentionHierarchyScore": 0,
+    "commercialFidelity": 0,
+    "visualWeightHero": 0,
+    "thumbnailReadability": 0,
+    "productVisualWeight": 0,
+    "typographyCompetition": 0
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "wb",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "DAOS generation failed: [\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"oneThought\",\n      \"deferredSpecs\",\n      0\n    ]\n  },\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"deferredBullets\",\n      0\n    ]\n  }\n]. WB leader wins by default.",
+    "gapClass": "Composition"
+  },
+  "compositeScore": {
+    "leader": 41.5,
+    "daos": 41.5
+  }
+}

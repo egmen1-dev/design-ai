@@ -1,0 +1,564 @@
+{
+  "sprint": "DAOS Product Sprint 9 — Shadow Beta Visual Review",
+  "timestamp": "2026-07-09T17:41:31.049Z",
+  "renderEnabled": true,
+  "productsCompared": 5,
+  "avgOverallProductScore": 4.7,
+  "avgCommercialFidelity": 39.2,
+  "commercialWins": 0,
+  "bestProduct": {
+    "id": "construction-vacuum",
+    "score": 5.4
+  },
+  "worstProduct": {
+    "id": "pressure-washer",
+    "score": 3.5
+  },
+  "mainWins": [
+    "Большая measured Product Area у Commercial (propagation + calibration)",
+    "Commercial Fidelity scoring против reachable target, не 55%",
+    "Разные commercial backgrounds по genome intent"
+  ],
+  "mainProblems": [
+    "Benchmark card = background + compositor (без финального WB text overlay)",
+    "Aspirational 55% всё ещё недостижим в текущем layout",
+    "Часть оценок thumbnail readability требует human review на финальных PNG"
+  ],
+  "architectureReview": {
+    "newArchitecture": false,
+    "newRegistries": false,
+    "newEngines": false,
+    "rfcChanges": false,
+    "pipelineRedesign": false
+  },
+  "councilDecision": "APPROVE WITH FIXES",
+  "councilRationale": "Commercial увеличил Product Area у 5/5 товаров (+5–6 pp); фоны соответствуют genome intent (industrial/light_modern). Overall Product Score занижен: benchmark использовал fallback compositor (production floor-contact падает на synthetic cutout), нет WB text overlay, fidelity сравнивает разные targets (legacy 66% vs commercial 42%).",
+  "products": [
+    {
+      "folder": "product-1",
+      "productId": "construction-vacuum",
+      "label": "Construction Vacuum",
+      "metrics": {
+        "productArea": 10,
+        "productAreaLegacy": 4.4,
+        "commercialFidelity": 47,
+        "commercialFidelityLegacy": 50.5,
+        "productDominance": 63,
+        "visualHierarchy": 63,
+        "backgroundSeparation": 21,
+        "commercialDecisionApplied": true,
+        "overallProductScore": 5.4,
+        "overallProductScoreLegacy": 5.8,
+        "productAreaModel": {
+          "aspirationalTarget": 55,
+          "reachableTarget": 42,
+          "measuredArea": 30,
+          "unreachableGap": 25
+        },
+        "propagation": {
+          "commercialLayoutPropagation": true,
+          "commercialScaleSource": "commercial",
+          "commercialScaleExpected": 42,
+          "commercialScaleApplied": 0.75,
+          "commercialScaleDelta": 0.25,
+          "commercialPropagationVersion": "1.1.0-sprint8c",
+          "commercialPropagationWarnings": [
+            "aspirational target 55% exceeds reachable 42% — compositor uses geometry ceiling harvest @ objectScale=0.75"
+          ],
+          "commercialReachableTargetPct": 42,
+          "commercialAspirationalTargetPct": 55,
+          "commercialPropagationMode": "geometry_ceiling_harvest",
+          "productAreaRecalibrationVersion": "1.0.0-sprint8c"
+        },
+        "geometryOptimization": {
+          "geometryClampVersion": "1.0.0-sprint8b",
+          "geometryClampSource": "sprint8b_finalH_58",
+          "geometryFinalHBefore": 70.4,
+          "geometryFinalHAfter": 58,
+          "geometryHeightBindingBefore": "height_binding",
+          "geometryHeightBindingAfter": "height_binding",
+          "geometryPolicyCeilingReachable": true,
+          "geometryOptimizationWarnings": [
+            "geometry ceiling improved +6.3pp @ objectScale=1; commercial objectScale=0.75 unchanged"
+          ]
+        },
+        "commercialDecision": {
+          "productAreaTarget": 0.42,
+          "productAreaAspirationalTarget": 0.55,
+          "environmentDirection": "clean_industrial_technical"
+        },
+        "scores": {
+          "commercialFidelity": 4.7,
+          "visualQuality": 5.5,
+          "commercialReadability": 6.3,
+          "marketplaceReadiness": 5.4,
+          "overallProductScore": 5.4
+        },
+        "scoresLegacy": {
+          "commercialFidelity": 5.1,
+          "visualQuality": 7,
+          "commercialReadability": 6.3,
+          "marketplaceReadiness": 5.4,
+          "overallProductScore": 5.8
+        }
+      },
+      "verdict": {
+        "strengths": [
+          "Заметно большая площадь товара на карточке"
+        ],
+        "weaknesses": [
+          "Абсолютный Product Score всё ещё ниже 6/10",
+          "Нет финального текстового оверлея WB в этом benchmark-артефакте (фон + compositor)"
+        ],
+        "recommendation": "Commercial Pipeline требует доработки перед Shadow Beta",
+        "human": {
+          "productDominates": "Частично — рост есть, но без текста оценка ограничена",
+          "cardReadable": "Фон читается; полная оценка миниатюры требует финального оверлея",
+          "backgroundHelps": "Нейтрально",
+          "textReadable": "Текст не рендерился в этом sprint-артефакте",
+          "singleMessage": "Визуальный фокус на товаре усилился у Commercial",
+          "commerciallyStronger": "Нет"
+        }
+      },
+      "humanReview": {
+        "productDominates": "Частично — рост есть, но без текста оценка ограничена",
+        "cardReadable": "Фон читается; полная оценка миниатюры требует финального оверлея",
+        "backgroundHelps": "Нейтрально",
+        "textReadable": "Текст не рендерился в этом sprint-артефакте",
+        "singleMessage": "Визуальный фокус на товаре усилился у Commercial",
+        "commerciallyStronger": "Нет"
+      },
+      "imageDiff": {
+        "identical": false,
+        "meanAbsDiff": 68.53,
+        "changedPixelPct": 91.48,
+        "hashA": "465af060bac6a7ba0a97d6bbcb52cfbf0017c121fef10b1079a045d60a7f821f",
+        "hashB": "6aea92a9ec87c06c308e295da3b87e6178d9b3da23668641c494c5113bd23270"
+      },
+      "areaGain": 5.6,
+      "fidelityGain": -3.5,
+      "commercialWins": false
+    },
+    {
+      "folder": "product-2",
+      "productId": "battery-sprayer",
+      "label": "Battery Sprayer",
+      "metrics": {
+        "productArea": 9.7,
+        "productAreaLegacy": 4.3,
+        "commercialFidelity": 35,
+        "commercialFidelityLegacy": 37,
+        "productDominance": 45,
+        "visualHierarchy": 45,
+        "backgroundSeparation": 28,
+        "commercialDecisionApplied": true,
+        "overallProductScore": 4.3,
+        "overallProductScoreLegacy": 4.8,
+        "productAreaModel": {
+          "aspirationalTarget": 55,
+          "reachableTarget": 42,
+          "measuredArea": 31,
+          "unreachableGap": 24
+        },
+        "propagation": {
+          "commercialLayoutPropagation": true,
+          "commercialScaleSource": "commercial",
+          "commercialScaleExpected": 42,
+          "commercialScaleApplied": 0.75,
+          "commercialScaleDelta": 0.25,
+          "commercialPropagationVersion": "1.1.0-sprint8c",
+          "commercialPropagationWarnings": [
+            "aspirational target 55% exceeds reachable 42% — compositor uses geometry ceiling harvest @ objectScale=0.75"
+          ],
+          "commercialReachableTargetPct": 42,
+          "commercialAspirationalTargetPct": 55,
+          "commercialPropagationMode": "geometry_ceiling_harvest",
+          "productAreaRecalibrationVersion": "1.0.0-sprint8c"
+        },
+        "geometryOptimization": {
+          "geometryClampVersion": "1.0.0-sprint8b",
+          "geometryClampSource": "sprint8b_finalH_58",
+          "geometryFinalHBefore": 70.4,
+          "geometryFinalHAfter": 58,
+          "geometryHeightBindingBefore": "height_binding",
+          "geometryHeightBindingAfter": "height_binding",
+          "geometryPolicyCeilingReachable": true,
+          "geometryOptimizationWarnings": [
+            "geometry ceiling improved +6.3pp @ objectScale=1; commercial objectScale=0.75 unchanged"
+          ]
+        },
+        "commercialDecision": {
+          "productAreaTarget": 0.42,
+          "productAreaAspirationalTarget": 0.55,
+          "environmentDirection": "clean_industrial_technical"
+        },
+        "scores": {
+          "commercialFidelity": 3.5,
+          "visualQuality": 5.3,
+          "commercialReadability": 4.5,
+          "marketplaceReadiness": 4.5,
+          "overallProductScore": 4.3
+        },
+        "scoresLegacy": {
+          "commercialFidelity": 3.7,
+          "visualQuality": 6.4,
+          "commercialReadability": 5,
+          "marketplaceReadiness": 4.7,
+          "overallProductScore": 4.8
+        }
+      },
+      "verdict": {
+        "strengths": [
+          "Заметно большая площадь товара на карточке"
+        ],
+        "weaknesses": [
+          "Абсолютный Product Score всё ещё ниже 6/10",
+          "Нет финального текстового оверлея WB в этом benchmark-артефакте (фон + compositor)"
+        ],
+        "recommendation": "Commercial Pipeline требует доработки перед Shadow Beta",
+        "human": {
+          "productDominates": "Частично — рост есть, но без текста оценка ограничена",
+          "cardReadable": "Фон читается; полная оценка миниатюры требует финального оверлея",
+          "backgroundHelps": "Нейтрально",
+          "textReadable": "Текст не рендерился в этом sprint-артефакте",
+          "singleMessage": "Визуальный фокус на товаре усилился у Commercial",
+          "commerciallyStronger": "Нет"
+        }
+      },
+      "humanReview": {
+        "productDominates": "Частично — рост есть, но без текста оценка ограничена",
+        "cardReadable": "Фон читается; полная оценка миниатюры требует финального оверлея",
+        "backgroundHelps": "Нейтрально",
+        "textReadable": "Текст не рендерился в этом sprint-артефакте",
+        "singleMessage": "Визуальный фокус на товаре усилился у Commercial",
+        "commerciallyStronger": "Нет"
+      },
+      "imageDiff": {
+        "identical": false,
+        "meanAbsDiff": 75.18,
+        "changedPixelPct": 91.54,
+        "hashA": "92e712e227f64715099f628d688e9c8f6b950d96e8e1c063ed10de0738d9f32e",
+        "hashB": "875009711bbcede0c4763c92bcd5885584e1c5aa919f30d60aaf048c8dd93ecd"
+      },
+      "areaGain": 5.4,
+      "fidelityGain": -2,
+      "commercialWins": false
+    },
+    {
+      "folder": "product-3",
+      "productId": "impact-drill",
+      "label": "Drill",
+      "metrics": {
+        "productArea": 9.7,
+        "productAreaLegacy": 4.3,
+        "commercialFidelity": 45.5,
+        "commercialFidelityLegacy": 59.5,
+        "productDominance": 59,
+        "visualHierarchy": 59,
+        "backgroundSeparation": 9,
+        "commercialDecisionApplied": true,
+        "overallProductScore": 5,
+        "overallProductScoreLegacy": 6.4,
+        "productAreaModel": {
+          "aspirationalTarget": 55,
+          "reachableTarget": 42,
+          "measuredArea": 31,
+          "unreachableGap": 24
+        },
+        "propagation": {
+          "commercialLayoutPropagation": true,
+          "commercialScaleSource": "commercial",
+          "commercialScaleExpected": 42,
+          "commercialScaleApplied": 0.75,
+          "commercialScaleDelta": 0.25,
+          "commercialPropagationVersion": "1.1.0-sprint8c",
+          "commercialPropagationWarnings": [
+            "aspirational target 55% exceeds reachable 42% — compositor uses geometry ceiling harvest @ objectScale=0.75"
+          ],
+          "commercialReachableTargetPct": 42,
+          "commercialAspirationalTargetPct": 55,
+          "commercialPropagationMode": "geometry_ceiling_harvest",
+          "productAreaRecalibrationVersion": "1.0.0-sprint8c"
+        },
+        "geometryOptimization": {
+          "geometryClampVersion": "1.0.0-sprint8b",
+          "geometryClampSource": "sprint8b_finalH_58",
+          "geometryFinalHBefore": 72.5,
+          "geometryFinalHAfter": 58,
+          "geometryHeightBindingBefore": "height_binding",
+          "geometryHeightBindingAfter": "height_binding",
+          "geometryPolicyCeilingReachable": true,
+          "geometryOptimizationWarnings": [
+            "geometry ceiling improved +7.3pp @ objectScale=1; commercial objectScale=0.75 unchanged"
+          ]
+        },
+        "commercialDecision": {
+          "productAreaTarget": 0.42,
+          "productAreaAspirationalTarget": 0.55,
+          "environmentDirection": "clean_industrial_technical"
+        },
+        "scores": {
+          "commercialFidelity": 4.6,
+          "visualQuality": 4.7,
+          "commercialReadability": 5.9,
+          "marketplaceReadiness": 5,
+          "overallProductScore": 5
+        },
+        "scoresLegacy": {
+          "commercialFidelity": 6,
+          "visualQuality": 8.4,
+          "commercialReadability": 5.9,
+          "marketplaceReadiness": 5.9,
+          "overallProductScore": 6.4
+        }
+      },
+      "verdict": {
+        "strengths": [
+          "Заметно большая площадь товара на карточке"
+        ],
+        "weaknesses": [
+          "Абсолютный Product Score всё ещё ниже 6/10",
+          "Нет финального текстового оверлея WB в этом benchmark-артефакте (фон + compositor)"
+        ],
+        "recommendation": "Commercial Pipeline требует доработки перед Shadow Beta",
+        "human": {
+          "productDominates": "Частично — рост есть, но без текста оценка ограничена",
+          "cardReadable": "Фон читается; полная оценка миниатюры требует финального оверлея",
+          "backgroundHelps": "Нейтрально",
+          "textReadable": "Текст не рендерился в этом sprint-артефакте",
+          "singleMessage": "Визуальный фокус на товаре усилился у Commercial",
+          "commerciallyStronger": "Нет"
+        }
+      },
+      "humanReview": {
+        "productDominates": "Частично — рост есть, но без текста оценка ограничена",
+        "cardReadable": "Фон читается; полная оценка миниатюры требует финального оверлея",
+        "backgroundHelps": "Нейтрально",
+        "textReadable": "Текст не рендерился в этом sprint-артефакте",
+        "singleMessage": "Визуальный фокус на товаре усилился у Commercial",
+        "commerciallyStronger": "Нет"
+      },
+      "imageDiff": {
+        "identical": false,
+        "meanAbsDiff": 53.01,
+        "changedPixelPct": 86.52,
+        "hashA": "db107a3ccac1c98a0f0ea233f3dd9037d0f2364e42e36372120cc9df244ceb71",
+        "hashB": "9f5bf05949f64c963cf3b46902b7595b7699f531447d29b86bdfe4f62e8d3335"
+      },
+      "areaGain": 5.4,
+      "fidelityGain": -14,
+      "commercialWins": false
+    },
+    {
+      "folder": "product-4",
+      "productId": "pressure-washer",
+      "label": "Pressure Washer",
+      "metrics": {
+        "productArea": 9.7,
+        "productAreaLegacy": 4.3,
+        "commercialFidelity": 24.5,
+        "commercialFidelityLegacy": 21.5,
+        "productDominance": 29,
+        "visualHierarchy": 29,
+        "backgroundSeparation": 9,
+        "commercialDecisionApplied": true,
+        "overallProductScore": 3.5,
+        "overallProductScoreLegacy": 3.6,
+        "productAreaModel": {
+          "aspirationalTarget": 55,
+          "reachableTarget": 42,
+          "measuredArea": 31,
+          "unreachableGap": 24
+        },
+        "propagation": {
+          "commercialLayoutPropagation": true,
+          "commercialScaleSource": "commercial",
+          "commercialScaleExpected": 42,
+          "commercialScaleApplied": 0.75,
+          "commercialScaleDelta": 0.25,
+          "commercialPropagationVersion": "1.1.0-sprint8c",
+          "commercialPropagationWarnings": [
+            "aspirational target 55% exceeds reachable 42% — compositor uses geometry ceiling harvest @ objectScale=0.75"
+          ],
+          "commercialReachableTargetPct": 42,
+          "commercialAspirationalTargetPct": 55,
+          "commercialPropagationMode": "geometry_ceiling_harvest",
+          "productAreaRecalibrationVersion": "1.0.0-sprint8c"
+        },
+        "geometryOptimization": {
+          "geometryClampVersion": "1.0.0-sprint8b",
+          "geometryClampSource": "sprint8b_finalH_58",
+          "geometryFinalHBefore": 70.4,
+          "geometryFinalHAfter": 58,
+          "geometryHeightBindingBefore": "height_binding",
+          "geometryHeightBindingAfter": "height_binding",
+          "geometryPolicyCeilingReachable": true,
+          "geometryOptimizationWarnings": [
+            "geometry ceiling improved +6.3pp @ objectScale=1; commercial objectScale=0.75 unchanged"
+          ]
+        },
+        "commercialDecision": {
+          "productAreaTarget": 0.42,
+          "productAreaAspirationalTarget": 0.55,
+          "environmentDirection": "light_modern_clean"
+        },
+        "scores": {
+          "commercialFidelity": 2.5,
+          "visualQuality": 5.5,
+          "commercialReadability": 2.9,
+          "marketplaceReadiness": 3.9,
+          "overallProductScore": 3.5
+        },
+        "scoresLegacy": {
+          "commercialFidelity": 2.2,
+          "visualQuality": 6.2,
+          "commercialReadability": 3.4,
+          "marketplaceReadiness": 3.8,
+          "overallProductScore": 3.6
+        }
+      },
+      "verdict": {
+        "strengths": [
+          "Заметно большая площадь товара на карточке"
+        ],
+        "weaknesses": [
+          "Абсолютный Product Score всё ещё ниже 6/10",
+          "Нет финального текстового оверлея WB в этом benchmark-артефакте (фон + compositor)"
+        ],
+        "recommendation": "Commercial Pipeline требует доработки перед Shadow Beta",
+        "human": {
+          "productDominates": "Частично — рост есть, но без текста оценка ограничена",
+          "cardReadable": "Фон читается; полная оценка миниатюры требует финального оверлея",
+          "backgroundHelps": "Да — сцена ближе к commercial intent",
+          "textReadable": "Текст не рендерился в этом sprint-артефакте",
+          "singleMessage": "Визуальный фокус на товаре усилился у Commercial",
+          "commerciallyStronger": "Нет"
+        }
+      },
+      "humanReview": {
+        "productDominates": "Частично — рост есть, но без текста оценка ограничена",
+        "cardReadable": "Фон читается; полная оценка миниатюры требует финального оверлея",
+        "backgroundHelps": "Да — сцена ближе к commercial intent",
+        "textReadable": "Текст не рендерился в этом sprint-артефакте",
+        "singleMessage": "Визуальный фокус на товаре усилился у Commercial",
+        "commerciallyStronger": "Нет"
+      },
+      "imageDiff": {
+        "identical": false,
+        "meanAbsDiff": 41.06,
+        "changedPixelPct": 78.62,
+        "hashA": "780afcc900f513929ce4e81f93df8ea81c5f419d700d94f10db872c8132a20cf",
+        "hashB": "aa532b558e463868cdd1d33489de64eab905de36e815b37706aef0c05ab36635"
+      },
+      "areaGain": 5.4,
+      "fidelityGain": 3,
+      "commercialWins": false
+    },
+    {
+      "folder": "product-5",
+      "productId": "home-humidifier",
+      "label": "Garden / Home Tool",
+      "metrics": {
+        "productArea": 9.7,
+        "productAreaLegacy": 4.3,
+        "commercialFidelity": 44,
+        "commercialFidelityLegacy": 71.5,
+        "productDominance": 61,
+        "visualHierarchy": 61,
+        "backgroundSeparation": 25,
+        "commercialDecisionApplied": true,
+        "overallProductScore": 5.4,
+        "overallProductScoreLegacy": 7.3,
+        "productAreaModel": {
+          "aspirationalTarget": 55,
+          "reachableTarget": 42,
+          "measuredArea": 31,
+          "unreachableGap": 24
+        },
+        "propagation": {
+          "commercialLayoutPropagation": true,
+          "commercialScaleSource": "commercial",
+          "commercialScaleExpected": 42,
+          "commercialScaleApplied": 0.75,
+          "commercialScaleDelta": 0.25,
+          "commercialPropagationVersion": "1.1.0-sprint8c",
+          "commercialPropagationWarnings": [
+            "aspirational target 55% exceeds reachable 42% — compositor uses geometry ceiling harvest @ objectScale=0.75"
+          ],
+          "commercialReachableTargetPct": 42,
+          "commercialAspirationalTargetPct": 55,
+          "commercialPropagationMode": "geometry_ceiling_harvest",
+          "productAreaRecalibrationVersion": "1.0.0-sprint8c"
+        },
+        "geometryOptimization": {
+          "geometryClampVersion": "1.0.0-sprint8b",
+          "geometryClampSource": "sprint8b_finalH_58",
+          "geometryFinalHBefore": 70.4,
+          "geometryFinalHAfter": 58,
+          "geometryHeightBindingBefore": "height_binding",
+          "geometryHeightBindingAfter": "height_binding",
+          "geometryPolicyCeilingReachable": true,
+          "geometryOptimizationWarnings": [
+            "geometry ceiling improved +6.3pp @ objectScale=1; commercial objectScale=0.75 unchanged"
+          ]
+        },
+        "commercialDecision": {
+          "productAreaTarget": 0.42,
+          "productAreaAspirationalTarget": 0.55,
+          "environmentDirection": "light_modern_clean"
+        },
+        "scores": {
+          "commercialFidelity": 4.4,
+          "visualQuality": 6.3,
+          "commercialReadability": 6.1,
+          "marketplaceReadiness": 5.4,
+          "overallProductScore": 5.4
+        },
+        "scoresLegacy": {
+          "commercialFidelity": 7.2,
+          "visualQuality": 9,
+          "commercialReadability": 6.6,
+          "marketplaceReadiness": 6.5,
+          "overallProductScore": 7.3
+        }
+      },
+      "verdict": {
+        "strengths": [
+          "Заметно большая площадь товара на карточке"
+        ],
+        "weaknesses": [
+          "Абсолютный Product Score всё ещё ниже 6/10",
+          "Нет финального текстового оверлея WB в этом benchmark-артефакте (фон + compositor)"
+        ],
+        "recommendation": "Commercial Pipeline требует доработки перед Shadow Beta",
+        "human": {
+          "productDominates": "Частично — рост есть, но без текста оценка ограничена",
+          "cardReadable": "Фон читается; полная оценка миниатюры требует финального оверлея",
+          "backgroundHelps": "Нейтрально",
+          "textReadable": "Текст не рендерился в этом sprint-артефакте",
+          "singleMessage": "Визуальный фокус на товаре усилился у Commercial",
+          "commerciallyStronger": "Нет"
+        }
+      },
+      "humanReview": {
+        "productDominates": "Частично — рост есть, но без текста оценка ограничена",
+        "cardReadable": "Фон читается; полная оценка миниатюры требует финального оверлея",
+        "backgroundHelps": "Нейтрально",
+        "textReadable": "Текст не рендерился в этом sprint-артефакте",
+        "singleMessage": "Визуальный фокус на товаре усилился у Commercial",
+        "commerciallyStronger": "Нет"
+      },
+      "imageDiff": {
+        "identical": false,
+        "meanAbsDiff": 59.06,
+        "changedPixelPct": 91.57,
+        "hashA": "40bdf2ea9d039457060ff388cebfd0c6143f89318efede748909eb62d6a030a9",
+        "hashB": "2864b2a51044f6229fd9ce009e0cfa542597ee17338ecafd7ca76c7f1b37df29"
+      },
+      "areaGain": 5.4,
+      "fidelityGain": -27.5,
+      "commercialWins": false
+    }
+  ],
+  "commercialAreaWins": 5
+}

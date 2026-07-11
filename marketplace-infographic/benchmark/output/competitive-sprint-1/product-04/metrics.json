@@ -1,0 +1,56 @@
+{
+  "productId": 952674072,
+  "category": "garden",
+  "categoryLabel": "Сад",
+  "name": "Садовый триммер для травы аккумуляторный",
+  "daosGenerated": true,
+  "genDurationMs": 9549,
+  "leader": {
+    "productDominance": 57,
+    "foregroundIsolation": 49.4,
+    "headlineVisualWeight": 22.1,
+    "primaryFocusRatio": 0.265,
+    "attentionHierarchyScore": 31.6,
+    "commercialFidelity": 42.5,
+    "visualWeightHero": 28.7,
+    "thumbnailReadability": 58.4,
+    "productVisualWeight": 28.7,
+    "typographyCompetition": 41
+  },
+  "daos": {
+    "productDominance": 61,
+    "foregroundIsolation": 88.4,
+    "headlineVisualWeight": 15.4,
+    "primaryFocusRatio": 0.353,
+    "attentionHierarchyScore": 37.6,
+    "commercialFidelity": 46.5,
+    "visualWeightHero": 24,
+    "thumbnailReadability": 72.2,
+    "productVisualWeight": 24,
+    "typographyCompetition": 33.4
+  },
+  "delta": {
+    "productDominance": 4,
+    "foregroundIsolation": 39,
+    "headlineVisualWeight": -6.7,
+    "primaryFocusRatio": 0.09,
+    "attentionHierarchyScore": 6,
+    "commercialFidelity": 4,
+    "visualWeightHero": -4.7,
+    "thumbnailReadability": 13.8,
+    "productVisualWeight": -4.7,
+    "typographyCompetition": -7.6
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 57 vs DAOS 61 (Δ4); FI: WB 49.4 vs DAOS 88.4; Thumbnail: WB 58.4 vs DAOS 72.2; Fidelity: WB 42.5 vs DAOS 46.5"
+  },
+  "compositeScore": {
+    "leader": 46.7,
+    "daos": 57.1
+  }
+}

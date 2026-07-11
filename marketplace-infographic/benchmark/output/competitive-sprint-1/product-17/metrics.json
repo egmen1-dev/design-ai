@@ -1,0 +1,56 @@
+{
+  "productId": 208892590,
+  "category": "pressure-wash",
+  "categoryLabel": "Мойка",
+  "name": "Мойка высокого давления от сети BHR-2000-PRO 2.0кВт 150 бар",
+  "daosGenerated": true,
+  "genDurationMs": 7294,
+  "leader": {
+    "productDominance": 66,
+    "foregroundIsolation": 70.2,
+    "headlineVisualWeight": 17.3,
+    "primaryFocusRatio": 0.416,
+    "attentionHierarchyScore": 42.6,
+    "commercialFidelity": 58,
+    "visualWeightHero": 33.4,
+    "thumbnailReadability": 47.4,
+    "productVisualWeight": 33.4,
+    "typographyCompetition": 38
+  },
+  "daos": {
+    "productDominance": 67,
+    "foregroundIsolation": 78.6,
+    "headlineVisualWeight": 7,
+    "primaryFocusRatio": 0.447,
+    "attentionHierarchyScore": 42.3,
+    "commercialFidelity": 51.5,
+    "visualWeightHero": 14.3,
+    "thumbnailReadability": 83.7,
+    "productVisualWeight": 14.3,
+    "typographyCompetition": 14.5
+  },
+  "delta": {
+    "productDominance": 1,
+    "foregroundIsolation": 8.4,
+    "headlineVisualWeight": -10.3,
+    "primaryFocusRatio": 0.03,
+    "attentionHierarchyScore": -0.3,
+    "commercialFidelity": -6.5,
+    "visualWeightHero": -19.1,
+    "thumbnailReadability": 36.3,
+    "productVisualWeight": -19.1,
+    "typographyCompetition": -23.5
+  },
+  "verdict": {
+    "moreProfessional": "draw",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 66 vs DAOS 67 (Δ1); FI: WB 70.2 vs DAOS 78.6; Thumbnail: WB 47.4 vs DAOS 83.7; Fidelity: WB 58 vs DAOS 51.5"
+  },
+  "compositeScore": {
+    "leader": 55.8,
+    "daos": 60.1
+  }
+}

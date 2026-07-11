@@ -1,0 +1,57 @@
+{
+  "productId": 250141307,
+  "category": "humidifier",
+  "categoryLabel": "Климат",
+  "name": "Увлажнитель воздуха для лица и тела, мини освежитель с паром",
+  "daosGenerated": true,
+  "genDurationMs": 13311,
+  "leader": {
+    "productDominance": 64,
+    "foregroundIsolation": 44.8,
+    "headlineVisualWeight": 5.7,
+    "primaryFocusRatio": 0.362,
+    "attentionHierarchyScore": 38.5,
+    "commercialFidelity": 54.5,
+    "visualWeightHero": 11.2,
+    "thumbnailReadability": 35.5,
+    "productVisualWeight": 11.2,
+    "typographyCompetition": 11.2
+  },
+  "daos": {
+    "productDominance": 42,
+    "foregroundIsolation": 67.6,
+    "headlineVisualWeight": 24.5,
+    "primaryFocusRatio": 0.212,
+    "attentionHierarchyScore": 27.9,
+    "commercialFidelity": 28,
+    "visualWeightHero": 17.4,
+    "thumbnailReadability": 71.9,
+    "productVisualWeight": 17.4,
+    "typographyCompetition": 44.7
+  },
+  "delta": {
+    "productDominance": -22,
+    "foregroundIsolation": 22.8,
+    "headlineVisualWeight": 18.8,
+    "primaryFocusRatio": -0.15,
+    "attentionHierarchyScore": -10.6,
+    "commercialFidelity": -26.5,
+    "visualWeightHero": 6.2,
+    "thumbnailReadability": 36.4,
+    "productVisualWeight": 6.2,
+    "typographyCompetition": 33.5
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "wb",
+    "rationale": "Dominance: WB 64 vs DAOS 42 (Δ-22); FI: WB 44.8 vs DAOS 67.6; Thumbnail: WB 35.5 vs DAOS 71.9; Fidelity: WB 54.5 vs DAOS 28",
+    "gapClass": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 46.8,
+    "daos": 42.4
+  }
+}

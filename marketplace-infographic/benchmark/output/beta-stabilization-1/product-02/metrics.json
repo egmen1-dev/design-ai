@@ -1,0 +1,56 @@
+{
+  "productId": 65018803,
+  "category": "power-tools",
+  "categoryLabel": "Электроинструмент",
+  "name": "Ударная дрель 1100Вт 13мм 2 скорости, ЗДУ-1100-2 ЭРМКМ2",
+  "daosGenerated": true,
+  "genDurationMs": 7734,
+  "leader": {
+    "productDominance": 58,
+    "foregroundIsolation": 53.4,
+    "headlineVisualWeight": 20.3,
+    "primaryFocusRatio": 0.283,
+    "attentionHierarchyScore": 33.4,
+    "commercialFidelity": 63,
+    "visualWeightHero": 28.3,
+    "thumbnailReadability": 54.7,
+    "productVisualWeight": 28.3,
+    "typographyCompetition": 38.1
+  },
+  "daos": {
+    "productDominance": 62,
+    "foregroundIsolation": 76.5,
+    "headlineVisualWeight": 10.8,
+    "primaryFocusRatio": 0.276,
+    "attentionHierarchyScore": 34.4,
+    "commercialFidelity": 48,
+    "visualWeightHero": 17.8,
+    "thumbnailReadability": 76.9,
+    "productVisualWeight": 17.8,
+    "typographyCompetition": 31
+  },
+  "delta": {
+    "productDominance": 4,
+    "foregroundIsolation": 23.1,
+    "headlineVisualWeight": -9.5,
+    "primaryFocusRatio": -0.01,
+    "attentionHierarchyScore": 1,
+    "commercialFidelity": -15,
+    "visualWeightHero": -10.5,
+    "thumbnailReadability": 22.2,
+    "productVisualWeight": -10.5,
+    "typographyCompetition": -7.1
+  },
+  "verdict": {
+    "moreProfessional": "draw",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 58 vs DAOS 62 (Δ4); FI: WB 53.4 vs DAOS 76.5; Thumbnail: WB 54.7 vs DAOS 76.9; Fidelity: WB 63 vs DAOS 48"
+  },
+  "compositeScore": {
+    "leader": 51.4,
+    "daos": 55.9
+  }
+}
