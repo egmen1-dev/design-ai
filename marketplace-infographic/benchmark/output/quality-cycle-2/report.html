@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"/>
+  <title>Quality Cycle 2 — Visual Weight Research</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #0b1220; color: #e2e8f0; padding: 24px; max-width: 1100px; margin: 0 auto; }
+    h1, h2 { color: #f8fafc; }
+    table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+    th, td { border: 1px solid #334155; padding: 8px 12px; text-align: left; }
+    th { background: #1e293b; }
+    .gap { color: #f87171; }
+    .top { color: #38bdf8; }
+    .card { background: #1e293b; border-radius: 8px; padding: 16px; margin: 12px 0; }
+    pre { background: #0f172a; padding: 12px; overflow: auto; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <h1>Quality Cycle 2 — Visual Weight Research</h1>
+  <p>125 cards · 20 features · Pearson correlation vs Product Dominance · No production code changed.</p>
+
+  <div class="card">
+    <h2>Council Decision</h2>
+    <p><strong>Single biggest blocker:</strong> <span class="top">Foreground Isolation</span></p>
+    <ul>
+      <li>Correlation with dominance: <strong>r = +0.332</strong> (medium confidence)</li>
+      <li>DAOS gap: <span class="gap">−20.2</span> (32.5 vs WB 52.7)</li>
+      <li>Next sprint: <strong>Quality Cycle 3 — Visual Weight Execution</strong></li>
+    </ul>
+  </div>
+
+  <h2>Hero Visual Weight — Decomposed</h2>
+  <table>
+    <tr><th>Component</th><th>r with visualWeightHero</th></tr>
+    <tr><td>Object Sharpness</td><td class="top">0.893</td></tr>
+    <tr><td>Local Contrast</td><td class="top">0.887</td></tr>
+    <tr><td>Object Contrast</td><td>0.870</td></tr>
+    <tr><td>Object Saturation</td><td>0.870</td></tr>
+  </table>
+
+  <h2>Top 6 — Correlation with Product Dominance</h2>
+  <table>
+    <tr><th>Feature</th><th>r</th><th>WB Mean</th><th>DAOS Mean</th><th>Gap</th></tr>
+    <tr><td>Foreground Isolation</td><td class="top">+0.332</td><td>52.7</td><td>32.5</td><td class="gap">−20.2</td></tr>
+    <tr><td>Object Sharpness</td><td>+0.326</td><td>30.5</td><td>24.0</td><td class="gap">−6.6</td></tr>
+    <tr><td>Local Contrast</td><td>+0.321</td><td>29.7</td><td>23.8</td><td class="gap">−5.9</td></tr>
+    <tr><td>Object Contrast</td><td>+0.313</td><td>71.3</td><td>59.0</td><td class="gap">−12.3</td></tr>
+    <tr><td>Object Saturation</td><td>+0.313</td><td>71.3</td><td>59.0</td><td class="gap">−12.3</td></tr>
+    <tr><td>Texture Competition</td><td>−0.289</td><td>2.1</td><td>1.0</td><td>−1.1</td></tr>
+  </table>
+
+  <h2>Product Area — Confirmed Negligible</h2>
+  <p>r = −0.099 with dominance. Cycle 1 finding validated.</p>
+
+  <h2>Product Dominance Model v2</h2>
+  <pre>
+Product Dominance ≈
+  12.8% Foreground Isolation
++ 12.5% Object Sharpness
++ 12.3% Local Contrast
++ 12.0% Object Contrast
++ 12.0% Object Saturation
+− 11.1% Texture Competition
++  6.7% Perspective
++ ...
+  </pre>
+
+  <p>
+    <a href="../../../docs/DAOS_VISUAL_WEIGHT_RESEARCH.md">Full research</a> ·
+    <a href="../../../docs/DAOS_PRODUCT_DOMINANCE_MODEL_V2.md">Model v2</a> ·
+    <a href="../../../docs/DAOS_QUALITY_BACKLOG.md">Updated backlog</a>
+  </p>
+</body>
+</html>

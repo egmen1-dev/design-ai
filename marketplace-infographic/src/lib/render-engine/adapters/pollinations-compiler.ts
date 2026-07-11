@@ -4,7 +4,11 @@
  */
 import { resolveLighting } from "@/lib/design/scene-blueprint/lighting";
 import { MATERIAL_PROFILES } from "@/lib/design/scene-blueprint/materials";
-import type { VisualSceneBlueprint } from "@/lib/design/visual-pipeline/types";
+import type {
+  CommercialBlueprintDiagnostics,
+  VisualSceneBlueprint,
+} from "@/lib/design/visual-pipeline/types";
+import { PROVIDER_COMMERCIAL_VERSION } from "@/lib/design/visual-pipeline/commercial-blueprint-materializer";
 import {
   ARCHITECTURE_VISUAL,
   DEPTH_VISUAL,
@@ -61,6 +65,8 @@ export type PollinationsCompiledPrompt = {
   tokenEstimate: number;
   modulesUsed: string[];
   validation: PollinationsPromptValidation;
+  providerCommercialVersion: string;
+  commercialDiagnostics?: CommercialBlueprintDiagnostics;
 };
 
 export type PollinationsPromptValidation = {
@@ -135,11 +141,13 @@ export function compilePollinationsPrompt(
 ): PollinationsCompiledPrompt {
   const coverConceptId = options?.coverConceptId;
   const coverHints = resolveCoverConceptVisualHints(coverConceptId);
+  const commercial = blueprint.commercial?.guidance;
   const lighting = resolveLighting(blueprint.lighting.preset);
   const floor = MATERIAL_PROFILES[blueprint.materials.floor];
 
   const environmentPhrase =
     options?.environmentPhraseOverride?.trim() ||
+    commercial?.environmentPhrase ||
     coverHints?.environmentPhrase ||
     ARCHITECTURE_VISUAL[blueprint.scene.architecture];
 
@@ -151,6 +159,10 @@ export function compilePollinationsPrompt(
 
   const optional = [
     coverHints ? null : "Premium commercial advertising background",
+    commercial?.backgroundPhrase ?? null,
+    commercial?.heroEmphasisPhrase ?? null,
+    commercial?.productDominancePhrase ?? null,
+    commercial?.visualPriorityPhrase ?? null,
     WEATHER_VISUAL[blueprint.scene.weather],
     TIME_VISUAL[blueprint.scene.time],
     DEPTH_VISUAL[blueprint.scene.depth],
@@ -173,11 +185,18 @@ export function compilePollinationsPrompt(
   const negativePrompt = blueprint.negative.terms.slice(0, 12).join(", ");
   const validation = validatePollinationsPrompt(prompt, negativePrompt);
 
+  const modulesUsed = ["scene", "lighting", "environment", "camera", "materials", "composition"];
+  if (blueprint.commercial?.diagnostics.commercialBlueprintMaterialized) {
+    modulesUsed.push("commercial");
+  }
+
   return {
     prompt,
     negativePrompt,
     tokenEstimate: estimateTokens(prompt),
-    modulesUsed: ["scene", "lighting", "environment", "camera", "materials", "composition"],
+    modulesUsed,
     validation,
+    providerCommercialVersion: PROVIDER_COMMERCIAL_VERSION,
+    commercialDiagnostics: blueprint.commercial?.diagnostics,
   };
 }

@@ -1,0 +1,62 @@
+{
+  "productId": 850327378,
+  "category": "garden",
+  "categoryLabel": "Сад",
+  "name": "Триммер садовый бензиновый FR 630",
+  "daosGenerated": true,
+  "genDurationMs": 15172,
+  "leader": {
+    "productDominance": 49,
+    "foregroundIsolation": 60.5,
+    "headlineVisualWeight": 33.9,
+    "primaryFocusRatio": 0.32,
+    "attentionHierarchyScore": 31.1,
+    "commercialFidelity": 34,
+    "visualWeightHero": 31.4,
+    "thumbnailReadability": 55.7,
+    "productVisualWeight": 31.4,
+    "typographyCompetition": 47.8,
+    "secondaryFocusRatio": 0.68,
+    "attentionDistribution": 0.278
+  },
+  "daos": {
+    "productDominance": 57,
+    "foregroundIsolation": 78.5,
+    "headlineVisualWeight": 13.2,
+    "primaryFocusRatio": 0.341,
+    "attentionHierarchyScore": 36.3,
+    "commercialFidelity": 42.5,
+    "visualWeightHero": 17.9,
+    "thumbnailReadability": 73,
+    "productVisualWeight": 17.9,
+    "typographyCompetition": 27.9,
+    "secondaryFocusRatio": 0.659,
+    "attentionDistribution": 0.303
+  },
+  "delta": {
+    "productDominance": 8,
+    "foregroundIsolation": 18,
+    "headlineVisualWeight": -20.7,
+    "primaryFocusRatio": 0.02,
+    "attentionHierarchyScore": 5.2,
+    "commercialFidelity": 8.5,
+    "visualWeightHero": -13.5,
+    "thumbnailReadability": 17.3,
+    "productVisualWeight": -13.5,
+    "typographyCompetition": -19.9,
+    "secondaryFocusRatio": -0.02,
+    "attentionDistribution": 0.02
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 49 vs DAOS 57 (Δ8); FI: WB 60.5 vs DAOS 78.5; Thumbnail: WB 55.7 vs DAOS 73; Fidelity: WB 34 vs DAOS 42.5"
+  },
+  "compositeScore": {
+    "leader": 43.5,
+    "daos": 53.1
+  }
+}

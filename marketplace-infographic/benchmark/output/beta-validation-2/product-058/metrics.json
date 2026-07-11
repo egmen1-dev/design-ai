@@ -1,0 +1,70 @@
+{
+  "productId": 192183239,
+  "category": "home",
+  "categoryLabel": "Дом",
+  "name": "Держатель для соусов в холодильник",
+  "daosGenerated": true,
+  "genDurationMs": 18483,
+  "leader": {
+    "productDominance": 64,
+    "foregroundIsolation": 42.6,
+    "headlineVisualWeight": 13.4,
+    "primaryFocusRatio": 0.351,
+    "attentionHierarchyScore": 38.7,
+    "commercialFidelity": 50,
+    "visualWeightHero": 24.9,
+    "thumbnailReadability": 52,
+    "productVisualWeight": 24.9,
+    "typographyCompetition": 26.5,
+    "secondaryFocusRatio": 0.649,
+    "attentionDistribution": 0.384
+  },
+  "daos": {
+    "productDominance": 47,
+    "foregroundIsolation": 57.9,
+    "headlineVisualWeight": 23.1,
+    "primaryFocusRatio": 0.269,
+    "attentionHierarchyScore": 30.3,
+    "commercialFidelity": 33.5,
+    "visualWeightHero": 20.7,
+    "thumbnailReadability": 75.9,
+    "productVisualWeight": 20.7,
+    "typographyCompetition": 46,
+    "secondaryFocusRatio": 0.731,
+    "attentionDistribution": 0.231
+  },
+  "delta": {
+    "productDominance": -17,
+    "foregroundIsolation": 15.3,
+    "headlineVisualWeight": 9.7,
+    "primaryFocusRatio": -0.08,
+    "attentionHierarchyScore": -8.4,
+    "commercialFidelity": -16.5,
+    "visualWeightHero": -4.2,
+    "thumbnailReadability": 23.9,
+    "productVisualWeight": -4.2,
+    "typographyCompetition": 19.5,
+    "secondaryFocusRatio": 0.08,
+    "attentionDistribution": -0.15
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "wb",
+    "rationale": "Dominance: WB 64 vs DAOS 47 (Δ-17); FI: WB 42.6 vs DAOS 57.9; Thumbnail: WB 52 vs DAOS 75.9; Fidelity: WB 50 vs DAOS 33.5",
+    "gapClass": "Product Dominance"
+  },
+  "failure": {
+    "slot": "product-058",
+    "productId": 192183239,
+    "category": "Дом",
+    "reason": "Dominance",
+    "detail": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 49.1,
+    "daos": 44.8
+  }
+}

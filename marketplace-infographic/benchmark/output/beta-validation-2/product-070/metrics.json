@@ -1,0 +1,62 @@
+{
+  "productId": 876220926,
+  "category": "home",
+  "categoryLabel": "Дом",
+  "name": "Органайзер для хранения мелочей пластик 10 ячеек",
+  "daosGenerated": true,
+  "genDurationMs": 15099,
+  "leader": {
+    "productDominance": 39,
+    "foregroundIsolation": 46.9,
+    "headlineVisualWeight": 28.6,
+    "primaryFocusRatio": 0.217,
+    "attentionHierarchyScore": 28,
+    "commercialFidelity": 28.5,
+    "visualWeightHero": 18.1,
+    "thumbnailReadability": 39.1,
+    "productVisualWeight": 18.1,
+    "typographyCompetition": 38.5,
+    "secondaryFocusRatio": 0.783,
+    "attentionDistribution": 0.212
+  },
+  "daos": {
+    "productDominance": 52,
+    "foregroundIsolation": 73.3,
+    "headlineVisualWeight": 21.1,
+    "primaryFocusRatio": 0.337,
+    "attentionHierarchyScore": 34,
+    "commercialFidelity": 38,
+    "visualWeightHero": 22.4,
+    "thumbnailReadability": 72.5,
+    "productVisualWeight": 22.4,
+    "typographyCompetition": 36.9,
+    "secondaryFocusRatio": 0.663,
+    "attentionDistribution": 0.279
+  },
+  "delta": {
+    "productDominance": 13,
+    "foregroundIsolation": 26.4,
+    "headlineVisualWeight": -7.5,
+    "primaryFocusRatio": 0.12,
+    "attentionHierarchyScore": 6,
+    "commercialFidelity": 9.5,
+    "visualWeightHero": 4.3,
+    "thumbnailReadability": 33.4,
+    "productVisualWeight": 4.3,
+    "typographyCompetition": -1.6,
+    "secondaryFocusRatio": -0.12,
+    "attentionDistribution": 0.07
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 39 vs DAOS 52 (Δ13); FI: WB 46.9 vs DAOS 73.3; Thumbnail: WB 39.1 vs DAOS 72.5; Fidelity: WB 28.5 vs DAOS 38"
+  },
+  "compositeScore": {
+    "leader": 33.5,
+    "daos": 49.7
+  }
+}

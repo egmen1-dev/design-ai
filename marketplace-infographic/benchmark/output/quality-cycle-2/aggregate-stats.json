@@ -1,0 +1,721 @@
+{
+  "version": "quality-cycle-2",
+  "timestamp": "2026-07-11T05:31:52.107Z",
+  "cards": {
+    "wildberries": 120,
+    "daos": 5,
+    "total": 125
+  },
+  "methodology": "20 hero-zone pixel features extracted via sharp; Pearson correlation vs productDominanceScore on WB cohort (n=120). Zones: Cycle 1 default hero-right layout.",
+  "featureStats": {
+    "productAreaPct": {
+      "n": 120,
+      "mean": 29.53,
+      "median": 30,
+      "p25": 29,
+      "p75": 30,
+      "std": 0.93,
+      "min": 25,
+      "max": 31
+    },
+    "objectContrast": {
+      "n": 120,
+      "mean": 71.27,
+      "median": 69.57,
+      "p25": 61.37,
+      "p75": 86.1,
+      "std": 15.65,
+      "min": 39.45139555772547,
+      "max": 114.7878284681655
+    },
+    "edgeContrast": {
+      "n": 120,
+      "mean": 2,
+      "median": 1.8,
+      "p25": 1.2,
+      "p75": 2.5,
+      "std": 1.04,
+      "min": 0.3,
+      "max": 7.7
+    },
+    "brightnessSeparation": {
+      "n": 120,
+      "mean": 32.36,
+      "median": 23.8,
+      "p25": 12.3,
+      "p75": 49.5,
+      "std": 23.95,
+      "min": 0.2,
+      "max": 93.3
+    },
+    "colorSeparation": {
+      "n": 120,
+      "mean": 64.16,
+      "median": 57.8,
+      "p25": 30.2,
+      "p75": 87,
+      "std": 40.2,
+      "min": 4,
+      "max": 164.1
+    },
+    "objectSharpness": {
+      "n": 120,
+      "mean": 30.51,
+      "median": 29.6,
+      "p25": 26.3,
+      "p75": 36.9,
+      "std": 6.32,
+      "min": 16.6,
+      "max": 47.1
+    },
+    "objectSaturation": {
+      "n": 120,
+      "mean": 71.27,
+      "median": 69.6,
+      "p25": 61.4,
+      "p75": 86.1,
+      "std": 15.65,
+      "min": 39.5,
+      "max": 114.8
+    },
+    "objectLighting": {
+      "n": 120,
+      "mean": 8.69,
+      "median": 10.5,
+      "p25": -19.8,
+      "p75": 40.9,
+      "std": 46.52,
+      "min": -108.1,
+      "max": 118.9
+    },
+    "objectDepth": {
+      "n": 120,
+      "mean": 15.55,
+      "median": 11,
+      "p25": 0.4,
+      "p75": 24.4,
+      "std": 15.19,
+      "min": 0,
+      "max": 53.3
+    },
+    "shadowPresence": {
+      "n": 120,
+      "mean": 14.77,
+      "median": 11.5,
+      "p25": 4.8,
+      "p75": 20.6,
+      "std": 13.35,
+      "min": 0,
+      "max": 57.2
+    },
+    "perspective": {
+      "n": 120,
+      "mean": 26.7,
+      "median": 23.2,
+      "p25": 12.4,
+      "p75": 34.4,
+      "std": 21.78,
+      "min": 0.6,
+      "max": 124.5
+    },
+    "foregroundIsolation": {
+      "n": 120,
+      "mean": 52.71,
+      "median": 50.2,
+      "p25": 44.8,
+      "p75": 59.9,
+      "std": 13.31,
+      "min": 20.5,
+      "max": 95.6
+    },
+    "negativeSpace": {
+      "n": 120,
+      "mean": 70.47,
+      "median": 70,
+      "p25": 70,
+      "p75": 71,
+      "std": 0.93,
+      "min": 69,
+      "max": 75
+    },
+    "objectSymmetry": {
+      "n": 120,
+      "mean": 68.81,
+      "median": 71.6,
+      "p25": 58.3,
+      "p75": 84.8,
+      "std": 23.03,
+      "min": 0,
+      "max": 99.3
+    },
+    "visualCenterOffset": {
+      "n": 120,
+      "mean": 10.73,
+      "median": 8.7,
+      "p25": 5.8,
+      "p75": 14.4,
+      "std": 6.85,
+      "min": 0.9,
+      "max": 36.5
+    },
+    "dominantColorBalance": {
+      "n": 120,
+      "mean": 30.83,
+      "median": 24.9,
+      "p25": 14.9,
+      "p75": 39.8,
+      "std": 23.52,
+      "min": 0,
+      "max": 129.9
+    },
+    "backgroundNoise": {
+      "n": 120,
+      "mean": 1.28,
+      "median": 1.2,
+      "p25": 0.9,
+      "p75": 1.6,
+      "std": 0.54,
+      "min": 0.3,
+      "max": 2.9
+    },
+    "textureCompetition": {
+      "n": 120,
+      "mean": 2.11,
+      "median": 2.1,
+      "p25": 1.4,
+      "p75": 2.7,
+      "std": 0.93,
+      "min": 0.1,
+      "max": 5
+    },
+    "highlightStrength": {
+      "n": 120,
+      "mean": 31.4,
+      "median": 28.5,
+      "p25": 10.4,
+      "p75": 47.5,
+      "std": 21.48,
+      "min": 1.7,
+      "max": 82.4
+    },
+    "localContrast": {
+      "n": 120,
+      "mean": 29.71,
+      "median": 29,
+      "p25": 25.6,
+      "p75": 36,
+      "std": 6.27,
+      "min": 16.3,
+      "max": 46.6
+    }
+  },
+  "correlations": [
+    {
+      "feature": "foregroundIsolation",
+      "correlation": 0.332,
+      "absCorrelation": 0.332,
+      "confidence": "medium",
+      "estimatedImpactPct": 33.2,
+      "wbMean": 52.71,
+      "wbMedian": 50.2,
+      "wbStd": 13.31,
+      "daosMean": 32.52,
+      "daosGap": -20.19
+    },
+    {
+      "feature": "objectSharpness",
+      "correlation": 0.326,
+      "absCorrelation": 0.326,
+      "confidence": "medium",
+      "estimatedImpactPct": 32.6,
+      "wbMean": 30.51,
+      "wbMedian": 29.6,
+      "wbStd": 6.32,
+      "daosMean": 23.96,
+      "daosGap": -6.55
+    },
+    {
+      "feature": "localContrast",
+      "correlation": 0.321,
+      "absCorrelation": 0.321,
+      "confidence": "medium",
+      "estimatedImpactPct": 32.1,
+      "wbMean": 29.71,
+      "wbMedian": 29,
+      "wbStd": 6.27,
+      "daosMean": 23.84,
+      "daosGap": -5.87
+    },
+    {
+      "feature": "objectContrast",
+      "correlation": 0.313,
+      "absCorrelation": 0.313,
+      "confidence": "medium",
+      "estimatedImpactPct": 31.3,
+      "wbMean": 71.27,
+      "wbMedian": 69.57,
+      "wbStd": 15.65,
+      "daosMean": 58.96,
+      "daosGap": -12.31
+    },
+    {
+      "feature": "objectSaturation",
+      "correlation": 0.313,
+      "absCorrelation": 0.313,
+      "confidence": "medium",
+      "estimatedImpactPct": 31.3,
+      "wbMean": 71.27,
+      "wbMedian": 69.6,
+      "wbStd": 15.65,
+      "daosMean": 58.96,
+      "daosGap": -12.31
+    },
+    {
+      "feature": "textureCompetition",
+      "correlation": -0.289,
+      "absCorrelation": 0.289,
+      "confidence": "medium",
+      "estimatedImpactPct": 28.9,
+      "wbMean": 2.11,
+      "wbMedian": 2.1,
+      "wbStd": 0.93,
+      "daosMean": 1.04,
+      "daosGap": -1.07
+    },
+    {
+      "feature": "perspective",
+      "correlation": 0.173,
+      "absCorrelation": 0.173,
+      "confidence": "low",
+      "estimatedImpactPct": 17.3,
+      "wbMean": 26.7,
+      "wbMedian": 23.2,
+      "wbStd": 21.78,
+      "daosMean": 8.56,
+      "daosGap": -18.14
+    },
+    {
+      "feature": "visualCenterOffset",
+      "correlation": 0.15,
+      "absCorrelation": 0.15,
+      "confidence": "low",
+      "estimatedImpactPct": 15,
+      "wbMean": 10.73,
+      "wbMedian": 8.7,
+      "wbStd": 6.85,
+      "daosMean": 20.4,
+      "daosGap": 9.67
+    },
+    {
+      "feature": "brightnessSeparation",
+      "correlation": 0.133,
+      "absCorrelation": 0.133,
+      "confidence": "low",
+      "estimatedImpactPct": 13.3,
+      "wbMean": 32.36,
+      "wbMedian": 23.8,
+      "wbStd": 23.95,
+      "daosMean": 38.46,
+      "daosGap": 6.1
+    },
+    {
+      "feature": "objectSymmetry",
+      "correlation": -0.13,
+      "absCorrelation": 0.13,
+      "confidence": "low",
+      "estimatedImpactPct": 13,
+      "wbMean": 68.81,
+      "wbMedian": 71.6,
+      "wbStd": 23.03,
+      "daosMean": 89.74,
+      "daosGap": 20.93
+    },
+    {
+      "feature": "dominantColorBalance",
+      "correlation": -0.12,
+      "absCorrelation": 0.12,
+      "confidence": "low",
+      "estimatedImpactPct": 12,
+      "wbMean": 30.83,
+      "wbMedian": 24.9,
+      "wbStd": 23.52,
+      "daosMean": 29.2,
+      "daosGap": -1.63
+    },
+    {
+      "feature": "productAreaPct",
+      "correlation": -0.099,
+      "absCorrelation": 0.099,
+      "confidence": "negligible",
+      "estimatedImpactPct": 9.9,
+      "wbMean": 29.53,
+      "wbMedian": 30,
+      "wbStd": 0.93,
+      "daosMean": 31,
+      "daosGap": 1.47
+    },
+    {
+      "feature": "negativeSpace",
+      "correlation": 0.099,
+      "absCorrelation": 0.099,
+      "confidence": "negligible",
+      "estimatedImpactPct": 9.9,
+      "wbMean": 70.47,
+      "wbMedian": 70,
+      "wbStd": 0.93,
+      "daosMean": 69,
+      "daosGap": -1.47
+    },
+    {
+      "feature": "objectDepth",
+      "correlation": 0.098,
+      "absCorrelation": 0.098,
+      "confidence": "negligible",
+      "estimatedImpactPct": 9.8,
+      "wbMean": 15.55,
+      "wbMedian": 11,
+      "wbStd": 15.19,
+      "daosMean": 0,
+      "daosGap": -15.55
+    },
+    {
+      "feature": "highlightStrength",
+      "correlation": 0.095,
+      "absCorrelation": 0.095,
+      "confidence": "negligible",
+      "estimatedImpactPct": 9.5,
+      "wbMean": 31.4,
+      "wbMedian": 28.5,
+      "wbStd": 21.48,
+      "daosMean": 37.1,
+      "daosGap": 5.7
+    },
+    {
+      "feature": "edgeContrast",
+      "correlation": 0.094,
+      "absCorrelation": 0.094,
+      "confidence": "negligible",
+      "estimatedImpactPct": 9.4,
+      "wbMean": 2,
+      "wbMedian": 1.8,
+      "wbStd": 1.04,
+      "daosMean": 0.4,
+      "daosGap": -1.6
+    },
+    {
+      "feature": "shadowPresence",
+      "correlation": 0.091,
+      "absCorrelation": 0.091,
+      "confidence": "negligible",
+      "estimatedImpactPct": 9.1,
+      "wbMean": 14.77,
+      "wbMedian": 11.5,
+      "wbStd": 13.35,
+      "daosMean": 5.58,
+      "daosGap": -9.18
+    },
+    {
+      "feature": "colorSeparation",
+      "correlation": 0.085,
+      "absCorrelation": 0.085,
+      "confidence": "negligible",
+      "estimatedImpactPct": 8.5,
+      "wbMean": 64.16,
+      "wbMedian": 57.8,
+      "wbStd": 40.2,
+      "daosMean": 66.92,
+      "daosGap": 2.76
+    },
+    {
+      "feature": "backgroundNoise",
+      "correlation": -0.07,
+      "absCorrelation": 0.07,
+      "confidence": "negligible",
+      "estimatedImpactPct": 7,
+      "wbMean": 1.28,
+      "wbMedian": 1.2,
+      "wbStd": 0.54,
+      "daosMean": 0.44,
+      "daosGap": -0.84
+    },
+    {
+      "feature": "objectLighting",
+      "correlation": 0.009,
+      "absCorrelation": 0.009,
+      "confidence": "negligible",
+      "estimatedImpactPct": 0.9,
+      "wbMean": 8.69,
+      "wbMedian": 10.5,
+      "wbStd": 46.52,
+      "daosMean": -71.92,
+      "daosGap": -80.61
+    }
+  ],
+  "visualWeightCorrelations": [
+    {
+      "feature": "objectSharpness",
+      "correlationWithVisualWeight": 0.893
+    },
+    {
+      "feature": "localContrast",
+      "correlationWithVisualWeight": 0.887
+    },
+    {
+      "feature": "objectContrast",
+      "correlationWithVisualWeight": 0.87
+    },
+    {
+      "feature": "objectSaturation",
+      "correlationWithVisualWeight": 0.87
+    },
+    {
+      "feature": "backgroundNoise",
+      "correlationWithVisualWeight": 0.348
+    },
+    {
+      "feature": "shadowPresence",
+      "correlationWithVisualWeight": 0.317
+    },
+    {
+      "feature": "perspective",
+      "correlationWithVisualWeight": 0.299
+    },
+    {
+      "feature": "textureCompetition",
+      "correlationWithVisualWeight": 0.297
+    },
+    {
+      "feature": "objectSymmetry",
+      "correlationWithVisualWeight": -0.267
+    },
+    {
+      "feature": "objectDepth",
+      "correlationWithVisualWeight": 0.244
+    },
+    {
+      "feature": "visualCenterOffset",
+      "correlationWithVisualWeight": -0.216
+    },
+    {
+      "feature": "productAreaPct",
+      "correlationWithVisualWeight": -0.194
+    },
+    {
+      "feature": "negativeSpace",
+      "correlationWithVisualWeight": 0.194
+    },
+    {
+      "feature": "edgeContrast",
+      "correlationWithVisualWeight": 0.177
+    },
+    {
+      "feature": "dominantColorBalance",
+      "correlationWithVisualWeight": -0.066
+    },
+    {
+      "feature": "objectLighting",
+      "correlationWithVisualWeight": 0.062
+    },
+    {
+      "feature": "foregroundIsolation",
+      "correlationWithVisualWeight": -0.057
+    },
+    {
+      "feature": "highlightStrength",
+      "correlationWithVisualWeight": 0.036
+    },
+    {
+      "feature": "brightnessSeparation",
+      "correlationWithVisualWeight": 0.031
+    },
+    {
+      "feature": "colorSeparation",
+      "correlationWithVisualWeight": 0.025
+    }
+  ],
+  "modelV2": {
+    "formula": "Product Dominance v2 = weighted sum of normalized features (|r| weights)",
+    "components": [
+      {
+        "feature": "foregroundIsolation",
+        "weightPct": 12.8,
+        "correlation": 0.332,
+        "direction": "positive"
+      },
+      {
+        "feature": "objectSharpness",
+        "weightPct": 12.5,
+        "correlation": 0.326,
+        "direction": "positive"
+      },
+      {
+        "feature": "localContrast",
+        "weightPct": 12.3,
+        "correlation": 0.321,
+        "direction": "positive"
+      },
+      {
+        "feature": "objectContrast",
+        "weightPct": 12,
+        "correlation": 0.313,
+        "direction": "positive"
+      },
+      {
+        "feature": "objectSaturation",
+        "weightPct": 12,
+        "correlation": 0.313,
+        "direction": "positive"
+      },
+      {
+        "feature": "textureCompetition",
+        "weightPct": 11.1,
+        "correlation": -0.289,
+        "direction": "negative"
+      },
+      {
+        "feature": "perspective",
+        "weightPct": 6.7,
+        "correlation": 0.173,
+        "direction": "positive"
+      },
+      {
+        "feature": "visualCenterOffset",
+        "weightPct": 5.8,
+        "correlation": 0.15,
+        "direction": "positive"
+      },
+      {
+        "feature": "brightnessSeparation",
+        "weightPct": 5.1,
+        "correlation": 0.133,
+        "direction": "positive"
+      },
+      {
+        "feature": "objectSymmetry",
+        "weightPct": 5,
+        "correlation": -0.13,
+        "direction": "negative"
+      },
+      {
+        "feature": "dominantColorBalance",
+        "weightPct": 4.6,
+        "correlation": -0.12,
+        "direction": "negative"
+      }
+    ],
+    "topDriver": {
+      "feature": "foregroundIsolation",
+      "weightPct": 12.8,
+      "correlation": 0.332,
+      "direction": "positive"
+    }
+  },
+  "daosGaps": [
+    {
+      "feature": "foregroundIsolation",
+      "gap": -20.19,
+      "status": "Missing"
+    },
+    {
+      "feature": "objectSharpness",
+      "gap": -6.55,
+      "status": "Missing"
+    },
+    {
+      "feature": "localContrast",
+      "gap": -5.87,
+      "status": "Missing"
+    },
+    {
+      "feature": "objectContrast",
+      "gap": -12.31,
+      "status": "Missing"
+    },
+    {
+      "feature": "objectSaturation",
+      "gap": -12.31,
+      "status": "Missing"
+    },
+    {
+      "feature": "textureCompetition",
+      "gap": -1.07,
+      "status": "Already Implemented"
+    },
+    {
+      "feature": "perspective",
+      "gap": -18.14,
+      "status": "Missing"
+    },
+    {
+      "feature": "visualCenterOffset",
+      "gap": 9.67,
+      "status": "Unknown"
+    },
+    {
+      "feature": "brightnessSeparation",
+      "gap": 6.1,
+      "status": "Unknown"
+    },
+    {
+      "feature": "objectSymmetry",
+      "gap": 20.93,
+      "status": "Unknown"
+    },
+    {
+      "feature": "dominantColorBalance",
+      "gap": -1.63,
+      "status": "Already Implemented"
+    },
+    {
+      "feature": "productAreaPct",
+      "gap": 1.47,
+      "status": "Already Implemented"
+    },
+    {
+      "feature": "negativeSpace",
+      "gap": -1.47,
+      "status": "Already Implemented"
+    },
+    {
+      "feature": "objectDepth",
+      "gap": -15.55,
+      "status": "Missing"
+    },
+    {
+      "feature": "highlightStrength",
+      "gap": 5.7,
+      "status": "Unknown"
+    },
+    {
+      "feature": "edgeContrast",
+      "gap": -1.6,
+      "status": "Already Implemented"
+    },
+    {
+      "feature": "shadowPresence",
+      "gap": -9.18,
+      "status": "Missing"
+    },
+    {
+      "feature": "colorSeparation",
+      "gap": 2.76,
+      "status": "Already Implemented"
+    },
+    {
+      "feature": "backgroundNoise",
+      "gap": -0.84,
+      "status": "Already Implemented"
+    },
+    {
+      "feature": "objectLighting",
+      "gap": -80.61,
+      "status": "Missing"
+    }
+  ],
+  "council": {
+    "singleBiggestFactor": "foregroundIsolation",
+    "impact": 12.8,
+    "confidence": "medium",
+    "nextSprint": "Quality Cycle 3 — Visual Weight Execution (compositor + local contrast)"
+  }
+}

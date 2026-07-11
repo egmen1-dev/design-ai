@@ -1,0 +1,62 @@
+{
+  "productId": 140135549,
+  "category": "humidifier",
+  "categoryLabel": "Климат",
+  "name": "Увлажнитель воздуха для дома Н2 Humidifier",
+  "daosGenerated": true,
+  "genDurationMs": 17752,
+  "leader": {
+    "productDominance": 54,
+    "foregroundIsolation": 39.1,
+    "headlineVisualWeight": 15.5,
+    "primaryFocusRatio": 0.296,
+    "attentionHierarchyScore": 33.3,
+    "commercialFidelity": 40,
+    "visualWeightHero": 18.2,
+    "thumbnailReadability": 52.3,
+    "productVisualWeight": 18.2,
+    "typographyCompetition": 27.1,
+    "secondaryFocusRatio": 0.704,
+    "attentionDistribution": 0.299
+  },
+  "daos": {
+    "productDominance": 45,
+    "foregroundIsolation": 54.6,
+    "headlineVisualWeight": 30,
+    "primaryFocusRatio": 0.318,
+    "attentionHierarchyScore": 32.1,
+    "commercialFidelity": 31.5,
+    "visualWeightHero": 24.2,
+    "thumbnailReadability": 59.6,
+    "productVisualWeight": 24.2,
+    "typographyCompetition": 45,
+    "secondaryFocusRatio": 0.682,
+    "attentionDistribution": 0.244
+  },
+  "delta": {
+    "productDominance": -9,
+    "foregroundIsolation": 15.5,
+    "headlineVisualWeight": 14.5,
+    "primaryFocusRatio": 0.02,
+    "attentionHierarchyScore": -1.2,
+    "commercialFidelity": -8.5,
+    "visualWeightHero": 6,
+    "thumbnailReadability": 7.3,
+    "productVisualWeight": 6,
+    "typographyCompetition": 17.9,
+    "secondaryFocusRatio": -0.02,
+    "attentionDistribution": -0.05
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "draw",
+    "fasterRead": "daos",
+    "wouldOpen": "draw",
+    "overall": "draw",
+    "rationale": "Dominance: WB 54 vs DAOS 45 (Δ-9); FI: WB 39.1 vs DAOS 54.6; Thumbnail: WB 52.3 vs DAOS 59.6; Fidelity: WB 40 vs DAOS 31.5"
+  },
+  "compositeScore": {
+    "leader": 42.3,
+    "daos": 41.1
+  }
+}

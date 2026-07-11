@@ -1,0 +1,62 @@
+{
+  "productId": 303704774,
+  "category": "home",
+  "categoryLabel": "Дом",
+  "name": "Кухонный подвесной органайзер для хранения",
+  "daosGenerated": true,
+  "genDurationMs": 15067,
+  "leader": {
+    "productDominance": 48,
+    "foregroundIsolation": 66.8,
+    "headlineVisualWeight": 20.8,
+    "primaryFocusRatio": 0.256,
+    "attentionHierarchyScore": 30,
+    "commercialFidelity": 33,
+    "visualWeightHero": 18.9,
+    "thumbnailReadability": 43.6,
+    "productVisualWeight": 18.9,
+    "typographyCompetition": 32.8,
+    "secondaryFocusRatio": 0.744,
+    "attentionDistribution": 0.261
+  },
+  "daos": {
+    "productDominance": 54,
+    "foregroundIsolation": 80.9,
+    "headlineVisualWeight": 16,
+    "primaryFocusRatio": 0.374,
+    "attentionHierarchyScore": 36.8,
+    "commercialFidelity": 39.5,
+    "visualWeightHero": 18.9,
+    "thumbnailReadability": 72.3,
+    "productVisualWeight": 18.9,
+    "typographyCompetition": 26.6,
+    "secondaryFocusRatio": 0.626,
+    "attentionDistribution": 0.307
+  },
+  "delta": {
+    "productDominance": 6,
+    "foregroundIsolation": 14.1,
+    "headlineVisualWeight": -4.8,
+    "primaryFocusRatio": 0.12,
+    "attentionHierarchyScore": 6.8,
+    "commercialFidelity": 6.5,
+    "visualWeightHero": 0,
+    "thumbnailReadability": 28.7,
+    "productVisualWeight": 0,
+    "typographyCompetition": -6.2,
+    "secondaryFocusRatio": -0.12,
+    "attentionDistribution": 0.05
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 48 vs DAOS 54 (Δ6); FI: WB 66.8 vs DAOS 80.9; Thumbnail: WB 43.6 vs DAOS 72.3; Fidelity: WB 33 vs DAOS 39.5"
+  },
+  "compositeScore": {
+    "leader": 41.4,
+    "daos": 51.9
+  }
+}

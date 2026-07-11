@@ -34,6 +34,21 @@ import {
 import { DEFAULT_STYLE, TRENDS, type InfographicStyle } from "@/lib/design-trends";
 import { renderHtmlToImage } from "@/lib/puppeteer";
 import { polishCoverImage } from "@/lib/cover-polish";
+import {
+  captureAttentionHierarchy,
+  type AttentionHierarchyDiagnostics,
+  type TypographyOverlayMode,
+} from "@/lib/typography/attention-hierarchy";
+import {
+  evaluatePostOverlayDominanceGate,
+  postOverlayDominanceGateEnabled,
+  type PostOverlayDominanceGateResult,
+} from "@/lib/typography/post-overlay-dominance-gate";
+import {
+  evaluateThumbnailReadabilityGate,
+  thumbnailReadabilityGateEnabled,
+  type ThumbnailReadabilityResult,
+} from "@/lib/typography/thumbnail-readability-gate";
 import { bufferToDataUrl } from "@/lib/background-removal";
 import {
   parseProductImageDataUrl,
@@ -97,11 +112,13 @@ import {
   toCompositionResult,
 } from "@/lib/layout-engine";
 import type { CardMeaning, LayoutTemplateId, ProductShapeHint } from "@/lib/layout-engine/types";
+import { getTemplate } from "@/lib/layout-engine/templates";
 import { runSeniorArtDirector, runMarketplaceCtrExpert, runCommercialPhotographer, runChiefDesignDirector, runDesignMemory, loadDesignMemoryStore, deriveFixApplicationHints, computeOutcomeScore, runVisualStoryDirector, runCommercialPhotoDirector, runArtDirector, type SeniorArtDirectorReview, type MarketplaceCtrReview, type CommercialPhotographerReview, type ChiefDesignDirectorPlan, type DesignMemoryUpdateResult, type VisualStoryDirectorResult, type CommercialPhotoDirectorResult, type ArtDirectorReview } from "@/lib/agents";
 import { creativeConceptToCardMeaning } from "@/lib/design-process/card-meaning";
 import type { ProductVisualProfile } from "@/lib/design/scene-planner";
 import type { CreativeDirectorResult } from "@/lib/design-process/creative-concept";
 import type { ScenePlan } from "@/lib/design/scene-planner";
+import type { CompositionLayout } from "@/lib/composition/types";
 import type { QualityValidationResult } from "@/lib/design/quality-validator";
 import type { ArtDirectorModeId } from "@/lib/design-process/art-director-modes";
 import type { RenderModelId } from "@/lib/render-engine/types";
@@ -114,6 +131,14 @@ import type { VisualSceneBlueprint } from "@/lib/design/visual-pipeline";
 import type { FeedbackLearningSnapshot } from "@/lib/feedback/types";
 import { PIPELINE_VERSION } from "@/lib/pipeline-version";
 import {
+  buildCommercialGenomeBetaPromptSnippet,
+  createCommercialGenomeBetaDecision,
+  isCommercialGenomeBetaEnabled,
+  type CommercialGenomeBetaDecisionResult,
+} from "@/lib/daos/commercial-genome-beta";
+import { getCategoryProfile } from "@/lib/daos/commercial-genome-beta/category-intelligence";
+import type { CategoryIntelligenceKey } from "@/lib/daos/commercial-genome-beta/category-intelligence/types";
+import {
   USE_RENDER_ENGINE_V17,
   regenerateMarketplaceBackground,
   type RenderEngineOrchestratorResult,
@@ -123,8 +148,18 @@ import {
   buildInitialLayoutSpec,
   layoutSpecToTemplatePreference,
   simplifyCardMeaningForSpec,
+  stabilizeLayoutSpecWithCommercialIntent,
+  isCommercialLayoutIntegrationEnabled,
   type LayoutSpec,
+  type CommercialLayoutDebugBundle,
+  resolveLayoutObjectScale,
+  type CommercialLayoutPropagationDiagnostics,
 } from "@/lib/design/layout-spec";
+import type { CommercialCalibrationDiagnostics } from "@/lib/compositing/commercial-calibration";
+import type { CommercialAlphaPolicyDiagnostics } from "@/lib/compositing/commercial-alpha-policy";
+import type { GeometryClampDiagnostics } from "@/lib/layout-engine/geometry-clamp-optimization";
+import { buildGeometryClampDiagnostics } from "@/lib/layout-engine/geometry-clamp-optimization";
+import type { CommercialDecisionBeta } from "@/lib/daos/commercial-genome-beta/types";
 import { runQualityGate, applyRefinementPatch, type QualityGateResult } from "@/lib/design/quality-v165";
 import type { CoverConceptId } from "@/lib/cover-concepts";
 import { evaluateFinalQuality } from "@/lib/design/final-quality-validator";
@@ -272,9 +307,55 @@ function toProductShapeHint(visual?: ProductVisualProfile): ProductShapeHint {
   return "standard";
 }
 
-function layoutObjectScale(areaPct?: number): number {
-  const pct = areaPct ?? 65;
-  return Math.min(0.62, Math.max(0.5, pct / 100));
+function resolveObjectScaleFromLayout(
+  layoutSpec: LayoutSpec | undefined,
+  templateAreaPct: number | undefined,
+  decisionLog?: string[],
+): { objectScale: number; propagation: CommercialLayoutPropagationDiagnostics } {
+  const resolved = resolveLayoutObjectScale({ layoutSpec, templateAreaPct });
+  decisionLog?.push(
+    `CommercialPropagation source=${resolved.diagnostics.commercialScaleSource} expected=${resolved.diagnostics.commercialScaleExpected}% applied=${resolved.diagnostics.commercialScaleApplied}`,
+  );
+  for (const warning of resolved.diagnostics.commercialPropagationWarnings) {
+    decisionLog?.push(`CommercialPropagation warn: ${warning}`);
+  }
+  return {
+    objectScale: resolved.objectScale,
+    propagation: resolved.diagnostics,
+  };
+}
+
+function marketplaceCompositeOptions(input: {
+  scene: ScenePlan;
+  compositionLayout?: CompositionLayout;
+  objectScale: number;
+  commercialLayoutPropagation?: CommercialLayoutPropagationDiagnostics;
+}) {
+  return {
+    layout: "marketplace" as const,
+    scene: input.scene,
+    compositionLayout: input.compositionLayout,
+    objectScale: input.objectScale,
+    commercialCalibration: input.commercialLayoutPropagation?.commercialLayoutPropagation ?? false,
+  };
+}
+
+function captureCommercialCalibration(
+  composite: Awaited<ReturnType<typeof compositeProductIntoScene>> | undefined,
+): CommercialCalibrationDiagnostics | undefined {
+  return composite?.commercialCalibration;
+}
+
+function captureCommercialAlphaPolicy(
+  composite: Awaited<ReturnType<typeof compositeProductIntoScene>> | undefined,
+): CommercialAlphaPolicyDiagnostics | undefined {
+  return composite?.commercialAlphaPolicy;
+}
+
+function captureForegroundIsolation(
+  composite: Awaited<ReturnType<typeof compositeProductIntoScene>> | undefined,
+) {
+  return composite?.foregroundIsolation;
 }
 
 function normalizeCardMeaning(
@@ -386,7 +467,19 @@ function compileBackgroundPrompt(input: {
   luxuryScore?: number;
   compositionScore?: number;
   sceneScore?: number;
+  commercialGenomeBetaSnippet?: string;
 }) {
+  const knowledgeSnippet = agentKnowledgeSnippet(
+    input.marketIntelligence,
+    input.assetsIntelligence,
+    input.genomeIntelligence,
+    input.storyDirection,
+    input.trendIntelligence,
+  );
+  const genomeSnippet = [input.genomeIntelligence?.agentSnippet, input.commercialGenomeBetaSnippet]
+    .filter(Boolean)
+    .join(" | ");
+
   return compileSceneRenderingPrompt(input.scenePlan, input.analysis, {
     prompt: input.prompt,
     dominantColors: input.productVisual?.dominantColors,
@@ -395,14 +488,8 @@ function compileBackgroundPrompt(input: {
     layoutSpec: input.layoutSpec,
     sceneBlueprint: input.sceneBlueprint,
     designBrief: input.designBrief,
-    marketSnippet: agentKnowledgeSnippet(
-      input.marketIntelligence,
-      input.assetsIntelligence,
-      input.genomeIntelligence,
-      input.storyDirection,
-      input.trendIntelligence,
-    ),
-    genomeSnippet: input.genomeIntelligence?.agentSnippet,
+    marketSnippet: knowledgeSnippet,
+    genomeSnippet: genomeSnippet || undefined,
     luxuryScore: input.luxuryScore,
     compositionScore: input.compositionScore,
     sceneScore: input.sceneScore,
@@ -470,6 +557,18 @@ function renderEngineResponseFields(result?: RenderEngineOrchestratorResult) {
 function storyBlueprintSnippet(story?: VisualStoryDirectorResult): string | undefined {
   if (!story) return undefined;
   return `Story: ${story.heroConcept}`;
+}
+
+/** Terminal production boundary: Genome intent → stabilized LayoutSpec (single call site). */
+function finalizeProductionLayoutSpec(
+  layout: LayoutSpec | undefined,
+  decision?: CommercialDecisionBeta,
+): { layoutSpec?: LayoutSpec; debugBundle?: CommercialLayoutDebugBundle } {
+  if (!layout || !decision) return { layoutSpec: layout };
+  const integrated = stabilizeLayoutSpecWithCommercialIntent(layout, decision, {
+    includeDebugBundle: isCommercialLayoutIntegrationEnabled(),
+  });
+  return { layoutSpec: integrated.layout, debugBundle: integrated.debugBundle };
 }
 
 async function buildLayoutWithAgentReview(input: {
@@ -996,6 +1095,41 @@ export async function handleGenerateInfographic(
 
     let scenePlan = storedScenePlan ?? plannedScene;
 
+    let commercialGenomeBetaResult: CommercialGenomeBetaDecisionResult | undefined;
+    let commercialGenomeBetaSnippet: string | undefined;
+    let commercialLayoutDebugBundle: CommercialLayoutDebugBundle | undefined;
+    let commercialLayoutPropagation: CommercialLayoutPropagationDiagnostics | undefined;
+    let commercialCalibration: CommercialCalibrationDiagnostics | undefined;
+    let commercialAlphaPolicy: CommercialAlphaPolicyDiagnostics | undefined;
+    let foregroundIsolation: ReturnType<typeof captureForegroundIsolation>;
+    let attentionHierarchy: AttentionHierarchyDiagnostics | undefined;
+    let postOverlayDominanceGate: PostOverlayDominanceGateResult | undefined;
+    let thumbnailReadabilityGate: ThumbnailReadabilityResult | undefined;
+    let geometryOptimization: GeometryClampDiagnostics | undefined;
+    let categoryAttentionRules: ReturnType<typeof getCategoryProfile>["attentionRules"] | null = null;
+    if (sdData.layout === "marketplace" && isCommercialGenomeBetaEnabled()) {
+      commercialGenomeBetaResult = createCommercialGenomeBetaDecision({
+        marketplace: "wildberries",
+        category: analysis.category,
+        productTitle: input.prompt,
+        productColor: productVisual?.dominantColors?.[0],
+        productType: analysis.category,
+        mode: input.regenerateBackgroundOnly ? "refinement" : "generation",
+      });
+      const catKey = commercialGenomeBetaResult.categoryIntelligence?.key as CategoryIntelligenceKey | null;
+      if (catKey) {
+        categoryAttentionRules = getCategoryProfile(catKey).attentionRules;
+      }
+      commercialGenomeBetaSnippet = buildCommercialGenomeBetaPromptSnippet(commercialGenomeBetaResult);
+      console.info(
+        "[commercial-genome-beta]",
+        commercialGenomeBetaResult.decision.environmentDirection,
+        commercialGenomeBetaResult.decision.backgroundContrastDirection,
+        `rules=${commercialGenomeBetaResult.decision.selectedRules.length}`,
+        catKey ? `category=${catKey}` : "",
+      );
+    }
+
     if (useDesignGovernance) {
       governanceBlueprint = resolveDesignDecisions({
         analysis,
@@ -1114,6 +1248,19 @@ export async function handleGenerateInfographic(
       qualityGateV165 = built.qualityGate;
       qualityRefinementPasses = built.refinementPasses;
 
+      if (governanceBlueprint?.locked) {
+        layoutSpec = governanceBlueprint.layoutSpec;
+        activeSceneBlueprint = governanceBlueprint.sceneBlueprint;
+        scenePlan = governanceBlueprint.scenePlan;
+      }
+
+      const finalized = finalizeProductionLayoutSpec(
+        layoutSpec,
+        commercialGenomeBetaResult?.decision,
+      );
+      layoutSpec = finalized.layoutSpec;
+      commercialLayoutDebugBundle = finalized.debugBundle ?? commercialLayoutDebugBundle;
+
       if (useRenderEngineV17 && layoutSpec) {
         const pipeline = rebuildVisualPipelineForRender({
           prompt: input.prompt,
@@ -1128,19 +1275,37 @@ export async function handleGenerateInfographic(
         activeSceneBlueprint = pipeline.sceneBlueprint;
       }
       luxuryScoreValue = built.qualityGate.luxuryScore.total;
-      if (governanceBlueprint?.locked) {
-        layoutSpec = governanceBlueprint.layoutSpec;
-        activeSceneBlueprint = governanceBlueprint.sceneBlueprint;
-        scenePlan = governanceBlueprint.scenePlan;
-      }
       if (designBrief && !designBrief.cardMeaning) {
         designBrief = { ...designBrief, cardMeaning };
       }
     }
 
     let compositionLayout = compositionResult?.layout;
-    let objectScale = layoutObjectScale(compositionLayout?.metrics?.productAreaPct);
+    let objectScale: number;
+    ({
+      objectScale,
+      propagation: commercialLayoutPropagation,
+    } = resolveObjectScaleFromLayout(
+      layoutSpec,
+      compositionLayout?.metrics?.productAreaPct,
+      governanceDecisionLog,
+    ));
     compositingHints = sceneToCompositingHints(scenePlan, objectScale);
+
+    if (compositionLayout) {
+      const templateId = (compositionResult?.templateId ??
+        compositionLayout.scenarioId) as LayoutTemplateId | undefined;
+      geometryOptimization = buildGeometryClampDiagnostics({
+        layout: compositionLayout,
+        productScale: templateId ? getTemplate(templateId).productScale : undefined,
+        objectScale,
+      });
+      if (geometryOptimization.geometryOptimizationWarnings.length) {
+        for (const w of geometryOptimization.geometryOptimizationWarnings) {
+          governanceDecisionLog.push(`GeometryOptimization warn: ${w}`);
+        }
+      }
+    }
 
     if (useDesignGovernance && governanceBlueprint) {
       assertRenderAllowed({
@@ -1174,6 +1339,7 @@ export async function handleGenerateInfographic(
         luxuryScore: luxuryScoreValue,
         compositionScore: compositionDirection?.quality.total,
         sceneScore: sceneDirection?.quality.total,
+        commercialGenomeBetaSnippet,
       });
       sdData.backgroundPrompt = compiledBackground.prompt;
       if (designBrief) {
@@ -1351,11 +1517,16 @@ export async function handleGenerateInfographic(
           }
 
           compositeResult = await compositeProductIntoScene(backgroundUrl, productCutoutPath, {
-            layout: "marketplace",
-            scene: scenePlan,
-            compositionLayout,
-            objectScale,
+            ...marketplaceCompositeOptions({
+              scene: scenePlan,
+              compositionLayout,
+              objectScale,
+              commercialLayoutPropagation,
+            }),
           });
+          commercialCalibration = captureCommercialCalibration(compositeResult);
+          commercialAlphaPolicy = captureCommercialAlphaPolicy(compositeResult);
+          foregroundIsolation = captureForegroundIsolation(compositeResult);
 
           qualityValidation = validateQuality({
             compositionLayout,
@@ -1453,7 +1624,14 @@ export async function handleGenerateInfographic(
           });
           compositionResult = fixed.compositionResult;
           compositionLayout = compositionResult.layout;
-          objectScale = layoutObjectScale(compositionLayout.metrics?.productAreaPct);
+          ({
+            objectScale,
+            propagation: commercialLayoutPropagation,
+          } = resolveObjectScaleFromLayout(
+            layoutSpec,
+            compositionLayout.metrics?.productAreaPct,
+            governanceDecisionLog,
+          ));
           cardMeaning = fixed.cardMeaning;
         }
 
@@ -1504,11 +1682,16 @@ export async function handleGenerateInfographic(
             backgroundSource = bg.source;
             if (bg.engine) renderEngineResult = bg.engine as RenderEngineOrchestratorResult;
             compositeResult = await compositeProductIntoScene(bg.url, productCutoutPath, {
-              layout: "marketplace",
-              scene: chiefScenePlan,
-              compositionLayout,
-              objectScale,
+              ...marketplaceCompositeOptions({
+                scene: chiefScenePlan,
+                compositionLayout,
+                objectScale,
+                commercialLayoutPropagation,
+              }),
             });
+            commercialCalibration = captureCommercialCalibration(compositeResult);
+          commercialAlphaPolicy = captureCommercialAlphaPolicy(compositeResult);
+          foregroundIsolation = captureForegroundIsolation(compositeResult);
             mergedImageDataUrl = await mergedToDataUrl(compositeResult.mergedPath);
             qualityValidation = validateQuality({
               compositionLayout,
@@ -1602,13 +1785,27 @@ export async function handleGenerateInfographic(
         });
         compositionResult = rebuilt.compositionResult;
         compositionLayout = compositionResult.layout;
-        objectScale = layoutObjectScale(compositionLayout.metrics?.productAreaPct);
         seniorAdReview = rebuilt.seniorAdReview;
         ctrReview = rebuilt.ctrReview;
         layoutSpec = rebuilt.layoutSpec;
         qualityGateV165 = rebuilt.qualityGate;
         luxuryScoreValue = rebuilt.qualityGate.luxuryScore.total;
         qualityRefinementPasses = rebuilt.refinementPasses;
+        const retryFinalized = finalizeProductionLayoutSpec(
+          layoutSpec,
+          commercialGenomeBetaResult?.decision,
+        );
+        layoutSpec = retryFinalized.layoutSpec;
+        commercialLayoutDebugBundle =
+          retryFinalized.debugBundle ?? commercialLayoutDebugBundle;
+        ({
+          objectScale,
+          propagation: commercialLayoutPropagation,
+        } = resolveObjectScaleFromLayout(
+          layoutSpec,
+          compositionLayout.metrics?.productAreaPct,
+          governanceDecisionLog,
+        ));
       }
 
       const retryScene = planScene({
@@ -1653,6 +1850,7 @@ export async function handleGenerateInfographic(
         luxuryScore: luxuryScoreValue,
         compositionScore: compositionDirection?.quality.total,
         sceneScore: sceneDirection?.quality.total,
+        commercialGenomeBetaSnippet,
       });
       compiledBackground = retryCompiled;
       sdData.backgroundPrompt = retryCompiled.prompt;
@@ -1669,11 +1867,16 @@ export async function handleGenerateInfographic(
 
         if (productCutoutPath && usePhotorealMerge) {
           compositeResult = await compositeProductIntoScene(bg.url, productCutoutPath, {
-            layout: "marketplace",
-            scene: retryScene,
-            compositionLayout,
-            objectScale,
+            ...marketplaceCompositeOptions({
+              scene: retryScene,
+              compositionLayout,
+              objectScale,
+              commercialLayoutPropagation,
+            }),
           });
+          commercialCalibration = captureCommercialCalibration(compositeResult);
+          commercialAlphaPolicy = captureCommercialAlphaPolicy(compositeResult);
+          foregroundIsolation = captureForegroundIsolation(compositeResult);
           mergedImageDataUrl = await mergedToDataUrl(compositeResult.mergedPath);
           qualityValidation = validateQuality({
             compositionLayout,
@@ -1830,7 +2033,12 @@ export async function handleGenerateInfographic(
       ]);
     }
 
-    const html = renderInfographicHtml(infographicData, {
+    const catKey = commercialGenomeBetaResult?.categoryIntelligence?.key as CategoryIntelligenceKey | null;
+    let typographyOverlayMode: TypographyOverlayMode =
+      catKey && commercialGenomeBetaResult?.categoryIntelligence?.enabled
+        ? getCategoryProfile(catKey).typographyRules.defaultOverlayMode
+        : "standard";
+    let html = renderInfographicHtml(infographicData, {
       style: appliedStyle,
       layout: sdData.layout,
       mergedImageDataUrl,
@@ -1844,12 +2052,135 @@ export async function handleGenerateInfographic(
       accentHex,
       compositionLayout,
       productPrompt: input.prompt,
+      typographyOverlayMode,
+      categoryAttentionRules,
     });
 
     const filename = `${input.userId}-${Date.now()}.png`;
     let imagePath = await renderHtmlToImage(html, filename);
     if (sdData.layout === "marketplace") {
       imagePath = await polishCoverImage(imagePath);
+
+      if (postOverlayDominanceGateEnabled()) {
+        for (let gateAttempt = 0; gateAttempt <= 1; gateAttempt++) {
+          try {
+            const { resolvePublicAssetPath } = await import("@/lib/runtime-paths");
+            const normalized = imagePath.startsWith("/api/") ? imagePath.replace("/api/", "/") : imagePath;
+            const absPath = await resolvePublicAssetPath(normalized);
+            attentionHierarchy = await captureAttentionHierarchy(absPath);
+            postOverlayDominanceGate = evaluatePostOverlayDominanceGate(
+              attentionHierarchy,
+              categoryAttentionRules,
+            );
+
+            if (postOverlayDominanceGate.passed) break;
+
+            if (gateAttempt === 0 && postOverlayDominanceGate.needsTypographyRelaxation) {
+              governanceDecisionLog.push(
+                `PostOverlayGate: LAW_101 — typography relaxation (${postOverlayDominanceGate.warnings.join("; ")})`,
+              );
+              console.warn(
+                "[post-overlay-gate] typography relaxation",
+                postOverlayDominanceGate.warnings,
+              );
+              typographyOverlayMode = "relaxed";
+              html = renderInfographicHtml(infographicData, {
+                style: appliedStyle,
+                layout: sdData.layout,
+                mergedImageDataUrl,
+                backgroundDataUrl: mergedImageDataUrl ? undefined : backgroundDataUrl,
+                backgroundCss: !backgroundDataUrl && !mergedImageDataUrl ? fallbackBg : undefined,
+                productImageSrc: mergedImageDataUrl ? undefined : productRender?.renderSrc,
+                productImageCutout: productRender?.cutout ?? false,
+                libraryFont,
+                libraryBadge,
+                parametricBadgeHtml,
+                accentHex,
+                compositionLayout,
+                productPrompt: input.prompt,
+                typographyOverlayMode,
+              });
+              imagePath = await renderHtmlToImage(html, filename);
+              imagePath = await polishCoverImage(imagePath);
+              continue;
+            }
+
+            governanceDecisionLog.push(
+              `PostOverlayGate: warning — ${postOverlayDominanceGate.warnings.join("; ")}`,
+            );
+            console.warn("[post-overlay-gate] dominance warning", postOverlayDominanceGate.warnings);
+            break;
+          } catch (err) {
+            console.warn("[post-overlay-gate] capture failed:", err);
+            break;
+          }
+        }
+      } else {
+        try {
+          const { resolvePublicAssetPath } = await import("@/lib/runtime-paths");
+          const normalized = imagePath.startsWith("/api/") ? imagePath.replace("/api/", "/") : imagePath;
+          const absPath = await resolvePublicAssetPath(normalized);
+          attentionHierarchy = await captureAttentionHierarchy(absPath);
+          if (!attentionHierarchy.law101Passed) {
+            console.warn("[attention-hierarchy] LAW_101", attentionHierarchy.law101Warning);
+          }
+        } catch (err) {
+          console.warn("[attention-hierarchy] capture failed:", err);
+        }
+      }
+
+      if (thumbnailReadabilityGateEnabled()) {
+        try {
+          const { resolvePublicAssetPath } = await import("@/lib/runtime-paths");
+          const normalized = imagePath.startsWith("/api/") ? imagePath.replace("/api/", "/") : imagePath;
+          const absPath = await resolvePublicAssetPath(normalized);
+          thumbnailReadabilityGate = await evaluateThumbnailReadabilityGate(absPath);
+
+          if (!thumbnailReadabilityGate.passed && typographyOverlayMode === "standard") {
+            governanceDecisionLog.push(
+              `ThumbnailGate: readability ${thumbnailReadabilityGate.score} — typography relaxation`,
+            );
+            console.warn("[thumbnail-gate] typography relaxation", thumbnailReadabilityGate.warnings);
+            typographyOverlayMode = "relaxed";
+            html = renderInfographicHtml(infographicData, {
+              style: appliedStyle,
+              layout: sdData.layout,
+              mergedImageDataUrl,
+              backgroundDataUrl: mergedImageDataUrl ? undefined : backgroundDataUrl,
+              backgroundCss: !backgroundDataUrl && !mergedImageDataUrl ? fallbackBg : undefined,
+              productImageSrc: mergedImageDataUrl ? undefined : productRender?.renderSrc,
+              productImageCutout: productRender?.cutout ?? false,
+              libraryFont,
+              libraryBadge,
+              parametricBadgeHtml,
+              accentHex,
+              compositionLayout,
+              productPrompt: input.prompt,
+              typographyOverlayMode,
+            });
+            imagePath = await renderHtmlToImage(html, filename);
+            imagePath = await polishCoverImage(imagePath);
+            const absRetry = await resolvePublicAssetPath(
+              imagePath.startsWith("/api/") ? imagePath.replace("/api/", "/") : imagePath,
+            );
+            thumbnailReadabilityGate = await evaluateThumbnailReadabilityGate(absRetry);
+            attentionHierarchy = await captureAttentionHierarchy(absRetry);
+            postOverlayDominanceGate = evaluatePostOverlayDominanceGate(
+              attentionHierarchy,
+              categoryAttentionRules,
+            );
+          }
+
+          if (!thumbnailReadabilityGate.passed) {
+            governanceDecisionLog.push(
+              `ThumbnailGate: warning — ${thumbnailReadabilityGate.warnings.join("; ")}`,
+            );
+            console.warn("[thumbnail-gate] warning", thumbnailReadabilityGate.warnings);
+          }
+        } catch (err) {
+          console.warn("[thumbnail-gate] capture failed:", err);
+        }
+      }
     }
 
     const balance = slot.usedFreeQuota
@@ -1887,6 +2218,16 @@ export async function handleGenerateInfographic(
         : undefined,
       feedbackLearning: undefined as FeedbackLearningSnapshot | undefined,
       promptCompiler: compiledBackground?.metadata,
+      commercialGenomeBeta: commercialGenomeBetaResult,
+      commercialLayoutIntegration: commercialLayoutDebugBundle,
+      commercialLayoutPropagation,
+      commercialCalibration,
+      commercialAlphaPolicy,
+      foregroundIsolation,
+      attentionHierarchy,
+      postOverlayDominanceGate,
+      thumbnailReadabilityGate,
+      geometryOptimization,
       designConstitution: constitutionReports.length ? constitutionReports : undefined,
       renderEngine: renderEngineResult
         ? buildStoredRenderReport({
@@ -2084,6 +2425,12 @@ export async function handleGenerateInfographic(
         finalQuality,
         conceptRetries: conceptRetryIndex,
         feedbackLearning: payloadExtras.feedbackLearning,
+        commercialGenomeBeta: commercialGenomeBetaResult,
+        commercialLayoutIntegration: commercialLayoutDebugBundle,
+      commercialLayoutPropagation,
+      commercialCalibration,
+      commercialAlphaPolicy,
+      geometryOptimization,
       });
 
     if (input.regenerateBackgroundOnly && input.existingImageId) {

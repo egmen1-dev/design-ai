@@ -1,0 +1,28 @@
+{
+  "source": "daos",
+  "category": "battery-sprayer",
+  "categoryLabel": "Battery Sprayer",
+  "productId": "product-2",
+  "sprint95Fidelity": 30.5,
+  "compositeFailed": true,
+  "handlerFlags": [
+    "not_professional",
+    "product_not_dominant",
+    "png_overlay_feel"
+  ],
+  "productAreaPct": 31,
+  "productDominanceScore": 44,
+  "visualHierarchyScore": 44,
+  "backgroundSeparationScore": 29,
+  "sceneConsistencyScore": 100,
+  "backgroundComplexity": 0.9,
+  "typographyDensity": 1.2,
+  "heroLuminance": 154.3,
+  "globalLuminance": 149.6,
+  "heroSaturation": 46.1,
+  "negativeSpaceProxy": 69,
+  "commercialFidelityScore": 30.5,
+  "heroZoneCanvasPct": 31.3,
+  "visualWeightHero": 18.1,
+  "contrastSeparation": 29
+}

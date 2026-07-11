@@ -1,0 +1,56 @@
+{
+  "productId": 409958399,
+  "category": "home-appliances",
+  "categoryLabel": "Бытовая техника",
+  "name": "Вертикальный проводной пылесос 3в1 мощный для дома и ковров",
+  "daosGenerated": true,
+  "genDurationMs": 8763,
+  "leader": {
+    "productDominance": 49,
+    "foregroundIsolation": 53.2,
+    "headlineVisualWeight": 18.7,
+    "primaryFocusRatio": 0.296,
+    "attentionHierarchyScore": 32.2,
+    "commercialFidelity": 35,
+    "visualWeightHero": 18,
+    "thumbnailReadability": 50.3,
+    "productVisualWeight": 18,
+    "typographyCompetition": 30.4
+  },
+  "daos": {
+    "productDominance": 68,
+    "foregroundIsolation": 85.5,
+    "headlineVisualWeight": 6,
+    "primaryFocusRatio": 0.28,
+    "attentionHierarchyScore": 35.3,
+    "commercialFidelity": 51.5,
+    "visualWeightHero": 12.7,
+    "thumbnailReadability": 85.2,
+    "productVisualWeight": 12.7,
+    "typographyCompetition": 24.7
+  },
+  "delta": {
+    "productDominance": 19,
+    "foregroundIsolation": 32.3,
+    "headlineVisualWeight": -12.7,
+    "primaryFocusRatio": -0.02,
+    "attentionHierarchyScore": 3.1,
+    "commercialFidelity": 16.5,
+    "visualWeightHero": -5.3,
+    "thumbnailReadability": 34.9,
+    "productVisualWeight": -5.3,
+    "typographyCompetition": -5.7
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 49 vs DAOS 68 (Δ19); FI: WB 53.2 vs DAOS 85.5; Thumbnail: WB 50.3 vs DAOS 85.2; Fidelity: WB 35 vs DAOS 51.5"
+  },
+  "compositeScore": {
+    "leader": 41.3,
+    "daos": 60.8
+  }
+}

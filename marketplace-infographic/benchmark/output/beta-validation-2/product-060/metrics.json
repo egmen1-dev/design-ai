@@ -1,0 +1,70 @@
+{
+  "productId": 207567698,
+  "category": "home",
+  "categoryLabel": "Дом",
+  "name": "Органайзер для хранения 3л-2шт",
+  "daosGenerated": true,
+  "genDurationMs": 17372,
+  "leader": {
+    "productDominance": 51,
+    "foregroundIsolation": 79.6,
+    "headlineVisualWeight": 19.9,
+    "primaryFocusRatio": 0.274,
+    "attentionHierarchyScore": 31,
+    "commercialFidelity": 36.5,
+    "visualWeightHero": 20.1,
+    "thumbnailReadability": 70,
+    "productVisualWeight": 20.1,
+    "typographyCompetition": 29,
+    "secondaryFocusRatio": 0.726,
+    "attentionDistribution": 0.291
+  },
+  "daos": {
+    "productDominance": 42,
+    "foregroundIsolation": 81.3,
+    "headlineVisualWeight": 17.7,
+    "primaryFocusRatio": 0.252,
+    "attentionHierarchyScore": 31,
+    "commercialFidelity": 28,
+    "visualWeightHero": 12.5,
+    "thumbnailReadability": 63.1,
+    "productVisualWeight": 12.5,
+    "typographyCompetition": 30.9,
+    "secondaryFocusRatio": 0.748,
+    "attentionDistribution": 0.205
+  },
+  "delta": {
+    "productDominance": -9,
+    "foregroundIsolation": 1.7,
+    "headlineVisualWeight": -2.2,
+    "primaryFocusRatio": -0.02,
+    "attentionHierarchyScore": 0,
+    "commercialFidelity": -8.5,
+    "visualWeightHero": -7.6,
+    "thumbnailReadability": -6.9,
+    "productVisualWeight": -7.6,
+    "typographyCompetition": 1.9,
+    "secondaryFocusRatio": 0.02,
+    "attentionDistribution": -0.09
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "wb",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "Dominance: WB 51 vs DAOS 42 (Δ-9); FI: WB 79.6 vs DAOS 81.3; Thumbnail: WB 70 vs DAOS 63.1; Fidelity: WB 36.5 vs DAOS 28",
+    "gapClass": "Product Dominance"
+  },
+  "failure": {
+    "slot": "product-060",
+    "productId": 207567698,
+    "category": "Дом",
+    "reason": "Dominance",
+    "detail": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 49.2,
+    "daos": 43.3
+  }
+}

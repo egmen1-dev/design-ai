@@ -1,0 +1,56 @@
+{
+  "productId": 14398217,
+  "category": "construction",
+  "categoryLabel": "Строительство",
+  "name": "Ударный электрический перфоратор для дома П1050",
+  "daosGenerated": true,
+  "genDurationMs": 7777,
+  "leader": {
+    "productDominance": 65,
+    "foregroundIsolation": 78.2,
+    "headlineVisualWeight": 17.8,
+    "primaryFocusRatio": 0.4,
+    "attentionHierarchyScore": 41.5,
+    "commercialFidelity": 62,
+    "visualWeightHero": 33,
+    "thumbnailReadability": 71.2,
+    "productVisualWeight": 33,
+    "typographyCompetition": 39.7
+  },
+  "daos": {
+    "productDominance": 61,
+    "foregroundIsolation": 98.6,
+    "headlineVisualWeight": 12.6,
+    "primaryFocusRatio": 0.309,
+    "attentionHierarchyScore": 35.5,
+    "commercialFidelity": 47,
+    "visualWeightHero": 19.2,
+    "thumbnailReadability": 100,
+    "productVisualWeight": 19.2,
+    "typographyCompetition": 32.8
+  },
+  "delta": {
+    "productDominance": -4,
+    "foregroundIsolation": 20.4,
+    "headlineVisualWeight": -5.2,
+    "primaryFocusRatio": -0.09,
+    "attentionHierarchyScore": -6,
+    "commercialFidelity": -15,
+    "visualWeightHero": -13.8,
+    "thumbnailReadability": 28.8,
+    "productVisualWeight": -13.8,
+    "typographyCompetition": -6.9
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 65 vs DAOS 61 (Δ-4); FI: WB 78.2 vs DAOS 98.6; Thumbnail: WB 71.2 vs DAOS 100; Fidelity: WB 62 vs DAOS 47"
+  },
+  "compositeScore": {
+    "leader": 60.9,
+    "daos": 62.3
+  }
+}

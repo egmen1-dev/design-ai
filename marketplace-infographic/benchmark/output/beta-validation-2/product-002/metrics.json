@@ -1,0 +1,62 @@
+{
+  "productId": 65018803,
+  "category": "power-tools",
+  "categoryLabel": "Электроинструмент",
+  "name": "Ударная дрель 1100Вт 13мм 2 скорости, ЗДУ-1100-2 ЭРМКМ2",
+  "daosGenerated": true,
+  "genDurationMs": 12578,
+  "leader": {
+    "productDominance": 58,
+    "foregroundIsolation": 53.4,
+    "headlineVisualWeight": 20.3,
+    "primaryFocusRatio": 0.283,
+    "attentionHierarchyScore": 33.4,
+    "commercialFidelity": 63,
+    "visualWeightHero": 28.3,
+    "thumbnailReadability": 54.7,
+    "productVisualWeight": 28.3,
+    "typographyCompetition": 38.1,
+    "secondaryFocusRatio": 0.717,
+    "attentionDistribution": 0.326
+  },
+  "daos": {
+    "productDominance": 69,
+    "foregroundIsolation": 80.5,
+    "headlineVisualWeight": 8.7,
+    "primaryFocusRatio": 0.316,
+    "attentionHierarchyScore": 37.5,
+    "commercialFidelity": 51,
+    "visualWeightHero": 19.6,
+    "thumbnailReadability": 78.6,
+    "productVisualWeight": 19.6,
+    "typographyCompetition": 32.3,
+    "secondaryFocusRatio": 0.684,
+    "attentionDistribution": 0.323
+  },
+  "delta": {
+    "productDominance": 11,
+    "foregroundIsolation": 27.1,
+    "headlineVisualWeight": -11.6,
+    "primaryFocusRatio": 0.03,
+    "attentionHierarchyScore": 4.1,
+    "commercialFidelity": -12,
+    "visualWeightHero": -8.7,
+    "thumbnailReadability": 23.9,
+    "productVisualWeight": -8.7,
+    "typographyCompetition": -5.8,
+    "secondaryFocusRatio": -0.03,
+    "attentionDistribution": 0
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 58 vs DAOS 69 (Δ11); FI: WB 53.4 vs DAOS 80.5; Thumbnail: WB 54.7 vs DAOS 78.6; Fidelity: WB 63 vs DAOS 51"
+  },
+  "compositeScore": {
+    "leader": 51.4,
+    "daos": 60
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "productId": 952674072,
+  "category": "garden",
+  "categoryLabel": "Сад",
+  "name": "Садовый триммер для травы аккумуляторный",
+  "daosGenerated": true,
+  "genDurationMs": 18049,
+  "leader": {
+    "productDominance": 57,
+    "foregroundIsolation": 49.4,
+    "headlineVisualWeight": 22.1,
+    "primaryFocusRatio": 0.265,
+    "attentionHierarchyScore": 31.6,
+    "commercialFidelity": 42.5,
+    "visualWeightHero": 28.7,
+    "thumbnailReadability": 58.4,
+    "productVisualWeight": 28.7,
+    "typographyCompetition": 41,
+    "secondaryFocusRatio": 0.735,
+    "attentionDistribution": 0.313
+  },
+  "daos": {
+    "productDominance": 42,
+    "foregroundIsolation": 66.8,
+    "headlineVisualWeight": 21.9,
+    "primaryFocusRatio": 0.269,
+    "attentionHierarchyScore": 31.1,
+    "commercialFidelity": 28,
+    "visualWeightHero": 15.9,
+    "thumbnailReadability": 60.1,
+    "productVisualWeight": 15.9,
+    "typographyCompetition": 36.6,
+    "secondaryFocusRatio": 0.731,
+    "attentionDistribution": 0.214
+  },
+  "delta": {
+    "productDominance": -15,
+    "foregroundIsolation": 17.4,
+    "headlineVisualWeight": -0.2,
+    "primaryFocusRatio": 0,
+    "attentionHierarchyScore": -0.5,
+    "commercialFidelity": -14.5,
+    "visualWeightHero": -12.8,
+    "thumbnailReadability": 1.7,
+    "productVisualWeight": -12.8,
+    "typographyCompetition": -4.4,
+    "secondaryFocusRatio": 0,
+    "attentionDistribution": -0.1
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "wb",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "Dominance: WB 57 vs DAOS 42 (Δ-15); FI: WB 49.4 vs DAOS 66.8; Thumbnail: WB 58.4 vs DAOS 60.1; Fidelity: WB 42.5 vs DAOS 28",
+    "gapClass": "Product Dominance"
+  },
+  "failure": {
+    "slot": "product-029",
+    "productId": 952674072,
+    "category": "Сад",
+    "reason": "Dominance",
+    "detail": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 46.7,
+    "daos": 40.8
+  }
+}

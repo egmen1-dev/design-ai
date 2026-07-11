@@ -1,0 +1,56 @@
+{
+  "productId": 865871291,
+  "category": "power-tools",
+  "categoryLabel": "Электроинструмент",
+  "name": "Дрель ударная электрическая 780В, 719.0.0.70",
+  "daosGenerated": true,
+  "genDurationMs": 7168,
+  "leader": {
+    "productDominance": 56,
+    "foregroundIsolation": 56.9,
+    "headlineVisualWeight": 15.4,
+    "primaryFocusRatio": 0.337,
+    "attentionHierarchyScore": 35.7,
+    "commercialFidelity": 42,
+    "visualWeightHero": 19.5,
+    "thumbnailReadability": 56.6,
+    "productVisualWeight": 19.5,
+    "typographyCompetition": 25.9
+  },
+  "daos": {
+    "productDominance": 67,
+    "foregroundIsolation": 78.2,
+    "headlineVisualWeight": 13.2,
+    "primaryFocusRatio": 0.413,
+    "attentionHierarchyScore": 42.6,
+    "commercialFidelity": 51,
+    "visualWeightHero": 27.9,
+    "thumbnailReadability": 90.6,
+    "productVisualWeight": 27.9,
+    "typographyCompetition": 29.5
+  },
+  "delta": {
+    "productDominance": 11,
+    "foregroundIsolation": 21.3,
+    "headlineVisualWeight": -2.2,
+    "primaryFocusRatio": 0.08,
+    "attentionHierarchyScore": 6.9,
+    "commercialFidelity": 9,
+    "visualWeightHero": 8.4,
+    "thumbnailReadability": 34,
+    "productVisualWeight": 8.4,
+    "typographyCompetition": 3.6
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 56 vs DAOS 67 (Δ11); FI: WB 56.9 vs DAOS 78.2; Thumbnail: WB 56.6 vs DAOS 90.6; Fidelity: WB 42 vs DAOS 51"
+  },
+  "compositeScore": {
+    "leader": 47,
+    "daos": 62
+  }
+}
