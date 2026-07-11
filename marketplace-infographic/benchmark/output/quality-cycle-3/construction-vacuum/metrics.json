@@ -1,0 +1,41 @@
+{
+  "productId": "construction-vacuum",
+  "label": "Construction Vacuum",
+  "durationMs": 6823,
+  "finalPath": "/workspace/marketplace-infographic/public/generated/cmrfxsxrr0000jspcur6g96le-1783748676773.png",
+  "compositedPath": "/workspace/marketplace-infographic/public/merged/99b72dd94702f6dc-1783748676763.png",
+  "composited": true,
+  "foregroundIsolationApplied": true,
+  "foregroundIsolationDiagnostics": {
+    "applied": true,
+    "backgroundHalo": true,
+    "localContrast": true,
+    "edgeSeparation": true,
+    "version": "1.1.0-quality-cycle-3"
+  },
+  "metrics": {
+    "productAreaPct": 31,
+    "foregroundIsolation": 47.4,
+    "objectSharpness": 38.9,
+    "objectContrast": 96.5,
+    "localContrast": 38.8,
+    "visualWeightHero": 34.6,
+    "productDominanceScore": 63,
+    "commercialFidelityScore": 54.5
+  },
+  "metricsComposited": {
+    "productAreaPct": 31,
+    "foregroundIsolation": 83.2,
+    "objectSharpness": 37.9,
+    "objectContrast": 94,
+    "localContrast": 37.8,
+    "visualWeightHero": 34.3,
+    "productDominanceScore": 70,
+    "commercialFidelityScore": 63.5
+  },
+  "handlerFlags": [
+    null,
+    null
+  ],
+  "qualityScore": 85
+}
