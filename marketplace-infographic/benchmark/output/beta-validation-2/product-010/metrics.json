@@ -1,0 +1,70 @@
+{
+  "productId": 459854998,
+  "category": "power-tools",
+  "categoryLabel": "Электроинструмент",
+  "name": "Дрель ударная сетевая Бош",
+  "daosGenerated": true,
+  "genDurationMs": 21988,
+  "leader": {
+    "productDominance": 50,
+    "foregroundIsolation": 90.6,
+    "headlineVisualWeight": 27.3,
+    "primaryFocusRatio": 0.293,
+    "attentionHierarchyScore": 30.9,
+    "commercialFidelity": 46.5,
+    "visualWeightHero": 26.5,
+    "thumbnailReadability": 58.2,
+    "productVisualWeight": 26.5,
+    "typographyCompetition": 31.4,
+    "secondaryFocusRatio": 0.707,
+    "attentionDistribution": 0.311
+  },
+  "daos": {
+    "productDominance": 48,
+    "foregroundIsolation": 77,
+    "headlineVisualWeight": 14.9,
+    "primaryFocusRatio": 0.34,
+    "attentionHierarchyScore": 34.9,
+    "commercialFidelity": 34,
+    "visualWeightHero": 13.3,
+    "thumbnailReadability": 60.6,
+    "productVisualWeight": 13.3,
+    "typographyCompetition": 22.3,
+    "secondaryFocusRatio": 0.66,
+    "attentionDistribution": 0.263
+  },
+  "delta": {
+    "productDominance": -2,
+    "foregroundIsolation": -13.6,
+    "headlineVisualWeight": -12.4,
+    "primaryFocusRatio": 0.05,
+    "attentionHierarchyScore": 4,
+    "commercialFidelity": -12.5,
+    "visualWeightHero": -13.2,
+    "thumbnailReadability": 2.4,
+    "productVisualWeight": -13.2,
+    "typographyCompetition": -9.1,
+    "secondaryFocusRatio": -0.05,
+    "attentionDistribution": -0.05
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "draw",
+    "fasterRead": "draw",
+    "wouldOpen": "draw",
+    "overall": "wb",
+    "rationale": "Dominance: WB 50 vs DAOS 48 (Δ-2); FI: WB 90.6 vs DAOS 77; Thumbnail: WB 58.2 vs DAOS 60.6; Fidelity: WB 46.5 vs DAOS 34",
+    "gapClass": "Scene"
+  },
+  "failure": {
+    "slot": "product-010",
+    "productId": 459854998,
+    "category": "Электроинструмент",
+    "reason": "Background",
+    "detail": "Scene"
+  },
+  "compositeScore": {
+    "leader": 51,
+    "daos": 45.9
+  }
+}

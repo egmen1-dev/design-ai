@@ -1,0 +1,62 @@
+{
+  "productId": 430830019,
+  "category": "home",
+  "categoryLabel": "Дом",
+  "name": "Набор органайзеров для косметики в ящик из 8 шт",
+  "daosGenerated": true,
+  "genDurationMs": 14892,
+  "leader": {
+    "productDominance": 48,
+    "foregroundIsolation": 52.5,
+    "headlineVisualWeight": 22.2,
+    "primaryFocusRatio": 0.268,
+    "attentionHierarchyScore": 30.5,
+    "commercialFidelity": 33.5,
+    "visualWeightHero": 20.3,
+    "thumbnailReadability": 49.3,
+    "productVisualWeight": 20.3,
+    "typographyCompetition": 32.1,
+    "secondaryFocusRatio": 0.732,
+    "attentionDistribution": 0.272
+  },
+  "daos": {
+    "productDominance": 52,
+    "foregroundIsolation": 72.6,
+    "headlineVisualWeight": 21.3,
+    "primaryFocusRatio": 0.331,
+    "attentionHierarchyScore": 33.8,
+    "commercialFidelity": 38,
+    "visualWeightHero": 22.9,
+    "thumbnailReadability": 71.9,
+    "productVisualWeight": 22.9,
+    "typographyCompetition": 38.5,
+    "secondaryFocusRatio": 0.669,
+    "attentionDistribution": 0.277
+  },
+  "delta": {
+    "productDominance": 4,
+    "foregroundIsolation": 20.1,
+    "headlineVisualWeight": -0.9,
+    "primaryFocusRatio": 0.06,
+    "attentionHierarchyScore": 3.3,
+    "commercialFidelity": 4.5,
+    "visualWeightHero": 2.6,
+    "thumbnailReadability": 22.6,
+    "productVisualWeight": 2.6,
+    "typographyCompetition": 6.4,
+    "secondaryFocusRatio": -0.06,
+    "attentionDistribution": 0.01
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 48 vs DAOS 52 (Δ4); FI: WB 52.5 vs DAOS 72.6; Thumbnail: WB 49.3 vs DAOS 71.9; Fidelity: WB 33.5 vs DAOS 38"
+  },
+  "compositeScore": {
+    "leader": 40.3,
+    "daos": 49.5
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "productId": 952441785,
+  "category": "home-appliances",
+  "categoryLabel": "Бытовая техника",
+  "name": "Беспроводной вертикальный пылесос для дома",
+  "daosGenerated": true,
+  "genDurationMs": 10173,
+  "leader": {
+    "productDominance": 51,
+    "foregroundIsolation": 48.5,
+    "headlineVisualWeight": 15.2,
+    "primaryFocusRatio": 0.233,
+    "attentionHierarchyScore": 30,
+    "commercialFidelity": 40,
+    "visualWeightHero": 15.7,
+    "thumbnailReadability": 47.4,
+    "productVisualWeight": 15.7,
+    "typographyCompetition": 24.8
+  },
+  "daos": {
+    "productDominance": 56,
+    "foregroundIsolation": 70.1,
+    "headlineVisualWeight": 15.6,
+    "primaryFocusRatio": 0.349,
+    "attentionHierarchyScore": 36.2,
+    "commercialFidelity": 42.5,
+    "visualWeightHero": 20,
+    "thumbnailReadability": 77.9,
+    "productVisualWeight": 20,
+    "typographyCompetition": 30.6
+  },
+  "delta": {
+    "productDominance": 5,
+    "foregroundIsolation": 21.6,
+    "headlineVisualWeight": 0.4,
+    "primaryFocusRatio": 0.12,
+    "attentionHierarchyScore": 6.2,
+    "commercialFidelity": 2.5,
+    "visualWeightHero": 4.3,
+    "thumbnailReadability": 30.5,
+    "productVisualWeight": 4.3,
+    "typographyCompetition": 5.8
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 51 vs DAOS 56 (Δ5); FI: WB 48.5 vs DAOS 70.1; Thumbnail: WB 47.4 vs DAOS 77.9; Fidelity: WB 40 vs DAOS 42.5"
+  },
+  "compositeScore": {
+    "leader": 41.5,
+    "daos": 52.3
+  }
+}

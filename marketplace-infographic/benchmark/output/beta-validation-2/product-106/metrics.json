@@ -1,0 +1,62 @@
+{
+  "productId": 307229408,
+  "category": "home-appliances",
+  "categoryLabel": "Бытовая техника",
+  "name": "Пылесос вертикальный мощный",
+  "daosGenerated": true,
+  "genDurationMs": 17730,
+  "leader": {
+    "productDominance": 36,
+    "foregroundIsolation": 46.9,
+    "headlineVisualWeight": 28.4,
+    "primaryFocusRatio": 0.267,
+    "attentionHierarchyScore": 30.9,
+    "commercialFidelity": 22,
+    "visualWeightHero": 15.7,
+    "thumbnailReadability": 48.3,
+    "productVisualWeight": 15.7,
+    "typographyCompetition": 36.4,
+    "secondaryFocusRatio": 0.733,
+    "attentionDistribution": 0.195
+  },
+  "daos": {
+    "productDominance": 44,
+    "foregroundIsolation": 51.8,
+    "headlineVisualWeight": 11.1,
+    "primaryFocusRatio": 0.287,
+    "attentionHierarchyScore": 33.4,
+    "commercialFidelity": 30.5,
+    "visualWeightHero": 8.7,
+    "thumbnailReadability": 57.7,
+    "productVisualWeight": 8.7,
+    "typographyCompetition": 18.2,
+    "secondaryFocusRatio": 0.713,
+    "attentionDistribution": 0.229
+  },
+  "delta": {
+    "productDominance": 8,
+    "foregroundIsolation": 4.9,
+    "headlineVisualWeight": -17.3,
+    "primaryFocusRatio": 0.02,
+    "attentionHierarchyScore": 2.5,
+    "commercialFidelity": 8.5,
+    "visualWeightHero": -7,
+    "thumbnailReadability": 9.4,
+    "productVisualWeight": -7,
+    "typographyCompetition": -18.2,
+    "secondaryFocusRatio": -0.02,
+    "attentionDistribution": 0.03
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 36 vs DAOS 44 (Δ8); FI: WB 46.9 vs DAOS 51.8; Thumbnail: WB 48.3 vs DAOS 57.7; Fidelity: WB 22 vs DAOS 30.5"
+  },
+  "compositeScore": {
+    "leader": 32.7,
+    "daos": 39.4
+  }
+}

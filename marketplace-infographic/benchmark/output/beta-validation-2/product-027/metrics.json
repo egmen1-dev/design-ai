@@ -1,0 +1,62 @@
+{
+  "productId": 313811132,
+  "category": "construction",
+  "categoryLabel": "Строительство",
+  "name": "Перфоратор электрический ударный в кейсе 1000 Вт",
+  "daosGenerated": true,
+  "genDurationMs": 17554,
+  "leader": {
+    "productDominance": 42,
+    "foregroundIsolation": 46,
+    "headlineVisualWeight": 27.9,
+    "primaryFocusRatio": 0.273,
+    "attentionHierarchyScore": 30.3,
+    "commercialFidelity": 28,
+    "visualWeightHero": 20.9,
+    "thumbnailReadability": 42.9,
+    "productVisualWeight": 20.9,
+    "typographyCompetition": 45.8,
+    "secondaryFocusRatio": 0.727,
+    "attentionDistribution": 0.221
+  },
+  "daos": {
+    "productDominance": 60,
+    "foregroundIsolation": 45.2,
+    "headlineVisualWeight": 15.2,
+    "primaryFocusRatio": 0.394,
+    "attentionHierarchyScore": 39.7,
+    "commercialFidelity": 46.5,
+    "visualWeightHero": 24.3,
+    "thumbnailReadability": 52.6,
+    "productVisualWeight": 24.3,
+    "typographyCompetition": 30.5,
+    "secondaryFocusRatio": 0.606,
+    "attentionDistribution": 0.347
+  },
+  "delta": {
+    "productDominance": 18,
+    "foregroundIsolation": -0.8,
+    "headlineVisualWeight": -12.7,
+    "primaryFocusRatio": 0.12,
+    "attentionHierarchyScore": 9.4,
+    "commercialFidelity": 18.5,
+    "visualWeightHero": 3.4,
+    "thumbnailReadability": 9.7,
+    "productVisualWeight": 3.4,
+    "typographyCompetition": -15.3,
+    "secondaryFocusRatio": -0.12,
+    "attentionDistribution": 0.13
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 42 vs DAOS 60 (Δ18); FI: WB 46 vs DAOS 45.2; Thumbnail: WB 42.9 vs DAOS 52.6; Fidelity: WB 28 vs DAOS 46.5"
+  },
+  "compositeScore": {
+    "leader": 35.3,
+    "daos": 47.6
+  }
+}

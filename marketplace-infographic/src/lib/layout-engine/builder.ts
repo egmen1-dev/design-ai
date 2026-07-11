@@ -7,6 +7,10 @@ import {
   PLAQUE_WIDTH_MAX_PCT,
   PRODUCT_AREA_MAX,
   PRODUCT_AREA_MIN,
+  PRODUCT_FINAL_HEIGHT_MAX_PCT,
+  PRODUCT_FINAL_HEIGHT_MIN_PCT,
+  PRODUCT_FINAL_WIDTH_MAX_PCT,
+  PRODUCT_FINAL_WIDTH_MIN_PCT,
   PRODUCT_ROTATION_MAX,
   fontPxToSizePct,
 } from "./constants";
@@ -74,8 +78,8 @@ export function buildLayoutFromTemplate(
   if (area > PRODUCT_AREA_MAX) {
     const k = Math.sqrt(PRODUCT_AREA_MAX / area);
   }
-  const finalW = clampPct(productW, 55, 72);
-  const finalH = clampPct(productH, 60, 85);
+  const finalW = clampPct(productW, PRODUCT_FINAL_WIDTH_MIN_PCT, PRODUCT_FINAL_WIDTH_MAX_PCT);
+  const finalH = clampPct(productH, PRODUCT_FINAL_HEIGHT_MIN_PCT, PRODUCT_FINAL_HEIGHT_MAX_PCT);
 
   const centerX = template.productCenterX;
   const centerY =

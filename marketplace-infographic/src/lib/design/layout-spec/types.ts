@@ -32,6 +32,29 @@ export type VisualWeightMap = {
   background: number;
 };
 
+export type PrimaryObjectPreference = "product" | string;
+
+export type BackgroundPalettePreference =
+  | "cool_neutral"
+  | "green_neutral"
+  | "light_neutral"
+  | "medium_contrast";
+
+export type ScenePreference =
+  | "industrial_technical"
+  | "outdoor_natural"
+  | "light_modern"
+  | "commercial_studio";
+
+export type CommercialLayoutDiagnostics = {
+  commercialIntentReceived: boolean;
+  commercialIntentApplied: string[];
+  commercialIntentIgnored: string[];
+  commercialIntentReason: Record<string, string>;
+  commercialIntegrationVersion: string;
+  commercialDecisionId: string;
+};
+
 export type LayoutSpec = {
   /** v16.7 — Composition Director template */
   compositionTemplateId?: CompositionTemplateId;
@@ -44,6 +67,26 @@ export type LayoutSpec = {
   heroPosition: HeroPosition;
   /** Target product area % (55–75) */
   heroScale: number;
+  /** Explicit product area % mirror of heroScale when commercial intent is applied */
+  productAreaPct?: number;
+  /** Sprint 8C — reachable product area % for fidelity (current layout) */
+  reachableProductAreaPct?: number;
+  /** Sprint 8C — aspirational EKB target % (not applied to compositor) */
+  aspirationalProductAreaPct?: number;
+  /** Commercial Genome — dominant object preference */
+  primaryObject?: PrimaryObjectPreference;
+  /** Commercial Genome — max benefit/characteristic lines */
+  maxCharacteristics?: number;
+  /** Commercial Genome — headline typography strategy */
+  typographyStrategy?: string;
+  /** Commercial Genome — badge/icon ceiling */
+  maxBadges?: number;
+  /** Commercial Genome — background palette separation intent */
+  backgroundPalettePreference?: BackgroundPalettePreference;
+  /** Commercial Genome — scene/environment preference */
+  scenePreference?: ScenePreference;
+  /** Commercial Genome → Layout integration diagnostics (layout runtime owned) */
+  commercialLayout?: CommercialLayoutDiagnostics;
   headlineArea: TextAreaSide;
   benefitsArea: BenefitsArea;
   ctaArea: CtaArea;

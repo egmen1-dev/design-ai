@@ -1,0 +1,62 @@
+{
+  "productId": 409958399,
+  "category": "home-appliances",
+  "categoryLabel": "Бытовая техника",
+  "name": "Вертикальный проводной пылесос 3в1 мощный для дома и ковров",
+  "daosGenerated": true,
+  "genDurationMs": 17107,
+  "leader": {
+    "productDominance": 49,
+    "foregroundIsolation": 53.2,
+    "headlineVisualWeight": 18.7,
+    "primaryFocusRatio": 0.296,
+    "attentionHierarchyScore": 32.2,
+    "commercialFidelity": 35,
+    "visualWeightHero": 18,
+    "thumbnailReadability": 50.3,
+    "productVisualWeight": 18,
+    "typographyCompetition": 30.4,
+    "secondaryFocusRatio": 0.704,
+    "attentionDistribution": 0.268
+  },
+  "daos": {
+    "productDominance": 43,
+    "foregroundIsolation": 60.1,
+    "headlineVisualWeight": 15.9,
+    "primaryFocusRatio": 0.36,
+    "attentionHierarchyScore": 35.9,
+    "commercialFidelity": 29.5,
+    "visualWeightHero": 11.9,
+    "thumbnailReadability": 53.1,
+    "productVisualWeight": 11.9,
+    "typographyCompetition": 19.3,
+    "secondaryFocusRatio": 0.64,
+    "attentionDistribution": 0.253
+  },
+  "delta": {
+    "productDominance": -6,
+    "foregroundIsolation": 6.9,
+    "headlineVisualWeight": -2.8,
+    "primaryFocusRatio": 0.06,
+    "attentionHierarchyScore": 3.7,
+    "commercialFidelity": -5.5,
+    "visualWeightHero": -6.1,
+    "thumbnailReadability": 2.8,
+    "productVisualWeight": -6.1,
+    "typographyCompetition": -11.1,
+    "secondaryFocusRatio": -0.06,
+    "attentionDistribution": -0.02
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "draw",
+    "fasterRead": "draw",
+    "wouldOpen": "draw",
+    "overall": "draw",
+    "rationale": "Dominance: WB 49 vs DAOS 43 (Δ-6); FI: WB 53.2 vs DAOS 60.1; Thumbnail: WB 50.3 vs DAOS 53.1; Fidelity: WB 35 vs DAOS 29.5"
+  },
+  "compositeScore": {
+    "leader": 41.3,
+    "daos": 39.8
+  }
+}

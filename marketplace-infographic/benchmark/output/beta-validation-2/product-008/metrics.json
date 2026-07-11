@@ -1,0 +1,62 @@
+{
+  "productId": 343369730,
+  "category": "power-tools",
+  "categoryLabel": "Электроинструмент",
+  "name": "Дрель ударная Мастер МСУ9-16-2РЭ М",
+  "daosGenerated": true,
+  "genDurationMs": 14764,
+  "leader": {
+    "productDominance": 53,
+    "foregroundIsolation": 81.5,
+    "headlineVisualWeight": 12.7,
+    "primaryFocusRatio": 0.372,
+    "attentionHierarchyScore": 36.8,
+    "commercialFidelity": 39.5,
+    "visualWeightHero": 14.2,
+    "thumbnailReadability": 77.7,
+    "productVisualWeight": 14.2,
+    "typographyCompetition": 20.6,
+    "secondaryFocusRatio": 0.628,
+    "attentionDistribution": 0.299
+  },
+  "daos": {
+    "productDominance": 67,
+    "foregroundIsolation": 78.7,
+    "headlineVisualWeight": 10.8,
+    "primaryFocusRatio": 0.502,
+    "attentionHierarchyScore": 45.5,
+    "commercialFidelity": 51,
+    "visualWeightHero": 22.3,
+    "thumbnailReadability": 75.8,
+    "productVisualWeight": 22.3,
+    "typographyCompetition": 18.4,
+    "secondaryFocusRatio": 0.498,
+    "attentionDistribution": 0.433
+  },
+  "delta": {
+    "productDominance": 14,
+    "foregroundIsolation": -2.8,
+    "headlineVisualWeight": -1.9,
+    "primaryFocusRatio": 0.13,
+    "attentionHierarchyScore": 8.7,
+    "commercialFidelity": 11.5,
+    "visualWeightHero": 8.1,
+    "thumbnailReadability": -1.9,
+    "productVisualWeight": 8.1,
+    "typographyCompetition": -2.2,
+    "secondaryFocusRatio": -0.13,
+    "attentionDistribution": 0.13
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "draw",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 53 vs DAOS 67 (Δ14); FI: WB 81.5 vs DAOS 78.7; Thumbnail: WB 77.7 vs DAOS 75.8; Fidelity: WB 39.5 vs DAOS 51"
+  },
+  "compositeScore": {
+    "leader": 52.1,
+    "daos": 59.7
+  }
+}

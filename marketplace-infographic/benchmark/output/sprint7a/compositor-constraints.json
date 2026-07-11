@@ -1,0 +1,1690 @@
+{
+  "sprint": "DAOS Product Sprint 7A — Compositor Constraints Investigation",
+  "timestamp": "2026-07-09T15:44:50.435Z",
+  "readOnly": true,
+  "codeMutations": false,
+  "commercialTargetPct": 55,
+  "productionConstants": {
+    "canvas": {
+      "width": 900,
+      "height": 1200
+    },
+    "PRODUCT_MAX_WIDTH_PX": 612,
+    "PRODUCT_TARGET_MAX_HEIGHT_PX": 696,
+    "PRODUCT_ALPHA_MAX_WIDTH_PX": 504,
+    "PRODUCT_ALPHA_MAX_HEIGHT_PX": 600,
+    "PRODUCT_SIDE_MARGIN_PX": 90,
+    "PRODUCT_BOTTOM_PAD_PX": 60,
+    "HEADER_RESERVE_PX": 240,
+    "canvasMaxW": 612,
+    "canvasMaxH": 696,
+    "canvasMaxAreaPct": 39.4,
+    "alphaMaxAreaPct": 28,
+    "usableCanvasAreaPct": 60
+  },
+  "pipelineMap": [
+    {
+      "stage": "resolveLayoutObjectScale",
+      "affectsArea": true,
+      "source": "commercial-layout-propagation.ts"
+    },
+    {
+      "stage": "computeMaxProductSize",
+      "affectsArea": true,
+      "source": "commercial-calibration.ts / scene-compositor.ts"
+    },
+    {
+      "stage": "prepareProductLayer",
+      "affectsArea": true,
+      "source": "scene-compositor.ts — clamp to canvasMax"
+    },
+    {
+      "stage": "fitProductWithSafePlacement",
+      "affectsArea": true,
+      "source": "alpha-fit.ts"
+    },
+    {
+      "stage": "PRODUCT_ALPHA_MAX bounds",
+      "affectsArea": true,
+      "source": "product-render-policy.ts"
+    },
+    {
+      "stage": "resolveVerticalTop / HEADER_RESERVE",
+      "affectsArea": false,
+      "source": "position only"
+    },
+    {
+      "stage": "shadow/reflection composite",
+      "affectsArea": false,
+      "source": "scene-compositor.ts"
+    },
+    {
+      "stage": "HTML typography overlay",
+      "affectsArea": false,
+      "source": "puppeteer post-pass"
+    }
+  ],
+  "constraintMatrix": [
+    {
+      "constraint": "computeMaxProductSize / scaleBoost",
+      "limitsProductArea": true,
+      "type": "Implementation Detail",
+      "reason": "zoneW×scaleBoost capped by canvas policy",
+      "canBeRelaxed": true,
+      "risk": "Low — calibration already expanded range"
+    },
+    {
+      "constraint": "PRODUCT_MAX_WIDTH_PX (68%)",
+      "limitsProductArea": true,
+      "type": "Historical Constant",
+      "reason": "product-render-policy.ts",
+      "canBeRelaxed": true,
+      "risk": "Medium — product may crowd headline"
+    },
+    {
+      "constraint": "PRODUCT_TARGET_MAX_HEIGHT_PX (58%)",
+      "limitsProductArea": true,
+      "type": "Historical Constant",
+      "reason": "product-render-policy.ts",
+      "canBeRelaxed": true,
+      "risk": "Medium — may overlap header reserve"
+    },
+    {
+      "constraint": "HEADER_RESERVE_PX (20%)",
+      "limitsProductArea": true,
+      "type": "Marketplace Requirement",
+      "reason": "Typography reserved zone — resolveVerticalTop floor",
+      "canBeRelaxed": "Partial",
+      "risk": "High — WB headline readability"
+    },
+    {
+      "constraint": "PRODUCT_SIDE_MARGIN_PX (10%)",
+      "limitsProductArea": true,
+      "type": "Safety Constraint",
+      "reason": "fitProductWithSafePlacement horizontal inset",
+      "canBeRelaxed": true,
+      "risk": "Low–Medium"
+    },
+    {
+      "constraint": "PRODUCT_ALPHA_MAX (56%×50%)",
+      "limitsProductArea": true,
+      "type": "Hard Constraint",
+      "reason": "Stricter than PRODUCT_MAX — primary post-prepare shrink",
+      "canBeRelaxed": true,
+      "risk": "Low if aligned to PRODUCT_MAX"
+    },
+    {
+      "constraint": "fitProductByAlphaBounds ×0.9",
+      "limitsProductArea": true,
+      "type": "Safety Constraint",
+      "reason": "alpha-fit.ts line 26",
+      "canBeRelaxed": true,
+      "risk": "Low — edge clipping"
+    },
+    {
+      "constraint": "fitProductWithSafePlacement ×0.88 retry",
+      "limitsProductArea": true,
+      "type": "Safety Constraint",
+      "reason": "alpha-fit.ts — only when margins fail",
+      "canBeRelaxed": true,
+      "risk": "Low"
+    },
+    {
+      "constraint": "compositionLayout template zone",
+      "limitsProductArea": true,
+      "type": "Implementation Detail",
+      "reason": "layout-engine maxWidth/HeightPct",
+      "canBeRelaxed": true,
+      "risk": "Medium — text overlap"
+    },
+    {
+      "constraint": "HTML overlay / badges",
+      "limitsProductArea": false,
+      "type": "Soft Constraint",
+      "reason": "Rendered after merged PNG — separate layer",
+      "canBeRelaxed": "N/A",
+      "risk": "N/A"
+    },
+    {
+      "constraint": "Shadow / reflection padding",
+      "limitsProductArea": false,
+      "type": "Implementation Detail",
+      "reason": "Drawn outside product buffer",
+      "canBeRelaxed": "N/A",
+      "risk": "N/A"
+    }
+  ],
+  "maximums": {
+    "currentObservedPct": 24.3,
+    "theoreticalPolicyMaxPct": 39.4,
+    "theoreticalAlphaMaxPct": 28,
+    "theoreticalUsableCanvasPct": 60,
+    "saturatedAtObjectScale1": 24.3,
+    "gapToTarget55": 30.7
+  },
+  "minimalChange": {
+    "recommendation": "Align PRODUCT_ALPHA_MAX_* with PRODUCT_MAX_*",
+    "current": {
+      "PRODUCT_ALPHA_MAX_WIDTH_PX": 504,
+      "PRODUCT_ALPHA_MAX_HEIGHT_PX": 600,
+      "alphaMaxAreaPct": 28
+    },
+    "proposed": {
+      "PRODUCT_ALPHA_MAX_WIDTH_PX": 612,
+      "PRODUCT_ALPHA_MAX_HEIGHT_PX": 696,
+      "alphaMaxAreaPct": 39.4
+    },
+    "estimatedGainPct": 11.4,
+    "rationale": "Alpha caps (56%×50%=28%) bind after computeMaxProductSize allows 68%×58%=39%. Single constant alignment — no compositor rewrite.",
+    "alternatives": [
+      {
+        "change": "HEADER_RESERVE_PX 20% → 15%",
+        "estimatedGainPct": 3,
+        "risk": "High — headline overlap"
+      },
+      {
+        "change": "fitProductByAlphaBounds safety 0.9 → 0.95",
+        "estimatedGainPct": 2.5,
+        "risk": "Low"
+      },
+      {
+        "change": "PRODUCT_SIDE_MARGIN_PX 10% → 7%",
+        "estimatedGainPct": 2,
+        "risk": "Medium"
+      }
+    ]
+  },
+  "productResults": [
+    {
+      "productId": "battery-sprayer",
+      "targetAreaPct": 55,
+      "templateZoneAreaPct": 47.333999999999996,
+      "objectScaleCommercial": 0.55,
+      "theoretical": {
+        "theoreticalFullUsableCanvas": 60,
+        "theoreticalPolicyMaxBBox": 39.4,
+        "theoreticalAlphaCapMax": 28,
+        "theoreticalAlphaCapWith09Safety": 22.7,
+        "templateZoneFull": 47.4,
+        "practicalWbWithoutTextOverlap": 39.4,
+        "maxAfterRelaxingAlphaToMatchProductMax": 39.4
+      },
+      "experiments": [
+        {
+          "objectScale": 0.4,
+          "requestedAreaPct": 40,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 351,
+              "maxH": 534,
+              "areaPct": 17.4,
+              "blocker": "legacy_scaleBoost_zone_multiplier"
+            },
+            "prepareProductLayer": {
+              "width": 351,
+              "height": 439,
+              "areaPct": 14.3
+            },
+            "fitProductWithSafePlacement": {
+              "width": 351,
+              "height": 439,
+              "areaPct": 14.3,
+              "alphaBounds": {
+                "width": 299,
+                "height": 405,
+                "areaPct": 11.2
+              }
+            }
+          },
+          "allowedAreaPct": 17.4,
+          "realAreaPct": 14.3,
+          "realAlphaAreaPct": 11.2,
+          "blockingConstraint": "legacy_scaleBoost_zone_multiplier"
+        },
+        {
+          "objectScale": 0.5,
+          "requestedAreaPct": 50,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 351,
+              "maxH": 534,
+              "areaPct": 17.4,
+              "blocker": "legacy_scaleBoost_zone_multiplier"
+            },
+            "prepareProductLayer": {
+              "width": 351,
+              "height": 439,
+              "areaPct": 14.3
+            },
+            "fitProductWithSafePlacement": {
+              "width": 351,
+              "height": 439,
+              "areaPct": 14.3,
+              "alphaBounds": {
+                "width": 299,
+                "height": 405,
+                "areaPct": 11.2
+              }
+            }
+          },
+          "allowedAreaPct": 17.4,
+          "realAreaPct": 14.3,
+          "realAlphaAreaPct": 11.2,
+          "blockingConstraint": "legacy_scaleBoost_zone_multiplier"
+        },
+        {
+          "objectScale": 0.6,
+          "requestedAreaPct": 60,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 394,
+              "maxH": 599,
+              "areaPct": 21.9,
+              "blocker": "zone_geometry_template"
+            },
+            "prepareProductLayer": {
+              "width": 394,
+              "height": 493,
+              "areaPct": 18
+            },
+            "fitProductWithSafePlacement": {
+              "width": 394,
+              "height": 493,
+              "areaPct": 18,
+              "alphaBounds": {
+                "width": 336,
+                "height": 455,
+                "areaPct": 14.2
+              }
+            }
+          },
+          "allowedAreaPct": 21.9,
+          "realAreaPct": 18,
+          "realAlphaAreaPct": 14.2,
+          "blockingConstraint": "zone_geometry_template"
+        },
+        {
+          "objectScale": 0.7,
+          "requestedAreaPct": 70,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 436,
+              "maxH": 664,
+              "areaPct": 26.8,
+              "blocker": "zone_geometry_template"
+            },
+            "prepareProductLayer": {
+              "width": 436,
+              "height": 545,
+              "areaPct": 22
+            },
+            "fitProductWithSafePlacement": {
+              "width": 436,
+              "height": 545,
+              "areaPct": 22,
+              "alphaBounds": {
+                "width": 372,
+                "height": 503,
+                "areaPct": 17.3
+              }
+            }
+          },
+          "allowedAreaPct": 26.8,
+          "realAreaPct": 22,
+          "realAlphaAreaPct": 17.3,
+          "blockingConstraint": "zone_geometry_template"
+        },
+        {
+          "objectScale": 0.8,
+          "requestedAreaPct": 80,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 458,
+              "maxH": 696,
+              "areaPct": 29.5,
+              "blocker": "zone_geometry_template"
+            },
+            "prepareProductLayer": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3
+            },
+            "fitProductWithSafePlacement": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3,
+              "alphaBounds": {
+                "width": 390,
+                "height": 527,
+                "areaPct": 19
+              }
+            }
+          },
+          "allowedAreaPct": 29.5,
+          "realAreaPct": 24.3,
+          "realAlphaAreaPct": 19,
+          "blockingConstraint": "zone_geometry_template"
+        },
+        {
+          "objectScale": 0.9,
+          "requestedAreaPct": 90,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 458,
+              "maxH": 696,
+              "areaPct": 29.5,
+              "blocker": "zone_geometry_template"
+            },
+            "prepareProductLayer": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3
+            },
+            "fitProductWithSafePlacement": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3,
+              "alphaBounds": {
+                "width": 390,
+                "height": 527,
+                "areaPct": 19
+              }
+            }
+          },
+          "allowedAreaPct": 29.5,
+          "realAreaPct": 24.3,
+          "realAlphaAreaPct": 19,
+          "blockingConstraint": "zone_geometry_template"
+        },
+        {
+          "objectScale": 1,
+          "requestedAreaPct": 100,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 458,
+              "maxH": 696,
+              "areaPct": 29.5,
+              "blocker": "zone_geometry_template"
+            },
+            "prepareProductLayer": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3
+            },
+            "fitProductWithSafePlacement": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3,
+              "alphaBounds": {
+                "width": 390,
+                "height": 527,
+                "areaPct": 19
+              }
+            }
+          },
+          "allowedAreaPct": 29.5,
+          "realAreaPct": 24.3,
+          "realAlphaAreaPct": 19,
+          "blockingConstraint": "zone_geometry_template"
+        }
+      ],
+      "lossAttribution": {
+        "targetPct": 55,
+        "measuredTypicalPct": 29.5,
+        "totalEstimatedLossPct": 25.5,
+        "losses": [
+          {
+            "constraint": "header_reserve_20pct",
+            "type": "Marketplace Requirement",
+            "estimatedLossPct": 20,
+            "reason": "scene-compositor.ts HEADER_RESERVE_PX — typography zone"
+          },
+          {
+            "constraint": "side_margin_10pct",
+            "type": "Safety Constraint",
+            "estimatedLossPct": 20,
+            "reason": "PRODUCT_SIDE_MARGIN_PX — horizontal safe inset"
+          },
+          {
+            "constraint": "bottom_pad_5pct",
+            "type": "Safety Constraint",
+            "estimatedLossPct": 5,
+            "reason": "PRODUCT_BOTTOM_PAD_PX"
+          },
+          {
+            "constraint": "template_zone_scaleBoost",
+            "type": "Implementation Detail",
+            "estimatedLossPct": 25.5,
+            "reason": "zone 47.3% × scaleBoost² — computeMaxProductSize"
+          },
+          {
+            "constraint": "PRODUCT_MAX_WIDTH_HEIGHT_cap",
+            "type": "Hard Constraint",
+            "estimatedLossPct": 7.9,
+            "reason": "68%×58% policy caps in product-render-policy.ts"
+          },
+          {
+            "constraint": "PRODUCT_ALPHA_MAX_cap",
+            "type": "Hard Constraint",
+            "estimatedLossPct": 11.4,
+            "reason": "56%×50% alpha caps — stricter than PRODUCT_MAX_*"
+          },
+          {
+            "constraint": "alpha_fit_0.9_safety",
+            "type": "Implementation Detail",
+            "estimatedLossPct": 5.3,
+            "reason": "fitProductByAlphaBounds scale ×0.9"
+          },
+          {
+            "constraint": "html_overlay_typography",
+            "type": "Soft Constraint",
+            "estimatedLossPct": 0,
+            "reason": "HTML overlay applied post-composite — does not shrink compositor bbox"
+          },
+          {
+            "constraint": "shadow_reflection_layers",
+            "type": "Soft Constraint",
+            "estimatedLossPct": 0,
+            "reason": "Shadows composite beside product — no bbox shrink"
+          }
+        ],
+        "primaryBlocker": "PRODUCT_ALPHA_MAX_cap",
+        "note": "Alpha caps (28%) bind before canvas policy max (39%)"
+      }
+    },
+    {
+      "productId": "construction-vacuum",
+      "targetAreaPct": 55,
+      "templateZoneAreaPct": 38.367000000000004,
+      "objectScaleCommercial": 0.55,
+      "theoretical": {
+        "theoreticalFullUsableCanvas": 60,
+        "theoreticalPolicyMaxBBox": 39.4,
+        "theoreticalAlphaCapMax": 28,
+        "theoreticalAlphaCapWith09Safety": 22.7,
+        "templateZoneFull": 38.4,
+        "practicalWbWithoutTextOverlap": 39.4,
+        "maxAfterRelaxingAlphaToMatchProductMax": 39.4
+      },
+      "experiments": [
+        {
+          "objectScale": 0.4,
+          "requestedAreaPct": 40,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 316,
+              "maxH": 480,
+              "areaPct": 14,
+              "blocker": "legacy_scaleBoost_zone_multiplier"
+            },
+            "prepareProductLayer": {
+              "width": 316,
+              "height": 395,
+              "areaPct": 11.6
+            },
+            "fitProductWithSafePlacement": {
+              "width": 316,
+              "height": 395,
+              "areaPct": 11.6,
+              "alphaBounds": {
+                "width": 270,
+                "height": 365,
+                "areaPct": 9.1
+              }
+            }
+          },
+          "allowedAreaPct": 14,
+          "realAreaPct": 11.6,
+          "realAlphaAreaPct": 9.1,
+          "blockingConstraint": "legacy_scaleBoost_zone_multiplier"
+        },
+        {
+          "objectScale": 0.5,
+          "requestedAreaPct": 50,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 316,
+              "maxH": 480,
+              "areaPct": 14,
+              "blocker": "legacy_scaleBoost_zone_multiplier"
+            },
+            "prepareProductLayer": {
+              "width": 316,
+              "height": 395,
+              "areaPct": 11.6
+            },
+            "fitProductWithSafePlacement": {
+              "width": 316,
+              "height": 395,
+              "areaPct": 11.6,
+              "alphaBounds": {
+                "width": 270,
+                "height": 365,
+                "areaPct": 9.1
+              }
+            }
+          },
+          "allowedAreaPct": 14,
+          "realAreaPct": 11.6,
+          "realAlphaAreaPct": 9.1,
+          "blockingConstraint": "legacy_scaleBoost_zone_multiplier"
+        },
+        {
+          "objectScale": 0.6,
+          "requestedAreaPct": 60,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 373,
+              "maxH": 567,
+              "areaPct": 19.6,
+              "blocker": "zone_geometry_template"
+            },
+            "prepareProductLayer": {
+              "width": 373,
+              "height": 466,
+              "areaPct": 16.1
+            },
+            "fitProductWithSafePlacement": {
+              "width": 373,
+              "height": 466,
+              "areaPct": 16.1,
+              "alphaBounds": {
+                "width": 319,
+                "height": 430,
+                "areaPct": 12.7
+              }
+            }
+          },
+          "allowedAreaPct": 19.6,
+          "realAreaPct": 16.1,
+          "realAlphaAreaPct": 12.7,
+          "blockingConstraint": "zone_geometry_template"
+        },
+        {
+          "objectScale": 0.7,
+          "requestedAreaPct": 70,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 429,
+              "maxH": 653,
+              "areaPct": 25.9,
+              "blocker": "zone_geometry_template"
+            },
+            "prepareProductLayer": {
+              "width": 429,
+              "height": 536,
+              "areaPct": 21.3
+            },
+            "fitProductWithSafePlacement": {
+              "width": 429,
+              "height": 536,
+              "areaPct": 21.3,
+              "alphaBounds": {
+                "width": 365,
+                "height": 494,
+                "areaPct": 16.7
+              }
+            }
+          },
+          "allowedAreaPct": 25.9,
+          "realAreaPct": 21.3,
+          "realAlphaAreaPct": 16.7,
+          "blockingConstraint": "zone_geometry_template"
+        },
+        {
+          "objectScale": 0.8,
+          "requestedAreaPct": 80,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 458,
+              "maxH": 696,
+              "areaPct": 29.5,
+              "blocker": "zone_geometry_template"
+            },
+            "prepareProductLayer": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3
+            },
+            "fitProductWithSafePlacement": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3,
+              "alphaBounds": {
+                "width": 390,
+                "height": 527,
+                "areaPct": 19
+              }
+            }
+          },
+          "allowedAreaPct": 29.5,
+          "realAreaPct": 24.3,
+          "realAlphaAreaPct": 19,
+          "blockingConstraint": "zone_geometry_template"
+        },
+        {
+          "objectScale": 0.9,
+          "requestedAreaPct": 90,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 458,
+              "maxH": 696,
+              "areaPct": 29.5,
+              "blocker": "zone_geometry_template"
+            },
+            "prepareProductLayer": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3
+            },
+            "fitProductWithSafePlacement": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3,
+              "alphaBounds": {
+                "width": 390,
+                "height": 527,
+                "areaPct": 19
+              }
+            }
+          },
+          "allowedAreaPct": 29.5,
+          "realAreaPct": 24.3,
+          "realAlphaAreaPct": 19,
+          "blockingConstraint": "zone_geometry_template"
+        },
+        {
+          "objectScale": 1,
+          "requestedAreaPct": 100,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 458,
+              "maxH": 696,
+              "areaPct": 29.5,
+              "blocker": "zone_geometry_template"
+            },
+            "prepareProductLayer": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3
+            },
+            "fitProductWithSafePlacement": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3,
+              "alphaBounds": {
+                "width": 390,
+                "height": 527,
+                "areaPct": 19
+              }
+            }
+          },
+          "allowedAreaPct": 29.5,
+          "realAreaPct": 24.3,
+          "realAlphaAreaPct": 19,
+          "blockingConstraint": "zone_geometry_template"
+        }
+      ],
+      "lossAttribution": {
+        "targetPct": 55,
+        "measuredTypicalPct": 29.5,
+        "totalEstimatedLossPct": 25.5,
+        "losses": [
+          {
+            "constraint": "header_reserve_20pct",
+            "type": "Marketplace Requirement",
+            "estimatedLossPct": 20,
+            "reason": "scene-compositor.ts HEADER_RESERVE_PX — typography zone"
+          },
+          {
+            "constraint": "side_margin_10pct",
+            "type": "Safety Constraint",
+            "estimatedLossPct": 20,
+            "reason": "PRODUCT_SIDE_MARGIN_PX — horizontal safe inset"
+          },
+          {
+            "constraint": "bottom_pad_5pct",
+            "type": "Safety Constraint",
+            "estimatedLossPct": 5,
+            "reason": "PRODUCT_BOTTOM_PAD_PX"
+          },
+          {
+            "constraint": "template_zone_scaleBoost",
+            "type": "Implementation Detail",
+            "estimatedLossPct": 25.5,
+            "reason": "zone 38.4% × scaleBoost² — computeMaxProductSize"
+          },
+          {
+            "constraint": "PRODUCT_MAX_WIDTH_HEIGHT_cap",
+            "type": "Hard Constraint",
+            "estimatedLossPct": -1,
+            "reason": "68%×58% policy caps in product-render-policy.ts"
+          },
+          {
+            "constraint": "PRODUCT_ALPHA_MAX_cap",
+            "type": "Hard Constraint",
+            "estimatedLossPct": 11.4,
+            "reason": "56%×50% alpha caps — stricter than PRODUCT_MAX_*"
+          },
+          {
+            "constraint": "alpha_fit_0.9_safety",
+            "type": "Implementation Detail",
+            "estimatedLossPct": 5.3,
+            "reason": "fitProductByAlphaBounds scale ×0.9"
+          },
+          {
+            "constraint": "html_overlay_typography",
+            "type": "Soft Constraint",
+            "estimatedLossPct": 0,
+            "reason": "HTML overlay applied post-composite — does not shrink compositor bbox"
+          },
+          {
+            "constraint": "shadow_reflection_layers",
+            "type": "Soft Constraint",
+            "estimatedLossPct": 0,
+            "reason": "Shadows composite beside product — no bbox shrink"
+          }
+        ],
+        "primaryBlocker": "PRODUCT_ALPHA_MAX_cap",
+        "note": "Alpha caps (28%) bind before canvas policy max (39%)"
+      }
+    },
+    {
+      "productId": "impact-drill",
+      "targetAreaPct": 55,
+      "templateZoneAreaPct": 38.367000000000004,
+      "objectScaleCommercial": 0.55,
+      "theoretical": {
+        "theoreticalFullUsableCanvas": 60,
+        "theoreticalPolicyMaxBBox": 39.4,
+        "theoreticalAlphaCapMax": 28,
+        "theoreticalAlphaCapWith09Safety": 22.7,
+        "templateZoneFull": 38.4,
+        "practicalWbWithoutTextOverlap": 39.4,
+        "maxAfterRelaxingAlphaToMatchProductMax": 39.4
+      },
+      "experiments": [
+        {
+          "objectScale": 0.4,
+          "requestedAreaPct": 40,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 316,
+              "maxH": 480,
+              "areaPct": 14,
+              "blocker": "legacy_scaleBoost_zone_multiplier"
+            },
+            "prepareProductLayer": {
+              "width": 316,
+              "height": 395,
+              "areaPct": 11.6
+            },
+            "fitProductWithSafePlacement": {
+              "width": 316,
+              "height": 395,
+              "areaPct": 11.6,
+              "alphaBounds": {
+                "width": 270,
+                "height": 365,
+                "areaPct": 9.1
+              }
+            }
+          },
+          "allowedAreaPct": 14,
+          "realAreaPct": 11.6,
+          "realAlphaAreaPct": 9.1,
+          "blockingConstraint": "legacy_scaleBoost_zone_multiplier"
+        },
+        {
+          "objectScale": 0.5,
+          "requestedAreaPct": 50,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 316,
+              "maxH": 480,
+              "areaPct": 14,
+              "blocker": "legacy_scaleBoost_zone_multiplier"
+            },
+            "prepareProductLayer": {
+              "width": 316,
+              "height": 395,
+              "areaPct": 11.6
+            },
+            "fitProductWithSafePlacement": {
+              "width": 316,
+              "height": 395,
+              "areaPct": 11.6,
+              "alphaBounds": {
+                "width": 270,
+                "height": 365,
+                "areaPct": 9.1
+              }
+            }
+          },
+          "allowedAreaPct": 14,
+          "realAreaPct": 11.6,
+          "realAlphaAreaPct": 9.1,
+          "blockingConstraint": "legacy_scaleBoost_zone_multiplier"
+        },
+        {
+          "objectScale": 0.6,
+          "requestedAreaPct": 60,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 373,
+              "maxH": 567,
+              "areaPct": 19.6,
+              "blocker": "zone_geometry_template"
+            },
+            "prepareProductLayer": {
+              "width": 373,
+              "height": 466,
+              "areaPct": 16.1
+            },
+            "fitProductWithSafePlacement": {
+              "width": 373,
+              "height": 466,
+              "areaPct": 16.1,
+              "alphaBounds": {
+                "width": 319,
+                "height": 430,
+                "areaPct": 12.7
+              }
+            }
+          },
+          "allowedAreaPct": 19.6,
+          "realAreaPct": 16.1,
+          "realAlphaAreaPct": 12.7,
+          "blockingConstraint": "zone_geometry_template"
+        },
+        {
+          "objectScale": 0.7,
+          "requestedAreaPct": 70,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 429,
+              "maxH": 653,
+              "areaPct": 25.9,
+              "blocker": "zone_geometry_template"
+            },
+            "prepareProductLayer": {
+              "width": 429,
+              "height": 536,
+              "areaPct": 21.3
+            },
+            "fitProductWithSafePlacement": {
+              "width": 429,
+              "height": 536,
+              "areaPct": 21.3,
+              "alphaBounds": {
+                "width": 365,
+                "height": 494,
+                "areaPct": 16.7
+              }
+            }
+          },
+          "allowedAreaPct": 25.9,
+          "realAreaPct": 21.3,
+          "realAlphaAreaPct": 16.7,
+          "blockingConstraint": "zone_geometry_template"
+        },
+        {
+          "objectScale": 0.8,
+          "requestedAreaPct": 80,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 458,
+              "maxH": 696,
+              "areaPct": 29.5,
+              "blocker": "zone_geometry_template"
+            },
+            "prepareProductLayer": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3
+            },
+            "fitProductWithSafePlacement": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3,
+              "alphaBounds": {
+                "width": 390,
+                "height": 527,
+                "areaPct": 19
+              }
+            }
+          },
+          "allowedAreaPct": 29.5,
+          "realAreaPct": 24.3,
+          "realAlphaAreaPct": 19,
+          "blockingConstraint": "zone_geometry_template"
+        },
+        {
+          "objectScale": 0.9,
+          "requestedAreaPct": 90,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 458,
+              "maxH": 696,
+              "areaPct": 29.5,
+              "blocker": "zone_geometry_template"
+            },
+            "prepareProductLayer": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3
+            },
+            "fitProductWithSafePlacement": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3,
+              "alphaBounds": {
+                "width": 390,
+                "height": 527,
+                "areaPct": 19
+              }
+            }
+          },
+          "allowedAreaPct": 29.5,
+          "realAreaPct": 24.3,
+          "realAlphaAreaPct": 19,
+          "blockingConstraint": "zone_geometry_template"
+        },
+        {
+          "objectScale": 1,
+          "requestedAreaPct": 100,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 458,
+              "maxH": 696,
+              "areaPct": 29.5,
+              "blocker": "zone_geometry_template"
+            },
+            "prepareProductLayer": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3
+            },
+            "fitProductWithSafePlacement": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3,
+              "alphaBounds": {
+                "width": 390,
+                "height": 527,
+                "areaPct": 19
+              }
+            }
+          },
+          "allowedAreaPct": 29.5,
+          "realAreaPct": 24.3,
+          "realAlphaAreaPct": 19,
+          "blockingConstraint": "zone_geometry_template"
+        }
+      ],
+      "lossAttribution": {
+        "targetPct": 55,
+        "measuredTypicalPct": 29.5,
+        "totalEstimatedLossPct": 25.5,
+        "losses": [
+          {
+            "constraint": "header_reserve_20pct",
+            "type": "Marketplace Requirement",
+            "estimatedLossPct": 20,
+            "reason": "scene-compositor.ts HEADER_RESERVE_PX — typography zone"
+          },
+          {
+            "constraint": "side_margin_10pct",
+            "type": "Safety Constraint",
+            "estimatedLossPct": 20,
+            "reason": "PRODUCT_SIDE_MARGIN_PX — horizontal safe inset"
+          },
+          {
+            "constraint": "bottom_pad_5pct",
+            "type": "Safety Constraint",
+            "estimatedLossPct": 5,
+            "reason": "PRODUCT_BOTTOM_PAD_PX"
+          },
+          {
+            "constraint": "template_zone_scaleBoost",
+            "type": "Implementation Detail",
+            "estimatedLossPct": 25.5,
+            "reason": "zone 38.4% × scaleBoost² — computeMaxProductSize"
+          },
+          {
+            "constraint": "PRODUCT_MAX_WIDTH_HEIGHT_cap",
+            "type": "Hard Constraint",
+            "estimatedLossPct": -1,
+            "reason": "68%×58% policy caps in product-render-policy.ts"
+          },
+          {
+            "constraint": "PRODUCT_ALPHA_MAX_cap",
+            "type": "Hard Constraint",
+            "estimatedLossPct": 11.4,
+            "reason": "56%×50% alpha caps — stricter than PRODUCT_MAX_*"
+          },
+          {
+            "constraint": "alpha_fit_0.9_safety",
+            "type": "Implementation Detail",
+            "estimatedLossPct": 5.3,
+            "reason": "fitProductByAlphaBounds scale ×0.9"
+          },
+          {
+            "constraint": "html_overlay_typography",
+            "type": "Soft Constraint",
+            "estimatedLossPct": 0,
+            "reason": "HTML overlay applied post-composite — does not shrink compositor bbox"
+          },
+          {
+            "constraint": "shadow_reflection_layers",
+            "type": "Soft Constraint",
+            "estimatedLossPct": 0,
+            "reason": "Shadows composite beside product — no bbox shrink"
+          }
+        ],
+        "primaryBlocker": "PRODUCT_ALPHA_MAX_cap",
+        "note": "Alpha caps (28%) bind before canvas policy max (39%)"
+      }
+    },
+    {
+      "productId": "pressure-washer",
+      "targetAreaPct": 55,
+      "templateZoneAreaPct": 38.367000000000004,
+      "objectScaleCommercial": 0.55,
+      "theoretical": {
+        "theoreticalFullUsableCanvas": 60,
+        "theoreticalPolicyMaxBBox": 39.4,
+        "theoreticalAlphaCapMax": 28,
+        "theoreticalAlphaCapWith09Safety": 22.7,
+        "templateZoneFull": 38.4,
+        "practicalWbWithoutTextOverlap": 39.4,
+        "maxAfterRelaxingAlphaToMatchProductMax": 39.4
+      },
+      "experiments": [
+        {
+          "objectScale": 0.4,
+          "requestedAreaPct": 40,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 316,
+              "maxH": 480,
+              "areaPct": 14,
+              "blocker": "legacy_scaleBoost_zone_multiplier"
+            },
+            "prepareProductLayer": {
+              "width": 316,
+              "height": 395,
+              "areaPct": 11.6
+            },
+            "fitProductWithSafePlacement": {
+              "width": 316,
+              "height": 395,
+              "areaPct": 11.6,
+              "alphaBounds": {
+                "width": 270,
+                "height": 365,
+                "areaPct": 9.1
+              }
+            }
+          },
+          "allowedAreaPct": 14,
+          "realAreaPct": 11.6,
+          "realAlphaAreaPct": 9.1,
+          "blockingConstraint": "legacy_scaleBoost_zone_multiplier"
+        },
+        {
+          "objectScale": 0.5,
+          "requestedAreaPct": 50,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 316,
+              "maxH": 480,
+              "areaPct": 14,
+              "blocker": "legacy_scaleBoost_zone_multiplier"
+            },
+            "prepareProductLayer": {
+              "width": 316,
+              "height": 395,
+              "areaPct": 11.6
+            },
+            "fitProductWithSafePlacement": {
+              "width": 316,
+              "height": 395,
+              "areaPct": 11.6,
+              "alphaBounds": {
+                "width": 270,
+                "height": 365,
+                "areaPct": 9.1
+              }
+            }
+          },
+          "allowedAreaPct": 14,
+          "realAreaPct": 11.6,
+          "realAlphaAreaPct": 9.1,
+          "blockingConstraint": "legacy_scaleBoost_zone_multiplier"
+        },
+        {
+          "objectScale": 0.6,
+          "requestedAreaPct": 60,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 373,
+              "maxH": 567,
+              "areaPct": 19.6,
+              "blocker": "zone_geometry_template"
+            },
+            "prepareProductLayer": {
+              "width": 373,
+              "height": 466,
+              "areaPct": 16.1
+            },
+            "fitProductWithSafePlacement": {
+              "width": 373,
+              "height": 466,
+              "areaPct": 16.1,
+              "alphaBounds": {
+                "width": 319,
+                "height": 430,
+                "areaPct": 12.7
+              }
+            }
+          },
+          "allowedAreaPct": 19.6,
+          "realAreaPct": 16.1,
+          "realAlphaAreaPct": 12.7,
+          "blockingConstraint": "zone_geometry_template"
+        },
+        {
+          "objectScale": 0.7,
+          "requestedAreaPct": 70,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 429,
+              "maxH": 653,
+              "areaPct": 25.9,
+              "blocker": "zone_geometry_template"
+            },
+            "prepareProductLayer": {
+              "width": 429,
+              "height": 536,
+              "areaPct": 21.3
+            },
+            "fitProductWithSafePlacement": {
+              "width": 429,
+              "height": 536,
+              "areaPct": 21.3,
+              "alphaBounds": {
+                "width": 365,
+                "height": 494,
+                "areaPct": 16.7
+              }
+            }
+          },
+          "allowedAreaPct": 25.9,
+          "realAreaPct": 21.3,
+          "realAlphaAreaPct": 16.7,
+          "blockingConstraint": "zone_geometry_template"
+        },
+        {
+          "objectScale": 0.8,
+          "requestedAreaPct": 80,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 458,
+              "maxH": 696,
+              "areaPct": 29.5,
+              "blocker": "zone_geometry_template"
+            },
+            "prepareProductLayer": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3
+            },
+            "fitProductWithSafePlacement": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3,
+              "alphaBounds": {
+                "width": 390,
+                "height": 527,
+                "areaPct": 19
+              }
+            }
+          },
+          "allowedAreaPct": 29.5,
+          "realAreaPct": 24.3,
+          "realAlphaAreaPct": 19,
+          "blockingConstraint": "zone_geometry_template"
+        },
+        {
+          "objectScale": 0.9,
+          "requestedAreaPct": 90,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 458,
+              "maxH": 696,
+              "areaPct": 29.5,
+              "blocker": "zone_geometry_template"
+            },
+            "prepareProductLayer": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3
+            },
+            "fitProductWithSafePlacement": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3,
+              "alphaBounds": {
+                "width": 390,
+                "height": 527,
+                "areaPct": 19
+              }
+            }
+          },
+          "allowedAreaPct": 29.5,
+          "realAreaPct": 24.3,
+          "realAlphaAreaPct": 19,
+          "blockingConstraint": "zone_geometry_template"
+        },
+        {
+          "objectScale": 1,
+          "requestedAreaPct": 100,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 458,
+              "maxH": 696,
+              "areaPct": 29.5,
+              "blocker": "zone_geometry_template"
+            },
+            "prepareProductLayer": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3
+            },
+            "fitProductWithSafePlacement": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3,
+              "alphaBounds": {
+                "width": 390,
+                "height": 527,
+                "areaPct": 19
+              }
+            }
+          },
+          "allowedAreaPct": 29.5,
+          "realAreaPct": 24.3,
+          "realAlphaAreaPct": 19,
+          "blockingConstraint": "zone_geometry_template"
+        }
+      ],
+      "lossAttribution": {
+        "targetPct": 55,
+        "measuredTypicalPct": 29.5,
+        "totalEstimatedLossPct": 25.5,
+        "losses": [
+          {
+            "constraint": "header_reserve_20pct",
+            "type": "Marketplace Requirement",
+            "estimatedLossPct": 20,
+            "reason": "scene-compositor.ts HEADER_RESERVE_PX — typography zone"
+          },
+          {
+            "constraint": "side_margin_10pct",
+            "type": "Safety Constraint",
+            "estimatedLossPct": 20,
+            "reason": "PRODUCT_SIDE_MARGIN_PX — horizontal safe inset"
+          },
+          {
+            "constraint": "bottom_pad_5pct",
+            "type": "Safety Constraint",
+            "estimatedLossPct": 5,
+            "reason": "PRODUCT_BOTTOM_PAD_PX"
+          },
+          {
+            "constraint": "template_zone_scaleBoost",
+            "type": "Implementation Detail",
+            "estimatedLossPct": 25.5,
+            "reason": "zone 38.4% × scaleBoost² — computeMaxProductSize"
+          },
+          {
+            "constraint": "PRODUCT_MAX_WIDTH_HEIGHT_cap",
+            "type": "Hard Constraint",
+            "estimatedLossPct": -1,
+            "reason": "68%×58% policy caps in product-render-policy.ts"
+          },
+          {
+            "constraint": "PRODUCT_ALPHA_MAX_cap",
+            "type": "Hard Constraint",
+            "estimatedLossPct": 11.4,
+            "reason": "56%×50% alpha caps — stricter than PRODUCT_MAX_*"
+          },
+          {
+            "constraint": "alpha_fit_0.9_safety",
+            "type": "Implementation Detail",
+            "estimatedLossPct": 5.3,
+            "reason": "fitProductByAlphaBounds scale ×0.9"
+          },
+          {
+            "constraint": "html_overlay_typography",
+            "type": "Soft Constraint",
+            "estimatedLossPct": 0,
+            "reason": "HTML overlay applied post-composite — does not shrink compositor bbox"
+          },
+          {
+            "constraint": "shadow_reflection_layers",
+            "type": "Soft Constraint",
+            "estimatedLossPct": 0,
+            "reason": "Shadows composite beside product — no bbox shrink"
+          }
+        ],
+        "primaryBlocker": "PRODUCT_ALPHA_MAX_cap",
+        "note": "Alpha caps (28%) bind before canvas policy max (39%)"
+      }
+    },
+    {
+      "productId": "home-humidifier",
+      "targetAreaPct": 55,
+      "templateZoneAreaPct": 47.333999999999996,
+      "objectScaleCommercial": 0.55,
+      "theoretical": {
+        "theoreticalFullUsableCanvas": 60,
+        "theoreticalPolicyMaxBBox": 39.4,
+        "theoreticalAlphaCapMax": 28,
+        "theoreticalAlphaCapWith09Safety": 22.7,
+        "templateZoneFull": 47.4,
+        "practicalWbWithoutTextOverlap": 39.4,
+        "maxAfterRelaxingAlphaToMatchProductMax": 39.4
+      },
+      "experiments": [
+        {
+          "objectScale": 0.4,
+          "requestedAreaPct": 40,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 351,
+              "maxH": 534,
+              "areaPct": 17.4,
+              "blocker": "legacy_scaleBoost_zone_multiplier"
+            },
+            "prepareProductLayer": {
+              "width": 351,
+              "height": 439,
+              "areaPct": 14.3
+            },
+            "fitProductWithSafePlacement": {
+              "width": 351,
+              "height": 439,
+              "areaPct": 14.3,
+              "alphaBounds": {
+                "width": 299,
+                "height": 405,
+                "areaPct": 11.2
+              }
+            }
+          },
+          "allowedAreaPct": 17.4,
+          "realAreaPct": 14.3,
+          "realAlphaAreaPct": 11.2,
+          "blockingConstraint": "legacy_scaleBoost_zone_multiplier"
+        },
+        {
+          "objectScale": 0.5,
+          "requestedAreaPct": 50,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 351,
+              "maxH": 534,
+              "areaPct": 17.4,
+              "blocker": "legacy_scaleBoost_zone_multiplier"
+            },
+            "prepareProductLayer": {
+              "width": 351,
+              "height": 439,
+              "areaPct": 14.3
+            },
+            "fitProductWithSafePlacement": {
+              "width": 351,
+              "height": 439,
+              "areaPct": 14.3,
+              "alphaBounds": {
+                "width": 299,
+                "height": 405,
+                "areaPct": 11.2
+              }
+            }
+          },
+          "allowedAreaPct": 17.4,
+          "realAreaPct": 14.3,
+          "realAlphaAreaPct": 11.2,
+          "blockingConstraint": "legacy_scaleBoost_zone_multiplier"
+        },
+        {
+          "objectScale": 0.6,
+          "requestedAreaPct": 60,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 394,
+              "maxH": 599,
+              "areaPct": 21.9,
+              "blocker": "zone_geometry_template"
+            },
+            "prepareProductLayer": {
+              "width": 394,
+              "height": 493,
+              "areaPct": 18
+            },
+            "fitProductWithSafePlacement": {
+              "width": 394,
+              "height": 493,
+              "areaPct": 18,
+              "alphaBounds": {
+                "width": 336,
+                "height": 455,
+                "areaPct": 14.2
+              }
+            }
+          },
+          "allowedAreaPct": 21.9,
+          "realAreaPct": 18,
+          "realAlphaAreaPct": 14.2,
+          "blockingConstraint": "zone_geometry_template"
+        },
+        {
+          "objectScale": 0.7,
+          "requestedAreaPct": 70,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 436,
+              "maxH": 664,
+              "areaPct": 26.8,
+              "blocker": "zone_geometry_template"
+            },
+            "prepareProductLayer": {
+              "width": 436,
+              "height": 545,
+              "areaPct": 22
+            },
+            "fitProductWithSafePlacement": {
+              "width": 436,
+              "height": 545,
+              "areaPct": 22,
+              "alphaBounds": {
+                "width": 372,
+                "height": 503,
+                "areaPct": 17.3
+              }
+            }
+          },
+          "allowedAreaPct": 26.8,
+          "realAreaPct": 22,
+          "realAlphaAreaPct": 17.3,
+          "blockingConstraint": "zone_geometry_template"
+        },
+        {
+          "objectScale": 0.8,
+          "requestedAreaPct": 80,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 458,
+              "maxH": 696,
+              "areaPct": 29.5,
+              "blocker": "zone_geometry_template"
+            },
+            "prepareProductLayer": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3
+            },
+            "fitProductWithSafePlacement": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3,
+              "alphaBounds": {
+                "width": 390,
+                "height": 527,
+                "areaPct": 19
+              }
+            }
+          },
+          "allowedAreaPct": 29.5,
+          "realAreaPct": 24.3,
+          "realAlphaAreaPct": 19,
+          "blockingConstraint": "zone_geometry_template"
+        },
+        {
+          "objectScale": 0.9,
+          "requestedAreaPct": 90,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 458,
+              "maxH": 696,
+              "areaPct": 29.5,
+              "blocker": "zone_geometry_template"
+            },
+            "prepareProductLayer": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3
+            },
+            "fitProductWithSafePlacement": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3,
+              "alphaBounds": {
+                "width": 390,
+                "height": 527,
+                "areaPct": 19
+              }
+            }
+          },
+          "allowedAreaPct": 29.5,
+          "realAreaPct": 24.3,
+          "realAlphaAreaPct": 19,
+          "blockingConstraint": "zone_geometry_template"
+        },
+        {
+          "objectScale": 1,
+          "requestedAreaPct": 100,
+          "stages": {
+            "computeMaxProductSize": {
+              "maxW": 458,
+              "maxH": 696,
+              "areaPct": 29.5,
+              "blocker": "zone_geometry_template"
+            },
+            "prepareProductLayer": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3
+            },
+            "fitProductWithSafePlacement": {
+              "width": 458,
+              "height": 573,
+              "areaPct": 24.3,
+              "alphaBounds": {
+                "width": 390,
+                "height": 527,
+                "areaPct": 19
+              }
+            }
+          },
+          "allowedAreaPct": 29.5,
+          "realAreaPct": 24.3,
+          "realAlphaAreaPct": 19,
+          "blockingConstraint": "zone_geometry_template"
+        }
+      ],
+      "lossAttribution": {
+        "targetPct": 55,
+        "measuredTypicalPct": 29.5,
+        "totalEstimatedLossPct": 25.5,
+        "losses": [
+          {
+            "constraint": "header_reserve_20pct",
+            "type": "Marketplace Requirement",
+            "estimatedLossPct": 20,
+            "reason": "scene-compositor.ts HEADER_RESERVE_PX — typography zone"
+          },
+          {
+            "constraint": "side_margin_10pct",
+            "type": "Safety Constraint",
+            "estimatedLossPct": 20,
+            "reason": "PRODUCT_SIDE_MARGIN_PX — horizontal safe inset"
+          },
+          {
+            "constraint": "bottom_pad_5pct",
+            "type": "Safety Constraint",
+            "estimatedLossPct": 5,
+            "reason": "PRODUCT_BOTTOM_PAD_PX"
+          },
+          {
+            "constraint": "template_zone_scaleBoost",
+            "type": "Implementation Detail",
+            "estimatedLossPct": 25.5,
+            "reason": "zone 47.3% × scaleBoost² — computeMaxProductSize"
+          },
+          {
+            "constraint": "PRODUCT_MAX_WIDTH_HEIGHT_cap",
+            "type": "Hard Constraint",
+            "estimatedLossPct": 7.9,
+            "reason": "68%×58% policy caps in product-render-policy.ts"
+          },
+          {
+            "constraint": "PRODUCT_ALPHA_MAX_cap",
+            "type": "Hard Constraint",
+            "estimatedLossPct": 11.4,
+            "reason": "56%×50% alpha caps — stricter than PRODUCT_MAX_*"
+          },
+          {
+            "constraint": "alpha_fit_0.9_safety",
+            "type": "Implementation Detail",
+            "estimatedLossPct": 5.3,
+            "reason": "fitProductByAlphaBounds scale ×0.9"
+          },
+          {
+            "constraint": "html_overlay_typography",
+            "type": "Soft Constraint",
+            "estimatedLossPct": 0,
+            "reason": "HTML overlay applied post-composite — does not shrink compositor bbox"
+          },
+          {
+            "constraint": "shadow_reflection_layers",
+            "type": "Soft Constraint",
+            "estimatedLossPct": 0,
+            "reason": "Shadows composite beside product — no bbox shrink"
+          }
+        ],
+        "primaryBlocker": "PRODUCT_ALPHA_MAX_cap",
+        "note": "Alpha caps (28%) bind before canvas policy max (39%)"
+      }
+    }
+  ],
+  "successCriteria": {
+    "rootCauseIdentified": true,
+    "constraintsFromExistingCompositor": true,
+    "noArchitectureChange": true,
+    "minimalChangeProposed": true
+  }
+}

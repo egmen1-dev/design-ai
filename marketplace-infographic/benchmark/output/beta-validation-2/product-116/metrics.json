@@ -1,0 +1,62 @@
+{
+  "productId": 493108370,
+  "category": "pressure-wash",
+  "categoryLabel": "Мойка",
+  "name": "Мойка высокого давления АМ-1800 на колесах 350 л ч, 58226",
+  "daosGenerated": true,
+  "genDurationMs": 17602,
+  "leader": {
+    "productDominance": 46,
+    "foregroundIsolation": 43.7,
+    "headlineVisualWeight": 30.3,
+    "primaryFocusRatio": 0.269,
+    "attentionHierarchyScore": 29.3,
+    "commercialFidelity": 40.5,
+    "visualWeightHero": 26.7,
+    "thumbnailReadability": 51.5,
+    "productVisualWeight": 26.7,
+    "typographyCompetition": 43.5,
+    "secondaryFocusRatio": 0.731,
+    "attentionDistribution": 0.266
+  },
+  "daos": {
+    "productDominance": 35,
+    "foregroundIsolation": 58.2,
+    "headlineVisualWeight": 15.7,
+    "primaryFocusRatio": 0.286,
+    "attentionHierarchyScore": 33.3,
+    "commercialFidelity": 21.5,
+    "visualWeightHero": 8.5,
+    "thumbnailReadability": 64.9,
+    "productVisualWeight": 8.5,
+    "typographyCompetition": 19.3,
+    "secondaryFocusRatio": 0.714,
+    "attentionDistribution": 0.195
+  },
+  "delta": {
+    "productDominance": -11,
+    "foregroundIsolation": 14.5,
+    "headlineVisualWeight": -14.6,
+    "primaryFocusRatio": 0.02,
+    "attentionHierarchyScore": 4,
+    "commercialFidelity": -19,
+    "visualWeightHero": -18.2,
+    "thumbnailReadability": 13.4,
+    "productVisualWeight": -18.2,
+    "typographyCompetition": -24.2,
+    "secondaryFocusRatio": -0.02,
+    "attentionDistribution": -0.07
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "draw",
+    "fasterRead": "daos",
+    "wouldOpen": "draw",
+    "overall": "draw",
+    "rationale": "Dominance: WB 46 vs DAOS 35 (Δ-11); FI: WB 43.7 vs DAOS 58.2; Thumbnail: WB 51.5 vs DAOS 64.9; Fidelity: WB 40.5 vs DAOS 21.5"
+  },
+  "compositeScore": {
+    "leader": 40.3,
+    "daos": 36.7
+  }
+}

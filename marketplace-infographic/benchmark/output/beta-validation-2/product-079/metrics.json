@@ -1,0 +1,70 @@
+{
+  "productId": 396190738,
+  "category": "kitchen",
+  "categoryLabel": "Кухня",
+  "name": "Портативный блендер для смузи и коктейлей с измельчителем",
+  "daosGenerated": true,
+  "genDurationMs": 15083,
+  "leader": {
+    "productDominance": 76,
+    "foregroundIsolation": 50.2,
+    "headlineVisualWeight": 8.7,
+    "primaryFocusRatio": 0.364,
+    "attentionHierarchyScore": 42.8,
+    "commercialFidelity": 54.5,
+    "visualWeightHero": 29.1,
+    "thumbnailReadability": 56.2,
+    "productVisualWeight": 29.1,
+    "typographyCompetition": 18.6,
+    "secondaryFocusRatio": 0.636,
+    "attentionDistribution": 0.516
+  },
+  "daos": {
+    "productDominance": 50,
+    "foregroundIsolation": 50.4,
+    "headlineVisualWeight": 31.9,
+    "primaryFocusRatio": 0.338,
+    "attentionHierarchyScore": 32.1,
+    "commercialFidelity": 36,
+    "visualWeightHero": 32,
+    "thumbnailReadability": 63,
+    "productVisualWeight": 32,
+    "typographyCompetition": 53.3,
+    "secondaryFocusRatio": 0.662,
+    "attentionDistribution": 0.273
+  },
+  "delta": {
+    "productDominance": -26,
+    "foregroundIsolation": 0.2,
+    "headlineVisualWeight": 23.2,
+    "primaryFocusRatio": -0.03,
+    "attentionHierarchyScore": -10.7,
+    "commercialFidelity": -18.5,
+    "visualWeightHero": 2.9,
+    "thumbnailReadability": 6.8,
+    "productVisualWeight": 2.9,
+    "typographyCompetition": 34.7,
+    "secondaryFocusRatio": 0.03,
+    "attentionDistribution": -0.24
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "draw",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "Dominance: WB 76 vs DAOS 50 (Δ-26); FI: WB 50.2 vs DAOS 50.4; Thumbnail: WB 56.2 vs DAOS 63; Fidelity: WB 54.5 vs DAOS 36",
+    "gapClass": "Product Dominance"
+  },
+  "failure": {
+    "slot": "product-079",
+    "productId": 396190738,
+    "category": "Кухня",
+    "reason": "Dominance",
+    "detail": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 56.4,
+    "daos": 44
+  }
+}

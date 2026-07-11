@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"/>
+  <title>Quality Cycle 4 — Attention Competition</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #0b1220; color: #e2e8f0; padding: 24px; max-width: 1100px; margin: 0 auto; }
+    h1, h2 { color: #f8fafc; }
+    table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+    th, td { border: 1px solid #334155; padding: 8px 12px; text-align: left; }
+    th { background: #1e293b; }
+    .gap { color: #f87171; }
+    .top { color: #38bdf8; }
+    .card { background: #1e293b; border-radius: 8px; padding: 16px; margin: 12px 0; }
+    .heatmap-grid { display: flex; flex-wrap: wrap; gap: 12px; margin: 12px 0; }
+    figure { margin: 0; text-align: center; }
+    figure img { width: 200px; border: 1px solid #334155; border-radius: 4px; }
+    figcaption { font-size: 11px; color: #94a3b8; margin-top: 4px; max-width: 200px; }
+    .legend { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #94a3b8; margin: 8px 0; }
+    .legend span { display: inline-block; width: 48px; height: 10px; border-radius: 2px; }
+    .low { background: linear-gradient(90deg, #1e3a5f, #3b82f6); }
+    .high { background: linear-gradient(90deg, #eab308, #ef4444); }
+  </style>
+</head>
+<body>
+  <h1>Quality Cycle 4 — Attention Competition Research</h1>
+  <p>120 WB + 5 DAOS composited/final · Research only · No production changes</p>
+
+  <div class="card">
+    <h2>Council Decision</h2>
+    <p><strong>Single biggest post-compositor factor:</strong> <span class="top">Headline Visual Weight</span></p>
+    <ul>
+      <li>Correlation with dominance: <strong>r = -0.723</strong> (high)</li>
+      <li>DAOS gap: <span class="gap">-8.72</span></li>
+      <li>Layer loss (composited→final): FI <span class="gap">−46.64</span>, primary focus <span class="gap">−0.3</span></li>
+      <li>Next cycle: <strong>Quality Cycle 5 — Typography Weight Governance (reduce headline contrast + cap text competition)</strong></li>
+    </ul>
+  </div>
+
+  <h2>DAOS Layer Drop (03 → 04)</h2>
+  <table>
+    <tr><th>Product</th><th>FI loss</th><th>Dominance loss</th><th>Typography +</th><th>Clutter +</th><th>Primary focus −</th></tr>
+    <tr>
+        <td>construction vacuum</td>
+        <td class="gap">−35.8</td>
+        <td class="gap">−7</td>
+        <td>+5.3</td>
+        <td>+0.1</td>
+        <td>−0.023</td>
+      </tr><tr>
+        <td>battery sprayer</td>
+        <td class="gap">−54.5</td>
+        <td class="gap">−60</td>
+        <td>+14.6</td>
+        <td>+0.2</td>
+        <td>−0.43</td>
+      </tr><tr>
+        <td>impact drill</td>
+        <td class="gap">−58.2</td>
+        <td class="gap">−74</td>
+        <td>+15.4</td>
+        <td>+0.2</td>
+        <td>−0.731</td>
+      </tr><tr>
+        <td>pressure washer</td>
+        <td class="gap">−46.3</td>
+        <td class="gap">−42</td>
+        <td>+9</td>
+        <td>+0.2</td>
+        <td>−0.294</td>
+      </tr><tr>
+        <td>home humidifier</td>
+        <td class="gap">−38.4</td>
+        <td class="gap">−13</td>
+        <td>+1.5</td>
+        <td>+0.1</td>
+        <td>−0.034</td>
+      </tr>
+  </table>
+
+  <h2>Top Correlations — Product Dominance (WB n=120)</h2>
+  <table>
+    <tr><th>Factor</th><th>r</th><th>Confidence</th><th>WB Median</th></tr>
+    <tr>
+        <td>productAttention</td>
+        <td>0.783</td>
+        <td>high</td>
+        <td>3.5</td>
+      </tr><tr>
+        <td>primaryFocusRatio</td>
+        <td>0.744</td>
+        <td>high</td>
+        <td>0.27</td>
+      </tr><tr>
+        <td>secondaryFocusRatio</td>
+        <td>-0.744</td>
+        <td>high</td>
+        <td>0.73</td>
+      </tr><tr>
+        <td>headlineVisualWeight</td>
+        <td>-0.723</td>
+        <td>high</td>
+        <td>24.4</td>
+      </tr><tr>
+        <td>typographyContrast</td>
+        <td>-0.595</td>
+        <td>high</td>
+        <td>75.7</td>
+      </tr><tr>
+        <td>typographyCompetition</td>
+        <td>-0.537</td>
+        <td>high</td>
+        <td>41</td>
+      </tr><tr>
+        <td>textCompetition</td>
+        <td>-0.537</td>
+        <td>high</td>
+        <td>41.5</td>
+      </tr><tr>
+        <td>attentionCompetitionIndex</td>
+        <td>-0.448</td>
+        <td>high</td>
+        <td>18.2</td>
+      </tr>
+  </table>
+
+  <h2>DAOS Gap (final vs WB)</h2>
+  <table>
+    <tr><th>Factor</th><th>Gap</th><th>Status</th></tr>
+    <tr><td>productAttention</td><td class="gap">1.88</td><td>SUPPORTED</td></tr><tr><td>primaryFocusRatio</td><td class="gap">0.07</td><td>SUPPORTED</td></tr><tr><td>secondaryFocusRatio</td><td class="gap">-0.07</td><td>SUPPORTED</td></tr><tr><td>headlineVisualWeight</td><td class="gap">-8.72</td><td>MISSING</td></tr><tr><td>typographyContrast</td><td class="gap">-17.4</td><td>MISSING</td></tr><tr><td>typographyCompetition</td><td class="gap">-19.13</td><td>MISSING</td></tr><tr><td>textCompetition</td><td class="gap">-19.53</td><td>MISSING</td></tr><tr><td>attentionCompetitionIndex</td><td class="gap">-10.36</td><td>MISSING</td></tr>
+  </table>
+
+  <h2>Тепловая карта внимания</h2>
+  <p>Edge-saliency proxy · красный = высокое внимание · синий = низкое · overlay = карточка + heatmap</p>
+  <div class="legend">
+    <span class="low"></span> низкое внимание
+    <span class="high"></span> высокое внимание
+  </div>
+
+  <div class="card">
+    <h3>Агрегат (n=120 WB / n=5 DAOS)</h3>
+    <div class="heatmap-grid">
+      <figure><img src="heatmaps/wb-aggregate.png"/><figcaption>WB median attention (120 cards)</figcaption></figure>
+      <figure><img src="heatmaps/daos-composited-aggregate.png"/><figcaption>DAOS composited aggregate</figcaption></figure>
+      <figure><img src="heatmaps/daos-final-aggregate.png"/><figcaption>DAOS final aggregate</figcaption></figure>
+      <figure><img src="heatmaps/daos-attention-shift.png"/><figcaption>Attention shift final−composited (red=gain)</figcaption></figure>
+    </div>
+    <p>WB peak: (0.342, 0.137) · DAOS composited peak: (0.39, 0.233) · DAOS final peak: (0.116, 0.067)</p>
+  </div>
+
+  <div class="card">
+    <h3>construction vacuum</h3>
+    <div class="heatmap-grid">
+      <figure><img src="construction-vacuum/03-composited.png"/><figcaption>03 Composited</figcaption></figure>
+      <figure><img src="construction-vacuum/03-composited-heatmap.png"/><figcaption>Composited heatmap</figcaption></figure>
+      <figure><img src="construction-vacuum/03-composited-overlay.png"/><figcaption>Composited overlay</figcaption></figure>
+      <figure><img src="construction-vacuum/04-final-card.png"/><figcaption>04 Final</figcaption></figure>
+      <figure><img src="construction-vacuum/04-final-heatmap.png"/><figcaption>Final heatmap</figcaption></figure>
+      <figure><img src="construction-vacuum/04-final-overlay.png"/><figcaption>Final overlay</figcaption></figure>
+      <figure><img src="construction-vacuum/attention-shift.png"/><figcaption>Shift (red=text gains attention)</figcaption></figure>
+    </div>
+  </div><div class="card">
+    <h3>battery sprayer</h3>
+    <div class="heatmap-grid">
+      <figure><img src="battery-sprayer/03-composited.png"/><figcaption>03 Composited</figcaption></figure>
+      <figure><img src="battery-sprayer/03-composited-heatmap.png"/><figcaption>Composited heatmap</figcaption></figure>
+      <figure><img src="battery-sprayer/03-composited-overlay.png"/><figcaption>Composited overlay</figcaption></figure>
+      <figure><img src="battery-sprayer/04-final-card.png"/><figcaption>04 Final</figcaption></figure>
+      <figure><img src="battery-sprayer/04-final-heatmap.png"/><figcaption>Final heatmap</figcaption></figure>
+      <figure><img src="battery-sprayer/04-final-overlay.png"/><figcaption>Final overlay</figcaption></figure>
+      <figure><img src="battery-sprayer/attention-shift.png"/><figcaption>Shift (red=text gains attention)</figcaption></figure>
+    </div>
+  </div><div class="card">
+    <h3>impact drill</h3>
+    <div class="heatmap-grid">
+      <figure><img src="impact-drill/03-composited.png"/><figcaption>03 Composited</figcaption></figure>
+      <figure><img src="impact-drill/03-composited-heatmap.png"/><figcaption>Composited heatmap</figcaption></figure>
+      <figure><img src="impact-drill/03-composited-overlay.png"/><figcaption>Composited overlay</figcaption></figure>
+      <figure><img src="impact-drill/04-final-card.png"/><figcaption>04 Final</figcaption></figure>
+      <figure><img src="impact-drill/04-final-heatmap.png"/><figcaption>Final heatmap</figcaption></figure>
+      <figure><img src="impact-drill/04-final-overlay.png"/><figcaption>Final overlay</figcaption></figure>
+      <figure><img src="impact-drill/attention-shift.png"/><figcaption>Shift (red=text gains attention)</figcaption></figure>
+    </div>
+  </div><div class="card">
+    <h3>pressure washer</h3>
+    <div class="heatmap-grid">
+      <figure><img src="pressure-washer/03-composited.png"/><figcaption>03 Composited</figcaption></figure>
+      <figure><img src="pressure-washer/03-composited-heatmap.png"/><figcaption>Composited heatmap</figcaption></figure>
+      <figure><img src="pressure-washer/03-composited-overlay.png"/><figcaption>Composited overlay</figcaption></figure>
+      <figure><img src="pressure-washer/04-final-card.png"/><figcaption>04 Final</figcaption></figure>
+      <figure><img src="pressure-washer/04-final-heatmap.png"/><figcaption>Final heatmap</figcaption></figure>
+      <figure><img src="pressure-washer/04-final-overlay.png"/><figcaption>Final overlay</figcaption></figure>
+      <figure><img src="pressure-washer/attention-shift.png"/><figcaption>Shift (red=text gains attention)</figcaption></figure>
+    </div>
+  </div><div class="card">
+    <h3>home humidifier</h3>
+    <div class="heatmap-grid">
+      <figure><img src="home-humidifier/03-composited.png"/><figcaption>03 Composited</figcaption></figure>
+      <figure><img src="home-humidifier/03-composited-heatmap.png"/><figcaption>Composited heatmap</figcaption></figure>
+      <figure><img src="home-humidifier/03-composited-overlay.png"/><figcaption>Composited overlay</figcaption></figure>
+      <figure><img src="home-humidifier/04-final-card.png"/><figcaption>04 Final</figcaption></figure>
+      <figure><img src="home-humidifier/04-final-heatmap.png"/><figcaption>Final heatmap</figcaption></figure>
+      <figure><img src="home-humidifier/04-final-overlay.png"/><figcaption>Final overlay</figcaption></figure>
+      <figure><img src="home-humidifier/attention-shift.png"/><figcaption>Shift (red=text gains attention)</figcaption></figure>
+    </div>
+  </div>
+
+  <p>
+    <a href="../../../docs/DAOS_ATTENTION_COMPETITION_RESEARCH.md">Full research</a> ·
+    <a href="../../../docs/DAOS_ATTENTION_MODEL_V1.md">Model v1</a>
+  </p>
+</body>
+</html>

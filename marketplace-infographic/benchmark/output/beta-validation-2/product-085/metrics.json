@@ -1,0 +1,62 @@
+{
+  "productId": 460767433,
+  "category": "kitchen",
+  "categoryLabel": "Кухня",
+  "name": "Блендер погружной 4 в 1 с венчиком и измельчителем",
+  "daosGenerated": true,
+  "genDurationMs": 17711,
+  "leader": {
+    "productDominance": 48,
+    "foregroundIsolation": 52.9,
+    "headlineVisualWeight": 30.5,
+    "primaryFocusRatio": 0.295,
+    "attentionHierarchyScore": 30.4,
+    "commercialFidelity": 33.5,
+    "visualWeightHero": 28.2,
+    "thumbnailReadability": 51.5,
+    "productVisualWeight": 28.2,
+    "typographyCompetition": 45.5,
+    "secondaryFocusRatio": 0.705,
+    "attentionDistribution": 0.271
+  },
+  "daos": {
+    "productDominance": 44,
+    "foregroundIsolation": 76.8,
+    "headlineVisualWeight": 25.2,
+    "primaryFocusRatio": 0.37,
+    "attentionHierarchyScore": 35.2,
+    "commercialFidelity": 30,
+    "visualWeightHero": 19.7,
+    "thumbnailReadability": 82.9,
+    "productVisualWeight": 19.7,
+    "typographyCompetition": 30.8,
+    "secondaryFocusRatio": 0.63,
+    "attentionDistribution": 0.26
+  },
+  "delta": {
+    "productDominance": -4,
+    "foregroundIsolation": 23.9,
+    "headlineVisualWeight": -5.3,
+    "primaryFocusRatio": 0.08,
+    "attentionHierarchyScore": 4.8,
+    "commercialFidelity": -3.5,
+    "visualWeightHero": -8.5,
+    "thumbnailReadability": 31.4,
+    "productVisualWeight": -8.5,
+    "typographyCompetition": -14.7,
+    "secondaryFocusRatio": -0.07,
+    "attentionDistribution": -0.01
+  },
+  "verdict": {
+    "moreProfessional": "draw",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 48 vs DAOS 44 (Δ-4); FI: WB 52.9 vs DAOS 76.8; Thumbnail: WB 51.5 vs DAOS 82.9; Fidelity: WB 33.5 vs DAOS 30"
+  },
+  "compositeScore": {
+    "leader": 41.1,
+    "daos": 47.4
+  }
+}

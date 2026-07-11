@@ -1,0 +1,70 @@
+{
+  "productId": 250141307,
+  "category": "humidifier",
+  "categoryLabel": "Климат",
+  "name": "Увлажнитель воздуха для лица и тела, мини освежитель с паром",
+  "daosGenerated": true,
+  "genDurationMs": 18234,
+  "leader": {
+    "productDominance": 64,
+    "foregroundIsolation": 44.8,
+    "headlineVisualWeight": 5.7,
+    "primaryFocusRatio": 0.362,
+    "attentionHierarchyScore": 38.5,
+    "commercialFidelity": 54.5,
+    "visualWeightHero": 11.2,
+    "thumbnailReadability": 35.5,
+    "productVisualWeight": 11.2,
+    "typographyCompetition": 11.2,
+    "secondaryFocusRatio": 0.638,
+    "attentionDistribution": 0.399
+  },
+  "daos": {
+    "productDominance": 28,
+    "foregroundIsolation": 57,
+    "headlineVisualWeight": 33.1,
+    "primaryFocusRatio": 0.164,
+    "attentionHierarchyScore": 25.9,
+    "commercialFidelity": 15.5,
+    "visualWeightHero": 12.5,
+    "thumbnailReadability": 55.6,
+    "productVisualWeight": 12.5,
+    "typographyCompetition": 54.2,
+    "secondaryFocusRatio": 0.836,
+    "attentionDistribution": 0.125
+  },
+  "delta": {
+    "productDominance": -36,
+    "foregroundIsolation": 12.2,
+    "headlineVisualWeight": 27.4,
+    "primaryFocusRatio": -0.2,
+    "attentionHierarchyScore": -12.6,
+    "commercialFidelity": -39,
+    "visualWeightHero": 1.3,
+    "thumbnailReadability": 20.1,
+    "productVisualWeight": 1.3,
+    "typographyCompetition": 43,
+    "secondaryFocusRatio": 0.2,
+    "attentionDistribution": -0.27
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "daos",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "Dominance: WB 64 vs DAOS 28 (Δ-36); FI: WB 44.8 vs DAOS 57; Thumbnail: WB 35.5 vs DAOS 55.6; Fidelity: WB 54.5 vs DAOS 15.5",
+    "gapClass": "Product Dominance"
+  },
+  "failure": {
+    "slot": "product-072",
+    "productId": 250141307,
+    "category": "Климат",
+    "reason": "Category Specific",
+    "detail": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 46.8,
+    "daos": 30.6
+  }
+}

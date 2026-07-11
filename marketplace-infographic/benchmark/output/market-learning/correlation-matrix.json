@@ -1,0 +1,282 @@
+[
+  {
+    "feature": "productAttention",
+    "correlation": 0.783,
+    "absCorrelation": 0.783,
+    "n": 120,
+    "wbMean": 3.44,
+    "wbMedian": 3.5
+  },
+  {
+    "feature": "primaryFocusRatio",
+    "correlation": 0.744,
+    "absCorrelation": 0.744,
+    "n": 120,
+    "wbMean": 0.28,
+    "wbMedian": 0.27
+  },
+  {
+    "feature": "secondaryFocusRatio",
+    "correlation": -0.744,
+    "absCorrelation": 0.744,
+    "n": 120,
+    "wbMean": 0.72,
+    "wbMedian": 0.73
+  },
+  {
+    "feature": "headlineVisualWeight",
+    "correlation": -0.723,
+    "absCorrelation": 0.723,
+    "n": 120,
+    "wbMean": 24.68,
+    "wbMedian": 24.4
+  },
+  {
+    "feature": "typographyContrast",
+    "correlation": -0.595,
+    "absCorrelation": 0.595,
+    "n": 120,
+    "wbMean": 75.4,
+    "wbMedian": 75.7
+  },
+  {
+    "feature": "typographyCompetition",
+    "correlation": -0.537,
+    "absCorrelation": 0.537,
+    "n": 120,
+    "wbMean": 39.95,
+    "wbMedian": 41
+  },
+  {
+    "feature": "textCompetition",
+    "correlation": -0.537,
+    "absCorrelation": 0.537,
+    "n": 120,
+    "wbMean": 40.47,
+    "wbMedian": 41.5
+  },
+  {
+    "feature": "attentionCompetitionIndex",
+    "correlation": -0.448,
+    "absCorrelation": 0.448,
+    "n": 120,
+    "wbMean": 17.78,
+    "wbMedian": 18.2
+  },
+  {
+    "feature": "eyePathScore",
+    "correlation": -0.39,
+    "absCorrelation": 0.39,
+    "n": 120,
+    "wbMean": 86.2,
+    "wbMedian": 88.2
+  },
+  {
+    "feature": "productVisualWeight",
+    "correlation": 0.349,
+    "absCorrelation": 0.349,
+    "n": 120,
+    "wbMean": 23.88,
+    "wbMedian": 24.3
+  },
+  {
+    "feature": "visualWeightHero",
+    "correlation": 0.349,
+    "absCorrelation": 0.349,
+    "n": 120,
+    "wbMean": 23.88,
+    "wbMedian": 24.3
+  },
+  {
+    "feature": "foregroundIsolation",
+    "correlation": 0.332,
+    "absCorrelation": 0.332,
+    "n": 120,
+    "wbMean": 52.71,
+    "wbMedian": 50.2
+  },
+  {
+    "feature": "objectSharpness",
+    "correlation": 0.326,
+    "absCorrelation": 0.326,
+    "n": 120,
+    "wbMean": 30.51,
+    "wbMedian": 29.6
+  },
+  {
+    "feature": "localContrast",
+    "correlation": 0.321,
+    "absCorrelation": 0.321,
+    "n": 120,
+    "wbMean": 29.71,
+    "wbMedian": 29
+  },
+  {
+    "feature": "objectContrast",
+    "correlation": 0.313,
+    "absCorrelation": 0.313,
+    "n": 120,
+    "wbMean": 71.27,
+    "wbMedian": 69.57
+  },
+  {
+    "feature": "objectSaturation",
+    "correlation": 0.313,
+    "absCorrelation": 0.313,
+    "n": 120,
+    "wbMean": 71.27,
+    "wbMedian": 69.6
+  },
+  {
+    "feature": "textureCompetition",
+    "correlation": -0.289,
+    "absCorrelation": 0.289,
+    "n": 120,
+    "wbMean": 2.11,
+    "wbMedian": 2.1
+  },
+  {
+    "feature": "typographyDensity",
+    "correlation": -0.223,
+    "absCorrelation": 0.223,
+    "n": 120,
+    "wbMean": 3.49,
+    "wbMedian": 3.3
+  },
+  {
+    "feature": "perspective",
+    "correlation": 0.173,
+    "absCorrelation": 0.173,
+    "n": 120,
+    "wbMean": 26.7,
+    "wbMedian": 23.2
+  },
+  {
+    "feature": "visualCenterOffset",
+    "correlation": 0.15,
+    "absCorrelation": 0.15,
+    "n": 120,
+    "wbMean": 10.73,
+    "wbMedian": 8.7
+  },
+  {
+    "feature": "brightnessSeparation",
+    "correlation": 0.133,
+    "absCorrelation": 0.133,
+    "n": 120,
+    "wbMean": 32.36,
+    "wbMedian": 23.8
+  },
+  {
+    "feature": "objectSymmetry",
+    "correlation": -0.13,
+    "absCorrelation": 0.13,
+    "n": 120,
+    "wbMean": 68.81,
+    "wbMedian": 71.6
+  },
+  {
+    "feature": "negativeSpace",
+    "correlation": 0.122,
+    "absCorrelation": 0.122,
+    "n": 120,
+    "wbMean": 68.55,
+    "wbMedian": 68.5
+  },
+  {
+    "feature": "dominantColorBalance",
+    "correlation": -0.12,
+    "absCorrelation": 0.12,
+    "n": 120,
+    "wbMean": 30.83,
+    "wbMedian": 24.9
+  },
+  {
+    "feature": "productAreaPct",
+    "correlation": -0.099,
+    "absCorrelation": 0.099,
+    "n": 120,
+    "wbMean": 29.53,
+    "wbMedian": 30
+  },
+  {
+    "feature": "objectDepth",
+    "correlation": 0.098,
+    "absCorrelation": 0.098,
+    "n": 120,
+    "wbMean": 15.55,
+    "wbMedian": 11
+  },
+  {
+    "feature": "highlightStrength",
+    "correlation": 0.095,
+    "absCorrelation": 0.095,
+    "n": 120,
+    "wbMean": 31.4,
+    "wbMedian": 28.5
+  },
+  {
+    "feature": "edgeContrast",
+    "correlation": 0.094,
+    "absCorrelation": 0.094,
+    "n": 120,
+    "wbMean": 2,
+    "wbMedian": 1.8
+  },
+  {
+    "feature": "shadowPresence",
+    "correlation": 0.091,
+    "absCorrelation": 0.091,
+    "n": 120,
+    "wbMean": 14.77,
+    "wbMedian": 11.5
+  },
+  {
+    "feature": "colorSeparation",
+    "correlation": 0.085,
+    "absCorrelation": 0.085,
+    "n": 120,
+    "wbMean": 64.16,
+    "wbMedian": 57.8
+  },
+  {
+    "feature": "backgroundNoise",
+    "correlation": -0.07,
+    "absCorrelation": 0.07,
+    "n": 120,
+    "wbMean": 1.28,
+    "wbMedian": 1.2
+  },
+  {
+    "feature": "visualClutter",
+    "correlation": -0.07,
+    "absCorrelation": 0.07,
+    "n": 120,
+    "wbMean": 1.28,
+    "wbMedian": 1.2
+  },
+  {
+    "feature": "badgeVisualWeight",
+    "correlation": -0.014,
+    "absCorrelation": 0.014,
+    "n": 120,
+    "wbMean": 16.16,
+    "wbMedian": 17
+  },
+  {
+    "feature": "badgeCompetition",
+    "correlation": -0.014,
+    "absCorrelation": 0.014,
+    "n": 120,
+    "wbMean": 16.16,
+    "wbMedian": 17
+  },
+  {
+    "feature": "objectLighting",
+    "correlation": 0.009,
+    "absCorrelation": 0.009,
+    "n": 120,
+    "wbMean": 8.69,
+    "wbMedian": 10.5
+  }
+]

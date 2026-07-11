@@ -1,0 +1,62 @@
+{
+  "productId": 192618575,
+  "category": "kitchen",
+  "categoryLabel": "Кухня",
+  "name": "Блендер погружной GL2127",
+  "daosGenerated": true,
+  "genDurationMs": 14255,
+  "leader": {
+    "productDominance": 41,
+    "foregroundIsolation": 63.9,
+    "headlineVisualWeight": 19.6,
+    "primaryFocusRatio": 0.291,
+    "attentionHierarchyScore": 32.6,
+    "commercialFidelity": 27,
+    "visualWeightHero": 13.6,
+    "thumbnailReadability": 39.6,
+    "productVisualWeight": 13.6,
+    "typographyCompetition": 26.3,
+    "secondaryFocusRatio": 0.709,
+    "attentionDistribution": 0.229
+  },
+  "daos": {
+    "productDominance": 61,
+    "foregroundIsolation": 69.9,
+    "headlineVisualWeight": 8.9,
+    "primaryFocusRatio": 0.379,
+    "attentionHierarchyScore": 38.7,
+    "commercialFidelity": 47.5,
+    "visualWeightHero": 14.3,
+    "thumbnailReadability": 81.8,
+    "productVisualWeight": 14.3,
+    "typographyCompetition": 18.8,
+    "secondaryFocusRatio": 0.621,
+    "attentionDistribution": 0.34
+  },
+  "delta": {
+    "productDominance": 20,
+    "foregroundIsolation": 6,
+    "headlineVisualWeight": -10.7,
+    "primaryFocusRatio": 0.09,
+    "attentionHierarchyScore": 6.1,
+    "commercialFidelity": 20.5,
+    "visualWeightHero": 0.7,
+    "thumbnailReadability": 42.2,
+    "productVisualWeight": 0.7,
+    "typographyCompetition": -7.5,
+    "secondaryFocusRatio": -0.09,
+    "attentionDistribution": 0.11
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 41 vs DAOS 61 (Δ20); FI: WB 63.9 vs DAOS 69.9; Thumbnail: WB 39.6 vs DAOS 81.8; Fidelity: WB 27 vs DAOS 47.5"
+  },
+  "compositeScore": {
+    "leader": 36.9,
+    "daos": 55.4
+  }
+}

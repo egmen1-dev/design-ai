@@ -1,0 +1,62 @@
+{
+  "productId": 68786263,
+  "category": "home-appliances",
+  "categoryLabel": "Бытовая техника",
+  "name": "Пылесос вертикальный для дома DX115C",
+  "daosGenerated": true,
+  "genDurationMs": 17380,
+  "leader": {
+    "productDominance": 42,
+    "foregroundIsolation": 42.3,
+    "headlineVisualWeight": 24.7,
+    "primaryFocusRatio": 0.26,
+    "attentionHierarchyScore": 30.2,
+    "commercialFidelity": 28,
+    "visualWeightHero": 18.1,
+    "thumbnailReadability": 41.4,
+    "productVisualWeight": 18.1,
+    "typographyCompetition": 42.3,
+    "secondaryFocusRatio": 0.74,
+    "attentionDistribution": 0.213
+  },
+  "daos": {
+    "productDominance": 43,
+    "foregroundIsolation": 46.1,
+    "headlineVisualWeight": 12.8,
+    "primaryFocusRatio": 0.274,
+    "attentionHierarchyScore": 32.6,
+    "commercialFidelity": 29.5,
+    "visualWeightHero": 9.8,
+    "thumbnailReadability": 57.8,
+    "productVisualWeight": 9.8,
+    "typographyCompetition": 21.8,
+    "secondaryFocusRatio": 0.726,
+    "attentionDistribution": 0.221
+  },
+  "delta": {
+    "productDominance": 1,
+    "foregroundIsolation": 3.8,
+    "headlineVisualWeight": -11.9,
+    "primaryFocusRatio": 0.01,
+    "attentionHierarchyScore": 2.4,
+    "commercialFidelity": 1.5,
+    "visualWeightHero": -8.3,
+    "thumbnailReadability": 16.4,
+    "productVisualWeight": -8.3,
+    "typographyCompetition": -20.5,
+    "secondaryFocusRatio": -0.01,
+    "attentionDistribution": 0.01
+  },
+  "verdict": {
+    "moreProfessional": "draw",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 42 vs DAOS 43 (Δ1); FI: WB 42.3 vs DAOS 46.1; Thumbnail: WB 41.4 vs DAOS 57.8; Fidelity: WB 28 vs DAOS 29.5"
+  },
+  "compositeScore": {
+    "leader": 34.4,
+    "daos": 38
+  }
+}

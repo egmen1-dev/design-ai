@@ -1,0 +1,62 @@
+{
+  "productId": 307232289,
+  "category": "home-appliances",
+  "categoryLabel": "Бытовая техника",
+  "name": "Пылесос вертикальный",
+  "daosGenerated": true,
+  "genDurationMs": 17389,
+  "leader": {
+    "productDominance": 45,
+    "foregroundIsolation": 46.8,
+    "headlineVisualWeight": 27.4,
+    "primaryFocusRatio": 0.252,
+    "attentionHierarchyScore": 29,
+    "commercialFidelity": 30.5,
+    "visualWeightHero": 23,
+    "thumbnailReadability": 48,
+    "productVisualWeight": 23,
+    "typographyCompetition": 41.9,
+    "secondaryFocusRatio": 0.748,
+    "attentionDistribution": 0.249
+  },
+  "daos": {
+    "productDominance": 45,
+    "foregroundIsolation": 48.5,
+    "headlineVisualWeight": 16.2,
+    "primaryFocusRatio": 0.272,
+    "attentionHierarchyScore": 31.8,
+    "commercialFidelity": 31,
+    "visualWeightHero": 13.2,
+    "thumbnailReadability": 57.1,
+    "productVisualWeight": 13.2,
+    "typographyCompetition": 29.4,
+    "secondaryFocusRatio": 0.728,
+    "attentionDistribution": 0.224
+  },
+  "delta": {
+    "productDominance": 0,
+    "foregroundIsolation": 1.7,
+    "headlineVisualWeight": -11.2,
+    "primaryFocusRatio": 0.02,
+    "attentionHierarchyScore": 2.8,
+    "commercialFidelity": 0.5,
+    "visualWeightHero": -9.8,
+    "thumbnailReadability": 9.1,
+    "productVisualWeight": -9.8,
+    "typographyCompetition": -12.5,
+    "secondaryFocusRatio": -0.02,
+    "attentionDistribution": -0.02
+  },
+  "verdict": {
+    "moreProfessional": "draw",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 45 vs DAOS 45 (Δ0); FI: WB 46.8 vs DAOS 48.5; Thumbnail: WB 48 vs DAOS 57.1; Fidelity: WB 30.5 vs DAOS 31"
+  },
+  "compositeScore": {
+    "leader": 37.6,
+    "daos": 39.2
+  }
+}

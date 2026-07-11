@@ -1,0 +1,62 @@
+{
+  "productId": 258014159,
+  "category": "kitchen",
+  "categoryLabel": "Кухня",
+  "name": "Блендер погружной измельчитель",
+  "daosGenerated": true,
+  "genDurationMs": 14505,
+  "leader": {
+    "productDominance": 26,
+    "foregroundIsolation": 34.7,
+    "headlineVisualWeight": 36.3,
+    "primaryFocusRatio": 0.175,
+    "attentionHierarchyScore": 26.5,
+    "commercialFidelity": 30,
+    "visualWeightHero": 12.6,
+    "thumbnailReadability": 37.3,
+    "productVisualWeight": 12.6,
+    "typographyCompetition": 48.2,
+    "secondaryFocusRatio": 0.825,
+    "attentionDistribution": 0.13
+  },
+  "daos": {
+    "productDominance": 61,
+    "foregroundIsolation": 42,
+    "headlineVisualWeight": 10.6,
+    "primaryFocusRatio": 0.498,
+    "attentionHierarchyScore": 43.8,
+    "commercialFidelity": 47.5,
+    "visualWeightHero": 17.7,
+    "thumbnailReadability": 60.7,
+    "productVisualWeight": 17.7,
+    "typographyCompetition": 15.4,
+    "secondaryFocusRatio": 0.502,
+    "attentionDistribution": 0.405
+  },
+  "delta": {
+    "productDominance": 35,
+    "foregroundIsolation": 7.3,
+    "headlineVisualWeight": -25.7,
+    "primaryFocusRatio": 0.32,
+    "attentionHierarchyScore": 17.3,
+    "commercialFidelity": 17.5,
+    "visualWeightHero": 5.1,
+    "thumbnailReadability": 23.4,
+    "productVisualWeight": 5.1,
+    "typographyCompetition": -32.8,
+    "secondaryFocusRatio": -0.32,
+    "attentionDistribution": 0.28
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 26 vs DAOS 61 (Δ35); FI: WB 34.7 vs DAOS 42; Thumbnail: WB 37.3 vs DAOS 60.7; Fidelity: WB 30 vs DAOS 47.5"
+  },
+  "compositeScore": {
+    "leader": 26.7,
+    "daos": 48.8
+  }
+}

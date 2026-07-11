@@ -1,0 +1,62 @@
+{
+  "productId": 402597884,
+  "category": "home-appliances",
+  "categoryLabel": "Бытовая техника",
+  "name": "Пылесос вертикальный беспроводной для дома и авто",
+  "daosGenerated": true,
+  "genDurationMs": 15047,
+  "leader": {
+    "productDominance": 46,
+    "foregroundIsolation": 47.2,
+    "headlineVisualWeight": 35.6,
+    "primaryFocusRatio": 0.248,
+    "attentionHierarchyScore": 27.3,
+    "commercialFidelity": 32,
+    "visualWeightHero": 29.8,
+    "thumbnailReadability": 50.5,
+    "productVisualWeight": 29.8,
+    "typographyCompetition": 61.9,
+    "secondaryFocusRatio": 0.752,
+    "attentionDistribution": 0.234
+  },
+  "daos": {
+    "productDominance": 53,
+    "foregroundIsolation": 59,
+    "headlineVisualWeight": 10.8,
+    "primaryFocusRatio": 0.377,
+    "attentionHierarchyScore": 37.2,
+    "commercialFidelity": 39,
+    "visualWeightHero": 12.4,
+    "thumbnailReadability": 71.1,
+    "productVisualWeight": 12.4,
+    "typographyCompetition": 17.3,
+    "secondaryFocusRatio": 0.623,
+    "attentionDistribution": 0.306
+  },
+  "delta": {
+    "productDominance": 7,
+    "foregroundIsolation": 11.8,
+    "headlineVisualWeight": -24.8,
+    "primaryFocusRatio": 0.13,
+    "attentionHierarchyScore": 9.9,
+    "commercialFidelity": 7,
+    "visualWeightHero": -17.4,
+    "thumbnailReadability": 20.6,
+    "productVisualWeight": -17.4,
+    "typographyCompetition": -44.6,
+    "secondaryFocusRatio": -0.13,
+    "attentionDistribution": 0.07
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 46 vs DAOS 53 (Δ7); FI: WB 47.2 vs DAOS 59; Thumbnail: WB 50.5 vs DAOS 71.1; Fidelity: WB 32 vs DAOS 39"
+  },
+  "compositeScore": {
+    "leader": 38.8,
+    "daos": 47.6
+  }
+}

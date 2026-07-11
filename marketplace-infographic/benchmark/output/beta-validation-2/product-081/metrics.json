@@ -1,0 +1,70 @@
+{
+  "productId": 456375182,
+  "category": "kitchen",
+  "categoryLabel": "Кухня",
+  "name": "Блендер погружной мощный со стаканом измельчитель 5 в 1",
+  "daosGenerated": true,
+  "genDurationMs": 17982,
+  "leader": {
+    "productDominance": 50,
+    "foregroundIsolation": 46,
+    "headlineVisualWeight": 20.1,
+    "primaryFocusRatio": 0.297,
+    "attentionHierarchyScore": 32.3,
+    "commercialFidelity": 36,
+    "visualWeightHero": 21.1,
+    "thumbnailReadability": 50.9,
+    "productVisualWeight": 21.1,
+    "typographyCompetition": 25.4,
+    "secondaryFocusRatio": 0.703,
+    "attentionDistribution": 0.317
+  },
+  "daos": {
+    "productDominance": 41,
+    "foregroundIsolation": 40,
+    "headlineVisualWeight": 11.6,
+    "primaryFocusRatio": 0.237,
+    "attentionHierarchyScore": 31.3,
+    "commercialFidelity": 27.5,
+    "visualWeightHero": 8.4,
+    "thumbnailReadability": 47.5,
+    "productVisualWeight": 8.4,
+    "typographyCompetition": 22.1,
+    "secondaryFocusRatio": 0.763,
+    "attentionDistribution": 0.2
+  },
+  "delta": {
+    "productDominance": -9,
+    "foregroundIsolation": -6,
+    "headlineVisualWeight": -8.5,
+    "primaryFocusRatio": -0.06,
+    "attentionHierarchyScore": -1,
+    "commercialFidelity": -8.5,
+    "visualWeightHero": -12.7,
+    "thumbnailReadability": -3.4,
+    "productVisualWeight": -12.7,
+    "typographyCompetition": -3.3,
+    "secondaryFocusRatio": 0.06,
+    "attentionDistribution": -0.12
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "wb",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "Dominance: WB 50 vs DAOS 41 (Δ-9); FI: WB 46 vs DAOS 40; Thumbnail: WB 50.9 vs DAOS 47.5; Fidelity: WB 36 vs DAOS 27.5",
+    "gapClass": "Product Dominance"
+  },
+  "failure": {
+    "slot": "product-081",
+    "productId": 456375182,
+    "category": "Кухня",
+    "reason": "Dominance",
+    "detail": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 41.1,
+    "daos": 34.3
+  }
+}

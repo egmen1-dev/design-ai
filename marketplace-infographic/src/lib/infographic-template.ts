@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { TypographyOverlayMode } from "@/lib/typography/attention-hierarchy";
 import type { CompositionLayout } from "@/lib/composition/types";
 import {
   type InfographicStyle,
@@ -119,6 +120,8 @@ export type RenderInfographicOptions = {
   compositionLayout?: CompositionLayout;
   /** Исходный промпт товара — для фактологичного заголовка marketplace */
   productPrompt?: string;
+  /** Post-overlay gate: standard vs typography-relaxed overlay */
+  typographyOverlayMode?: TypographyOverlayMode;
 };
 
 function escapeHtml(text: string): string {

@@ -1,0 +1,58 @@
+{
+  "productId": 192183239,
+  "category": "home",
+  "categoryLabel": "Дом",
+  "name": "Держатель для соусов в холодильник",
+  "daosGenerated": false,
+  "genError": "[\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"oneThought\",\n      \"deferredSpecs\",\n      0\n    ]\n  },\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"deferredBullets\",\n      0\n    ]\n  }\n]",
+  "genDurationMs": 72,
+  "leader": {
+    "productDominance": 64,
+    "foregroundIsolation": 42.6,
+    "headlineVisualWeight": 13.4,
+    "primaryFocusRatio": 0.351,
+    "attentionHierarchyScore": 38.7,
+    "commercialFidelity": 50,
+    "visualWeightHero": 24.9,
+    "thumbnailReadability": 52,
+    "productVisualWeight": 24.9,
+    "typographyCompetition": 26.5
+  },
+  "daos": {
+    "productDominance": 64,
+    "foregroundIsolation": 42.6,
+    "headlineVisualWeight": 13.4,
+    "primaryFocusRatio": 0.351,
+    "attentionHierarchyScore": 38.7,
+    "commercialFidelity": 50,
+    "visualWeightHero": 24.9,
+    "thumbnailReadability": 52,
+    "productVisualWeight": 24.9,
+    "typographyCompetition": 26.5
+  },
+  "delta": {
+    "productDominance": 0,
+    "foregroundIsolation": 0,
+    "headlineVisualWeight": 0,
+    "primaryFocusRatio": 0,
+    "attentionHierarchyScore": 0,
+    "commercialFidelity": 0,
+    "visualWeightHero": 0,
+    "thumbnailReadability": 0,
+    "productVisualWeight": 0,
+    "typographyCompetition": 0
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "wb",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "DAOS generation failed: [\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"oneThought\",\n      \"deferredSpecs\",\n      0\n    ]\n  },\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"deferredBullets\",\n      0\n    ]\n  }\n]. WB leader wins by default.",
+    "gapClass": "Composition"
+  },
+  "compositeScore": {
+    "leader": 49.1,
+    "daos": 49.1
+  }
+}

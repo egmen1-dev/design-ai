@@ -1,0 +1,62 @@
+{
+  "productId": 11516920,
+  "category": "construction",
+  "categoryLabel": "Строительство",
+  "name": "Перфоратор П-32-1000К, 1000вт",
+  "daosGenerated": true,
+  "genDurationMs": 15809,
+  "leader": {
+    "productDominance": 55,
+    "foregroundIsolation": 56.3,
+    "headlineVisualWeight": 18.6,
+    "primaryFocusRatio": 0.327,
+    "attentionHierarchyScore": 34.8,
+    "commercialFidelity": 41,
+    "visualWeightHero": 22.9,
+    "thumbnailReadability": 52.9,
+    "productVisualWeight": 22.9,
+    "typographyCompetition": 31.2,
+    "secondaryFocusRatio": 0.673,
+    "attentionDistribution": 0.315
+  },
+  "daos": {
+    "productDominance": 52,
+    "foregroundIsolation": 68.5,
+    "headlineVisualWeight": 22.2,
+    "primaryFocusRatio": 0.356,
+    "attentionHierarchyScore": 34.9,
+    "commercialFidelity": 38,
+    "visualWeightHero": 24.1,
+    "thumbnailReadability": 64.9,
+    "productVisualWeight": 24.1,
+    "typographyCompetition": 36.8,
+    "secondaryFocusRatio": 0.644,
+    "attentionDistribution": 0.29
+  },
+  "delta": {
+    "productDominance": -3,
+    "foregroundIsolation": 12.2,
+    "headlineVisualWeight": 3.6,
+    "primaryFocusRatio": 0.03,
+    "attentionHierarchyScore": 0.1,
+    "commercialFidelity": -3,
+    "visualWeightHero": 1.2,
+    "thumbnailReadability": 12,
+    "productVisualWeight": 1.2,
+    "typographyCompetition": 5.6,
+    "secondaryFocusRatio": -0.03,
+    "attentionDistribution": -0.03
+  },
+  "verdict": {
+    "moreProfessional": "draw",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 55 vs DAOS 52 (Δ-3); FI: WB 56.3 vs DAOS 68.5; Thumbnail: WB 52.9 vs DAOS 64.9; Fidelity: WB 41 vs DAOS 38"
+  },
+  "compositeScore": {
+    "leader": 45.9,
+    "daos": 48
+  }
+}
