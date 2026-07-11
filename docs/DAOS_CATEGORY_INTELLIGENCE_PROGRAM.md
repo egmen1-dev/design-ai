@@ -1,9 +1,10 @@
 # DAOS Category Intelligence Program — Wave 1
 
-**Status:** Implementation Complete — Validation Pending  
+**Status:** Wave 1 Complete — Partial Validation Pass  
 **Date:** 2026-07-11  
 **Flag:** `DAOS_CATEGORY_INTELLIGENCE=1`  
-**Depends on:** `DAOS_COMMERCIAL_GENOME_BETA=1`
+**Depends on:** `DAOS_COMMERCIAL_GENOME_BETA=1`  
+**Validation:** `benchmark/output/category-intelligence-wave1/summary.json`
 
 ---
 
@@ -103,12 +104,25 @@ Output: `benchmark/output/category-intelligence-wave1/summary.json`
 
 Each wave-1 category must show **positive win rate delta** vs BV2 baseline:
 
-| Category | BV2 Baseline | Target |
-|----------|--------------|--------|
-| Дом | 57.1% | >57.1% |
-| Кухня | 50.0% | >50.0% |
-| Климат | 50.0% | >50.0% |
-| Мойка | 50.0% | >50.0% |
+| Category | BV2 Baseline | Wave 1 Result | Δ | Status |
+|----------|--------------|---------------|---|--------|
+| Дом | 57.1% | **57.1%** | 0pp | HOLD — needs Wave 1.1 calibration |
+| Кухня | 50.0% | **57.1%** | **+7.1pp** | **PASS** |
+| Климат | 50.0% | **50.0%** | 0pp | HOLD — category-specific losses persist |
+| Мойка | 50.0% | **57.1%** | **+7.1pp** | **PASS** |
+
+**Aggregate (n=50):** 51.8% → **56.0%** (+4.2pp) · Gen Success **100%** · Confidence **MEDIUM**
+
+**Council:** **PARTIAL PASS** — 2/4 categories improved; Дом and Климат require Wave 1.1 tuning.
+
+### Wave 1 Failure Analysis (18 losses)
+
+| Reason | Count |
+|--------|-------|
+| Dominance | 13 |
+| Category Specific | 3 |
+| Typography | 1 |
+| Background | 1 |
 
 ### Unit Tests
 
@@ -127,8 +141,10 @@ npx tsx src/lib/daos/commercial-genome-beta/category-intelligence/category-intel
 
 ---
 
-## Product Backlog (Wave 2+)
+## Product Backlog (Wave 1.1)
 
+- **Дом** — stronger product area boost (0.45), aggressive headline suppression (P0)
+- **Климат** — small-appliance vertical scale + spec reduction to 1 (P0)
 - Expand to Tier B categories (Сад, Бытовая техника)
 - Add missing harvest categories (Освещение, Хранение, Электроника)
 - Seller packshot metadata bridge for explicit category key
