@@ -26,7 +26,7 @@ import {
 
 process.chdir(path.join(__dirname, ".."));
 
-const OUT_DIR = path.join("benchmark", "output", "beta-validation-1");
+const OUT_DIR = path.join("benchmark", "output", process.env.BV1_OUT_DIR ?? "beta-validation-1");
 const LIMIT = Number(process.env.BV1_LIMIT ?? 20);
 const FIXED_SEED = "beta-validation-1-20260711";
 

@@ -1,0 +1,56 @@
+{
+  "productId": 396190738,
+  "category": "kitchen",
+  "categoryLabel": "Кухня",
+  "name": "Портативный блендер для смузи и коктейлей с измельчителем",
+  "daosGenerated": true,
+  "genDurationMs": 10890,
+  "leader": {
+    "productDominance": 76,
+    "foregroundIsolation": 50.2,
+    "headlineVisualWeight": 8.7,
+    "primaryFocusRatio": 0.364,
+    "attentionHierarchyScore": 42.8,
+    "commercialFidelity": 54.5,
+    "visualWeightHero": 29.1,
+    "thumbnailReadability": 56.2,
+    "productVisualWeight": 29.1,
+    "typographyCompetition": 18.6
+  },
+  "daos": {
+    "productDominance": 66,
+    "foregroundIsolation": 80.3,
+    "headlineVisualWeight": 15.7,
+    "primaryFocusRatio": 0.365,
+    "attentionHierarchyScore": 39.9,
+    "commercialFidelity": 51,
+    "visualWeightHero": 29.8,
+    "thumbnailReadability": 89.8,
+    "productVisualWeight": 29.8,
+    "typographyCompetition": 33.1
+  },
+  "delta": {
+    "productDominance": -10,
+    "foregroundIsolation": 30.1,
+    "headlineVisualWeight": 7,
+    "primaryFocusRatio": 0,
+    "attentionHierarchyScore": -2.9,
+    "commercialFidelity": -3.5,
+    "visualWeightHero": 0.7,
+    "thumbnailReadability": 33.6,
+    "productVisualWeight": 0.7,
+    "typographyCompetition": 14.5
+  },
+  "verdict": {
+    "moreProfessional": "draw",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 76 vs DAOS 66 (Δ-10); FI: WB 50.2 vs DAOS 80.3; Thumbnail: WB 56.2 vs DAOS 89.8; Fidelity: WB 54.5 vs DAOS 51"
+  },
+  "compositeScore": {
+    "leader": 56.4,
+    "daos": 61.7
+  }
+}

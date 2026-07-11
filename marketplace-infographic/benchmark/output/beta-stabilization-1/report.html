@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8"/><title>Beta Validation 1</title>
+<style>
+body{font-family:system-ui,sans-serif;margin:24px;background:#0f172a;color:#e2e8f0}
+h1,h2{color:#f8fafc}.meta{color:#94a3b8}
+.cards{display:flex;gap:16px;flex-wrap:wrap;margin:16px 0}
+.card{background:#1e293b;padding:16px 20px;border-radius:8px;min-width:120px}
+.card strong{display:block;font-size:1.5rem;color:#38bdf8}
+table{width:100%;border-collapse:collapse;margin:12px 0 24px;font-size:0.85rem}
+th,td{border:1px solid #334155;padding:8px;text-align:left}
+th{background:#1e293b}.good{color:#4ade80}.bad{color:#f87171}.warn{color:#fbbf24}
+.council{background:#1e293b;padding:20px;border-radius:8px;margin:20px 0;border-left:4px solid #38bdf8}
+</style></head><body>
+<h1>Beta Validation 1 — Real Marketplace Challenge</h1>
+<p class="meta">2026-07-11T09:35:02.799Z · 20 products · Production pipeline</p>
+<div class="cards">
+  <div class="card"><strong>13</strong>DAOS Wins</div>
+  <div class="card"><strong>6</strong>WB Wins</div>
+  <div class="card"><strong>1</strong>Draws</div>
+  <div class="card"><strong>65%</strong>DAOS Better (overall)</div>
+  <div class="card"><strong>100%</strong>Gen Success</div>
+</div>
+<div class="council">
+  <h2>Council Decision: READY</h2>
+  <p><strong>DAOS looks better in 65% of cases.</strong></p>
+  <p>Top blockers: Product Dominance (5); Visual (1)</p>
+  <p>DAOS wins or matches WB leaders in majority of head-to-head comparisons on real catalog images.</p>
+</div>
+<h2>Per-Product Results</h2>
+<table><thead><tr><th>Slot</th><th>Category</th><th>Product</th><th>Overall</th><th>WB Dom</th><th>DAOS Dom</th><th>Gap</th></tr></thead>
+<tbody><tr>
+        <td>product-01</td>
+        <td>Электроинструмент</td>
+        <td>Дрель ударная электрическая ДУ-13 750ЭР,…</td>
+        <td class="bad">WB</td>
+        <td>63</td>
+        <td>49</td>
+        <td>Product Dominance</td>
+      </tr><tr>
+        <td>product-02</td>
+        <td>Электроинструмент</td>
+        <td>Ударная дрель 1100Вт 13мм 2 скорости, ЗД…</td>
+        <td class="good">DAOS</td>
+        <td>58</td>
+        <td>62</td>
+        <td>—</td>
+      </tr><tr>
+        <td>product-03</td>
+        <td>Электроинструмент</td>
+        <td>Дрель ударная электрическая 780В, 719.0.…</td>
+        <td class="good">DAOS</td>
+        <td>56</td>
+        <td>65</td>
+        <td>—</td>
+      </tr><tr>
+        <td>product-04</td>
+        <td>Сад</td>
+        <td>Садовый триммер для травы аккумуляторный…</td>
+        <td class="good">DAOS</td>
+        <td>57</td>
+        <td>61</td>
+        <td>—</td>
+      </tr><tr>
+        <td>product-05</td>
+        <td>Сад</td>
+        <td>Аккумуляторный триммер для травы мощный …</td>
+        <td class="good">DAOS</td>
+        <td>52</td>
+        <td>55</td>
+        <td>—</td>
+      </tr><tr>
+        <td>product-06</td>
+        <td>Сад</td>
+        <td>Аккумуляторный триммер для травы мощный …</td>
+        <td class="good">DAOS</td>
+        <td>52</td>
+        <td>52</td>
+        <td>—</td>
+      </tr><tr>
+        <td>product-07</td>
+        <td>Строительство</td>
+        <td>Ударный электрический перфоратор для дом…</td>
+        <td class="good">DAOS</td>
+        <td>65</td>
+        <td>61</td>
+        <td>—</td>
+      </tr><tr>
+        <td>product-08</td>
+        <td>Строительство</td>
+        <td>Перфоратор ПЭВ-1450…</td>
+        <td class="good">DAOS</td>
+        <td>64</td>
+        <td>77</td>
+        <td>—</td>
+      </tr><tr>
+        <td>product-09</td>
+        <td>Бытовая техника</td>
+        <td>Беспроводной вертикальный пылесос для до…</td>
+        <td class="good">DAOS</td>
+        <td>51</td>
+        <td>56</td>
+        <td>—</td>
+      </tr><tr>
+        <td>product-10</td>
+        <td>Бытовая техника</td>
+        <td>Вертикальный проводной пылесос 3в1 мощны…</td>
+        <td class="good">DAOS</td>
+        <td>49</td>
+        <td>61</td>
+        <td>—</td>
+      </tr><tr>
+        <td>product-11</td>
+        <td>Дом</td>
+        <td>Органайзер для хранения вещей и белья…</td>
+        <td class="bad">WB</td>
+        <td>79</td>
+        <td>48</td>
+        <td>Product Dominance</td>
+      </tr><tr>
+        <td>product-12</td>
+        <td>Дом</td>
+        <td>Держатель для соусов в холодильник…</td>
+        <td class="good">DAOS</td>
+        <td>64</td>
+        <td>71</td>
+        <td>—</td>
+      </tr><tr>
+        <td>product-13</td>
+        <td>Авто</td>
+        <td>Пылесос для автомобиля…</td>
+        <td class="bad">WB</td>
+        <td>62</td>
+        <td>46</td>
+        <td>Product Dominance</td>
+      </tr><tr>
+        <td>product-14</td>
+        <td>Авто</td>
+        <td>Пылесос для автомобиля беспроводной мощн…</td>
+        <td class="good">DAOS</td>
+        <td>54</td>
+        <td>74</td>
+        <td>—</td>
+      </tr><tr>
+        <td>product-15</td>
+        <td>Кухня</td>
+        <td>Портативный блендер для смузи и коктейле…</td>
+        <td class="good">DAOS</td>
+        <td>76</td>
+        <td>66</td>
+        <td>—</td>
+      </tr><tr>
+        <td>product-16</td>
+        <td>Кухня</td>
+        <td>Блендер погружной измельчитель FHB-010 м…</td>
+        <td class="warn">DRAW</td>
+        <td>69</td>
+        <td>57</td>
+        <td>—</td>
+      </tr><tr>
+        <td>product-17</td>
+        <td>Мойка</td>
+        <td>Мойка высокого давления от сети BHR-2000…</td>
+        <td class="good">DAOS</td>
+        <td>66</td>
+        <td>67</td>
+        <td>—</td>
+      </tr><tr>
+        <td>product-18</td>
+        <td>Мойка</td>
+        <td>Мойка высокого давления BHR-2000M чёрный…</td>
+        <td class="bad">WB</td>
+        <td>64</td>
+        <td>48</td>
+        <td>Product Dominance</td>
+      </tr><tr>
+        <td>product-19</td>
+        <td>Климат</td>
+        <td>Увлажнитель воздуха мини…</td>
+        <td class="bad">WB</td>
+        <td>67</td>
+        <td>67</td>
+        <td>Visual</td>
+      </tr><tr>
+        <td>product-20</td>
+        <td>Климат</td>
+        <td>Увлажнитель воздуха для лица и тела, мин…</td>
+        <td class="bad">WB</td>
+        <td>64</td>
+        <td>41</td>
+        <td>Product Dominance</td>
+      </tr></tbody></table>
+<h2>By Category</h2>
+<table><thead><tr><th>Category</th><th>DAOS</th><th>WB</th><th>Draw</th></tr></thead><tbody><tr><td>Электроинструмент</td><td>2</td><td>1</td><td>0</td></tr><tr><td>Сад</td><td>3</td><td>0</td><td>0</td></tr><tr><td>Строительство</td><td>2</td><td>0</td><td>0</td></tr><tr><td>Бытовая техника</td><td>2</td><td>0</td><td>0</td></tr><tr><td>Дом</td><td>1</td><td>1</td><td>0</td></tr><tr><td>Авто</td><td>1</td><td>1</td><td>0</td></tr><tr><td>Кухня</td><td>1</td><td>0</td><td>1</td></tr><tr><td>Мойка</td><td>1</td><td>1</td><td>0</td></tr><tr><td>Климат</td><td>0</td><td>2</td><td>0</td></tr></tbody></table>
+<h2>Top 5 Improvements</h2>
+<table><thead><tr><th>Improvement</th><th>Impact</th><th>Complexity</th><th>Expected Benefit</th></tr></thead>
+<tbody><tr><td>Real seller packshot inputs (not full WB card as source)</td><td>CRITICAL</td><td>Low (ops + benchmark)</td><td>Eliminates double-overlay artifact; +15–25% dominance on real photos</td></tr><tr><td>Post-overlay dominance preservation gate</td><td>CRITICAL</td><td>Medium</td><td>Addresses avg FI gap 21.7; blocks ship when overlay collapses hierarchy</td></tr><tr><td>Thumbnail 120×160 pass/fail in final QA</td><td>HIGH</td><td>Low</td><td>+8–12% estimated CTR proxy; catches unreadable cards pre-publish</td></tr><tr><td>Category-tuned attention hierarchy caps</td><td>HIGH</td><td>Medium</td><td>Fixes industrial/tool silhouettes where headline still wins</td></tr><tr><td>Hero lighting on weak-edge cutouts</td><td>MEDIUM</td><td>Medium</td><td>Lifts visual weight when dominance Δ=-2.4</td></tr></tbody></table>
+</body></html>
