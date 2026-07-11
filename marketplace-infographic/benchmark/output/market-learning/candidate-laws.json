@@ -1,0 +1,82 @@
+[
+  {
+    "feature": "productAttention",
+    "correlation": 0.783,
+    "absCorrelation": 0.783,
+    "n": 120,
+    "direction": "positive",
+    "status": "Candidate Law",
+    "rationale": "Unmapped feature with |r|=0.783 (n=120). Requires separate Council review before promotion.",
+    "requiresReview": true
+  },
+  {
+    "feature": "secondaryFocusRatio",
+    "correlation": -0.744,
+    "absCorrelation": 0.744,
+    "n": 120,
+    "direction": "negative",
+    "status": "Candidate Law",
+    "rationale": "Unmapped feature with |r|=0.744 (n=120). Requires separate Council review before promotion.",
+    "requiresReview": true
+  },
+  {
+    "feature": "typographyContrast",
+    "correlation": -0.595,
+    "absCorrelation": 0.595,
+    "n": 120,
+    "direction": "negative",
+    "status": "Candidate Law",
+    "rationale": "Unmapped feature with |r|=0.595 (n=120). Requires separate Council review before promotion.",
+    "requiresReview": true
+  },
+  {
+    "feature": "typographyCompetition",
+    "correlation": -0.537,
+    "absCorrelation": 0.537,
+    "n": 120,
+    "direction": "negative",
+    "status": "Candidate Law",
+    "rationale": "Unmapped feature with |r|=0.537 (n=120). Requires separate Council review before promotion.",
+    "requiresReview": true
+  },
+  {
+    "feature": "textCompetition",
+    "correlation": -0.537,
+    "absCorrelation": 0.537,
+    "n": 120,
+    "direction": "negative",
+    "status": "Candidate Law",
+    "rationale": "Unmapped feature with |r|=0.537 (n=120). Requires separate Council review before promotion.",
+    "requiresReview": true
+  },
+  {
+    "feature": "attentionCompetitionIndex",
+    "correlation": -0.448,
+    "absCorrelation": 0.448,
+    "n": 120,
+    "direction": "negative",
+    "status": "Candidate Law",
+    "rationale": "Unmapped feature with |r|=0.448 (n=120). Requires separate Council review before promotion.",
+    "requiresReview": true
+  },
+  {
+    "feature": "eyePathScore",
+    "correlation": -0.39,
+    "absCorrelation": 0.39,
+    "n": 120,
+    "direction": "negative",
+    "status": "Candidate Law",
+    "rationale": "Unmapped feature with |r|=0.39 (n=120). Requires separate Council review before promotion.",
+    "requiresReview": true
+  },
+  {
+    "feature": "productVisualWeight",
+    "correlation": 0.349,
+    "absCorrelation": 0.349,
+    "n": 120,
+    "direction": "positive",
+    "status": "Candidate Law",
+    "rationale": "Unmapped feature with |r|=0.349 (n=120). Requires separate Council review before promotion.",
+    "requiresReview": true
+  }
+]
