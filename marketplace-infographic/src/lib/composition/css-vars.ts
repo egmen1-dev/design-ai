@@ -1,4 +1,5 @@
 import type { CompositionLayout } from "./types";
+import { buildAttentionHierarchyCss } from "@/lib/typography/attention-hierarchy";
 
 /** Генерирует CSS-переменные из композиции (% + calc от размера холста) */
 export function compositionToCssBlock(layout: CompositionLayout): string {
@@ -200,5 +201,7 @@ export function compositionToCssBlock(layout: CompositionLayout): string {
     .mp-left-panel__hero-icon {
       font-size: calc(var(--comp-icon-size) * var(--canvas-w-num) / 100 * 0.85px) !important;
     }
+
+    ${buildAttentionHierarchyCss()}
   `.trim();
 }

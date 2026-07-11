@@ -8,8 +8,9 @@ import { WB_COVER } from "@/lib/composition/canvas";
 export const PRODUCT_TARGET_HEIGHT_RATIO = 0.55;
 export const PRODUCT_TARGET_MAX_HEIGHT_PX = Math.round(WB_COVER.height * 0.58);
 export const PRODUCT_MAX_WIDTH_PX = Math.round(WB_COVER.width * 0.68);
-export const PRODUCT_ALPHA_MAX_WIDTH_PX = Math.round(WB_COVER.width * 0.56);
-export const PRODUCT_ALPHA_MAX_HEIGHT_PX = Math.round(WB_COVER.height * 0.5);
+/** Sprint 7B — aligned with PRODUCT_MAX_* so alpha-fit does not shrink below computeMaxProductSize */
+export const PRODUCT_ALPHA_MAX_WIDTH_PX = PRODUCT_MAX_WIDTH_PX;
+export const PRODUCT_ALPHA_MAX_HEIGHT_PX = PRODUCT_TARGET_MAX_HEIGHT_PX;
 export const PRODUCT_BOTTOM_PAD_PX = Math.round(WB_COVER.height * 0.05);
 export const PRODUCT_SIDE_MARGIN_PX = Math.round(WB_COVER.width * 0.1);
 

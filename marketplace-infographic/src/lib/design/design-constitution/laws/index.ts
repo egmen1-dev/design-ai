@@ -1,4 +1,5 @@
 import { createLaw, fail, layoutPatch, pass, scenePatch } from "./helpers";
+import { attentionHierarchyEnabled } from "@/lib/typography/attention-hierarchy";
 
 /** LAW_001 — Maximum one dominant visual object */
 export const LAW_001 = createLaw({
@@ -431,6 +432,41 @@ export const LAW_014 = createLaw({
   },
 });
 
+/** LAW_101 — Attention hierarchy: Product > Headline > Benefits > Badges > Background */
+export const LAW_101 = createLaw({
+  id: "LAW_101",
+  name: "Attention Hierarchy",
+  category: "hierarchy",
+  severity: "critical",
+  description:
+    "Attention(Product) > Attention(Headline) > Attention(Benefits) > Attention(Badges) > Attention(Background)",
+  stages: ["rendered_critique"],
+  validate(ctx) {
+    const ah = ctx.attentionHierarchy;
+    if (ah) {
+      if (!ah.law101Passed) {
+        return fail(ah.law101Warning ?? "Attention hierarchy violated", {
+          productVW: ah.productVisualWeight,
+          headlineVW: ah.headlineVisualWeight,
+          primaryFocus: ah.primaryFocusRatio,
+        });
+      }
+      return pass({ attentionHierarchyScore: ah.attentionHierarchyScore });
+    }
+    if (attentionHierarchyEnabled()) {
+      const product = (ctx.layout?.metrics?.productAreaPct ?? 30) * 0.7;
+      const text = (ctx.layout?.metrics?.textAreaPct ?? 8) * 1.5;
+      if (text > product * 0.55) {
+        return fail("Headline zone estimated to compete with product attention", { product, text });
+      }
+    }
+    return pass();
+  },
+  correct() {
+    return { priority: 80 };
+  },
+});
+
 /** LAW_015 — Brand palette adherence */
 export const LAW_015 = createLaw({
   id: "LAW_015",
@@ -470,6 +506,7 @@ export const ALL_LAWS = [
   LAW_013,
   LAW_014,
   LAW_015,
+  LAW_101,
 ];
 
 export const LAW_BY_ID = Object.fromEntries(ALL_LAWS.map((l) => [l.id, l])) as Record<
