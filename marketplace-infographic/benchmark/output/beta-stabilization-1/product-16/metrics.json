@@ -1,0 +1,56 @@
+{
+  "productId": 316171067,
+  "category": "kitchen",
+  "categoryLabel": "Кухня",
+  "name": "Блендер погружной измельчитель FHB-010 мощный электрический",
+  "daosGenerated": true,
+  "genDurationMs": 8332,
+  "leader": {
+    "productDominance": 69,
+    "foregroundIsolation": 67.3,
+    "headlineVisualWeight": 11,
+    "primaryFocusRatio": 0.313,
+    "attentionHierarchyScore": 38,
+    "commercialFidelity": 69.5,
+    "visualWeightHero": 24.9,
+    "thumbnailReadability": 67.4,
+    "productVisualWeight": 24.9,
+    "typographyCompetition": 29.9
+  },
+  "daos": {
+    "productDominance": 57,
+    "foregroundIsolation": 84.7,
+    "headlineVisualWeight": 22.8,
+    "primaryFocusRatio": 0.284,
+    "attentionHierarchyScore": 32.7,
+    "commercialFidelity": 45.5,
+    "visualWeightHero": 29.9,
+    "thumbnailReadability": 86.3,
+    "productVisualWeight": 29.9,
+    "typographyCompetition": 49
+  },
+  "delta": {
+    "productDominance": -12,
+    "foregroundIsolation": 17.4,
+    "headlineVisualWeight": 11.8,
+    "primaryFocusRatio": -0.03,
+    "attentionHierarchyScore": -5.3,
+    "commercialFidelity": -24,
+    "visualWeightHero": 5,
+    "thumbnailReadability": 18.9,
+    "productVisualWeight": 5,
+    "typographyCompetition": 19.1
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "draw",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "draw",
+    "rationale": "Dominance: WB 69 vs DAOS 57 (Δ-12); FI: WB 67.3 vs DAOS 84.7; Thumbnail: WB 67.4 vs DAOS 86.3; Fidelity: WB 69.5 vs DAOS 45.5"
+  },
+  "compositeScore": {
+    "leader": 60.5,
+    "daos": 57
+  }
+}

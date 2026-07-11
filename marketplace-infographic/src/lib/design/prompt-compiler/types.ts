@@ -100,6 +100,7 @@ export type PromptCompilerMetadata = {
   promptComplexityScore: number;
   validation: PromptValidationResult;
   attempts: number;
+  promptCommercial?: import("./commercial-layout-materializer").PromptCommercialDiagnostics;
 };
 
 export type PromptCompilerResult = {

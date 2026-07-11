@@ -1,0 +1,58 @@
+{
+  "productId": 903330846,
+  "category": "garden",
+  "categoryLabel": "Сад",
+  "name": "Аккумуляторный триммер для травы мощный Косилка садовая",
+  "daosGenerated": false,
+  "genError": "[\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"oneThought\",\n      \"deferredSpecs\",\n      0\n    ]\n  },\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"deferredBullets\",\n      0\n    ]\n  }\n]",
+  "genDurationMs": 82,
+  "leader": {
+    "productDominance": 52,
+    "foregroundIsolation": 50.5,
+    "headlineVisualWeight": 24,
+    "primaryFocusRatio": 0.269,
+    "attentionHierarchyScore": 30.4,
+    "commercialFidelity": 37.5,
+    "visualWeightHero": 26.4,
+    "thumbnailReadability": 56.2,
+    "productVisualWeight": 26.4,
+    "typographyCompetition": 43.6
+  },
+  "daos": {
+    "productDominance": 52,
+    "foregroundIsolation": 50.5,
+    "headlineVisualWeight": 24,
+    "primaryFocusRatio": 0.269,
+    "attentionHierarchyScore": 30.4,
+    "commercialFidelity": 37.5,
+    "visualWeightHero": 26.4,
+    "thumbnailReadability": 56.2,
+    "productVisualWeight": 26.4,
+    "typographyCompetition": 43.6
+  },
+  "delta": {
+    "productDominance": 0,
+    "foregroundIsolation": 0,
+    "headlineVisualWeight": 0,
+    "primaryFocusRatio": 0,
+    "attentionHierarchyScore": 0,
+    "commercialFidelity": 0,
+    "visualWeightHero": 0,
+    "thumbnailReadability": 0,
+    "productVisualWeight": 0,
+    "typographyCompetition": 0
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "wb",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "DAOS generation failed: [\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"oneThought\",\n      \"deferredSpecs\",\n      0\n    ]\n  },\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"deferredBullets\",\n      0\n    ]\n  }\n]. WB leader wins by default.",
+    "gapClass": "Composition"
+  },
+  "compositeScore": {
+    "leader": 43.6,
+    "daos": 43.6
+  }
+}

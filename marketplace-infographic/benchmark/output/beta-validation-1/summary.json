@@ -1,0 +1,259 @@
+{
+  "version": "beta-validation-1",
+  "timestamp": "2026-07-11T09:01:51.616Z",
+  "productCount": 20,
+  "aggregate": {
+    "daosWins": 6,
+    "wbWins": 14,
+    "draws": 0,
+    "byCategory": {
+      "Электроинструмент": {
+        "daos": 2,
+        "wb": 1,
+        "draw": 0
+      },
+      "Сад": {
+        "daos": 0,
+        "wb": 3,
+        "draw": 0
+      },
+      "Строительство": {
+        "daos": 2,
+        "wb": 0,
+        "draw": 0
+      },
+      "Бытовая техника": {
+        "daos": 1,
+        "wb": 1,
+        "draw": 0
+      },
+      "Дом": {
+        "daos": 0,
+        "wb": 2,
+        "draw": 0
+      },
+      "Авто": {
+        "daos": 0,
+        "wb": 2,
+        "draw": 0
+      },
+      "Кухня": {
+        "daos": 0,
+        "wb": 2,
+        "draw": 0
+      },
+      "Мойка": {
+        "daos": 1,
+        "wb": 1,
+        "draw": 0
+      },
+      "Климат": {
+        "daos": 0,
+        "wb": 2,
+        "draw": 0
+      }
+    },
+    "gapCounts": {
+      "Product Dominance": 4,
+      "Composition": 10
+    }
+  },
+  "council": {
+    "pctDaosBetter": 30,
+    "genSuccessRate": 50,
+    "topGaps": [
+      "Composition (10)",
+      "Product Dominance (4)"
+    ],
+    "betaReady": "NOT READY",
+    "rationale": "Generation succeeded on 50% of products (10/20). Pipeline reliability blocks Beta. Among successful generations: DAOS wins 6/10."
+  },
+  "improvements": [
+    {
+      "title": "Generation reliability hardening",
+      "impact": "CRITICAL",
+      "complexity": "Low–Medium",
+      "benefit": "Reduces 50% generation failures in benchmark"
+    },
+    {
+      "title": "Real seller packshot inputs (not full WB card as source)",
+      "impact": "CRITICAL",
+      "complexity": "Low (ops + benchmark)",
+      "benefit": "Eliminates double-overlay artifact; +15–25% dominance on real photos"
+    },
+    {
+      "title": "Post-overlay dominance preservation gate",
+      "impact": "CRITICAL",
+      "complexity": "Medium",
+      "benefit": "Addresses avg FI gap 9.4; blocks ship when overlay collapses hierarchy"
+    },
+    {
+      "title": "Thumbnail 120×160 pass/fail in final QA",
+      "impact": "HIGH",
+      "complexity": "Low",
+      "benefit": "+8–12% estimated CTR proxy; catches unreadable cards pre-publish"
+    },
+    {
+      "title": "Category-tuned attention hierarchy caps",
+      "impact": "HIGH",
+      "complexity": "Medium",
+      "benefit": "Fixes industrial/tool silhouettes where headline still wins"
+    }
+  ],
+  "products": [
+    {
+      "slot": "product-01",
+      "productId": 243752873,
+      "category": "Электроинструмент",
+      "overall": "wb",
+      "daosGenerated": true,
+      "gapClass": "Product Dominance"
+    },
+    {
+      "slot": "product-02",
+      "productId": 65018803,
+      "category": "Электроинструмент",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-03",
+      "productId": 865871291,
+      "category": "Электроинструмент",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-04",
+      "productId": 952674072,
+      "category": "Сад",
+      "overall": "wb",
+      "daosGenerated": false,
+      "gapClass": "Composition"
+    },
+    {
+      "slot": "product-05",
+      "productId": 903330846,
+      "category": "Сад",
+      "overall": "wb",
+      "daosGenerated": false,
+      "gapClass": "Composition"
+    },
+    {
+      "slot": "product-06",
+      "productId": 880158593,
+      "category": "Сад",
+      "overall": "wb",
+      "daosGenerated": false,
+      "gapClass": "Composition"
+    },
+    {
+      "slot": "product-07",
+      "productId": 14398217,
+      "category": "Строительство",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-08",
+      "productId": 282525552,
+      "category": "Строительство",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-09",
+      "productId": 952441785,
+      "category": "Бытовая техника",
+      "overall": "wb",
+      "daosGenerated": false,
+      "gapClass": "Composition"
+    },
+    {
+      "slot": "product-10",
+      "productId": 409958399,
+      "category": "Бытовая техника",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-11",
+      "productId": 10392457,
+      "category": "Дом",
+      "overall": "wb",
+      "daosGenerated": false,
+      "gapClass": "Composition"
+    },
+    {
+      "slot": "product-12",
+      "productId": 192183239,
+      "category": "Дом",
+      "overall": "wb",
+      "daosGenerated": false,
+      "gapClass": "Composition"
+    },
+    {
+      "slot": "product-13",
+      "productId": 901998555,
+      "category": "Авто",
+      "overall": "wb",
+      "daosGenerated": true,
+      "gapClass": "Product Dominance"
+    },
+    {
+      "slot": "product-14",
+      "productId": 253631867,
+      "category": "Авто",
+      "overall": "wb",
+      "daosGenerated": false,
+      "gapClass": "Composition"
+    },
+    {
+      "slot": "product-15",
+      "productId": 396190738,
+      "category": "Кухня",
+      "overall": "wb",
+      "daosGenerated": false,
+      "gapClass": "Composition"
+    },
+    {
+      "slot": "product-16",
+      "productId": 316171067,
+      "category": "Кухня",
+      "overall": "wb",
+      "daosGenerated": true,
+      "gapClass": "Product Dominance"
+    },
+    {
+      "slot": "product-17",
+      "productId": 208892590,
+      "category": "Мойка",
+      "overall": "daos",
+      "daosGenerated": true
+    },
+    {
+      "slot": "product-18",
+      "productId": 901618182,
+      "category": "Мойка",
+      "overall": "wb",
+      "daosGenerated": true,
+      "gapClass": "Product Dominance"
+    },
+    {
+      "slot": "product-19",
+      "productId": 196125400,
+      "category": "Климат",
+      "overall": "wb",
+      "daosGenerated": false,
+      "gapClass": "Composition"
+    },
+    {
+      "slot": "product-20",
+      "productId": 250141307,
+      "category": "Климат",
+      "overall": "wb",
+      "daosGenerated": false,
+      "gapClass": "Composition"
+    }
+  ]
+}

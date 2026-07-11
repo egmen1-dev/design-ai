@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>DAOS Marketplace Learning — Knowledge Update Report</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 24px; background: #0f172a; color: #e2e8f0; }
+    h1, h2 { color: #f8fafc; }
+    .meta { color: #94a3b8; margin-bottom: 24px; }
+    .cards { display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 0; }
+    .card { background: #1e293b; padding: 16px 20px; border-radius: 8px; min-width: 140px; }
+    .card strong { display: block; font-size: 1.6rem; color: #38bdf8; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 28px; font-size: 0.9rem; }
+    th, td { border: 1px solid #334155; padding: 8px 10px; text-align: left; vertical-align: top; }
+    th { background: #1e293b; }
+    .good { color: #4ade80; }
+    .warn { color: #fbbf24; }
+    .bad { color: #f87171; }
+    .ok { color: #94a3b8; }
+    code { background: #334155; padding: 2px 6px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>DAOS Marketplace Learning MVP</h1>
+  <p class="meta">Cycle 6 · Knowledge Runtime · 2026-07-11T08:04:39.740Z · Mode: cached_features · Cards: 120</p>
+
+  <div class="cards">
+    <div class="card"><strong>9</strong>Still Proven / Likely</div>
+    <div class="card"><strong>0</strong>Confidence Increased</div>
+    <div class="card"><strong>0</strong>Confidence Decreased</div>
+    <div class="card"><strong>0</strong>Contradicted / Review</div>
+    <div class="card"><strong>8</strong>Candidate Laws</div>
+  </div>
+
+  <h2>Law Validation</h2>
+  <table>
+    <thead><tr>
+      <th>Law</th><th>Name</th><th>Status</th><th>Baseline r</th><th>Current r</th><th>Δ</th>
+      <th>Validation</th><th>Finding</th><th>Rationale</th>
+    </tr></thead>
+    <tbody><tr>
+        <td><code>LAW_001</code></td>
+        <td>Product Area Does Not Drive Dominance</td>
+        <td>PROVEN</td>
+        <td>-0.099</td>
+        <td>-0.099</td>
+        <td>0</td>
+        <td class="ok">Still Proven</td>
+        <td>confirmation</td>
+        <td>Remains negligible: r=-0.099 (baseline -0.099).</td>
+      </tr><tr>
+        <td><code>LAW_002</code></td>
+        <td>Foreground Isolation Increases Dominance</td>
+        <td>PROVEN</td>
+        <td>0.332</td>
+        <td>0.332</td>
+        <td>0</td>
+        <td class="ok">Still Proven</td>
+        <td>confirmation</td>
+        <td>Within drift tolerance: r=0.332 (baseline 0.332, Δ=0).</td>
+      </tr><tr>
+        <td><code>LAW_003</code></td>
+        <td>Headline Steals Attention</td>
+        <td>PROVEN</td>
+        <td>-0.723</td>
+        <td>-0.723</td>
+        <td>0</td>
+        <td class="ok">Still Proven</td>
+        <td>confirmation</td>
+        <td>Within drift tolerance: r=-0.723 (baseline -0.723, Δ=0).</td>
+      </tr><tr>
+        <td><code>LAW_004</code></td>
+        <td>Badge Competition Not Bottleneck</td>
+        <td>PROVEN</td>
+        <td>0.05</td>
+        <td>—</td>
+        <td>—</td>
+        <td class="ok">Not Measurable</td>
+        <td>not_applicable</td>
+        <td>Qualitative law. Re-confirmed if related feature remains negligible in WB scan.</td>
+      </tr><tr>
+        <td><code>LAW_005</code></td>
+        <td>Attention Hierarchy &gt; Product Area</td>
+        <td>PROVEN</td>
+        <td>0.744</td>
+        <td>0.744</td>
+        <td>0</td>
+        <td class="ok">Still Proven</td>
+        <td>confirmation</td>
+        <td>Within drift tolerance: r=0.744 (baseline 0.744, Δ=0).</td>
+      </tr><tr>
+        <td><code>LAW_006</code></td>
+        <td>Compositor Sufficient; Overlay Dilutes FI</td>
+        <td>PROVEN</td>
+        <td>—</td>
+        <td>—</td>
+        <td>—</td>
+        <td class="ok">Not Measurable</td>
+        <td>not_applicable</td>
+        <td>DAOS-only law (layer delta). Validated via production benchmarks, not WB correlation refresh.</td>
+      </tr><tr>
+        <td><code>LAW_007</code></td>
+        <td>Hero Visual Weight Drives Dominance</td>
+        <td>PROVEN</td>
+        <td>0.35</td>
+        <td>0.349</td>
+        <td>-0.001</td>
+        <td class="ok">Still Proven</td>
+        <td>confirmation</td>
+        <td>Within drift tolerance: r=0.349 (baseline 0.35, Δ=-0.001).</td>
+      </tr><tr>
+        <td><code>LAW_008</code></td>
+        <td>Sharpness Cluster Explains Visual Weight</td>
+        <td>PROVEN</td>
+        <td>0.326</td>
+        <td>0.326</td>
+        <td>0</td>
+        <td class="ok">Still Proven</td>
+        <td>confirmation</td>
+        <td>Within drift tolerance: r=0.326 (baseline 0.326, Δ=0).</td>
+      </tr><tr>
+        <td><code>LAW_009</code></td>
+        <td>Texture Competition Reduces Dominance</td>
+        <td>PROVEN</td>
+        <td>-0.289</td>
+        <td>-0.289</td>
+        <td>0</td>
+        <td class="ok">Still Proven</td>
+        <td>confirmation</td>
+        <td>Within drift tolerance: r=-0.289 (baseline -0.289, Δ=0).</td>
+      </tr><tr>
+        <td><code>LAW_014</code></td>
+        <td>Object Sharpness Correlates With Dominance</td>
+        <td>LIKELY</td>
+        <td>0.326</td>
+        <td>0.326</td>
+        <td>0</td>
+        <td class="ok">Still Likely</td>
+        <td>confirmation</td>
+        <td>Within drift tolerance: r=0.326 (baseline 0.326, Δ=0).</td>
+      </tr><tr>
+        <td><code>LAW_015</code></td>
+        <td>Perspective Cues Correlate With Dominance</td>
+        <td>LIKELY</td>
+        <td>0.173</td>
+        <td>0.173</td>
+        <td>0</td>
+        <td class="ok">Still Likely</td>
+        <td>confirmation</td>
+        <td>Within drift tolerance: r=0.173 (baseline 0.173, Δ=0).</td>
+      </tr><tr>
+        <td><code>LAW_021</code></td>
+        <td>Product Area 55% as Dominance Lever — REJECTED</td>
+        <td>REJECTED</td>
+        <td>-0.099</td>
+        <td>-0.099</td>
+        <td>0</td>
+        <td class="ok">Still Rejected</td>
+        <td>confirmation</td>
+        <td>Rejection holds: r=-0.099 (negligible expected).</td>
+      </tr><tr>
+        <td><code>LAW_022</code></td>
+        <td>Badge Competition Fix — REJECTED</td>
+        <td>REJECTED</td>
+        <td>0.05</td>
+        <td>-0.014</td>
+        <td>-0.064</td>
+        <td class="ok">Still Rejected</td>
+        <td>confirmation</td>
+        <td>Rejection holds: r=-0.014 (negligible expected).</td>
+      </tr><tr>
+        <td><code>LAW_024</code></td>
+        <td>Heavier Headline Improves Dominance — REJECTED</td>
+        <td>REJECTED</td>
+        <td>-0.723</td>
+        <td>-0.723</td>
+        <td>0</td>
+        <td class="ok">Still Rejected</td>
+        <td>confirmation</td>
+        <td>Rejection holds: r=-0.723 (negative expected).</td>
+      </tr></tbody>
+  </table>
+
+  <h2>Top Correlations (Current Scan)</h2>
+  <table>
+    <thead><tr><th>Feature</th><th>r</th><th>|r|</th><th>n</th><th>Mean</th></tr></thead>
+    <tbody><tr>
+        <td><code>productAttention</code></td>
+        <td>0.783</td>
+        <td>0.783</td>
+        <td>120</td>
+        <td>3.44</td>
+      </tr><tr>
+        <td><code>primaryFocusRatio</code></td>
+        <td>0.744</td>
+        <td>0.744</td>
+        <td>120</td>
+        <td>0.28</td>
+      </tr><tr>
+        <td><code>secondaryFocusRatio</code></td>
+        <td>-0.744</td>
+        <td>0.744</td>
+        <td>120</td>
+        <td>0.72</td>
+      </tr><tr>
+        <td><code>headlineVisualWeight</code></td>
+        <td>-0.723</td>
+        <td>0.723</td>
+        <td>120</td>
+        <td>24.68</td>
+      </tr><tr>
+        <td><code>typographyContrast</code></td>
+        <td>-0.595</td>
+        <td>0.595</td>
+        <td>120</td>
+        <td>75.4</td>
+      </tr><tr>
+        <td><code>typographyCompetition</code></td>
+        <td>-0.537</td>
+        <td>0.537</td>
+        <td>120</td>
+        <td>39.95</td>
+      </tr><tr>
+        <td><code>textCompetition</code></td>
+        <td>-0.537</td>
+        <td>0.537</td>
+        <td>120</td>
+        <td>40.47</td>
+      </tr><tr>
+        <td><code>attentionCompetitionIndex</code></td>
+        <td>-0.448</td>
+        <td>0.448</td>
+        <td>120</td>
+        <td>17.78</td>
+      </tr><tr>
+        <td><code>eyePathScore</code></td>
+        <td>-0.39</td>
+        <td>0.39</td>
+        <td>120</td>
+        <td>86.2</td>
+      </tr><tr>
+        <td><code>productVisualWeight</code></td>
+        <td>0.349</td>
+        <td>0.349</td>
+        <td>120</td>
+        <td>23.88</td>
+      </tr><tr>
+        <td><code>visualWeightHero</code></td>
+        <td>0.349</td>
+        <td>0.349</td>
+        <td>120</td>
+        <td>23.88</td>
+      </tr><tr>
+        <td><code>foregroundIsolation</code></td>
+        <td>0.332</td>
+        <td>0.332</td>
+        <td>120</td>
+        <td>52.71</td>
+      </tr><tr>
+        <td><code>objectSharpness</code></td>
+        <td>0.326</td>
+        <td>0.326</td>
+        <td>120</td>
+        <td>30.51</td>
+      </tr><tr>
+        <td><code>localContrast</code></td>
+        <td>0.321</td>
+        <td>0.321</td>
+        <td>120</td>
+        <td>29.71</td>
+      </tr><tr>
+        <td><code>objectContrast</code></td>
+        <td>0.313</td>
+        <td>0.313</td>
+        <td>120</td>
+        <td>71.27</td>
+      </tr></tbody>
+  </table>
+
+  <h2>Candidate Laws (Not Auto-Promoted)</h2>
+  <table>
+    <thead><tr><th>Feature</th><th>r</th><th>Direction</th><th>n</th><th>Rationale</th></tr></thead>
+    <tbody><tr>
+            <td><code>productAttention</code></td>
+            <td>0.783</td>
+            <td>positive</td>
+            <td>120</td>
+            <td>Unmapped feature with |r|=0.783 (n=120). Requires separate Council review before promotion.</td>
+          </tr><tr>
+            <td><code>secondaryFocusRatio</code></td>
+            <td>-0.744</td>
+            <td>negative</td>
+            <td>120</td>
+            <td>Unmapped feature with |r|=0.744 (n=120). Requires separate Council review before promotion.</td>
+          </tr><tr>
+            <td><code>typographyContrast</code></td>
+            <td>-0.595</td>
+            <td>negative</td>
+            <td>120</td>
+            <td>Unmapped feature with |r|=0.595 (n=120). Requires separate Council review before promotion.</td>
+          </tr><tr>
+            <td><code>typographyCompetition</code></td>
+            <td>-0.537</td>
+            <td>negative</td>
+            <td>120</td>
+            <td>Unmapped feature with |r|=0.537 (n=120). Requires separate Council review before promotion.</td>
+          </tr><tr>
+            <td><code>textCompetition</code></td>
+            <td>-0.537</td>
+            <td>negative</td>
+            <td>120</td>
+            <td>Unmapped feature with |r|=0.537 (n=120). Requires separate Council review before promotion.</td>
+          </tr><tr>
+            <td><code>attentionCompetitionIndex</code></td>
+            <td>-0.448</td>
+            <td>negative</td>
+            <td>120</td>
+            <td>Unmapped feature with |r|=0.448 (n=120). Requires separate Council review before promotion.</td>
+          </tr><tr>
+            <td><code>eyePathScore</code></td>
+            <td>-0.39</td>
+            <td>negative</td>
+            <td>120</td>
+            <td>Unmapped feature with |r|=0.39 (n=120). Requires separate Council review before promotion.</td>
+          </tr><tr>
+            <td><code>productVisualWeight</code></td>
+            <td>0.349</td>
+            <td>positive</td>
+            <td>120</td>
+            <td>Unmapped feature with |r|=0.349 (n=120). Requires separate Council review before promotion.</td>
+          </tr></tbody>
+  </table>
+
+  <h2>Per-Category Snapshots</h2>
+  <table>
+    <thead><tr><th>Category</th><th>n</th><th>Dominance Mean</th><th>Top Driver</th><th>|r|</th></tr></thead>
+    <tbody><tr>
+        <td>Электроинструмент</td>
+        <td>14</td>
+        <td>52.29</td>
+        <td><code>headlineVisualWeight</code></td>
+        <td>0.799</td>
+      </tr><tr>
+        <td>Сад</td>
+        <td>14</td>
+        <td>49.86</td>
+        <td><code>highlightStrength</code></td>
+        <td>0.545</td>
+      </tr><tr>
+        <td>Бытовая техника</td>
+        <td>14</td>
+        <td>44.71</td>
+        <td><code>headlineVisualWeight</code></td>
+        <td>0.541</td>
+      </tr><tr>
+        <td>Строительство</td>
+        <td>14</td>
+        <td>52.43</td>
+        <td><code>productAttention</code></td>
+        <td>0.842</td>
+      </tr><tr>
+        <td>Дом</td>
+        <td>14</td>
+        <td>51.14</td>
+        <td><code>headlineVisualWeight</code></td>
+        <td>0.862</td>
+      </tr><tr>
+        <td>Авто</td>
+        <td>14</td>
+        <td>48.64</td>
+        <td><code>headlineVisualWeight</code></td>
+        <td>0.771</td>
+      </tr><tr>
+        <td>Кухня</td>
+        <td>14</td>
+        <td>47.71</td>
+        <td><code>productAttention</code></td>
+        <td>0.925</td>
+      </tr><tr>
+        <td>Мойка</td>
+        <td>14</td>
+        <td>50.5</td>
+        <td><code>productAttention</code></td>
+        <td>0.942</td>
+      </tr><tr>
+        <td>Климат</td>
+        <td>8</td>
+        <td>49.38</td>
+        <td><code>secondaryFocusRatio</code></td>
+        <td>0.954</td>
+      </tr></tbody>
+  </table>
+
+  <p class="meta">Baseline: Commercial Knowledge Base v1 · Laws: 14 · No production runtime changes.</p>
+</body>
+</html>
