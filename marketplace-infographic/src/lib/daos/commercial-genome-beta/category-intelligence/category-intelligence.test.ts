@@ -67,13 +67,21 @@ function testFlagGatedIntegration() {
   assert.equal(off.categoryIntelligence?.key, null);
 
   process.env.DAOS_CATEGORY_INTELLIGENCE = "1";
-  const on = createCommercialGenomeBetaDecision({
+  const onHome = createCommercialGenomeBetaDecision({
+    marketplace: "wildberries",
+    productTitle: "Органайзер для дома",
+    mode: "generation",
+  });
+  assert.equal(onHome.categoryIntelligence?.key, "home");
+  assert.equal(onHome.decision.productAreaTarget, 0.45);
+
+  const onKitchen = createCommercialGenomeBetaDecision({
     marketplace: "wildberries",
     productTitle: "Блендер кухонный",
     mode: "generation",
   });
-  assert.equal(on.categoryIntelligence?.key, "kitchen");
-  assert.equal(on.decision.productAreaTarget, 0.45);
+  assert.equal(onKitchen.categoryIntelligence?.key, "kitchen");
+  assert.equal(onKitchen.decision.productAreaTarget, 0.44);
 
   if (prev === undefined) delete process.env.DAOS_CATEGORY_INTELLIGENCE;
   else process.env.DAOS_CATEGORY_INTELLIGENCE = prev;
