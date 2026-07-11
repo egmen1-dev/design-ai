@@ -1,0 +1,70 @@
+{
+  "productId": 10392457,
+  "category": "home",
+  "categoryLabel": "Дом",
+  "name": "Органайзер для хранения вещей и белья",
+  "daosGenerated": true,
+  "genDurationMs": 16914,
+  "leader": {
+    "productDominance": 79,
+    "foregroundIsolation": 71,
+    "headlineVisualWeight": 5.2,
+    "primaryFocusRatio": 0.375,
+    "attentionHierarchyScore": 41.4,
+    "commercialFidelity": 41.5,
+    "visualWeightHero": 18.7,
+    "thumbnailReadability": 77.9,
+    "productVisualWeight": 18.7,
+    "typographyCompetition": 20.6,
+    "secondaryFocusRatio": 0.625,
+    "attentionDistribution": 0.42
+  },
+  "daos": {
+    "productDominance": 40,
+    "foregroundIsolation": 72.9,
+    "headlineVisualWeight": 27.1,
+    "primaryFocusRatio": 0.267,
+    "attentionHierarchyScore": 30.7,
+    "commercialFidelity": 26,
+    "visualWeightHero": 17.4,
+    "thumbnailReadability": 74,
+    "productVisualWeight": 17.4,
+    "typographyCompetition": 41.2,
+    "secondaryFocusRatio": 0.733,
+    "attentionDistribution": 0.203
+  },
+  "delta": {
+    "productDominance": -39,
+    "foregroundIsolation": 1.9,
+    "headlineVisualWeight": 21.9,
+    "primaryFocusRatio": -0.11,
+    "attentionHierarchyScore": -10.7,
+    "commercialFidelity": -15.5,
+    "visualWeightHero": -1.3,
+    "thumbnailReadability": -3.9,
+    "productVisualWeight": -1.3,
+    "typographyCompetition": 20.6,
+    "secondaryFocusRatio": 0.11,
+    "attentionDistribution": -0.22
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "wb",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "Dominance: WB 79 vs DAOS 40 (Δ-39); FI: WB 71 vs DAOS 72.9; Thumbnail: WB 77.9 vs DAOS 74; Fidelity: WB 41.5 vs DAOS 26",
+    "gapClass": "Product Dominance"
+  },
+  "failure": {
+    "slot": "product-057",
+    "productId": 10392457,
+    "category": "Дом",
+    "reason": "Dominance",
+    "detail": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 60.1,
+    "daos": 42.7
+  }
+}

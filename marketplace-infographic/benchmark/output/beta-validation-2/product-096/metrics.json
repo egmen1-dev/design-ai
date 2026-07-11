@@ -1,0 +1,62 @@
+{
+  "productId": 904781208,
+  "category": "home-appliances",
+  "categoryLabel": "Бытовая техника",
+  "name": "Белый Пылесос вертикальный беспроводной для дома и авто",
+  "daosGenerated": true,
+  "genDurationMs": 17172,
+  "leader": {
+    "productDominance": 48,
+    "foregroundIsolation": 56.9,
+    "headlineVisualWeight": 22.9,
+    "primaryFocusRatio": 0.248,
+    "attentionHierarchyScore": 29.3,
+    "commercialFidelity": 34,
+    "visualWeightHero": 21.2,
+    "thumbnailReadability": 52.6,
+    "productVisualWeight": 21.2,
+    "typographyCompetition": 37.2,
+    "secondaryFocusRatio": 0.752,
+    "attentionDistribution": 0.261
+  },
+  "daos": {
+    "productDominance": 47,
+    "foregroundIsolation": 57.4,
+    "headlineVisualWeight": 24.5,
+    "primaryFocusRatio": 0.335,
+    "attentionHierarchyScore": 33.3,
+    "commercialFidelity": 33,
+    "visualWeightHero": 22,
+    "thumbnailReadability": 45.9,
+    "productVisualWeight": 22,
+    "typographyCompetition": 37.7,
+    "secondaryFocusRatio": 0.665,
+    "attentionDistribution": 0.261
+  },
+  "delta": {
+    "productDominance": -1,
+    "foregroundIsolation": 0.5,
+    "headlineVisualWeight": 1.6,
+    "primaryFocusRatio": 0.09,
+    "attentionHierarchyScore": 4,
+    "commercialFidelity": -1,
+    "visualWeightHero": 0.8,
+    "thumbnailReadability": -6.7,
+    "productVisualWeight": 0.8,
+    "typographyCompetition": 0.5,
+    "secondaryFocusRatio": -0.09,
+    "attentionDistribution": 0
+  },
+  "verdict": {
+    "moreProfessional": "draw",
+    "strongerSell": "draw",
+    "fasterRead": "wb",
+    "wouldOpen": "draw",
+    "overall": "draw",
+    "rationale": "Dominance: WB 48 vs DAOS 47 (Δ-1); FI: WB 56.9 vs DAOS 57.4; Thumbnail: WB 52.6 vs DAOS 45.9; Fidelity: WB 34 vs DAOS 33"
+  },
+  "compositeScore": {
+    "leader": 41.5,
+    "daos": 40.5
+  }
+}

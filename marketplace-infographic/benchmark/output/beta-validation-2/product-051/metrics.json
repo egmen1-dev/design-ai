@@ -1,0 +1,62 @@
+{
+  "productId": 446180181,
+  "category": "auto",
+  "categoryLabel": "Авто",
+  "name": "Пылесос для автомобиля беспроводной Урал Смерч 5000",
+  "daosGenerated": true,
+  "genDurationMs": 16856,
+  "leader": {
+    "productDominance": 47,
+    "foregroundIsolation": 36.5,
+    "headlineVisualWeight": 30.3,
+    "primaryFocusRatio": 0.304,
+    "attentionHierarchyScore": 30.9,
+    "commercialFidelity": 33,
+    "visualWeightHero": 28.3,
+    "thumbnailReadability": 43.2,
+    "productVisualWeight": 28.3,
+    "typographyCompetition": 43.8,
+    "secondaryFocusRatio": 0.696,
+    "attentionDistribution": 0.276
+  },
+  "daos": {
+    "productDominance": 55,
+    "foregroundIsolation": 50.3,
+    "headlineVisualWeight": 11.5,
+    "primaryFocusRatio": 0.289,
+    "attentionHierarchyScore": 33.8,
+    "commercialFidelity": 41.5,
+    "visualWeightHero": 14.5,
+    "thumbnailReadability": 70.9,
+    "productVisualWeight": 14.5,
+    "typographyCompetition": 28.2,
+    "secondaryFocusRatio": 0.711,
+    "attentionDistribution": 0.268
+  },
+  "delta": {
+    "productDominance": 8,
+    "foregroundIsolation": 13.8,
+    "headlineVisualWeight": -18.8,
+    "primaryFocusRatio": -0.02,
+    "attentionHierarchyScore": 2.9,
+    "commercialFidelity": 8.5,
+    "visualWeightHero": -13.8,
+    "thumbnailReadability": 27.7,
+    "productVisualWeight": -13.8,
+    "typographyCompetition": -15.6,
+    "secondaryFocusRatio": 0.02,
+    "attentionDistribution": -0.01
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 47 vs DAOS 55 (Δ8); FI: WB 36.5 vs DAOS 50.3; Thumbnail: WB 43.2 vs DAOS 70.9; Fidelity: WB 33 vs DAOS 41.5"
+  },
+  "compositeScore": {
+    "leader": 37.1,
+    "daos": 47.2
+  }
+}

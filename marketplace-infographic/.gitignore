@@ -50,3 +50,9 @@ benchmark/output/packshots/
 benchmark/output/roi-improvement-1/_tmp/
 benchmark/output/roi-improvement-2/_tmp/
 benchmark/output/roi-improvement-3/_tmp/
+benchmark/output/beta-validation-2/_tmp/
+benchmark/output/beta-validation-2/**/daos.png
+benchmark/output/beta-validation-2/**/leader.png
+benchmark/output/beta-validation-2/**/packshot.png
+benchmark/output/beta-validation-2/**/comparison.png
+benchmark/output/beta-validation-2/**/product-*.png

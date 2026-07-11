@@ -1,0 +1,70 @@
+{
+  "productId": 316171067,
+  "category": "kitchen",
+  "categoryLabel": "Кухня",
+  "name": "Блендер погружной измельчитель FHB-010 мощный электрический",
+  "daosGenerated": true,
+  "genDurationMs": 18715,
+  "leader": {
+    "productDominance": 69,
+    "foregroundIsolation": 67.3,
+    "headlineVisualWeight": 11,
+    "primaryFocusRatio": 0.313,
+    "attentionHierarchyScore": 38,
+    "commercialFidelity": 69.5,
+    "visualWeightHero": 24.9,
+    "thumbnailReadability": 67.4,
+    "productVisualWeight": 24.9,
+    "typographyCompetition": 29.9,
+    "secondaryFocusRatio": 0.687,
+    "attentionDistribution": 0.378
+  },
+  "daos": {
+    "productDominance": 52,
+    "foregroundIsolation": 74.5,
+    "headlineVisualWeight": 17.3,
+    "primaryFocusRatio": 0.289,
+    "attentionHierarchyScore": 32.4,
+    "commercialFidelity": 38,
+    "visualWeightHero": 18.9,
+    "thumbnailReadability": 75.4,
+    "productVisualWeight": 18.9,
+    "typographyCompetition": 37.5,
+    "secondaryFocusRatio": 0.711,
+    "attentionDistribution": 0.256
+  },
+  "delta": {
+    "productDominance": -17,
+    "foregroundIsolation": 7.2,
+    "headlineVisualWeight": 6.3,
+    "primaryFocusRatio": -0.02,
+    "attentionHierarchyScore": -5.6,
+    "commercialFidelity": -31.5,
+    "visualWeightHero": -6,
+    "thumbnailReadability": 8,
+    "productVisualWeight": -6,
+    "typographyCompetition": 7.6,
+    "secondaryFocusRatio": 0.02,
+    "attentionDistribution": -0.12
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "draw",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "Dominance: WB 69 vs DAOS 52 (Δ-17); FI: WB 67.3 vs DAOS 74.5; Thumbnail: WB 67.4 vs DAOS 75.4; Fidelity: WB 69.5 vs DAOS 38",
+    "gapClass": "Product Dominance"
+  },
+  "failure": {
+    "slot": "product-080",
+    "productId": 316171067,
+    "category": "Кухня",
+    "reason": "Dominance",
+    "detail": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 60.5,
+    "daos": 50
+  }
+}

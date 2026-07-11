@@ -1,0 +1,70 @@
+{
+  "productId": 440630926,
+  "category": "home-appliances",
+  "categoryLabel": "Бытовая техника",
+  "name": "Салфетка для вертикального пылесоса",
+  "daosGenerated": true,
+  "genDurationMs": 18126,
+  "leader": {
+    "productDominance": 46,
+    "foregroundIsolation": 45.9,
+    "headlineVisualWeight": 20.6,
+    "primaryFocusRatio": 0.305,
+    "attentionHierarchyScore": 32.7,
+    "commercialFidelity": 32.5,
+    "visualWeightHero": 18.3,
+    "thumbnailReadability": 48.5,
+    "productVisualWeight": 18.3,
+    "typographyCompetition": 22.6,
+    "secondaryFocusRatio": 0.695,
+    "attentionDistribution": 0.298
+  },
+  "daos": {
+    "productDominance": 33,
+    "foregroundIsolation": 51.3,
+    "headlineVisualWeight": 16.7,
+    "primaryFocusRatio": 0.253,
+    "attentionHierarchyScore": 31.9,
+    "commercialFidelity": 19.5,
+    "visualWeightHero": 8.3,
+    "thumbnailReadability": 58.6,
+    "productVisualWeight": 8.3,
+    "typographyCompetition": 21.9,
+    "secondaryFocusRatio": 0.747,
+    "attentionDistribution": 0.177
+  },
+  "delta": {
+    "productDominance": -13,
+    "foregroundIsolation": 5.4,
+    "headlineVisualWeight": -3.9,
+    "primaryFocusRatio": -0.05,
+    "attentionHierarchyScore": -0.8,
+    "commercialFidelity": -13,
+    "visualWeightHero": -10,
+    "thumbnailReadability": 10.1,
+    "productVisualWeight": -10,
+    "typographyCompetition": -0.7,
+    "secondaryFocusRatio": 0.05,
+    "attentionDistribution": -0.12
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "daos",
+    "wouldOpen": "draw",
+    "overall": "wb",
+    "rationale": "Dominance: WB 46 vs DAOS 33 (Δ-13); FI: WB 45.9 vs DAOS 51.3; Thumbnail: WB 48.5 vs DAOS 58.6; Fidelity: WB 32.5 vs DAOS 19.5",
+    "gapClass": "Product Dominance"
+  },
+  "failure": {
+    "slot": "product-099",
+    "productId": 440630926,
+    "category": "Бытовая техника",
+    "reason": "Dominance",
+    "detail": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 38.5,
+    "daos": 33.5
+  }
+}

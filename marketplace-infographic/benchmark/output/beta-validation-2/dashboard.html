@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8"/><title>BV2 Dashboard</title>
+<style>
+body{font-family:system-ui,sans-serif;margin:24px;background:#0b1220;color:#e2e8f0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:20px 0}
+.card{background:#1e293b;padding:20px;border-radius:10px}
+.card strong{font-size:2rem;color:#38bdf8;display:block}
+.ci{font-size:0.8rem;color:#94a3b8}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:0.85rem}
+th,td{border:1px solid #334155;padding:8px}th{background:#1e293b}
+.pass{color:#4ade80}.warn{color:#fbbf24}.fail{color:#f87171}
+</style></head><body>
+<h1>Beta Validation 2 — Market Confidence Dashboard</h1>
+<p>2026-07-11T11:37:41.980Z · n=120 · Confidence: <strong>HIGH</strong></p>
+<div class="grid">
+  <div class="card"><strong>63%</strong>Market Win Rate<span class="ci">95% CI: 54.4–71.4%</span></div>
+  <div class="card"><strong>100%</strong>Generation Success</div>
+  <div class="card"><strong class="pass">NOT READY</strong>Closed Beta</div>
+  <div class="card"><strong>50.67</strong>Avg Dominance<span class="ci">σ=10.94</span></div>
+  <div class="card"><strong>36.57</strong>Avg Fidelity<span class="ci">CI 34.8–38.34</span></div>
+  <div class="card"><strong>65.37</strong>Thumbnail Read<span class="ci">σ=13.5</span></div>
+</div>
+<h2>Category Win Rates</h2>
+<table><thead><tr><th>Category</th><th>n</th><th>Win Rate</th><th>Avg Dominance</th></tr></thead><tbody><tr><td>Электроинструмент</td><td>14</td><td>78.6%</td><td>60.6</td></tr><tr><td>Строительство</td><td>14</td><td>71.4%</td><td>50.4</td></tr><tr><td>Сад</td><td>14</td><td>64.3%</td><td>50.6</td></tr><tr><td>Авто</td><td>14</td><td>78.6%</td><td>48.9</td></tr><tr><td>Дом</td><td>14</td><td>57.1%</td><td>49.4</td></tr><tr><td>Климат</td><td>8</td><td>50%</td><td>49.4</td></tr><tr><td>Кухня</td><td>14</td><td>50%</td><td>50.4</td></tr><tr><td>Бытовая техника</td><td>14</td><td>64.3%</td><td>47.2</td></tr><tr><td>Мойка</td><td>14</td><td>50%</td><td>48.6</td></tr></tbody></table>
+<h2>Failure Reasons (DAOS losses)</h2>
+<pre>{
+  "Background": 4,
+  "Dominance": 21,
+  "Category Specific": 3,
+  "Lighting": 1,
+  "Typography": 1
+}</pre>
+</body></html>

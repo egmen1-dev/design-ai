@@ -1,0 +1,70 @@
+{
+  "productId": 62929192,
+  "category": "kitchen",
+  "categoryLabel": "Кухня",
+  "name": "Блендер погружной измельчитель 3 в 1 Bt HB1233SS Турбо режим",
+  "daosGenerated": true,
+  "genDurationMs": 19003,
+  "leader": {
+    "productDominance": 48,
+    "foregroundIsolation": 48.1,
+    "headlineVisualWeight": 29.2,
+    "primaryFocusRatio": 0.231,
+    "attentionHierarchyScore": 27,
+    "commercialFidelity": 34,
+    "visualWeightHero": 27.4,
+    "thumbnailReadability": 47.9,
+    "productVisualWeight": 27.4,
+    "typographyCompetition": 50.1,
+    "secondaryFocusRatio": 0.769,
+    "attentionDistribution": 0.257
+  },
+  "daos": {
+    "productDominance": 26,
+    "foregroundIsolation": 53.3,
+    "headlineVisualWeight": 27.8,
+    "primaryFocusRatio": 0.224,
+    "attentionHierarchyScore": 30,
+    "commercialFidelity": 14.5,
+    "visualWeightHero": 9.9,
+    "thumbnailReadability": 42.1,
+    "productVisualWeight": 9.9,
+    "typographyCompetition": 32,
+    "secondaryFocusRatio": 0.776,
+    "attentionDistribution": 0.142
+  },
+  "delta": {
+    "productDominance": -22,
+    "foregroundIsolation": 5.2,
+    "headlineVisualWeight": -1.4,
+    "primaryFocusRatio": -0.01,
+    "attentionHierarchyScore": 3,
+    "commercialFidelity": -19.5,
+    "visualWeightHero": -17.5,
+    "thumbnailReadability": -5.8,
+    "productVisualWeight": -17.5,
+    "typographyCompetition": -18.1,
+    "secondaryFocusRatio": 0.01,
+    "attentionDistribution": -0.12
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "wb",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "Dominance: WB 48 vs DAOS 26 (Δ-22); FI: WB 48.1 vs DAOS 53.3; Thumbnail: WB 47.9 vs DAOS 42.1; Fidelity: WB 34 vs DAOS 14.5",
+    "gapClass": "Product Dominance"
+  },
+  "failure": {
+    "slot": "product-084",
+    "productId": 62929192,
+    "category": "Кухня",
+    "reason": "Dominance",
+    "detail": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 39.6,
+    "daos": 27.6
+  }
+}

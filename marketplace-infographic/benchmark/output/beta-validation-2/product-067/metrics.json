@@ -1,0 +1,62 @@
+{
+  "productId": 79890545,
+  "category": "home",
+  "categoryLabel": "Дом",
+  "name": "Органайзер для хранения белья и одежды 60х45х30 см",
+  "daosGenerated": true,
+  "genDurationMs": 15787,
+  "leader": {
+    "productDominance": 48,
+    "foregroundIsolation": 66.1,
+    "headlineVisualWeight": 18.5,
+    "primaryFocusRatio": 0.223,
+    "attentionHierarchyScore": 28.9,
+    "commercialFidelity": 34.5,
+    "visualWeightHero": 16.1,
+    "thumbnailReadability": 57.1,
+    "productVisualWeight": 16.1,
+    "typographyCompetition": 34.3,
+    "secondaryFocusRatio": 0.777,
+    "attentionDistribution": 0.234
+  },
+  "daos": {
+    "productDominance": 62,
+    "foregroundIsolation": 81.3,
+    "headlineVisualWeight": 17.2,
+    "primaryFocusRatio": 0.368,
+    "attentionHierarchyScore": 38.5,
+    "commercialFidelity": 49,
+    "visualWeightHero": 27.4,
+    "thumbnailReadability": 87.1,
+    "productVisualWeight": 27.4,
+    "typographyCompetition": 37.8,
+    "secondaryFocusRatio": 0.632,
+    "attentionDistribution": 0.333
+  },
+  "delta": {
+    "productDominance": 14,
+    "foregroundIsolation": 15.2,
+    "headlineVisualWeight": -1.3,
+    "primaryFocusRatio": 0.14,
+    "attentionHierarchyScore": 9.6,
+    "commercialFidelity": 14.5,
+    "visualWeightHero": 11.3,
+    "thumbnailReadability": 30,
+    "productVisualWeight": 11.3,
+    "typographyCompetition": 3.5,
+    "secondaryFocusRatio": -0.15,
+    "attentionDistribution": 0.1
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 48 vs DAOS 62 (Δ14); FI: WB 66.1 vs DAOS 81.3; Thumbnail: WB 57.1 vs DAOS 87.1; Fidelity: WB 34.5 vs DAOS 49"
+  },
+  "compositeScore": {
+    "leader": 43.4,
+    "daos": 59.4
+  }
+}

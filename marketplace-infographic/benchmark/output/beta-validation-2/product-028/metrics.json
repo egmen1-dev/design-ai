@@ -1,0 +1,62 @@
+{
+  "productId": 404228253,
+  "category": "construction",
+  "categoryLabel": "Строительство",
+  "name": "Перфоратор электрический ударный по бетону KBH 3-20K",
+  "daosGenerated": true,
+  "genDurationMs": 18217,
+  "leader": {
+    "productDominance": 41,
+    "foregroundIsolation": 54.8,
+    "headlineVisualWeight": 33.1,
+    "primaryFocusRatio": 0.258,
+    "attentionHierarchyScore": 29.2,
+    "commercialFidelity": 27,
+    "visualWeightHero": 22.8,
+    "thumbnailReadability": 51.1,
+    "productVisualWeight": 22.8,
+    "typographyCompetition": 44.9,
+    "secondaryFocusRatio": 0.742,
+    "attentionDistribution": 0.226
+  },
+  "daos": {
+    "productDominance": 52,
+    "foregroundIsolation": 52.6,
+    "headlineVisualWeight": 9.6,
+    "primaryFocusRatio": 0.235,
+    "attentionHierarchyScore": 31.2,
+    "commercialFidelity": 38.5,
+    "visualWeightHero": 10.7,
+    "thumbnailReadability": 60.4,
+    "productVisualWeight": 10.7,
+    "typographyCompetition": 27,
+    "secondaryFocusRatio": 0.765,
+    "attentionDistribution": 0.226
+  },
+  "delta": {
+    "productDominance": 11,
+    "foregroundIsolation": -2.2,
+    "headlineVisualWeight": -23.5,
+    "primaryFocusRatio": -0.02,
+    "attentionHierarchyScore": 2,
+    "commercialFidelity": 11.5,
+    "visualWeightHero": -12.1,
+    "thumbnailReadability": 9.3,
+    "productVisualWeight": -12.1,
+    "typographyCompetition": -17.9,
+    "secondaryFocusRatio": 0.02,
+    "attentionDistribution": 0
+  },
+  "verdict": {
+    "moreProfessional": "daos",
+    "strongerSell": "daos",
+    "fasterRead": "daos",
+    "wouldOpen": "daos",
+    "overall": "daos",
+    "rationale": "Dominance: WB 41 vs DAOS 52 (Δ11); FI: WB 54.8 vs DAOS 52.6; Thumbnail: WB 51.1 vs DAOS 60.4; Fidelity: WB 27 vs DAOS 38.5"
+  },
+  "compositeScore": {
+    "leader": 37.1,
+    "daos": 44
+  }
+}

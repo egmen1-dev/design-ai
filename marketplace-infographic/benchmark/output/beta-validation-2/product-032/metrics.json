@@ -1,0 +1,70 @@
+{
+  "productId": 945646115,
+  "category": "garden",
+  "categoryLabel": "Сад",
+  "name": "Триммер садовый электрический для травы мотокоса 1850 Вт",
+  "daosGenerated": true,
+  "genDurationMs": 18570,
+  "leader": {
+    "productDominance": 51,
+    "foregroundIsolation": 29,
+    "headlineVisualWeight": 21.8,
+    "primaryFocusRatio": 0.277,
+    "attentionHierarchyScore": 30.9,
+    "commercialFidelity": 37,
+    "visualWeightHero": 22.6,
+    "thumbnailReadability": 32.1,
+    "productVisualWeight": 22.6,
+    "typographyCompetition": 29.6,
+    "secondaryFocusRatio": 0.723,
+    "attentionDistribution": 0.305
+  },
+  "daos": {
+    "productDominance": 21,
+    "foregroundIsolation": 22.1,
+    "headlineVisualWeight": 11.6,
+    "primaryFocusRatio": 0.125,
+    "attentionHierarchyScore": 27.7,
+    "commercialFidelity": 14,
+    "visualWeightHero": 3.2,
+    "thumbnailReadability": 19.9,
+    "productVisualWeight": 3.2,
+    "typographyCompetition": 18.8,
+    "secondaryFocusRatio": 0.875,
+    "attentionDistribution": 0.095
+  },
+  "delta": {
+    "productDominance": -30,
+    "foregroundIsolation": -6.9,
+    "headlineVisualWeight": -10.2,
+    "primaryFocusRatio": -0.15,
+    "attentionHierarchyScore": -3.2,
+    "commercialFidelity": -23,
+    "visualWeightHero": -19.4,
+    "thumbnailReadability": -12.2,
+    "productVisualWeight": -19.4,
+    "typographyCompetition": -10.8,
+    "secondaryFocusRatio": 0.15,
+    "attentionDistribution": -0.21
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "wb",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "Dominance: WB 51 vs DAOS 21 (Δ-30); FI: WB 29 vs DAOS 22.1; Thumbnail: WB 32.1 vs DAOS 19.9; Fidelity: WB 37 vs DAOS 14",
+    "gapClass": "Product Dominance"
+  },
+  "failure": {
+    "slot": "product-032",
+    "productId": 945646115,
+    "category": "Сад",
+    "reason": "Dominance",
+    "detail": "Product Dominance"
+  },
+  "compositeScore": {
+    "leader": 36.1,
+    "daos": 17.9
+  }
+}

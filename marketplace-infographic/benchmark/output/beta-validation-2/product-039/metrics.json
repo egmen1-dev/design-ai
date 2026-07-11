@@ -1,0 +1,62 @@
+{
+  "productId": 188483852,
+  "category": "garden",
+  "categoryLabel": "Сад",
+  "name": "Триммер электрический для травы от сети Электротриммер",
+  "daosGenerated": true,
+  "genDurationMs": 17666,
+  "leader": {
+    "productDominance": 49,
+    "foregroundIsolation": 46.1,
+    "headlineVisualWeight": 25.5,
+    "primaryFocusRatio": 0.286,
+    "attentionHierarchyScore": 30.4,
+    "commercialFidelity": 34,
+    "visualWeightHero": 25,
+    "thumbnailReadability": 59.1,
+    "productVisualWeight": 25,
+    "typographyCompetition": 41.8,
+    "secondaryFocusRatio": 0.714,
+    "attentionDistribution": 0.271
+  },
+  "daos": {
+    "productDominance": 45,
+    "foregroundIsolation": 56.6,
+    "headlineVisualWeight": 19.3,
+    "primaryFocusRatio": 0.32,
+    "attentionHierarchyScore": 33.5,
+    "commercialFidelity": 31,
+    "visualWeightHero": 16.3,
+    "thumbnailReadability": 63.8,
+    "productVisualWeight": 16.3,
+    "typographyCompetition": 29.8,
+    "secondaryFocusRatio": 0.68,
+    "attentionDistribution": 0.249
+  },
+  "delta": {
+    "productDominance": -4,
+    "foregroundIsolation": 10.5,
+    "headlineVisualWeight": -6.2,
+    "primaryFocusRatio": 0.03,
+    "attentionHierarchyScore": 3.1,
+    "commercialFidelity": -3,
+    "visualWeightHero": -8.7,
+    "thumbnailReadability": 4.7,
+    "productVisualWeight": -8.7,
+    "typographyCompetition": -12,
+    "secondaryFocusRatio": -0.03,
+    "attentionDistribution": -0.02
+  },
+  "verdict": {
+    "moreProfessional": "draw",
+    "strongerSell": "draw",
+    "fasterRead": "draw",
+    "wouldOpen": "draw",
+    "overall": "draw",
+    "rationale": "Dominance: WB 49 vs DAOS 45 (Δ-4); FI: WB 46.1 vs DAOS 56.6; Thumbnail: WB 59.1 vs DAOS 63.8; Fidelity: WB 34 vs DAOS 31"
+  },
+  "compositeScore": {
+    "leader": 41.5,
+    "daos": 41.8
+  }
+}
