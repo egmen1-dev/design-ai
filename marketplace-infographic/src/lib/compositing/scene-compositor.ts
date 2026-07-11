@@ -31,7 +31,7 @@ import {
   fitProductWithSafePlacement,
 } from "./alpha-fit";
 import {
-  computeHeroMaxProductSize,
+  applyHeroMassToMaxSize,
   getHeroVisualMassPolicy,
   isFlatWideSilhouette,
   resolveHeroAlphaLimits,
@@ -186,6 +186,7 @@ async function prepareProductLayer(
   rotationDeg: number,
   maxWidthPx: number,
   maxHeightPx: number,
+  headerReservePx: number = HEADER_RESERVE_PX,
 ): Promise<{ buffer: Buffer; width: number; height: number }> {
   let pipeline = sharp(productBuffer)
     .ensureAlpha()
@@ -204,7 +205,7 @@ async function prepareProductLayer(
   let { data: buffer, info } = resized;
 
   const canvasMaxW = CANVAS_W - SIDE_MARGIN * 2;
-  const canvasMaxH = CANVAS_H - HEADER_RESERVE_PX - BOTTOM_PAD;
+  const canvasMaxH = CANVAS_H - headerReservePx - BOTTOM_PAD;
   if (info.width > canvasMaxW || info.height > canvasMaxH) {
     const fitted = await sharp(buffer)
       .resize(canvasMaxW, canvasMaxH, { fit: "inside", withoutEnlargement: true })
@@ -291,6 +292,9 @@ export async function compositeProductIntoScene(
     preBounds != null &&
     isFlatWideSilhouette(preBounds.width, preBounds.height);
 
+  const canvasMaxW = Math.min(PRODUCT_MAX_WIDTH_PX, CANVAS_W - SIDE_MARGIN * 2);
+  const canvasMaxH = Math.min(PRODUCT_MAX_H, CANVAS_H - headerReservePx - BOTTOM_PAD);
+
   const bgResized = await resizeBackground(bgRaw);
   let maxSize = computeMaxProductSize(
     options.compositionLayout,
@@ -299,18 +303,15 @@ export async function compositeProductIntoScene(
   );
 
   if (heroPolicy.enabled) {
-    const heroSize = computeHeroMaxProductSize({
-      compositionLayout: options.compositionLayout,
-      objectScale,
-      canvasMaxW: Math.min(PRODUCT_MAX_WIDTH_PX, CANVAS_W - SIDE_MARGIN * 2),
-      canvasMaxH: Math.min(PRODUCT_MAX_H, CANVAS_H - headerReservePx - BOTTOM_PAD),
-      productMaxW: PRODUCT_MAX_WIDTH_PX,
-      productMaxH: PRODUCT_MAX_H,
-      flatWide,
-    });
     maxSize = {
-      maxW: Math.max(maxSize.maxW, heroSize.maxW),
-      maxH: Math.max(maxSize.maxH, heroSize.maxH),
+      ...applyHeroMassToMaxSize({
+        maxW: maxSize.maxW,
+        maxH: maxSize.maxH,
+        policy: heroPolicy,
+        flatWide,
+        canvasMaxW,
+        canvasMaxH,
+      }),
       placementAreaPct: maxSize.placementAreaPct,
     };
   }
@@ -347,6 +348,7 @@ export async function compositeProductIntoScene(
     rotationDeg,
     maxW,
     maxH,
+    headerReservePx,
   );
   const placement = await fitProductWithSafePlacement(
     prepared.buffer,

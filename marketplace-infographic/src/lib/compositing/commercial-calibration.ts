@@ -1,5 +1,6 @@
 import { xPct, yPct, zoneAreaPct, WB_COVER } from "@/lib/composition/canvas";
 import type { CompositionLayout } from "@/lib/composition/types";
+import { resolveHeroAlphaLimits, getHeroVisualMassPolicy } from "./hero-visual-mass";
 import {
   PRODUCT_BOTTOM_PAD_PX,
   PRODUCT_MAX_WIDTH_PX,
@@ -44,7 +45,13 @@ export type MaxProductSizeEstimate = {
 
 const CANVAS_W = WB_COVER.width;
 const CANVAS_H = WB_COVER.height;
-const HEADER_RESERVE_PX = Math.round(CANVAS_H * 0.2);
+
+function headerReservePx(): number {
+  const heroPolicy = getHeroVisualMassPolicy();
+  return heroPolicy.enabled
+    ? resolveHeroAlphaLimits(heroPolicy).headerReservePx
+    : Math.round(CANVAS_H * 0.2);
+}
 
 function legacyScaleBoost(objectScale: number): number {
   return LEGACY_SCALE_BOOST_BASE + objectScale * LEGACY_SCALE_BOOST_SLOPE;
@@ -63,11 +70,12 @@ export const CALIBRATION_OBJECT_SCALE_MIN = 0.5;
 export const CALIBRATION_OBJECT_SCALE_MAX = 0.75;
 
 function canvasCaps(): { canvasMaxW: number; canvasMaxH: number } {
+  const reserve = headerReservePx();
   return {
     canvasMaxW: Math.min(PRODUCT_MAX_WIDTH_PX, CANVAS_W - PRODUCT_SIDE_MARGIN_PX * 2),
     canvasMaxH: Math.min(
       PRODUCT_TARGET_MAX_HEIGHT_PX,
-      CANVAS_H - HEADER_RESERVE_PX - PRODUCT_BOTTOM_PAD_PX,
+      CANVAS_H - reserve - PRODUCT_BOTTOM_PAD_PX,
     ),
   };
 }
@@ -167,11 +175,7 @@ export function resolveFallbackCanvasScale(input: {
   }
 
   const legacy = legacyFallbackScale(input.objectScale);
-  const canvasMaxW = Math.min(PRODUCT_MAX_WIDTH_PX, CANVAS_W - PRODUCT_SIDE_MARGIN_PX * 2);
-  const canvasMaxH = Math.min(
-    PRODUCT_TARGET_MAX_HEIGHT_PX,
-    CANVAS_H - HEADER_RESERVE_PX - PRODUCT_BOTTOM_PAD_PX,
-  );
+  const { canvasMaxW, canvasMaxH } = canvasCaps();
   const maxAchievableAreaPct = placementAreaPct(canvasMaxW, canvasMaxH);
   const ideal = Math.sqrt(Math.max(0.01, targetAreaPct / maxAchievableAreaPct));
   const scale = Math.min(0.95, Math.max(legacy, ideal * legacy));
@@ -191,11 +195,7 @@ export function computeMaxProductSize(
   objectScale: number,
   mode: CommercialCalibrationMode = "legacy",
 ): MaxProductSizeEstimate {
-  const canvasMaxW = Math.min(PRODUCT_MAX_WIDTH_PX, CANVAS_W - PRODUCT_SIDE_MARGIN_PX * 2);
-  const canvasMaxH = Math.min(
-    PRODUCT_TARGET_MAX_HEIGHT_PX,
-    CANVAS_H - HEADER_RESERVE_PX - PRODUCT_BOTTOM_PAD_PX,
-  );
+  const { canvasMaxW, canvasMaxH } = canvasCaps();
 
   const comp = compositionLayout?.product;
   if (comp) {

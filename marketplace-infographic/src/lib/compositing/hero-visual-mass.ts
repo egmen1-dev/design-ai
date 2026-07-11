@@ -23,6 +23,10 @@ export type HeroVisualMassPolicy = {
   allowAlphaEnlargement: boolean;
   flatWideWidthBoost: number;
   minAlphaFillRatio: number;
+  /** Multiplier applied on top of commercial-calibration max size */
+  executionMassWidthMul: number;
+  executionMassHeightMul: number;
+  executionMassFlatWideWidthMul: number;
 };
 
 const DEFAULT_POLICY: HeroVisualMassPolicy = {
@@ -36,19 +40,25 @@ const DEFAULT_POLICY: HeroVisualMassPolicy = {
   allowAlphaEnlargement: false,
   flatWideWidthBoost: 1,
   minAlphaFillRatio: 0,
+  executionMassWidthMul: 1,
+  executionMassHeightMul: 1,
+  executionMassFlatWideWidthMul: 1,
 };
 
 const SPRINT1_POLICY: HeroVisualMassPolicy = {
   enabled: true,
-  objectScaleMultiplier: 1.14,
+  objectScaleMultiplier: 1.18,
   zoneScaleBoost: 0.72,
   zoneScaleSlope: 0.2,
-  alphaMaxWidthPct: 0.78,
-  alphaMaxHeightPct: 0.68,
-  headerReservePct: 0.12,
+  alphaMaxWidthPct: 0.82,
+  alphaMaxHeightPct: 0.72,
+  headerReservePct: 0.1,
   allowAlphaEnlargement: true,
-  flatWideWidthBoost: 1.18,
-  minAlphaFillRatio: 0.72,
+  flatWideWidthBoost: 1.22,
+  minAlphaFillRatio: 0.78,
+  executionMassWidthMul: 1.1,
+  executionMassHeightMul: 1.08,
+  executionMassFlatWideWidthMul: 1.14,
 };
 
 export function isHeroVisualMassEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
@@ -67,7 +77,7 @@ export function resolveHeroObjectScale(
 ): number {
   const policy = getHeroVisualMassPolicy(env);
   if (!policy.enabled) return baseObjectScale;
-  return Math.min(0.92, baseObjectScale * policy.objectScaleMultiplier);
+  return Math.min(0.95, baseObjectScale * policy.objectScaleMultiplier);
 }
 
 export function resolveHeroAlphaLimits(policy: HeroVisualMassPolicy): {
@@ -138,5 +148,32 @@ export function computeHeroMaxProductSize(input: {
     ),
     maxH: Math.min(input.canvasMaxH, Math.round(input.canvasMaxH * scale)),
     policy,
+  };
+}
+
+/**
+ * Mandatory execution boost on top of commercial-calibration sizing.
+ * Math.max(hero, commercial) is a no-op when calibrated mode already hits 1.18 scaleBoost.
+ */
+export function applyHeroMassToMaxSize(input: {
+  maxW: number;
+  maxH: number;
+  policy: HeroVisualMassPolicy;
+  flatWide: boolean;
+  canvasMaxW: number;
+  canvasMaxH: number;
+}): { maxW: number; maxH: number } {
+  if (!input.policy.enabled) {
+    return { maxW: input.maxW, maxH: input.maxH };
+  }
+
+  const widthMul =
+    input.policy.executionMassWidthMul *
+    (input.flatWide ? input.policy.executionMassFlatWideWidthMul : 1);
+  const heightMul = input.policy.executionMassHeightMul;
+
+  return {
+    maxW: Math.min(input.canvasMaxW, Math.round(input.maxW * widthMul)),
+    maxH: Math.min(input.canvasMaxH, Math.round(input.maxH * heightMul)),
   };
 }

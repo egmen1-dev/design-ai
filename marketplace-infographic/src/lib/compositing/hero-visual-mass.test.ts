@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import {
+  applyHeroMassToMaxSize,
   computeHeroMaxProductSize,
   getHeroVisualMassPolicy,
   isFlatWideSilhouette,
@@ -17,7 +18,7 @@ function testObjectScaleBoost() {
   const env = { DAOS_HERO_VISUAL_MASS: "1" } as NodeJS.ProcessEnv;
   const boosted = resolveHeroObjectScale(0.75, env);
   assert.ok(boosted > 0.75, `expected boost, got ${boosted}`);
-  assert.ok(boosted <= 0.92, `expected cap, got ${boosted}`);
+  assert.ok(boosted <= 0.95, `expected cap, got ${boosted}`);
   console.log("✔ objectScale multiplier applied");
 }
 
@@ -58,11 +59,28 @@ function testHeroSizeExceedsLegacy() {
   console.log("✔ hero mass sizing exceeds legacy");
 }
 
+function testExecutionMassBoostsCommercialCeiling() {
+  const policy = getHeroVisualMassPolicy({ DAOS_HERO_VISUAL_MASS: "1" } as NodeJS.ProcessEnv);
+  const commercialCeiling = { maxW: 612, maxH: 580 };
+  const boosted = applyHeroMassToMaxSize({
+    ...commercialCeiling,
+    policy,
+    flatWide: true,
+    canvasMaxW: 700,
+    canvasMaxH: 650,
+  });
+
+  assert.ok(boosted.maxW > commercialCeiling.maxW, "flat-wide width should exceed commercial ceiling");
+  assert.ok(boosted.maxH > commercialCeiling.maxH, "height should exceed commercial ceiling");
+  console.log("✔ execution mass boosts past commercial calibration ceiling");
+}
+
 function main() {
   testFlagGating();
   testObjectScaleBoost();
   testFlatWideDetection();
   testHeroSizeExceedsLegacy();
+  testExecutionMassBoostsCommercialCeiling();
   console.log("==> hero-visual-mass tests OK");
 }
 
