@@ -26,18 +26,15 @@ This is **Quality Gap №1**.
 ```
 DAOS Quality Program v1
 │
-├── Cycle 1 — Product Dominance Research     ← THIS CYCLE (research only)
-│   ├── 120 WB leader cards analyzed
-│   ├── DAOS Sprint 9.5 baseline compared
-│   ├── Product Dominance Model
-│   ├── Gap Matrix
-│   └── Quality Backlog (Top-20)
+├── Cycle 1 — Product Dominance Research     ✅ COMPLETE
 │
-├── Cycle 2 — Compositor Reliability        (planned)
-│   └── Scene merge + shadows on real cutouts
+├── Cycle 2 — Visual Weight Research         ✅ COMPLETE
+│   ├── 20 pixel features per card
+│   ├── Correlation matrix vs dominance
+│   └── Product Dominance Model v2
 │
-├── Cycle 3 — Visual Weight & Integration   (planned)
-│   └── Eliminate png_overlay_feel
+├── Cycle 3 — Visual Weight Execution        ← NEXT
+│   └── Foreground isolation + compositor + sharpness cluster
 │
 ├── Cycle 4 — Thumbnail CTR Validation      (planned)
 │   └── WB search-grid human review
