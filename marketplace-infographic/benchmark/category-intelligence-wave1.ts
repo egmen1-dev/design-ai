@@ -130,6 +130,7 @@ async function main() {
     cmp: MetricComparison;
     daosOk: boolean;
     genError?: string;
+    failure?: import("./lib/beta-validation-failure-analysis").FailureRecord;
   }> = [];
 
   for (const product of products) {
@@ -143,19 +144,23 @@ async function main() {
         verdict: m.verdict,
         cmp: { leader: m.leader, daos: m.daos, delta: m.delta, leaderWins: 0, daosWins: 0, draws: 0 },
         daosOk: m.daosGenerated,
+        failure: m.failure,
       });
       console.log(`  [cached] ${product.slot} ${product.categoryLabel} → ${m.verdict.overall}`);
       continue;
     }
 
-    const packshot = await ensurePackshotFromLeader(product.leaderImagePath);
+    const packshot = await ensurePackshotFromLeader({
+      leaderImagePath: product.leaderImagePath,
+      productId: product.productId,
+    });
     const gen = await generateDaosCard({ product, productImage: packshot, userId });
 
     if (!gen.ok || !gen.finalPath) {
       results.push({
         product,
-        verdict: { overall: "wb", professional: "wb", attention: "wb", sell: "wb", readability: "wb", open: "wb" },
-        cmp: { leader: {}, daos: {}, delta: {}, leaderWins: 0, daosWins: 0, draws: 0 } as MetricComparison,
+        verdict: { overall: "wb", moreProfessional: "wb", strongerSell: "wb", fasterRead: "wb", wouldOpen: "wb", rationale: gen.error ?? "gen failed" },
+        cmp: { leader: {} as never, daos: {} as never, delta: {} as never, leaderWins: 0, daosWins: 0, draws: 0 },
         daosOk: false,
         genError: gen.error,
       });
@@ -166,8 +171,22 @@ async function main() {
     const leaderMetrics = await measureBetaCardMetrics(product.leaderImagePath);
     const daosMetrics = await measureBetaCardMetrics(gen.finalPath);
     const cmp = compareMetrics(leaderMetrics, daosMetrics);
-    const verdict = deriveHumanVerdict(cmp);
-    const failure = verdict.overall === "wb" ? classifyFailure({ category: product.category, cmp }) : undefined;
+    const verdict = deriveHumanVerdict(cmp, {
+      leaderDominance: product.wbDominance,
+      daosGenerated: true,
+    });
+    const failure =
+      verdict.overall === "wb"
+        ? classifyFailure({
+            slot: product.slot,
+            productId: product.productId,
+            category: product.category,
+            categoryLabel: product.categoryLabel,
+            daosGenerated: true,
+            gapClass: verdict.gapClass,
+            delta: cmp.delta,
+          })
+        : undefined;
 
     await fsPromises.mkdir(productDir, { recursive: true });
     await fsPromises.writeFile(
@@ -191,7 +210,7 @@ async function main() {
       ),
     );
 
-    results.push({ product, verdict, cmp, daosOk: true });
+    results.push({ product, verdict, cmp, daosOk: true, failure });
     console.log(`  ${product.slot} ${product.categoryLabel} → ${verdict.overall} (dom Δ${cmp.delta.dominance?.toFixed(1) ?? "?"})`);
   }
 
@@ -222,10 +241,8 @@ async function main() {
     categoryAnalysis[label] = { ...s, winRate: wr, baselineWinRate: baseline, deltaPp: delta };
   }
 
-  const dominanceScores = results.filter((r) => r.daosOk).map((r) => r.cmp.daos.dominance ?? 0);
-  const failures = results
-    .filter((r) => r.verdict.overall === "wb")
-    .map((r) => classifyFailure({ category: r.product.category, cmp: r.cmp }));
+  const dominanceScores = results.filter((r) => r.daosOk).map((r) => r.cmp.daos.productDominance ?? 0);
+  const failures = results.filter((r) => r.failure).map((r) => r.failure!);
 
   const summary = {
     version: "category-intelligence-wave1",
