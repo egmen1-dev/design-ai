@@ -2,6 +2,7 @@ import sharp from "sharp";
 import type { SceneLightingProfile } from "./scene-analysis";
 import type { Rgb } from "./scene-analysis";
 import { getAlphaBounds } from "./ground-detector";
+import { clampExtractRect } from "./safe-extract";
 
 export type ShadowType = "contact" | "ambient" | "directional" | "alpha-contact" | "ambient-occlusion";
 
@@ -100,20 +101,25 @@ async function renderAlphaContactShadow(
   if (!bounds) return null;
 
   const meta = await sharp(productBuffer).metadata();
-  const w = meta.width ?? bounds.width;
-  const h = meta.height ?? bounds.height;
+  const imgW = meta.width ?? bounds.width;
+  const imgH = meta.height ?? bounds.height;
 
-  const footTop = bounds.top + Math.round(bounds.height * 0.72);
-  const footHeight = Math.max(8, bounds.bottom - footTop + 2);
+  const footTop = Math.min(bounds.top + Math.round(bounds.height * 0.72), imgH - 1);
+  const footHeight = Math.min(
+    Math.max(8, bounds.bottom - footTop + 2),
+    imgH - footTop,
+  );
+  const extractRect = clampExtractRect(imgW, imgH, {
+    left: bounds.left,
+    top: footTop,
+    width: bounds.width,
+    height: footHeight,
+  });
+  if (!extractRect) return null;
 
   const alphaSlice = await sharp(productBuffer)
     .ensureAlpha()
-    .extract({
-      left: bounds.left,
-      top: footTop,
-      width: bounds.width,
-      height: footHeight,
-    })
+    .extract(extractRect)
     .resize(Math.round(bounds.width * 1.05), Math.max(12, Math.round(footHeight * 1.8)), {
       fit: "fill",
     })

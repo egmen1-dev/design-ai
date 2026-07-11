@@ -1,0 +1,988 @@
+{
+  "generatedAt": "2026-07-09T12:22:57.519Z",
+  "seed": "sprint3-control-surface-20260709",
+  "renderEnabled": true,
+  "productCount": 5,
+  "controlSurface": [
+    {
+      "commercialIntent": "productAreaTarget",
+      "layoutSpec": "YES",
+      "promptCompiler": "YES",
+      "visibleImage": "NOISE",
+      "controlStrength": "WEAK",
+      "bottleneck": "Prompt Compiler → Pollinations (v17 production path)",
+      "evidence": {
+        "layoutProducts": 5,
+        "promptProducts": 5,
+        "pollinationsProducts": 0,
+        "imageProducts": 3,
+        "avgMeanAbsDiff": 5.22
+      }
+    },
+    {
+      "commercialIntent": "heroDominance",
+      "layoutSpec": "YES",
+      "promptCompiler": "YES",
+      "visibleImage": "NOISE",
+      "controlStrength": "WEAK",
+      "bottleneck": "Prompt Compiler → Pollinations (v17 production path)",
+      "evidence": {
+        "layoutProducts": 5,
+        "promptProducts": 5,
+        "pollinationsProducts": 0,
+        "imageProducts": 3,
+        "avgMeanAbsDiff": 5.22
+      }
+    },
+    {
+      "commercialIntent": "hierarchy",
+      "layoutSpec": "YES",
+      "promptCompiler": "YES",
+      "visibleImage": "NOISE",
+      "controlStrength": "WEAK",
+      "bottleneck": "Prompt Compiler → Pollinations (v17 production path)",
+      "evidence": {
+        "layoutProducts": 5,
+        "promptProducts": 5,
+        "pollinationsProducts": 0,
+        "imageProducts": 3,
+        "avgMeanAbsDiff": 5.22
+      }
+    },
+    {
+      "commercialIntent": "maxCharacteristics",
+      "layoutSpec": "YES",
+      "promptCompiler": "YES",
+      "visibleImage": "NOISE",
+      "controlStrength": "WEAK",
+      "bottleneck": "Prompt Compiler → Pollinations (v17 production path)",
+      "evidence": {
+        "layoutProducts": 5,
+        "promptProducts": 5,
+        "pollinationsProducts": 0,
+        "imageProducts": 3,
+        "avgMeanAbsDiff": 5.22
+      }
+    },
+    {
+      "commercialIntent": "badgeLimit",
+      "layoutSpec": "YES",
+      "promptCompiler": "YES",
+      "visibleImage": "NOISE",
+      "controlStrength": "WEAK",
+      "bottleneck": "Prompt Compiler → Pollinations (v17 production path)",
+      "evidence": {
+        "layoutProducts": 5,
+        "promptProducts": 5,
+        "pollinationsProducts": 0,
+        "imageProducts": 3,
+        "avgMeanAbsDiff": 5.22
+      }
+    },
+    {
+      "commercialIntent": "typographyStrategy",
+      "layoutSpec": "YES",
+      "promptCompiler": "YES",
+      "visibleImage": "NOISE",
+      "controlStrength": "WEAK",
+      "bottleneck": "Prompt Compiler → Pollinations (v17 production path)",
+      "evidence": {
+        "layoutProducts": 5,
+        "promptProducts": 5,
+        "pollinationsProducts": 0,
+        "imageProducts": 3,
+        "avgMeanAbsDiff": 5.22
+      }
+    },
+    {
+      "commercialIntent": "backgroundPalettePreference",
+      "layoutSpec": "YES",
+      "promptCompiler": "YES",
+      "visibleImage": "NOISE",
+      "controlStrength": "WEAK",
+      "bottleneck": "Prompt Compiler → Pollinations (v17 production path)",
+      "evidence": {
+        "layoutProducts": 5,
+        "promptProducts": 4,
+        "pollinationsProducts": 5,
+        "imageProducts": 3,
+        "avgMeanAbsDiff": 5.22
+      }
+    },
+    {
+      "commercialIntent": "scenePreference",
+      "layoutSpec": "YES",
+      "promptCompiler": "YES",
+      "visibleImage": "NOISE",
+      "controlStrength": "WEAK",
+      "bottleneck": "Prompt Compiler → Pollinations (v17 production path)",
+      "evidence": {
+        "layoutProducts": 5,
+        "promptProducts": 5,
+        "pollinationsProducts": 4,
+        "imageProducts": 3,
+        "avgMeanAbsDiff": 5.22
+      }
+    },
+    {
+      "commercialIntent": "environmentDirection",
+      "layoutSpec": "YES",
+      "promptCompiler": "YES",
+      "visibleImage": "NOISE",
+      "controlStrength": "WEAK",
+      "bottleneck": "Prompt Compiler → Pollinations (v17 production path)",
+      "evidence": {
+        "layoutProducts": 5,
+        "promptProducts": 5,
+        "pollinationsProducts": 4,
+        "imageProducts": 3,
+        "avgMeanAbsDiff": 5.22
+      }
+    },
+    {
+      "commercialIntent": "backgroundContrastDirection",
+      "layoutSpec": "YES",
+      "promptCompiler": "YES",
+      "visibleImage": "NOISE",
+      "controlStrength": "WEAK",
+      "bottleneck": "Prompt Compiler → Pollinations (v17 production path)",
+      "evidence": {
+        "layoutProducts": 5,
+        "promptProducts": 5,
+        "pollinationsProducts": 5,
+        "imageProducts": 3,
+        "avgMeanAbsDiff": 5.22
+      }
+    },
+    {
+      "commercialIntent": "mainMessage",
+      "layoutSpec": "NO",
+      "promptCompiler": "NO",
+      "visibleImage": "NOISE",
+      "controlStrength": "NONE",
+      "bottleneck": "Commercial Decision → LayoutSpec",
+      "evidence": {
+        "layoutProducts": 0,
+        "promptProducts": 0,
+        "pollinationsProducts": 0,
+        "imageProducts": 3,
+        "avgMeanAbsDiff": 5.22
+      }
+    }
+  ],
+  "fluxLevers": [
+    {
+      "lever": "Background Palette",
+      "reachesPollinations": true,
+      "reachesImage": true,
+      "controlStrength": "WEAK",
+      "notes": "scenePreference/backgroundPalettePreference not wired into VisualSceneBlueprint"
+    },
+    {
+      "lever": "Scene / Environment",
+      "reachesPollinations": false,
+      "reachesImage": true,
+      "controlStrength": "NONE",
+      "notes": "Pollinations architecture from category/coverConcept, not commercial scenePreference"
+    },
+    {
+      "lever": "Camera",
+      "reachesPollinations": true,
+      "reachesImage": true,
+      "controlStrength": "MEDIUM",
+      "notes": "Camera/lens in pollinations optional segments; not commercial-controlled"
+    },
+    {
+      "lever": "Product Scale",
+      "reachesPollinations": false,
+      "reachesImage": false,
+      "controlStrength": "NONE",
+      "notes": "heroScale on LayoutSpec; percentages banned in Pollinations; layout-engine ignores"
+    },
+    {
+      "lever": "Typography",
+      "reachesPollinations": false,
+      "reachesImage": false,
+      "controlStrength": "NONE",
+      "notes": "Typography on overlay/HTML layer; background prompt forbids text"
+    },
+    {
+      "lever": "Environment",
+      "reachesPollinations": true,
+      "reachesImage": true,
+      "controlStrength": "WEAK",
+      "notes": "Category-driven, not commercial genome scenePreference"
+    }
+  ],
+  "productResults": [
+    {
+      "productId": "battery-sprayer",
+      "title": "Аккумуляторный опрыскиватель 16 л для сада",
+      "legacy": {
+        "arm": "legacy",
+        "layoutSpec": {
+          "heroScale": 0.66,
+          "maxIcons": 1
+        },
+        "promptCompiler": {
+          "prompt": "commercial garden tools product hero, shape standard, complementing colors neutral product tones, single primary object only, no duplicate products, scene mood outdoor energetic, concept garden scene, environment Сад / газон, surface grass, horizon low horizon, upper third sky, composition hero right, whitespace 31%, max 2 secondary elements, product hero target area 66% of frame, maximum 1 icon elements, maximum 1 badge elements, soft even studio key, minimal shadows, direction top-left, temperature 5500K, shadow mixed, surface grass, physical accuracy, contact shadow area on surface, 50mm minimal lens, eye level, generous negative space, three-quarter front-right, waist-level, medium-close, background for compositing, product placement zone 45% 67% empty, text safe zones: headline zone 38.2% 6% 55x16% empty; bullets zone 68.4% 48.6% 28x28% empty; plaques zone 82.7% 18.4% 14x32% empty, no objects in product zone, atmospheric depth foreground midground background, visual hierarchy: hero dominant, headline H1, one benefit, optional CTA badge, decorative minimal, headline safe zone 38.2% 6% keep empty for text overlay, 2-3 colors maximum, whitespace dominates, 8k photorealistic commercial advertising photography, physical light accuracy, no AI artifacts, Wildberries marketplace cover 900x1200, #1a1a2e, #f8fafc, #f97316, #64748b, trustworthy commercial look, designed whitespace not empty accident, marketplace CTR optimized, maximum 1 icon elements, maximum 1 badge elements",
+          "promptLength": 1494,
+          "commercialIntentRead": [
+            "heroScale",
+            "maxIcons"
+          ],
+          "commercialIntentIgnored": [
+            "productAreaPct",
+            "primaryObject",
+            "hierarchy",
+            "maxBadges",
+            "maxCharacteristics",
+            "scenePreference",
+            "backgroundPalettePreference",
+            "typographyStrategy"
+          ]
+        },
+        "pollinations": {
+          "prompt": "sunny suburban lawn, garden path, wooden fence blurred, golden hour, clear grass foreground, cinematic depth, , no objects, empty foreground for product compositing, backdrop only, no objects, no text, no letters, no watermark, sharp detailed floor plane in foreground, clear bright atmosphere, warm golden hour glow, sharp product zone, soft distant background, confident premium atmosphere, directional key light, minimal fill, subtle rim separation, 5500K color temperature, 70mm lens, three-quarter view, natural premium, large clean empty space on left",
+          "tokenEstimate": 78,
+          "validationOk": false,
+          "validationIssues": [
+            "duplicated instructions"
+          ],
+          "architecture": "nature",
+          "negativeSpace": "left"
+        },
+        "render": {
+          "ok": true,
+          "url": "/backgrounds/v17-7588c8d1676774a4-1783599745026.png",
+          "localPath": "/workspace/marketplace-infographic/benchmark/output/sprint3-control-surface/battery-sprayer-legacy.png",
+          "sha256": "0ec5da2ab07e3b0e505b26d30ab2618f3800ba942468e6190f70fa350d072532",
+          "adapterPrompt": "sunny suburban lawn, garden path, wooden fence blurred, golden hour, clear grass foreground, cinematic depth, , no objects, empty foreground for product compositing, backdrop only, no objects, no text, no letters, no watermark, sharp detailed floor plane in foreground, clear bright atmosphere, warm golden hour glow, sharp product zone, soft distant background, confident premium atmosphere, directional key light, minimal fill, subtle rim separation, 5500K color temperature, 70mm lens, three-quarter view, natural premium, large clean empty space on left",
+          "overallScore": 82
+        }
+      },
+      "commercial": {
+        "arm": "commercial",
+        "layoutSpec": {
+          "heroScale": 0.55,
+          "productAreaPct": 55,
+          "primaryObject": "product",
+          "hierarchy": {
+            "headline": "H1",
+            "hero": "hero",
+            "benefits": "supporting",
+            "cta": "cta",
+            "decorative": "decorative"
+          },
+          "maxIcons": 2,
+          "maxBadges": 2,
+          "maxCharacteristics": 4,
+          "typographyStrategy": "one main message, strong result-oriented headline",
+          "scenePreference": "industrial_technical",
+          "backgroundPalettePreference": "medium_contrast",
+          "commercialIntentApplied": [
+            "heroScale",
+            "productAreaPct",
+            "primaryObject",
+            "hierarchy",
+            "maxSecondaryObjects",
+            "maxCharacteristics",
+            "typographyStrategy",
+            "maxIcons",
+            "maxBadges",
+            "backgroundPalettePreference",
+            "scenePreference"
+          ]
+        },
+        "promptCompiler": {
+          "prompt": "commercial garden tools product hero, shape standard, complementing colors neutral product tones, single primary object only, no duplicate products, product-first dominance, single hero product is the visual anchor, scene mood outdoor energetic, concept garden scene, environment Сад / газон, surface grass, horizon low horizon, upper third sky, scene preference from layout: clean industrial technical environment, composition hero right, whitespace 31%, max 2 secondary elements, product hero target area 55% of frame, maximum 2 icon elements, maximum 2 badge elements, soft even studio key, minimal shadows, direction top-left, temperature 5500K, shadow mixed, surface grass, physical accuracy, contact shadow area on surface, 50mm minimal lens, eye level, generous negative space, three-quarter front-right, waist-level, medium-close, background for compositing, product placement zone 45% 67% empty, text safe zones: headline zone 38.2% 6% 55x16% empty; bullets zone 68.4% 48.6% 28x28% empty; plaques zone 82.7% 18.4% 14x32% empty, no objects in product zone, atmospheric depth foreground midground background, medium contrast background separation, VISUAL HIERARCHY (preserve order):, 1. H1 — headline, 2. hero — product hero, 3. supporting — supporting benefit, 4. cta — CTA badge, 5. decorative — decorative (minimal), product-first dominance, single hero product is the visual anchor, headline safe zone 38.2% 6% keep empty for text overlay, maximum 4 characteristic lines on card, typography strategy: one main message, strong result-oriented headline, 2-3 colors maximum, whitespace dominates, 8k photorealistic commercial advertising photography, physical light accuracy, no AI artifacts, Wildberries marketplace cover 900x1200, #1a1a2e, #f8fafc, #f97316, #64748b, trustworthy commercial look, designed whitespace not empty accident, marketplace CTR optimized, maximum 2 icon elements, maximum 2 badge elements, maximum 4 characteristic lines on card, medium contrast background separation",
+          "promptLength": 2001,
+          "commercialIntentRead": [
+            "heroScale",
+            "productAreaPct",
+            "primaryObject",
+            "hierarchy",
+            "maxIcons",
+            "maxCharacteristics",
+            "typographyStrategy",
+            "scenePreference",
+            "backgroundPalettePreference"
+          ],
+          "commercialIntentIgnored": []
+        },
+        "pollinations": {
+          "prompt": "sunny suburban lawn, garden path, wooden fence blurred, golden hour, clear grass foreground, cinematic depth, , no objects, empty foreground for product compositing, backdrop only, no objects, no text, no letters, no watermark, sharp detailed floor plane in foreground, clear bright atmosphere, warm golden hour glow, sharp product zone, soft distant background, confident premium atmosphere, directional key light, minimal fill, subtle rim separation, 5500K color temperature, 70mm lens, three-quarter view, natural premium, large clean empty space on left",
+          "tokenEstimate": 78,
+          "validationOk": false,
+          "validationIssues": [
+            "duplicated instructions"
+          ],
+          "architecture": "nature",
+          "negativeSpace": "left"
+        },
+        "render": {
+          "ok": true,
+          "url": "/backgrounds/v17-7588c8d1676774a4-1783599745849.png",
+          "localPath": "/workspace/marketplace-infographic/benchmark/output/sprint3-control-surface/battery-sprayer-commercial.png",
+          "sha256": "0ec5da2ab07e3b0e505b26d30ab2618f3800ba942468e6190f70fa350d072532",
+          "adapterPrompt": "sunny suburban lawn, garden path, wooden fence blurred, golden hour, clear grass foreground, cinematic depth, , no objects, empty foreground for product compositing, backdrop only, no objects, no text, no letters, no watermark, sharp detailed floor plane in foreground, clear bright atmosphere, warm golden hour glow, sharp product zone, soft distant background, confident premium atmosphere, directional key light, minimal fill, subtle rim separation, 5500K color temperature, 70mm lens, three-quarter view, natural premium, large clean empty space on left",
+          "overallScore": 82
+        }
+      },
+      "diff": {
+        "promptCompilerChanged": true,
+        "pollinationsChanged": false,
+        "pollinationsIdentical": true,
+        "pollinationsPromptDelta": [],
+        "promptCompilerAddedLines": [
+          "product-first dominance",
+          "single hero product is the visual anchor",
+          "scene preference from layout: clean industrial technical environment",
+          "product hero target area 55% of frame",
+          "maximum 2 icon elements",
+          "maximum 2 badge elements",
+          "medium contrast background separation",
+          "VISUAL HIERARCHY (preserve order):",
+          "1. H1 — headline",
+          "2. hero — product hero",
+          "3. supporting — supporting benefit",
+          "4. cta — CTA badge",
+          "5. decorative — decorative (minimal)",
+          "product-first dominance",
+          "single hero product is the visual anchor",
+          "maximum 4 characteristic lines on card",
+          "typography strategy: one main message",
+          "strong result-oriented headline",
+          "maximum 2 icon elements",
+          "maximum 2 badge elements",
+          "maximum 4 characteristic lines on card",
+          "medium contrast background separation"
+        ],
+        "imageDiff": {
+          "identical": true,
+          "meanAbsDiff": 0,
+          "changedPixelPct": 0,
+          "hashA": "895079622b2b9b2661019315a94a3fee89fe52f6d73af5c8cc28dbcab374e3b8",
+          "hashB": "895079622b2b9b2661019315a94a3fee89fe52f6d73af5c8cc28dbcab374e3b8"
+        },
+        "imageDiffLikelyNoise": false
+      }
+    },
+    {
+      "productId": "construction-vacuum",
+      "title": "Строительный пылесос для ремонта 30 л",
+      "legacy": {
+        "arm": "legacy",
+        "layoutSpec": {
+          "heroScale": 0.66,
+          "maxIcons": 1
+        },
+        "promptCompiler": {
+          "prompt": "commercial professional tool product hero, shape standard, complementing colors neutral product tones, single primary object only, no duplicate products, scene mood trustworthy commercial, concept home interior, environment Дом / интерьер, surface matte, horizon interior vanishing point mid-frame, composition hero right, whitespace 31%, max 2 secondary elements, product hero target area 66% of frame, maximum 1 icon elements, maximum 1 badge elements, soft even studio key, minimal shadows, direction left, temperature 5200K, shadow ambient, surface matte, physical accuracy, contact shadow area on surface, 50mm minimal lens, eye level, generous negative space, three-quarter catalog, counter-level, medium-wide, background for compositing, product placement zone 45% 67% empty, text safe zones: headline zone 38.5% 5.5% 55x16% empty; bullets zone 67.2% 48% 28x28% empty; plaques zone 81.8% 18% 14x32% empty, no objects in product zone, atmospheric depth foreground midground background, visual hierarchy: hero dominant, headline H1, one benefit, optional CTA badge, decorative minimal, headline safe zone 38.5% 5.5% keep empty for text overlay, 2-3 colors maximum, whitespace dominates, 8k photorealistic commercial advertising photography, physical light accuracy, no AI artifacts, Wildberries marketplace cover 900x1200, #1a1a2e, #f8fafc, #f97316, #64748b, trustworthy commercial look, designed whitespace not empty accident, marketplace CTR optimized, maximum 1 icon elements, maximum 1 badge elements",
+          "promptLength": 1509,
+          "commercialIntentRead": [
+            "heroScale",
+            "maxIcons"
+          ],
+          "commercialIntentIgnored": [
+            "productAreaPct",
+            "primaryObject",
+            "hierarchy",
+            "maxBadges",
+            "maxCharacteristics",
+            "scenePreference",
+            "backgroundPalettePreference",
+            "typographyStrategy"
+          ]
+        },
+        "pollinations": {
+          "prompt": "modern home interior, warm ambient light, wooden floor, soft bokeh background, empty space for product,, empty foreground for product compositing, backdrop only, no objects, no text, no letters, no watermark, sharp detailed floor plane in foreground, controlled indoor studio atmosphere, fresh morning light, sharp foreground floor, gentle background falloff only, trustworthy calm atmosphere, soft diffused key light, minimal fill, subtle rim separation, 5200K color temperature, 70mm lens, three-quarter view, warm lifestyle, large clean empty space on left",
+          "tokenEstimate": 77,
+          "validationOk": true,
+          "validationIssues": [],
+          "architecture": "home_interior",
+          "negativeSpace": "left"
+        },
+        "render": {
+          "ok": true,
+          "url": "/backgrounds/v17-b8f1152c8ecad263-1783599749904.png",
+          "localPath": "/workspace/marketplace-infographic/benchmark/output/sprint3-control-surface/construction-vacuum-legacy.png",
+          "sha256": "de8ae12fd0b57e93a02980ac4ac3bf543b86fffe1f08935dec32b6b381c22e96",
+          "adapterPrompt": "modern home interior, warm ambient light, wooden floor, soft bokeh background, empty space for product,, empty foreground for product compositing, backdrop only, no objects, no text, no letters, no watermark, sharp detailed floor plane in foreground, controlled indoor studio atmosphere, fresh morning light, sharp foreground floor, gentle background falloff only, trustworthy calm atmosphere, soft diffused key light, minimal fill, subtle rim separation, 5200K color temperature, 70mm lens, three-quarter view, warm lifestyle, large clean empty space on left",
+          "overallScore": 82
+        }
+      },
+      "commercial": {
+        "arm": "commercial",
+        "layoutSpec": {
+          "heroScale": 0.55,
+          "productAreaPct": 55,
+          "primaryObject": "product",
+          "hierarchy": {
+            "headline": "H1",
+            "hero": "hero",
+            "benefits": "supporting",
+            "cta": "cta",
+            "decorative": "decorative"
+          },
+          "maxIcons": 2,
+          "maxBadges": 2,
+          "maxCharacteristics": 4,
+          "typographyStrategy": "one main message, strong result-oriented headline",
+          "scenePreference": "industrial_technical",
+          "backgroundPalettePreference": "cool_neutral",
+          "commercialIntentApplied": [
+            "heroScale",
+            "productAreaPct",
+            "primaryObject",
+            "hierarchy",
+            "maxSecondaryObjects",
+            "maxCharacteristics",
+            "typographyStrategy",
+            "maxIcons",
+            "maxBadges",
+            "backgroundPalettePreference",
+            "scenePreference"
+          ]
+        },
+        "promptCompiler": {
+          "prompt": "commercial professional tool product hero, shape standard, complementing colors neutral product tones, single primary object only, no duplicate products, product-first dominance, single hero product is the visual anchor, scene mood trustworthy commercial, concept home interior, environment Дом / интерьер, surface matte, horizon interior vanishing point mid-frame, scene preference from layout: clean industrial technical environment, composition hero right, whitespace 31%, max 2 secondary elements, product hero target area 55% of frame, maximum 2 icon elements, maximum 2 badge elements, soft even studio key, minimal shadows, direction left, temperature 5200K, shadow ambient, surface matte, physical accuracy, contact shadow area on surface, 50mm minimal lens, eye level, generous negative space, three-quarter catalog, counter-level, medium-wide, background for compositing, product placement zone 45% 67% empty, text safe zones: headline zone 38.5% 5.5% 55x16% empty; bullets zone 67.2% 48% 28x28% empty; plaques zone 81.8% 18% 14x32% empty, no objects in product zone, atmospheric depth foreground midground background, cool neutral background separation from product, VISUAL HIERARCHY (preserve order):, 1. H1 — headline, 2. hero — product hero, 3. supporting — supporting benefit, 4. cta — CTA badge, 5. decorative — decorative (minimal), product-first dominance, single hero product is the visual anchor, headline safe zone 38.5% 5.5% keep empty for text overlay, maximum 4 characteristic lines on card, typography strategy: one main message, strong result-oriented headline, 2-3 colors maximum, whitespace dominates, 8k photorealistic commercial advertising photography, physical light accuracy, no AI artifacts, Wildberries marketplace cover 900x1200, #1a1a2e, #f8fafc, #f97316, #64748b, trustworthy commercial look, designed whitespace not empty accident, marketplace CTR optimized, maximum 2 icon elements, maximum 2 badge elements, maximum 4 characteristic lines on card, cool neutral background separation from product",
+          "promptLength": 2036,
+          "commercialIntentRead": [
+            "heroScale",
+            "productAreaPct",
+            "primaryObject",
+            "hierarchy",
+            "maxIcons",
+            "maxCharacteristics",
+            "typographyStrategy",
+            "scenePreference",
+            "backgroundPalettePreference"
+          ],
+          "commercialIntentIgnored": []
+        },
+        "pollinations": {
+          "prompt": "modern home interior, warm ambient light, wooden floor, soft bokeh background, empty space for product,, empty foreground for product compositing, backdrop only, no objects, no text, no letters, no watermark, sharp detailed floor plane in foreground, controlled indoor studio atmosphere, fresh morning light, sharp foreground floor, gentle background falloff only, trustworthy calm atmosphere, soft diffused key light, minimal fill, subtle rim separation, 5200K color temperature, 70mm lens, three-quarter view, warm lifestyle, large clean empty space on left",
+          "tokenEstimate": 77,
+          "validationOk": true,
+          "validationIssues": [],
+          "architecture": "home_interior",
+          "negativeSpace": "left"
+        },
+        "render": {
+          "ok": true,
+          "url": "/backgrounds/v17-b8f1152c8ecad263-1783599754006.png",
+          "localPath": "/workspace/marketplace-infographic/benchmark/output/sprint3-control-surface/construction-vacuum-commercial.png",
+          "sha256": "bfb69134a3d08d93ea4f6657cc546b50c0788d3abf0dbec9a3d0d975445626e6",
+          "adapterPrompt": "modern home interior, warm ambient light, wooden floor, soft bokeh background, empty space for product,, empty foreground for product compositing, backdrop only, no objects, no text, no letters, no watermark, sharp detailed floor plane in foreground, controlled indoor studio atmosphere, fresh morning light, sharp foreground floor, gentle background falloff only, trustworthy calm atmosphere, soft diffused key light, minimal fill, subtle rim separation, 5200K color temperature, 70mm lens, three-quarter view, warm lifestyle, large clean empty space on left",
+          "overallScore": 82
+        }
+      },
+      "diff": {
+        "promptCompilerChanged": true,
+        "pollinationsChanged": false,
+        "pollinationsIdentical": true,
+        "pollinationsPromptDelta": [],
+        "promptCompilerAddedLines": [
+          "product-first dominance",
+          "single hero product is the visual anchor",
+          "scene preference from layout: clean industrial technical environment",
+          "product hero target area 55% of frame",
+          "maximum 2 icon elements",
+          "maximum 2 badge elements",
+          "cool neutral background separation from product",
+          "VISUAL HIERARCHY (preserve order):",
+          "1. H1 — headline",
+          "2. hero — product hero",
+          "3. supporting — supporting benefit",
+          "4. cta — CTA badge",
+          "5. decorative — decorative (minimal)",
+          "product-first dominance",
+          "single hero product is the visual anchor",
+          "maximum 4 characteristic lines on card",
+          "typography strategy: one main message",
+          "strong result-oriented headline",
+          "maximum 2 icon elements",
+          "maximum 2 badge elements",
+          "maximum 4 characteristic lines on card",
+          "cool neutral background separation from product"
+        ],
+        "imageDiff": {
+          "identical": false,
+          "meanAbsDiff": 13.61,
+          "changedPixelPct": 41.61,
+          "hashA": "30c4c28e61c3809b0793f5332c99dda8ecc85fb5aa7b9a683afc98aa7871b169",
+          "hashB": "a53bcaa9c4e0f469b40c656ced35d039cd78736bcc06ec702d8ee1908ecc9827"
+        },
+        "imageDiffLikelyNoise": true
+      }
+    },
+    {
+      "productId": "impact-drill",
+      "title": "Ударная дрель 800 Вт профессиональная",
+      "legacy": {
+        "arm": "legacy",
+        "layoutSpec": {
+          "heroScale": 0.66,
+          "maxIcons": 1
+        },
+        "promptCompiler": {
+          "prompt": "commercial professional tool product hero, shape standard, complementing colors neutral product tones, single primary object only, no duplicate products, scene mood premium confident, concept commercial studio, environment Студийная съёмка, surface studio_floor, horizon no visible horizon, studio infinity, composition hero right, whitespace 31%, max 2 secondary elements, product hero target area 66% of frame, maximum 1 icon elements, maximum 1 badge elements, soft even studio key, minimal shadows, direction top-left, temperature 5600K, shadow mixed, surface studio_floor, physical accuracy, contact shadow area on surface, 50mm minimal lens, eye level, generous negative space, three-quarter commercial, table-level, medium-close, background for compositing, product placement zone 57% 67% empty, text safe zones: headline zone 5.4% 6% 52x16% empty; bullets zone 6% 48.6% 28x28% empty; plaques zone 5.9% 18.3% 14x32% empty, no objects in product zone, atmospheric depth foreground midground background, visual hierarchy: hero dominant, headline H1, one benefit, optional CTA badge, decorative minimal, headline safe zone 5.4% 6% keep empty for text overlay, 2-3 colors maximum, whitespace dominates, 8k photorealistic commercial advertising photography, physical light accuracy, no AI artifacts, Wildberries marketplace cover 900x1200, #1a1a2e, #f8fafc, #f97316, #64748b, trustworthy commercial look, designed whitespace not empty accident, marketplace CTR optimized, maximum 1 icon elements, maximum 1 badge elements",
+          "promptLength": 1523,
+          "commercialIntentRead": [
+            "heroScale",
+            "maxIcons"
+          ],
+          "commercialIntentIgnored": [
+            "productAreaPct",
+            "primaryObject",
+            "hierarchy",
+            "maxBadges",
+            "maxCharacteristics",
+            "scenePreference",
+            "backgroundPalettePreference",
+            "typographyStrategy"
+          ]
+        },
+        "pollinations": {
+          "prompt": "professional product photography studio, soft gradient backdrop, cinematic key light, empty foreground surface, ,, empty foreground for product compositing, backdrop only, no objects, no text, no letters, no watermark, sharp detailed floor plane in foreground, controlled indoor studio atmosphere, neutral studio lighting, sharp foreground floor, gentle background falloff only, editorial luxury calm, soft diffused key light, minimal fill, subtle rim separation, 5600K color temperature, 70mm lens, three-quarter view, premium technical calm, large clean empty space on left",
+          "tokenEstimate": 77,
+          "validationOk": false,
+          "validationIssues": [
+            "duplicated instructions"
+          ],
+          "architecture": "studio",
+          "negativeSpace": "left"
+        },
+        "render": {
+          "ok": true,
+          "url": "/backgrounds/v17-808067e4f10fba37-1783599758011.png",
+          "localPath": "/workspace/marketplace-infographic/benchmark/output/sprint3-control-surface/impact-drill-legacy.png",
+          "sha256": "af5edf506d88bbbdb7adb8cb2ac89c1706b7e0923077cb714c40eb8a7e3cbc47",
+          "adapterPrompt": "professional product photography studio, soft gradient backdrop, cinematic key light, empty foreground surface, ,, empty foreground for product compositing, backdrop only, no objects, no text, no letters, no watermark, sharp detailed floor plane in foreground, controlled indoor studio atmosphere, neutral studio lighting, sharp foreground floor, gentle background falloff only, editorial luxury calm, soft diffused key light, minimal fill, subtle rim separation, 5600K color temperature, 70mm lens, three-quarter view, premium technical calm, large clean empty space on left",
+          "overallScore": 82
+        }
+      },
+      "commercial": {
+        "arm": "commercial",
+        "layoutSpec": {
+          "heroScale": 0.55,
+          "productAreaPct": 55,
+          "primaryObject": "product",
+          "hierarchy": {
+            "headline": "H1",
+            "hero": "hero",
+            "benefits": "supporting",
+            "cta": "cta",
+            "decorative": "decorative"
+          },
+          "maxIcons": 2,
+          "maxBadges": 2,
+          "maxCharacteristics": 4,
+          "typographyStrategy": "one main message, strong result-oriented headline",
+          "scenePreference": "industrial_technical",
+          "backgroundPalettePreference": "light_neutral",
+          "commercialIntentApplied": [
+            "heroScale",
+            "productAreaPct",
+            "primaryObject",
+            "hierarchy",
+            "maxSecondaryObjects",
+            "maxCharacteristics",
+            "typographyStrategy",
+            "maxIcons",
+            "maxBadges",
+            "backgroundPalettePreference",
+            "scenePreference"
+          ]
+        },
+        "promptCompiler": {
+          "prompt": "commercial professional tool product hero, shape standard, complementing colors neutral product tones, single primary object only, no duplicate products, product-first dominance, single hero product is the visual anchor, scene mood premium confident, concept commercial studio, environment Студийная съёмка, surface studio_floor, horizon no visible horizon, studio infinity, scene preference from layout: clean industrial technical environment, composition hero right, whitespace 31%, max 2 secondary elements, product hero target area 55% of frame, maximum 2 icon elements, maximum 2 badge elements, soft even studio key, minimal shadows, direction top-left, temperature 5600K, shadow mixed, surface studio_floor, physical accuracy, contact shadow area on surface, 50mm minimal lens, eye level, generous negative space, three-quarter commercial, table-level, medium-close, background for compositing, product placement zone 57% 67% empty, text safe zones: headline zone 5.4% 6% 52x16% empty; bullets zone 6% 48.6% 28x28% empty; plaques zone 5.9% 18.3% 14x32% empty, no objects in product zone, atmospheric depth foreground midground background, light neutral background for dark product separation, VISUAL HIERARCHY (preserve order):, 1. H1 — headline, 2. hero — product hero, 3. supporting — supporting benefit, 4. cta — CTA badge, 5. decorative — decorative (minimal), product-first dominance, single hero product is the visual anchor, headline safe zone 5.4% 6% keep empty for text overlay, maximum 4 characteristic lines on card, typography strategy: one main message, strong result-oriented headline, 2-3 colors maximum, whitespace dominates, 8k photorealistic commercial advertising photography, physical light accuracy, no AI artifacts, Wildberries marketplace cover 900x1200, #1a1a2e, #f8fafc, #f97316, #64748b, trustworthy commercial look, designed whitespace not empty accident, marketplace CTR optimized, maximum 2 icon elements, maximum 2 badge elements, maximum 4 characteristic lines on card, light neutral background for dark product separation",
+          "promptLength": 2060,
+          "commercialIntentRead": [
+            "heroScale",
+            "productAreaPct",
+            "primaryObject",
+            "hierarchy",
+            "maxIcons",
+            "maxCharacteristics",
+            "typographyStrategy",
+            "scenePreference",
+            "backgroundPalettePreference"
+          ],
+          "commercialIntentIgnored": []
+        },
+        "pollinations": {
+          "prompt": "professional product photography studio, soft gradient backdrop, cinematic key light, empty foreground surface, ,, empty foreground for product compositing, backdrop only, no objects, no text, no letters, no watermark, sharp detailed floor plane in foreground, controlled indoor studio atmosphere, neutral studio lighting, sharp foreground floor, gentle background falloff only, editorial luxury calm, soft diffused key light, minimal fill, subtle rim separation, 5600K color temperature, 70mm lens, three-quarter view, premium technical calm, large clean empty space on left",
+          "tokenEstimate": 77,
+          "validationOk": false,
+          "validationIssues": [
+            "duplicated instructions"
+          ],
+          "architecture": "studio",
+          "negativeSpace": "left"
+        },
+        "render": {
+          "ok": true,
+          "url": "/backgrounds/v17-808067e4f10fba37-1783599763687.png",
+          "localPath": "/workspace/marketplace-infographic/benchmark/output/sprint3-control-surface/impact-drill-commercial.png",
+          "sha256": "c980ff23fb67bdef683de398265d19d24f64632fe07e4bde348aefda63cf0a36",
+          "adapterPrompt": "professional product photography studio, soft gradient backdrop, cinematic key light, empty foreground surface, ,, empty foreground for product compositing, backdrop only, no objects, no text, no letters, no watermark, sharp detailed floor plane in foreground, controlled indoor studio atmosphere, neutral studio lighting, sharp foreground floor, gentle background falloff only, editorial luxury calm, soft diffused key light, minimal fill, subtle rim separation, 5600K color temperature, 70mm lens, three-quarter view, premium technical calm, large clean empty space on left",
+          "overallScore": 82
+        }
+      },
+      "diff": {
+        "promptCompilerChanged": true,
+        "pollinationsChanged": false,
+        "pollinationsIdentical": true,
+        "pollinationsPromptDelta": [],
+        "promptCompilerAddedLines": [
+          "product-first dominance",
+          "single hero product is the visual anchor",
+          "scene preference from layout: clean industrial technical environment",
+          "product hero target area 55% of frame",
+          "maximum 2 icon elements",
+          "maximum 2 badge elements",
+          "light neutral background for dark product separation",
+          "VISUAL HIERARCHY (preserve order):",
+          "1. H1 — headline",
+          "2. hero — product hero",
+          "3. supporting — supporting benefit",
+          "4. cta — CTA badge",
+          "5. decorative — decorative (minimal)",
+          "product-first dominance",
+          "single hero product is the visual anchor",
+          "maximum 4 characteristic lines on card",
+          "typography strategy: one main message",
+          "strong result-oriented headline",
+          "maximum 2 icon elements",
+          "maximum 2 badge elements",
+          "maximum 4 characteristic lines on card",
+          "light neutral background for dark product separation"
+        ],
+        "imageDiff": {
+          "identical": false,
+          "meanAbsDiff": 6.46,
+          "changedPixelPct": 20.56,
+          "hashA": "14fed0e50a96bb148e3bfe2f7538111258e84bb1632b9816c5b7027f9e08ad03",
+          "hashB": "09a9386576af9ea80d9c90207ddb831c70187b1e88f7834414d0adefe00ca016"
+        },
+        "imageDiffLikelyNoise": true
+      }
+    },
+    {
+      "productId": "pressure-washer",
+      "title": "Мойка высокого давления 180 бар",
+      "legacy": {
+        "arm": "legacy",
+        "layoutSpec": {
+          "heroScale": 0.66,
+          "maxIcons": 1
+        },
+        "promptCompiler": {
+          "prompt": "commercial home appliances product hero, shape standard, complementing colors neutral product tones, single primary object only, no duplicate products, scene mood trustworthy commercial, concept commercial studio, environment Студийная съёмка, surface studio_floor, horizon no visible horizon, studio infinity, composition hero right, whitespace 31%, max 2 secondary elements, product hero target area 66% of frame, maximum 1 icon elements, maximum 1 badge elements, soft even studio key, minimal shadows, direction top-left, temperature 5600K, shadow mixed, surface studio_floor, physical accuracy, contact shadow area on surface, 50mm minimal lens, eye level, generous negative space, three-quarter commercial, table-level, medium-close, background for compositing, product placement zone 57% 67% empty, text safe zones: headline zone 4% 5.4% 52x16% empty; bullets zone 5.3% 47.4% 28x28% empty; plaques zone 4.2% 18.6% 14x32% empty, no objects in product zone, atmospheric depth foreground midground background, visual hierarchy: hero dominant, headline H1, one benefit, optional CTA badge, decorative minimal, headline safe zone 4% 5.4% keep empty for text overlay, 2-3 colors maximum, whitespace dominates, 8k photorealistic commercial advertising photography, physical light accuracy, no AI artifacts, Wildberries marketplace cover 900x1200, #1a1a2e, #f8fafc, #f97316, #64748b, trustworthy commercial look, designed whitespace not empty accident, marketplace CTR optimized, maximum 1 icon elements, maximum 1 badge elements",
+          "promptLength": 1528,
+          "commercialIntentRead": [
+            "heroScale",
+            "maxIcons"
+          ],
+          "commercialIntentIgnored": [
+            "productAreaPct",
+            "primaryObject",
+            "hierarchy",
+            "maxBadges",
+            "maxCharacteristics",
+            "scenePreference",
+            "backgroundPalettePreference",
+            "typographyStrategy"
+          ]
+        },
+        "pollinations": {
+          "prompt": "professional product photography studio, soft gradient backdrop, cinematic key light, empty foreground surface, ,, empty foreground for product compositing, backdrop only, no objects, no text, no letters, no watermark, sharp detailed floor plane in foreground, controlled indoor studio atmosphere, neutral studio lighting, sharp product zone, soft distant background, trustworthy calm atmosphere, focused spotlight, minimal fill, subtle rim separation, 5600K color temperature, 70mm lens, three-quarter view, premium technical calm, large clean empty space on left",
+          "tokenEstimate": 74,
+          "validationOk": false,
+          "validationIssues": [
+            "duplicated instructions"
+          ],
+          "architecture": "studio",
+          "negativeSpace": "left"
+        },
+        "render": {
+          "ok": true,
+          "url": "/backgrounds/v17-ca5cf1de6f188ffd-1783599768691.png",
+          "localPath": "/workspace/marketplace-infographic/benchmark/output/sprint3-control-surface/pressure-washer-legacy.png",
+          "sha256": "a82dc3c319ca672392369ececf44b549aa39e28171f0f7fcf95e179bdd1f4b04",
+          "adapterPrompt": "professional product photography studio, soft gradient backdrop, cinematic key light, empty foreground surface, ,, empty foreground for product compositing, backdrop only, no objects, no text, no letters, no watermark, sharp detailed floor plane in foreground, controlled indoor studio atmosphere, neutral studio lighting, sharp product zone, soft distant background, trustworthy calm atmosphere, focused spotlight, minimal fill, subtle rim separation, 5600K color temperature, 70mm lens, three-quarter view, premium technical calm, large clean empty space on left",
+          "overallScore": 82
+        }
+      },
+      "commercial": {
+        "arm": "commercial",
+        "layoutSpec": {
+          "heroScale": 0.55,
+          "productAreaPct": 55,
+          "primaryObject": "product",
+          "hierarchy": {
+            "headline": "H1",
+            "hero": "hero",
+            "benefits": "supporting",
+            "cta": "cta",
+            "decorative": "decorative"
+          },
+          "maxIcons": 2,
+          "maxBadges": 2,
+          "maxCharacteristics": 4,
+          "typographyStrategy": "one main message, strong result-oriented headline",
+          "scenePreference": "light_modern",
+          "backgroundPalettePreference": "medium_contrast",
+          "commercialIntentApplied": [
+            "heroScale",
+            "productAreaPct",
+            "primaryObject",
+            "hierarchy",
+            "maxSecondaryObjects",
+            "maxCharacteristics",
+            "typographyStrategy",
+            "maxIcons",
+            "maxBadges",
+            "backgroundPalettePreference",
+            "scenePreference"
+          ]
+        },
+        "promptCompiler": {
+          "prompt": "commercial home appliances product hero, shape standard, complementing colors neutral product tones, single primary object only, no duplicate products, product-first dominance, single hero product is the visual anchor, scene mood trustworthy commercial, concept commercial studio, environment Студийная съёмка, surface studio_floor, horizon no visible horizon, studio infinity, scene preference from layout: light modern clean environment, composition hero right, whitespace 31%, max 2 secondary elements, product hero target area 55% of frame, maximum 2 icon elements, maximum 2 badge elements, soft even studio key, minimal shadows, direction top-left, temperature 5600K, shadow mixed, surface studio_floor, physical accuracy, contact shadow area on surface, 50mm minimal lens, eye level, generous negative space, three-quarter commercial, table-level, medium-close, background for compositing, product placement zone 57% 67% empty, text safe zones: headline zone 4% 5.4% 52x16% empty; bullets zone 5.3% 47.4% 28x28% empty; plaques zone 4.2% 18.6% 14x32% empty, no objects in product zone, atmospheric depth foreground midground background, medium contrast background separation, VISUAL HIERARCHY (preserve order):, 1. H1 — headline, 2. hero — product hero, 3. supporting — supporting benefit, 4. cta — CTA badge, 5. decorative — decorative (minimal), product-first dominance, single hero product is the visual anchor, headline safe zone 4% 5.4% keep empty for text overlay, maximum 4 characteristic lines on card, typography strategy: one main message, strong result-oriented headline, 2-3 colors maximum, whitespace dominates, 8k photorealistic commercial advertising photography, physical light accuracy, no AI artifacts, Wildberries marketplace cover 900x1200, #1a1a2e, #f8fafc, #f97316, #64748b, trustworthy commercial look, designed whitespace not empty accident, marketplace CTR optimized, maximum 2 icon elements, maximum 2 badge elements, maximum 4 characteristic lines on card, medium contrast background separation",
+          "promptLength": 2027,
+          "commercialIntentRead": [
+            "heroScale",
+            "productAreaPct",
+            "primaryObject",
+            "hierarchy",
+            "maxIcons",
+            "maxCharacteristics",
+            "typographyStrategy",
+            "scenePreference",
+            "backgroundPalettePreference"
+          ],
+          "commercialIntentIgnored": []
+        },
+        "pollinations": {
+          "prompt": "professional product photography studio, soft gradient backdrop, cinematic key light, empty foreground surface, ,, empty foreground for product compositing, backdrop only, no objects, no text, no letters, no watermark, sharp detailed floor plane in foreground, controlled indoor studio atmosphere, neutral studio lighting, sharp product zone, soft distant background, trustworthy calm atmosphere, focused spotlight, minimal fill, subtle rim separation, 5600K color temperature, 70mm lens, three-quarter view, premium technical calm, large clean empty space on left",
+          "tokenEstimate": 74,
+          "validationOk": false,
+          "validationIssues": [
+            "duplicated instructions"
+          ],
+          "architecture": "studio",
+          "negativeSpace": "left"
+        },
+        "render": {
+          "ok": true,
+          "url": "/backgrounds/v17-ca5cf1de6f188ffd-1783599769289.png",
+          "localPath": "/workspace/marketplace-infographic/benchmark/output/sprint3-control-surface/pressure-washer-commercial.png",
+          "sha256": "a82dc3c319ca672392369ececf44b549aa39e28171f0f7fcf95e179bdd1f4b04",
+          "adapterPrompt": "professional product photography studio, soft gradient backdrop, cinematic key light, empty foreground surface, ,, empty foreground for product compositing, backdrop only, no objects, no text, no letters, no watermark, sharp detailed floor plane in foreground, controlled indoor studio atmosphere, neutral studio lighting, sharp product zone, soft distant background, trustworthy calm atmosphere, focused spotlight, minimal fill, subtle rim separation, 5600K color temperature, 70mm lens, three-quarter view, premium technical calm, large clean empty space on left",
+          "overallScore": 82
+        }
+      },
+      "diff": {
+        "promptCompilerChanged": true,
+        "pollinationsChanged": false,
+        "pollinationsIdentical": true,
+        "pollinationsPromptDelta": [],
+        "promptCompilerAddedLines": [
+          "product-first dominance",
+          "single hero product is the visual anchor",
+          "scene preference from layout: light modern clean environment",
+          "product hero target area 55% of frame",
+          "maximum 2 icon elements",
+          "maximum 2 badge elements",
+          "medium contrast background separation",
+          "VISUAL HIERARCHY (preserve order):",
+          "1. H1 — headline",
+          "2. hero — product hero",
+          "3. supporting — supporting benefit",
+          "4. cta — CTA badge",
+          "5. decorative — decorative (minimal)",
+          "product-first dominance",
+          "single hero product is the visual anchor",
+          "maximum 4 characteristic lines on card",
+          "typography strategy: one main message",
+          "strong result-oriented headline",
+          "maximum 2 icon elements",
+          "maximum 2 badge elements",
+          "maximum 4 characteristic lines on card",
+          "medium contrast background separation"
+        ],
+        "imageDiff": {
+          "identical": true,
+          "meanAbsDiff": 0,
+          "changedPixelPct": 0,
+          "hashA": "3f9d0836d3fe902800bcb9263bd9b9b56d861260b2a9a8fe8eb2ef7af348f940",
+          "hashB": "3f9d0836d3fe902800bcb9263bd9b9b56d861260b2a9a8fe8eb2ef7af348f940"
+        },
+        "imageDiffLikelyNoise": false
+      }
+    },
+    {
+      "productId": "home-humidifier",
+      "title": "Увлажнитель воздуха для дома ультразвуковой",
+      "legacy": {
+        "arm": "legacy",
+        "layoutSpec": {
+          "heroScale": 0.66,
+          "maxIcons": 1
+        },
+        "promptCompiler": {
+          "prompt": "commercial home product hero, shape standard, complementing colors neutral product tones, single primary object only, no duplicate products, scene mood trustworthy commercial, concept commercial studio, environment Студийная съёмка, surface studio_floor, horizon no visible horizon, studio infinity, composition hero right, whitespace 31%, max 2 secondary elements, product hero target area 66% of frame, maximum 1 icon elements, maximum 1 badge elements, soft even studio key, minimal shadows, direction top-left, temperature 5600K, shadow mixed, surface studio_floor, physical accuracy, contact shadow area on surface, 50mm minimal lens, eye level, generous negative space, three-quarter commercial, table-level, medium-close, background for compositing, product placement zone 45% 68% empty, text safe zones: headline zone 38.8% 5.5% 55x16% empty; bullets zone 68.5% 47.5% 28x28% empty; plaques zone 81.7% 18.3% 14x32% empty, no objects in product zone, atmospheric depth foreground midground background, visual hierarchy: hero dominant, headline H1, one benefit, optional CTA badge, decorative minimal, headline safe zone 38.8% 5.5% keep empty for text overlay, 2-3 colors maximum, whitespace dominates, 8k photorealistic commercial advertising photography, physical light accuracy, no AI artifacts, Wildberries marketplace cover 900x1200, #1a1a2e, #f8fafc, #f97316, #64748b, trustworthy commercial look, designed whitespace not empty accident, marketplace CTR optimized, maximum 1 icon elements, maximum 1 badge elements",
+          "promptLength": 1525,
+          "commercialIntentRead": [
+            "heroScale",
+            "maxIcons"
+          ],
+          "commercialIntentIgnored": [
+            "productAreaPct",
+            "primaryObject",
+            "hierarchy",
+            "maxBadges",
+            "maxCharacteristics",
+            "scenePreference",
+            "backgroundPalettePreference",
+            "typographyStrategy"
+          ]
+        },
+        "pollinations": {
+          "prompt": "professional product photography studio, soft gradient backdrop, cinematic key light, empty foreground surface, ,, empty foreground for product compositing, backdrop only, no objects, no text, no letters, no watermark, sharp detailed floor plane in foreground, controlled indoor studio atmosphere, neutral studio lighting, sharp foreground floor, gentle background falloff only, trustworthy calm atmosphere, soft diffused key light, minimal fill, subtle rim separation, 5600K color temperature, 70mm lens, three-quarter view, premium technical calm, large clean empty space on left",
+          "tokenEstimate": 77,
+          "validationOk": false,
+          "validationIssues": [
+            "duplicated instructions"
+          ],
+          "architecture": "studio",
+          "negativeSpace": "left"
+        },
+        "render": {
+          "ok": true,
+          "url": "/backgrounds/v17-80d8e547fb774dab-1783599773092.png",
+          "localPath": "/workspace/marketplace-infographic/benchmark/output/sprint3-control-surface/home-humidifier-legacy.png",
+          "sha256": "3ed8ead388622b7b606a9dd7893d8022b266e1511f7a42ebf803f0de98ea2c7d",
+          "adapterPrompt": "professional product photography studio, soft gradient backdrop, cinematic key light, empty foreground surface, ,, empty foreground for product compositing, backdrop only, no objects, no text, no letters, no watermark, sharp detailed floor plane in foreground, controlled indoor studio atmosphere, neutral studio lighting, sharp foreground floor, gentle background falloff only, trustworthy calm atmosphere, soft diffused key light, minimal fill, subtle rim separation, 5600K color temperature, 70mm lens, three-quarter view, premium technical calm, large clean empty space on left",
+          "overallScore": 82
+        }
+      },
+      "commercial": {
+        "arm": "commercial",
+        "layoutSpec": {
+          "heroScale": 0.55,
+          "productAreaPct": 55,
+          "primaryObject": "product",
+          "hierarchy": {
+            "headline": "H1",
+            "hero": "hero",
+            "benefits": "supporting",
+            "cta": "cta",
+            "decorative": "decorative"
+          },
+          "maxIcons": 2,
+          "maxBadges": 2,
+          "maxCharacteristics": 4,
+          "typographyStrategy": "one main message, strong result-oriented headline",
+          "scenePreference": "light_modern",
+          "backgroundPalettePreference": "medium_contrast",
+          "commercialIntentApplied": [
+            "heroScale",
+            "productAreaPct",
+            "primaryObject",
+            "hierarchy",
+            "maxSecondaryObjects",
+            "maxCharacteristics",
+            "typographyStrategy",
+            "maxIcons",
+            "maxBadges",
+            "backgroundPalettePreference",
+            "scenePreference"
+          ]
+        },
+        "promptCompiler": {
+          "prompt": "commercial home product hero, shape standard, complementing colors neutral product tones, single primary object only, no duplicate products, product-first dominance, single hero product is the visual anchor, scene mood trustworthy commercial, concept commercial studio, environment Студийная съёмка, surface studio_floor, horizon no visible horizon, studio infinity, scene preference from layout: light modern clean environment, composition hero right, whitespace 31%, max 2 secondary elements, product hero target area 55% of frame, maximum 2 icon elements, maximum 2 badge elements, soft even studio key, minimal shadows, direction top-left, temperature 5600K, shadow mixed, surface studio_floor, physical accuracy, contact shadow area on surface, 50mm minimal lens, eye level, generous negative space, three-quarter commercial, table-level, medium-close, background for compositing, product placement zone 45% 68% empty, text safe zones: headline zone 38.8% 5.5% 55x16% empty; bullets zone 68.5% 47.5% 28x28% empty; plaques zone 81.7% 18.3% 14x32% empty, no objects in product zone, atmospheric depth foreground midground background, medium contrast background separation, VISUAL HIERARCHY (preserve order):, 1. H1 — headline, 2. hero — product hero, 3. supporting — supporting benefit, 4. cta — CTA badge, 5. decorative — decorative (minimal), product-first dominance, single hero product is the visual anchor, headline safe zone 38.8% 5.5% keep empty for text overlay, maximum 4 characteristic lines on card, typography strategy: one main message, strong result-oriented headline, 2-3 colors maximum, whitespace dominates, 8k photorealistic commercial advertising photography, physical light accuracy, no AI artifacts, Wildberries marketplace cover 900x1200, #1a1a2e, #f8fafc, #f97316, #64748b, trustworthy commercial look, designed whitespace not empty accident, marketplace CTR optimized, maximum 2 icon elements, maximum 2 badge elements, maximum 4 characteristic lines on card, medium contrast background separation",
+          "promptLength": 2024,
+          "commercialIntentRead": [
+            "heroScale",
+            "productAreaPct",
+            "primaryObject",
+            "hierarchy",
+            "maxIcons",
+            "maxCharacteristics",
+            "typographyStrategy",
+            "scenePreference",
+            "backgroundPalettePreference"
+          ],
+          "commercialIntentIgnored": []
+        },
+        "pollinations": {
+          "prompt": "professional product photography studio, soft gradient backdrop, cinematic key light, empty foreground surface, ,, empty foreground for product compositing, backdrop only, no objects, no text, no letters, no watermark, sharp detailed floor plane in foreground, controlled indoor studio atmosphere, neutral studio lighting, sharp foreground floor, gentle background falloff only, trustworthy calm atmosphere, soft diffused key light, minimal fill, subtle rim separation, 5600K color temperature, 70mm lens, three-quarter view, premium technical calm, large clean empty space on left",
+          "tokenEstimate": 77,
+          "validationOk": false,
+          "validationIssues": [
+            "duplicated instructions"
+          ],
+          "architecture": "studio",
+          "negativeSpace": "left"
+        },
+        "render": {
+          "ok": true,
+          "url": "/backgrounds/v17-80d8e547fb774dab-1783599777474.png",
+          "localPath": "/workspace/marketplace-infographic/benchmark/output/sprint3-control-surface/home-humidifier-commercial.png",
+          "sha256": "3b6343ac84f44b2c9764f09bcac65c9542fc30bc09d962cef7de0c044930dcd6",
+          "adapterPrompt": "professional product photography studio, soft gradient backdrop, cinematic key light, empty foreground surface, ,, empty foreground for product compositing, backdrop only, no objects, no text, no letters, no watermark, sharp detailed floor plane in foreground, controlled indoor studio atmosphere, neutral studio lighting, sharp foreground floor, gentle background falloff only, trustworthy calm atmosphere, soft diffused key light, minimal fill, subtle rim separation, 5600K color temperature, 70mm lens, three-quarter view, premium technical calm, large clean empty space on left",
+          "overallScore": 82
+        }
+      },
+      "diff": {
+        "promptCompilerChanged": true,
+        "pollinationsChanged": false,
+        "pollinationsIdentical": true,
+        "pollinationsPromptDelta": [],
+        "promptCompilerAddedLines": [
+          "product-first dominance",
+          "single hero product is the visual anchor",
+          "scene preference from layout: light modern clean environment",
+          "product hero target area 55% of frame",
+          "maximum 2 icon elements",
+          "maximum 2 badge elements",
+          "medium contrast background separation",
+          "VISUAL HIERARCHY (preserve order):",
+          "1. H1 — headline",
+          "2. hero — product hero",
+          "3. supporting — supporting benefit",
+          "4. cta — CTA badge",
+          "5. decorative — decorative (minimal)",
+          "product-first dominance",
+          "single hero product is the visual anchor",
+          "maximum 4 characteristic lines on card",
+          "typography strategy: one main message",
+          "strong result-oriented headline",
+          "maximum 2 icon elements",
+          "maximum 2 badge elements",
+          "maximum 4 characteristic lines on card",
+          "medium contrast background separation"
+        ],
+        "imageDiff": {
+          "identical": false,
+          "meanAbsDiff": 6.01,
+          "changedPixelPct": 13.59,
+          "hashA": "31c630157a227f117d1e9177656d4dfb089e807be7f5107d0bb9c8babaa70c6c",
+          "hashB": "b2c2dcdb196b3827b3559699ed963390b6106d86c0d058d14150a6aff602df5f"
+        },
+        "imageDiffLikelyNoise": true
+      }
+    }
+  ],
+  "summary": {
+    "promptCompilerChangedCount": 5,
+    "pollinationsChangedCount": 0,
+    "imageChangedCount": 3,
+    "renderSuccessCount": 5,
+    "pollinationsIdenticalCount": 5,
+    "imageNoiseLikelyCount": 3
+  }
+}

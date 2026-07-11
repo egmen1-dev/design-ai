@@ -1,0 +1,58 @@
+{
+  "productId": 10392457,
+  "category": "home",
+  "categoryLabel": "Дом",
+  "name": "Органайзер для хранения вещей и белья",
+  "daosGenerated": false,
+  "genError": "[\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"oneThought\",\n      \"deferredSpecs\",\n      0\n    ]\n  },\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"deferredBullets\",\n      0\n    ]\n  }\n]",
+  "genDurationMs": 86,
+  "leader": {
+    "productDominance": 79,
+    "foregroundIsolation": 71,
+    "headlineVisualWeight": 5.2,
+    "primaryFocusRatio": 0.375,
+    "attentionHierarchyScore": 41.4,
+    "commercialFidelity": 41.5,
+    "visualWeightHero": 18.7,
+    "thumbnailReadability": 77.9,
+    "productVisualWeight": 18.7,
+    "typographyCompetition": 20.6
+  },
+  "daos": {
+    "productDominance": 79,
+    "foregroundIsolation": 71,
+    "headlineVisualWeight": 5.2,
+    "primaryFocusRatio": 0.375,
+    "attentionHierarchyScore": 41.4,
+    "commercialFidelity": 41.5,
+    "visualWeightHero": 18.7,
+    "thumbnailReadability": 77.9,
+    "productVisualWeight": 18.7,
+    "typographyCompetition": 20.6
+  },
+  "delta": {
+    "productDominance": 0,
+    "foregroundIsolation": 0,
+    "headlineVisualWeight": 0,
+    "primaryFocusRatio": 0,
+    "attentionHierarchyScore": 0,
+    "commercialFidelity": 0,
+    "visualWeightHero": 0,
+    "thumbnailReadability": 0,
+    "productVisualWeight": 0,
+    "typographyCompetition": 0
+  },
+  "verdict": {
+    "moreProfessional": "wb",
+    "strongerSell": "wb",
+    "fasterRead": "wb",
+    "wouldOpen": "wb",
+    "overall": "wb",
+    "rationale": "DAOS generation failed: [\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"oneThought\",\n      \"deferredSpecs\",\n      0\n    ]\n  },\n  {\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at most 80 character(s)\",\n    \"path\": [\n      \"deferredBullets\",\n      0\n    ]\n  }\n]. WB leader wins by default.",
+    "gapClass": "Composition"
+  },
+  "compositeScore": {
+    "leader": 60.1,
+    "daos": 60.1
+  }
+}
