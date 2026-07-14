@@ -37,3 +37,4 @@ See **Part 20** in [Architecture_Bible.md](../Architecture_Bible.md).
 
 - [Directive Registry](directive-registry.md)
 - [RFC Index](../rfc/README.md)
+- [Architecture Inventory (2026-07-14 audit)](inventory/DAOS_ARCHITECTURE_INVENTORY.md) — factual entity catalog; no redesign
