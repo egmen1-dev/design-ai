@@ -147,8 +147,9 @@ export function computeAlternativeStability(
 function weightedFromScores(scores: DecisionEvaluation["scores"]): number {
   let total = 0;
   let weight = 0;
+  const scoreMap = scores as Record<string, number>;
   for (const [key, value] of Object.entries(FACTOR_WEIGHTS)) {
-    const score = scores[key as keyof ConfidenceFactors];
+    const score = scoreMap[key];
     if (score !== undefined) {
       total += score * value;
       weight += value;

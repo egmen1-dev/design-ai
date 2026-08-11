@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "test:specs": "bash scripts/run-specs.sh",
+    "test:e2e": "playwright test",
     "test:v18-blueprint": "bash scripts/run-v18-blueprint-tests.sh",
     "postinstall": "npx prisma generate",
     "db:push": "prisma db push",
@@ -33,6 +34,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.2",

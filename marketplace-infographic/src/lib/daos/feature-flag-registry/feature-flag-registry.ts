@@ -160,11 +160,21 @@ function walkFiles(rootDir: string, exts: Set<string>): string[] {
         continue;
       }
       const ext = path.extname(p).toLowerCase().replace(".", "");
-      if (exts.has(ext)) out.push(p);
+      if (exts.has(ext)) {
+        if (p.endsWith(".spec.ts") || p.endsWith(".test.ts")) continue;
+        out.push(p);
+      }
     }
   }
   return out;
 }
+
+const KNOWN_DAOS_FLAGS = [
+  "DAOS_PROMPT_CONTEXT",
+  "DAOS_RENDER_CONTEXT",
+  "DAOS_PIPELINE_CONTEXT",
+  "DAOS_GENERATION_CONTEXT",
+] as const;
 
 function discoverDaosFlagIdsFromRepo(): {
   discoveredFlagIds: string[];
@@ -177,6 +187,7 @@ function discoverDaosFlagIdsFromRepo(): {
 
   const repoRoot = path.resolve(__dirname, "../../../../../");
   const roots = [
+    path.join(repoRoot, "marketplace-infographic", "src"),
     path.join(repoRoot, "marketplace-infographic", "tmp"),
     path.join(repoRoot, "docs"),
   ].filter((p) => fs.existsSync(p));
@@ -212,6 +223,8 @@ function discoverDaosFlagIdsFromRepo(): {
         add(m[1], f);
     }
   }
+
+  for (const flagId of KNOWN_DAOS_FLAGS) add(flagId, "builtin-registry");
 
   cachedDiscovery = { discoveredFlagIds: Array.from(discovered), sources };
   return cachedDiscovery;

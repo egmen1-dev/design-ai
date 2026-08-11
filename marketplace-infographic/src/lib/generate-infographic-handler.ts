@@ -1293,7 +1293,7 @@ export async function handleGenerateInfographic(
     compositingHints = sceneToCompositingHints(scenePlan, objectScale);
 
     if (compositionLayout) {
-      const templateId = (compositionResult?.templateId ??
+      const templateId = (compositionResult?.scenarioId ??
         compositionLayout.scenarioId) as LayoutTemplateId | undefined;
       geometryOptimization = buildGeometryClampDiagnostics({
         layout: compositionLayout,
@@ -2427,10 +2427,10 @@ export async function handleGenerateInfographic(
         feedbackLearning: payloadExtras.feedbackLearning,
         commercialGenomeBeta: commercialGenomeBetaResult,
         commercialLayoutIntegration: commercialLayoutDebugBundle,
-      commercialLayoutPropagation,
-      commercialCalibration,
-      commercialAlphaPolicy,
-      geometryOptimization,
+        commercialLayoutPropagation,
+        commercialCalibration,
+        commercialAlphaPolicy,
+        geometryOptimization,
       });
 
     if (input.regenerateBackgroundOnly && input.existingImageId) {

@@ -24,7 +24,7 @@ export const CATEGORY_INTELLIGENCE_FLAG_DEFINITION: FeatureFlagDefinition = {
   DefaultValue: "0",
   CurrentValue: process.env[CATEGORY_INTELLIGENCE_FLAG] ?? "0",
   Scope: "runtime",
-  Category: "commercial",
+  Category: "pipeline",
   LifecycleState: "Shadow",
   IntroducedInWave: 45,
   PlannedRemovalWave: null,

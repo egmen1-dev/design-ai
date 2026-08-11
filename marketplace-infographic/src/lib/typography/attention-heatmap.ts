@@ -66,7 +66,7 @@ export async function computeSaliencyGrid(imagePath: string): Promise<Float32Arr
   return sal;
 }
 
-function gridToHeatmapBuffer(grid: Float32Array, blurSigma = 1.8): Buffer {
+async function gridToHeatmapBuffer(grid: Float32Array, blurSigma = 1.8): Promise<Buffer> {
   const pixels = W * H;
   const raw = Buffer.alloc(pixels * 3);
   for (let i = 0; i < pixels; i++) {
@@ -75,7 +75,7 @@ function gridToHeatmapBuffer(grid: Float32Array, blurSigma = 1.8): Buffer {
     raw[i * 3 + 1] = g;
     raw[i * 3 + 2] = b;
   }
-  return sharp(raw, { raw: { width: W, height: H, channels: 3 } })
+  return await sharp(raw, { raw: { width: W, height: H, channels: 3 } })
     .blur(blurSigma)
     .png()
     .toBuffer();

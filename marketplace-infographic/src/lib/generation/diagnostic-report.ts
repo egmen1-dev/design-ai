@@ -11,6 +11,10 @@ import type { RenderEngineOrchestratorResult } from "@/lib/render-engine";
 import { PIPELINE_VERSION } from "@/lib/pipeline-version";
 import type { CommercialGenomeBetaDecisionResult } from "@/lib/daos/commercial-genome-beta";
 import type { CommercialLayoutDebugBundle } from "@/lib/design/layout-spec";
+import type { CommercialLayoutPropagationDiagnostics } from "@/lib/design/layout-spec/commercial-layout-propagation";
+import type { CommercialCalibrationDiagnostics } from "@/lib/compositing/commercial-calibration";
+import type { CommercialAlphaPolicyDiagnostics } from "@/lib/compositing/commercial-alpha-policy";
+import type { GeometryClampDiagnostics } from "@/lib/layout-engine/geometry-clamp-optimization";
 
 export const DIAGNOSTIC_REPORT_VERSION = "1.0";
 
@@ -164,6 +168,10 @@ export type BuildGenerationDiagnosticInput = {
   feedbackLearning?: FeedbackLearningSnapshot;
   commercialGenomeBeta?: CommercialGenomeBetaDecisionResult;
   commercialLayoutIntegration?: CommercialLayoutDebugBundle;
+  commercialLayoutPropagation?: CommercialLayoutPropagationDiagnostics;
+  commercialCalibration?: CommercialCalibrationDiagnostics;
+  commercialAlphaPolicy?: CommercialAlphaPolicyDiagnostics;
+  geometryOptimization?: GeometryClampDiagnostics;
 };
 
 export function buildGenerationDiagnostic(

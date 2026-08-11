@@ -56,3 +56,8 @@ benchmark/output/beta-validation-2/**/leader.png
 benchmark/output/beta-validation-2/**/packshot.png
 benchmark/output/beta-validation-2/**/comparison.png
 benchmark/output/beta-validation-2/**/product-*.png
+
+# Playwright
+test-results/
+tests/playwright-report/
+playwright-report/
